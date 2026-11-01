@@ -231,7 +231,13 @@ pub(crate) fn append(mesh: &mut SurfaceMeshData, center: Vec3, half: Vec3, hat: 
 }
 
 /// Only the police cloth crown follows the source pigment; visor, band and badge retain their materials.
-pub(crate) fn append_with_color(mesh: &mut SurfaceMeshData, center: Vec3, half: Vec3, hat: &str, color: Option<[u8; 3]>) -> bool {
+pub(crate) fn append_with_color(
+    mesh: &mut SurfaceMeshData,
+    center: Vec3,
+    half: Vec3,
+    hat: &str,
+    color: Option<[u8; 3]>,
+) -> bool {
     if !matches!(
         hat,
         "trainer" | "kris" | "police" | "captain" | "sailor" | "top" | "nurse"
@@ -551,17 +557,27 @@ mod source_color_tests {
         let mut blue = SurfaceMeshData::default();
         let mut green = SurfaceMeshData::default();
         assert!(append(&mut blue, Vec3::ZERO, Vec3::splat(0.3), "police"));
-        assert!(append_with_color(&mut green, Vec3::ZERO, Vec3::splat(0.3), "police", Some([57,189,24])));
+        assert!(append_with_color(
+            &mut green,
+            Vec3::ZERO,
+            Vec3::splat(0.3),
+            "police",
+            Some([57, 189, 24])
+        ));
         assert_eq!(blue.positions, green.positions);
         assert_eq!(blue.normals, green.normals);
         assert_eq!(blue.uvs, green.uvs);
         assert_eq!(blue.indices, green.indices);
-        let base = Color::srgb_u8(36,64,117).to_linear().to_f32_array();
-        let target = Color::srgb_u8(57,189,24).to_linear().to_f32_array();
+        let base = Color::srgb_u8(36, 64, 117).to_linear().to_f32_array();
+        let target = Color::srgb_u8(57, 189, 24).to_linear().to_f32_array();
         let mut changed = 0;
-        for (a,b) in blue.colors.iter().zip(&green.colors) {
-            if *a == base { assert_eq!(*b,target); changed += 1; }
-            else { assert_eq!(a,b); }
+        for (a, b) in blue.colors.iter().zip(&green.colors) {
+            if *a == base {
+                assert_eq!(*b, target);
+                changed += 1;
+            } else {
+                assert_eq!(a, b);
+            }
         }
         assert!(changed > 100);
         assert!(changed < blue.colors.len());

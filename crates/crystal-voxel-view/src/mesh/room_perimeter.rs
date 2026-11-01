@@ -2,30 +2,30 @@
 //! All geometry is presentation-only; source floors and support remain intact.
 use super::*;
 use bevy::prelude::IVec2;
-#[path = "tin_room_bounds.rs"]
-mod tin_room_bounds;
-#[path = "tin_entrance_perimeter.rs"]
-mod tin_entrance_perimeter;
-#[path = "vermilion_room.rs"]
-mod vermilion_room;
-#[path = "tin_north_outline.rs"]
-mod tin_north_outline;
-#[path = "pokecom_room_bounds.rs"]
-mod pokecom_room_bounds;
 #[path = "hall_room.rs"]
 mod hall_room;
 #[path = "home_stair_recess.rs"]
 mod home_stair_recess;
+#[path = "pokecom_room_bounds.rs"]
+mod pokecom_room_bounds;
+#[path = "tin_entrance_perimeter.rs"]
+mod tin_entrance_perimeter;
+#[path = "tin_north_outline.rs"]
+mod tin_north_outline;
+#[path = "tin_room_bounds.rs"]
+mod tin_room_bounds;
+#[path = "vermilion_room.rs"]
+mod vermilion_room;
 pub(super) use home_stair_recess::append as append_home_stair_recess;
+#[path = "cerulean_room.rs"]
+mod cerulean_room;
 #[path = "native_arcade_backing.rs"]
 mod native_arcade_backing;
 #[path = "native_facility_room_shell.rs"]
 mod native_facility_room_shell;
-#[path = "cerulean_room.rs"]
-mod cerulean_room;
-pub(in crate::mesh) use hall_room::finish as finish_hall_room;
 #[cfg(test)]
 use bevy::prelude::UVec2;
+pub(in crate::mesh) use hall_room::finish as finish_hall_room;
 
 fn is_wall(kind: ModelKind) -> bool {
     matches!(
@@ -60,7 +60,9 @@ fn ungrounded_wall_donor(map: &str, cells: &[&VisualTile], g: &GridGeometry) -> 
     for drawing in drawings {
         // This wall carries a control unit; returns must copy plain field
         // paint rather than repeating the control around the room.
-        if drawing.tileset == "battle_tower_inside" && matches!(drawing.block, 3 | 4 | 0x1b | 0x1d | 0x1e | 0x2a | 0x2b) {
+        if drawing.tileset == "battle_tower_inside"
+            && matches!(drawing.block, 3 | 4 | 0x1b | 0x1d | 0x1e | 0x2a | 0x2b)
+        {
             continue;
         }
         if drawing.tileset == "underground" && map != "VermilionPortPassage" {
@@ -114,40 +116,93 @@ fn ungrounded_wall_donor(map: &str, cells: &[&VisualTile], g: &GridGeometry) -> 
     None
 }
 
-fn cafe_rear_template(out:&mut SurfaceMeshData,map:&str,cells:&[&VisualTile],g:&GridGeometry,
-    placements:&[Placement])->Option<usize> {
-    if !matches!(map,"CeladonCafe"|"OlivineCafe") {return None;}
-    let donor=placements.iter().find(|p|p.kind==ModelKind::ArcadeWall && p.width==4 && p.height==2
-        &&p.base_pixels==0. &&p.indices(g.width).enumerate().all(|(j,i)| {
-            let s=&cells[i].source;
-            s.tileset_id.as_ref()=="game_corner" && s.metatile_id==2 && s.tile_index==2
-                &&s.subtile_column==(j%4)as u8&&s.subtile_row==(j/4)as u8
-        }))?;
+fn cafe_rear_template(
+    out: &mut SurfaceMeshData,
+    map: &str,
+    cells: &[&VisualTile],
+    g: &GridGeometry,
+    placements: &[Placement],
+) -> Option<usize> {
+    if !matches!(map, "CeladonCafe" | "OlivineCafe") {
+        return None;
+    }
+    let donor = placements.iter().find(|p| {
+        p.kind == ModelKind::ArcadeWall
+            && p.width == 4
+            && p.height == 2
+            && p.base_pixels == 0.
+            && p.indices(g.width).enumerate().all(|(j, i)| {
+                let s = &cells[i].source;
+                s.tileset_id.as_ref() == "game_corner"
+                    && s.metatile_id == 2
+                    && s.tile_index == 2
+                    && s.subtile_column == (j % 4) as u8
+                    && s.subtile_row == (j / 4) as u8
+            })
+    })?;
     // Two columns match the perimeter's two-cell sections at native texel
     // scale, while the complete four-column donor remains authenticated.
-    let mut p=donor.clone();p.width=2;
-    let w=g.origin_x+p.column as f32*g.tile_width;
-    let front=g.origin_z+(p.row+2)as f32*g.tile_height;
-    append_kanto_house_wall(out,g,&p,[w,w+2.*g.tile_width,front-3.*g.tile_height/8.,front]);
+    let mut p = donor.clone();
+    p.width = 2;
+    let w = g.origin_x + p.column as f32 * g.tile_width;
+    let front = g.origin_z + (p.row + 2) as f32 * g.tile_height;
+    append_kanto_house_wall(
+        out,
+        g,
+        &p,
+        [
+            w,
+            w + 2. * g.tile_width,
+            front - 3. * g.tile_height / 8.,
+            front,
+        ],
+    );
     Some(p.row)
 }
 
 // The downstairs side returns continue block $05's solid rear planks.
 // The projecting divider and kitchen trim are separate source drawings.
-fn player_house_rear_template(out:&mut SurfaceMeshData,map:&str,cells:&[&VisualTile],g:&GridGeometry)->Option<usize> {
-    if map!="PlayersHouse1F" || g.width<4 || g.height<2 {return None;}
-    for row in 0..=g.height-2 {for column in 0..=g.width-4 {
-        if !(0..2).all(|y|(0..4).all(|x| {
-            let s=&cells[(row+y)*g.width+column+x].source;
-            s.tileset_id.as_ref()=="players_house" && s.metatile_id==5 && s.tile_index==0x11
-                && s.subtile_column==x as u8 && s.subtile_row==y as u8
-        })) {continue;}
-        let w=g.origin_x+column as f32*g.tile_width;
-        let front=g.origin_z+(row+2)as f32*g.tile_height;
-        native_home_timber::append(out,g,[w,w+2.*g.tile_width,front-3.*g.tile_height/8.,front],
-            0.,32.*g.tile_height/8.,[column,row]);
-        return Some(row);
-    }}
+fn player_house_rear_template(
+    out: &mut SurfaceMeshData,
+    map: &str,
+    cells: &[&VisualTile],
+    g: &GridGeometry,
+) -> Option<usize> {
+    if map != "PlayersHouse1F" || g.width < 4 || g.height < 2 {
+        return None;
+    }
+    for row in 0..=g.height - 2 {
+        for column in 0..=g.width - 4 {
+            if !(0..2).all(|y| {
+                (0..4).all(|x| {
+                    let s = &cells[(row + y) * g.width + column + x].source;
+                    s.tileset_id.as_ref() == "players_house"
+                        && s.metatile_id == 5
+                        && s.tile_index == 0x11
+                        && s.subtile_column == x as u8
+                        && s.subtile_row == y as u8
+                })
+            }) {
+                continue;
+            }
+            let w = g.origin_x + column as f32 * g.tile_width;
+            let front = g.origin_z + (row + 2) as f32 * g.tile_height;
+            native_home_timber::append(
+                out,
+                g,
+                [
+                    w,
+                    w + 2. * g.tile_width,
+                    front - 3. * g.tile_height / 8.,
+                    front,
+                ],
+                0.,
+                32. * g.tile_height / 8.,
+                [column, row],
+            );
+            return Some(row);
+        }
+    }
     None
 }
 
@@ -371,7 +426,10 @@ fn copy_section(
     out.positions.extend(source.positions.iter().map(|p| {
         let mut v = turn((p[0] - b[0]) * stretch, p[1], p[2] - b[3]);
         match edge {
-            Edge::North => {v[0]+=start;v[2]+=at;}
+            Edge::North => {
+                v[0] += start;
+                v[2] += at;
+            }
             Edge::West => {
                 v[0] += at;
                 v[2] += end;
@@ -399,21 +457,33 @@ fn copy_section(
     out.cutaway_ranges.push(first..out.positions.len());
 }
 
-
-fn append_section(mesh:&mut TerrainMeshData,solid:&SurfaceMeshData,textured:&SurfaceMeshData,
-    b:[f32;4],edge:Edge,at:f32,start:f32,end:f32) {
-    let first_solid=mesh.solid.positions.len();let first_textured=mesh.textured.positions.len();
-    copy_section(&mut mesh.solid,solid,b,edge,at,start,end);
-    copy_section(&mut mesh.textured,textured,b,edge,at,start,end);
-    let plane=match edge {
-        Edge::North=>[0.,1.,at],Edge::West=>[1.,0.,at],
-        Edge::East=>[-1.,0.,-at],Edge::South=>[0.,-1.,-at],
+fn append_section(
+    mesh: &mut TerrainMeshData,
+    solid: &SurfaceMeshData,
+    textured: &SurfaceMeshData,
+    b: [f32; 4],
+    edge: Edge,
+    at: f32,
+    start: f32,
+    end: f32,
+) {
+    let first_solid = mesh.solid.positions.len();
+    let first_textured = mesh.textured.positions.len();
+    copy_section(&mut mesh.solid, solid, b, edge, at, start, end);
+    copy_section(&mut mesh.textured, textured, b, edge, at, start, end);
+    let plane = match edge {
+        Edge::North => [0., 1., at],
+        Edge::West => [1., 0., at],
+        Edge::East => [-1., 0., -at],
+        Edge::South => [0., -1., -at],
     };
-    if first_solid<mesh.solid.positions.len() {
-        mesh.camera_wall_solid_ranges.push((first_solid..mesh.solid.positions.len(),plane));
+    if first_solid < mesh.solid.positions.len() {
+        mesh.camera_wall_solid_ranges
+            .push((first_solid..mesh.solid.positions.len(), plane));
     }
-    if first_textured<mesh.textured.positions.len() {
-        mesh.camera_wall_textured_ranges.push((first_textured..mesh.textured.positions.len(),plane));
+    if first_textured < mesh.textured.positions.len() {
+        mesh.camera_wall_textured_ranges
+            .push((first_textured..mesh.textured.positions.len(), plane));
     }
 }
 
@@ -427,30 +497,33 @@ pub(in crate::mesh) fn append(
     images: Option<&TerrainImageSamples>,
     profiles: Option<&Document>,
 ) {
-    if super::super::lance_terraces::owns_perimeter(frame,cells,g,profiles) {
+    if super::super::lance_terraces::owns_perimeter(frame, cells, g, profiles) {
         return;
     }
-    if native_facility_room_shell::append(mesh,frame,cells,g,profiles) {
+    if native_facility_room_shell::append(mesh, frame, cells, g, profiles) {
         return;
     }
-    if frame.map_id.as_ref()=="BattleTowerBattleRoom" {
-        super::super::modeled_dungeons::append_tower_battle_perimeter(mesh,frame,cells,g);
+    if frame.map_id.as_ref() == "BattleTowerBattleRoom" {
+        super::super::modeled_dungeons::append_tower_battle_perimeter(mesh, frame, cells, g);
         return;
     }
-    if matches!(frame.map_id.as_ref(),"BattleTowerHallway"|"BattleTower1F") {
-        native_tower_architecture::perimeter(mesh,frame,cells,g,placements);
+    if matches!(
+        frame.map_id.as_ref(),
+        "BattleTowerHallway" | "BattleTower1F"
+    ) {
+        native_tower_architecture::perimeter(mesh, frame, cells, g, placements);
         return;
     }
-    if frame.map_id.as_ref()=="CeruleanGym" {
-        cerulean_room::append(mesh,frame,cells,g);
+    if frame.map_id.as_ref() == "CeruleanGym" {
+        cerulean_room::append(mesh, frame, cells, g);
         return;
     }
     if frame.map_id.as_ref() == "HallOfFame" {
-        hall_room::append(mesh,frame,cells,g);
+        hall_room::append(mesh, frame, cells, g);
         return;
     }
-    if frame.map_id.as_ref()==crate::pokecom::ADMIN_OFFICE {
-        pokecom_room_bounds::append(mesh,frame,cells,g);
+    if frame.map_id.as_ref() == crate::pokecom::ADMIN_OFFICE {
+        pokecom_room_bounds::append(mesh, frame, cells, g);
         return;
     }
     let Some(size) = frame.source_map_size_core_tiles else {
@@ -467,9 +540,17 @@ pub(in crate::mesh) fn append(
     // Never repeat signs, cabinets or a whole furniture course.
     let donor = placements
         .iter()
-        .filter(|p| is_wall(p.kind) && p.base_pixels == 0. && p.depth_pixels <= 16.
-            && !(cells[p.row*g.width+p.column].source.tileset_id.as_ref()=="battle_tower_inside"
-                && matches!(cells[p.row*g.width+p.column].source.metatile_id,3|4|0x1b|0x1d|0x1e|0x2a|0x2b)))
+        .filter(|p| {
+            is_wall(p.kind)
+                && p.base_pixels == 0.
+                && p.depth_pixels <= 16.
+                && !(cells[p.row * g.width + p.column].source.tileset_id.as_ref()
+                    == "battle_tower_inside"
+                    && matches!(
+                        cells[p.row * g.width + p.column].source.metatile_id,
+                        3 | 4 | 0x1b | 0x1d | 0x1e | 0x2a | 0x2b
+                    ))
+        })
         .min_by_key(|p| {
             (
                 p.kind == ModelKind::WindowWall,
@@ -479,18 +560,34 @@ pub(in crate::mesh) fn append(
             )
         });
     let mut template = TerrainMeshData::default();
-    let donor_row = if frame.map_id.as_ref()=="VermilionGym" {
-        let Some(row)=vermilion_room::template(&mut template,frame,cells,g,profiles) else {return;};
+    let donor_row = if frame.map_id.as_ref() == "VermilionGym" {
+        let Some(row) = vermilion_room::template(&mut template, frame, cells, g, profiles) else {
+            return;
+        };
         row
-    } else if let Some(row)=cafe_rear_template(&mut template.textured,&frame.map_id,cells,g,placements) {
+    } else if let Some(row) =
+        cafe_rear_template(&mut template.textured, &frame.map_id, cells, g, placements)
+    {
         row
-    } else if let Some(row)=player_house_rear_template(&mut template.textured,&frame.map_id,cells,g) {
+    } else if let Some(row) =
+        player_house_rear_template(&mut template.textured, &frame.map_id, cells, g)
+    {
         row
-    } else if let Some(row)=native_lab_walls::perimeter_template(
-        &mut template.textured,&frame.map_id,cells,g,placements) {
+    } else if let Some(row) = native_lab_walls::perimeter_template(
+        &mut template.textured,
+        &frame.map_id,
+        cells,
+        g,
+        placements,
+    ) {
         row
     } else if let Some(row) = native_classroom::perimeter_template(
-        &mut template.textured,&frame.map_id,cells,g,placements) {
+        &mut template.textured,
+        &frame.map_id,
+        cells,
+        g,
+        placements,
+    ) {
         row
     } else if let Some(row) = traditional_wood_wall::perimeter_template(
         &mut template.textured,
@@ -500,15 +597,22 @@ pub(in crate::mesh) fn append(
         placements,
     ) {
         row
-    } else if let Some(donor) = dungeon_placements.iter()
-        .filter(|p| (super::super::modeled_dungeons::tin_tower_architecture_map(&frame.map_id)
-            ||matches!(frame.map_id.as_ref(),"SproutTower1F"|"SproutTower2F"|"SproutTower3F"))
-            &&p.native_tower_wall())
-        .min_by_key(|p|p.source_row()) {
+    } else if let Some(donor) = dungeon_placements
+        .iter()
+        .filter(|p| {
+            (super::super::modeled_dungeons::tin_tower_architecture_map(&frame.map_id)
+                || matches!(
+                    frame.map_id.as_ref(),
+                    "SproutTower1F" | "SproutTower2F" | "SproutTower3F"
+                ))
+                && p.native_tower_wall()
+        })
+        .min_by_key(|p| p.source_row())
+    {
         // A side-facing post's width/depth axes are already rotated. Copying
         // it as a rear-facing donor creates thick repeated blocks and open
         // seams. Native rear courses retain their actual thin wall geometry.
-        donor.append_room_wall(&mut template,g,cells,frame.grid_origin.to_array());
+        donor.append_room_wall(&mut template, g, cells, frame.grid_origin.to_array());
         donor.source_row()
     } else if let Some(donor) = donor {
         if !super::append(
@@ -605,14 +709,14 @@ pub(in crate::mesh) fn append(
             }
         }
     }
-    if frame.map_id.as_ref()=="VermilionGym" {
-        vermilion_room::append(mesh,frame,cells,g,profiles,&solid,&textured,b);
+    if frame.map_id.as_ref() == "VermilionGym" {
+        vermilion_room::append(mesh, frame, cells, g, profiles, &solid, &textured, b);
         return;
     }
-    if frame.map_id.as_ref()=="EcruteakTinTowerEntrance" {
-        let north=g.origin_z-frame.grid_origin.y as f32*g.tile_height;
-        let rear=north+b[2]-(g.origin_z+donor_row as f32*g.tile_height);
-        tin_entrance_perimeter::append(mesh,frame,cells,g,profiles,&solid,&textured,b,rear);
+    if frame.map_id.as_ref() == "EcruteakTinTowerEntrance" {
+        let north = g.origin_z - frame.grid_origin.y as f32 * g.tile_height;
+        let rear = north + b[2] - (g.origin_z + donor_row as f32 * g.tile_height);
+        tin_entrance_perimeter::append(mesh, frame, cells, g, profiles, &solid, &textured, b, rear);
         return;
     }
     let width = size.x as i32 * 2;
@@ -625,38 +729,60 @@ pub(in crate::mesh) fn append(
     let south = north + (height - inset[2]) as f32 * g.tile_height;
     let thickness = b[3] - b[2];
     let rear = north + b[2] - (g.origin_z + donor_row as f32 * g.tile_height);
-    for (a, bound) in native_arcade_backing::gaps(frame,cells,g,profiles) {
-        let mut x=map_west+a as f32*g.tile_width;
-        let to=map_west+bound as f32*g.tile_width;
-        while x<to-0.001 {
-            let end=(x+2.*g.tile_width).min(to);
-            append_section(mesh,&solid,&textured,b,Edge::North,rear+thickness,x,end);
-            x=end;
+    for (a, bound) in native_arcade_backing::gaps(frame, cells, g, profiles) {
+        let mut x = map_west + a as f32 * g.tile_width;
+        let to = map_west + bound as f32 * g.tile_width;
+        while x < to - 0.001 {
+            let end = (x + 2. * g.tile_width).min(to);
+            append_section(
+                mesh,
+                &solid,
+                &textured,
+                b,
+                Edge::North,
+                rear + thickness,
+                x,
+                end,
+            );
+            x = end;
         }
     }
-    let north_gaps=tin_north_outline::gaps(frame,cells,g,profiles)
-        .filter(|_|inset[0]==4&&inset[1]==4).filter(|gaps|!gaps.is_empty());
-    if let Some(gaps)=&north_gaps {
-        for &(a,bound) in gaps {
-            let a=map_west+a as f32*g.tile_width;
-            let bound=map_west+bound as f32*g.tile_width;
-            let from=if a==west {a-thickness}else{a};
-            let to=if bound==east {bound+thickness}else{bound};
-            let mut x=from;
-            while x<to-0.001 {
-                let end=(x+g.tile_width*2.).min(to);
-                append_section(mesh,&solid,&textured,b,Edge::North,north,x,end);
-                x=end;
+    let north_gaps = tin_north_outline::gaps(frame, cells, g, profiles)
+        .filter(|_| inset[0] == 4 && inset[1] == 4)
+        .filter(|gaps| !gaps.is_empty());
+    if let Some(gaps) = &north_gaps {
+        for &(a, bound) in gaps {
+            let a = map_west + a as f32 * g.tile_width;
+            let bound = map_west + bound as f32 * g.tile_width;
+            let from = if a == west { a - thickness } else { a };
+            let to = if bound == east {
+                bound + thickness
+            } else {
+                bound
+            };
+            let mut x = from;
+            while x < to - 0.001 {
+                let end = (x + g.tile_width * 2.).min(to);
+                append_section(mesh, &solid, &textured, b, Edge::North, north, x, end);
+                x = end;
             }
             // Return into the already authored rear course. Each return's
             // backing sits on the WALL side, leaving the neighboring floor or
             // horizontal grating untouched. Internal walls are not extended.
-            let front=north+2.*g.tile_height-thickness;
-            if a>west {append_section(mesh,&solid,&textured,b,Edge::West,a,north,front);}
-            if bound<east {append_section(mesh,&solid,&textured,b,Edge::East,bound,north,front);}
+            let front = north + 2. * g.tile_height - thickness;
+            if a > west {
+                append_section(mesh, &solid, &textured, b, Edge::West, a, north, front);
+            }
+            if bound < east {
+                append_section(mesh, &solid, &textured, b, Edge::East, bound, north, front);
+            }
         }
     }
-    let side_rear=if north_gaps.is_some(){north}else{rear.max(north)};
+    let side_rear = if north_gaps.is_some() {
+        north
+    } else {
+        rear.max(north)
+    };
     // Actual room edges, clipped to this builder's terrain region. A cropped
     // viewport is never a room boundary. Corners overlap outside the floor.
     for (edge, at, from, to, step) in [
@@ -679,13 +805,15 @@ pub(in crate::mesh) fn append(
             Edge::East => (
                 g.origin_z,
                 g.origin_z + g.height as f32 * g.tile_height,
-                frame.grid_origin.x <= width - inset[1] && frame.grid_origin.x + g.width as i32 >= width - inset[1],
+                frame.grid_origin.x <= width - inset[1]
+                    && frame.grid_origin.x + g.width as i32 >= width - inset[1],
             ),
             Edge::North => unreachable!("north joins use authenticated source gaps"),
             Edge::South => (
                 g.origin_x,
                 g.origin_x + g.width as f32 * g.tile_width,
-                frame.grid_origin.y <= height - inset[2] && frame.grid_origin.y + g.height as i32 >= height - inset[2],
+                frame.grid_origin.y <= height - inset[2]
+                    && frame.grid_origin.y + g.height as i32 >= height - inset[2],
             ),
         };
         if !visible {
@@ -752,9 +880,24 @@ pub(in crate::mesh) fn append(
                 if e < grid_from || s > grid_to {
                     continue;
                 }
-                let clipped=native_lab_walls::section_template(
-                    &textured,&frame.map_id,cells,g,placements,e-s);
-                append_section(mesh,&solid,clipped.as_ref().unwrap_or(&textured),b,edge,at,s,e);
+                let clipped = native_lab_walls::section_template(
+                    &textured,
+                    &frame.map_id,
+                    cells,
+                    g,
+                    placements,
+                    e - s,
+                );
+                append_section(
+                    mesh,
+                    &solid,
+                    clipped.as_ref().unwrap_or(&textured),
+                    b,
+                    edge,
+                    at,
+                    s,
+                    e,
+                );
             }
             start = end;
         }
@@ -823,48 +966,111 @@ mod tests {
                 .collect::<Vec<_>>();
             let refs = tiles.iter().collect::<Vec<_>>();
             let p = resolve(map, &refs, &g, None);
-            if matches!(map.as_str(),"CeladonCafe"|"OlivineCafe") {
-                let mut wall=SurfaceMeshData::default();
-                assert_eq!(cafe_rear_template(&mut wall,map,&refs,&g,&p),Some(0));
-                let min=wall.positions.iter().map(|v|v[0]).fold(f32::INFINITY,f32::min);
-                let max=wall.positions.iter().map(|v|v[0]).fold(f32::NEG_INFINITY,f32::max);
-                assert_eq!(max-min,16.,"cafe returns preserve source texel width");
-                assert_eq!(wall.positions.iter().map(|v|v[1]).fold(0.,f32::max),32.);
+            if matches!(map.as_str(), "CeladonCafe" | "OlivineCafe") {
+                let mut wall = SurfaceMeshData::default();
+                assert_eq!(cafe_rear_template(&mut wall, map, &refs, &g, &p), Some(0));
+                let min = wall
+                    .positions
+                    .iter()
+                    .map(|v| v[0])
+                    .fold(f32::INFINITY, f32::min);
+                let max = wall
+                    .positions
+                    .iter()
+                    .map(|v| v[0])
+                    .fold(f32::NEG_INFINITY, f32::max);
+                assert_eq!(max - min, 16., "cafe returns preserve source texel width");
+                assert_eq!(wall.positions.iter().map(|v| v[1]).fold(0., f32::max), 32.);
             }
-            if map=="CeladonCafe" {
-                let display=p.iter().find(|p|p.kind==ModelKind::ArcadePrizeRack&&p.row==0).unwrap();
-                let mut rear=SurfaceMeshData::default();
-                append_cafe_display_rear_wall(&mut rear,map,&refs,&g,display,[0,0]);
-                assert!(!rear.indices.is_empty(),"native timber closes behind the rear cabinet");
-                assert_eq!(rear.positions.iter().map(|v|v[1]).fold(0.,f32::max),32.);
-                let min=rear.positions.iter().map(|v|v[0]).fold(f32::INFINITY,f32::min);
-                let max=rear.positions.iter().map(|v|v[0]).fold(f32::NEG_INFINITY,f32::max);
-                assert_eq!((min,max),(display.column as f32*8.,(display.column+4)as f32*8.));
-                let mut interior=SurfaceMeshData::default();
-                append_cafe_display_rear_wall(&mut interior,map,&refs,&g,display,[0,4]);
+            if map == "CeladonCafe" {
+                let display = p
+                    .iter()
+                    .find(|p| p.kind == ModelKind::ArcadePrizeRack && p.row == 0)
+                    .unwrap();
+                let mut rear = SurfaceMeshData::default();
+                append_cafe_display_rear_wall(&mut rear, map, &refs, &g, display, [0, 0]);
+                assert!(
+                    !rear.indices.is_empty(),
+                    "native timber closes behind the rear cabinet"
+                );
+                assert_eq!(rear.positions.iter().map(|v| v[1]).fold(0., f32::max), 32.);
+                let min = rear
+                    .positions
+                    .iter()
+                    .map(|v| v[0])
+                    .fold(f32::INFINITY, f32::min);
+                let max = rear
+                    .positions
+                    .iter()
+                    .map(|v| v[0])
+                    .fold(f32::NEG_INFINITY, f32::max);
+                assert_eq!(
+                    (min, max),
+                    (display.column as f32 * 8., (display.column + 4) as f32 * 8.)
+                );
+                let mut interior = SurfaceMeshData::default();
+                append_cafe_display_rear_wall(&mut interior, map, &refs, &g, display, [0, 4]);
                 assert!(interior.indices.is_empty());
-                let mut changed=tiles.clone();
-                for t in &mut changed {if t.source.metatile_id==2 {t.source.tile_index=0xffff;}}
-                let mut rejected=SurfaceMeshData::default();
-                append_cafe_display_rear_wall(&mut rejected,map,&changed.iter().collect::<Vec<_>>(),&g,display,[0,0]);
-                assert!(rejected.indices.is_empty(),"unproven rear timber cannot be copied");
+                let mut changed = tiles.clone();
+                for t in &mut changed {
+                    if t.source.metatile_id == 2 {
+                        t.source.tile_index = 0xffff;
+                    }
+                }
+                let mut rejected = SurfaceMeshData::default();
+                append_cafe_display_rear_wall(
+                    &mut rejected,
+                    map,
+                    &changed.iter().collect::<Vec<_>>(),
+                    &g,
+                    display,
+                    [0, 0],
+                );
+                assert!(
+                    rejected.indices.is_empty(),
+                    "unproven rear timber cannot be copied"
+                );
             }
             if map == "PlayersHouse1F" {
-                let mut rear=SurfaceMeshData::default();
-                assert_eq!(player_house_rear_template(&mut rear,map,&refs,&g),Some(0));
-                assert_eq!(rear.positions.iter().map(|v|v[1]).fold(0.,f32::max),32.);
+                let mut rear = SurfaceMeshData::default();
+                assert_eq!(
+                    player_house_rear_template(&mut rear, map, &refs, &g),
+                    Some(0)
+                );
+                assert_eq!(rear.positions.iter().map(|v| v[1]).fold(0., f32::max), 32.);
                 // Every front texel comes from the authenticated rear plank
                 // drawing, never the interior divider or kitchen trim.
-                let front_uvs=(12..16).flat_map(|x|[g.uv(x,0),g.uv(x,1)]).collect::<Vec<_>>();
-                for i in rear.indices.iter().map(|&i|i as usize).filter(|&i|rear.normals[i][2]>0.5) {
-                    let uv=rear.uvs[i];
-                    assert!(front_uvs.iter().any(|b|uv[0]>=b.0&&uv[0]<=b.1&&uv[1]>=b.2&&uv[1]<=b.3));
+                let front_uvs = (12..16)
+                    .flat_map(|x| [g.uv(x, 0), g.uv(x, 1)])
+                    .collect::<Vec<_>>();
+                for i in rear
+                    .indices
+                    .iter()
+                    .map(|&i| i as usize)
+                    .filter(|&i| rear.normals[i][2] > 0.5)
+                {
+                    let uv = rear.uvs[i];
+                    assert!(
+                        front_uvs
+                            .iter()
+                            .any(|b| uv[0] >= b.0 && uv[0] <= b.1 && uv[1] >= b.2 && uv[1] <= b.3)
+                    );
                 }
-                for y in 0..2 {for x in 12..16 {
-                    let mut changed=tiles.clone();changed[y*w+x].source.tile_index=0xffff;
-                    assert!(player_house_rear_template(&mut SurfaceMeshData::default(),map,
-                        &changed.iter().collect::<Vec<_>>(),&g).is_none());
-                }}
+                for y in 0..2 {
+                    for x in 12..16 {
+                        let mut changed = tiles.clone();
+                        changed[y * w + x].source.tile_index = 0xffff;
+                        assert!(
+                            player_house_rear_template(
+                                &mut SurfaceMeshData::default(),
+                                map,
+                                &changed.iter().collect::<Vec<_>>(),
+                                &g
+                            )
+                            .is_none()
+                        );
+                    }
+                }
             }
             if map == "KurtsHouse" {
                 let mut timber = SurfaceMeshData::default();
@@ -916,42 +1122,112 @@ mod tests {
                 .map(|warp| IVec2::new(i32::from(warp.x), i32::from(warp.y)))
                 .collect();
             if crate::mesh::modeled_dungeons::tin_tower_guardian_map(map) {
-                let outline=tin_north_outline::gaps(&frame,&refs,&g,None).expect("complete source north row");
-                let affected=matches!(map.as_str(),"TinTower2F"|"TinTower3F"|"TinTower4F"|"TinTower5F"|"TinTower7F"|"TinTower9F");
-                assert_eq!(!outline.is_empty(),affected,"{map}: only missing boundary sections are added");
-                if map=="TinTower9F" {assert_eq!(outline,vec![(4,8),(32,36)]);}
-                if map=="TinTower9F" {
-                    let padded_g=GridGeometry{width:w+8,height:h+8,origin_x:-32.,origin_z:-32.,..g};
-                    let mut padded=vec![refs[0];padded_g.width*padded_g.height];
-                    for y in 0..h {for x in 0..w {padded[(y+4)*padded_g.width+x+4]=refs[y*w+x];}}
-                    let mut shifted=frame.clone();shifted.grid_origin=IVec2::new(-4,-4);
-                    assert_eq!(tin_north_outline::gaps(&shifted,&padded,&padded_g,None),Some(outline.clone()),
-                        "viewport padding cannot move the physical source outline");
+                let outline = tin_north_outline::gaps(&frame, &refs, &g, None)
+                    .expect("complete source north row");
+                let affected = matches!(
+                    map.as_str(),
+                    "TinTower2F"
+                        | "TinTower3F"
+                        | "TinTower4F"
+                        | "TinTower5F"
+                        | "TinTower7F"
+                        | "TinTower9F"
+                );
+                assert_eq!(
+                    !outline.is_empty(),
+                    affected,
+                    "{map}: only missing boundary sections are added"
+                );
+                if map == "TinTower9F" {
+                    assert_eq!(outline, vec![(4, 8), (32, 36)]);
                 }
-                if map=="TinTower5F" {assert_eq!(outline,vec![(4,36)],"north walkway stays in front of the boundary");}
-                for y in 0..4 {for x in 0..w {
-                    let mut changed=tiles.clone();changed[y*w+x].source.tile_index^=1;
-                    assert!(tin_north_outline::gaps(&frame,&changed.iter().collect::<Vec<_>>(),&g,None).is_none(),
-                        "every padding, grating and wall source cell authenticates the outline");
-                }}
-                let short_g=GridGeometry{height:3,..g};
-                assert!(tin_north_outline::gaps(&frame,&refs[..w*3],&short_g,None).is_none());
-                let mut wrong=frame.clone();wrong.map_id="TinTowerRoof".into();
-                assert!(tin_north_outline::gaps(&wrong,&refs,&g,None).is_none());
-                wrong=frame.clone();wrong.source_map_size_core_tiles=Some(UVec2::new(20,20));
-                assert!(tin_north_outline::gaps(&wrong,&refs,&g,None).is_none());
-                let mut custom=built_in_profiles().objects[0].clone();
-                custom.name="Custom north source".into();custom.map=Some(map.clone());custom.maps=None;
-                custom.tileset="tower".into();custom.metatile=refs[4].source.metatile_id;custom.metatiles=None;
-                custom.origin=[0,0];custom.ground=2;custom.tiles=vec![vec![refs[4].source.tile_index]];
-                custom.parts.clear();custom.footing_pixels=None;
-                assert!(tin_north_outline::gaps(&frame,&refs,&g,Some(&Document{objects:vec![custom],atmosphere:None})).is_none(),
-                    "a custom owner of the actual source band suppresses inferred joins");
+                if map == "TinTower9F" {
+                    let padded_g = GridGeometry {
+                        width: w + 8,
+                        height: h + 8,
+                        origin_x: -32.,
+                        origin_z: -32.,
+                        ..g
+                    };
+                    let mut padded = vec![refs[0]; padded_g.width * padded_g.height];
+                    for y in 0..h {
+                        for x in 0..w {
+                            padded[(y + 4) * padded_g.width + x + 4] = refs[y * w + x];
+                        }
+                    }
+                    let mut shifted = frame.clone();
+                    shifted.grid_origin = IVec2::new(-4, -4);
+                    assert_eq!(
+                        tin_north_outline::gaps(&shifted, &padded, &padded_g, None),
+                        Some(outline.clone()),
+                        "viewport padding cannot move the physical source outline"
+                    );
+                }
+                if map == "TinTower5F" {
+                    assert_eq!(
+                        outline,
+                        vec![(4, 36)],
+                        "north walkway stays in front of the boundary"
+                    );
+                }
+                for y in 0..4 {
+                    for x in 0..w {
+                        let mut changed = tiles.clone();
+                        changed[y * w + x].source.tile_index ^= 1;
+                        assert!(
+                            tin_north_outline::gaps(
+                                &frame,
+                                &changed.iter().collect::<Vec<_>>(),
+                                &g,
+                                None
+                            )
+                            .is_none(),
+                            "every padding, grating and wall source cell authenticates the outline"
+                        );
+                    }
+                }
+                let short_g = GridGeometry { height: 3, ..g };
+                assert!(tin_north_outline::gaps(&frame, &refs[..w * 3], &short_g, None).is_none());
+                let mut wrong = frame.clone();
+                wrong.map_id = "TinTowerRoof".into();
+                assert!(tin_north_outline::gaps(&wrong, &refs, &g, None).is_none());
+                wrong = frame.clone();
+                wrong.source_map_size_core_tiles = Some(UVec2::new(20, 20));
+                assert!(tin_north_outline::gaps(&wrong, &refs, &g, None).is_none());
+                let mut custom = built_in_profiles().objects[0].clone();
+                custom.name = "Custom north source".into();
+                custom.map = Some(map.clone());
+                custom.maps = None;
+                custom.tileset = "tower".into();
+                custom.metatile = refs[4].source.metatile_id;
+                custom.metatiles = None;
+                custom.origin = [0, 0];
+                custom.ground = 2;
+                custom.tiles = vec![vec![refs[4].source.tile_index]];
+                custom.parts.clear();
+                custom.footing_pixels = None;
+                assert!(
+                    tin_north_outline::gaps(
+                        &frame,
+                        &refs,
+                        &g,
+                        Some(&Document {
+                            objects: vec![custom],
+                            atmosphere: None
+                        })
+                    )
+                    .is_none(),
+                    "a custom owner of the actual source band suppresses inferred joins"
+                );
                 for warp in &data.events.warps {
-                    assert_eq!(tin_room_bounds::opens_perimeter(map,
-                        IVec2::new(i32::from(warp.x), i32::from(warp.y))),
+                    assert_eq!(
+                        tin_room_bounds::opens_perimeter(
+                            map,
+                            IVec2::new(i32::from(warp.x), i32::from(warp.y))
+                        ),
                         warp.target_map == "ECRUTEAK_CITY",
-                        "{map}: stairs and teleport pads keep wall backing");
+                        "{map}: stairs and teleport pads keep wall backing"
+                    );
                 }
             }
             let mut mesh = TerrainMeshData {
@@ -960,149 +1236,351 @@ mod tests {
                 ..Default::default()
             };
             if crate::mesh::modeled_dungeons::tin_tower_guardian_map(map) {
-                mesh.animated_textured.positions.push([17.,19.,23.]);
-                mesh.animated_pillars.push([7,9]);
+                mesh.animated_textured.positions.push([17., 19., 23.]);
+                mesh.animated_pillars.push([7, 9]);
             }
             append(&mut mesh, &frame, &refs, &g, &p, &dungeon, None, None);
-            if super::super::super::lance_terraces::owns_perimeter(&frame,&refs,&g,None) {
-                assert!(mesh.solid.indices.is_empty() && mesh.textured.indices.is_empty(),
-                    "authenticated champion enclosure must not receive a second inferred black shell");
-                super::super::super::lance_terraces::finish(&mut mesh,&frame,&refs,&g,None);
-                assert_eq!(mesh.footing_heights[0],18.75,"upper dais retains its authored16px rise");
-                assert!(mesh.footing_heights[12*w..].iter().all(|&h|h==2.75),
-                    "the entrance and statue hall keep every walking height");
-                assert_eq!(mesh.authored_cells.iter().filter(|&&v|v==Some("lance:south-barrier")).count(),32,
-                    "the base drawing keeps both four-source-cell entrance lanes open");
-                for x in [0.,160.] {
-                    assert!(mesh.textured.positions.iter().any(|p|p[0]==x && p[1]==48. && p[2]==384.),
-                        "native south corners close at the same ceiling as both blue walls");
+            if super::super::super::lance_terraces::owns_perimeter(&frame, &refs, &g, None) {
+                assert!(
+                    mesh.solid.indices.is_empty() && mesh.textured.indices.is_empty(),
+                    "authenticated champion enclosure must not receive a second inferred black shell"
+                );
+                super::super::super::lance_terraces::finish(&mut mesh, &frame, &refs, &g, None);
+                assert_eq!(
+                    mesh.footing_heights[0], 18.75,
+                    "upper dais retains its authored16px rise"
+                );
+                assert!(
+                    mesh.footing_heights[12 * w..].iter().all(|&h| h == 2.75),
+                    "the entrance and statue hall keep every walking height"
+                );
+                assert_eq!(
+                    mesh.authored_cells
+                        .iter()
+                        .filter(|&&v| v == Some("lance:south-barrier"))
+                        .count(),
+                    32,
+                    "the base drawing keeps both four-source-cell entrance lanes open"
+                );
+                for x in [0., 160.] {
+                    assert!(
+                        mesh.textured
+                            .positions
+                            .iter()
+                            .any(|p| p[0] == x && p[1] == 48. && p[2] == 384.),
+                        "native south corners close at the same ceiling as both blue walls"
+                    );
                 }
                 continue;
             }
             if crate::mesh::modeled_dungeons::tin_tower_guardian_map(map) {
-                assert_eq!(mesh.animated_textured.positions,vec![[17.,19.,23.]]);
-                assert_eq!(mesh.animated_pillars,vec![[7,9]],"enclosure cannot replace the moving pillar");
-                let gaps=tin_north_outline::gaps(&frame,&refs,&g,None).unwrap();
-                let ranges=mesh.camera_wall_textured_ranges.iter().filter(|(_,plane)|*plane==[0.,1.,0.]).collect::<Vec<_>>();
-                assert_eq!(!ranges.is_empty(),!gaps.is_empty());
-                for (a,bound) in gaps {
-                    let mut spans=ranges.iter().filter_map(|(range,_)| {
-                        let points=&mesh.textured.positions[range.clone()];
-                        assert!(points.iter().all(|p|p[2]>=-3.001&&p[2]<=0.001&&p[1]<=32.001));
-                        let lo=points.iter().map(|p|p[0]).fold(f32::INFINITY,f32::min);
-                        let hi=points.iter().map(|p|p[0]).fold(f32::NEG_INFINITY,f32::max);
-                        (hi>a as f32*8.&&lo<bound as f32*8.).then_some((lo,hi))
-                    }).collect::<Vec<_>>();
-                    spans.sort_by(|a,b|a.0.total_cmp(&b.0));let mut end=a as f32*8.;
-                    for (lo,hi) in spans {assert!(lo<=end+0.001,"{map}: no north gap");end=end.max(hi);}
-                    assert!(end>=bound as f32*8.);
-                    for (x,side) in [(a,1.),(bound,-1.)] {
-                        if x==4||x==36 {continue;}
-                        let at=x as f32*8.;
-                        assert!(mesh.camera_wall_textured_ranges.iter().any(|(range,plane)| {
-                            if *plane!=[side,0.,side*at] {return false;}
-                            let points=&mesh.textured.positions[range.clone()];
-                            let lo=points.iter().map(|p|p[2]).fold(f32::INFINITY,f32::min);
-                            let hi=points.iter().map(|p|p[2]).fold(f32::NEG_INFINITY,f32::max);
-                            lo<=0.001&&hi>=12.999&&hi<=13.001
-                        }),"{map}: short return must meet the rear body without coplanar overlap");
+                assert_eq!(mesh.animated_textured.positions, vec![[17., 19., 23.]]);
+                assert_eq!(
+                    mesh.animated_pillars,
+                    vec![[7, 9]],
+                    "enclosure cannot replace the moving pillar"
+                );
+                let gaps = tin_north_outline::gaps(&frame, &refs, &g, None).unwrap();
+                let ranges = mesh
+                    .camera_wall_textured_ranges
+                    .iter()
+                    .filter(|(_, plane)| *plane == [0., 1., 0.])
+                    .collect::<Vec<_>>();
+                assert_eq!(!ranges.is_empty(), !gaps.is_empty());
+                for (a, bound) in gaps {
+                    let mut spans = ranges
+                        .iter()
+                        .filter_map(|(range, _)| {
+                            let points = &mesh.textured.positions[range.clone()];
+                            assert!(
+                                points
+                                    .iter()
+                                    .all(|p| p[2] >= -3.001 && p[2] <= 0.001 && p[1] <= 32.001)
+                            );
+                            let lo = points.iter().map(|p| p[0]).fold(f32::INFINITY, f32::min);
+                            let hi = points
+                                .iter()
+                                .map(|p| p[0])
+                                .fold(f32::NEG_INFINITY, f32::max);
+                            (hi > a as f32 * 8. && lo < bound as f32 * 8.).then_some((lo, hi))
+                        })
+                        .collect::<Vec<_>>();
+                    spans.sort_by(|a, b| a.0.total_cmp(&b.0));
+                    let mut end = a as f32 * 8.;
+                    for (lo, hi) in spans {
+                        assert!(lo <= end + 0.001, "{map}: no north gap");
+                        end = end.max(hi);
+                    }
+                    assert!(end >= bound as f32 * 8.);
+                    for (x, side) in [(a, 1.), (bound, -1.)] {
+                        if x == 4 || x == 36 {
+                            continue;
+                        }
+                        let at = x as f32 * 8.;
+                        assert!(
+                            mesh.camera_wall_textured_ranges
+                                .iter()
+                                .any(|(range, plane)| {
+                                    if *plane != [side, 0., side * at] {
+                                        return false;
+                                    }
+                                    let points = &mesh.textured.positions[range.clone()];
+                                    let lo =
+                                        points.iter().map(|p| p[2]).fold(f32::INFINITY, f32::min);
+                                    let hi = points
+                                        .iter()
+                                        .map(|p| p[2])
+                                        .fold(f32::NEG_INFINITY, f32::max);
+                                    lo <= 0.001 && hi >= 12.999 && hi <= 13.001
+                                }),
+                            "{map}: short return must meet the rear body without coplanar overlap"
+                        );
                     }
                 }
-                assert_eq!(mesh.authored_cells,vec![None;w*h],"inferred edges do not claim grating or floor");
+                assert_eq!(
+                    mesh.authored_cells,
+                    vec![None; w * h],
+                    "inferred edges do not claim grating or floor"
+                );
             }
-            if map=="DayCare" {
-                assert_eq!(tin_room_bounds::insets(&frame,&refs,&g,w as i32,h as i32),[0,4,0]);
-                assert!(mesh.camera_wall_textured_ranges.iter().any(|(_,plane)|*plane==[-1.,0.,-128.]));
-                assert!(mesh.textured.positions.iter().all(|p|p[0]<=131.001),"Day Care returns meet its floor edge");
-                let mut changed=tiles.clone();changed[w-1].source.tile_index=0xffff;
-                assert_eq!(tin_room_bounds::insets(&frame,&changed.iter().collect::<Vec<_>>(),&g,w as i32,h as i32),[0;3]);
-                let mut other=frame.clone();other.map_id="TrainerHouse1F".into();
-                assert_eq!(tin_room_bounds::insets(&other,&refs,&g,w as i32,h as i32),[0;3]);
-                assert_eq!(tin_room_bounds::insets(&frame,&refs,&g,w as i32+4,h as i32),[0;3]);
+            if map == "DayCare" {
+                assert_eq!(
+                    tin_room_bounds::insets(&frame, &refs, &g, w as i32, h as i32),
+                    [0, 4, 0]
+                );
+                assert!(
+                    mesh.camera_wall_textured_ranges
+                        .iter()
+                        .any(|(_, plane)| *plane == [-1., 0., -128.])
+                );
+                assert!(
+                    mesh.textured.positions.iter().all(|p| p[0] <= 131.001),
+                    "Day Care returns meet its floor edge"
+                );
+                let mut changed = tiles.clone();
+                changed[w - 1].source.tile_index = 0xffff;
+                assert_eq!(
+                    tin_room_bounds::insets(
+                        &frame,
+                        &changed.iter().collect::<Vec<_>>(),
+                        &g,
+                        w as i32,
+                        h as i32
+                    ),
+                    [0; 3]
+                );
+                let mut other = frame.clone();
+                other.map_id = "TrainerHouse1F".into();
+                assert_eq!(
+                    tin_room_bounds::insets(&other, &refs, &g, w as i32, h as i32),
+                    [0; 3]
+                );
+                assert_eq!(
+                    tin_room_bounds::insets(&frame, &refs, &g, w as i32 + 4, h as i32),
+                    [0; 3]
+                );
             }
-            if map=="CopycatsHouse2F" {
-                assert_eq!(tin_room_bounds::insets(&frame,&refs,&g,w as i32,h as i32),[0,4,0]);
-                assert!(mesh.camera_wall_textured_ranges.iter().any(|(_,plane)|*plane==[-1.,0.,-128.]));
-                assert!(mesh.textured.positions.iter().all(|p|p[0]<=131.001),
-                    "the side and front returns must meet the actual floor edge, not blank padding");
-                let mut changed=tiles.clone();
-                changed[w-1].source.tile_index=0xffff;
-                assert_eq!(tin_room_bounds::insets(&frame,&changed.iter().collect::<Vec<_>>(),&g,w as i32,h as i32),[0;3]);
-                let mut other=frame.clone();other.map_id="RedsHouse2F".into();
-                assert_eq!(tin_room_bounds::insets(&other,&refs,&g,w as i32,h as i32),[0;3]);
+            if map == "CopycatsHouse2F" {
+                assert_eq!(
+                    tin_room_bounds::insets(&frame, &refs, &g, w as i32, h as i32),
+                    [0, 4, 0]
+                );
+                assert!(
+                    mesh.camera_wall_textured_ranges
+                        .iter()
+                        .any(|(_, plane)| *plane == [-1., 0., -128.])
+                );
+                assert!(
+                    mesh.textured.positions.iter().all(|p| p[0] <= 131.001),
+                    "the side and front returns must meet the actual floor edge, not blank padding"
+                );
+                let mut changed = tiles.clone();
+                changed[w - 1].source.tile_index = 0xffff;
+                assert_eq!(
+                    tin_room_bounds::insets(
+                        &frame,
+                        &changed.iter().collect::<Vec<_>>(),
+                        &g,
+                        w as i32,
+                        h as i32
+                    ),
+                    [0; 3]
+                );
+                let mut other = frame.clone();
+                other.map_id = "RedsHouse2F".into();
+                assert_eq!(
+                    tin_room_bounds::insets(&other, &refs, &g, w as i32, h as i32),
+                    [0; 3]
+                );
             }
-            if matches!(map.as_str(),"SproutTower1F"|"SproutTower2F"|"SproutTower3F") {
-                let inset=if map=="SproutTower3F" {8}else{4};
-                assert_eq!(tin_room_bounds::insets(&frame,&refs,&g,w as i32,h as i32),[inset,inset,0]);
+            if matches!(
+                map.as_str(),
+                "SproutTower1F" | "SproutTower2F" | "SproutTower3F"
+            ) {
+                let inset = if map == "SproutTower3F" { 8 } else { 4 };
+                assert_eq!(
+                    tin_room_bounds::insets(&frame, &refs, &g, w as i32, h as i32),
+                    [inset, inset, 0]
+                );
                 for warp in &data.events.warps {
-                    assert_eq!(tin_room_bounds::opens_perimeter(map,IVec2::new(warp.x.into(),warp.y.into())),
-                        warp.target_map=="VIOLET_CITY","internal stairs retain continuous wall backing");
+                    assert_eq!(
+                        tin_room_bounds::opens_perimeter(
+                            map,
+                            IVec2::new(warp.x.into(), warp.y.into())
+                        ),
+                        warp.target_map == "VIOLET_CITY",
+                        "internal stairs retain continuous wall backing"
+                    );
                 }
-                for side in [1.,-1.] {
-                    let at=if side>0. {inset as f32*8.}else{(w as i32-inset)as f32*8.};
-                    let mut spans=Vec::new();
-                    for (surface,ranges) in [(&mesh.solid,&mesh.camera_wall_solid_ranges),
-                        (&mesh.textured,&mesh.camera_wall_textured_ranges)] {
-                        for (range,plane) in ranges {
-                            if plane[0]!=side {continue;}
-                            assert_eq!(plane[2],side*at,"returns meet the actual room's timber corners");
-                            let points=&surface.positions[range.clone()];
-                            spans.push((points.iter().map(|p|p[2]).fold(f32::INFINITY,f32::min),
-                                points.iter().map(|p|p[2]).fold(f32::NEG_INFINITY,f32::max)));
+                for side in [1., -1.] {
+                    let at = if side > 0. {
+                        inset as f32 * 8.
+                    } else {
+                        (w as i32 - inset) as f32 * 8.
+                    };
+                    let mut spans = Vec::new();
+                    for (surface, ranges) in [
+                        (&mesh.solid, &mesh.camera_wall_solid_ranges),
+                        (&mesh.textured, &mesh.camera_wall_textured_ranges),
+                    ] {
+                        for (range, plane) in ranges {
+                            if plane[0] != side {
+                                continue;
+                            }
+                            assert_eq!(
+                                plane[2],
+                                side * at,
+                                "returns meet the actual room's timber corners"
+                            );
+                            let points = &surface.positions[range.clone()];
+                            spans.push((
+                                points.iter().map(|p| p[2]).fold(f32::INFINITY, f32::min),
+                                points
+                                    .iter()
+                                    .map(|p| p[2])
+                                    .fold(f32::NEG_INFINITY, f32::max),
+                            ));
                         }
                     }
-                    spans.sort_by(|a,b|a.0.total_cmp(&b.0));
+                    spans.sort_by(|a, b| a.0.total_cmp(&b.0));
                     assert!(!spans.is_empty());
-                    let mut end=spans[0].0;
-                    for (start,stop) in spans {
-                        assert!(start<=end+0.001,"{map}: continuous side backing behind ladders");
-                        end=end.max(stop);
+                    let mut end = spans[0].0;
+                    for (start, stop) in spans {
+                        assert!(
+                            start <= end + 0.001,
+                            "{map}: continuous side backing behind ladders"
+                        );
+                        end = end.max(stop);
                     }
-                    assert!(end>=h as f32*8.);
+                    assert!(end >= h as f32 * 8.);
                 }
-                let mut changed=tiles.clone();changed[w*4].source.tile_index=2;
-                assert_eq!(tin_room_bounds::insets(&frame,&changed.iter().collect::<Vec<_>>(),&g,w as i32,h as i32),
-                    [0,inset,0],"edited black padding cannot move a wall");
-                if map=="SproutTower3F" {
-                    changed=tiles.clone();changed[w*4+4].source.tile_index=2;
-                    assert_eq!(tin_room_bounds::insets(&frame,&changed.iter().collect::<Vec<_>>(),&g,w as i32,h as i32),
-                        [0,8,0],"edited lattice cannot be inferred as exterior void");
-                    assert!(mesh.textured.positions.iter().chain(&mesh.solid.positions)
-                        .all(|p|p[0]>=61.-0.001&&p[0]<=259.+0.001),
-                        "no detached side wall may remain over the outer lattice");
+                let mut changed = tiles.clone();
+                changed[w * 4].source.tile_index = 2;
+                assert_eq!(
+                    tin_room_bounds::insets(
+                        &frame,
+                        &changed.iter().collect::<Vec<_>>(),
+                        &g,
+                        w as i32,
+                        h as i32
+                    ),
+                    [0, inset, 0],
+                    "edited black padding cannot move a wall"
+                );
+                if map == "SproutTower3F" {
+                    changed = tiles.clone();
+                    changed[w * 4 + 4].source.tile_index = 2;
+                    assert_eq!(
+                        tin_room_bounds::insets(
+                            &frame,
+                            &changed.iter().collect::<Vec<_>>(),
+                            &g,
+                            w as i32,
+                            h as i32
+                        ),
+                        [0, 8, 0],
+                        "edited lattice cannot be inferred as exterior void"
+                    );
+                    assert!(
+                        mesh.textured
+                            .positions
+                            .iter()
+                            .chain(&mesh.solid.positions)
+                            .all(|p| p[0] >= 61. - 0.001 && p[0] <= 259. + 0.001),
+                        "no detached side wall may remain over the outer lattice"
+                    );
                 }
             }
-            if map=="CeruleanGym" {
-                assert!(cerulean_room::source(&mesh,&frame,&refs,&g).is_some());
+            if map == "CeruleanGym" {
+                assert!(cerulean_room::source(&mesh, &frame, &refs, &g).is_some());
                 assert!(mesh.solid.indices.is_empty());
-                assert_eq!(mesh.textured.positions.iter().map(|p|p[1]).fold(0.,f32::max),32.);
-                assert!(mesh.textured.positions.iter().all(|p|p[2]>=13.-0.002),"north padding stays outside the room");
-                assert!(mesh.camera_wall_textured_ranges.iter().any(|(_,p)|*p==[0.,1.,16.]));
-                for (range,plane) in &mesh.camera_wall_textured_ranges {
-                    assert!(mesh.textured.cutaway_ranges.contains(range),"every camera wall supports cutaway");
-                    if plane[1]==-1. {
-                        assert!(mesh.textured.positions[range.clone()].iter().all(|p|p[0]<=64.||p[0]>=96.),
-                            "both authoritative exit tiles remain open");
+                assert_eq!(
+                    mesh.textured
+                        .positions
+                        .iter()
+                        .map(|p| p[1])
+                        .fold(0., f32::max),
+                    32.
+                );
+                assert!(
+                    mesh.textured.positions.iter().all(|p| p[2] >= 13. - 0.002),
+                    "north padding stays outside the room"
+                );
+                assert!(
+                    mesh.camera_wall_textured_ranges
+                        .iter()
+                        .any(|(_, p)| *p == [0., 1., 16.])
+                );
+                for (range, plane) in &mesh.camera_wall_textured_ranges {
+                    assert!(
+                        mesh.textured.cutaway_ranges.contains(range),
+                        "every camera wall supports cutaway"
+                    );
+                    if plane[1] == -1. {
+                        assert!(
+                            mesh.textured.positions[range.clone()]
+                                .iter()
+                                .all(|p| p[0] <= 64. || p[0] >= 96.),
+                            "both authoritative exit tiles remain open"
+                        );
                     }
                 }
                 for triangle in mesh.textured.indices.chunks_exact(3) {
-                    let [a,b,c]=[0,1,2].map(|j|Vec3::from_array(mesh.textured.positions[triangle[j]as usize]));
-                    let normal=Vec3::from_array(mesh.textured.normals[triangle[0]as usize]);
-                    assert!((b-a).cross(c-a).dot(normal)>0.,"outward wall faces remain visible");
+                    let [a, b, c] = [0, 1, 2]
+                        .map(|j| Vec3::from_array(mesh.textured.positions[triangle[j] as usize]));
+                    let normal = Vec3::from_array(mesh.textured.normals[triangle[0] as usize]);
+                    assert!(
+                        (b - a).cross(c - a).dot(normal) > 0.,
+                        "outward wall faces remain visible"
+                    );
                 }
-                for (i,tile) in tiles.iter().enumerate() {
-                    let (x,y)=(i%w,i/w);
-                    if !(x<2||x>=18||y<4||y>=28) {continue;}
-                    let mut changed=tiles.clone();changed[i].source.tile_index=0xffff;
-                    assert!(cerulean_room::source(&mesh,&frame,&changed.iter().collect::<Vec<_>>(),&g).is_none(),
-                        "changed boundary cell {x},{y} cannot seed walls: {:?}",tile.source);
+                for (i, tile) in tiles.iter().enumerate() {
+                    let (x, y) = (i % w, i / w);
+                    if !(x < 2 || x >= 18 || y < 4 || y >= 28) {
+                        continue;
+                    }
+                    let mut changed = tiles.clone();
+                    changed[i].source.tile_index = 0xffff;
+                    assert!(
+                        cerulean_room::source(
+                            &mesh,
+                            &frame,
+                            &changed.iter().collect::<Vec<_>>(),
+                            &g
+                        )
+                        .is_none(),
+                        "changed boundary cell {x},{y} cannot seed walls: {:?}",
+                        tile.source
+                    );
                 }
-                let mut other=frame.clone();other.map_id="VermilionPort".into();
-                assert!(cerulean_room::source(&mesh,&other,&refs,&g).is_none());
-                other=frame.clone();
-                let mut warps=other.boundary_warps.to_vec();warps.pop();
-                other.boundary_warps=warps.into();
-                assert!(cerulean_room::source(&mesh,&other,&refs,&g).is_none());
+                let mut other = frame.clone();
+                other.map_id = "VermilionPort".into();
+                assert!(cerulean_room::source(&mesh, &other, &refs, &g).is_none());
+                other = frame.clone();
+                let mut warps = other.boundary_warps.to_vec();
+                warps.pop();
+                other.boundary_warps = warps.into();
+                assert!(cerulean_room::source(&mesh, &other, &refs, &g).is_none());
             }
             if mesh.solid.indices.is_empty() && mesh.textured.indices.is_empty() {
                 missing
@@ -1112,45 +1590,75 @@ mod tests {
             } else {
                 let inset = tin_room_bounds::insets(&frame, &refs, &g, w as i32, h as i32);
                 if crate::mesh::modeled_dungeons::tin_tower_guardian_map(map) {
-                    assert_eq!(inset, [4;3], "all nine tower floors use the inner padding edge");
+                    assert_eq!(
+                        inset, [4; 3],
+                        "all nine tower floors use the inner padding edge"
+                    );
                     let mut altered = tiles.clone();
                     altered[w * 4].source.tile_index = 2;
                     let altered_refs = altered.iter().collect::<Vec<_>>();
-                    assert_eq!(tin_room_bounds::insets(&frame, &altered_refs, &g, w as i32, h as i32),
-                        [0,4,4], "an edited boundary is never inferred as blank padding");
+                    assert_eq!(
+                        tin_room_bounds::insets(&frame, &altered_refs, &g, w as i32, h as i32),
+                        [0, 4, 4],
+                        "an edited boundary is never inferred as blank padding"
+                    );
                     let mut other = frame.clone();
                     other.map_id = "SproutTower1F".into();
-                    assert_eq!(tin_room_bounds::insets(&other, &refs, &g, w as i32, h as i32),
-                        [0;3], "other tower architecture retains its original boundaries");
+                    assert_eq!(
+                        tin_room_bounds::insets(&other, &refs, &g, w as i32, h as i32),
+                        [0; 3],
+                        "other tower architecture retains its original boundaries"
+                    );
                     // A wall can exist at both ends while still having a doorway-sized
                     // hole behind a stair. Check the complete inner side span.
                     for side in [1., -1.] {
                         let at = if side > 0. { 32. } else { (w as f32 - 4.) * 8. };
                         let mut spans = Vec::new();
-                        for (surface, ranges) in [(&mesh.solid, &mesh.camera_wall_solid_ranges),
-                            (&mesh.textured, &mesh.camera_wall_textured_ranges)] {
+                        for (surface, ranges) in [
+                            (&mesh.solid, &mesh.camera_wall_solid_ranges),
+                            (&mesh.textured, &mesh.camera_wall_textured_ranges),
+                        ] {
                             for (range, plane) in ranges {
                                 // Internal north returns have the same orientation,
                                 // but belong to their own source-column plane.
-                                if *plane != [side, 0., side * at] { continue; }
+                                if *plane != [side, 0., side * at] {
+                                    continue;
+                                }
                                 let points = &surface.positions[range.clone()];
-                                assert!(points.iter().any(|p| (p[0] - at).abs() < 0.001),
-                                    "{map}: outer side wall meets the source padding edge");
-                                spans.push((points.iter().map(|p| p[2]).fold(f32::INFINITY, f32::min),
-                                    points.iter().map(|p| p[2]).fold(f32::NEG_INFINITY, f32::max)));
+                                assert!(
+                                    points.iter().any(|p| (p[0] - at).abs() < 0.001),
+                                    "{map}: outer side wall meets the source padding edge"
+                                );
+                                spans.push((
+                                    points.iter().map(|p| p[2]).fold(f32::INFINITY, f32::min),
+                                    points
+                                        .iter()
+                                        .map(|p| p[2])
+                                        .fold(f32::NEG_INFINITY, f32::max),
+                                ));
                             }
                         }
                         assert!(!spans.is_empty(), "{map}: outer side {side} wall exists");
                         spans.sort_by(|a, b| a.0.total_cmp(&b.0));
                         let mut covered_to = if tin_north_outline::gaps(&frame, &refs, &g, None)
-                            .unwrap().is_empty() { 13. } else { 0. };
+                            .unwrap()
+                            .is_empty()
+                        {
+                            13.
+                        } else {
+                            0.
+                        };
                         for (start, end) in spans {
-                            assert!(start <= covered_to + 0.001,
-                                "{map}: side {side} wall gap from {covered_to} to {start}");
+                            assert!(
+                                start <= covered_to + 0.001,
+                                "{map}: side {side} wall gap from {covered_to} to {start}"
+                            );
                             covered_to = covered_to.max(end);
                         }
-                        assert!(covered_to >= (h as f32 - 4.) * 8.,
-                            "{map}: side {side} wall stops before the south corner");
+                        assert!(
+                            covered_to >= (h as f32 - 4.) * 8.,
+                            "{map}: side {side} wall stops before the south corner"
+                        );
                     }
                 }
                 let points = mesh
@@ -1160,11 +1668,15 @@ mod tests {
                     .chain(&mesh.textured.positions)
                     .collect::<Vec<_>>();
                 assert!(
-                    points.iter().any(|p| p[0] <= inset[0] as f32 * 8. && p[1] > 8.),
+                    points
+                        .iter()
+                        .any(|p| p[0] <= inset[0] as f32 * 8. && p[1] > 8.),
                     "{map}: west wall"
                 );
                 assert!(
-                    points.iter().any(|p| p[0] >= (w as i32 - inset[1]) as f32 * 8. && p[1] > 8.),
+                    points
+                        .iter()
+                        .any(|p| p[0] >= (w as i32 - inset[1]) as f32 * 8. && p[1] > 8.),
                     "{map}: east wall"
                 );
                 if map == "TrainerHouseB1F" {
@@ -1173,25 +1685,44 @@ mod tests {
                     // requiring a second inferred green wall behind it.
                     assert!(points.iter().all(|p| p[2] <= 96.001));
                     let mut arena = TerrainMeshData::default();
-                    let mut claims = vec![false; w*h];
-                    crate::mesh::append_facility_divider_network(&mut arena,map,&refs,&g,&mut claims).unwrap();
+                    let mut claims = vec![false; w * h];
+                    crate::mesh::append_facility_divider_network(
+                        &mut arena,
+                        map,
+                        &refs,
+                        &g,
+                        &mut claims,
+                    )
+                    .unwrap();
                     for x in 0..w {
-                        let sample = (x as f32 + 0.5)*8.;
+                        let sample = (x as f32 + 0.5) * 8.;
                         // The corner drawings end in a gray footing cell;
                         // their solid wall ends one source cell before the
                         // middle front course. Preserve that native outline.
-                        let front = if x<2 || x>=w-2 {h-1}else{h} as f32*8.;
-                        assert!(arena.textured.positions.chunks_exact(4)
-                            .zip(arena.textured.normals.chunks_exact(4)).any(|(p,n)| {
-                                n[0][2] > 0.99 && p.iter().all(|p| (p[2]-front).abs()<0.001)
-                                    && p.iter().map(|p|p[0]).fold(f32::INFINITY,f32::min)<=sample
-                                    && p.iter().map(|p|p[0]).fold(f32::NEG_INFINITY,f32::max)>=sample
-                                    && p.iter().any(|p|p[1]>=16.)
-                            }),"{map}: source arena front remains closed at column{x}");
+                        let front = if x < 2 || x >= w - 2 { h - 1 } else { h } as f32 * 8.;
+                        assert!(
+                            arena
+                                .textured
+                                .positions
+                                .chunks_exact(4)
+                                .zip(arena.textured.normals.chunks_exact(4))
+                                .any(|(p, n)| {
+                                    n[0][2] > 0.99
+                                        && p.iter().all(|p| (p[2] - front).abs() < 0.001)
+                                        && p.iter().map(|p| p[0]).fold(f32::INFINITY, f32::min)
+                                            <= sample
+                                        && p.iter().map(|p| p[0]).fold(f32::NEG_INFINITY, f32::max)
+                                            >= sample
+                                        && p.iter().any(|p| p[1] >= 16.)
+                                }),
+                            "{map}: source arena front remains closed at column{x}"
+                        );
                     }
                 } else {
                     assert!(
-                        points.iter().any(|p| p[2] >= (h as i32 - inset[2]) as f32 * 8. && p[1] > 8.),
+                        points
+                            .iter()
+                            .any(|p| p[2] >= (h as i32 - inset[2]) as f32 * 8. && p[1] > 8.),
                         "{map}: front wall"
                     );
                 }
@@ -1200,19 +1731,27 @@ mod tests {
                     vec![2.75; w * h],
                     "{map}: floors remain authoritative"
                 );
-                let mut expected_claims=vec![None;w*h];
-                if map=="VermilionGym" {
+                let mut expected_claims = vec![None; w * h];
+                if map == "VermilionGym" {
                     // Its authored stepped header deliberately replaces 46
                     // cap/return drawings. The void corners and floor remain
                     // unclaimed; ordinary inferred room edges claim nothing.
-                    for x in 0..20 {expected_claims[x]=Some("room:vermilion-stepped-boundary");}
-                    for x in 3..17 {expected_claims[w+x]=Some("room:vermilion-stepped-boundary");}
-                    for y in 2..8 {for x in [3,16] {
-                        expected_claims[y*w+x]=Some("room:vermilion-stepped-boundary");
-                    }}
+                    for x in 0..20 {
+                        expected_claims[x] = Some("room:vermilion-stepped-boundary");
+                    }
+                    for x in 3..17 {
+                        expected_claims[w + x] = Some("room:vermilion-stepped-boundary");
+                    }
+                    for y in 2..8 {
+                        for x in [3, 16] {
+                            expected_claims[y * w + x] = Some("room:vermilion-stepped-boundary");
+                        }
+                    }
                 }
-                assert_eq!(mesh.authored_cells,expected_claims,
-                    "{map}: only the exact authored stepped header may replace source cells");
+                assert_eq!(
+                    mesh.authored_cells, expected_claims,
+                    "{map}: only the exact authored stepped header may replace source cells"
+                );
                 for surface in [&mesh.solid, &mesh.textured] {
                     assert_eq!(surface.positions.len(), surface.normals.len());
                     assert_eq!(surface.positions.len(), surface.uvs.len());
@@ -1222,21 +1761,30 @@ mod tests {
                             .iter()
                             .all(|n| (Vec3::from_array(*n).length() - 1.).abs() < 0.001)
                     );
-                    let uncovered=(0..surface.positions.len()).filter(|i|
-                        !surface.cutaway_ranges.iter().any(|r|r.contains(i))).collect::<Vec<_>>();
-                    if map=="VermilionGym" && std::ptr::eq(surface,&mesh.textured) {
-                        assert_eq!(uncovered.len(),32*4,
-                            "the inset threshold needs exactly 32 permanent checker floor quads");
+                    let uncovered = (0..surface.positions.len())
+                        .filter(|i| !surface.cutaway_ranges.iter().any(|r| r.contains(i)))
+                        .collect::<Vec<_>>();
+                    if map == "VermilionGym" && std::ptr::eq(surface, &mesh.textured) {
+                        assert_eq!(
+                            uncovered.len(),
+                            32 * 4,
+                            "the inset threshold needs exactly 32 permanent checker floor quads"
+                        );
                         for i in uncovered {
-                            let p=surface.positions[i];
-                            assert_eq!(p[1],0.);
-                            assert_eq!(surface.normals[i],[0.,1.,0.]);
-                            assert!(((32.0..=64.0).contains(&p[0])||(96.0..=128.0).contains(&p[0]))
-                                &&(64.0..=96.0).contains(&p[2]),
-                                "the non-cutaway floor must stay inside the actual inset threshold");
+                            let p = surface.positions[i];
+                            assert_eq!(p[1], 0.);
+                            assert_eq!(surface.normals[i], [0., 1., 0.]);
+                            assert!(
+                                ((32.0..=64.0).contains(&p[0]) || (96.0..=128.0).contains(&p[0]))
+                                    && (64.0..=96.0).contains(&p[2]),
+                                "the non-cutaway floor must stay inside the actual inset threshold"
+                            );
                         }
                     } else {
-                        assert!(uncovered.is_empty(),"{map}: all wall vertices belong to cutaway sections");
+                        assert!(
+                            uncovered.is_empty(),
+                            "{map}: all wall vertices belong to cutaway sections"
+                        );
                     }
                 }
                 for (surface, sections) in [
@@ -1248,17 +1796,31 @@ mod tests {
                         // BattleRoom's source-art trim deliberately clears its
                         // structural backing by0.02px. Its dedicated regression
                         // pins that exact offset; keep the body boundary strict.
-                        let trim=if map=="BattleTowerBattleRoom" {
-                            surface.indices.chunks_exact(3).filter(|t|
-                                t.iter().all(|&i|range.contains(&(i as usize)))
-                                &&t.iter().any(|&i|surface.uvs[i as usize]!=surface.uvs[t[0]as usize]))
-                                .flat_map(|t|t.iter().map(|&i|i as usize))
+                        let trim = if map == "BattleTowerBattleRoom" {
+                            surface
+                                .indices
+                                .chunks_exact(3)
+                                .filter(|t| {
+                                    t.iter().all(|&i| range.contains(&(i as usize)))
+                                        && t.iter().any(|&i| {
+                                            surface.uvs[i as usize] != surface.uvs[t[0] as usize]
+                                        })
+                                })
+                                .flat_map(|t| t.iter().map(|&i| i as usize))
                                 .collect::<std::collections::BTreeSet<_>>()
-                        } else {Default::default()};
-                        for (offset,p) in points.iter().enumerate() {
-                            let relief=if trim.contains(&(range.start+offset)) {0.02*g.tile_height/8.}else{0.};
-                            assert!(plane[0]*p[0]+plane[1]*p[2]<=plane[2]+relief+0.001,
-                                "{map}: wall body or source trim exceeds its physical boundary");
+                        } else {
+                            Default::default()
+                        };
+                        for (offset, p) in points.iter().enumerate() {
+                            let relief = if trim.contains(&(range.start + offset)) {
+                                0.02 * g.tile_height / 8.
+                            } else {
+                                0.
+                            };
+                            assert!(
+                                plane[0] * p[0] + plane[1] * p[2] <= plane[2] + relief + 0.001,
+                                "{map}: wall body or source trim exceeds its physical boundary"
+                            );
                         }
                         for warp in frame.boundary_warps.iter() {
                             if !tin_room_bounds::opens_perimeter(map, *warp) {

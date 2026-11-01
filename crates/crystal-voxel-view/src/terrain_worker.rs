@@ -25,7 +25,9 @@ mod response;
 
 include!(concat!(env!("OUT_DIR"), "/terrain_kernel_identity.rs"));
 #[cfg(feature = "actor-worker")]
-pub(crate) fn kernel_identity() -> [u8; 32] { TERRAIN_KERNEL_ID }
+pub(crate) fn kernel_identity() -> [u8; 32] {
+    TERRAIN_KERNEL_ID
+}
 
 #[derive(serde::Serialize, serde::Deserialize)]
 struct Request {
@@ -105,7 +107,10 @@ fn build_cpu_response(bytes: &[u8]) -> Result<response::Response, String> {
     let built = crate::prepare_runtime_terrain(pending.into_streamed(), &frame);
     let slots = bindings.len();
     let _capture = crate::loading_trace::span("worker.capture_response", || {
-        let meshes = built.textured_meshes.iter().chain(&built.solid_meshes)
+        let meshes = built
+            .textured_meshes
+            .iter()
+            .chain(&built.solid_meshes)
             .map(|batch| &batch.mesh)
             .chain(built.scenery.iter().map(|(batch, _)| &batch.mesh))
             .chain(built.background.iter().map(|(mesh, _)| mesh))
@@ -114,13 +119,22 @@ fn build_cpu_response(bytes: &[u8]) -> Result<response::Response, String> {
             .chain(built.reveal_join_batches.iter().map(|(mesh, _)| mesh))
             .chain([&built.animated_textured_mesh, &built.animated_solid_mesh]);
         let (count, bytes) = meshes.fold((0_u64, 0_u64), |(count, bytes), mesh| {
-            let attributes = mesh.try_attributes().map(|attributes|
-                attributes.map(|(_, values)| values.get_bytes().len() as u64).sum::<u64>())
+            let attributes = mesh
+                .try_attributes()
+                .map(|attributes| {
+                    attributes
+                        .map(|(_, values)| values.get_bytes().len() as u64)
+                        .sum::<u64>()
+                })
                 .unwrap_or(0);
-            let indices = mesh.try_indices_option().ok().flatten().map_or(0, |indices| match indices {
-                bevy::mesh::Indices::U16(values) => values.len() as u64 * 2,
-                bevy::mesh::Indices::U32(values) => values.len() as u64 * 4,
-            });
+            let indices =
+                mesh.try_indices_option()
+                    .ok()
+                    .flatten()
+                    .map_or(0, |indices| match indices {
+                        bevy::mesh::Indices::U16(values) => values.len() as u64 * 2,
+                        bevy::mesh::Indices::U32(values) => values.len() as u64 * 4,
+                    });
             (count + 1, bytes + attributes + indices)
         });
         serde_json::json!({"owned_meshes":count,"transferred_mesh_bytes":bytes})
@@ -324,10 +338,16 @@ mod tests {
         let mut mismatched: Request = decode(&bytes).unwrap();
         mismatched.kernel = TERRAIN_KERNEL_ID;
         mismatched.dense_understory = !crate::forest_instances::dense_understory();
-        assert!(execute_cpu_job(&encode(&mismatched).unwrap()).unwrap_err()
-            .contains("density configuration mismatch"));
+        assert!(
+            execute_cpu_job(&encode(&mismatched).unwrap())
+                .unwrap_err()
+                .contains("density configuration mismatch")
+        );
         let captured: Request = decode(&bytes).unwrap();
-        assert_eq!(captured.dense_understory, crate::forest_instances::dense_understory());
+        assert_eq!(
+            captured.dense_understory,
+            crate::forest_instances::dense_understory()
+        );
         bytes[..8].copy_from_slice(b"GTRNW002");
         assert!(execute_cpu_job(&bytes).unwrap_err().contains("unsupported"));
     }
@@ -370,7 +390,12 @@ mod tests {
         .into_iter()
         .enumerate()
         {
-            if selected_map.as_deref().is_some_and(|selected| selected != map_name) { continue; }
+            if selected_map
+                .as_deref()
+                .is_some_and(|selected| selected != map_name)
+            {
+                continue;
+            }
             tested_maps += 1;
             let module = &pack.data().maps[map_name];
             let tileset = &module.attributes.tileset_name;
@@ -473,15 +498,33 @@ mod tests {
                 // input, alongside the complete terrain geometry roundtrip.
                 let prepared = crate::water_surface::PreparedImages::for_frame(&frame);
                 let mask = crate::cave_water::mask(&frame);
-                let shore = mask.as_ref().and_then(|_| crate::water_surface::shoreline(&frame));
+                let shore = mask
+                    .as_ref()
+                    .and_then(|_| crate::water_surface::shoreline(&frame));
                 for (actual, expected) in [(prepared.mask, mask), (prepared.shore, shore)] {
-                    assert_eq!(actual.is_some(), expected.is_some(), "{map_name} water availability");
+                    assert_eq!(
+                        actual.is_some(),
+                        expected.is_some(),
+                        "{map_name} water availability"
+                    );
                     if let (Some(actual), Some(expected)) = (actual, expected) {
                         assert_eq!(actual.data, expected.data, "{map_name} water pixels");
-                        assert_eq!(actual.texture_descriptor.size, expected.texture_descriptor.size);
-                        assert_eq!(actual.texture_descriptor.format, expected.texture_descriptor.format);
-                        assert_eq!(actual.texture_descriptor.dimension, expected.texture_descriptor.dimension);
-                        assert_eq!(format!("{:?}",actual.sampler),format!("{:?}",expected.sampler));
+                        assert_eq!(
+                            actual.texture_descriptor.size,
+                            expected.texture_descriptor.size
+                        );
+                        assert_eq!(
+                            actual.texture_descriptor.format,
+                            expected.texture_descriptor.format
+                        );
+                        assert_eq!(
+                            actual.texture_descriptor.dimension,
+                            expected.texture_descriptor.dimension
+                        );
+                        assert_eq!(
+                            format!("{:?}", actual.sampler),
+                            format!("{:?}", expected.sampler)
+                        );
                     }
                 }
             }
@@ -499,8 +542,14 @@ mod tests {
                 .into_streamed(),
                 &frame,
             );
-            assert_eq!(direct.train_doors,matches!(map_name,"GoldenrodMagnetTrainStation"|"SaffronMagnetTrainStation"),
-                "{map_name}: selected train metadata");
+            assert_eq!(
+                direct.train_doors,
+                matches!(
+                    map_name,
+                    "GoldenrodMagnetTrainStation" | "SaffronMagnetTrainStation"
+                ),
+                "{map_name}: selected train metadata"
+            );
             let direct_ms = started.elapsed().as_secs_f64() * 1000.;
             if matches!(map_name, "NationalPark" | "NationalParkBugContest") {
                 // The production browser transfers bounded raw pages. A
@@ -617,6 +666,9 @@ mod tests {
                 bytes.len()
             );
         }
-        assert!(tested_maps > 0, "selected terrain test map is not in the region matrix");
+        assert!(
+            tested_maps > 0,
+            "selected terrain test map is not in the region matrix"
+        );
     }
 }

@@ -31,7 +31,8 @@ pub(in crate::mesh) fn frozen_point(p: Vec3, g: &GridGeometry, origin: [i32; 2])
             + cave_cliff::slab(x * 0.65 + y * 0.38, z * 0.65) * 0.65
             + fissure)
             * g.tile_width,
-        (noise(x * 0.3, z * 0.3) * 0.80 + cave_cliff::slab(x * 0.40, z * 0.40) * 1.25 - 0.10 + crest)
+        (noise(x * 0.3, z * 0.3) * 0.80 + cave_cliff::slab(x * 0.40, z * 0.40) * 1.25 - 0.10
+            + crest)
             * g.tile_height,
         (noise(z * 0.3 - y * 0.06 + 37.0, x * 0.3) * 0.45
             + cave_cliff::slab(z * 0.65 - y * 0.38 + 37., x * 0.65) * 0.65
@@ -205,7 +206,14 @@ mod tests {
     use super::*;
     #[test]
     fn irregular_frozen_crests_keep_vertical_order_and_enclosing_height() {
-        let g = GridGeometry { width: 2, height: 2, tile_width: 8., tile_height: 8., origin_x: 0., origin_z: 0. };
+        let g = GridGeometry {
+            width: 2,
+            height: 2,
+            tile_width: 8.,
+            tile_height: 8.,
+            origin_x: 0.,
+            origin_z: 0.,
+        };
         let mut min = f32::INFINITY;
         let mut max = f32::NEG_INFINITY;
         for z in 0..48 {
@@ -216,15 +224,18 @@ mod tests {
                 max = max.max(top.y);
                 assert!(top.y > 32., "crest must retain an enclosing wall at {p:?}");
                 // No vertical folds from ground through the broad broken cap.
-                let mut previous = frozen_point(Vec3::new(p.x, 0., p.z), &g, [0,0]).y;
+                let mut previous = frozen_point(Vec3::new(p.x, 0., p.z), &g, [0, 0]).y;
                 for y in 1..=96 {
-                    let next = frozen_point(Vec3::new(p.x, y as f32 * 0.5, p.z), &g, [0,0]).y;
+                    let next = frozen_point(Vec3::new(p.x, y as f32 * 0.5, p.z), &g, [0, 0]).y;
                     assert!(next > previous, "folded wall height at {p:?}, {y}");
                     previous = next;
                 }
             }
         }
-        assert!(max - min > 12., "crowns need broad physical height variation");
+        assert!(
+            max - min > 12.,
+            "crowns need broad physical height variation"
+        );
     }
     #[test]
     fn fractured_frozen_caps_keep_outward_winding_across_the_map() {

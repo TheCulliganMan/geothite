@@ -116,7 +116,10 @@ impl SourceAudioClock {
     /// the drum sample pointer (the source routine leaves both untouched).
     /// Commit one Flags1 store from the authored SFXChannelsOff routine.
     pub fn stop_sfx_channel(&mut self, channel: u8) -> Result<()> {
-        ensure!((5..=8).contains(&channel), "SFX shutdown cannot clear music channel {channel}");
+        ensure!(
+            (5..=8).contains(&channel),
+            "SFX shutdown cannot clear music channel {channel}"
+        );
         if let Some(channel) = self.channels[usize::from(channel - 1)].as_mut() {
             channel.state.flags1 = 0;
         }
@@ -710,29 +713,71 @@ mod tests {
     #[test]
     fn source_clock_sfx_channels_off_preserves_music_and_sample_pointer() -> Result<()> {
         let mut clock = SourceAudioClock::new()?;
-        clock.play(&program(1, &[("note_type", &["4", "8", "0"]), ("note", &["C_", "4"]), ("sound_ret", &[])]))?;
-        clock.play(&program(5, &[("square_note", &["4", "8", "0", "400"]), ("sound_ret", &[])]))?;
+        clock.play(&program(
+            1,
+            &[
+                ("note_type", &["4", "8", "0"]),
+                ("note", &["C_", "4"]),
+                ("sound_ret", &[]),
+            ],
+        ))?;
+        clock.play(&program(
+            5,
+            &[("square_note", &["4", "8", "0", "400"]), ("sound_ret", &[])],
+        ))?;
         clock.update_vblank()?;
-        let music_before = clock.channels().into_iter().find(|channel| channel.channel == 1).unwrap();
+        let music_before = clock
+            .channels()
+            .into_iter()
+            .find(|channel| channel.channel == 1)
+            .unwrap();
         clock.sample_pointer_present = true;
         assert!(clock.stop_sfx_channel(1).is_err());
         clock.stop_sfx_channel(5)?;
         let states = clock.channels();
-        assert_eq!(states.iter().find(|channel| channel.channel == 1), Some(&music_before));
-        assert_eq!(states.iter().find(|channel| channel.channel == 5).unwrap().flags1, 0);
+        assert_eq!(
+            states.iter().find(|channel| channel.channel == 1),
+            Some(&music_before)
+        );
+        assert_eq!(
+            states
+                .iter()
+                .find(|channel| channel.channel == 5)
+                .unwrap()
+                .flags1,
+            0
+        );
         assert!(clock.sample_pointer_present);
-        assert!(clock.update_vblank()?.iter().all(|step| step.before.channel <= 4));
+        assert!(
+            clock
+                .update_vblank()?
+                .iter()
+                .all(|step| step.before.channel <= 4)
+        );
         Ok(())
     }
 
     #[test]
     fn source_clock_empty_drum_sample_retains_its_terminator_pointer() -> Result<()> {
         let mut clock = SourceAudioClock::new()?;
-        clock.context.drumkits.insert(0, BTreeMap::from([(1, vec![])]));
-        clock.play(&program(4, &[("toggle_noise", &["0"]), ("drum_note", &["1", "4"]), ("sound_ret", &[])]))?;
+        clock
+            .context
+            .drumkits
+            .insert(0, BTreeMap::from([(1, vec![])]));
+        clock.play(&program(
+            4,
+            &[
+                ("toggle_noise", &["0"]),
+                ("drum_note", &["1", "4"]),
+                ("sound_ret", &[]),
+            ],
+        ))?;
         let first = clock.update_vblank()?.remove(0);
         assert_eq!(first.noise_sample_first_byte, Some(255));
-        assert_eq!(clock.update_vblank()?.remove(0).noise_sample_first_byte, Some(255));
+        assert_eq!(
+            clock.update_vblank()?.remove(0).noise_sample_first_byte,
+            Some(255)
+        );
         clock.stop_all();
         assert!(!clock.sample_pointer_present);
         Ok(())

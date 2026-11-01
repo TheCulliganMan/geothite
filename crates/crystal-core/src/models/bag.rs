@@ -162,8 +162,18 @@ pub enum BagSaveError {
 }
 
 impl Bag {
-    pub fn switch_pc_item_stacks(&mut self, source_index: usize, target_index: usize) -> Result<(), String> {
-        switch_inventory_stacks(&mut self.pc_items, source_index, target_index, MAX_ITEM_STACK).map(|_| ())
+    pub fn switch_pc_item_stacks(
+        &mut self,
+        source_index: usize,
+        target_index: usize,
+    ) -> Result<(), String> {
+        switch_inventory_stacks(
+            &mut self.pc_items,
+            source_index,
+            target_index,
+            MAX_ITEM_STACK,
+        )
+        .map(|_| ())
     }
 
     pub fn switch_item_stacks(

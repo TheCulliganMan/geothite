@@ -165,7 +165,9 @@ fn main() {
     );
     // Derive legacy rig bindings from the same canonical model inputs. Moving
     // a species to an authored GLB must not leave a stale JSON include behind.
-    let mut legacy_rigs = String::from("fn legacy_rig(species: &str) -> Option<&'static crate::species_rig::SpeciesRig> { match species {\n");
+    let mut legacy_rigs = String::from(
+        "fn legacy_rig(species: &str) -> Option<&'static crate::species_rig::SpeciesRig> { match species {\n",
+    );
     let mut expected_outputs = HashSet::new();
     for path in paths {
         println!("cargo:rerun-if-changed={}", path.display());
@@ -224,9 +226,15 @@ fn main() {
         inventory.push_str(&format!(
             "({name:?}, crate::model_storage::include_model!({name:?})),\n"
         ));
-        if let Some(species) = name.strip_prefix("models/battle_species/")
-            .and_then(|name| name.strip_suffix(".mesh.json")) {
-            assert!(species.bytes().all(|b| b.is_ascii_lowercase() || b.is_ascii_digit() || b == b'_'));
+        if let Some(species) = name
+            .strip_prefix("models/battle_species/")
+            .and_then(|name| name.strip_suffix(".mesh.json"))
+        {
+            assert!(
+                species
+                    .bytes()
+                    .all(|b| b.is_ascii_lowercase() || b.is_ascii_digit() || b == b'_')
+            );
             legacy_rigs.push_str(&format!(
                 "{species:?} => {{ static RIG: OnceLock<crate::species_rig::SpeciesRig> = OnceLock::new(); Some(RIG.get_or_init(|| {{ let (mesh, anatomy) = parse_model(crate::model_storage::include_model!({name:?})).expect(\"valid named species mesh\"); crate::species_rig::motion::from_mesh({species:?}, mesh, anatomy) }})) }},\n"
             ));

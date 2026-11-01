@@ -5,8 +5,8 @@
 
 mod menu_labels;
 pub use menu_labels::visible_script_menu_option_label;
-mod painted;
 mod ink;
+mod painted;
 pub use painted::PaintedRenderer;
 mod snapshot;
 mod terminal;
@@ -29,32 +29,63 @@ pub struct VisibleBattleReplayFrame {
 }
 #[derive(Debug, Clone)]
 pub struct VisibleBattleReplayPiece {
-    pub x: i16, pub y: i16, pub width: u16, pub height: u16, pub rgba: Vec<u8>,
+    pub x: i16,
+    pub y: i16,
+    pub width: u16,
+    pub height: u16,
+    pub rgba: Vec<u8>,
 }
 #[derive(Debug, Clone)]
-pub struct VisibleBattleReplay { pub animation_label: String, pub frames: Vec<VisibleBattleReplayFrame> }
+pub struct VisibleBattleReplay {
+    pub animation_label: String,
+    pub frames: Vec<VisibleBattleReplayFrame>,
+}
 
 /// Escape the shared Ratatui cell buffer for the browser's presentation adapter.
 pub fn buffer_html(buffer: &ratatui::buffer::Buffer) -> String {
     use ratatui::style::{Color, Modifier};
     use std::fmt::Write;
-    let color = |color| match color { Color::Rgb(r,g,b) => format!("#{r:02x}{g:02x}{b:02x}"), _ => "inherit".to_string() };
+    let color = |color| match color {
+        Color::Rgb(r, g, b) => format!("#{r:02x}{g:02x}{b:02x}"),
+        _ => "inherit".to_string(),
+    };
     let mut html = String::new();
     for y in buffer.area.top()..buffer.area.bottom() {
         let mut style = None;
         for x in buffer.area.left()..buffer.area.right() {
-            let cell = &buffer[(x,y)];
-            let next = (cell.fg,cell.bg,cell.modifier);
+            let cell = &buffer[(x, y)];
+            let next = (cell.fg, cell.bg, cell.modifier);
             if style != Some(next) {
-                if style.is_some() { html.push_str("</span>"); }
-                let _ = write!(html, "<span style=\"color:{};background-color:{};font-weight:{}\">", color(cell.fg),color(cell.bg),if cell.modifier.contains(Modifier::BOLD) {"bold"}else{"normal"});
+                if style.is_some() {
+                    html.push_str("</span>");
+                }
+                let _ = write!(
+                    html,
+                    "<span style=\"color:{};background-color:{};font-weight:{}\">",
+                    color(cell.fg),
+                    color(cell.bg),
+                    if cell.modifier.contains(Modifier::BOLD) {
+                        "bold"
+                    } else {
+                        "normal"
+                    }
+                );
                 style = Some(next);
             }
             for ch in cell.symbol().chars() {
-                match ch { '&'=>html.push_str("&amp;"),'<'=>html.push_str("&lt;"),'>'=>html.push_str("&gt;"),'"'=>html.push_str("&quot;"),'\''=>html.push_str("&#39;"),_=>html.push(ch) }
+                match ch {
+                    '&' => html.push_str("&amp;"),
+                    '<' => html.push_str("&lt;"),
+                    '>' => html.push_str("&gt;"),
+                    '"' => html.push_str("&quot;"),
+                    '\'' => html.push_str("&#39;"),
+                    _ => html.push(ch),
+                }
             }
         }
-        if style.is_some() { html.push_str("</span>"); }
+        if style.is_some() {
+            html.push_str("</span>");
+        }
         html.push('\n');
     }
     html

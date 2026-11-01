@@ -241,7 +241,10 @@ fn set_scene_or_no_scene(
     if table.scenes.is_empty() {
         return check_scene_or_no_scene(state, map_name, table);
     }
-    state.scenes.set_map_scene(map_name, scene_id, table).map_err(Into::into)
+    state
+        .scenes
+        .set_map_scene(map_name, scene_id, table)
+        .map_err(Into::into)
 }
 
 fn check_scene_or_no_scene(
@@ -707,12 +710,19 @@ mod tests {
             state.scenes.enter_map("Route43Gate", &table()).unwrap();
             let before = state.clone();
             let result = apply_script_scene_command(
-                &mut state, "Route43Gate", target_map, &MapSceneTable::default(),
+                &mut state,
+                "Route43Gate",
+                target_map,
+                &MapSceneTable::default(),
                 command(name, map_id, Some("0")),
-            ).unwrap();
+            )
+            .unwrap();
             assert_eq!(result.scene_index, 255);
             assert_eq!(result.script_name, None);
-            assert_eq!(state, before, "a map without a scene variable cannot store a scene");
+            assert_eq!(
+                state, before,
+                "a map without a scene variable cannot store a scene"
+            );
         }
     }
 

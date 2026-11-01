@@ -97,7 +97,10 @@ fn main() -> Result<()> {
         .context("find compatible local Crystalpack")?;
     let root = AssetRoot::new(pack.parent().context("pack directory")?);
     let loaded = {
-        let _trace = crystal_voxel_view::loading_trace::span("pack.verify", || serde_json::json!({"path": pack}));
+        let _trace = crystal_voxel_view::loading_trace::span(
+            "pack.verify",
+            || serde_json::json!({"path": pack}),
+        );
         if std::env::var_os("CRYSTAL_LOADING_TRACE").is_some() {
             crystal_assets::with_compiled_pack_load_observer(
                 crystal_bevy::loading_pack_trace::observe_stage,
@@ -108,7 +111,8 @@ fn main() -> Result<()> {
         }
     };
     let runtime = {
-        let _trace = crystal_voxel_view::loading_trace::span("pack.load_runtime", || serde_json::json!({}));
+        let _trace =
+            crystal_voxel_view::loading_trace::span("pack.load_runtime", || serde_json::json!({}));
         CrystalRuntime::from_loaded_compiled_pack(&root, loaded)?
     };
     let (width, height) = runtime

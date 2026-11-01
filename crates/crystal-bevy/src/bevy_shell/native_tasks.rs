@@ -36,16 +36,16 @@ mod tests {
 
     #[test]
     fn pool_assignments_are_nonzero_and_bounded_by_available_cpu_capacity() {
-        for available in [0,1,2,3,4,8,10,16,32,64,128] {
+        for available in [0, 1, 2, 3, 4, 8, 10, 16, 32, 64, 128] {
             let options = options(available);
-            let pools = [&options.io,&options.async_compute,&options.compute];
+            let pools = [&options.io, &options.async_compute, &options.compute];
             for pool in pools {
                 assert!(pool.min_threads >= 1);
-                assert_eq!(pool.min_threads,pool.max_threads);
+                assert_eq!(pool.min_threads, pool.max_threads);
             }
             // Bevy requires all three pools, including on one/two-core hosts.
             let total = pools.iter().map(|pool| pool.min_threads).sum::<usize>();
-            assert_eq!(total,available.max(3));
+            assert_eq!(total, available.max(3));
         }
     }
 }

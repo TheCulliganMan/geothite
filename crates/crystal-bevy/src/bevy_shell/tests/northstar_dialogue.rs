@@ -87,7 +87,7 @@ pub(super) fn acknowledge(c: &mut VisibleShellController, id: &str, label: &str,
         );
     };
     assert_eq!(actual, expected);
-    for page in expected {
+    for (page_index, page) in expected.into_iter().enumerate() {
         assert!(
             !c.shell
                 .shell
@@ -101,6 +101,12 @@ pub(super) fn acknowledge(c: &mut VisibleShellController, id: &str, label: &str,
         let text = s.ui.text.expect("canonical native text");
         assert_eq!(text.label, label);
         assert_eq!(text.asm_text, Some(page));
+        if let Some(directory) = std::env::var_os("CRYSTAL_NORTHSTAR_EVENTS_SAVE_DIR") {
+            let directory = std::path::PathBuf::from(directory);
+            std::fs::create_dir_all(&directory).expect("actual dialogue capture directory");
+            c.save(directory.join(format!("{label}-page-{page_index}.crystalsave")))
+                .expect("save the actual reached native page");
+        }
         let at = (s.overworld.map_name, s.overworld.tile);
         press(c, GameButton::Down);
         let blocked = c.snapshot().expect("dialogue owns input");

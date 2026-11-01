@@ -40,9 +40,12 @@ pub(super) fn install(app: &mut App) {
     #[cfg(feature = "fullscreen-scaling")]
     app.add_systems(Update, fit_initial_window.before(toggle_fullscreen));
     #[cfg(feature = "voxel-view")]
-    app.configure_sets(Update, crystal_voxel_view::VoxelCameraInput
-        .after(release_input_on_focus_loss)
-        .before(gather_input))
+    app.configure_sets(
+        Update,
+        crystal_voxel_view::VoxelCameraInput
+            .after(release_input_on_focus_loss)
+            .before(gather_input),
+    )
     .add_systems(
         Update,
         controller_camera
@@ -203,7 +206,9 @@ impl HandheldInput {
         // Keep a held controller; an idle built-in pad must not steal a docked controller.
         if current.is_empty() {
             if let Some((id, _)) = pads.iter().find(|(_, pad)| {
-                !sample_pad(pad, None).is_empty() || pad.left_stick().length() > 0.18 || pad.right_stick().length() > 0.2
+                !sample_pad(pad, None).is_empty()
+                    || pad.left_stick().length() > 0.18
+                    || pad.right_stick().length() > 0.2
             }) {
                 if self.active != Some(*id) {
                     self.direction = None;
@@ -241,21 +246,26 @@ impl HandheldInput {
         }
         self.movement = super::natural_movement::keyboard_vector(keyboard);
         if self.movement == Vec2::ZERO {
-            if let Some((_, pad)) = pads.iter().find(|(id,_)| Some(*id) == self.active) {
+            if let Some((_, pad)) = pads.iter().find(|(id, _)| Some(*id) == self.active) {
                 let down = |b| i32::from(pad.pressed(b));
-                let dpad=Vec2::new((down(GamepadButton::DPadRight)-down(GamepadButton::DPadLeft)) as f32,
-                    (down(GamepadButton::DPadDown)-down(GamepadButton::DPadUp)) as f32);
-                if dpad!=Vec2::ZERO {self.movement=dpad.clamp_length_max(1.0);}
-                else {
-                    let analog=super::natural_movement::analog_vector(pad.left_stick());
-                    self.movement=Vec2::new(analog.x,-analog.y);
+                let dpad = Vec2::new(
+                    (down(GamepadButton::DPadRight) - down(GamepadButton::DPadLeft)) as f32,
+                    (down(GamepadButton::DPadDown) - down(GamepadButton::DPadUp)) as f32,
+                );
+                if dpad != Vec2::ZERO {
+                    self.movement = dpad.clamp_length_max(1.0);
+                } else {
+                    let analog = super::natural_movement::analog_vector(pad.left_stick());
+                    self.movement = Vec2::new(analog.x, -analog.y);
                 }
             }
         }
         if self.wait_for_neutral {
             // Require every connected pad to be released after an overlay/suspend.
             let neutral = pads.iter().all(|(_, pad)| {
-                sample_pad(pad, self.direction).is_empty() && pad.left_stick().length() <= 0.18 && pad.right_stick().length() <= 0.2
+                sample_pad(pad, self.direction).is_empty()
+                    && pad.left_stick().length() <= 0.18
+                    && pad.right_stick().length() <= 0.2
             });
             if neutral && !self.unfocused && !blocked {
                 self.wait_for_neutral = false;
@@ -345,7 +355,9 @@ pub(super) fn gather_input(
         customization_is_open() || save_manager_is_open(),
     );
     #[cfg(feature = "voxel-view")]
-    if (input.unfocused || input.wait_for_neutral) && let Some(mut shell) = shell {
+    if (input.unfocused || input.wait_for_neutral)
+        && let Some(mut shell) = shell
+    {
         let _ = shell.natural_movement.take_input(Vec2::ZERO);
     }
 }
@@ -459,12 +471,14 @@ fn controller_camera(
                 camera.steer(-look.x * dt * 2.5, -look.y * dt * 2.0);
             }
         }
-        if buttons
-            .as_ref()
-            .is_some_and(|b| b.pressed(MouseButton::Right)
-                || (cfg!(not(target_arch = "wasm32")) && b.pressed(MouseButton::Left)
-                    && !ui.iter().any(|interaction| *interaction != bevy::ui::Interaction::None)))
-        {
+        if buttons.as_ref().is_some_and(|b| {
+            b.pressed(MouseButton::Right)
+                || (cfg!(not(target_arch = "wasm32"))
+                    && b.pressed(MouseButton::Left)
+                    && !ui
+                        .iter()
+                        .any(|interaction| *interaction != bevy::ui::Interaction::None))
+        }) {
             if let Some(mouse) = mouse {
                 camera.steer(-mouse.delta.x * 0.003, mouse.delta.y * 0.003);
             }
@@ -551,19 +565,40 @@ mod tests {
         app.init_resource::<HandheldInput>()
             .init_resource::<ButtonInput<KeyCode>>()
             .init_resource::<ButtonInput<MouseButton>>()
-            .insert_resource(bevy::input::mouse::AccumulatedMouseMotion { delta: Vec2::new(30., -10.) })
-            .insert_resource(crystal_render_api::VisualWorldFrame { active: true, ..default() })
-            .insert_resource(crystal_voxel_view::VoxelViewSettings { enabled: true, ..default() })
+            .insert_resource(bevy::input::mouse::AccumulatedMouseMotion {
+                delta: Vec2::new(30., -10.),
+            })
+            .insert_resource(crystal_render_api::VisualWorldFrame {
+                active: true,
+                ..default()
+            })
+            .insert_resource(crystal_voxel_view::VoxelViewSettings {
+                enabled: true,
+                ..default()
+            })
             .add_systems(Update, controller_camera);
-        app.world_mut().resource_mut::<ButtonInput<MouseButton>>().press(MouseButton::Left);
-        let before = app.world().resource::<crystal_voxel_view::VoxelViewSettings>().camera;
+        app.world_mut()
+            .resource_mut::<ButtonInput<MouseButton>>()
+            .press(MouseButton::Left);
+        let before = app
+            .world()
+            .resource::<crystal_voxel_view::VoxelViewSettings>()
+            .camera;
         app.update();
-        let after = app.world().resource::<crystal_voxel_view::VoxelViewSettings>().camera;
+        let after = app
+            .world()
+            .resource::<crystal_voxel_view::VoxelViewSettings>()
+            .camera;
         assert_ne!(after.rotation_step, before.rotation_step);
         assert_ne!(after.pitch_degrees, before.pitch_degrees);
         app.world_mut().spawn(bevy::ui::Interaction::Hovered);
         app.update();
-        assert_eq!(app.world().resource::<crystal_voxel_view::VoxelViewSettings>().camera, after);
+        assert_eq!(
+            app.world()
+                .resource::<crystal_voxel_view::VoxelViewSettings>()
+                .camera,
+            after
+        );
     }
 
     #[cfg(feature = "voxel-view")]
@@ -955,7 +990,8 @@ mod tests {
             .init_resource::<crystal_voxel_view::VoxelViewSettings>()
             .init_resource::<Time>()
             .add_systems(Update, controller_camera);
-        app.world_mut().resource_mut::<Time>()
+        app.world_mut()
+            .resource_mut::<Time>()
             .advance_by(std::time::Duration::from_secs_f32(0.1));
         app.world_mut()
             .resource_mut::<HandheldInput>()
@@ -1013,8 +1049,11 @@ mod tests {
             .world()
             .resource::<crystal_voxel_view::VoxelViewSettings>()
             .camera;
-        assert!(((after.rotation_step - before.rotation_step) * std::f32::consts::FRAC_PI_4
-            - 0.25).abs() < 1e-6);
+        assert!(
+            ((after.rotation_step - before.rotation_step) * std::f32::consts::FRAC_PI_4 - 0.25)
+                .abs()
+                < 1e-6
+        );
         assert_eq!(after.zoom_step, before.zoom_step + 1.0);
         app.world_mut()
             .resource_mut::<HandheldInput>()

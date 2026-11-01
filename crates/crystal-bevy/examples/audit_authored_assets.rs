@@ -26,22 +26,43 @@ fn main() -> Result<()> {
     .canonicalize()?;
     let output = PathBuf::from(args.next().context("output report path is required")?);
     let mut requested: Vec<_> = args.collect();
-    let inspect_roofs = requested.iter().position(|arg| arg == "--roof-coverage")
-        .map(|index| requested.remove(index)).is_some();
+    let inspect_roofs = requested
+        .iter()
+        .position(|arg| arg == "--roof-coverage")
+        .map(|index| requested.remove(index))
+        .is_some();
     let seam_window = if let Some(i) = requested.iter().position(|arg| arg == "--mineral-seams") {
-        ensure!(i + 1 < requested.len(), "--mineral-seams needs x0,y0,x1,y1 in source cells");
-        let values = requested.remove(i + 1).split(',').map(str::parse::<f32>)
+        ensure!(
+            i + 1 < requested.len(),
+            "--mineral-seams needs x0,y0,x1,y1 in source cells"
+        );
+        let values = requested
+            .remove(i + 1)
+            .split(',')
+            .map(str::parse::<f32>)
             .collect::<std::result::Result<Vec<_>, _>>()?;
         requested.remove(i);
-        ensure!(values.len() == 4 && values.iter().all(|v| v.is_finite())
-            && values[0] < values[2] && values[1] < values[3], "invalid mineral seam window");
+        ensure!(
+            values.len() == 4
+                && values.iter().all(|v| v.is_finite())
+                && values[0] < values[2]
+                && values[1] < values[3],
+            "invalid mineral seam window"
+        );
         Some([values[0], values[1], values[2], values[3]])
-    } else { None };
+    } else {
+        None
+    };
     let script_variants = requested.iter().any(|arg| arg == "--script-block-variants");
     let kanto_interiors = requested.iter().any(|arg| arg == "--kanto-interiors");
     let outdoors = requested.iter().any(|arg| arg == "--outdoors");
     let jump_maps = requested.iter().any(|arg| arg == "--jump-maps");
-    requested.retain(|arg| arg != "--script-block-variants" && arg != "--kanto-interiors" && arg != "--outdoors" && arg != "--jump-maps");
+    requested.retain(|arg| {
+        arg != "--script-block-variants"
+            && arg != "--kanto-interiors"
+            && arg != "--outdoors"
+            && arg != "--jump-maps"
+    });
     let root = AssetRoot::new(pack.parent().context("pack directory")?);
     let loaded = read_loaded_verified_compiled_game_pack(&pack)?;
     let actor_sources: Vec<_> = loaded
@@ -98,10 +119,17 @@ fn main() -> Result<()> {
         let mut selected = Vec::new();
         for map in maps {
             let module = &runtime.data().maps[&map];
-            let collision = runtime.data().tileset_collision(&module.attributes.tileset_name)?;
+            let collision = runtime
+                .data()
+                .tileset_collision(&module.attributes.tileset_name)?;
             if !crystal_bevy::bevy_shell::authored_visual_jump_ledges(
-                module.attributes.width, &module.blocks, &collision, bevy::prelude::IVec2::ZERO,
-            )?.is_empty() {
+                module.attributes.width,
+                &module.blocks,
+                &collision,
+                bevy::prelude::IVec2::ZERO,
+            )?
+            .is_empty()
+            {
                 selected.push(map);
             }
         }
@@ -190,28 +218,49 @@ fn main() -> Result<()> {
             tile_size: Vec2::splat(8.0),
             grid_size: UVec2::new(width as u32, height as u32),
             source_map_size_core_tiles: Some(UVec2::new(width as u32 / 2, height as u32 / 2)),
-            boundary_warps: module.events.warps.iter().map(|warp|
-                bevy::prelude::IVec2::new(i32::from(warp.x), i32::from(warp.y))).collect(),
+            boundary_warps: module
+                .events
+                .warps
+                .iter()
+                .map(|warp| bevy::prelude::IVec2::new(i32::from(warp.x), i32::from(warp.y)))
+                .collect(),
             viewport_size: Vec2::new(width as f32 * 8.0, height as f32 * 8.0),
             tiles,
             ..Default::default()
         };
         frame.jump_ledges = crystal_bevy::bevy_shell::authored_visual_jump_ledges(
-            module.attributes.width,&module.blocks,&runtime.data().tileset_collision(tileset)?,
-            bevy::prelude::IVec2::ZERO)?;
-        let domain_collision=runtime.data().tileset_collision(tileset)?;
-        let domain_sources=frame.tiles.iter().map(|tile| {
-            let s=&tile.source;
-            let permission=domain_collision.metatiles[s.metatile_id as usize].collision[
-                usize::from(s.subtile_row/2)*2+usize::from(s.subtile_column/2)];
-            let land=crystal_core::world::collision::describe_collision(permission).terrain
-                ==crystal_core::world::collision::Terrain::Land
-                || [crystal_core::world::map::Direction::Up,crystal_core::world::map::Direction::Down,
-                    crystal_core::world::map::Direction::Left,crystal_core::world::map::Direction::Right]
-                    .into_iter().any(|d|crystal_core::world::collision::allows_ledge_direction(permission,d));
-            (bevy::prelude::IVec2::new(tile.column as i32,tile.row as i32),s.clone(),land)
-        }).collect::<Vec<_>>();
-        frame.terrace_datum=crystal_voxel_view::source_terrace_datum(map_id,&frame.jump_ledges,&domain_sources);
+            module.attributes.width,
+            &module.blocks,
+            &runtime.data().tileset_collision(tileset)?,
+            bevy::prelude::IVec2::ZERO,
+        )?;
+        let domain_collision = runtime.data().tileset_collision(tileset)?;
+        let domain_sources = frame
+            .tiles
+            .iter()
+            .map(|tile| {
+                let s = &tile.source;
+                let permission = domain_collision.metatiles[s.metatile_id as usize].collision
+                    [usize::from(s.subtile_row / 2) * 2 + usize::from(s.subtile_column / 2)];
+                let land = crystal_core::world::collision::describe_collision(permission).terrain
+                    == crystal_core::world::collision::Terrain::Land
+                    || [
+                        crystal_core::world::map::Direction::Up,
+                        crystal_core::world::map::Direction::Down,
+                        crystal_core::world::map::Direction::Left,
+                        crystal_core::world::map::Direction::Right,
+                    ]
+                    .into_iter()
+                    .any(|d| crystal_core::world::collision::allows_ledge_direction(permission, d));
+                (
+                    bevy::prelude::IVec2::new(tile.column as i32, tile.row as i32),
+                    s.clone(),
+                    land,
+                )
+            })
+            .collect::<Vec<_>>();
+        frame.terrace_datum =
+            crystal_voxel_view::source_terrace_datum(map_id, &frame.jump_ledges, &domain_sources);
         let legacy = audit_cell_coverage_on_map(map_id, &frame.tiles, width, height)
             .map_err(|error| anyhow::anyhow!("{map_id}: {error:?}"))?;
         let mesh = match audit_terrain_mesh_with_images(&frame, &images) {
@@ -242,7 +291,7 @@ fn main() -> Result<()> {
         // TryJump reads HOP permissions at the current runtime position.
         use crystal_core::world::{
             map::{Direction, TilePosition},
-            movement::{attempt_ledge_jump, LedgeJumpOutcome, PlayerMovementState, StepOptions},
+            movement::{LedgeJumpOutcome, PlayerMovementState, StepOptions, attempt_ledge_jump},
         };
         let authored_map = runtime.data().overworld_map(map_id)?;
         let collision = runtime.data().tileset_collision(tileset)?;
@@ -252,25 +301,51 @@ fn main() -> Result<()> {
                 // The low-level jump helper accepts a wall quadrant when its
                 // complement carries HOP bits. A real player still needs an
                 // occupiable origin, as required by production session startup.
-                if ![Direction::Down, Direction::Up, Direction::Left, Direction::Right]
-                    .into_iter().any(|direction| crystal_core::world::collision::can_enter_tile(
-                        &authored_map, &collision, origin, direction,
-                        crystal_core::world::collision::PlayerTraversalState::Walk)) {
+                if ![
+                    Direction::Down,
+                    Direction::Up,
+                    Direction::Left,
+                    Direction::Right,
+                ]
+                .into_iter()
+                .any(|direction| {
+                    crystal_core::world::collision::can_enter_tile(
+                        &authored_map,
+                        &collision,
+                        origin,
+                        direction,
+                        crystal_core::world::collision::PlayerTraversalState::Walk,
+                    )
+                }) {
                     rejected_jump_origins += 1;
                     continue;
                 }
-                for direction in [Direction::Down, Direction::Up, Direction::Left, Direction::Right] {
-                    let mut player = PlayerMovementState::new(TilePosition::new(x as i16, y as i16));
+                for direction in [
+                    Direction::Down,
+                    Direction::Up,
+                    Direction::Left,
+                    Direction::Right,
+                ] {
+                    let mut player =
+                        PlayerMovementState::new(TilePosition::new(x as i16, y as i16));
                     let LedgeJumpOutcome::Jumped { from, to, .. } = attempt_ledge_jump(
-                        &mut player, direction, &authored_map, &collision, StepOptions::default(),
-                    ) else { continue; };
+                        &mut player,
+                        direction,
+                        &authored_map,
+                        &collision,
+                        StepOptions::default(),
+                    ) else {
+                        continue;
+                    };
                     let index = |p: TilePosition| {
                         let x = i32::from(p.x) * 2 + 1;
                         let y = i32::from(p.y) * 2 + 1;
                         (x >= 0 && y >= 0 && x < width as i32 && y < height as i32)
                             .then(|| y as usize * width + x as usize)
                     };
-                    let (Some(a), Some(b)) = (index(from), index(to)) else { continue; };
+                    let (Some(a), Some(b)) = (index(from), index(to)) else {
+                        continue;
+                    };
                     jump_edge_samples += 1;
                     let support = |p: TilePosition| {
                         let foot = Vec2::new(
@@ -279,14 +354,21 @@ fn main() -> Result<()> {
                             // center, one source cell north of the sprite foot.
                             height as f32 * 4. - (f32::from(p.y) * 2. + 1.) * 8.,
                         );
-                        crystal_voxel_view::resolved_footing_height(&frame, foot, &mesh.footing_heights)
-                            .expect("in-bounds production footing")
+                        crystal_voxel_view::resolved_footing_height(
+                            &frame,
+                            foot,
+                            &mesh.footing_heights,
+                        )
+                        .expect("in-bounds production footing")
                     };
                     let approach = support(from);
                     let landing = support(to);
                     let changes_level = crystal_voxel_view::jump_changes_floor_level(map_id);
-                    if if changes_level { approach <= landing + 0.0001 }
-                        else { (approach - landing).abs() > 0.0001 } {
+                    if if changes_level {
+                        approach <= landing + 0.0001
+                    } else {
+                        (approach - landing).abs() > 0.0001
+                    } {
                         errors.push(json!({"map":map_id,"error":if changes_level {
                             "production jump does not descend" } else { "production barrier hop changes floor level" },
                             "direction":format!("{direction:?}"),
@@ -309,14 +391,21 @@ fn main() -> Result<()> {
         let mut sources = BTreeMap::<String, usize>::new();
         for ((tile, modeled), old) in frame.tiles.iter().zip(&mesh.authored_cells).zip(legacy) {
             if let Some(family) = modeled {
-                let bounds=family_bounds.entry((*family).to_owned())
-                    .or_insert([tile.column,tile.row,tile.column,tile.row]);
-                bounds[0]=bounds[0].min(tile.column);
-                bounds[1]=bounds[1].min(tile.row);
-                bounds[2]=bounds[2].max(tile.column);
-                bounds[3]=bounds[3].max(tile.row);
-                if matches!(*family,"world-exterior/kanto_blank"|"outdoor/kanto_flat_house")
-                    && matches!(tile.source.tile_index,0x0a|0x32) {
+                let bounds = family_bounds.entry((*family).to_owned()).or_insert([
+                    tile.column,
+                    tile.row,
+                    tile.column,
+                    tile.row,
+                ]);
+                bounds[0] = bounds[0].min(tile.column);
+                bounds[1] = bounds[1].min(tile.row);
+                bounds[2] = bounds[2].max(tile.column);
+                bounds[3] = bounds[3].max(tile.row);
+                if matches!(
+                    *family,
+                    "world-exterior/kanto_blank" | "outdoor/kanto_flat_house"
+                ) && matches!(tile.source.tile_index, 0x0a | 0x32)
+                {
                     blank_windows.push(json!({"column":tile.column,"row":tile.row,
                         "tile":tile.source.tile_index}));
                 }
@@ -325,7 +414,7 @@ fn main() -> Result<()> {
                 *totals.entry("modeled".into()).or_default() += 1;
             } else {
                 *remaining.entry(old.label().into()).or_default() += 1;
-                if old.label()=="facade" {
+                if old.label() == "facade" {
                     facade_cells.push(json!({"column":tile.column,"row":tile.row,
                         "metatile":tile.source.metatile_id,"tile":tile.source.tile_index}));
                 }
@@ -350,7 +439,8 @@ fn main() -> Result<()> {
             started.elapsed().as_secs_f64() * 1000.0
         );
         let environment = runtime.data().map_environment(map_id)?;
-        let city_window_sources = crystal_voxel_view::audit_city_window_sources(map_id, &mesh.solid);
+        let city_window_sources =
+            crystal_voxel_view::audit_city_window_sources(map_id, &mesh.solid);
         let landmark = runtime.data().pokegear_landmark_for_map(map_id).ok();
         let mut map_report = json!({ "map": map_id, "environment": environment,
             "region": landmark.map(|landmark| landmark.region.as_str()),
@@ -360,8 +450,13 @@ fn main() -> Result<()> {
             "footing_height_max":mesh.footing_heights.iter().copied().reduce(f32::max),
             "jump_edge_samples":jump_edge_samples });
         map_report["rejected_unoccupiable_jump_origins"] = json!(rejected_jump_origins);
-        map_report["open_water_level"]=json!(frame.terrace_datum.as_ref()
-            .and_then(|d|d.open_water.as_ref()).map(|r|r.level));
+        map_report["open_water_level"] = json!(
+            frame
+                .terrace_datum
+                .as_ref()
+                .and_then(|d| d.open_water.as_ref())
+                .map(|r| r.level)
+        );
         map_report["coastal_terrace_field"] = json!(frame.terrace_datum.is_some());
         map_report["unmodeled_facade_cells"] = json!(facade_cells);
         map_report["authored_family_source_bounds"] = json!(family_bounds);
@@ -406,34 +501,44 @@ fn main() -> Result<()> {
 /// a later scene transform. Only live-painted pitched surfaces participate.
 fn roof_coverage(mesh: &crystal_voxel_view::SurfaceMeshData) -> serde_json::Value {
     let mut inverted = 0;
-    let faces = mesh.indices.chunks_exact(3).filter_map(|triangle| {
-        let ids = [triangle[0], triangle[1], triangle[2]].map(|index| index as usize);
-        if !ids.iter().all(|&i| (mesh.uvs[i][0] - 85000.).abs() < 0.5) {
-            return None;
-        }
-        let points = ids.map(|i| Vec3::from_array(mesh.positions[i]));
-        let face = (points[1] - points[0]).cross(points[2] - points[0]);
-        let normal = face.normalize_or_zero();
-        let authored_normal = Vec3::from_array(mesh.normals[ids[0]]);
-        if (0.35..0.98).contains(&authored_normal.y) && normal.dot(authored_normal) < 0. {
-            inverted += 1;
-        }
-        if !(0.35..0.98).contains(&normal.y) { return None; }
-        // Source samples are linear colors; even a light tile can have a
-        // low numeric brightness. Broad structural planes distinguish the
-        // roof deck from finely tessellated tiles without a pigment guess.
-        Some((points, face.length() * 0.5))
-    }).collect::<Vec<_>>();
+    let faces = mesh
+        .indices
+        .chunks_exact(3)
+        .filter_map(|triangle| {
+            let ids = [triangle[0], triangle[1], triangle[2]].map(|index| index as usize);
+            if !ids.iter().all(|&i| (mesh.uvs[i][0] - 85000.).abs() < 0.5) {
+                return None;
+            }
+            let points = ids.map(|i| Vec3::from_array(mesh.positions[i]));
+            let face = (points[1] - points[0]).cross(points[2] - points[0]);
+            let normal = face.normalize_or_zero();
+            let authored_normal = Vec3::from_array(mesh.normals[ids[0]]);
+            if (0.35..0.98).contains(&authored_normal.y) && normal.dot(authored_normal) < 0. {
+                inverted += 1;
+            }
+            if !(0.35..0.98).contains(&normal.y) {
+                return None;
+            }
+            // Source samples are linear colors; even a light tile can have a
+            // low numeric brightness. Broad structural planes distinguish the
+            // roof deck from finely tessellated tiles without a pigment guess.
+            Some((points, face.length() * 0.5))
+        })
+        .collect::<Vec<_>>();
     let mut blocked = Vec::new();
     let mut sampled = 0;
     for (points, area) in &faces {
-        if *area >= 100. { continue; }
+        if *area >= 100. {
+            continue;
+        }
         let center = points.iter().copied().sum::<Vec3>() / 3.;
         let q = Vec2::new(center.x, center.z);
         sampled += 1;
         let mut covering_dark = None;
         for (deck, area) in &faces {
-            if *area < 200. { continue; }
+            if *area < 200. {
+                continue;
+            }
             // Entry shelters and lower tiers legitimately sit beneath a
             // main roof. Check only samples above this deck's eave datum.
             if center.y < deck.iter().map(|p| p.y).fold(f32::INFINITY, f32::min) - 0.01 {
@@ -443,10 +548,14 @@ fn roof_coverage(mesh: &crystal_voxel_view::SurfaceMeshData) -> serde_json::Valu
             let ab = Vec2::new(deck[1].x, deck[1].z) - a;
             let ac = Vec2::new(deck[2].x, deck[2].z) - a;
             let determinant = ab.perp_dot(ac);
-            if determinant.abs() < 0.000001 { continue; }
+            if determinant.abs() < 0.000001 {
+                continue;
+            }
             let u = (q - a).perp_dot(ac) / determinant;
             let v = ab.perp_dot(q - a) / determinant;
-            if u < 0. || v < 0. || u + v > 1. { continue; }
+            if u < 0. || v < 0. || u + v > 1. {
+                continue;
+            }
             let height = deck[0].y + u * (deck[1].y - deck[0].y) + v * (deck[2].y - deck[0].y);
             if height > center.y + 0.01 {
                 covering_dark = Some(height);
@@ -463,15 +572,22 @@ fn roof_coverage(mesh: &crystal_voxel_view::SurfaceMeshData) -> serde_json::Valu
 
 /// Unpaired triangle edges locate inspection candidates, not proven holes:
 /// ground contacts and differently subdivided joined faces can also appear.
-fn mineral_seams(mesh: &crystal_voxel_view::SurfaceMeshData, window: [f32; 4]) -> serde_json::Value {
+fn mineral_seams(
+    mesh: &crystal_voxel_view::SurfaceMeshData,
+    window: [f32; 4],
+) -> serde_json::Value {
     type Point = [i64; 3];
     let key = |i: u32| mesh.positions[i as usize].map(|v| (v * 10000.).round() as i64);
     let mut edges = BTreeMap::<(Point, Point), (usize, [u32; 2])>::new();
     for tri in mesh.indices.chunks_exact(3) {
-        if !tri.iter().all(|&i| mesh.uvs[i as usize][0] < -9000.) { continue; }
+        if !tri.iter().all(|&i| mesh.uvs[i as usize][0] < -9000.) {
+            continue;
+        }
         for [a, b] in [[tri[0], tri[1]], [tri[1], tri[2]], [tri[2], tri[0]]] {
             let (p, q) = (key(a), key(b));
-            if p == q { continue; }
+            if p == q {
+                continue;
+            }
             let edge = if p < q { (p, q) } else { (q, p) };
             let entry = edges.entry(edge).or_insert((0, [a, b]));
             entry.0 += 1;
@@ -479,17 +595,26 @@ fn mineral_seams(mesh: &crystal_voxel_view::SurfaceMeshData, window: [f32; 4]) -
     }
     let source = |i: u32| {
         let uv = mesh.uvs[i as usize];
-        [(-uv[0] - 10000.) / 8.,
-            (-uv[1] - if uv[1] < -30000. { 40000. } else { 20000. }) / 8.]
+        [
+            (-uv[0] - 10000.) / 8.,
+            (-uv[1] - if uv[1] < -30000. { 40000. } else { 20000. }) / 8.,
+        ]
     };
     let mut samples = Vec::new();
     let mut count = 0;
     for (_, (uses, ids)) in edges {
-        if uses != 1 { continue; }
+        if uses != 1 {
+            continue;
+        }
         let uv = ids.map(source);
         let midpoint = [(uv[0][0] + uv[1][0]) * 0.5, (uv[0][1] + uv[1][1]) * 0.5];
-        if midpoint[0] < window[0] || midpoint[0] > window[2]
-            || midpoint[1] < window[1] || midpoint[1] > window[3] { continue; }
+        if midpoint[0] < window[0]
+            || midpoint[0] > window[2]
+            || midpoint[1] < window[1]
+            || midpoint[1] > window[3]
+        {
+            continue;
+        }
         count += 1;
         if samples.len() < 2048 {
             samples.push(json!({"positions": ids.map(|i| mesh.positions[i as usize]),
@@ -598,7 +723,9 @@ fn audit_script_variants(
     }
     eprintln!(
         "{map}: {} block-substitution states verified ({}, {} possible combinations)",
-        reports.len(), plan.coverage, plan.possible_combinations
+        reports.len(),
+        plan.coverage,
+        plan.possible_combinations
     );
     Ok(reports)
 }

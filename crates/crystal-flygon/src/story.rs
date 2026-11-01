@@ -310,12 +310,29 @@ impl StoryLedger {
             .and_then(Value::as_str)
             .unwrap_or("")
             .trim();
-        let setup_screen = after.pointer("/status/screen").and_then(Value::as_str).unwrap_or("");
-        if matches!(setup_screen,"intro"|"title"|"clock"|"introduction"|"gender"|"naming")
-            && button == "a" && before.pointer("/observe/text") != after.pointer("/observe/text") {
-            let text=after.pointer("/observe/text").and_then(Value::as_str).unwrap_or("");
-            let page:String=text.chars().map(|c|if c.is_ascii_digit(){'#'}else{c}).collect();
-            if !page.is_empty() && self.seen.insert(format!("setup-page:{setup_screen}:{page}")) {
+        let setup_screen = after
+            .pointer("/status/screen")
+            .and_then(Value::as_str)
+            .unwrap_or("");
+        if matches!(
+            setup_screen,
+            "intro" | "title" | "clock" | "introduction" | "gender" | "naming"
+        ) && button == "a"
+            && before.pointer("/observe/text") != after.pointer("/observe/text")
+        {
+            let text = after
+                .pointer("/observe/text")
+                .and_then(Value::as_str)
+                .unwrap_or("");
+            let page: String = text
+                .chars()
+                .map(|c| if c.is_ascii_digit() { '#' } else { c })
+                .collect();
+            if !page.is_empty()
+                && self
+                    .seen
+                    .insert(format!("setup-page:{setup_screen}:{page}"))
+            {
                 rewards.push(format!("setup:advance:{setup_screen}"));
             }
         }
@@ -384,18 +401,49 @@ impl StoryLedger {
         {
             aversions.push("action:blocked_movement".into());
         }
-        if !animating && overworld && before.pointer("/status/screen").and_then(Value::as_str)==Some("overworld") && rewards.is_empty() && before_page.is_empty() && after_page.is_empty() && !menu_open
-            && !moved && matches!(button,"a"|"b") {
+        if !animating
+            && overworld
+            && before.pointer("/status/screen").and_then(Value::as_str) == Some("overworld")
+            && rewards.is_empty()
+            && before_page.is_empty()
+            && after_page.is_empty()
+            && !menu_open
+            && !moved
+            && matches!(button, "a" | "b")
+        {
             aversions.push("action:idle_input".into());
         }
-        let no_party=before.pointer("/status/party").and_then(Value::as_array).is_some_and(|p|p.is_empty());
-        if no_party && overworld && button=="start" && before.pointer("/observe/menus").and_then(Value::as_array).is_some_and(|m|m.is_empty()) && menu_open {
+        let no_party = before
+            .pointer("/status/party")
+            .and_then(Value::as_array)
+            .is_some_and(|p| p.is_empty());
+        if no_party
+            && overworld
+            && button == "start"
+            && before
+                .pointer("/observe/menus")
+                .and_then(Value::as_array)
+                .is_some_and(|m| m.is_empty())
+            && menu_open
+        {
             aversions.push("action:unneeded_menu".into());
         }
-        if no_party && overworld && before.pointer("/observe/menus").and_then(Value::as_array).is_some_and(|m|!m.is_empty()) {
-            if after.pointer("/observe/menus").and_then(Value::as_array).is_some_and(|m|m.is_empty()) {
+        if no_party
+            && overworld
+            && before
+                .pointer("/observe/menus")
+                .and_then(Value::as_array)
+                .is_some_and(|m| !m.is_empty())
+        {
+            if after
+                .pointer("/observe/menus")
+                .and_then(Value::as_array)
+                .is_some_and(|m| m.is_empty())
+            {
                 rewards.push("interface:closed_unneeded_menu".into());
-            } else { aversions.push("inaction:unneeded_menu".into()); }
+            } else {
+                aversions.push("inaction:unneeded_menu".into());
+            }
         }
         if moved
             && rewards.is_empty()
@@ -413,8 +461,11 @@ impl StoryLedger {
         }
         // Pay real setup-stage transitions once, so the cold brain can leave
         // clock/name setup without a scripted boot sequence.
-        if matches!(setup_screen, "intro" | "title" | "clock" | "introduction" | "gender" | "naming")
-            && before.pointer("/status/screen") != after.pointer("/status/screen") {
+        if matches!(
+            setup_screen,
+            "intro" | "title" | "clock" | "introduction" | "gender" | "naming"
+        ) && before.pointer("/status/screen") != after.pointer("/status/screen")
+        {
             let stage = after
                 .pointer("/status/screen")
                 .and_then(Value::as_str)
@@ -450,7 +501,9 @@ impl StoryLedger {
         // Cursor movement and refusal text are not progress toward leaving the
         // switch selector. Allow enough inputs to reach any party slot first.
         let switch_open = |v: &Value| {
-            v.pointer("/observe/pokemon_switch_open").and_then(Value::as_bool) == Some(true)
+            v.pointer("/observe/pokemon_switch_open")
+                .and_then(Value::as_bool)
+                == Some(true)
         };
         if !switch_open(before) || !switch_open(after) || battle_turn {
             self.switch_screen_actions = 0;
@@ -684,23 +737,38 @@ mod tests {
             next["observe"]["menus"] = json!([{"kind":"battle", "selected":n % 2}]);
             next["observe"]["text"] = json!(format!("Switch choice {}", n % 2));
             let penalties = ledger.action_feedback(&state, &next, "down").1;
-            assert_eq!(penalties.contains(&"inaction:pokemon_switch".into()), n >= 12);
+            assert_eq!(
+                penalties.contains(&"inaction:pokemon_switch".into()),
+                n >= 12
+            );
             state = next;
         }
         let mut restored: StoryLedger =
             serde_json::from_str(&serde_json::to_string(&ledger).unwrap()).unwrap();
-        assert!(restored.action_feedback(&state, &state, "a").1
-            .contains(&"inaction:pokemon_switch".into()));
+        assert!(
+            restored
+                .action_feedback(&state, &state, "a")
+                .1
+                .contains(&"inaction:pokemon_switch".into())
+        );
         state["flow_state"] = json!({"animating":true});
         let count = restored.switch_screen_actions;
-        assert!(!restored.action_feedback(&state, &state, "a").1
-            .contains(&"inaction:pokemon_switch".into()));
+        assert!(
+            !restored
+                .action_feedback(&state, &state, "a")
+                .1
+                .contains(&"inaction:pokemon_switch".into())
+        );
         assert_eq!(restored.switch_screen_actions, count);
         state["flow_state"]["animating"] = json!(false);
         let mut next = state.clone();
         next["reward_state"]["battle"]["player_turns"] = json!(1);
-        assert!(!restored.action_feedback(&state, &next, "a").1
-            .contains(&"inaction:pokemon_switch".into()));
+        assert!(
+            !restored
+                .action_feedback(&state, &next, "a")
+                .1
+                .contains(&"inaction:pokemon_switch".into())
+        );
         assert_eq!(restored.switch_screen_actions, 0);
         restored.action_feedback(&next, &next, "down");
         let mut closed = next.clone();

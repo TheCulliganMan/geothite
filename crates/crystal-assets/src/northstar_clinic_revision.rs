@@ -100,5 +100,61 @@ pub(crate) fn install(pack: &mut CompiledGamePack) -> Result<()> {
     reminder.push(c("jumptext", &["MnRCDeliveryAfterText"]));
     room.scripts
         .insert("MnRCDeliveryAfter".into(), json!(reminder));
+    let mut offer = vec![
+        c("checkevent", &["EVENT_MN_REED_ROCHESTER_MET"]),
+        c("iftrue", &["MnArcRCChoice"]),
+        c("setevent", &["EVENT_MN_REED_ROCHESTER_MET"]),
+        c("faceobject", &["MN_ARC_RC_REED", "PLAYER"]),
+        c("faceobject", &["PLAYER", "MN_ARC_RC_REED"]),
+    ];
+    offer.extend(crate::northstar_lair_authoring::say("MnArcRCPathsText"));
+    offer.push(c("sjump", &["MnArcRCChoice"]));
+    crate::northstar_rival_arc::put(&mut room, "MnArcRCOffer", offer);
+    room.events
+        .coord_events
+        .retain(|event| !(event.y == 12 && (6..=11).contains(&event.x)));
+    for x in 8..=11 {
+        let entry = format!("MnArcRCEntryX{x}");
+        let approach = format!("MnArcRCApproachX{x}");
+        // (8, 11) is a wall. Approach that lane from its clear eastern side.
+        let mut steps: Vec<(&str, usize)> = Vec::new();
+        if x == 8 {
+            steps.push(("DOWN", 2));
+        } else {
+            if x > 9 {
+                steps.push(("RIGHT", usize::from(x - 9)));
+            }
+            steps.push(("DOWN", 1));
+        }
+        crate::northstar_rival_arc::movement(&mut room, &approach, &steps);
+        crate::northstar_rival_arc::put(
+            &mut room,
+            &entry,
+            vec![
+                c("checkevent", &["EVENT_MN_REED_ROCHESTER_MET"]),
+                c("iftrue", &["MnArcRCEnd"]),
+                c("checkevent", &["EVENT_MN_DELIVERED_ROCHESTER_PARCEL"]),
+                c("iffalse", &["MnArcRCEnd"]),
+                c("applymovement", &["MN_ARC_RC_REED", &approach]),
+                c(
+                    "turnobject",
+                    &["MN_ARC_RC_REED", if x == 8 { "LEFT" } else { "DOWN" }],
+                ),
+                c(
+                    "turnobject",
+                    &["PLAYER", if x == 8 { "RIGHT" } else { "UP" }],
+                ),
+                c("sjump", &["MnArcRCOffer"]),
+            ],
+        );
+        room.events
+            .coord_events
+            .push(crystal_core::map::CoordEvent {
+                x,
+                y: 12,
+                scene_id: "-1".into(),
+                script_name: entry,
+            });
+    }
     crate::northstar_story_revision::publish(pack, room)
 }

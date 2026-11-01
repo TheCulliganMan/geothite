@@ -27,8 +27,14 @@ fn shore(tile: &VisualTile, claim: Option<&str>) -> bool {
     }
 }
 
-pub(super) fn finish_with_datum(mesh:&mut TerrainMeshData,cells:&[&VisualTile],g:&GridGeometry,
-    edges:&[crystal_render_api::VisualJumpLedge],origin:[i32;2],datum:Option<&crystal_render_api::VisualTerraceDatum>) {
+pub(super) fn finish_with_datum(
+    mesh: &mut TerrainMeshData,
+    cells: &[&VisualTile],
+    g: &GridGeometry,
+    edges: &[crystal_render_api::VisualJumpLedge],
+    origin: [i32; 2],
+    datum: Option<&crystal_render_api::VisualTerraceDatum>,
+) {
     let field = terraces::Field::with_source(edges, g, origin, cells).with_datum(datum);
     finish_with_field(mesh, cells, g, Some(&field));
 }
@@ -63,7 +69,9 @@ fn finish_with_field(
             // Complete-source mineral ponds have already moved with their
             // plateau, including Surf support. The fallback pond pass must
             // not apply that same offset a second time.
-            if field.is_some_and(|f|f.water_offset(i,cells)>0.) {closed=false;}
+            if field.is_some_and(|f| f.water_offset(i, cells) > 0.) {
+                closed = false;
+            }
 
             if mesh.authored_cells.get(i).is_some_and(|c| c.is_some()) {
                 closed = false;
@@ -325,7 +333,12 @@ mod tests {
             for (i, t) in tiles.iter().enumerate() {
                 if wet(t) {
                     let (w, e, n, s) = g.bounds(i % 7, i / 7);
-                    append_top(surface, [w, e, n, s], crate::profile::WATER_HEIGHT, g.uv(i % 7, i / 7));
+                    append_top(
+                        surface,
+                        [w, e, n, s],
+                        crate::profile::WATER_HEIGHT,
+                        g.uv(i % 7, i / 7),
+                    );
                 }
             }
         }
@@ -345,7 +358,12 @@ mod tests {
             &mesh.animated_solid,
             &mesh.animated_textured,
         ] {
-            assert!(surface.positions.iter().all(|p| p[1] == 16. + crate::profile::WATER_HEIGHT));
+            assert!(
+                surface
+                    .positions
+                    .iter()
+                    .all(|p| p[1] == 16. + crate::profile::WATER_HEIGHT)
+            );
             assert_eq!(surface.indices, original.solid.indices);
             assert_eq!(surface.uvs, original.solid.uvs);
             assert_eq!(surface.normals, original.solid.normals);
@@ -368,20 +386,42 @@ mod tests {
     }
     #[test]
     fn source_resolved_pond_is_not_lifted_a_second_time() {
-        let (tiles,g,mut mesh)=fixture();
-        let mut levels=vec![[0.;4];tiles.len()];
-        for (i,tile) in tiles.iter().enumerate() {if wet(tile) {
-            levels[i]=[16./crate::profile::JUMP_LEDGE_HEIGHT;4];
-            mesh.footing_heights[i]+=16.;
-        }}
-        for surface in [&mut mesh.solid,&mut mesh.textured,&mut mesh.animated_solid,&mut mesh.animated_textured] {
-            for p in &mut surface.positions {p[1]+=16.;}
+        let (tiles, g, mut mesh) = fixture();
+        let mut levels = vec![[0.; 4]; tiles.len()];
+        for (i, tile) in tiles.iter().enumerate() {
+            if wet(tile) {
+                levels[i] = [16. / crate::profile::JUMP_LEDGE_HEIGHT; 4];
+                mesh.footing_heights[i] += 16.;
+            }
         }
-        let datum=crystal_render_api::VisualTerraceDatum {walkable_mineral:Default::default(),origin:bevy::prelude::IVec2::ZERO,
-            size:bevy::prelude::UVec2::splat(7),levels:levels.into(),open_water:None,water_barriers:std::sync::Arc::from([])};
-        let original=mesh.clone();
-        finish_with_datum(&mut mesh,&tiles.iter().collect::<Vec<_>>(),&g,&[],[0,0],Some(&datum));
-        assert_eq!(mesh,original);
+        for surface in [
+            &mut mesh.solid,
+            &mut mesh.textured,
+            &mut mesh.animated_solid,
+            &mut mesh.animated_textured,
+        ] {
+            for p in &mut surface.positions {
+                p[1] += 16.;
+            }
+        }
+        let datum = crystal_render_api::VisualTerraceDatum {
+            walkable_mineral: Default::default(),
+            origin: bevy::prelude::IVec2::ZERO,
+            size: bevy::prelude::UVec2::splat(7),
+            levels: levels.into(),
+            open_water: None,
+            water_barriers: std::sync::Arc::from([]),
+        };
+        let original = mesh.clone();
+        finish_with_datum(
+            &mut mesh,
+            &tiles.iter().collect::<Vec<_>>(),
+            &g,
+            &[],
+            [0, 0],
+            Some(&datum),
+        );
+        assert_eq!(mesh, original);
     }
 
     #[test]
@@ -430,7 +470,10 @@ mod tests {
             mesh.footing_heights[bank], 24.,
             "cached bank retains outer datum"
         );
-        let frame = VisualWorldFrame { source_regions: Default::default(), view_center: bevy::prelude::Vec2::ZERO, terrace_datum: None,
+        let frame = VisualWorldFrame {
+            source_regions: Default::default(),
+            view_center: bevy::prelude::Vec2::ZERO,
+            terrace_datum: None,
             active: true,
             map_id: "Route22".into(),
             source_map_size_core_tiles: None,

@@ -31,21 +31,32 @@ pub(super) struct PairedCaptureHold {
 }
 
 #[derive(Resource)]
-struct EntryFrameHold { after: u16, held: bool }
+struct EntryFrameHold {
+    after: u16,
+    held: bool,
+}
 
 fn requested_entry_after(value: Option<&str>) -> Result<Option<u16>> {
-    value.map(|value| {
-        let frame: u16 = value.parse().context("entry hold must be an integer source frame")?;
-        anyhow::ensure!((2..=180).contains(&frame), "entry hold frame must be 2–180");
-        Ok(frame)
-    }).transpose()
+    value
+        .map(|value| {
+            let frame: u16 = value
+                .parse()
+                .context("entry hold must be an integer source frame")?;
+            anyhow::ensure!((2..=180).contains(&frame), "entry hold frame must be 2–180");
+            Ok(frame)
+        })
+        .transpose()
 }
 
 fn install_entry_hold(app: &mut App, after: Option<u16>) {
     if let Some(after) = after {
         app.insert_resource(EntryFrameHold { after, held: false })
-            .add_systems(PreUpdate, hold_presented_entry
-                .after(bevy::input::InputSystems).before(super::render_walk::drive));
+            .add_systems(
+                PreUpdate,
+                hold_presented_entry
+                    .after(bevy::input::InputSystems)
+                    .before(super::render_walk::drive),
+            );
     }
 }
 
@@ -58,24 +69,35 @@ fn hold_presented_entry(
     mut keys: ResMut<ButtonInput<KeyCode>>,
     mut exit: MessageWriter<AppExit>,
 ) {
-    if request.held { return; }
+    if request.held {
+        return;
+    }
     let Some(walk) = walk.as_mut() else {
         eprintln!("entry capture requires --walk and ordinary production input");
-        exit.write(AppExit::error()); return;
+        exit.write(AppExit::error());
+        return;
     };
-    let Some(transition) = runtime.visible_battle_transition.filter(|_| walk.started()) else { return; };
+    let Some(transition) = runtime.visible_battle_transition.filter(|_| walk.started()) else {
+        return;
+    };
     if request.after >= visible_battle_transition_total_frames(&transition) {
         eprintln!("entry hold lies beyond this source transition");
-        exit.write(AppExit::error()); return;
+        exit.write(AppExit::error());
+        return;
     }
-    if transition.frame < request.after { return; }
+    if transition.frame < request.after {
+        return;
+    }
     // Pin the actually observed frame; never manufacture or rewind the clock.
     if let Err(error) = walk.hold_for_source_capture() {
         eprintln!("entry capture could not pin its source frame: {error:#}");
-        exit.write(AppExit::error()); return;
+        exit.write(AppExit::error());
+        return;
     }
     request.held = true;
-    keys.reset_all(); hold.frozen = true; virtual_time.pause();
+    keys.reset_all();
+    hold.frozen = true;
+    virtual_time.pause();
 }
 
 #[derive(Resource)]
@@ -100,25 +122,46 @@ fn requested_send_out_frame(value: Option<&str>) -> Result<Option<u8>> {
     }
 }
 
-fn presented_send_out_matches(target: u8, animation: Option<&VisibleSendOutAnimation>,
-    frame: &crystal_render_api::VisualBattleFrame) -> bool {
-    let Some(animation) = animation else { return false; };
+fn presented_send_out_matches(
+    target: u8,
+    animation: Option<&VisibleSendOutAnimation>,
+    frame: &crystal_render_api::VisualBattleFrame,
+) -> bool {
+    let Some(animation) = animation else {
+        return false;
+    };
     let side = if animation.side == crate::core::battle::turn::BattleSide::Player {
         VisualBattleSide::Player
-    } else { VisualBattleSide::Enemy };
-    animation.frame == target && frame.active && !frame.use_source_scene && frame.validate().is_ok()
-        && frame.source.as_ref().is_some_and(|source| source.frame == u16::from(target))
-        && frame.cues.iter().any(|cue| cue.kind == VisualBattleCueKind::SendOut
-            && cue.side == side && cue.move_id.as_ref() == "SEND_OUT")
+    } else {
+        VisualBattleSide::Enemy
+    };
+    animation.frame == target
+        && frame.active
+        && !frame.use_source_scene
+        && frame.validate().is_ok()
+        && frame
+            .source
+            .as_ref()
+            .is_some_and(|source| source.frame == u16::from(target))
+        && frame.cues.iter().any(|cue| {
+            cue.kind == VisualBattleCueKind::SendOut
+                && cue.side == side
+                && cue.move_id.as_ref() == "SEND_OUT"
+        })
 }
 
 fn install_send_out_hold(app: &mut App, target: Option<u8>) {
     if let Some(target) = target {
         app.insert_resource(bevy::time::TimeUpdateStrategy::ManualDuration(
-            std::time::Duration::from_secs_f64(1.0 / 60.0)))
-            .insert_resource(SendOutFrameHold { target, held: None })
-            .add_systems(PreUpdate, hold_presented_send_out
-                .after(bevy::input::InputSystems).before(super::render_walk::drive));
+            std::time::Duration::from_secs_f64(1.0 / 60.0),
+        ))
+        .insert_resource(SendOutFrameHold { target, held: None })
+        .add_systems(
+            PreUpdate,
+            hold_presented_send_out
+                .after(bevy::input::InputSystems)
+                .before(super::render_walk::drive),
+        );
     }
 }
 
@@ -132,14 +175,23 @@ fn hold_presented_send_out(
     mut keys: ResMut<ButtonInput<KeyCode>>,
     mut exit: MessageWriter<AppExit>,
 ) {
-    if request.held.is_some() { return; }
+    if request.held.is_some() {
+        return;
+    }
     let Some(walk) = walk.as_mut() else {
         eprintln!("send-out capture requires --walk and an ordinary input route");
         exit.write(AppExit::error());
         return;
     };
-    if !walk.started() || !presented_send_out_matches(request.target,
-        runtime.visible_send_out_animation.as_ref(), &frame) { return; }
+    if !walk.started()
+        || !presented_send_out_matches(
+            request.target,
+            runtime.visible_send_out_animation.as_ref(),
+            &frame,
+        )
+    {
+        return;
+    }
     let pinned = (|| -> Result<HeldSendOut> {
         walk.hold_for_source_capture()?;
         Ok(HeldSendOut {
@@ -176,22 +228,43 @@ struct StablePairedState {
     repetitions: u8,
 }
 impl StablePairedState {
-    fn observe(&mut self,state:PairedState)->Option<PairedState> {
-        self.repetitions=if self.last.as_ref()==Some(&state) {self.repetitions.saturating_add(1)}else{1};
-        if self.repetitions>=3 {self.last=None;Some(state)}else{self.last=Some(state);None}
+    fn observe(&mut self, state: PairedState) -> Option<PairedState> {
+        self.repetitions = if self.last.as_ref() == Some(&state) {
+            self.repetitions.saturating_add(1)
+        } else {
+            1
+        };
+        if self.repetitions >= 3 {
+            self.last = None;
+            Some(state)
+        } else {
+            self.last = Some(state);
+            None
+        }
     }
 }
 
-pub(super) fn paired_state(runtime: &BevyRuntimeShell, frame: &crystal_render_api::VisualWorldFrame) -> Result<PairedState> {
+pub(super) fn paired_state(
+    runtime: &BevyRuntimeShell,
+    frame: &crystal_render_api::VisualWorldFrame,
+) -> Result<PairedState> {
     Ok(PairedState {
         checksum: runtime.shell.snapshot()?.state_checksum,
         lcd_frame: runtime.lcd_animation_frame,
         // Compare the source actors shared by both views. The optional 3D
         // companion has no 2D entity or authoritative state to compare.
-        actors: frame.actors.iter()
-            .filter(|actor| !matches!(actor.id, crystal_render_api::VisualActorId::PartyFollower
-                | crystal_render_api::VisualActorId::SurfMount))
-            .cloned().collect(),
+        actors: frame
+            .actors
+            .iter()
+            .filter(|actor| {
+                !matches!(
+                    actor.id,
+                    crystal_render_api::VisualActorId::PartyFollower
+                        | crystal_render_api::VisualActorId::SurfMount
+                )
+            })
+            .cloned()
+            .collect(),
     })
 }
 
@@ -212,24 +285,38 @@ fn capture_timeout_elapsed(
 
 #[test]
 fn capture_deadline_gives_a_long_completed_route_its_full_readback_window() {
-    let startup=Instant::now();
-    let later=startup+std::time::Duration::from_secs(500);
-    let mut readback=None;
-    assert_eq!(capture_timeout_elapsed(startup,&mut readback,Some((true,false)),later),None);
-    assert_eq!(capture_timeout_elapsed(startup,&mut readback,Some((true,true)),later),
-        Some(std::time::Duration::ZERO));
-    assert_eq!(capture_timeout_elapsed(startup,&mut readback,Some((true,true)),
-        later+std::time::Duration::from_secs(61)),Some(std::time::Duration::from_secs(61)));
+    let startup = Instant::now();
+    let later = startup + std::time::Duration::from_secs(500);
+    let mut readback = None;
+    assert_eq!(
+        capture_timeout_elapsed(startup, &mut readback, Some((true, false)), later),
+        None
+    );
+    assert_eq!(
+        capture_timeout_elapsed(startup, &mut readback, Some((true, true)), later),
+        Some(std::time::Duration::ZERO)
+    );
+    assert_eq!(
+        capture_timeout_elapsed(
+            startup,
+            &mut readback,
+            Some((true, true)),
+            later + std::time::Duration::from_secs(61)
+        ),
+        Some(std::time::Duration::from_secs(61))
+    );
 }
 
 #[test]
 fn capture_deadline_still_bounds_static_and_unstarted_route_startup() {
-    let startup=Instant::now();
-    let later=startup+std::time::Duration::from_secs(61);
-    for route in [None,Some((false,false))] {
-        let mut readback=None;
-        assert_eq!(capture_timeout_elapsed(startup,&mut readback,route,later),
-            Some(std::time::Duration::from_secs(61)));
+    let startup = Instant::now();
+    let later = startup + std::time::Duration::from_secs(61);
+    for route in [None, Some((false, false))] {
+        let mut readback = None;
+        assert_eq!(
+            capture_timeout_elapsed(startup, &mut readback, route, later),
+            Some(std::time::Duration::from_secs(61))
+        );
         assert!(readback.is_none());
     }
 }
@@ -273,36 +360,54 @@ pub(super) fn install(
 ) -> Result<()> {
     if let Ok(value) = std::env::var("CRYSTAL_RENDER_TEST_CAMERA") {
         let camera = parse_camera_request(&value)?;
-        app.add_systems(Startup, move |mut settings: ResMut<crystal_voxel_view::VoxelViewSettings>| {
-            settings.camera = camera;
-        });
+        app.add_systems(
+            Startup,
+            move |mut settings: ResMut<crystal_voxel_view::VoxelViewSettings>| {
+                settings.camera = camera;
+            },
+        );
     }
     if let Ok(value) = std::env::var("CRYSTAL_RENDER_TEST_FOV_DEGREES") {
-        let degrees=value.parse::<f32>().context("capture field of view must be a number")?;
-        anyhow::ensure!(degrees.is_finite() && (30. ..=120.).contains(&degrees),
-            "capture field of view must be between 30 and 120 degrees");
+        let degrees = value
+            .parse::<f32>()
+            .context("capture field of view must be a number")?;
+        anyhow::ensure!(
+            degrees.is_finite() && (30. ..=120.).contains(&degrees),
+            "capture field of view must be between 30 and 120 degrees"
+        );
         // Tall landmark QA can widen only the active 3D capture camera.
         // Production controls, the paired 2D camera and game state stay intact.
-        app.add_systems(Update,(move |mut cameras:Query<(&Camera,&mut Projection),With<Camera3d>>| {
-            for (camera,mut projection) in &mut cameras {
-                if camera.is_active && let Projection::Perspective(p)=&mut *projection {
-                    p.fov=degrees.to_radians();
+        app.add_systems(
+            Update,
+            (move |mut cameras: Query<(&Camera, &mut Projection), With<Camera3d>>| {
+                for (camera, mut projection) in &mut cameras {
+                    if camera.is_active
+                        && let Projection::Perspective(p) = &mut *projection
+                    {
+                        p.fov = degrees.to_radians();
+                    }
                 }
-            }
-        }).after(crystal_render_api::WorldRenderSet::RenderSync).before(capture));
+            })
+            .after(crystal_render_api::WorldRenderSet::RenderSync)
+            .before(capture),
+        );
     }
-    let timeout_seconds = match std::env::var("CRYSTAL_RENDER_TEST_CAPTURE_TIMEOUT_SECS") {
-        Err(std::env::VarError::NotPresent) => 60,
-        Ok(value) => {
-            let seconds = value.parse::<u64>().map_err(|_| anyhow::anyhow!(
+    let timeout_seconds =
+        match std::env::var("CRYSTAL_RENDER_TEST_CAPTURE_TIMEOUT_SECS") {
+            Err(std::env::VarError::NotPresent) => 60,
+            Ok(value) => {
+                let seconds = value.parse::<u64>().map_err(|_| anyhow::anyhow!(
                 "CRYSTAL_RENDER_TEST_CAPTURE_TIMEOUT_SECS must be an integer between 60 and 300"))?;
-            anyhow::ensure!((60..=300).contains(&seconds),
-                "CRYSTAL_RENDER_TEST_CAPTURE_TIMEOUT_SECS must be between 60 and 300");
-            seconds
-        }
-        Err(_) => anyhow::bail!(
-            "CRYSTAL_RENDER_TEST_CAPTURE_TIMEOUT_SECS must be an integer between 60 and 300"),
-    };
+                anyhow::ensure!(
+                    (60..=300).contains(&seconds),
+                    "CRYSTAL_RENDER_TEST_CAPTURE_TIMEOUT_SECS must be between 60 and 300"
+                );
+                seconds
+            }
+            Err(_) => anyhow::bail!(
+                "CRYSTAL_RENDER_TEST_CAPTURE_TIMEOUT_SECS must be an integer between 60 and 300"
+            ),
+        };
     let same_second_view = match std::env::var("CRYSTAL_RENDER_TEST_SECOND_VIEW") {
         Err(std::env::VarError::NotPresent) => false,
         Ok(value) if value == "toggle" => false,
@@ -333,13 +438,23 @@ pub(super) fn install(
     #[cfg(target_arch = "wasm32")]
     let send_out_frame = None;
     if send_out_frame.is_some() {
-        anyhow::ensure!(!live && !same_second_view && second.is_some(),
-            "send-out frame verification requires a one-shot matched 3D/2D capture");
-        anyhow::ensure!(app.world().resource::<BevyRuntimeShell>().quick_save_path.is_none(),
-            "send-out frame verification requires a disposable session without a save path");
+        anyhow::ensure!(
+            !live && !same_second_view && second.is_some(),
+            "send-out frame verification requires a one-shot matched 3D/2D capture"
+        );
+        anyhow::ensure!(
+            app.world()
+                .resource::<BevyRuntimeShell>()
+                .quick_save_path
+                .is_none(),
+            "send-out frame verification requires a disposable session without a save path"
+        );
     }
     let state_receipt = path.with_extension("paired-state.txt");
-    for path in std::iter::once(&path).chain(second.iter()).chain(std::iter::once(&state_receipt)) {
+    for path in std::iter::once(&path)
+        .chain(second.iter())
+        .chain(std::iter::once(&state_receipt))
+    {
         if let Some(parent) = path.parent().filter(|p| !p.as_os_str().is_empty()) {
             std::fs::create_dir_all(parent)?;
         }
@@ -357,36 +472,48 @@ pub(super) fn install(
             request_path.display()
         );
     }
-    app.init_resource::<PairedCaptureHold>().insert_resource(Capture {
-        live,
-        idle: false,
-        first_path: path.clone(),
-        second_path: second.clone(),
-        request_path,
-        previous: None,
-        identity: String::new(),
-        image_target_mode,
-        recording_target_only: false,
-        preserve_alpha,
-        image_target: None,
-        image_size: UVec2::ZERO,
-        paired_state: None,
-        world_actor_sources: None,
-        paired_stability: StablePairedState::default(),
-        path,
-        second,
-        same_second_view,
-        frame: 0,
-        requested: false,
-        completion: default(),
-        started: Instant::now(),
-        timeout_seconds,
-        route_readback_started: None,
-    })
-    .add_systems(Update, (prepare_image_target, capture).chain()
-        .after(crystal_render_api::WorldRenderSet::RenderSync));
-    let entry_after = requested_entry_after(std::env::var("CRYSTAL_RENDER_TEST_HOLD_ENTRY_AFTER").ok().as_deref())?;
-    anyhow::ensure!(entry_after.is_none() || send_out_frame.is_none(), "choose entry or send-out source hold");
+    app.init_resource::<PairedCaptureHold>()
+        .insert_resource(Capture {
+            live,
+            idle: false,
+            first_path: path.clone(),
+            second_path: second.clone(),
+            request_path,
+            previous: None,
+            identity: String::new(),
+            image_target_mode,
+            recording_target_only: false,
+            preserve_alpha,
+            image_target: None,
+            image_size: UVec2::ZERO,
+            paired_state: None,
+            world_actor_sources: None,
+            paired_stability: StablePairedState::default(),
+            path,
+            second,
+            same_second_view,
+            frame: 0,
+            requested: false,
+            completion: default(),
+            started: Instant::now(),
+            timeout_seconds,
+            route_readback_started: None,
+        })
+        .add_systems(
+            Update,
+            (prepare_image_target, capture)
+                .chain()
+                .after(crystal_render_api::WorldRenderSet::RenderSync),
+        );
+    let entry_after = requested_entry_after(
+        std::env::var("CRYSTAL_RENDER_TEST_HOLD_ENTRY_AFTER")
+            .ok()
+            .as_deref(),
+    )?;
+    anyhow::ensure!(
+        entry_after.is_none() || send_out_frame.is_none(),
+        "choose entry or send-out source hold"
+    );
     install_send_out_hold(app, send_out_frame);
     install_entry_hold(app, entry_after);
     Ok(())
@@ -396,7 +523,9 @@ pub(super) fn install(
 // one-shot capture that freezes the move or waits for the input route to end.
 pub(super) fn install_recording_target(app: &mut App, path: PathBuf) -> Result<()> {
     install(app, path, None, false)?;
-    app.world_mut().resource_mut::<Capture>().recording_target_only = true;
+    app.world_mut()
+        .resource_mut::<Capture>()
+        .recording_target_only = true;
     Ok(())
 }
 
@@ -404,8 +533,10 @@ pub(super) fn install_recording_target(app: &mut App, path: PathBuf) -> Result<(
 // the final readback. An unprepared image target never falls back to a window.
 pub(super) fn moving_screenshot(capture: Option<&Capture>, window: Entity) -> Option<Screenshot> {
     if let Some(capture) = capture.filter(|capture| capture.image_target_mode) {
-        return capture.image_target.as_ref().map(|target|
-            Screenshot(bevy::camera::RenderTarget::Image(target.clone())));
+        return capture
+            .image_target
+            .as_ref()
+            .map(|target| Screenshot(bevy::camera::RenderTarget::Image(target.clone())));
     }
     Some(Screenshot::window(window))
 }
@@ -423,9 +554,18 @@ fn prepare_image_target(
     if !capture.image_target_mode {
         return;
     }
-    let Capture { image_target, image_size, .. } = &mut *capture;
+    let Capture {
+        image_target,
+        image_size,
+        ..
+    } = &mut *capture;
     if prepare_image_target_for_cameras(
-        image_target, image_size, &windows, &mut images, &mut targets, &mut commands,
+        image_target,
+        image_size,
+        &windows,
+        &mut images,
+        &mut targets,
+        &mut commands,
     ) {
         capture.frame = 0;
     }
@@ -512,14 +652,17 @@ fn capture(
     status: Res<crystal_voxel_view::VoxelViewStatus>,
     battle_status: Res<crystal_voxel_view::BattleViewStatus>,
     battle_frame: Res<crystal_render_api::VisualBattleFrame>,
-    review_proofs: (Option<Res<SendOutFrameHold>>,Option<Res<VerifiedPcLcdCapture>>),
+    review_proofs: (
+        Option<Res<SendOutFrameHold>>,
+        Option<Res<VerifiedPcLcdCapture>>,
+    ),
     mut settings: ResMut<crystal_voxel_view::VoxelViewSettings>,
     primary_window: Query<Entity, With<PrimaryWindow>>,
     move_menu: Query<(), With<CompetitiveMoveMenuMarker>>,
     mut commands: Commands,
     mut exit: MessageWriter<AppExit>,
 ) {
-    let (send_out_hold,verified_pc_lcd)=review_proofs;
+    let (send_out_hold, verified_pc_lcd) = review_proofs;
     if let Some(error) = runtime.render_test_error.as_ref() {
         eprintln!("capture rejected after runtime error: {error}");
         exit.write(AppExit::error());
@@ -527,16 +670,23 @@ fn capture(
     }
     if let Some(request) = &send_out_hold {
         if capture.started.elapsed().as_secs() > capture.timeout_seconds {
-            eprintln!("send-out frame {} capture timed out; map: {:?}",
-                request.target, battle_status.map_scenery_fallback_reason);
+            eprintln!(
+                "send-out frame {} capture timed out; map: {:?}",
+                request.target, battle_status.map_scenery_fallback_reason
+            );
             exit.write(AppExit::error());
             return;
         }
-        let Some(pinned) = &request.held else { return; };
+        let Some(pinned) = &request.held else {
+            return;
+        };
         let preserved = runtime.visible_send_out_animation.as_ref() == Some(&pinned.animation)
             && *battle_frame == pinned.presented
             && runtime.lcd_animation_frame == pinned.lcd_frame
-            && runtime.shell.snapshot().is_ok_and(|snapshot| snapshot.state_checksum == pinned.checksum);
+            && runtime
+                .shell
+                .snapshot()
+                .is_ok_and(|snapshot| snapshot.state_checksum == pinned.checksum);
         if !preserved {
             eprintln!("send-out capture rejected: pinned source or authoritative state changed");
             exit.write(AppExit::error());
@@ -549,26 +699,39 @@ fn capture(
         match paired_state(&runtime, &frame) {
             Ok(current) if first == &current => {}
             Ok(current) => {
-                eprintln!("paired capture rejected: state changed during GPU readback; checksum {:?} -> {:?}; lcd {} -> {}; actors_equal={}, actor_count {} -> {}",
-                    first.checksum, current.checksum, first.lcd_frame, current.lcd_frame,
-                    first.actors == current.actors, first.actors.len(), current.actors.len());
+                eprintln!(
+                    "paired capture rejected: state changed during GPU readback; checksum {:?} -> {:?}; lcd {} -> {}; actors_equal={}, actor_count {} -> {}",
+                    first.checksum,
+                    current.checksum,
+                    first.lcd_frame,
+                    current.lcd_frame,
+                    first.actors == current.actors,
+                    first.actors.len(),
+                    current.actors.len()
+                );
                 for before in &first.actors {
-                    let after=current.actors.iter().find(|actor|actor.id==before.id);
-                    if after!=Some(before) {
-                        eprintln!("paired capture actor changed: before={before:?}; after={after:?}");
+                    let after = current.actors.iter().find(|actor| actor.id == before.id);
+                    if after != Some(before) {
+                        eprintln!(
+                            "paired capture actor changed: before={before:?}; after={after:?}"
+                        );
                     }
                 }
                 exit.write(AppExit::error());
                 return;
             }
             Err(error) => {
-                eprintln!("paired capture rejected: state unavailable during GPU readback: {error}");
+                eprintln!(
+                    "paired capture rejected: state unavailable during GPU readback: {error}"
+                );
                 exit.write(AppExit::error());
                 return;
             }
         }
     }
-    if capture.recording_target_only { return; }
+    if capture.recording_target_only {
+        return;
+    }
     if capture.idle {
         let external = match std::fs::read_to_string(&capture.request_path) {
             Ok(value) => {
@@ -640,29 +803,44 @@ fn capture(
             );
         } else {
             if let Some(state) = &capture.paired_state {
-                let actor_sources=state.actors.iter().map(|actor|serde_json::json!({
-                    "id":format!("{:?}",actor.id),
-                    "source":actor.source_id.as_ref(),
-                    "center":[actor.center.x,actor.center.y],
-                    "size":[actor.size.x,actor.size.y],
-                    "facing":actor.facing.map(|f|[f.x,f.y]),
-                })).collect::<Vec<_>>();
+                let actor_sources = state
+                    .actors
+                    .iter()
+                    .map(|actor| {
+                        serde_json::json!({
+                            "id":format!("{:?}",actor.id),
+                            "source":actor.source_id.as_ref(),
+                            "center":[actor.center.x,actor.center.y],
+                            "size":[actor.size.x,actor.size.y],
+                            "facing":actor.facing.map(|f|[f.x,f.y]),
+                        })
+                    })
+                    .collect::<Vec<_>>();
                 let mut receipt = format!(
                     "state_preserved=true\nchecksum={:?}\nlcd_animation_frame={}\nactors={}\nvirtual_seconds={}\nactor_sources={}\n",
-                    state.checksum, state.lcd_frame, state.actors.len(), virtual_time.elapsed_secs_f64(),
+                    state.checksum,
+                    state.lcd_frame,
+                    state.actors.len(),
+                    virtual_time.elapsed_secs_f64(),
                     serde_json::Value::Array(actor_sources),
                 );
                 receipt.push_str(&format!("presentation={}\n", capture.identity));
                 if let Some(actors) = &capture.world_actor_sources {
                     receipt.push_str(&format!("world_actor_sources={actors}\n"));
                 }
-                if let Some(pinned) = send_out_hold.as_ref().and_then(|request| request.held.as_ref()) {
+                if let Some(pinned) = send_out_hold
+                    .as_ref()
+                    .and_then(|request| request.held.as_ref())
+                {
                     receipt.push_str(&format!(
                         "source_state_preserved=true\nsource_clock_hz=60\nsend_out_side={:?}\nsend_out_frame={}\nsource_frame={}\n",
                         pinned.animation.side, pinned.animation.frame,
                         pinned.presented.source.as_ref().unwrap().frame));
                 }
-                if let Err(error) = std::fs::write(capture.first_path.with_extension("paired-state.txt"), receipt) {
+                if let Err(error) = std::fs::write(
+                    capture.first_path.with_extension("paired-state.txt"),
+                    receipt,
+                ) {
                     eprintln!("paired capture receipt failed: {error}");
                     exit.write(AppExit::error());
                     return;
@@ -673,40 +851,51 @@ fn capture(
         return;
     }
     // Bound startup/readback failures; ordinary walking has its own duration.
-    let startup=capture.started;
-    let elapsed=capture_timeout_elapsed(startup,&mut capture.route_readback_started,
-        walk.as_ref().map(|walk|(walk.started(),walk.settled())),Instant::now());
-    if elapsed.is_some_and(|elapsed|elapsed.as_secs()>capture.timeout_seconds) {
+    let startup = capture.started;
+    let elapsed = capture_timeout_elapsed(
+        startup,
+        &mut capture.route_readback_started,
+        walk.as_ref().map(|walk| (walk.started(), walk.settled())),
+        Instant::now(),
+    );
+    if elapsed.is_some_and(|elapsed| elapsed.as_secs() > capture.timeout_seconds) {
         eprintln!("capture timed out: {:?}", status.inactive_reason);
         exit.write(AppExit::error());
         return;
     }
     capture.frame = capture.frame.saturating_add(1);
-    if capture.frame % 300 == 0
-        && std::env::var_os("CRYSTAL_RENDER_TEST_TRACE_FRAME").is_some()
-    {
-        eprintln!("capture readiness: battle={battle_status:?}; menu={}; script={}; movement={}; fade={}; hold={}; bgp={:?}",
-            !move_menu.is_empty(), runtime.pending_scene_script.is_some(),
-            runtime.visible_script_movement.is_some(), runtime.screen_fade.is_some(),
-            hold.frozen, battle_frame.source.as_ref().map(|source| source.bgp));
+    if capture.frame % 300 == 0 && std::env::var_os("CRYSTAL_RENDER_TEST_TRACE_FRAME").is_some() {
+        eprintln!(
+            "capture readiness: battle={battle_status:?}; menu={}; script={}; movement={}; fade={}; hold={}; bgp={:?}",
+            !move_menu.is_empty(),
+            runtime.pending_scene_script.is_some(),
+            runtime.visible_script_movement.is_some(),
+            runtime.screen_fade.is_some(),
+            hold.frozen,
+            battle_frame.source.as_ref().map(|source| source.bgp)
+        );
     }
     // Preserve the established 30 active-frame GPU warmup, but drop the
     // unconditional 90-frame startup and 60-frame post-save waits.
     // UI-only reviews can explicitly inspect the renderer's honest source-art
     // fallback. Model/scenery reviews continue requiring an active 3D scene.
-    let source_fallback = std::env::var("CRYSTAL_RENDER_TEST_CAPTURE_SOURCE_FALLBACK").as_deref() == Ok("1")
-        && battle_frame.active && !move_menu.is_empty()
-        && battle_status.map_scenery_fallback_reason.is_some_and(|reason|
-            reason != "actual battle groves are warming");
+    let source_fallback = std::env::var("CRYSTAL_RENDER_TEST_CAPTURE_SOURCE_FALLBACK").as_deref()
+        == Ok("1")
+        && battle_frame.active
+        && !move_menu.is_empty()
+        && battle_status
+            .map_scenery_fallback_reason
+            .is_some_and(|reason| reason != "actual battle groves are warming");
     // PC carried-Pokemon and Mail readers intentionally own the original LCD.
     // A named UI review may capture its actual fullscreen owner after its
     // ordinary inputs have frozen. Scenery reviews still require native world
     // or battle frames; this is not admission of a scenery-art fallback.
     let pc_lcd_review = hold.frozen
-        && std::env::var("CRYSTAL_RENDER_TEST_HOLD_MENU_ID").ok()
-            .is_some_and(|id|render_walk::pc_lcd_review_ready(&runtime,&id))
+        && std::env::var("CRYSTAL_RENDER_TEST_HOLD_MENU_ID")
+            .ok()
+            .is_some_and(|id| render_walk::pc_lcd_review_ready(&runtime, &id))
         && retained_field_fullscreen_active(&runtime)
-        && walk.as_ref().is_some_and(|walk|walk.settled());
+        && walk.as_ref().is_some_and(|walk| walk.settled());
     let settled = if settings.enabled {
         (status.active && !status.profiles_pending && status.active_frames >= 30)
             || (battle_status.active && battle_status.active_frames >= 30)
@@ -719,7 +908,9 @@ fn capture(
     // freeze. This waits on the production printer without acknowledging it.
     if !hold.frozen && std::env::var_os("CRYSTAL_RENDER_TEST_WAIT_FIELD_TEXT").is_some() {
         match runtime.shell.presentation_snapshot() {
-            Ok(snapshot) if !visible_field_dialogue_is_fully_revealed(&runtime, &snapshot) => return,
+            Ok(snapshot) if !visible_field_dialogue_is_fully_revealed(&runtime, &snapshot) => {
+                return;
+            }
             Ok(_) => {}
             Err(error) => {
                 eprintln!("dialogue capture snapshot failed: {error:#}");
@@ -745,17 +936,30 @@ fn capture(
     // A uniform original background palette is a transient battle flash,
     // unsuitable for comparing scenery. Wait for the next visible source
     // frame before freezing; never advance it after taking the baseline.
-    if capture.second.is_some() && battle_frame.active && battle_frame.source.as_ref().is_some_and(|source| {
-        let tone = source.bgp & 3;
-        (0..4).all(|index| (source.bgp >> (index * 2)) & 3 == tone)
-    }) { return; }
+    if capture.second.is_some()
+        && battle_frame.active
+        && battle_frame.source.as_ref().is_some_and(|source| {
+            let tone = source.bgp & 3;
+            (0..4).all(|index| (source.bgp >> (index * 2)) & 3 == tone)
+        })
+    {
+        return;
+    }
     // Original item screens legitimately use only three displayed colors.
     // Keep the general scenery check unchanged; certify this narrow exception
     // only from the live, frozen production LCD owner, never from a file/env claim.
-    if pc_lcd_review && std::env::var("CRYSTAL_RENDER_TEST_HOLD_MENU_ID").ok()
-        .is_some_and(|id|matches!(id.as_str(),"pc:items"|"pc:quantity"|"pc:toss-confirmation"|"pc:toss-closing"))
-        &&let Some(proof)=verified_pc_lcd.as_ref() {
-        proof.0.store(true,std::sync::atomic::Ordering::Relaxed);
+    if pc_lcd_review
+        && std::env::var("CRYSTAL_RENDER_TEST_HOLD_MENU_ID")
+            .ok()
+            .is_some_and(|id| {
+                matches!(
+                    id.as_str(),
+                    "pc:items" | "pc:quantity" | "pc:toss-confirmation" | "pc:toss-closing"
+                )
+            })
+        && let Some(proof) = verified_pc_lcd.as_ref()
+    {
+        proof.0.store(true, std::sync::atomic::Ordering::Relaxed);
     }
     let screenshot = if capture.image_target_mode {
         let Some(target) = capture.image_target.as_ref() else {
@@ -770,14 +974,17 @@ fn capture(
         };
         Screenshot::window(window)
     };
-    if !capture.live && !capture.same_second_view
+    if !capture.live
+        && !capture.same_second_view
         && walk.as_ref().is_none_or(|walk| walk.settled())
         && (capture.second.is_some() || capture.paired_state.is_some())
     {
         // Do not strand entry callbacks or a startup transition. Hold only
         // after the presentation has settled, immediately before readback.
-        if runtime.pending_scene_script.is_some() || runtime.visible_script_movement.is_some()
-            || runtime.screen_fade.is_some() || runtime.title_menu.is_some()
+        if runtime.pending_scene_script.is_some()
+            || runtime.visible_script_movement.is_some()
+            || runtime.screen_fade.is_some()
+            || runtime.title_menu.is_some()
             || runtime.intro_screen.is_some()
         {
             return;
@@ -800,7 +1007,9 @@ fn capture(
         };
         if let Some(first) = &capture.paired_state {
             if first != &state {
-                eprintln!("paired capture rejected: authoritative state or actor presentation changed");
+                eprintln!(
+                    "paired capture rejected: authoritative state or actor presentation changed"
+                );
                 exit.write(AppExit::error());
                 return;
             }
@@ -808,7 +1017,9 @@ fn capture(
             // Enabling read-only actor extraction can reconcile newly spawned
             // NPC sprites one update later at the frozen movement subframe.
             // Wait for that presentation to stabilize before either readback.
-            let Some(state)=capture.paired_stability.observe(state) else{return;};
+            let Some(state) = capture.paired_stability.observe(state) else {
+                return;
+            };
             capture.paired_state = Some(state);
             hold.frozen = true;
             virtual_time.pause();
@@ -827,13 +1038,22 @@ fn capture(
             format!("{}|{:?}|{:?}", frame.map_id, frame.center, settings.camera)
         };
         if let Some(transition) = runtime.visible_battle_transition {
-            capture.identity.push_str(&format!("|entry_frame={}", transition.frame));
+            capture
+                .identity
+                .push_str(&format!("|entry_frame={}", transition.frame));
         }
     }
     if std::env::var_os("CRYSTAL_RENDER_TEST_TRACE_FRAME").is_some() {
-        println!("capture frame: map={} center={:?} origin={:?} grid={:?} tile={:?} viewport={:?} camera={:?}",
-            frame.map_id, frame.center, frame.grid_origin, frame.grid_size,
-            frame.tile_size, frame.viewport_size, settings.camera);
+        println!(
+            "capture frame: map={} center={:?} origin={:?} grid={:?} tile={:?} viewport={:?} camera={:?}",
+            frame.map_id,
+            frame.center,
+            frame.grid_origin,
+            frame.grid_size,
+            frame.tile_size,
+            frame.viewport_size,
+            settings.camera
+        );
     }
     let path = capture.path.clone();
     if settings.enabled && capture.world_actor_sources.is_none() {
@@ -886,7 +1106,10 @@ fn parse_camera_request(value: &str) -> Result<crystal_voxel_view::VoxelCameraCo
     );
     let mut camera = crystal_voxel_view::VoxelCameraControls::new(values[0], values[1]);
     if let Some(first_person) = values.get(3) {
-        anyhow::ensure!(*first_person == 0.0 || *first_person == 1.0, "first-person must be 0 or 1");
+        anyhow::ensure!(
+            *first_person == 0.0 || *first_person == 1.0,
+            "first-person must be 0 or 1"
+        );
         camera.first_person = *first_person == 1.0;
     }
     if let Some(pitch) = values.get(2) {
@@ -955,7 +1178,10 @@ mod image_target_tests {
     use super::*;
     #[test]
     fn automated_native_captures_default_to_offscreen_images() {
-        assert_eq!(image_capture_target(None, false).unwrap(), !cfg!(target_arch = "wasm32"));
+        assert_eq!(
+            image_capture_target(None, false).unwrap(),
+            !cfg!(target_arch = "wasm32")
+        );
         assert!(!image_capture_target(None, true).unwrap());
         assert!(image_capture_target(Some("image"), false).unwrap());
         assert!(!image_capture_target(Some("window"), false).unwrap());
@@ -970,19 +1196,27 @@ mod image_target_tests {
     fn source_frame_hold_is_opt_in_and_only_accepts_reveal_ticks() {
         assert_eq!(requested_send_out_frame(None).unwrap(), None);
         for tick in ["4", "5"] {
-            assert_eq!(requested_send_out_frame(Some(tick)).unwrap(), tick.parse::<u8>().ok());
+            assert_eq!(
+                requested_send_out_frame(Some(tick)).unwrap(),
+                tick.parse::<u8>().ok()
+            );
         }
         for invalid in ["", "0", "3", "6", "40", "4.0"] {
             assert!(requested_send_out_frame(Some(invalid)).is_err());
         }
         let mut app = App::new();
         install_send_out_hold(&mut app, None);
-        assert!(!app.world().contains_resource::<bevy::time::TimeUpdateStrategy>());
+        assert!(
+            !app.world()
+                .contains_resource::<bevy::time::TimeUpdateStrategy>()
+        );
         assert!(!app.world().contains_resource::<SendOutFrameHold>());
         install_send_out_hold(&mut app, Some(4));
-        assert!(matches!(app.world().resource::<bevy::time::TimeUpdateStrategy>(),
+        assert!(
+            matches!(app.world().resource::<bevy::time::TimeUpdateStrategy>(),
             bevy::time::TimeUpdateStrategy::ManualDuration(step)
-            if *step == std::time::Duration::from_secs_f64(1.0 / 60.0)));
+            if *step == std::time::Duration::from_secs_f64(1.0 / 60.0))
+        );
         assert!(app.world().resource::<SendOutFrameHold>().held.is_none());
     }
 
@@ -990,34 +1224,52 @@ mod image_target_tests {
     fn entry_hold_is_opt_in_and_does_not_replace_the_game_clock() {
         assert_eq!(requested_entry_after(None).unwrap(), None);
         assert_eq!(requested_entry_after(Some("110")).unwrap(), Some(110));
-        for invalid in ["0", "1", "181", "-1", "no"] { assert!(requested_entry_after(Some(invalid)).is_err()); }
+        for invalid in ["0", "1", "181", "-1", "no"] {
+            assert!(requested_entry_after(Some(invalid)).is_err());
+        }
         let mut app = App::new();
         install_entry_hold(&mut app, None);
         assert!(!app.world().contains_resource::<EntryFrameHold>());
         install_entry_hold(&mut app, Some(110));
         assert_eq!(app.world().resource::<EntryFrameHold>().after, 110);
         assert!(!app.world().resource::<EntryFrameHold>().held);
-        assert!(!app.world().contains_resource::<bevy::time::TimeUpdateStrategy>());
+        assert!(
+            !app.world()
+                .contains_resource::<bevy::time::TimeUpdateStrategy>()
+        );
     }
 
     #[test]
     fn source_frame_hold_requires_the_actual_presented_send_out_without_advancing_it() {
         let animation = VisibleSendOutAnimation {
-            side: crate::core::battle::turn::BattleSide::Player, frame: 4, shiny: false,
+            side: crate::core::battle::turn::BattleSide::Player,
+            frame: 4,
+            shiny: false,
         };
         let mut frame = crystal_render_api::VisualBattleFrame {
-            active: true, map_id: Arc::from("Route29"),
+            active: true,
+            map_id: Arc::from("Route29"),
             source: Some(VisualBattleSourceFrame {
-                frame: 4, bgp: 0xe4, battler_bgps: [0xe4; 2],
+                frame: 4,
+                bgp: 0xe4,
+                battler_bgps: [0xe4; 2],
                 battler_palettes: [[[1.0; 4]; 4]; 2],
                 battler_textures: [Handle::default(), Handle::default()],
-                battler_offsets: [Vec2::ZERO; 2], screen_offset: Vec2::ZERO,
-                line_x_offsets: None, line_y_offsets: None,
-                objects: Vec::new(), battler_rows: [None; 2],
+                battler_offsets: [Vec2::ZERO; 2],
+                screen_offset: Vec2::ZERO,
+                line_x_offsets: None,
+                line_y_offsets: None,
+                objects: Vec::new(),
+                battler_rows: [None; 2],
             }),
-            cues: vec![VisualBattleCue { kind: VisualBattleCueKind::SendOut,
-                side: VisualBattleSide::Player, move_id: Arc::from("SEND_OUT"),
-                element: Arc::from("NORMAL"), progress: 4.0 / 36.0, damaging: false }],
+            cues: vec![VisualBattleCue {
+                kind: VisualBattleCueKind::SendOut,
+                side: VisualBattleSide::Player,
+                move_id: Arc::from("SEND_OUT"),
+                element: Arc::from("NORMAL"),
+                progress: 4.0 / 36.0,
+                damaging: false,
+            }],
             ..default()
         };
         let before = frame.clone();
@@ -1048,28 +1300,38 @@ mod image_target_tests {
         assert_eq!(expected.scale_factor, 2.0);
         let (mut app, window, _, _, _, _) = fixture(false);
         app.update();
-        assert!(matches!(moving_screenshot(Some(app.world().resource::<Capture>()), window)
-            .unwrap().0, RenderTarget::Window(WindowRef::Entity(entity)) if entity == window));
+        assert!(
+            matches!(moving_screenshot(Some(app.world().resource::<Capture>()), window)
+            .unwrap().0, RenderTarget::Window(WindowRef::Entity(entity)) if entity == window)
+        );
     }
 
     #[test]
     fn paired_baseline_waits_for_npc_interpolation_reconciliation() {
-        let state=|x|PairedState {
-            checksum:StateChecksum::new(12,3691618926),lcd_frame:16,
-            actors:vec![crystal_render_api::VisualActor {
-                id:crystal_render_api::VisualActorId::Object(2),source_id:Arc::from("cooltrainer_f"),
-                model_palette:None,texture:default(),center:Vec2::new(x,128.),size:Vec2::splat(64.),
-                flip_x:false,above_priority:false,facing:Some(Vec2::X),
+        let state = |x| PairedState {
+            checksum: StateChecksum::new(12, 3691618926),
+            lcd_frame: 16,
+            actors: vec![crystal_render_api::VisualActor {
+                id: crystal_render_api::VisualActorId::Object(2),
+                source_id: Arc::from("cooltrainer_f"),
+                model_palette: None,
+                texture: default(),
+                center: Vec2::new(x, 128.),
+                size: Vec2::splat(64.),
+                flip_x: false,
+                above_priority: false,
+                facing: Some(Vec2::X),
             }],
         };
-        let mut stable=StablePairedState::default();
+        let mut stable = StablePairedState::default();
         assert!(stable.observe(state(160.)).is_none());
         // Same authoritative state, but the newly reconciled source sprite
         // moves to its correct frozen interpolation point before capture.
         assert!(stable.observe(state(157.84944)).is_none());
         assert!(stable.observe(state(157.84944)).is_none());
-        let baseline=stable.observe(state(157.84944)).unwrap();
-        assert!(baseline==state(157.84944));assert!(baseline!=state(160.));
+        let baseline = stable.observe(state(157.84944)).unwrap();
+        assert!(baseline == state(157.84944));
+        assert!(baseline != state(160.));
     }
 
     fn fixture(enabled: bool) -> (App, Entity, Entity, Entity, Entity, Handle<Image>) {
@@ -1099,7 +1361,7 @@ mod image_target_tests {
                 image_size: UVec2::ZERO,
                 paired_state: None,
                 world_actor_sources: None,
-        paired_stability: StablePairedState::default(),
+                paired_stability: StablePairedState::default(),
             })
             .add_systems(Update, prepare_image_target);
         let window = app

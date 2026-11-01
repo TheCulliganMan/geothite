@@ -60,9 +60,14 @@ pub(crate) fn finish_normals(
     .flatten()
     .collect();
     let key = |p: [f32; 3]| p.map(|v| (v * 100_000.).round() as i32);
-    let minimum_x=0_f32;
-    #[cfg(all(feature="people-review",not(target_arch="wasm32")))]
-    let minimum_x=if std::env::var_os("CRYSTAL_PEOPLE_REVIEW_SPINE_REFINEMENT_BASELINE").is_some() {0.08} else {minimum_x};
+    let minimum_x = 0_f32;
+    #[cfg(all(feature = "people-review", not(target_arch = "wasm32")))]
+    let minimum_x = if std::env::var_os("CRYSTAL_PEOPLE_REVIEW_SPINE_REFINEMENT_BASELINE").is_some()
+    {
+        0.08
+    } else {
+        minimum_x
+    };
     let mut referenced = vec![false; mesh.positions.len()];
     for &i in &mesh.indices {
         referenced[i as usize] = true;

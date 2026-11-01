@@ -61,8 +61,7 @@ pub fn capture_front_source_pixel(destination: Vec2, shown_tiles: u32) -> Option
         return None;
     }
     let removed = 7 - shown_tiles;
-    let active_min = FRONT_SLOT_MIN
-        + Vec2::new((removed / 2) as f32, removed as f32) * TILE_SIZE;
+    let active_min = FRONT_SLOT_MIN + Vec2::new((removed / 2) as f32, removed as f32) * TILE_SIZE;
     let active_max = active_min + Vec2::splat(shown_tiles as f32 * TILE_SIZE);
     if !inside(destination, active_min, active_max) {
         return None;

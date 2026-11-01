@@ -1,14 +1,31 @@
 //! Explicit native dialogue pages. Finished prose is never silently reflowed.
-use anyhow::{Result, ensure};
+use std::sync::OnceLock;
+
+use anyhow::{Context, Result, ensure};
 use serde::Deserialize;
 use serde_json::Value;
 
+use crate::MapModule;
 use crate::grand_marais_modpack::authoring::command;
 
 #[derive(Debug, Deserialize)]
 #[serde(transparent)]
 pub(crate) struct AuthoredDialoguePage {
     pub lines: Vec<String>,
+}
+
+/// Installs a Minnesota conversation without reflowing its reviewed pages.
+pub(crate) fn install_canonical(map: &mut MapModule, label: &str) -> Result<()> {
+    static SOURCE: OnceLock<Value> = OnceLock::new();
+    let source = SOURCE.get_or_init(|| {
+        serde_json::from_str(include_str!("../../../planning/minnesota/story.json"))
+            .expect("canonical Minnesota story must be valid JSON")
+    });
+    let pages: Vec<AuthoredDialoguePage> =
+        serde_json::from_value(source["dialogue_overhaul"]["texts"][&map.id][label].clone())
+            .with_context(|| format!("canonical dialogue {}/{label}", map.id))?;
+    map.scripts.insert(label.into(), compile(&pages)?);
+    Ok(())
 }
 
 pub(crate) fn compile(pages: &[AuthoredDialoguePage]) -> Result<Value> {

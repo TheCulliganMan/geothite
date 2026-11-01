@@ -329,9 +329,7 @@ fn mesh_clearance(runtime: &CrystalRuntime, map: &str) -> Result<Value> {
     use bevy::{
         asset::RenderAssetUsages,
         prelude::{Assets, Handle, Image, UVec2, Vec2},
-        render::{
-            render_resource::{Extent3d, TextureDimension, TextureFormat},
-        },
+        render::render_resource::{Extent3d, TextureDimension, TextureFormat},
     };
     use crystal_render_api::{VisualTile, VisualTileSource, VisualWorldFrame};
     let m = &runtime.data().maps[map];

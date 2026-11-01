@@ -6,9 +6,9 @@ pub(super) fn mix(a: [f32; 3], b: [f32; 3], t: f32) -> [f32; 3] {
 }
 // Ordinary house roofs retain their live source hue and night exposure, with
 // a softer mineral finish shared by the hip tiles and flat roof pans.
-pub(super) fn house_roof_paint(color:[f32;3])->[f32;3] {
-    let light=color[0]*0.2126+color[1]*0.7152+color[2]*0.0722;
-    mix(color,[light*0.95,light*0.99,light*1.06],0.45).map(|v|v*0.84)
+pub(super) fn house_roof_paint(color: [f32; 3]) -> [f32; 3] {
+    let light = color[0] * 0.2126 + color[1] * 0.7152 + color[2] * 0.0722;
+    mix(color, [light * 0.95, light * 0.99, light * 1.06], 0.45).map(|v| v * 0.84)
 }
 pub(super) fn face(
     out: &mut SurfaceMeshData,
@@ -41,8 +41,11 @@ pub(super) fn face(
         out.uvs.push(if kind >= 0. {
             [
                 u / unit,
-                (if kind==4. {crate::scenery_finish::TOWN_SLATE_BASE}
-                    else {crate::scenery_finish::TOWN_PAINT_BASE + kind * 32.}) + v / unit,
+                (if kind == 4. {
+                    crate::scenery_finish::TOWN_SLATE_BASE
+                } else {
+                    crate::scenery_finish::TOWN_PAINT_BASE + kind * 32.
+                }) + v / unit,
             ]
         } else {
             crate::scenery_finish::SOURCE_PAINT_UV
@@ -56,25 +59,41 @@ pub(super) fn face(
 /// A closed shallow barrel tile, with three physical ceramic shoulders.
 /// The two sections may narrow independently to follow a hip without cards
 /// or exposed undersides at the ends of a course.
-pub(super) fn ceramic_tile(out: &mut SurfaceMeshData, ends: [[Vec3;2];2], unit: f32,
-    crown: f32, color: [f32;3]) {
-    let sections=ends.map(|[a,b]| {
-        let mut ring=Vec::new();
+pub(super) fn ceramic_tile(
+    out: &mut SurfaceMeshData,
+    ends: [[Vec3; 2]; 2],
+    unit: f32,
+    crown: f32,
+    color: [f32; 3],
+) {
+    let sections = ends.map(|[a, b]| {
+        let mut ring = Vec::new();
         for i in 0..4 {
-            let t=i as f32/3.;
-            ring.push(a+(b-a)*t+Vec3::Y*(std::f32::consts::PI*t).sin()*crown);
+            let t = i as f32 / 3.;
+            ring.push(a + (b - a) * t + Vec3::Y * (std::f32::consts::PI * t).sin() * crown);
         }
-        ring.push(b-Vec3::Y*unit*0.035);
-        ring.push(a-Vec3::Y*unit*0.035);
+        ring.push(b - Vec3::Y * unit * 0.035);
+        ring.push(a - Vec3::Y * unit * 0.035);
         ring
     });
-    let center=sections.iter().flatten().copied().sum::<Vec3>()/12.;
-    face(out,sections[0].clone(),center,color,0.,unit);
-    face(out,sections[1].clone(),center,color,0.,unit);
+    let center = sections.iter().flatten().copied().sum::<Vec3>() / 12.;
+    face(out, sections[0].clone(), center, color, 0., unit);
+    face(out, sections[1].clone(), center, color, 0., unit);
     for i in 0..6 {
-        let j=(i+1)%6;
-        face(out,vec![sections[0][i],sections[0][j],sections[1][j],sections[1][i]],
-            center,color,0.,unit);
+        let j = (i + 1) % 6;
+        face(
+            out,
+            vec![
+                sections[0][i],
+                sections[0][j],
+                sections[1][j],
+                sections[1][i],
+            ],
+            center,
+            color,
+            0.,
+            unit,
+        );
     }
 }
 // Closed bevelled boxes use a full inner body and a recessed eight-sided
@@ -180,7 +199,8 @@ pub(super) fn block(
 pub(super) fn source_ink(tile: u16, x: usize, y: usize) -> usize {
     let rows = match tile {
         0x4b => [
-            "00000000", "11111110", "11111110", "00000000", "11101111", "11101111", "00000000", "01111110",
+            "00000000", "11111110", "11111110", "00000000", "11101111", "11101111", "00000000",
+            "01111110",
         ],
         0x17 => [
             "22222222", "11111111", "11111111", "11111111", "11111111", "33333333", "22222222",

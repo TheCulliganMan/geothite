@@ -70,11 +70,11 @@ pub(super) fn proven_empty(mesh: Option<&Mesh>) -> bool {
         // RENDER_WORLD meshes can still have an Assets<Mesh> entry after
         // extraction, but their CPU buffers are no longer accessible. The
         // fallible accessors distinguish that state from a known empty mesh.
-        mesh.try_attributes().is_ok_and(|mut attributes| {
-            attributes.all(|(_, values)| values.is_empty())
-        }) && mesh.try_indices_option().is_ok_and(|indices| {
-            indices.is_none_or(|indices| indices.is_empty())
-        })
+        mesh.try_attributes()
+            .is_ok_and(|mut attributes| attributes.all(|(_, values)| values.is_empty()))
+            && mesh
+                .try_indices_option()
+                .is_ok_and(|indices| indices.is_none_or(|indices| indices.is_empty()))
     })
 }
 
@@ -257,10 +257,20 @@ fn report(
                 .fold(f32::INFINITY, |bottom, point| bottom.min(point.y));
             loose_receiver_far = loose_receiver_far.max(loose_far);
             let (far, bottom) = match clipped_receiver_bounds(
-                bounds, transform, frustum, forward, camera.translation(),
+                bounds,
+                transform,
+                frustum,
+                forward,
+                camera.translation(),
             ) {
-                Some(bounds) => { clipped += 1; bounds }
-                None => { loose_fallbacks += 1; (loose_far, loose_bottom) }
+                Some(bounds) => {
+                    clipped += 1;
+                    bounds
+                }
+                None => {
+                    loose_fallbacks += 1;
+                    (loose_far, loose_bottom)
+                }
             };
             receiver_far = receiver_far.max(far);
             receiver_bottom = receiver_bottom.min(bottom);
@@ -279,7 +289,9 @@ fn report(
         .flatten();
     eprintln!(
         "shadow_bounds receivers={receivers} casters={casters} missing={missing} empty={empty} clipped={clipped} loose_fallbacks={loose_fallbacks} frustum_corners_finite={} cascade_far={:?} loose_receiver_far={loose_receiver_far:.2} receiver_far={receiver_far:.2} receiver_bottom={receiver_bottom:.2} caster_top={caster_top:.2} conservative_far={far:?}",
-        frustum.corners().is_some_and(|points| points.iter().all(|point| point.is_finite())),
+        frustum
+            .corners()
+            .is_some_and(|points| points.iter().all(|point| point.is_finite())),
         cascade.bounds.last()
     );
 }
@@ -403,8 +415,10 @@ mod tests {
         let gpu = drawn.take_gpu_data().unwrap();
         assert!(!proven_empty(Some(&drawn)));
         assert!(!proven_empty(Some(&gpu)));
-        let mut empty = Mesh::new(bevy::mesh::PrimitiveTopology::TriangleList,
-            bevy::asset::RenderAssetUsages::RENDER_WORLD);
+        let mut empty = Mesh::new(
+            bevy::mesh::PrimitiveTopology::TriangleList,
+            bevy::asset::RenderAssetUsages::RENDER_WORLD,
+        );
         assert!(proven_empty(Some(&empty)));
         let _gpu = empty.take_gpu_data().unwrap();
         assert!(!proven_empty(Some(&empty)));

@@ -52,9 +52,7 @@ pub(crate) fn extension_model(kind: ExtensionKind) -> &'static Model {
             crate::model_storage::include_model!(
                 "models/dungeon_extensions/ruins_frieze.mesh.json"
             ),
-            crate::model_storage::include_model!(
-                "models/dungeon_extensions/league_wall.mesh.json"
-            ),
+            crate::model_storage::include_model!("models/dungeon_extensions/league_wall.mesh.json"),
             crate::model_storage::include_model!(
                 "models/dungeon_extensions/passage_wall.mesh.json"
             ),
@@ -64,9 +62,7 @@ pub(crate) fn extension_model(kind: ExtensionKind) -> &'static Model {
             crate::model_storage::include_model!(
                 "models/dungeon_extensions/ship_bulkhead.mesh.json"
             ),
-            crate::model_storage::include_model!(
-                "models/dungeon_extensions/ship_door.mesh.json"
-            ),
+            crate::model_storage::include_model!("models/dungeon_extensions/ship_door.mesh.json"),
             crate::model_storage::include_model!(
                 "models/dungeon_extensions/harbor_bollard.mesh.json"
             ),
@@ -76,9 +72,7 @@ pub(crate) fn extension_model(kind: ExtensionKind) -> &'static Model {
             crate::model_storage::include_model!(
                 "models/dungeon_extensions/hall_of_fame_terminal.mesh.json"
             ),
-            crate::model_storage::include_model!(
-                "models/dungeon_extensions/puzzle_dais.mesh.json"
-            ),
+            crate::model_storage::include_model!("models/dungeon_extensions/puzzle_dais.mesh.json"),
             crate::model_storage::include_model!(
                 "models/dungeon_extensions/harbor_ferry.mesh.json"
             ),

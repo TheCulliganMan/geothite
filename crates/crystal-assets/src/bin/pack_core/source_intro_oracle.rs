@@ -213,7 +213,8 @@ fn measure_routine_fixture(
     for _ in 0..1_000_000 {
         if let Some((return_location, return_sp, start)) = frame_wait {
             if cpu.location() == return_location && cpu.registers().3 == return_sp {
-                frame_waits.push(json!({"start_instruction":start,"end_instruction":instructions.len()}));
+                frame_waits
+                    .push(json!({"start_instruction":start,"end_instruction":instructions.len()}));
                 frame_wait = None;
             }
         }
@@ -226,19 +227,27 @@ fn measure_routine_fixture(
         if wake_frame_waits && location == delay_frame {
             ensure!(frame_wait.is_none(), "nested DelayFrame fixture");
             let sp = cpu.registers().3;
-            let pc = u16::from_le_bytes([cpu.read(sp),cpu.read(sp.wrapping_add(1))]);
-            frame_wait = Some(((if pc<0x4000 {0}else{cpu.rom_bank()},pc),sp.wrapping_add(2),instructions.len()));
+            let pc = u16::from_le_bytes([cpu.read(sp), cpu.read(sp.wrapping_add(1))]);
+            frame_wait = Some((
+                (if pc < 0x4000 { 0 } else { cpu.rom_bank() }, pc),
+                sp.wrapping_add(2),
+                instructions.len(),
+            ));
         }
         let opcode = cpu.read(location.1);
         let start = cpu.clock().0;
         cpu.step().map_err(anyhow::Error::msg)?;
         instructions.push(json!({"bank":location.0,"address":location.1,"opcode":opcode,"machine_cycles":(cpu.clock().0-start)/4}));
         if wake_frame_waits && frame_wait.is_some() && opcode == 0x76 {
-            for name in ["wVBlankOccurred", "wRequested2bppSize", "wRequested1bppSize"] {
-                cpu.fixture_write(fixture_address(symbols,name)?,0);
+            for name in [
+                "wVBlankOccurred",
+                "wRequested2bppSize",
+                "wRequested1bppSize",
+            ] {
+                cpu.fixture_write(fixture_address(symbols, name)?, 0);
             }
-            cpu.fixture_write(0xffff,1);
-            cpu.fixture_write(0xff0f,1);
+            cpu.fixture_write(0xffff, 1);
+            cpu.fixture_write(0xff0f, 1);
         }
     }
     anyhow::bail!("timing routine {label} exceeded bounded instruction limit")
@@ -337,8 +346,11 @@ fn scene_memory(cpu: &Cpu, symbols: &BTreeMap<String, (usize, u16)>) -> Value {
             memory.insert(name.into(), json!(cpu.read_symbol(*bank, *address)));
         }
     }
-    if let Some((bank,address)) = symbols.get("wGameTimeHours") {
-        memory.insert("wGameTimeHours+1".into(),json!(cpu.read_symbol(*bank,address.wrapping_add(1))));
+    if let Some((bank, address)) = symbols.get("wGameTimeHours") {
+        memory.insert(
+            "wGameTimeHours+1".into(),
+            json!(cpu.read_symbol(*bank, address.wrapping_add(1))),
+        );
     }
     // Hardware register constants do not have entries in RGBDS's symbol file.
     memory.insert("rWBK".into(), json!(cpu.read(0xff70)));
@@ -466,7 +478,17 @@ pub(super) fn trace(vendor: &Path) -> Result<Value> {
                 ensure!(!entered, "intro oracle unexpectedly reentered CrystalIntro");
                 entered = true;
                 let return_pc = u16::from_le_bytes([cpu.read(sp), cpu.read(sp.wrapping_add(1))]);
-                intro_return = Some(((if return_pc < 0x4000 { 0 } else { cpu.rom_bank() }, return_pc), sp.wrapping_add(2)));
+                intro_return = Some((
+                    (
+                        if return_pc < 0x4000 {
+                            0
+                        } else {
+                            cpu.rom_bank()
+                        },
+                        return_pc,
+                    ),
+                    sp.wrapping_add(2),
+                ));
                 let (timer_period, first_timer_request) = cpu
                     .timer_calendar()
                     .context("intro entry timer is disabled")?;
@@ -569,8 +591,13 @@ pub(super) fn trace(vendor: &Path) -> Result<Value> {
                     cleanup_clock = Some(json!({"cpu_t_cycles":cycles,"lcd_t_cycles":lcd}));
                 }
                 if intro_return == Some((location, sp)) {
-                    ensure!(cleanup_clock.is_some() && pending.is_empty(), "intro oracle returned before completed cleanup hooks");
-                    return Ok(json!({"schema_version":1,"validated":false,"runner":"pack_core Rust intro oracle","rom_sha1":hash,"startup":"CGB post-boot registers, LCD enabled, zeroed external RAM","frame_t_cycles":FRAME,"entry":entry_clock,"first_input":first_input,"scenes":scenes,"records":records,"interrupt_timing_samples_t_cycles":interrupt_timings,"cleanup_entry":cleanup_clock,"completion":{"boundary":"CrystalIntro_return","cpu_t_cycles":cycles,"lcd_t_cycles":lcd,"memory":scene_memory(&cpu,&symbols)}}));
+                    ensure!(
+                        cleanup_clock.is_some() && pending.is_empty(),
+                        "intro oracle returned before completed cleanup hooks"
+                    );
+                    return Ok(
+                        json!({"schema_version":1,"validated":false,"runner":"pack_core Rust intro oracle","rom_sha1":hash,"startup":"CGB post-boot registers, LCD enabled, zeroed external RAM","frame_t_cycles":FRAME,"entry":entry_clock,"first_input":first_input,"scenes":scenes,"records":records,"interrupt_timing_samples_t_cycles":interrupt_timings,"cleanup_entry":cleanup_clock,"completion":{"boundary":"CrystalIntro_return","cpu_t_cycles":cycles,"lcd_t_cycles":lcd,"memory":scene_memory(&cpu,&symbols)}}),
+                    );
                 }
             }
         }

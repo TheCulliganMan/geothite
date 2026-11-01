@@ -214,7 +214,7 @@ fn append_partitions(
                         0.0,
                         g.uv(ground % g.width, ground / g.width),
                     );
-                    if (COURSE_HEIGHT-1..6).contains(&r) {
+                    if (COURSE_HEIGHT - 1..6).contains(&r) {
                         append_top(
                             &mut mesh.textured,
                             [x0, x1, z0, z1],
@@ -256,7 +256,7 @@ fn append_partitions(
                         [0.68, 0.68, 0.68, 1.0],
                     );
                 }
-                for r in COURSE_HEIGHT-1..6 {
+                for r in COURSE_HEIGHT - 1..6 {
                     for east in [false, true] {
                         let x = g.origin_x + (col + if east { 2 } else { 0 }) as f32 * g.tile_width;
                         let z0 = g.origin_z + (row + r) as f32 * g.tile_height;

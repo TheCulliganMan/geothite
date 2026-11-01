@@ -4507,13 +4507,23 @@ mod tests {
         let mut state = GameState::default();
         state.script_runtime.text_window_open = true;
         state.script_runtime.active_text_label = Some("QuestionText".into());
-        apply_script_runtime_command(&mut state, command("loadmenu", &["RuntimeMenu"]), default_inputs()).unwrap();
-        apply_script_runtime_command(&mut state, command("verticalmenu", &[]), default_inputs()).unwrap();
-        apply_script_runtime_command(&mut state, command("closewindow", &[]), default_inputs()).unwrap();
+        apply_script_runtime_command(
+            &mut state,
+            command("loadmenu", &["RuntimeMenu"]),
+            default_inputs(),
+        )
+        .unwrap();
+        apply_script_runtime_command(&mut state, command("verticalmenu", &[]), default_inputs())
+            .unwrap();
+        apply_script_runtime_command(&mut state, command("closewindow", &[]), default_inputs())
+            .unwrap();
         assert!(!state.script_runtime.window_open);
         assert_eq!(state.script_runtime.active_menu, None);
         assert!(state.script_runtime.text_window_open);
-        assert_eq!(state.script_runtime.active_text_label.as_deref(), Some("QuestionText"));
+        assert_eq!(
+            state.script_runtime.active_text_label.as_deref(),
+            Some("QuestionText")
+        );
     }
 
     #[test]

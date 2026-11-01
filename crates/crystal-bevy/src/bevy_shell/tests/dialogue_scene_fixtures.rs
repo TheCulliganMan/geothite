@@ -14,6 +14,8 @@ mod report_comparison;
 mod retry;
 #[path = "dialogue_story_pacing.rs"]
 mod story_pacing;
+#[path = "dialogue_story_review.rs"]
+mod story_review;
 
 use crystal_assets::AssetRoot;
 use crystal_core::input::GameButton;

@@ -224,8 +224,15 @@ impl Template {
         );
         mesh.insert_attribute(Mesh::ATTRIBUTE_JOINT_WEIGHT, mapped_weights.clone());
         let indices: Vec<_> = mesh.indices().unwrap().iter().collect();
-        let fit = super::control_fit::Fit::new(&points, &indices, &cloth,
-            &mapped_joints, &mapped_weights, originals.len(), centers.len());
+        let fit = super::control_fit::Fit::new(
+            &points,
+            &indices,
+            &cloth,
+            &mapped_joints,
+            &mapped_weights,
+            originals.len(),
+            centers.len(),
+        );
         Self {
             key,
             points,
@@ -265,7 +272,8 @@ impl Template {
     }
 
     fn controls(&self, field: &Field) -> Vec<Mat4> {
-        let mut controls = self.centers
+        let mut controls = self
+            .centers
             .iter()
             .map(|&center| {
                 let angle = center
@@ -304,7 +312,9 @@ impl Template {
             })
             .collect::<Vec<_>>();
         if std::env::var_os("CRYSTAL_PEOPLE_REVIEW_UNFITTED_CONTROLS").is_none() {
-            self.fit.correct(&self.points, &mut controls, |_, p| field.map(p, Mat4::IDENTITY));
+            self.fit.correct(&self.points, &mut controls, |_, p| {
+                field.map(p, Mat4::IDENTITY)
+            });
         }
         controls
     }

@@ -17,19 +17,30 @@ pub(crate) mod live;
 /// A closed, consistently wound cut can still pass through itself. Check its
 /// actual triangles before judging any animated deformation of that cut.
 pub(crate) fn validate_closed_fabric(mesh: &crate::mesh::SurfaceMeshData) {
-    let fabric: Vec<_> = mesh.indices.chunks_exact(3).map(|face|
-        [face[0], face[1], face[2]].map(|i| Vec3::from_array(mesh.positions[i as usize])))
+    let fabric: Vec<_> = mesh
+        .indices
+        .chunks_exact(3)
+        .map(|face| {
+            [face[0], face[1], face[2]].map(|i| Vec3::from_array(mesh.positions[i as usize]))
+        })
         .collect();
     validate_fabric_intersections(&fabric, "neutral fabric");
 }
 
 fn validate_fabric_intersections(fabric: &[[Vec3; 3]], label: &str) {
     let pairs = contact_validation::crossings(fabric, fabric);
-    assert!(pairs.is_empty(), "{label} intersects itself: {} strict pairs", pairs.len() / 2);
+    assert!(
+        pairs.is_empty(),
+        "{label} intersects itself: {} strict pairs",
+        pairs.len() / 2
+    );
 }
 
 pub(crate) fn local_body() -> bool {
-    matches!(std::env::var("CRYSTAL_PEOPLE_REVIEW_DRAPE_TRIAL").as_deref(), Ok("local" | "live"))
+    matches!(
+        std::env::var("CRYSTAL_PEOPLE_REVIEW_DRAPE_TRIAL").as_deref(),
+        Ok("local" | "live")
+    )
 }
 
 const TOP: f32 = 1.62;
@@ -40,23 +51,37 @@ const CENTER_Z: f32 = 0.05;
 
 fn leg_joint_mask(rig: &PersonRig) -> Vec<bool> {
     let upper = rig.leg_joints.map(|leg| rig.skin_nodes[leg[0]]);
-    rig.skin_nodes.iter().map(|&node| {
-        let mut cursor = Some(node);
-        while let Some(node) = cursor {
-            if upper.contains(&node) { return true; }
-            cursor = rig.parents[node];
-        }
-        false
-    }).collect()
+    rig.skin_nodes
+        .iter()
+        .map(|&node| {
+            let mut cursor = Some(node);
+            while let Some(node) = cursor {
+                if upper.contains(&node) {
+                    return true;
+                }
+                cursor = rig.parents[node];
+            }
+            false
+        })
+        .collect()
 }
 
 /// Keep authored torso attachments on their original skin. The hanging cloth
 /// is distinguished by its existing leg influences, not by height alone.
-fn cloth_vertices(rig: &PersonRig, points: &[[f32; 3]], joints: &[[u16; 4]],
-    weights: &[[f32; 4]]) -> Vec<bool> {
+fn cloth_vertices(
+    rig: &PersonRig,
+    points: &[[f32; 3]],
+    joints: &[[u16; 4]],
+    weights: &[[f32; 4]],
+) -> Vec<bool> {
     let legs = leg_joint_mask(rig);
-    points.iter().enumerate().map(|(i, p)| p[1] < TOP
-        && (0..4).any(|slot| weights[i][slot] > 0. && legs[joints[i][slot] as usize])).collect()
+    points
+        .iter()
+        .enumerate()
+        .map(|(i, p)| {
+            p[1] < TOP && (0..4).any(|slot| weights[i][slot] > 0. && legs[joints[i][slot] as usize])
+        })
+        .collect()
 }
 
 pub(crate) struct BodyCollision(body_envelope::Collider);
@@ -65,14 +90,27 @@ pub(crate) struct BodyCollision(body_envelope::Collider);
 /// leg surfaces and fitted footwear. The coarse GLB is not its animated hull.
 pub(crate) fn body_collision(mesh: &Mesh, rig: &PersonRig, palette: &[Mat4]) -> BodyCollision {
     let Some(VertexAttributeValues::Float32x3(points)) = mesh.attribute(Mesh::ATTRIBUTE_POSITION)
-        else { panic!("cloth collision body positions"); };
+    else {
+        panic!("cloth collision body positions");
+    };
     let Some(VertexAttributeValues::Uint16x4(joints)) = mesh.attribute(Mesh::ATTRIBUTE_JOINT_INDEX)
-        else { panic!("cloth collision body joints"); };
-    let Some(VertexAttributeValues::Float32x4(weights)) = mesh.attribute(Mesh::ATTRIBUTE_JOINT_WEIGHT)
-        else { panic!("cloth collision body weights"); };
+    else {
+        panic!("cloth collision body joints");
+    };
+    let Some(VertexAttributeValues::Float32x4(weights)) =
+        mesh.attribute(Mesh::ATTRIBUTE_JOINT_WEIGHT)
+    else {
+        panic!("cloth collision body weights");
+    };
     let indices: Vec<_> = mesh.indices().unwrap().iter().map(|i| i as u32).collect();
-    BodyCollision(body_envelope::Collider::from_parts(points, &indices, joints, weights,
-        palette, palette[rig.hips_joint].inverse()))
+    BodyCollision(body_envelope::Collider::from_parts(
+        points,
+        &indices,
+        joints,
+        weights,
+        palette,
+        palette[rig.hips_joint].inverse(),
+    ))
 }
 
 struct UpperHull(Vec<Vec2>);
@@ -198,14 +236,24 @@ impl Field {
         let hip = palette[rig.hips_joint];
         let inverse = hip.inverse();
         let local = local_body();
-        let low = if local { profile.rings.last().unwrap().height - 0.04 } else { LOW };
+        let low = if local {
+            profile.rings.last().unwrap().height - 0.04
+        } else {
+            LOW
+        };
         let height = |index: usize| TOP - (TOP - low) * index as f32 / (SAMPLES - 1) as f32;
         let collider = if local {
             let mut neutral = Vec::new();
             for row in &profile.rings {
-                if row.height > TOP { continue; }
+                if row.height > TOP {
+                    continue;
+                }
                 for p in &row.polar {
-                    neutral.push(Vec3::new(p.y * p.x.sin(), row.height, CENTER_Z + p.y * p.x.cos()));
+                    neutral.push(Vec3::new(
+                        p.y * p.x.sin(),
+                        row.height,
+                        CENTER_Z + p.y * p.x.cos(),
+                    ));
                 }
             }
             for side in 0..48 {
@@ -213,34 +261,44 @@ impl Field {
                 let r = profile.radius(low, angle);
                 neutral.push(Vec3::new(r * angle.sin(), low, CENTER_Z + r * angle.cos()));
             }
-            Some(body.expect("local drape requires the final prepared body").0.envelope(low, &neutral))
-        } else { None };
+            Some(
+                body.expect("local drape requires the final prepared body")
+                    .0
+                    .envelope(low, &neutral),
+            )
+        } else {
+            None
+        };
         let leg_joint = leg_joint_mask(rig);
         // Pose the supplied coarse leg cage with the actual LBS palette. This
         // retains the bent knee's real shape, including its volume loss. The
         // final refined body and outfit shoes still need collision verification.
-        let cage: Vec<_> = if local { Vec::new() } else { rig
-            .mesh
-            .positions
-            .iter()
-            .zip(&rig.ids)
-            .zip(&rig.weights)
-            .filter(|((_, ids), weights)| {
-                (0..4)
-                    .filter(|&i| leg_joint[ids[i] as usize])
-                    .map(|i| weights[i])
-                    .sum::<f32>()
-                    > 0.01
-            })
-            .map(|((&p, ids), weights)| {
-                let posed: Vec3 = (0..4)
-                    .map(|i| {
-                        palette[ids[i] as usize].transform_point3(Vec3::from_array(p)) * weights[i]
-                    })
-                    .sum();
-                inverse.transform_point3(posed) - Vec3::Z * CENTER_Z
-            })
-            .collect() };
+        let cage: Vec<_> = if local {
+            Vec::new()
+        } else {
+            rig.mesh
+                .positions
+                .iter()
+                .zip(&rig.ids)
+                .zip(&rig.weights)
+                .filter(|((_, ids), weights)| {
+                    (0..4)
+                        .filter(|&i| leg_joint[ids[i] as usize])
+                        .map(|i| weights[i])
+                        .sum::<f32>()
+                        > 0.01
+                })
+                .map(|((&p, ids), weights)| {
+                    let posed: Vec3 = (0..4)
+                        .map(|i| {
+                            palette[ids[i] as usize].transform_point3(Vec3::from_array(p))
+                                * weights[i]
+                        })
+                        .sum();
+                    inverse.transform_point3(posed) - Vec3::Z * CENTER_Z
+                })
+                .collect()
+        };
         let waist_row = profile
             .rings
             .iter()
@@ -266,13 +324,21 @@ impl Field {
             let neutral: [f32; SAMPLES] = std::array::from_fn(|i| profile.radius(height(i), angle));
             let mut projected: Vec<_> = if let Some(collider) = &collider {
                 let radii = collider.column(Vec3::new(sin, 0., CENTER_Z + cos));
-                (1..SAMPLES).map(|i| {
-                    let y = height(i);
-                    let radius = radii.radius(y);
-                    Vec2::new(y, neutral[i].max(if radius > 0. { radius + 0.035 } else { 0. }))
-                }).collect()
-            } else { cage.iter()
-                .map(|p| Vec2::new(p.y, p.xz().dot(direction) + 0.035)).collect() };
+                (1..SAMPLES)
+                    .map(|i| {
+                        let y = height(i);
+                        let radius = radii.radius(y);
+                        Vec2::new(
+                            y,
+                            neutral[i].max(if radius > 0. { radius + 0.035 } else { 0. }),
+                        )
+                    })
+                    .collect()
+            } else {
+                cage.iter()
+                    .map(|p| Vec2::new(p.y, p.xz().dot(direction) + 0.035))
+                    .collect()
+            };
             // The fitted waist and lower neutral profile close the convex
             // envelope smoothly across empty space above/below the leg cage.
             projected.push(Vec2::new(TOP, neutral[0]));
@@ -319,7 +385,11 @@ impl Field {
         }
     }
     fn map_vertex(&self, index: usize, p: Vec3, skin: Mat4) -> Vec3 {
-        if self.cloth[index] { self.map(p, skin) } else { skin.transform_point3(p) }
+        if self.cloth[index] {
+            self.map(p, skin)
+        } else {
+            skin.transform_point3(p)
+        }
     }
     fn drape(&self, p: Vec3) -> Vec3 {
         let radial = Vec2::new(p.x, p.z - CENTER_Z);
@@ -369,8 +439,13 @@ impl Field {
 
 /// Freeze only the review mesh at one actual production pose. Inverting its
 /// current palette keeps the real Bevy material, UVs, skin path and camera.
-pub(crate) fn freeze(key: &str, rig: &PersonRig, mesh: &mut Mesh, palette: &[Mat4],
-    body: Option<BodyCollision>) {
+pub(crate) fn freeze(
+    key: &str,
+    rig: &PersonRig,
+    mesh: &mut Mesh,
+    palette: &[Mat4],
+    body: Option<BodyCollision>,
+) {
     let Some(VertexAttributeValues::Float32x3(points)) = mesh.attribute(Mesh::ATTRIBUTE_POSITION)
     else {
         panic!("trial positions");
@@ -413,8 +488,7 @@ pub(crate) fn freeze(key: &str, rig: &PersonRig, mesh: &mut Mesh, palette: &[Mat
         );
         let epsilon = 0.001;
         let derivative = |axis: Vec3| {
-            (map(p + axis * epsilon, skin) - map(p - axis * epsilon, skin))
-                / (2. * epsilon)
+            (map(p + axis * epsilon, skin) - map(p - axis * epsilon, skin)) / (2. * epsilon)
         };
         let jacobian = Mat3::from_cols(
             derivative(Vec3::X),

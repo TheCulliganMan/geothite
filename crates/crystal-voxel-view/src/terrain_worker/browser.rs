@@ -90,9 +90,10 @@ fn cancel(id: u32, reason: &'static str) {
         state.remove(&id).is_some()
     });
     if removed {
-        let _trace = crate::loading_trace::span("worker.cancel_request", || {
-            serde_json::json!({"job": id, "reason": reason})
-        });
+        let _trace = crate::loading_trace::span(
+            "worker.cancel_request",
+            || serde_json::json!({"job": id, "reason": reason}),
+        );
         let _ = js_cancel(id);
     }
 }

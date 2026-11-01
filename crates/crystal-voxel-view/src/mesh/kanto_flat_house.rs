@@ -72,7 +72,10 @@ pub(super) fn paint(
     })
 }
 pub(super) fn append(out: &mut SurfaceMeshData, b: [f32; 4], unit: f32, p: Paint) {
-    let p=Paint {roof:p.roof.map(super::kanto_craft::house_roof_paint),..p};
+    let p = Paint {
+        roof: p.roof.map(super::kanto_craft::house_roof_paint),
+        ..p
+    };
     let first = out.positions.len();
     let (width, depth) = (b[1] - b[0], b[3] - b[2]);
     let material_unit = unit * (width / unit / 14.).max(1.);
@@ -178,8 +181,17 @@ pub(super) fn append(out: &mut SurfaceMeshData, b: [f32; 4], unit: f32, p: Paint
         // A slender meeting rail gives the source pane a seated sash, rather
         // than stretching the native square into a floor-height glass door.
         part(
-            [x-unit*0.40,x+unit*0.40,unit*1.70,unit*1.745,s+unit*0.125,s+unit*0.22],
-            0.006,frame,1.,
+            [
+                x - unit * 0.40,
+                x + unit * 0.40,
+                unit * 1.70,
+                unit * 1.745,
+                s + unit * 0.125,
+                s + unit * 0.22,
+            ],
+            0.006,
+            frame,
+            1.,
         );
         part(
             [
@@ -394,19 +406,32 @@ mod tests {
             );
             let mut front_panes = 0;
             for tri in day.indices.chunks_exact(3) {
-                let ids=[tri[0] as usize,tri[1] as usize,tri[2] as usize];
-                if day.normals[ids[0]][2]<0.99 || !ids.iter().all(|&i|
-                    crate::scenery_finish::source_glass_coordinates(day.uvs[i]).is_some()) {continue;}
-                let (lo,hi)=ids.iter().map(|&i|Vec3::from_array(day.positions[i])).fold(
-                    (Vec3::splat(f32::INFINITY),Vec3::splat(f32::NEG_INFINITY)),
-                    |(lo,hi),p|(lo.min(p),hi.max(p)));
-                let aspect=(hi.y-lo.y)/(hi.x-lo.x);
-                assert!((1.0..1.5).contains(&aspect),"source windows must not become tall doors: {aspect}");
-                assert!(paint.panes.iter().any(|(cell,_,_)|
-                    ((lo.x+hi.x)*0.5-(*cell as f32+0.5)*8.).abs()<0.001));
-                front_panes+=1;
+                let ids = [tri[0] as usize, tri[1] as usize, tri[2] as usize];
+                if day.normals[ids[0]][2] < 0.99
+                    || !ids.iter().all(|&i| {
+                        crate::scenery_finish::source_glass_coordinates(day.uvs[i]).is_some()
+                    })
+                {
+                    continue;
+                }
+                let (lo, hi) = ids
+                    .iter()
+                    .map(|&i| Vec3::from_array(day.positions[i]))
+                    .fold(
+                        (Vec3::splat(f32::INFINITY), Vec3::splat(f32::NEG_INFINITY)),
+                        |(lo, hi), p| (lo.min(p), hi.max(p)),
+                    );
+                let aspect = (hi.y - lo.y) / (hi.x - lo.x);
+                assert!(
+                    (1.0..1.5).contains(&aspect),
+                    "source windows must not become tall doors: {aspect}"
+                );
+                assert!(paint.panes.iter().any(|(cell, _, _)| {
+                    ((lo.x + hi.x) * 0.5 - (*cell as f32 + 0.5) * 8.).abs() < 0.001
+                }));
+                front_panes += 1;
             }
-            assert_eq!(front_panes,paint.panes.len()*2);
+            assert_eq!(front_panes, paint.panes.len() * 2);
             assert!(day.indices.len() / 3 < 10000);
             assert!(
                 day.normals

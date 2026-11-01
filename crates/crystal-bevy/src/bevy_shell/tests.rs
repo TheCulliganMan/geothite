@@ -13,20 +13,20 @@ mod dialogue_save_prompt;
 mod dialogue_scene_fixtures;
 #[path = "tests/grand_marais_partner_retry.rs"]
 mod grand_marais_partner_retry;
+#[path = "tests/mankato_terrace_pond.rs"]
+mod mankato_terrace_pond;
 #[path = "tests/minnesota_badges.rs"]
 mod minnesota_badges;
 #[path = "tests/minnesota_castorock.rs"]
 mod minnesota_castorock;
 #[path = "tests/minnesota_fossils.rs"]
 mod minnesota_fossils;
-#[path = "tests/minnesota_starter_return.rs"]
-mod minnesota_starter_return;
 #[path = "tests/minnesota_research_access.rs"]
 mod minnesota_research_access;
+#[path = "tests/minnesota_starter_return.rs"]
+mod minnesota_starter_return;
 #[path = "tests/native_city_ports.rs"]
 mod native_city_ports;
-#[path = "tests/mankato_terrace_pond.rs"]
-mod mankato_terrace_pond;
 
 #[path = "tests/brainerd_lakeside_loop.rs"]
 mod brainerd_lakeside_loop;
@@ -34,10 +34,10 @@ mod brainerd_lakeside_loop;
 #[path = "tests/r16_seed_bank.rs"]
 mod r16_seed_bank;
 
-#[path = "tests/r02_working_farmyard.rs"]
-mod r02_working_farmyard;
 #[path = "tests/northstar_dispatch_course.rs"]
 mod northstar_dispatch_course;
+#[path = "tests/r02_working_farmyard.rs"]
+mod r02_working_farmyard;
 #[cfg(feature = "location-tester")]
 include!("tests/party_follower.rs");
 include!("tests/multiplayer_rendering.rs");
@@ -96,15 +96,31 @@ fn flygon_observation_reports_pack_exits_and_inventory_without_mutating_game() {
     let before = shell.shell.session().state().clone();
     let observed = super::webmcp_observation(&shell, None).unwrap();
     let snapshot = shell.shell.snapshot().unwrap();
-    let module = shell.runtime.data().map_module(&snapshot.overworld.map_name).unwrap();
-    assert_eq!(observed["map_info"]["curriculum_exits"].as_array().unwrap().len(),
-        module.events.warps.len() + module.attributes.connections.len());
+    let module = shell
+        .runtime
+        .data()
+        .map_module(&snapshot.overworld.map_name)
+        .unwrap();
+    assert_eq!(
+        observed["map_info"]["curriculum_exits"]
+            .as_array()
+            .unwrap()
+            .len(),
+        module.events.warps.len() + module.attributes.connections.len()
+    );
     for warp in &module.events.warps {
-        assert!(observed["map_info"]["curriculum_exits"].as_array().unwrap().iter().any(|e|
-            e["target"] == warp.target_map && e["x"] == warp.x && e["y"] == warp.y));
+        assert!(
+            observed["map_info"]["curriculum_exits"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .any(|e| e["target"] == warp.target_map && e["x"] == warp.x && e["y"] == warp.y)
+        );
     }
-    assert_eq!(observed["reward_state"]["items"].as_array().unwrap().len(),
-        snapshot.bag.items.len() + snapshot.bag.balls.len());
+    assert_eq!(
+        observed["reward_state"]["items"].as_array().unwrap().len(),
+        snapshot.bag.items.len() + snapshot.bag.balls.len()
+    );
     assert_eq!(shell.shell.session().state(), &before);
 }
 
@@ -115,11 +131,22 @@ fn flygon_observation_reports_real_battle_health_and_foreground_menu() {
     };
     for _ in 0..64 {
         let v = super::webmcp_observation(&controller.shell, None).unwrap();
-        if v["observe"]["menus"].as_array().unwrap().iter().any(|m|m["surface"]=="commands") {
+        if v["observe"]["menus"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .any(|m| m["surface"] == "commands")
+        {
             let snapshot = controller.snapshot().unwrap();
             let battle = snapshot.battle.as_ref().unwrap();
-            assert_eq!(v["reward_state"]["battle"]["enemy_max_hp"], battle.enemy_pokemon.max_hp);
-            assert_eq!(v["reward_state"]["battle"]["active_player"], serde_json::json!(battle.active_player_party_index));
+            assert_eq!(
+                v["reward_state"]["battle"]["enemy_max_hp"],
+                battle.enemy_pokemon.max_hp
+            );
+            assert_eq!(
+                v["reward_state"]["battle"]["active_player"],
+                serde_json::json!(battle.active_player_party_index)
+            );
             assert!(v["observe"]["battle"].as_str().unwrap().contains("Wild"));
             return;
         }
@@ -130,25 +157,40 @@ fn flygon_observation_reports_real_battle_health_and_foreground_menu() {
 
 #[test]
 fn flygon_observation_exposes_moms_authored_weekday_choice() {
-    let repo = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../..").canonicalize().unwrap();
+    let repo = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("../..")
+        .canonicalize()
+        .unwrap();
     let assets = AssetRoot::new(repo);
     let runtime = workspace_desktop_runtime(&assets);
     let mut controller = VisibleShellController::new_game(assets, runtime, "CHRIS", None).unwrap();
-    for (button,count) in [(GameButton::Right,4),(GameButton::Up,3),(GameButton::Down,4)] {
+    for (button, count) in [
+        (GameButton::Right, 4),
+        (GameButton::Up, 3),
+        (GameButton::Down, 4),
+    ] {
         for _ in 0..count {
-            let before=controller.snapshot().unwrap().overworld;
+            let before = controller.snapshot().unwrap().overworld;
             for _ in 0..4 {
                 controller.press(button).unwrap();
-                let after=controller.snapshot().unwrap().overworld;
-                if before.map_name!=after.map_name || before.tile!=after.tile {break;}
+                let after = controller.snapshot().unwrap().overworld;
+                if before.map_name != after.map_name || before.tile != after.tile {
+                    break;
+                }
             }
         }
     }
     for _ in 0..96 {
         if controller.shell.pending_day_of_week.is_some() {
-            let v = super::webmcp_observation(&controller.shell,None).unwrap();
-            assert!(v["observe"]["menus"].as_array().unwrap().iter().any(|m|m["kind"]=="weekday"),
-                "a real weekday choice must not be encoded as confirmation-only dialogue");
+            let v = super::webmcp_observation(&controller.shell, None).unwrap();
+            assert!(
+                v["observe"]["menus"]
+                    .as_array()
+                    .unwrap()
+                    .iter()
+                    .any(|m| m["kind"] == "weekday"),
+                "a real weekday choice must not be encoded as confirmation-only dialogue"
+            );
             return;
         }
         controller.press(GameButton::A).unwrap();
@@ -512,10 +554,10 @@ mod bridge_overlay_rendering;
 #[path = "tests/city_exteriors.rs"]
 mod city_exteriors;
 
-#[path = "tests/iron_crosscut.rs"]
-mod iron_crosscut;
 #[path = "tests/iron_approach_cache.rs"]
 mod iron_approach_cache;
+#[path = "tests/iron_crosscut.rs"]
+mod iron_crosscut;
 #[path = "tests/minneapolis_citywide_cycling.rs"]
 mod minneapolis_citywide_cycling;
 #[path = "tests/minnesota_trainers.rs"]
@@ -535,10 +577,10 @@ mod staples_station;
 #[path = "tests/northstar_ancient_swamp.rs"]
 mod northstar_ancient_swamp;
 
-#[path = "tests/northstar_progression_rewards.rs"]
-mod northstar_progression_rewards;
 #[path = "tests/legendary_master_ball.rs"]
 mod legendary_master_ball;
+#[path = "tests/northstar_progression_rewards.rs"]
+mod northstar_progression_rewards;
 #[path = "tests/northstar_research_share.rs"]
 mod northstar_research_share;
 

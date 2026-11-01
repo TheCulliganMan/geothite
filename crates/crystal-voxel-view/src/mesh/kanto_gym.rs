@@ -43,23 +43,51 @@ const WINDOWS: [(usize, usize); 12] = [
 ];
 
 fn source_tile(width: usize, x: usize, y: usize) -> u16 {
-    let template_x=if x<4 {x} else if x>=width-4 {8+x-(width-4)} else {4+x%4};
+    let template_x = if x < 4 {
+        x
+    } else if x >= width - 4 {
+        8 + x - (width - 4)
+    } else {
+        4 + x % 4
+    };
     TILES[y][template_x]
 }
 pub(super) fn matches(cells: &[&VisualTile], g: &GridGeometry, p: BuildingPlacement) -> bool {
-    (8..=24).contains(&p.width) && p.width%4==0 && p.height==8 && p.roof_rows==4
-        && p.column+p.width<=g.width && p.row+p.height<=g.height
-        && (0..8).all(|y|(0..p.width).all(|x| {
-            let block=if y<4 {
-                if x<4 {0x0c} else if x>=p.width-4 {0x0e} else {0x0d}
-            } else if x<4 {0x10} else if x>=p.width-4 {0x12} else {0x11};
-            cells.get((p.row+y)*g.width+p.column+x).is_some_and(|c| {
-                let s=&c.source;
-                s.tileset_id.as_ref()=="kanto" && s.metatile_id==block
-                    && s.subtile_column as usize==x%4 && s.subtile_row as usize==y%4
-                    && s.tile_index==source_tile(p.width,x,y)
+    (8..=24).contains(&p.width)
+        && p.width % 4 == 0
+        && p.height == 8
+        && p.roof_rows == 4
+        && p.column + p.width <= g.width
+        && p.row + p.height <= g.height
+        && (0..8).all(|y| {
+            (0..p.width).all(|x| {
+                let block = if y < 4 {
+                    if x < 4 {
+                        0x0c
+                    } else if x >= p.width - 4 {
+                        0x0e
+                    } else {
+                        0x0d
+                    }
+                } else if x < 4 {
+                    0x10
+                } else if x >= p.width - 4 {
+                    0x12
+                } else {
+                    0x11
+                };
+                cells
+                    .get((p.row + y) * g.width + p.column + x)
+                    .is_some_and(|c| {
+                        let s = &c.source;
+                        s.tileset_id.as_ref() == "kanto"
+                            && s.metatile_id == block
+                            && s.subtile_column as usize == x % 4
+                            && s.subtile_row as usize == y % 4
+                            && s.tile_index == source_tile(p.width, x, y)
+                    })
             })
-        }))
+        })
 }
 
 #[derive(Clone)]
@@ -68,8 +96,8 @@ pub(super) struct Paint {
     wall: [f32; 3],
     trim: [f32; 3],
     ink: [f32; 3],
-    windows: Vec<[f32;3]>,
-    pane_cells: Vec<[usize;2]>,
+    windows: Vec<[f32; 3]>,
+    pane_cells: Vec<[usize; 2]>,
     signs: Vec<f32>,
     door: [f32; 3],
     glass: [f32; 3],
@@ -90,7 +118,9 @@ pub(super) fn paint(
     p: BuildingPlacement,
     images: &TerrainImageSamples,
 ) -> Option<Paint> {
-    if !matches(cells,g,p) {return None;}
+    if !matches(cells, g, p) {
+        return None;
+    }
     let sample = |x: usize, y: usize| -> Option<[Option<[u8; 4]>; 4]> {
         let cell = cells[(p.row + y) * g.width + p.column + x];
         let rgba = tile_rgba(images, cell).ok()?;
@@ -116,22 +146,32 @@ pub(super) fn paint(
     if roof[1] == roof[2] || wall[0] == wall[1] {
         return None;
     }
-    let mut windows=Vec::new();let mut pane_cells=Vec::new();
-    for y in [4,6] {for x in 0..p.width {
-        if source_tile(p.width,x,y)!=0x0a {continue;}
-        let c=sample(x,y)?;
-        if c[0]==c[3] {return None;}
-        windows.push(linear(c[0]?));pane_cells.push([x,y]);
-    }}
+    let mut windows = Vec::new();
+    let mut pane_cells = Vec::new();
+    for y in [4, 6] {
+        for x in 0..p.width {
+            if source_tile(p.width, x, y) != 0x0a {
+                continue;
+            }
+            let c = sample(x, y)?;
+            if c[0] == c[3] {
+                return None;
+            }
+            windows.push(linear(c[0]?));
+            pane_cells.push([x, y]);
+        }
+    }
     let window = sample(2, 4)?;
-    let upper = sample(p.width-4, 6)?;
-    let door = sample(p.width-4, 7)?;
+    let upper = sample(p.width - 4, 6)?;
+    let door = sample(p.width - 4, 7)?;
     Some(Paint {
         roof: [linear(roof[2]?), linear(roof[1]?)],
         wall: linear(wall[0]?),
         trim: linear(wall[1]?),
         ink: linear(window[3]?),
-        windows,pane_cells,signs:(4..p.width-4).step_by(4).map(|x|x as f32+2.).collect(),
+        windows,
+        pane_cells,
+        signs: (4..p.width - 4).step_by(4).map(|x| x as f32 + 2.).collect(),
         door: linear(door[2]?),
         glass: linear(upper[0]?),
     })
@@ -193,7 +233,11 @@ fn roof(out: &mut SurfaceMeshData, b: [f32; 4], unit: f32, p: &Paint) {
         );
         // Closed barrel courses share the museum's ceramic profile. Each
         // course narrows with the hip while retaining its curved shoulders.
-        let columns = if side < 2 {((e-w)/(unit*0.60)).round().max(1.) as usize} else {12};
+        let columns = if side < 2 {
+            ((e - w) / (unit * 0.60)).round().max(1.) as usize
+        } else {
+            12
+        };
         // Long barrel tiles read as roofing rather than square paving.
         // Three courses also keep the curved kit below its former mesh cost.
         let rows = 3;
@@ -536,56 +580,56 @@ pub(super) fn append(out: &mut SurfaceMeshData, b: [f32; 4], unit: f32, door: f3
     );
     // Source sign content in real raised strokes; no substitute medal icons.
     for &sign in &p.signs {
-    let sign_x = w + unit * sign;
-    let sign_y = unit * 3.62;
-    block(
-        out,
-        [
-            sign_x - unit * 1.35,
-            sign_x + unit * 1.35,
-            sign_y - unit * 0.08,
-            sign_y + unit * 0.78,
-            front + unit * 0.08,
-            front + unit * 0.20,
-        ],
-        unit * 0.045,
-        stone,
-        3.,
-        unit,
-    );
-    for (letter, rows) in [
-        [14u8, 17, 16, 23, 17, 17, 14],
-        [17, 17, 10, 4, 4, 4, 4],
-        [17, 27, 21, 21, 17, 17, 17],
-    ]
-    .into_iter()
-    .enumerate()
-    {
-        for (row, bits) in rows.into_iter().enumerate() {
-            for col in 0..5 {
-                if bits & (1 << (4 - col)) == 0 {
-                    continue;
+        let sign_x = w + unit * sign;
+        let sign_y = unit * 3.62;
+        block(
+            out,
+            [
+                sign_x - unit * 1.35,
+                sign_x + unit * 1.35,
+                sign_y - unit * 0.08,
+                sign_y + unit * 0.78,
+                front + unit * 0.08,
+                front + unit * 0.20,
+            ],
+            unit * 0.045,
+            stone,
+            3.,
+            unit,
+        );
+        for (letter, rows) in [
+            [14u8, 17, 16, 23, 17, 17, 14],
+            [17, 17, 10, 4, 4, 4, 4],
+            [17, 27, 21, 21, 17, 17, 17],
+        ]
+        .into_iter()
+        .enumerate()
+        {
+            for (row, bits) in rows.into_iter().enumerate() {
+                for col in 0..5 {
+                    if bits & (1 << (4 - col)) == 0 {
+                        continue;
+                    }
+                    let x = sign_x + unit * (-1.09 + letter as f32 * 0.78 + col as f32 * 0.115);
+                    let y = sign_y + unit * (0.62 - row as f32 * 0.085);
+                    block(
+                        out,
+                        [
+                            x,
+                            x + unit * 0.125,
+                            y,
+                            y + unit * 0.095,
+                            front + unit * 0.20,
+                            front + unit * 0.24,
+                        ],
+                        0.,
+                        p.ink,
+                        -1.,
+                        unit,
+                    );
                 }
-                let x = sign_x + unit * (-1.09 + letter as f32 * 0.78 + col as f32 * 0.115);
-                let y = sign_y + unit * (0.62 - row as f32 * 0.085);
-                block(
-                    out,
-                    [
-                        x,
-                        x + unit * 0.125,
-                        y,
-                        y + unit * 0.095,
-                        front + unit * 0.20,
-                        front + unit * 0.24,
-                    ],
-                    0.,
-                    p.ink,
-                    -1.,
-                    unit,
-                );
             }
         }
-    }
     }
     for position in &mut out.positions[first..] {
         *position = (Vec3::from_array(*position) + origin).to_array();
@@ -680,15 +724,37 @@ pub(super) fn fixture() -> (
 }
 
 #[cfg(test)]
-pub(super) fn fixture_width(width: usize) -> (Vec<VisualTile>,GridGeometry,BuildingPlacement,TerrainImageSamples) {
-    let (original,g,p,images)=fixture();
-    let mut cells=Vec::new();
-    for y in 0..g.height {for x in 0..width {
-        let old_x=if x<4 {x} else if x>=width-4 {x-(width-4)+8} else {4+x%4};
-        let mut tile=original[y*g.width+old_x].clone();tile.column=x as u32;
-        tile.source.subtile_column=(x%4) as u8;cells.push(tile);
-    }}
-    (cells,GridGeometry {width,..g},BuildingPlacement {width,..p},images)
+pub(super) fn fixture_width(
+    width: usize,
+) -> (
+    Vec<VisualTile>,
+    GridGeometry,
+    BuildingPlacement,
+    TerrainImageSamples,
+) {
+    let (original, g, p, images) = fixture();
+    let mut cells = Vec::new();
+    for y in 0..g.height {
+        for x in 0..width {
+            let old_x = if x < 4 {
+                x
+            } else if x >= width - 4 {
+                x - (width - 4) + 8
+            } else {
+                4 + x % 4
+            };
+            let mut tile = original[y * g.width + old_x].clone();
+            tile.column = x as u32;
+            tile.source.subtile_column = (x % 4) as u8;
+            cells.push(tile);
+        }
+    }
+    (
+        cells,
+        GridGeometry { width, ..g },
+        BuildingPlacement { width, ..p },
+        images,
+    )
 }
 
 #[cfg(test)]
@@ -741,47 +807,88 @@ mod tests {
     }
     #[test]
     fn repeated_civic_bays_keep_native_panes_signs_door_and_bounded_roof() {
-        for width in [8,12,16,20,24] {
-            let (mut tiles,g,p,mut images)=fixture_width(width);
-            let refs=tiles.iter().collect::<Vec<_>>();
-            let day=paint(&refs,&g,p,&images).unwrap();
-            assert_eq!(day.windows.len(),width);
-            assert_eq!(day.pane_cells.len(),width);
-            assert_eq!(day.signs,(4..width-4).step_by(4).map(|x|x as f32+2.).collect::<Vec<_>>());
-            let mut a=SurfaceMeshData::default();let door=(width-3) as f32*8.;
-            append(&mut a,[0.,width as f32*8.,0.,64.],8.,door,day.clone());
-            assert!(a.positions.iter().all(|p|p[0]>=0. && p[0]<=width as f32*8.
-                && (0. ..=64.).contains(&p[2]) && (0. ..52.).contains(&p[1])));
-            assert!(a.indices.len()/3<20_000);
+        for width in [8, 12, 16, 20, 24] {
+            let (mut tiles, g, p, mut images) = fixture_width(width);
+            let refs = tiles.iter().collect::<Vec<_>>();
+            let day = paint(&refs, &g, p, &images).unwrap();
+            assert_eq!(day.windows.len(), width);
+            assert_eq!(day.pane_cells.len(), width);
+            assert_eq!(
+                day.signs,
+                (4..width - 4)
+                    .step_by(4)
+                    .map(|x| x as f32 + 2.)
+                    .collect::<Vec<_>>()
+            );
+            let mut a = SurfaceMeshData::default();
+            let door = (width - 3) as f32 * 8.;
+            append(
+                &mut a,
+                [0., width as f32 * 8., 0., 64.],
+                8.,
+                door,
+                day.clone(),
+            );
+            assert!(a.positions.iter().all(|p| p[0] >= 0.
+                && p[0] <= width as f32 * 8.
+                && (0. ..=64.).contains(&p[2])
+                && (0. ..52.).contains(&p[1])));
+            assert!(a.indices.len() / 3 < 20_000);
             for t in a.indices.chunks_exact(3) {
-                let [x,y,z]=std::array::from_fn(|i|Vec3::from_array(a.positions[t[i] as usize]));
-                assert!((y-x).cross(z-x).dot(Vec3::from_array(a.normals[t[0] as usize]))>1e-8);
+                let [x, y, z] =
+                    std::array::from_fn(|i| Vec3::from_array(a.positions[t[i] as usize]));
+                assert!(
+                    (y - x)
+                        .cross(z - x)
+                        .dot(Vec3::from_array(a.normals[t[0] as usize]))
+                        > 1e-8
+                );
             }
-            let mut moved=SurfaceMeshData::default();
-            append(&mut moved,[112.,112.+width as f32*8.,-96.,-32.],8.,112.+door,day.clone());
-            assert_eq!(a.uvs,moved.uvs);assert_eq!(a.colors,moved.colors);assert_eq!(a.indices,moved.indices);
-            for (local,world) in a.positions.iter().zip(&moved.positions) {
-                assert_eq!(*world,(Vec3::from_array(*local)+Vec3::new(112.,0.,-96.)).to_array());
+            let mut moved = SurfaceMeshData::default();
+            append(
+                &mut moved,
+                [112., 112. + width as f32 * 8., -96., -32.],
+                8.,
+                112. + door,
+                day.clone(),
+            );
+            assert_eq!(a.uvs, moved.uvs);
+            assert_eq!(a.colors, moved.colors);
+            assert_eq!(a.indices, moved.indices);
+            for (local, world) in a.positions.iter().zip(&moved.positions) {
+                assert_eq!(
+                    *world,
+                    (Vec3::from_array(*local) + Vec3::new(112., 0., -96.)).to_array()
+                );
             }
             // A live change in one native end window changes paint, never geometry.
-            let pane=tiles[4*g.width+width-3].texture.id();
-            if let TileImageSample::Rgba(data)=images.pixels.get_mut(&pane).unwrap() {
-                for i in 0..64 {if ink(0x0a,i%8,i/8)==0 {
-                    data[i*4..i*4+4].copy_from_slice(&[255,255,132,255]);
-                }}
+            let pane = tiles[4 * g.width + width - 3].texture.id();
+            if let TileImageSample::Rgba(data) = images.pixels.get_mut(&pane).unwrap() {
+                for i in 0..64 {
+                    if ink(0x0a, i % 8, i / 8) == 0 {
+                        data[i * 4..i * 4 + 4].copy_from_slice(&[255, 255, 132, 255]);
+                    }
+                }
             }
-            let night=paint(&refs,&g,p,&images).unwrap();
-            assert_ne!(day.windows,night.windows);
-            let mut changed=SurfaceMeshData::default();
-            append(&mut changed,[0.,width as f32*8.,0.,64.],8.,door,night);
-            assert_eq!(a.positions,changed.positions);assert_eq!(a.indices,changed.indices);
-            assert_ne!(a.colors,changed.colors);
+            let night = paint(&refs, &g, p, &images).unwrap();
+            assert_ne!(day.windows, night.windows);
+            let mut changed = SurfaceMeshData::default();
+            append(
+                &mut changed,
+                [0., width as f32 * 8., 0., 64.],
+                8.,
+                door,
+                night,
+            );
+            assert_eq!(a.positions, changed.positions);
+            assert_eq!(a.indices, changed.indices);
+            assert_ne!(a.colors, changed.colors);
             drop(refs);
-            tiles[0].source.subtile_column=1;
-            assert!(!matches(&tiles.iter().collect::<Vec<_>>(),&g,p));
-            tiles[0].source.subtile_column=0;
-            tiles[6*g.width+width-4].source.tile_index=0xffff;
-            assert!(!matches(&tiles.iter().collect::<Vec<_>>(),&g,p));
+            tiles[0].source.subtile_column = 1;
+            assert!(!matches(&tiles.iter().collect::<Vec<_>>(), &g, p));
+            tiles[0].source.subtile_column = 0;
+            tiles[6 * g.width + width - 4].source.tile_index = 0xffff;
+            assert!(!matches(&tiles.iter().collect::<Vec<_>>(), &g, p));
         }
     }
 
@@ -793,7 +900,13 @@ mod tests {
         let mut a = SurfaceMeshData::default();
         append(&mut a, [0., 96., 0., 64.], 8., 72., day.clone());
         let mut translated = SurfaceMeshData::default();
-        append(&mut translated, [144., 240., -288., -224.], 8., 216., day.clone());
+        append(
+            &mut translated,
+            [144., 240., -288., -224.],
+            8.,
+            216.,
+            day.clone(),
+        );
         assert_eq!(
             translated.uvs, a.uvs,
             "viewport translation cannot change material domains"

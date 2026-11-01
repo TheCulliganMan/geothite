@@ -49,14 +49,9 @@ impl MotionCapture {
                 let result = (|| -> Result<()> {
                     crate::capture_archive::archive_existing(&path)?;
                     crate::capture_archive::archive_gpu_readback(&path, &event.image)?;
-                    let original = event
-                        .image
-                        .clone()
-                        .try_into_dynamic()?
-                        ;
+                    let original = event.image.clone().try_into_dynamic()?;
                     crate::capture_archive::archive_capture_image(&path, "original", &original)?;
-                    let rgb = image::DynamicImage::ImageRgb8(original.to_rgb8()
-                        );
+                    let rgb = image::DynamicImage::ImageRgb8(original.to_rgb8());
                     crate::capture_archive::write_capture_png(&path, &rgb)?;
                     Ok(())
                 })()

@@ -128,7 +128,13 @@ fn rectangle(out: &mut CostumeMesh, rig: &PersonRig, b: [f32; 4], side: f32, rgb
 fn belt(out: &mut CostumeMesh, rig: &PersonRig) -> Option<()> {
     waist_band(out, rig, 1.45, 0.185, [30, 31, 36])
 }
-fn waist_band(out: &mut CostumeMesh, rig: &PersonRig, bottom: f32, height: f32, color: [u8; 3]) -> Option<()> {
+fn waist_band(
+    out: &mut CostumeMesh,
+    rig: &PersonRig,
+    bottom: f32,
+    height: f32,
+    color: [u8; 3],
+) -> Option<()> {
     const SIDES: usize = 64;
     const ROWS: usize = 6;
     let first = out.surface.positions.len() as u32;
@@ -179,14 +185,16 @@ fn biker_vest(out: &mut CostumeMesh, rig: &PersonRig) -> Option<()> {
     let rgb = Color::srgb_u8(42, 43, 47).to_linear();
     for row in 0..=ROWS {
         for col in 0..=SIDES {
-            let angle = opening + (std::f32::consts::TAU - 2. * opening)
-                * col as f32 / SIDES as f32;
+            let angle =
+                opening + (std::f32::consts::TAU - 2. * opening) * col as f32 / SIDES as f32;
             let direction = Vec2::new(angle.sin(), angle.cos());
             let top = 2.40 - 0.37 * direction.x.powi(2);
             let y = 1.50 + (top - 1.50) * row as f32 / ROWS as f32;
             let sample = crate::garment_fit::section(rig, y, direction)?;
             let radius = sample.radius + 0.018;
-            out.surface.positions.push([direction.x * radius, y, 0.05 + direction.y * radius]);
+            out.surface
+                .positions
+                .push([direction.x * radius, y, 0.05 + direction.y * radius]);
             out.surface.normals.push([direction.x, 0., direction.y]);
             out.surface.uvs.push([0.; 2]);
             out.surface.colors.push([rgb.red, rgb.green, rgb.blue, 1.]);
@@ -194,8 +202,12 @@ fn biker_vest(out: &mut CostumeMesh, rig: &PersonRig) -> Option<()> {
             influences.sort_by(|a, b| b.1.total_cmp(&a.1).then(a.0.cmp(&b.0)));
             influences.truncate(4);
             let total: f32 = influences.iter().map(|p| p.1).sum();
-            out.joints.push(std::array::from_fn(|i| influences.get(i).map_or(0, |p| p.0 as u16)));
-            out.weights.push(std::array::from_fn(|i| influences.get(i).map_or(0., |p| p.1 / total)));
+            out.joints.push(std::array::from_fn(|i| {
+                influences.get(i).map_or(0, |p| p.0 as u16)
+            }));
+            out.weights.push(std::array::from_fn(|i| {
+                influences.get(i).map_or(0., |p| p.1 / total)
+            }));
         }
     }
     for row in 0..ROWS {
@@ -208,11 +220,18 @@ fn biker_vest(out: &mut CostumeMesh, rig: &PersonRig) -> Option<()> {
     // The source torso is not cylindrical. Shade the fitted surface itself,
     // including its shoulder slope, instead of assigning radial belt normals.
     let mut normals = vec![Vec3::ZERO; out.surface.positions.len() - first as usize];
-    for face in out.surface.indices.chunks_exact(3).filter(|f| f[0] >= first) {
+    for face in out
+        .surface
+        .indices
+        .chunks_exact(3)
+        .filter(|f| f[0] >= first)
+    {
         let p = [face[0], face[1], face[2]]
             .map(|i| Vec3::from_array(out.surface.positions[i as usize]));
         let normal = (p[1] - p[0]).cross(p[2] - p[0]);
-        for &i in face { normals[i as usize - first as usize] += normal; }
+        for &i in face {
+            normals[i as usize - first as usize] += normal;
+        }
     }
     for (i, normal) in normals.into_iter().enumerate() {
         if let Some(normal) = normal.try_normalize() {
@@ -223,58 +242,114 @@ fn biker_vest(out: &mut CostumeMesh, rig: &PersonRig) -> Option<()> {
 }
 
 fn cardigan_details(rig: &PersonRig, look: Look) -> Option<CostumeMesh> {
-    if look.texture_key != "teacher" { return None; }
+    if look.texture_key != "teacher" {
+        return None;
+    }
     let mut out = CostumeMesh {
-        surface: SurfaceMeshData::default(), joints: Vec::new(), weights: Vec::new(),
+        surface: SurfaceMeshData::default(),
+        joints: Vec::new(),
+        weights: Vec::new(),
     };
     // The cardigan is layered over a blouse. These front-only details must
     // not repeat on the shared sleeve/back UVs or replace her separate skirt.
-    panel(&mut out, rig, &[
-        [-0.15, 2.43], [0.15, 2.43], [0., 2.10],
-    ], 1., [234, 233, 220]);
-    let trim = look.shirt.map(|channel| (channel as f32 * 0.78).round() as u8);
+    panel(
+        &mut out,
+        rig,
+        &[[-0.15, 2.43], [0.15, 2.43], [0., 2.10]],
+        1.,
+        [234, 233, 220],
+    );
+    let trim = look
+        .shirt
+        .map(|channel| (channel as f32 * 0.78).round() as u8);
     for sign in [-1., 1.] {
         let first = out.surface.positions.len();
-        panel(&mut out, rig, &[
-            [0.15 * sign, 2.43], [0.18 * sign, 2.41],
-            [0.025 * sign, 2.10], [0., 2.10],
-        ], 1., trim);
-        for p in &mut out.surface.positions[first..] { p[2] += 0.006; }
+        panel(
+            &mut out,
+            rig,
+            &[
+                [0.15 * sign, 2.43],
+                [0.18 * sign, 2.41],
+                [0.025 * sign, 2.10],
+                [0., 2.10],
+            ],
+            1.,
+            trim,
+        );
+        for p in &mut out.surface.positions[first..] {
+            p[2] += 0.006;
+        }
     }
     rectangle(&mut out, rig, [-0.018, 0.018, 1.62, 2.10], 1., trim);
     for y in [1.76, 1.94, 2.10] {
-        let points: Vec<_> = (0..12).map(|i| {
-            let a = std::f32::consts::TAU * i as f32 / 12.;
-            [0.018 * a.cos(), y + 0.018 * a.sin()]
-        }).collect();
+        let points: Vec<_> = (0..12)
+            .map(|i| {
+                let a = std::f32::consts::TAU * i as f32 / 12.;
+                [0.018 * a.cos(), y + 0.018 * a.sin()]
+            })
+            .collect();
         let first = out.surface.positions.len();
         panel(&mut out, rig, &points, 1., [222, 204, 166]);
-        for p in &mut out.surface.positions[first..] { p[2] += 0.012; }
+        for p in &mut out.surface.positions[first..] {
+            p[2] += 0.012;
+        }
     }
     Some(out)
 }
 
 fn rocket_details(rig: &PersonRig, look: Look) -> Option<CostumeMesh> {
-    if !matches!(look.texture_key, "rocket" | "rocket_girl") { return None; }
+    if !matches!(look.texture_key, "rocket" | "rocket_girl") {
+        return None;
+    }
     let mut out = CostumeMesh {
-        surface: SurfaceMeshData::default(), joints: Vec::new(), weights: Vec::new(),
+        surface: SurfaceMeshData::default(),
+        joints: Vec::new(),
+        weights: Vec::new(),
     };
     // A fitted chest emblem leaves the shared back/sleeve atlas unmarked.
     // Separate convex strokes keep the counter open without overlapping faces.
     let red = [209, 43, 57];
     rectangle(&mut out, rig, [-0.16, -0.08, 1.90, 2.35], 1., red);
-    panel(&mut out, rig, &[
-        [-0.08, 2.35], [0.07, 2.35], [0.14, 2.29], [0.07, 2.27], [-0.08, 2.27],
-    ], 1., red);
-    panel(&mut out, rig, &[
-        [0.07, 2.27], [0.14, 2.29], [0.14, 2.12], [0.07, 2.14],
-    ], 1., red);
-    panel(&mut out, rig, &[
-        [-0.08, 2.06], [0.07, 2.06], [0.14, 2.12], [0.07, 2.14], [-0.08, 2.14],
-    ], 1., red);
-    panel(&mut out, rig, &[
-        [0.01, 2.06], [0.08, 2.06], [0.19, 1.90], [0.10, 1.90],
-    ], 1., red);
+    panel(
+        &mut out,
+        rig,
+        &[
+            [-0.08, 2.35],
+            [0.07, 2.35],
+            [0.14, 2.29],
+            [0.07, 2.27],
+            [-0.08, 2.27],
+        ],
+        1.,
+        red,
+    );
+    panel(
+        &mut out,
+        rig,
+        &[[0.07, 2.27], [0.14, 2.29], [0.14, 2.12], [0.07, 2.14]],
+        1.,
+        red,
+    );
+    panel(
+        &mut out,
+        rig,
+        &[
+            [-0.08, 2.06],
+            [0.07, 2.06],
+            [0.14, 2.12],
+            [0.07, 2.14],
+            [-0.08, 2.14],
+        ],
+        1.,
+        red,
+    );
+    panel(
+        &mut out,
+        rig,
+        &[[0.01, 2.06], [0.08, 2.06], [0.19, 1.90], [0.10, 1.90]],
+        1.,
+        red,
+    );
     Some(out)
 }
 
@@ -282,15 +357,24 @@ pub(crate) fn append(cloth: &mut CostumeMesh, rig: &PersonRig, look: Look) {
     let extra = cardigan_details(rig, look).or_else(|| {
         // The male uniform is returned by build; the female one composes
         // here so its skirt stays in the same skinned costume.
-        if look.texture_key == "rocket_girl" { rocket_details(rig, look) } else { None }
+        if look.texture_key == "rocket_girl" {
+            rocket_details(rig, look)
+        } else {
+            None
+        }
     });
-    let Some(extra) = extra else { return; };
+    let Some(extra) = extra else {
+        return;
+    };
     let first = cloth.surface.positions.len() as u32;
     cloth.surface.positions.extend(extra.surface.positions);
     cloth.surface.normals.extend(extra.surface.normals);
     cloth.surface.colors.extend(extra.surface.colors);
     cloth.surface.uvs.extend(extra.surface.uvs);
-    cloth.surface.indices.extend(extra.surface.indices.into_iter().map(|i| i + first));
+    cloth
+        .surface
+        .indices
+        .extend(extra.surface.indices.into_iter().map(|i| i + first));
     cloth.joints.extend(extra.joints);
     cloth.weights.extend(extra.weights);
 }
@@ -299,9 +383,27 @@ pub(crate) fn build(rig: &PersonRig, look: Look) -> Option<CostumeMesh> {
     build_with_uniform(rig, look, None)
 }
 
-pub(crate) fn build_with_uniform(rig: &PersonRig, look: Look, uniform: Option<[u8; 3]>) -> Option<CostumeMesh> {
-    if look.texture_key == "rocket" { return rocket_details(rig, look); }
-    if !matches!(look.texture_key, "officer" | "captain" | "sailor" | "clerk" | "biker" | "black_belt" | "gentleman" | "gym_guide" | "unused_guy" | "cal") {
+pub(crate) fn build_with_uniform(
+    rig: &PersonRig,
+    look: Look,
+    uniform: Option<[u8; 3]>,
+) -> Option<CostumeMesh> {
+    if look.texture_key == "rocket" {
+        return rocket_details(rig, look);
+    }
+    if !matches!(
+        look.texture_key,
+        "officer"
+            | "captain"
+            | "sailor"
+            | "clerk"
+            | "biker"
+            | "black_belt"
+            | "gentleman"
+            | "gym_guide"
+            | "unused_guy"
+            | "cal"
+    ) {
         return None;
     }
     let mut out = CostumeMesh {
@@ -313,28 +415,56 @@ pub(crate) fn build_with_uniform(rig: &PersonRig, look: Look, uniform: Option<[u
         // A zip jacket needs a continuous hem around the sides and back,
         // rather than front-only stripes on the shared sleeve/body UV island.
         waist_band(&mut out, rig, 1.46, 0.085, [137, 35, 43])?;
-        rectangle(&mut out, rig, [-0.042, 0.042, 1.545, 2.36], 1., [81, 30, 39]);
+        rectangle(
+            &mut out,
+            rig,
+            [-0.042, 0.042, 1.545, 2.36],
+            1.,
+            [81, 30, 39],
+        );
         let first = out.surface.positions.len();
-        rectangle(&mut out, rig, [-0.009, 0.009, 1.565, 2.33], 1., [179, 169, 148]);
-        for p in &mut out.surface.positions[first..] { p[2] += 0.006; }
+        rectangle(
+            &mut out,
+            rig,
+            [-0.009, 0.009, 1.565, 2.33],
+            1.,
+            [179, 169, 148],
+        );
+        for p in &mut out.surface.positions[first..] {
+            p[2] += 0.006;
+        }
         for sign in [-1., 1.] {
             let first = out.surface.positions.len();
             let collar = [[0.015, 2.34], [0.12, 2.43], [0.25, 2.34], [0.12, 2.23]]
                 .map(|[x, y]| [x * sign, y]);
             panel(&mut out, rig, &collar, 1., [164, 39, 47]);
-            for p in &mut out.surface.positions[first..] { p[2] += 0.012; }
+            for p in &mut out.surface.positions[first..] {
+                p[2] += 0.012;
+            }
             let pocket = [[0.11, 1.73], [0.24, 1.84], [0.26, 1.815], [0.13, 1.705]]
                 .map(|[x, y]| [x * sign, y]);
             panel(&mut out, rig, &pocket, 1., [116, 34, 44]);
         }
         let first = out.surface.positions.len();
-        rectangle(&mut out, rig, [-0.02, 0.02, 2.24, 2.30], 1., [193, 181, 151]);
-        for p in &mut out.surface.positions[first..] { p[2] += 0.014; }
+        rectangle(
+            &mut out,
+            rig,
+            [-0.02, 0.02, 2.24, 2.30],
+            1.,
+            [193, 181, 151],
+        );
+        for p in &mut out.surface.positions[first..] {
+            p[2] += 0.014;
+        }
         return Some(out);
     }
     if matches!(look.texture_key, "gentleman" | "gym_guide" | "unused_guy") {
         let ochre_suit = look.texture_key == "unused_guy";
-        let opening = if ochre_suit { [105, 76, 40] } else { [28, 44, 67] };
+        let opening = if ochre_suit {
+            [105, 76, 40]
+        } else {
+            [28, 44, 67]
+        };
         if ochre_suit {
             // The jacket hem closes around the torso instead of ending as
             // disconnected front details on the shared shirt painting.
@@ -342,36 +472,64 @@ pub(crate) fn build_with_uniform(rig: &PersonRig, look: Look, uniform: Option<[u
         }
         // Keep front-specific suit details off the shared shirt UV island.
         // Every panel follows the same torso surface and skin influences.
-        panel(&mut out, rig, &[
-            [-0.13, 2.43], [0.13, 2.43], [0., 1.96],
-        ], 1., [234, 233, 220]);
+        panel(
+            &mut out,
+            rig,
+            &[[-0.13, 2.43], [0.13, 2.43], [0., 1.96]],
+            1.,
+            [234, 233, 220],
+        );
         for sign in [-1., 1.] {
             let first = out.surface.positions.len();
-            let points = [[0.13, 2.43], [0.29, 2.30], [0.22, 2.21], [0., 1.96]]
-                .map(|[x, y]| [x * sign, y]);
-            let lapel = look.shirt.map(|channel| (channel as f32 * 0.82).round() as u8);
+            let points =
+                [[0.13, 2.43], [0.29, 2.30], [0.22, 2.21], [0., 1.96]].map(|[x, y]| [x * sign, y]);
+            let lapel = look
+                .shirt
+                .map(|channel| (channel as f32 * 0.82).round() as u8);
             panel(&mut out, rig, &points, 1., lapel);
-            for p in &mut out.surface.positions[first..] { p[2] += 0.006; }
+            for p in &mut out.surface.positions[first..] {
+                p[2] += 0.006;
+            }
         }
         if look.texture_key == "gentleman" {
             // The two bow wings and knot are raised above the ivory shirt.
             for sign in [-1., 1.] {
                 let first = out.surface.positions.len();
-                let points = [[0.018, 2.32], [0.13, 2.38], [0.13, 2.26]]
-                    .map(|[x, y]| [x * sign, y]);
+                let points =
+                    [[0.018, 2.32], [0.13, 2.38], [0.13, 2.26]].map(|[x, y]| [x * sign, y]);
                 panel(&mut out, rig, &points, 1., [28, 36, 49]);
-                for p in &mut out.surface.positions[first..] { p[2] += 0.012; }
+                for p in &mut out.surface.positions[first..] {
+                    p[2] += 0.012;
+                }
             }
             let first = out.surface.positions.len();
             rectangle(&mut out, rig, [-0.025, 0.025, 2.29, 2.35], 1., [43, 51, 62]);
-            for p in &mut out.surface.positions[first..] { p[2] += 0.016; }
+            for p in &mut out.surface.positions[first..] {
+                p[2] += 0.016;
+            }
         } else {
             let first = out.surface.positions.len();
-            panel(&mut out, rig, &[
-                [0., 2.34], [-0.032, 2.29], [-0.024, 2.06],
-                [0., 2.00], [0.024, 2.06], [0.032, 2.29],
-            ], 1., if ochre_suit { [45, 117, 119] } else { [145, 49, 63] });
-            for p in &mut out.surface.positions[first..] { p[2] += 0.012; }
+            panel(
+                &mut out,
+                rig,
+                &[
+                    [0., 2.34],
+                    [-0.032, 2.29],
+                    [-0.024, 2.06],
+                    [0., 2.00],
+                    [0.024, 2.06],
+                    [0.032, 2.29],
+                ],
+                1.,
+                if ochre_suit {
+                    [45, 117, 119]
+                } else {
+                    [145, 49, 63]
+                },
+            );
+            for p in &mut out.surface.positions[first..] {
+                p[2] += 0.012;
+            }
         }
         rectangle(&mut out, rig, [-0.014, 0.014, 1.50, 1.94], 1., opening);
         rectangle(&mut out, rig, [-0.24, -0.10, 2.08, 2.105], 1., opening);
@@ -383,13 +541,17 @@ pub(crate) fn build_with_uniform(rig: &PersonRig, look: Look, uniform: Option<[u
             }
         }
         for y in [1.64, 1.81] {
-            let points: Vec<_> = (0..12).map(|i| {
-                let a = std::f32::consts::TAU * i as f32 / 12.;
-                [0.015 * a.cos(), y + 0.015 * a.sin()]
-            }).collect();
+            let points: Vec<_> = (0..12)
+                .map(|i| {
+                    let a = std::f32::consts::TAU * i as f32 / 12.;
+                    [0.015 * a.cos(), y + 0.015 * a.sin()]
+                })
+                .collect();
             let first = out.surface.positions.len();
             panel(&mut out, rig, &points, 1., [73, 83, 97]);
-            for p in &mut out.surface.positions[first..] { p[2] += 0.006; }
+            for p in &mut out.surface.positions[first..] {
+                p[2] += 0.006;
+            }
         }
         return Some(out);
     }
@@ -412,23 +574,34 @@ pub(crate) fn build_with_uniform(rig: &PersonRig, look: Look, uniform: Option<[u
             panel(&mut out, rig, &points, 1., [47, 63, 82]);
             if sign > 0. {
                 // Raise the outer lapel at its crossing to avoid z fighting.
-                for p in &mut out.surface.positions[first..] { p[2] += 0.007; }
+                for p in &mut out.surface.positions[first..] {
+                    p[2] += 0.007;
+                }
             }
         }
         belt(&mut out, rig)?;
         let first = out.surface.positions.len();
         rectangle(&mut out, rig, [-0.045, 0.045, 1.49, 1.60], 1., [39, 40, 43]);
-        for p in &mut out.surface.positions[first..] { p[2] += 0.006; }
+        for p in &mut out.surface.positions[first..] {
+            p[2] += 0.006;
+        }
         // Two tapered cloth ends distinguish a tied martial belt from a
         // plain waist stripe. Sample the torso skin palette so the ends
         // follow the same bend as the knot instead of hanging rigidly.
         for points in [
-            [[-0.040, 1.53], [0.005, 1.53], [-0.035, 1.32], [-0.085, 1.34]],
+            [
+                [-0.040, 1.53],
+                [0.005, 1.53],
+                [-0.035, 1.32],
+                [-0.085, 1.34],
+            ],
             [[0.005, 1.53], [0.045, 1.53], [0.100, 1.37], [0.055, 1.35]],
         ] {
             let first = out.surface.positions.len();
             panel(&mut out, rig, &points, 1., [30, 31, 36]);
-            for p in &mut out.surface.positions[first..] { p[2] += 0.009; }
+            for p in &mut out.surface.positions[first..] {
+                p[2] += 0.009;
+            }
         }
         return Some(out);
     }
@@ -436,20 +609,46 @@ pub(crate) fn build_with_uniform(rig: &PersonRig, look: Look, uniform: Option<[u
         // A fitted waist-length work apron. Every panel samples the actual
         // torso triangles and their skin palette, including the back ties.
         let cloth = [222, 210, 178];
-        panel(&mut out, rig, &[
-            [-0.15, 2.34], [0.15, 2.34], [0.29, 1.50], [-0.29, 1.50],
-        ], 1., cloth);
+        panel(
+            &mut out,
+            rig,
+            &[[-0.15, 2.34], [0.15, 2.34], [0.29, 1.50], [-0.29, 1.50]],
+            1.,
+            cloth,
+        );
         for sign in [-1., 1.] {
             // Meet the bib edge without overlapping coplanar cloth faces.
-            rectangle(&mut out, rig, [0.10 * sign - 0.025, 0.10 * sign + 0.025, 2.34, 2.47], 1., cloth);
+            rectangle(
+                &mut out,
+                rig,
+                [0.10 * sign - 0.025, 0.10 * sign + 0.025, 2.34, 2.47],
+                1.,
+                cloth,
+            );
         }
         waist_band(&mut out, rig, 1.50, 0.055, [205, 192, 159])?;
         let pocket_start = out.surface.positions.len();
-        rectangle(&mut out, rig, [-0.115, 0.115, 1.68, 1.88], 1., [205, 192, 159]);
-        for p in &mut out.surface.positions[pocket_start..] { p[2] += 0.009; }
+        rectangle(
+            &mut out,
+            rig,
+            [-0.115, 0.115, 1.68, 1.88],
+            1.,
+            [205, 192, 159],
+        );
+        for p in &mut out.surface.positions[pocket_start..] {
+            p[2] += 0.009;
+        }
         let badge_start = out.surface.positions.len();
-        rectangle(&mut out, rig, [0.055, 0.125, 2.20, 2.235], 1., [211, 175, 80]);
-        for p in &mut out.surface.positions[badge_start..] { p[2] += 0.009; }
+        rectangle(
+            &mut out,
+            rig,
+            [0.055, 0.125, 2.20, 2.235],
+            1.,
+            [211, 175, 80],
+        );
+        for p in &mut out.surface.positions[badge_start..] {
+            p[2] += 0.009;
+        }
         return Some(out);
     }
     let sailor = look.texture_key == "sailor";
@@ -479,7 +678,8 @@ pub(crate) fn build_with_uniform(rig: &PersonRig, look: Look, uniform: Option<[u
             } else if captain {
                 [234, 233, 220]
             } else {
-                uniform.map(|rgb| rgb.map(|v| (f32::from(v)*1.18).round().min(255.) as u8))
+                uniform
+                    .map(|rgb| rgb.map(|v| (f32::from(v) * 1.18).round().min(255.) as u8))
                     .unwrap_or([62, 88, 128])
             },
         );
@@ -628,15 +828,35 @@ mod tests {
             CharacterKind::RocketGirl,
         ] {
             let look = crate::npc_appearance::look(kind);
-            let composed_details = matches!(kind, CharacterKind::Teacher | CharacterKind::RocketGirl);
+            let composed_details =
+                matches!(kind, CharacterKind::Teacher | CharacterKind::RocketGirl);
             let rig = if composed_details { &female } else { &male };
             let cloth = if composed_details {
                 let composed = crate::npc_appearance::costume_mesh(rig, look).unwrap();
-                assert!(composed.surface.positions.iter().any(|p| p[1] < 1.1),
-                    "{} details must retain the separate skirt", look.texture_key);
-                cardigan_details(rig, look).or_else(|| rocket_details(rig, look)).unwrap()
-            } else { crate::npc_appearance::costume_mesh(rig, look).unwrap() };
-            let minimum_vertices = if matches!(kind, CharacterKind::Gentleman | CharacterKind::GymGuide | CharacterKind::UnusedGuy | CharacterKind::Teacher | CharacterKind::Rocket | CharacterKind::RocketGirl) { 100 } else { 1000 };
+                assert!(
+                    composed.surface.positions.iter().any(|p| p[1] < 1.1),
+                    "{} details must retain the separate skirt",
+                    look.texture_key
+                );
+                cardigan_details(rig, look)
+                    .or_else(|| rocket_details(rig, look))
+                    .unwrap()
+            } else {
+                crate::npc_appearance::costume_mesh(rig, look).unwrap()
+            };
+            let minimum_vertices = if matches!(
+                kind,
+                CharacterKind::Gentleman
+                    | CharacterKind::GymGuide
+                    | CharacterKind::UnusedGuy
+                    | CharacterKind::Teacher
+                    | CharacterKind::Rocket
+                    | CharacterKind::RocketGirl
+            ) {
+                100
+            } else {
+                1000
+            };
             assert!(cloth.surface.positions.len() > minimum_vertices);
             for (j, w) in cloth.joints.iter().zip(&cloth.weights) {
                 assert!(j.iter().all(|&id| (id as usize) < rig.skin_nodes.len()));

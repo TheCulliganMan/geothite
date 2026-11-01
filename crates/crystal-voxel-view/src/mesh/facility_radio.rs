@@ -1,13 +1,13 @@
 //! Original source-complete institutional benches and connected radio desks.
 use super::*;
+use crate::interior_models::RadioFurniturePart;
 use crate::interior_models::{Model, ModelKind};
 use crate::live_profiles::Document;
 use std::sync::OnceLock;
-use crate::interior_models::RadioFurniturePart;
-#[path = "facility_radio_source.rs"]
-mod source;
 #[path = "power_plant_equipment.rs"]
 mod power_plant_equipment;
+#[path = "facility_radio_source.rs"]
+mod source;
 pub(in crate::mesh) use power_plant_equipment::finish as finish_power_plant_equipment;
 use source::{Identity, Kind};
 pub(super) struct Placement {
@@ -37,9 +37,7 @@ fn model(index: usize) -> &'static Model {
             crate::model_storage::include_model!(
                 "models/facility_radio/radio_phone_desk.mesh.json"
             ),
-            crate::model_storage::include_model!(
-                "models/facility_radio/radio_memo_desk.mesh.json"
-            ),
+            crate::model_storage::include_model!("models/facility_radio/radio_memo_desk.mesh.json"),
             crate::model_storage::include_model!(
                 "models/facility_radio/radio_reception_u.mesh.json"
             ),
@@ -83,7 +81,7 @@ pub(super) fn resolve(
         &customized,
     )
     .into_iter()
-    .filter(|p|p.kind()!=Kind::Workbench || model(0).has_native_facility_workbench())
+    .filter(|p| p.kind() != Kind::Workbench || model(0).has_native_facility_workbench())
     .map(|resolved| Placement { resolved })
     .collect()
 }
@@ -99,29 +97,28 @@ fn pixel_uv(g: &GridGeometry, p: &source::Match, x: f32, y: f32) -> [f32; 2] {
 
 // Plain fields in the bench's own complete source drawing: wood top,
 // brown drawer apron, light edge and dark drawer division respectively.
-fn workbench_swatches(g:&GridGeometry,p:&source::Match)->[[f32;2];4] {
-    [[4.,14.],[4.,16.],[4.,1.],[4.,17.]]
-        .map(|[x,y]|pixel_uv(g,p,x+0.5,y+0.5))
+fn workbench_swatches(g: &GridGeometry, p: &source::Match) -> [[f32; 2]; 4] {
+    [[4., 14.], [4., 16.], [4., 1.], [4., 17.]].map(|[x, y]| pixel_uv(g, p, x + 0.5, y + 0.5))
 }
 
-fn radio_affine(kind:Kind,part:RadioFurniturePart)->[f32;4] {
+fn radio_affine(kind: Kind, part: RadioFurniturePart) -> [f32; 4] {
     use RadioFurniturePart::*;
-    let counter=matches!(kind,Kind::ReceptionU|Kind::ReceptionL);
-    let old_top=if counter {12.}else{10.};
+    let counter = matches!(kind, Kind::ReceptionU | Kind::ReceptionL);
+    let old_top = if counter { 12. } else { 10. };
     match part {
-        Rail=>[2./3.,0.,0.5,8.],
-        Return=>[2./3.,0.,1.,0.],
-        Corner=>[2./3.,0.,5./6.,8.],
-        Desk=>[0.8,0.,0.5,8.],
-        Telephone=>[0.65,8.-old_top*0.65,0.5,10.5],
-        Memo=>[0.8,8.-old_top*0.8,0.5,8.],
-        Terminal=>[1.,0.,0.5,12.],
+        Rail => [2. / 3., 0., 0.5, 8.],
+        Return => [2. / 3., 0., 1., 0.],
+        Corner => [2. / 3., 0., 5. / 6., 8.],
+        Desk => [0.8, 0., 0.5, 8.],
+        Telephone => [0.65, 8. - old_top * 0.65, 0.5, 10.5],
+        Memo => [0.8, 8. - old_top * 0.8, 0.5, 8.],
+        Terminal => [1., 0., 0.5, 12.],
     }
 }
 
-fn radio_point(kind:Kind,part:RadioFurniturePart,point:[f32;3])->[f32;3] {
-    let [ys,yo,zs,zo]=radio_affine(kind,part);
-    [point[0],point[1]*ys+yo,point[2]*zs+zo]
+fn radio_point(kind: Kind, part: RadioFurniturePart, point: [f32; 3]) -> [f32; 3] {
+    let [ys, yo, zs, zo] = radio_affine(kind, part);
+    [point[0], point[1] * ys + yo, point[2] * zs + zo]
 }
 /// Only the source readout/memo face stays live, never a copied cabinet skin.
 /// Pixel clipping splits at source-cell boundaries so UVs do not cross tiles.
@@ -187,7 +184,7 @@ pub(super) fn append(
     if !p.coherent(&identities, g.width, g.height) {
         return false;
     }
-    if p.kind()==Kind::Workbench && !model(0).has_native_facility_workbench() {
+    if p.kind() == Kind::Workbench && !model(0).has_native_facility_workbench() {
         return false;
     }
     let (west, _, north, _) = g.bounds(p.column, p.row);
@@ -205,16 +202,43 @@ pub(super) fn append(
     let ([w, e, n, s], rise) = p.kind().fitting();
     let bounds = [west + w * sx, west + e * sx, north + n * sy, north + s * sy];
     match p.kind() {
-        Kind::InstrumentBank if p.map()=="TrainerHouseB1F" => {
-            let [w,e,n,s]=bounds;let h=rise*sy;
-            let first=mesh.textured.positions.len();
-            super::modeled_interiors::architecture_box(&mut mesh.textured,[w,e,0.,h,n,s],[1.;3]);
-            mesh.textured.uvs[first..].fill(pixel_uv(g,p,2.5,2.5));
+        Kind::InstrumentBank if p.map() == "TrainerHouseB1F" => {
+            let [w, e, n, s] = bounds;
+            let h = rise * sy;
+            let first = mesh.textured.positions.len();
+            super::modeled_interiors::architecture_box(
+                &mut mesh.textured,
+                [w, e, 0., h, n, s],
+                [1.; 3],
+            );
+            mesh.textured.uvs[first..].fill(pixel_uv(g, p, 2.5, 2.5));
             // The source's first row is a horizontal lid, not blank front height.
-            live_panel(mesh,g,p,[0.,0.,16.,8.],
-                [[w,h+0.002*sy,n],[e,h+0.002*sy,n],[e,h+0.002*sy,s],[w,h+0.002*sy,s]],[0.,1.,0.]);
-            live_panel(mesh,g,p,[0.,8.,16.,24.],
-                [[w,h,s+0.002*sy],[e,h,s+0.002*sy],[e,0.,s+0.002*sy],[w,0.,s+0.002*sy]],[0.,0.,1.]);
+            live_panel(
+                mesh,
+                g,
+                p,
+                [0., 0., 16., 8.],
+                [
+                    [w, h + 0.002 * sy, n],
+                    [e, h + 0.002 * sy, n],
+                    [e, h + 0.002 * sy, s],
+                    [w, h + 0.002 * sy, s],
+                ],
+                [0., 1., 0.],
+            );
+            live_panel(
+                mesh,
+                g,
+                p,
+                [0., 8., 16., 24.],
+                [
+                    [w, h, s + 0.002 * sy],
+                    [e, h, s + 0.002 * sy],
+                    [e, 0., s + 0.002 * sy],
+                    [w, 0., s + 0.002 * sy],
+                ],
+                [0., 0., 1.],
+            );
         }
         Kind::InstrumentBank => crate::dungeon_models::room_model(
             crate::dungeon_models::RoomAsset::FacilityInstrumentBank,
@@ -223,26 +247,57 @@ pub(super) fn append(
             pixel_uv(g, p, v[0] + 0.5, v[1] + 0.5)
         }),
         Kind::Stool | Kind::RoundStool => {
-            let source_y=if p.kind()==Kind::Stool {16.}else{0.};
-            let top=pixel_uv(g,p,8.5,source_y+5.5);
-            let side=pixel_uv(g,p,3.5,source_y+9.5);
-            crate::interior_models::model(ModelKind::ArcadeStool)
-                .append_native_stool(&mut mesh.textured,bounds,rise*sy,top,side);
+            let source_y = if p.kind() == Kind::Stool { 16. } else { 0. };
+            let top = pixel_uv(g, p, 8.5, source_y + 5.5);
+            let side = pixel_uv(g, p, 3.5, source_y + 9.5);
+            crate::interior_models::model(ModelKind::ArcadeStool).append_native_stool(
+                &mut mesh.textured,
+                bounds,
+                rise * sy,
+                top,
+                side,
+            );
         }
-        kind @ (Kind::PhoneDesk|Kind::MemoDesk|Kind::ReceptionU|Kind::ReceptionL|Kind::CounterExtension) => {
-            let front=if matches!(kind,Kind::ReceptionU|Kind::ReceptionL) {[20.,10.]}else{[3.,10.]};
-            let swatches=[[3.,3.],front,[1.,1.],[0.,0.]].map(|v|pixel_uv(g,p,v[0]+0.5,v[1]+0.5));
-            assert!(model(kind.model_index()).append_native_radio(&mut mesh.textured,bounds,rise*sy,sy,
-                |part|radio_affine(kind,part),swatches),"canonical radio furniture requires its named material parts");
+        kind @ (Kind::PhoneDesk
+        | Kind::MemoDesk
+        | Kind::ReceptionU
+        | Kind::ReceptionL
+        | Kind::CounterExtension) => {
+            let front = if matches!(kind, Kind::ReceptionU | Kind::ReceptionL) {
+                [20., 10.]
+            } else {
+                [3., 10.]
+            };
+            let swatches = [[3., 3.], front, [1., 1.], [0., 0.]]
+                .map(|v| pixel_uv(g, p, v[0] + 0.5, v[1] + 0.5));
+            assert!(
+                model(kind.model_index()).append_native_radio(
+                    &mut mesh.textured,
+                    bounds,
+                    rise * sy,
+                    sy,
+                    |part| radio_affine(kind, part),
+                    swatches
+                ),
+                "canonical radio furniture requires its named material parts"
+            );
         }
         Kind::Workbench => {
-            assert!(model(0).append_native_facility_workbench(&mut mesh.textured,bounds,
-                rise*sy,workbench_swatches(g,p)),"complete facility workbench requires named live materials");
+            assert!(
+                model(0).append_native_facility_workbench(
+                    &mut mesh.textured,
+                    bounds,
+                    rise * sy,
+                    workbench_swatches(g, p)
+                ),
+                "complete facility workbench requires named live materials"
+            );
         }
     }
     let point = |x: f32, y: f32, z: f32| [west + x * sx, y * sy, north + z * sy];
-    let native_point=|part,x,y,z| {
-        let v=radio_point(p.kind(),part,[x,y,z]);point(v[0],v[1],v[2])
+    let native_point = |part, x, y, z| {
+        let v = radio_point(p.kind(), part, [x, y, z]);
+        point(v[0], v[1], v[2])
     };
     match p.kind() {
         Kind::Workbench => live_panel(
@@ -264,10 +319,10 @@ pub(super) fn append(
             p,
             [83., 5., 10., 5.],
             [
-                native_point(RadioFurniturePart::Terminal,82.8,16.2,20.02),
-                native_point(RadioFurniturePart::Terminal,93.2,16.2,20.02),
-                native_point(RadioFurniturePart::Terminal,93.2,13.2,20.02),
-                native_point(RadioFurniturePart::Terminal,82.8,13.2,20.02),
+                native_point(RadioFurniturePart::Terminal, 82.8, 16.2, 20.02),
+                native_point(RadioFurniturePart::Terminal, 93.2, 16.2, 20.02),
+                native_point(RadioFurniturePart::Terminal, 93.2, 13.2, 20.02),
+                native_point(RadioFurniturePart::Terminal, 82.8, 13.2, 20.02),
             ],
             [0., 0., 1.],
         ),
@@ -283,10 +338,10 @@ pub(super) fn append(
                 p,
                 [source_x, 1., 4., 5.],
                 [
-                    native_point(RadioFurniturePart::Memo,x,base+0.27,2.3),
-                    native_point(RadioFurniturePart::Memo,x+4.5,base+0.27,2.3),
-                    native_point(RadioFurniturePart::Memo,x+4.5,base+0.27,7.1),
-                    native_point(RadioFurniturePart::Memo,x,base+0.27,7.1),
+                    native_point(RadioFurniturePart::Memo, x, base + 0.27, 2.3),
+                    native_point(RadioFurniturePart::Memo, x + 4.5, base + 0.27, 2.3),
+                    native_point(RadioFurniturePart::Memo, x + 4.5, base + 0.27, 7.1),
+                    native_point(RadioFurniturePart::Memo, x, base + 0.27, 7.1),
                 ],
                 [0., 1., 0.],
             );

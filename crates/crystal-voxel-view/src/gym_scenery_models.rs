@@ -9,9 +9,7 @@ pub(crate) fn gym_model(index: usize) -> &'static Model {
         [
             crate::model_storage::include_model!("models/gym_scenery/planter_leafy.mesh.json"),
             crate::model_storage::include_model!("models/gym_scenery/planter_round.mesh.json"),
-            crate::model_storage::include_model!(
-                "models/gym_scenery/azalea_broad_tree.mesh.json"
-            ),
+            crate::model_storage::include_model!("models/gym_scenery/azalea_broad_tree.mesh.json"),
             crate::model_storage::include_model!(
                 "models/gym_scenery/celadon_round_hedge.mesh.json"
             ),
@@ -96,16 +94,17 @@ mod tests {
             let mut mesh = crate::mesh::SurfaceMeshData::default();
             gym_model(index).append(&mut mesh, [-8., 8., 16., 32.], 0., 12.);
             assert!(!mesh.indices.is_empty());
-            assert!(mesh
-                .positions
-                .iter()
-                .all(|p| p.iter().all(|v| v.is_finite())
-                    && p[0] >= -8.001
-                    && p[0] <= 8.001
-                    && p[1] >= -0.001
-                    && p[1] <= 12.001
-                    && p[2] >= 15.999
-                    && p[2] <= 32.001));
+            assert!(
+                mesh.positions
+                    .iter()
+                    .all(|p| p.iter().all(|v| v.is_finite())
+                        && p[0] >= -8.001
+                        && p[0] <= 8.001
+                        && p[1] >= -0.001
+                        && p[1] <= 12.001
+                        && p[2] >= 15.999
+                        && p[2] <= 32.001)
+            );
         }
     }
     #[test]
@@ -158,32 +157,49 @@ mod tests {
                             }) {
                                 continue;
                             }
-                            assert!(source.name.starts_with("Closed masonry")
-                                || source.name.starts_with("Continuous recessed")
-                                || source.name.starts_with("Closed dressed-stone")
-                                || source.name.starts_with("Continuous coping")
-                                || source.name.starts_with("Beveled continuous stone coping"),
-                                "only closed masonry and coping parts may reach a join");
-                            let points = tri.iter().map(|&i| {
-                                let mut point = bevy::prelude::Vec3::from_slice(
-                                    &source.positions[i as usize * 3..i as usize * 3 + 3]);
-                                point[axis] -= direction;
-                                point
-                            }).collect::<Vec<_>>();
+                            assert!(
+                                source.name.starts_with("Closed masonry")
+                                    || source.name.starts_with("Continuous recessed")
+                                    || source.name.starts_with("Closed dressed-stone")
+                                    || source.name.starts_with("Continuous coping")
+                                    || source.name.starts_with("Beveled continuous stone coping"),
+                                "only closed masonry and coping parts may reach a join"
+                            );
+                            let points = tri
+                                .iter()
+                                .map(|&i| {
+                                    let mut point = bevy::prelude::Vec3::from_slice(
+                                        &source.positions[i as usize * 3..i as usize * 3 + 3],
+                                    );
+                                    point[axis] -= direction;
+                                    point
+                                })
+                                .collect::<Vec<_>>();
                             // Beveled coping and the masonry courses are closed convex parts.
                             // Require one actual neighboring part to contain
                             // the entire triangle, rather than its bounding box.
-                            let contained = exports[usize::from(neighbor)].primitives.iter().any(|other| {
-                                other.indices.chunks_exact(3).all(|face| {
-                                    let [a,b,c] = [face[0],face[1],face[2]].map(|i|
-                                        bevy::prelude::Vec3::from_slice(
-                                            &other.positions[i as usize * 3..i as usize * 3 + 3]));
-                                    let normal = (b-a).cross(c-a).normalize();
-                                    points.iter().all(|point|normal.dot(*point-a)<=0.00001)
-                                })
-                            });
-                            assert!(contained,
-                                "join leaves closed neighbor: own={own} neighbor={neighbor} side={bit} part={part}");
+                            let contained =
+                                exports[usize::from(neighbor)]
+                                    .primitives
+                                    .iter()
+                                    .any(|other| {
+                                        other.indices.chunks_exact(3).all(|face| {
+                                            let [a, b, c] = [face[0], face[1], face[2]].map(|i| {
+                                                bevy::prelude::Vec3::from_slice(
+                                                    &other.positions
+                                                        [i as usize * 3..i as usize * 3 + 3],
+                                                )
+                                            });
+                                            let normal = (b - a).cross(c - a).normalize();
+                                            points
+                                                .iter()
+                                                .all(|point| normal.dot(*point - a) <= 0.00001)
+                                        })
+                                    });
+                            assert!(
+                                contained,
+                                "join leaves closed neighbor: own={own} neighbor={neighbor} side={bit} part={part}"
+                            );
                             removed += 1;
                         }
                     }
@@ -206,20 +222,44 @@ pub(crate) fn gym_flower_planter_base() -> &'static Model {
     static BASE: OnceLock<Model> = OnceLock::new();
     BASE.get_or_init(|| {
         let mut source: serde_json::Value = crate::model_storage::parse(
-            crate::model_storage::include_model!("models/gym_scenery/planter_round.mesh.json"))
-            .expect("named flower container source");
-        assert_eq!(source["name"].as_str(),Some("planter_round"));
-        let parts=source["primitives"].as_array_mut().expect("named planter parts");
-        assert!(parts.iter().all(|p|matches!(p["name"].as_str().and_then(|n|n.rsplit(':').next()),
-            Some("oak"|"oak_light"|"oak_end"|"soil"|"brass"|"bark"|"leaf"|"leaf_light"|"leaf_gold"))));
-        parts.retain(|p|matches!(p["name"].as_str().and_then(|n|n.rsplit(':').next()),
-            Some("oak"|"oak_light"|"oak_end"|"soil"|"brass")));
+            crate::model_storage::include_model!("models/gym_scenery/planter_round.mesh.json"),
+        )
+        .expect("named flower container source");
+        assert_eq!(source["name"].as_str(), Some("planter_round"));
+        let parts = source["primitives"]
+            .as_array_mut()
+            .expect("named planter parts");
+        assert!(parts.iter().all(|p| matches!(
+            p["name"].as_str().and_then(|n| n.rsplit(':').next()),
+            Some(
+                "oak"
+                    | "oak_light"
+                    | "oak_end"
+                    | "soil"
+                    | "brass"
+                    | "bark"
+                    | "leaf"
+                    | "leaf_light"
+                    | "leaf_gold"
+            )
+        )));
+        parts.retain(|p| {
+            matches!(
+                p["name"].as_str().and_then(|n| n.rsplit(':').next()),
+                Some("oak" | "oak_light" | "oak_end" | "soil" | "brass")
+            )
+        });
         assert!(!parts.is_empty());
-        let mut model=Model::parse(serde_json::to_string(&source).expect("retained container parts").as_str())
-            .expect("validated flower container");
+        let mut model = Model::parse(
+            serde_json::to_string(&source)
+                .expect("retained container parts")
+                .as_str(),
+        )
+        .expect("validated flower container");
         // Keep the original assembly's fit; removing the canopy must not
         // stretch the wooden container to the full plant height.
-        model.min=gym_model(1).min;model.max=gym_model(1).max;
+        model.min = gym_model(1).min;
+        model.max = gym_model(1).max;
         model
     })
 }
@@ -229,12 +269,19 @@ mod flower_tests {
     use super::*;
     #[test]
     fn gym_planter_flower_container_preserves_named_cache_and_original_fit() {
-        let ordinary=gym_model(1);let before=ordinary.surface.clone();
-        let base=gym_flower_planter_base();
-        assert_eq!(base.min,ordinary.min);assert_eq!(base.max,ordinary.max);
-        assert!(base.surface.positions.iter().all(|p|p[1]<ordinary.max[1]*0.6));
-        assert!(base.surface.indices.len()<ordinary.surface.indices.len());
-        assert_eq!(gym_model(1).surface,before);
-        assert!(std::ptr::eq(base,gym_flower_planter_base()));
+        let ordinary = gym_model(1);
+        let before = ordinary.surface.clone();
+        let base = gym_flower_planter_base();
+        assert_eq!(base.min, ordinary.min);
+        assert_eq!(base.max, ordinary.max);
+        assert!(
+            base.surface
+                .positions
+                .iter()
+                .all(|p| p[1] < ordinary.max[1] * 0.6)
+        );
+        assert!(base.surface.indices.len() < ordinary.surface.indices.len());
+        assert_eq!(gym_model(1).surface, before);
+        assert!(std::ptr::eq(base, gym_flower_planter_base()));
     }
 }

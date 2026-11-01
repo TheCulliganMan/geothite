@@ -119,13 +119,26 @@ pub fn decode_modified_cry(midi: &str, request: &ModifiedCryRequest) -> Result<D
     // pre-parameterized programs accept the caller's cartridge registers.
     // Preserve the pack's integrity contract; derived output has a different
     // hash and frame count and must not be compared to the ordinary cry.
-    decode_midi_pcm(midi, request.format.clone(), request.byte_len,
-        &request.payload_hash, None, None)?;
+    decode_midi_pcm(
+        midi,
+        request.format.clone(),
+        request.byte_len,
+        &request.payload_hash,
+        None,
+        None,
+    )?;
     program.cry_pitch = Some(i64::from(request.parameters.pitch));
     program.cry_length = Some(i64::from(request.parameters.length));
     let rendered = render(&program, SynthContext::cartridge()?)?;
-    anyhow::ensure!(rendered.loop_samples.is_empty(), "modified cry must terminate");
-    let bytes = rendered.downsample().into_iter().flat_map(i16::to_le_bytes).collect();
+    anyhow::ensure!(
+        rendered.loop_samples.is_empty(),
+        "modified cry must terminate"
+    );
+    let bytes = rendered
+        .downsample()
+        .into_iter()
+        .flat_map(i16::to_le_bytes)
+        .collect();
     decode_pcm(bytes, request.format.clone(), None, None)
 }
 

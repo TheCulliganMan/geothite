@@ -7,9 +7,10 @@ const TRUNK_SIDES: usize = 32;
 pub(super) fn dimensions(spacing: f32, tile: f32, coordinates: [i32; 2]) -> (f32, f32) {
     let v = variation(coordinates[0], coordinates[1]);
     let maturity = (v.height - 0.90) / 0.70;
-    (tile * (10.5 + maturity * 4.0) * [0.96, 1.04, 1.0][v.index],
-        spacing * (2.0 + maturity * 0.40) * (0.94 + v.width * 0.06)
-            * [1.04, 0.94, 1.0][v.index])
+    (
+        tile * (10.5 + maturity * 4.0) * [0.96, 1.04, 1.0][v.index],
+        spacing * (2.0 + maturity * 0.40) * (0.94 + v.width * 0.06) * [1.04, 0.94, 1.0][v.index],
+    )
 }
 
 pub(super) fn phase(coordinates: [i32; 2]) -> f32 {
@@ -49,8 +50,7 @@ pub(super) fn crown_shape(a: f32, b: f32, phase: f32) -> (f32, Vec3) {
         let spread = (1. - y * y).sqrt();
         let axis = Vec3::new(spread * turn.cos(), y, spread * turn.sin());
         let dot = direction.dot(axis);
-        let weight = 0.30 + 0.18 *
-            (0.5 + 0.5 * (phase * 1.37 + cluster as f32 * 0.91).sin());
+        let weight = 0.30 + 0.18 * (0.5 + 0.5 * (phase * 1.37 + cluster as f32 * 0.91).sin());
         let lobe = weight * ((dot - 1.) * 10.).exp();
         mass += lobe;
         gradient += (axis - direction * dot) * (10. * lobe);
@@ -219,15 +219,19 @@ pub(crate) fn append_park_tree(
         .push(first..mesh.solid.positions.len());
 }
 
-fn append_understory(mesh: &mut SurfaceMeshData, center: Vec3, spacing: f32, tile: f32, phase: f32) {
+fn append_understory(
+    mesh: &mut SurfaceMeshData,
+    center: Vec3,
+    spacing: f32,
+    tile: f32,
+    phase: f32,
+) {
     // Low rosettes sit beside the buttress roots, inside the original tree
     // plot. They add planted depth without spreading over the promenade.
     for plant in 0..12 {
         let angle = phase + plant as f32 * 2.399963;
-        let radius = spacing * (0.16 + (plant % 3) as f32 * 0.05
-            + 0.025 * (angle * 2.3).sin());
-        let root = center + Vec3::new(angle.cos() * radius, tile * 0.0015,
-            angle.sin() * radius);
+        let radius = spacing * (0.16 + (plant % 3) as f32 * 0.05 + 0.025 * (angle * 2.3).sin());
+        let root = center + Vec3::new(angle.cos() * radius, tile * 0.0015, angle.sin() * radius);
         for leaf in 0..6 {
             let a = angle + leaf as f32 * std::f32::consts::TAU / 6.;
             let along = Vec3::new(a.cos(), 0., a.sin());
@@ -238,16 +242,25 @@ fn append_understory(mesh: &mut SurfaceMeshData, center: Vec3, spacing: f32, til
             let left = middle - across * tile * 0.090;
             let right = middle + across * tile * 0.090;
             let ridge = middle + Vec3::Y * tile * 0.045;
-            for mut p in [[root, left, ridge], [left, tip, ridge],
-                [tip, right, ridge], [right, root, ridge]] {
+            for mut p in [
+                [root, left, ridge],
+                [left, tip, ridge],
+                [tip, right, ridge],
+                [right, root, ridge],
+            ] {
                 let mut normal = (p[1] - p[0]).cross(p[2] - p[0]).normalize();
-                if normal.y < 0. { p.swap(1, 2); normal = -normal; }
-                let shade = 0.72 + 0.28 * normal.dot(Vec3::new(0.45, 0.80, 0.55).normalize()).max(0.);
+                if normal.y < 0. {
+                    p.swap(1, 2);
+                    normal = -normal;
+                }
+                let shade =
+                    0.72 + 0.28 * normal.dot(Vec3::new(0.45, 0.80, 0.55).normalize()).max(0.);
                 let first = mesh.positions.len() as u32;
                 mesh.positions.extend(p.map(|p| p.to_array()));
                 mesh.normals.extend([normal.to_array(); 3]);
                 mesh.uvs.extend([[0.; 2]; 3]);
-                mesh.colors.extend([[0.12 * shade, 0.25 * shade, 0.075 * shade, 1.]; 3]);
+                mesh.colors
+                    .extend([[0.12 * shade, 0.25 * shade, 0.075 * shade, 1.]; 3]);
                 mesh.indices.extend([first, first + 1, first + 2]);
             }
         }
@@ -424,7 +437,8 @@ mod tests {
                 continue;
             }
             faces += 1;
-            let p = [face[0], face[1], face[2]].map(|i| Vec3::from_array(mesh.positions[i as usize]));
+            let p =
+                [face[0], face[1], face[2]].map(|i| Vec3::from_array(mesh.positions[i as usize]));
             let [a, b, c] = p.map(|p| p.as_dvec3() - origin);
             volume += a.dot(b.cross(c));
             let ids = p.map(|p| {
@@ -488,12 +502,18 @@ mod tests {
     fn park_cluster_leaves_keep_outward_faces() {
         for phase in [0., 1.3, 3.8] {
             let mut mesh = SurfaceMeshData::default();
-            town_crown(&mut mesh, Vec3::ZERO, Vec3::new(17., 15., 16.),
-                phase, [1.; 3]);
+            town_crown(
+                &mut mesh,
+                Vec3::ZERO,
+                Vec3::new(17., 15., 16.),
+                phase,
+                [1.; 3],
+            );
             for ids in mesh.indices.chunks_exact(3) {
-                let [a, b, c] = [ids[0], ids[1], ids[2]]
-                    .map(|i| Vec3::from_array(mesh.positions[i as usize]));
-                let normal = ids.iter()
+                let [a, b, c] =
+                    [ids[0], ids[1], ids[2]].map(|i| Vec3::from_array(mesh.positions[i as usize]));
+                let normal = ids
+                    .iter()
                     .map(|&i| Vec3::from_array(mesh.normals[i as usize]))
                     .sum::<Vec3>();
                 let face = (b - a).cross(c - a);
@@ -600,11 +620,15 @@ mod tests {
         for phase in [0., 1.3, 3.8] {
             let mut mesh = SurfaceMeshData::default();
             append_understory(&mut mesh, Vec3::new(16., 3., 16.), 32., 8., phase);
-            assert!(mesh.positions.iter().all(|p| p[0] > 0. && p[0] < 32.
-                && p[2] > 0. && p[2] < 32. && p[1] >= 3. && p[1] < 3. + 8. * 0.40));
+            assert!(mesh.positions.iter().all(|p| p[0] > 0.
+                && p[0] < 32.
+                && p[2] > 0.
+                && p[2] < 32.
+                && p[1] >= 3.
+                && p[1] < 3. + 8. * 0.40));
             for ids in mesh.indices.chunks_exact(3) {
-                let [a, b, c] = [ids[0], ids[1], ids[2]]
-                    .map(|i| Vec3::from_array(mesh.positions[i as usize]));
+                let [a, b, c] =
+                    [ids[0], ids[1], ids[2]].map(|i| Vec3::from_array(mesh.positions[i as usize]));
                 let normal = Vec3::from_array(mesh.normals[ids[0] as usize]);
                 let face = (b - a).cross(c - a);
                 assert!(face.length_squared() > 0.000001);
@@ -647,7 +671,8 @@ mod tests {
                 }
                 assert_closed_component(&leaf, 0..leaf.positions.len());
                 assert!(
-                    normals[0].dot(direction) > 0.99 && normals[PARK_LEAF_BACK].dot(direction) < -0.99,
+                    normals[0].dot(direction) > 0.99
+                        && normals[PARK_LEAF_BACK].dot(direction) < -0.99,
                     "the leaf needs distinct upper and lower shading"
                 );
                 for edge in 1..=PARK_LEAF_EDGES {
@@ -732,12 +757,19 @@ mod tests {
             let mut mesh = SurfaceMeshData::default();
             append_root(&mut mesh, Vec3::new(0., 3., 0.), angle, 2.72, 7.2, 8.);
             assert_eq!(mesh.positions.len(), 17 * 4);
-            assert!(mesh.positions.iter().all(|p| p[1] >= 3.
-                && p[0].abs() < 8. && p[2].abs() < 8.));
+            assert!(
+                mesh.positions
+                    .iter()
+                    .all(|p| p[1] >= 3. && p[0].abs() < 8. && p[2].abs() < 8.)
+            );
             assert!(mesh.positions.iter().any(|p| p[1] == 3.));
-            for (p, n) in mesh.positions.chunks_exact(4).zip(mesh.normals.chunks_exact(4)) {
+            for (p, n) in mesh
+                .positions
+                .chunks_exact(4)
+                .zip(mesh.normals.chunks_exact(4))
+            {
                 let [a, b, c] = [p[0], p[1], p[2]].map(Vec3::from_array);
-                let cross = (b-a).cross(c-a);
+                let cross = (b - a).cross(c - a);
                 assert!(cross.length_squared() > 0.000001);
                 assert!(cross.normalize().dot(Vec3::from_array(n[0])) > 0.999);
             }
@@ -764,12 +796,22 @@ mod tests {
                     .all(|n| (Vec3::from_array(*n).length() - 1.).abs() < 0.001)
             );
             assert!(s.indices.iter().all(|&i| (i as usize) < s.positions.len()));
-            let top = s.positions.iter().map(|p| p[1] - 3.)
+            let top = s
+                .positions
+                .iter()
+                .map(|p| p[1] - 3.)
                 .fold(0.0_f32, f32::max);
-            assert!(top > visitor_height * 3., "park trees must tower over visitors");
-            assert!(s.positions.iter().filter(|p| p[0].abs() > 16. || p[2].abs() > 16.)
-                .all(|p| p[1] - 3. > visitor_height),
-                "spreading boughs must clear people on adjacent paths");
+            assert!(
+                top > visitor_height * 3.,
+                "park trees must tower over visitors"
+            );
+            assert!(
+                s.positions
+                    .iter()
+                    .filter(|p| p[0].abs() > 16. || p[2].abs() > 16.)
+                    .all(|p| p[1] - 3. > visitor_height),
+                "spreading boughs must clear people on adjacent paths"
+            );
             if let Some(p) = previous {
                 assert_ne!(s.positions, p);
             }

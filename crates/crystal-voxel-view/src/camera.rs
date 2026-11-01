@@ -57,7 +57,11 @@ impl VoxelCameraControls {
         camera.first_person = first_person;
         camera.pitch_degrees = if pitch.is_finite() {
             pitch.clamp(if first_person { -85.0 } else { 5.0 }, 85.0)
-        } else if first_person { 0.0 } else { CAMERA_PITCH_DEGREES };
+        } else if first_person {
+            0.0
+        } else {
+            CAMERA_PITCH_DEGREES
+        };
         camera
     }
 
@@ -131,7 +135,9 @@ impl VoxelCameraControls {
         let mut pose = self.pose(frame.viewport_size);
         // The classic viewport clamps at room/map edges. Its center must not
         // become the orbit pivot when the trainer walks away from it.
-        let pivot = frame.actors.iter()
+        let pivot = frame
+            .actors
+            .iter()
             .find(|actor| actor.id == crystal_render_api::VisualActorId::Player)
             .map(|player| crate::footing::actor_ground_point(frame, player))
             .filter(|point| point.is_finite())
@@ -140,10 +146,17 @@ impl VoxelCameraControls {
         pose.eye += origin;
         pose.target += origin;
         if !self.first_person {
-            if let Some(player) = frame.actors.iter().find(|a|
-                a.id == crystal_render_api::VisualActorId::Player) {
-                let height=crate::footing::resolved_footing_height(frame,
-                    crate::footing::actor_ground_point(frame, player), heights).unwrap_or(0.);
+            if let Some(player) = frame
+                .actors
+                .iter()
+                .find(|a| a.id == crystal_render_api::VisualActorId::Player)
+            {
+                let height = crate::footing::resolved_footing_height(
+                    frame,
+                    crate::footing::actor_ground_point(frame, player),
+                    heights,
+                )
+                .unwrap_or(0.);
                 pose.eye.y += height;
                 pose.target.y += height;
                 // Look over raised native terrain rather than letting a low
@@ -151,17 +164,29 @@ impl VoxelCameraControls {
                 // Keep user yaw, distance and target; only add needed pitch.
                 if crate::cave_water::outdoor(&frame.map_id)
                     && frame.map_id.as_ref() != "IlexForest"
-                    && frame.tiles.first().is_some_and(|tile|
-                        matches!(tile.source.tileset_id.as_ref(), "johto" | "johto_modern" | "kanto")) {
+                    && frame.tiles.first().is_some_and(|tile| {
+                        matches!(
+                            tile.source.tileset_id.as_ref(),
+                            "johto" | "johto_modern" | "kanto"
+                        )
+                    })
+                {
                     let foot = crate::footing::actor_ground_point(frame, player);
-                    pose = clear_foreground_terrain(pose, frame, heights,
-                        crate::footing::visual_point_to_voxel(foot, height));
+                    pose = clear_foreground_terrain(
+                        pose,
+                        frame,
+                        heights,
+                        crate::footing::visual_point_to_voxel(foot, height),
+                    );
                 }
                 if !crate::cave_water::outdoor(&frame.map_id)
-                    && let Some(stature) = crate::new_bark_actors::modeled_character_height(frame, player)
+                    && let Some(stature) =
+                        crate::new_bark_actors::modeled_character_height(frame, player)
                 {
                     let foot = crate::footing::visual_point_to_voxel(
-                        crate::footing::actor_ground_point(frame, player), height);
+                        crate::footing::actor_ground_point(frame, player),
+                        height,
+                    );
                     pose = contain_actor_height(pose, foot, stature);
                 }
             }
@@ -188,7 +213,9 @@ impl VoxelCameraControls {
             }
         }
         if crate::summit_vista::enabled(frame) {
-            pose.far=pose.far.max(6000.*crate::summit_vista::world_units(frame));
+            pose.far = pose
+                .far
+                .max(6000. * crate::summit_vista::world_units(frame));
         }
         pose
     }
@@ -201,39 +228,59 @@ impl VoxelCameraControls {
         traversal: Option<&crystal_render_api::VisualPlayerTraversal>,
     ) -> VoxelCameraPose {
         let mut pose = self.world_pose(frame, heights);
-        if let Some(player) = frame.actors.iter().find(|a| a.id == crystal_render_api::VisualActorId::Player)
-            && let Some((height, arc)) = crate::footing::traversal_height(frame, player, heights, traversal)
+        if let Some(player) = frame
+            .actors
+            .iter()
+            .find(|a| a.id == crystal_render_api::VisualActorId::Player)
+            && let Some((height, arc)) =
+                crate::footing::traversal_height(frame, player, heights, traversal)
             && arc > 0.0
         {
-            let ground = crate::footing::resolved_footing_height(frame, crate::footing::actor_ground_point(frame, player), heights).unwrap_or(height);
+            let ground = crate::footing::resolved_footing_height(
+                frame,
+                crate::footing::actor_ground_point(frame, player),
+                heights,
+            )
+            .unwrap_or(height);
             let step = traversal.and_then(|t| t.step).unwrap();
             let offset = Vec2::Y * frame.tile_size.y;
-            let from = crate::footing::resolved_footing_height(frame, step.from + offset, heights).unwrap_or(ground);
-            let to = crate::footing::resolved_footing_height(frame, step.to + offset, heights).unwrap_or(ground);
-            let camera_height = if self.first_person { height } else { from + (to - from) * step.progress.clamp(0.0, 1.0) };
+            let from = crate::footing::resolved_footing_height(frame, step.from + offset, heights)
+                .unwrap_or(ground);
+            let to = crate::footing::resolved_footing_height(frame, step.to + offset, heights)
+                .unwrap_or(ground);
+            let camera_height = if self.first_person {
+                height
+            } else {
+                from + (to - from) * step.progress.clamp(0.0, 1.0)
+            };
             pose.eye.y += camera_height - ground;
             pose.target.y += camera_height - ground;
         }
         pose
     }
-
 }
 
 /// Pan within the camera plane when a clamped interior viewport would cut off
 /// the player at an entrance. Preserve projection, depth, orbit and rig scale.
 fn contain_actor_height(mut pose: VoxelCameraPose, foot: Vec3, stature: f32) -> VoxelCameraPose {
-    if !foot.is_finite() || !stature.is_finite() || stature <= 0. { return pose; }
+    if !foot.is_finite() || !stature.is_finite() || stature <= 0. {
+        return pose;
+    }
     let forward = (pose.target - pose.eye).normalize_or_zero();
     let right = forward.cross(pose.up).normalize_or_zero();
     let up = right.cross(forward);
-    if up.length_squared() < 0.5 { return pose; }
+    if up.length_squared() < 0.5 {
+        return pose;
+    }
     let tangent = (pose.vertical_fov_radians * 0.5).tan();
     let mut low = f32::NEG_INFINITY;
     let mut high = f32::INFINITY;
     for point in [foot, foot + Vec3::Y * stature] {
         let relative = point - pose.eye;
         let depth = relative.dot(forward);
-        if depth <= pose.near || !depth.is_finite() { return pose; }
+        if depth <= pose.near || !depth.is_finite() {
+            return pose;
+        }
         let half_height = depth * tangent * 0.9;
         let height = relative.dot(up);
         low = low.max(height - half_height);
@@ -241,7 +288,9 @@ fn contain_actor_height(mut pose: VoxelCameraPose, foot: Vec3, stature: f32) -> 
     }
     // A rig larger than the viewport needs the user's wider zoom. Panning
     // cannot honestly contain both extremes in that case.
-    if !low.is_finite() || !high.is_finite() || low > high { return pose; }
+    if !low.is_finite() || !high.is_finite() || low > high {
+        return pose;
+    }
     let shift = up * 0_f32.clamp(low, high);
     pose.eye += shift;
     pose.target += shift;
@@ -257,14 +306,18 @@ fn clear_foreground_terrain(
     let offset = pose.eye - pose.target;
     let horizontal = Vec2::new(offset.x, offset.z);
     let distance = horizontal.length();
-    if distance <= 0.001 { return pose; }
+    if distance <= 0.001 {
+        return pose;
+    }
     let direction = horizontal / distance;
     let pitch = offset.y.atan2(distance);
     let mut needed = pitch;
     // Half-cell sampling includes narrow shelves without inspecting source
     // collision or changing the actual navigation/support geometry.
     let stride = frame.tile_size.min_element() * 0.5;
-    if stride <= 0.0 || !stride.is_finite() { return pose; }
+    if stride <= 0.0 || !stride.is_finite() {
+        return pose;
+    }
     let mut d = stride;
     while d <= distance {
         let p = Vec2::new(foot.x, foot.z) + direction * d;
@@ -272,8 +325,10 @@ fn clear_foreground_terrain(
         // Obstruction needs the published cell crown, not the actor's exact
         // stair interpolation (which reconstructs the terrace field).
         if let Some(cell) = crate::footing::tile_at_visual_point(frame, visual)
-            && let Some(&height) = heights.get(cell.y as usize * frame.grid_size.x as usize + cell.x as usize)
-            && height > foot.y + frame.tile_size.y * 0.25 {
+            && let Some(&height) =
+                heights.get(cell.y as usize * frame.grid_size.x as usize + cell.x as usize)
+            && height > foot.y + frame.tile_size.y * 0.25
+        {
             needed = needed.max((height + frame.tile_size.y * 0.5 - foot.y).atan2(d));
         }
         d += stride;
@@ -283,16 +338,34 @@ fn clear_foreground_terrain(
     if std::env::var_os("CRYSTAL_CAMERA_CLEARANCE_TRACE").is_some() && !heights.is_empty() {
         static REPORTED: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
         if !REPORTED.swap(true, std::sync::atomic::Ordering::Relaxed) {
-            eprintln!("camera-clearance map={} foot={foot:?} eye={:?} target={:?} tile={:?} grid={:?} center={:?} heights={:?} pitch={} needed={}",
-                frame.map_id, pose.eye, pose.target, frame.tile_size, frame.grid_size, frame.center,
-                heights.iter().copied().fold((f32::INFINITY,f32::NEG_INFINITY), |(lo,hi),h|(lo.min(h),hi.max(h))),
-                pitch.to_degrees(), angle.to_degrees());
+            eprintln!(
+                "camera-clearance map={} foot={foot:?} eye={:?} target={:?} tile={:?} grid={:?} center={:?} heights={:?} pitch={} needed={}",
+                frame.map_id,
+                pose.eye,
+                pose.target,
+                frame.tile_size,
+                frame.grid_size,
+                frame.center,
+                heights
+                    .iter()
+                    .copied()
+                    .fold((f32::INFINITY, f32::NEG_INFINITY), |(lo, hi), h| (
+                        lo.min(h),
+                        hi.max(h)
+                    )),
+                pitch.to_degrees(),
+                angle.to_degrees()
+            );
         }
     }
     if angle > pitch {
         let length = offset.length();
-        pose.eye = pose.target + Vec3::new(direction.x * angle.cos(), angle.sin(),
-            direction.y * angle.cos()) * length;
+        pose.eye = pose.target
+            + Vec3::new(
+                direction.x * angle.cos(),
+                angle.sin(),
+                direction.y * angle.cos(),
+            ) * length;
     }
     pose
 }
@@ -371,10 +444,15 @@ mod tests {
             tile_size: Vec2::splat(8.),
             grid_size: bevy::prelude::UVec2::new(20, 18),
             actors: vec![VisualActor {
-                id: VisualActorId::Player, source_id: "player".into(),
-                model_palette: None, texture: Default::default(),
-                center: Vec2::new(32., -112.), size: Vec2::splat(16.),
-                flip_x: false, above_priority: false, facing: Some(Vec2::NEG_Y),
+                id: VisualActorId::Player,
+                source_id: "player".into(),
+                model_palette: None,
+                texture: Default::default(),
+                center: Vec2::new(32., -112.),
+                size: Vec2::splat(16.),
+                flip_x: false,
+                above_priority: false,
+                facing: Some(Vec2::NEG_Y),
             }],
             ..Default::default()
         };
@@ -420,52 +498,78 @@ mod tests {
 
     #[test]
     fn map_anchored_orbit_and_first_person_preserve_the_same_view() {
-        use crystal_render_api::{VisualWorldFrame,VisualActor,VisualActorId};
-        let frame=VisualWorldFrame {active:true, center:Vec2::new(12.,-4.),
-            grid_origin:bevy::prelude::IVec2::new(17,-9),
-            viewport_size:Vec2::splat(64.),grid_size:bevy::prelude::UVec2::splat(8),
-            tile_size:Vec2::splat(8.), actors:vec![VisualActor {id:VisualActorId::Player,
-                source_id:"player".into(),model_palette:None,texture:Default::default(),
-                center:Vec2::new(4.,8.),size:Vec2::splat(16.),flip_x:false,
-                above_priority:false,facing:Some(Vec2::Y)}],..Default::default()};
-        let mut anchored=frame.clone();let shift=anchored.anchor_to_map();
-        let delta=Vec3::new(shift.x,0.,-shift.y);
-        for first in [false,true] {for yaw in 0..8 {
-            let controls=VoxelCameraControls::with_pose(1.,yaw as f32,45.,first);
-            let old=controls.world_pose(&frame,&[7.;64]);
-            let new=controls.world_pose(&anchored,&[7.;64]);
-            assert!(new.eye.abs_diff_eq(old.eye+delta,0.0001));
-            assert!(new.target.abs_diff_eq(old.target+delta,0.0001));
-            assert_eq!(new.vertical_fov_radians,old.vertical_fov_radians);
-            assert_eq!((new.near,new.far),(old.near,old.far));
-        }}
+        use crystal_render_api::{VisualActor, VisualActorId, VisualWorldFrame};
+        let frame = VisualWorldFrame {
+            active: true,
+            center: Vec2::new(12., -4.),
+            grid_origin: bevy::prelude::IVec2::new(17, -9),
+            viewport_size: Vec2::splat(64.),
+            grid_size: bevy::prelude::UVec2::splat(8),
+            tile_size: Vec2::splat(8.),
+            actors: vec![VisualActor {
+                id: VisualActorId::Player,
+                source_id: "player".into(),
+                model_palette: None,
+                texture: Default::default(),
+                center: Vec2::new(4., 8.),
+                size: Vec2::splat(16.),
+                flip_x: false,
+                above_priority: false,
+                facing: Some(Vec2::Y),
+            }],
+            ..Default::default()
+        };
+        let mut anchored = frame.clone();
+        let shift = anchored.anchor_to_map();
+        let delta = Vec3::new(shift.x, 0., -shift.y);
+        for first in [false, true] {
+            for yaw in 0..8 {
+                let controls = VoxelCameraControls::with_pose(1., yaw as f32, 45., first);
+                let old = controls.world_pose(&frame, &[7.; 64]);
+                let new = controls.world_pose(&anchored, &[7.; 64]);
+                assert!(new.eye.abs_diff_eq(old.eye + delta, 0.0001));
+                assert!(new.target.abs_diff_eq(old.target + delta, 0.0001));
+                assert_eq!(new.vertical_fov_radians, old.vertical_fov_radians);
+                assert_eq!((new.near, new.far), (old.near, old.far));
+            }
+        }
     }
 
     #[test]
     fn map_anchored_first_person_preload_without_actors_preserves_camera_origin() {
-        let mut frame=crystal_render_api::VisualWorldFrame {active:true,
-            center:Vec2::new(8.,-3.),grid_origin:bevy::prelude::IVec2::new(20,30),
-            tile_size:Vec2::splat(8.),viewport_size:Vec2::new(160.,144.),..Default::default()};
-        let controls=VoxelCameraControls::with_pose(1.,2.,0.,true);
-        let old=controls.world_pose(&frame,&[]);
-        let shift=frame.anchor_to_map();let delta=Vec3::new(shift.x,0.,-shift.y);
-        let new=controls.world_pose(&frame,&[]);
-        assert!(new.eye.abs_diff_eq(old.eye+delta,0.0001));
-        assert!(new.target.abs_diff_eq(old.target+delta,0.0001));
+        let mut frame = crystal_render_api::VisualWorldFrame {
+            active: true,
+            center: Vec2::new(8., -3.),
+            grid_origin: bevy::prelude::IVec2::new(20, 30),
+            tile_size: Vec2::splat(8.),
+            viewport_size: Vec2::new(160., 144.),
+            ..Default::default()
+        };
+        let controls = VoxelCameraControls::with_pose(1., 2., 0., true);
+        let old = controls.world_pose(&frame, &[]);
+        let shift = frame.anchor_to_map();
+        let delta = Vec3::new(shift.x, 0., -shift.y);
+        let new = controls.world_pose(&frame, &[]);
+        assert!(new.eye.abs_diff_eq(old.eye + delta, 0.0001));
+        assert!(new.target.abs_diff_eq(old.target + delta, 0.0001));
     }
 
     #[test]
     fn interior_arrival_pan_contains_head_and_feet_without_changing_projection_or_scale() {
         for yaw in [0., 2., 4., 6.] {
-            let before = VoxelCameraControls::with_pose(1., yaw, 45., false)
-                .pose(Vec2::new(640., 576.));
+            let before =
+                VoxelCameraControls::with_pose(1., yaw, 45., false).pose(Vec2::new(640., 576.));
             let forward = (before.target - before.eye).normalize();
             let up = forward.cross(before.up).normalize().cross(forward);
             let foot = before.eye + forward * 450. - up * 270.;
             let after = contain_actor_height(before, foot, 72.);
             assert_ne!(after, before, "the arrival foot starts below the viewport");
-            let projection = bevy::prelude::Mat4::perspective_rh(after.vertical_fov_radians,
-                640./576., after.near, after.far);
+            let projection = bevy::prelude::Mat4::perspective_rh(
+                after.vertical_fov_radians,
+                640. / 576.,
+                after.near,
+                after.far,
+            );
             let view = after.transform().to_matrix().inverse();
             for point in [foot, foot + Vec3::Y * 72.] {
                 let screen = (projection * view).project_point3(point);
@@ -475,39 +579,58 @@ mod tests {
                 assert!((old_depth - new_depth).abs() < 0.001);
             }
             assert!((after.eye - after.target).abs_diff_eq(before.eye - before.target, 0.001));
-            assert_eq!((after.vertical_fov_radians, after.near, after.far),
-                (before.vertical_fov_radians, before.near, before.far));
-            assert_eq!(contain_actor_height(before, before.target, 72.), before,
-                "an already readable player does not move the camera");
+            assert_eq!(
+                (after.vertical_fov_radians, after.near, after.far),
+                (before.vertical_fov_radians, before.near, before.far)
+            );
+            assert_eq!(
+                contain_actor_height(before, before.target, 72.),
+                before,
+                "an already readable player does not move the camera"
+            );
         }
     }
 
     #[test]
     fn raised_foreground_clears_orbit_without_moving_target_or_terrain() {
         let frame = crystal_render_api::VisualWorldFrame {
-            viewport_size: Vec2::splat(128.), tile_size: Vec2::splat(8.),
-            grid_size: bevy::prelude::UVec2::splat(16), ..Default::default()
+            viewport_size: Vec2::splat(128.),
+            tile_size: Vec2::splat(8.),
+            grid_size: bevy::prelude::UVec2::splat(16),
+            ..Default::default()
         };
         let pose = VoxelCameraPose {
-            eye: Vec3::new(0., 60., 100.), target: Vec3::new(0., 8., 0.),
+            eye: Vec3::new(0., 60., 100.),
+            target: Vec3::new(0., 8., 0.),
             ..camera_pose(frame.viewport_size)
         };
         let mut heights = vec![0.; 256];
-        assert_eq!(clear_foreground_terrain(pose, &frame, &heights, Vec3::ZERO), pose);
+        assert_eq!(
+            clear_foreground_terrain(pose, &frame, &heights, Vec3::ZERO),
+            pose
+        );
         // A tall rear bank must never force the camera upward.
         heights[4 * 16 + 8] = 100.;
-        assert_eq!(clear_foreground_terrain(pose, &frame, &heights, Vec3::ZERO), pose);
+        assert_eq!(
+            clear_foreground_terrain(pose, &frame, &heights, Vec3::ZERO),
+            pose
+        );
         heights[10 * 16 + 8] = 30.;
         let before = heights.clone();
         let clear = clear_foreground_terrain(pose, &frame, &heights, Vec3::ZERO);
         assert!(clear.eye.y > pose.eye.y);
         assert_eq!(clear.target, pose.target);
         assert_eq!(clear.eye.x, pose.eye.x);
-        assert!(((clear.eye - clear.target).length() - (pose.eye - pose.target).length()).abs() < 0.001);
+        assert!(
+            ((clear.eye - clear.target).length() - (pose.eye - pose.target).length()).abs() < 0.001
+        );
         assert_eq!(heights, before);
         // Existing high views are retained exactly.
         let overhead = VoxelCameraControls::with_pose(0., 0., 85., false).pose(frame.viewport_size);
-        assert_eq!(clear_foreground_terrain(overhead, &frame, &heights, Vec3::ZERO), overhead);
+        assert_eq!(
+            clear_foreground_terrain(overhead, &frame, &heights, Vec3::ZERO),
+            overhead
+        );
     }
 
     #[test]
@@ -533,9 +656,17 @@ mod tests {
         assert_eq!(wide.pitch_degrees, -85.0);
         assert_eq!(wide.rotation_step, 7.0);
         assert_eq!(close.pitch_degrees, 85.0);
-        assert!(close.pose(viewport).vertical_fov_radians < wide.pose(viewport).vertical_fov_radians);
-        assert_eq!(VoxelCameraControls::with_pose(1.0, 0.0, -100.0, false).pitch_degrees, 5.0);
-        assert_eq!(VoxelCameraControls::with_pose(1.0, 0.0, f32::NAN, true).pitch_degrees, 0.0);
+        assert!(
+            close.pose(viewport).vertical_fov_radians < wide.pose(viewport).vertical_fov_radians
+        );
+        assert_eq!(
+            VoxelCameraControls::with_pose(1.0, 0.0, -100.0, false).pitch_degrees,
+            5.0
+        );
+        assert_eq!(
+            VoxelCameraControls::with_pose(1.0, 0.0, f32::NAN, true).pitch_degrees,
+            0.0
+        );
     }
 
     #[test]
@@ -582,10 +713,10 @@ mod tests {
             ..Default::default()
         };
         let mut camera = VoxelCameraControls::default();
-        let orbit_base=camera.pose(frame.viewport_size);
-        let orbit=camera.world_pose(&frame,&vec![7.;16]);
-        assert_eq!(orbit.eye.y,orbit_base.eye.y+7.);
-        assert_eq!(orbit.target.y,orbit_base.target.y+7.);
+        let orbit_base = camera.pose(frame.viewport_size);
+        let orbit = camera.world_pose(&frame, &vec![7.; 16]);
+        assert_eq!(orbit.eye.y, orbit_base.eye.y + 7.);
+        assert_eq!(orbit.target.y, orbit_base.target.y + 7.);
         camera.toggle_first_person(Vec2::Y);
         let heights = vec![7.0; 16];
         let pose = camera.world_pose(&frame, &heights);

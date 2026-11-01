@@ -25,31 +25,65 @@ mod tests {
         for name in ["TENTACOOL", "TENTACRUEL"] {
             let rig = species_rig::motion::world_rig(species_rig::for_species(name).unwrap());
             let seat = SurfSeat::for_rig(rig);
-            let bell = rig.anatomy.iter().find(|part| part.name.starts_with("Bell /")).unwrap();
-            assert!(seat.vertices.iter().all(|v| bell.vertices.contains(v)),
-                "{name} rider is not carried by the actual bell");
-            let low = bell.vertices.clone().map(|v|rig.neutral.positions[v][1])
-                .fold(f32::INFINITY,f32::min);
-            let high = bell.vertices.clone().map(|v|rig.neutral.positions[v][1])
-                .fold(f32::NEG_INFINITY,f32::max);
-            assert!(seat.point.y > low+(high-low)*0.65, "{name} seat is below the upper bell");
-            assert!(seat.waterline > low && seat.waterline < seat.point.y,
-                "{name} must immerse the lower bell, leaving its carrying surface above water");
-            let tendrils: Vec<_> = rig.anatomy.iter().filter(|part|
-                part.name.starts_with("Tentacle /")).collect();
+            let bell = rig
+                .anatomy
+                .iter()
+                .find(|part| part.name.starts_with("Bell /"))
+                .unwrap();
+            assert!(
+                seat.vertices.iter().all(|v| bell.vertices.contains(v)),
+                "{name} rider is not carried by the actual bell"
+            );
+            let low = bell
+                .vertices
+                .clone()
+                .map(|v| rig.neutral.positions[v][1])
+                .fold(f32::INFINITY, f32::min);
+            let high = bell
+                .vertices
+                .clone()
+                .map(|v| rig.neutral.positions[v][1])
+                .fold(f32::NEG_INFINITY, f32::max);
+            assert!(
+                seat.point.y > low + (high - low) * 0.65,
+                "{name} seat is below the upper bell"
+            );
+            assert!(
+                seat.waterline > low && seat.waterline < seat.point.y,
+                "{name} must immerse the lower bell, leaving its carrying surface above water"
+            );
+            let tendrils: Vec<_> = rig
+                .anatomy
+                .iter()
+                .filter(|part| part.name.starts_with("Tentacle /"))
+                .collect();
             assert!(!tendrils.is_empty());
-            let mut pose = vec![Transform::IDENTITY;rig.joints.len()];
-            let mut matrices = vec![Mat4::IDENTITY;rig.joints.len()];
+            let mut pose = vec![Transform::IDENTITY; rig.joints.len()];
+            let mut matrices = vec![Mat4::IDENTITY; rig.joints.len()];
             for tick in 0..64 {
-                rig.sample_swimming(tick as f32/32.,tick as f32*std::f32::consts::TAU/64.,1.,&mut pose);
-                rig.skin_matrices_into(&pose,&mut matrices).unwrap();
+                rig.sample_swimming(
+                    tick as f32 / 32.,
+                    tick as f32 * std::f32::consts::TAU / 64.,
+                    1.,
+                    &mut pose,
+                );
+                rig.skin_matrices_into(&pose, &mut matrices).unwrap();
                 for part in &tendrils {
-                    let tip = part.vertices.clone().map(|v|rig.skin_point(v,&matrices).y)
-                        .fold(f32::INFINITY,f32::min);
-                    assert!(tip < seat.waterline, "{name} {} left the water at phase {tick}",part.name);
+                    let tip = part
+                        .vertices
+                        .clone()
+                        .map(|v| rig.skin_point(v, &matrices).y)
+                        .fold(f32::INFINITY, f32::min);
+                    assert!(
+                        tip < seat.waterline,
+                        "{name} {} left the water at phase {tick}",
+                        part.name
+                    );
                 }
-                assert!(seat.animated_point(rig,&matrices).y > seat.waterline,
-                    "{name} animated carrying surface sank");
+                assert!(
+                    seat.animated_point(rig, &matrices).y > seat.waterline,
+                    "{name} animated carrying surface sank"
+                );
             }
         }
     }
@@ -58,19 +92,42 @@ mod tests {
     fn octillery_is_carried_by_the_upper_mantle_instead_of_rooted_arm_bases() {
         let rig = species_rig::motion::world_rig(species_rig::rig(Species::Octillery));
         let seat = SurfSeat::for_rig(rig);
-        let body = rig.anatomy.iter().find(|part|part.name.starts_with("Body /")).unwrap();
-        let low = body.vertices.clone().map(|v|rig.neutral.positions[v][1])
-            .fold(f32::INFINITY,f32::min);
-        let high = body.vertices.clone().map(|v|rig.neutral.positions[v][1])
-            .fold(f32::NEG_INFINITY,f32::max);
-        assert!(seat.point.y > low+(high-low)*0.65,
-            "Octillery rider must sit on the upper mantle: {:?}",seat.point);
-        assert!(seat.vertices.iter().all(|v|body.vertices.contains(v)));
-        let root = body.vertices.clone().filter(|&v|rig.joint_indices[v].iter()
-            .zip(rig.joint_weights[v]).any(|(&joint,w)|joint==0 && w>=0.7))
-            .map(|v|rig.neutral.positions[v][1]).fold(f32::NEG_INFINITY,f32::max);
-        assert!(seat.waterline > root && seat.waterline < seat.point.y,
-            "arm bases must be submerged while the upper mantle carries the rider");
+        let body = rig
+            .anatomy
+            .iter()
+            .find(|part| part.name.starts_with("Body /"))
+            .unwrap();
+        let low = body
+            .vertices
+            .clone()
+            .map(|v| rig.neutral.positions[v][1])
+            .fold(f32::INFINITY, f32::min);
+        let high = body
+            .vertices
+            .clone()
+            .map(|v| rig.neutral.positions[v][1])
+            .fold(f32::NEG_INFINITY, f32::max);
+        assert!(
+            seat.point.y > low + (high - low) * 0.65,
+            "Octillery rider must sit on the upper mantle: {:?}",
+            seat.point
+        );
+        assert!(seat.vertices.iter().all(|v| body.vertices.contains(v)));
+        let root = body
+            .vertices
+            .clone()
+            .filter(|&v| {
+                rig.joint_indices[v]
+                    .iter()
+                    .zip(rig.joint_weights[v])
+                    .any(|(&joint, w)| joint == 0 && w >= 0.7)
+            })
+            .map(|v| rig.neutral.positions[v][1])
+            .fold(f32::NEG_INFINITY, f32::max);
+        assert!(
+            seat.waterline > root && seat.waterline < seat.point.y,
+            "arm bases must be submerged while the upper mantle carries the rider"
+        );
     }
 
     #[test]
@@ -78,23 +135,40 @@ mod tests {
         for name in ["STARYU", "STARMIE"] {
             let rig = species_rig::motion::world_rig(species_rig::for_species(name).unwrap());
             let seat = SurfSeat::for_rig(rig);
-            let body:Vec<_> = rig.anatomy.iter().filter(|part|matches!(
-                part.name.split(" / ").next(),Some("Body"|"Front star"|"Back star"|"Core")))
-                .flat_map(|part|part.vertices.clone()).collect();
-            assert!(seat.vertices.iter().all(|v|body.contains(v)),"{name} seat left its body");
-            let mut pose=vec![Transform::IDENTITY;rig.joints.len()];
-            let mut matrices=vec![Mat4::IDENTITY;rig.joints.len()];
+            let body: Vec<_> = rig
+                .anatomy
+                .iter()
+                .filter(|part| {
+                    matches!(
+                        part.name.split(" / ").next(),
+                        Some("Body" | "Front star" | "Back star" | "Core")
+                    )
+                })
+                .flat_map(|part| part.vertices.clone())
+                .collect();
+            assert!(
+                seat.vertices.iter().all(|v| body.contains(v)),
+                "{name} seat left its body"
+            );
+            let mut pose = vec![Transform::IDENTITY; rig.joints.len()];
+            let mut matrices = vec![Mat4::IDENTITY; rig.joints.len()];
             for tick in 0..64 {
-                rig.sample_swimming(tick as f32/32.,tick as f32*std::f32::consts::TAU/64.,1.,&mut pose);
-                rig.skin_matrices_into(&pose,&mut matrices).unwrap();
-                let (low,high) = body.iter().map(|&v|rig.skin_point(v,&matrices)).fold(
-                    (Vec3::splat(f32::INFINITY),Vec3::splat(f32::NEG_INFINITY)),
-                    |(lo,hi),p|(lo.min(p),hi.max(p)));
-                let span=high-low;
-                assert!(span.x.max(span.z)>span.y*2.,"{name} must swim face-up");
-                let contact=seat.animated_point(rig,&matrices);
-                assert!(contact.y>seat.waterline,"{name} rider contact submerged");
-                assert!(low.y<seat.waterline,"{name} body floats clear of water");
+                rig.sample_swimming(
+                    tick as f32 / 32.,
+                    tick as f32 * std::f32::consts::TAU / 64.,
+                    1.,
+                    &mut pose,
+                );
+                rig.skin_matrices_into(&pose, &mut matrices).unwrap();
+                let (low, high) = body.iter().map(|&v| rig.skin_point(v, &matrices)).fold(
+                    (Vec3::splat(f32::INFINITY), Vec3::splat(f32::NEG_INFINITY)),
+                    |(lo, hi), p| (lo.min(p), hi.max(p)),
+                );
+                let span = high - low;
+                assert!(span.x.max(span.z) > span.y * 2., "{name} must swim face-up");
+                let contact = seat.animated_point(rig, &matrices);
+                assert!(contact.y > seat.waterline, "{name} rider contact submerged");
+                assert!(low.y < seat.waterline, "{name} body floats clear of water");
             }
         }
     }
@@ -112,9 +186,11 @@ mod tests {
             let seat = SurfSeat::for_rig(rig);
             if species == Species::Gyarados {
                 let original = SurfSeat::fit(species_rig::rig(species));
-                assert!(seat.point.abs_diff_eq(original.point, 0.0001),
-                    "world body joints changed the neutral rider seat");
-                assert!((seat.waterline-original.waterline).abs() < 0.0001);
+                assert!(
+                    seat.point.abs_diff_eq(original.point, 0.0001),
+                    "world body joints changed the neutral rider seat"
+                );
+                assert!((seat.waterline - original.waterline).abs() < 0.0001);
             }
             assert!(seat.point.is_finite() && seat.half_width.is_finite());
             assert!(
@@ -132,8 +208,12 @@ mod tests {
                     .abs_diff_eq(seat.point, 0.0001)
             );
             for tick in 0..32 {
-                rig.sample_swimming(tick as f32 / 16., tick as f32 * std::f32::consts::TAU / 32.,
-                    1., &mut pose);
+                rig.sample_swimming(
+                    tick as f32 / 16.,
+                    tick as f32 * std::f32::consts::TAU / 32.,
+                    1.,
+                    &mut pose,
+                );
                 // The rider must inherit swimming lift as well as joint motion.
                 pose[0].translation += Vec3::new(0.02, 0.16, -0.01);
                 rig.skin_matrices_into(&pose, &mut matrices).unwrap();
@@ -167,7 +247,9 @@ impl SurfSeat {
             // The continuous star is the body, including its articulating
             // points. Restrict by the authored body parts below, not by their
             // root-pinned distal tips or the separate jewel assembly.
-            if star { return 1.; }
+            if star {
+                return 1.;
+            }
             rig.joint_indices[v]
                 .iter()
                 .zip(rig.joint_weights[v])
@@ -177,7 +259,10 @@ impl SurfSeat {
                             rig.joints[**j as usize].name.rsplit('/').next(),
                             Some("body" | "torso" | "shell")
                         )
-                        || rig.joints[**j as usize].name.rsplit('/').next()
+                        || rig.joints[**j as usize]
+                            .name
+                            .rsplit('/')
+                            .next()
                             .is_some_and(|name| name.starts_with("swim_wave_"))
                         || (jelly && rig.joints[**j as usize].name.ends_with("/bell"))
                         || (rig.species.name() == "octillery"
@@ -190,7 +275,7 @@ impl SurfSeat {
             let category = name.split(" / ").next();
             matches!(category, Some("Body" | "Shell" | "Torso"))
                 || (jelly && category == Some("Bell"))
-                || (star && matches!(category,Some("Front star"|"Back star")))
+                || (star && matches!(category, Some("Front star" | "Back star")))
         };
         let has_body_parts = rig.anatomy.iter().any(|part| body_part(&part.name));
         let mut carrying_surface = vec![!has_body_parts; rig.neutral.positions.len()];
@@ -204,14 +289,17 @@ impl SurfSeat {
         // original vertex IDs/barycentric weights for animated rider contact.
         let water_points;
         let points = if star {
-            let mut pose=vec![Transform::IDENTITY;rig.joints.len()];
-            let mut matrices=vec![Mat4::IDENTITY;rig.joints.len()];
-            rig.sample_swimming(0.,0.,0.,&mut pose);
-            rig.skin_matrices_into(&pose,&mut matrices).unwrap();
-            water_points=(0..rig.neutral.positions.len()).map(|v|
-                rig.skin_point(v,&matrices).to_array()).collect::<Vec<_>>();
+            let mut pose = vec![Transform::IDENTITY; rig.joints.len()];
+            let mut matrices = vec![Mat4::IDENTITY; rig.joints.len()];
+            rig.sample_swimming(0., 0., 0., &mut pose);
+            rig.skin_matrices_into(&pose, &mut matrices).unwrap();
+            water_points = (0..rig.neutral.positions.len())
+                .map(|v| rig.skin_point(v, &matrices).to_array())
+                .collect::<Vec<_>>();
             &water_points
-        } else { &rig.neutral.positions };
+        } else {
+            &rig.neutral.positions
+        };
         let body = (0..points.len())
             .filter(|&v| carrying_surface[v] && body_weight(v) >= 0.7)
             .collect::<Vec<_>>();
@@ -224,14 +312,22 @@ impl SurfSeat {
         } else {
             bounds
         };
-        let target = Vec2::new((low.x + high.x) * 0.5,
-            if star { (low.z+high.z)*0.5 } else { low.z + (high.z - low.z) * 0.28 });
+        let target = Vec2::new(
+            (low.x + high.x) * 0.5,
+            if star {
+                (low.z + high.z) * 0.5
+            } else {
+                low.z + (high.z - low.z) * 0.28
+            },
+        );
         let mut best: Option<Self> = None;
         for part in &rig.anatomy {
             // A water star carries at its central hard core. The raised gem
             // sets rider contact, while the star body still sets buoyancy.
-            if has_body_parts && !body_part(&part.name)
-                && !(star && part.name.starts_with("Core /")) {
+            if has_body_parts
+                && !body_part(&part.name)
+                && !(star && part.name.starts_with("Core /"))
+            {
                 continue;
             }
             if part.name.to_ascii_lowercase().contains("spike") {
@@ -307,7 +403,8 @@ impl SurfSeat {
         // Heads, fins, legs and spikes must not set immersion depth. Keep the
         // upper back and its seated rider above the plane on unusual bodies.
         seat.waterline = (low.y + (high.y - low.y) * 0.40)
-            .min(seat.point.y - (high.y - low.y) * 0.10).max(0.);
+            .min(seat.point.y - (high.y - low.y) * 0.10)
+            .max(0.);
         seat
     }
 

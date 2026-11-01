@@ -284,7 +284,8 @@ impl CaptureViewInputs<'_, '_> {
             return false;
         };
         !parent
-            && row_capture::effective_ambient(camera_ambient, self.ambient.as_deref()) == stamp.ambient
+            && row_capture::effective_ambient(camera_ambient, self.ambient.as_deref())
+                == stamp.ambient
             && !self.unsupported.contains(entity)
             && msaa.samples() == stamp.msaa_samples
             && *camera_layers == layers

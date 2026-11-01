@@ -54,24 +54,20 @@
           "and its POKEMON."
         ],
         [
-          "IVY works at the",
-          "ROCHESTER clinic."
+          "IVY's a doctor in",
+          "ROCHESTER."
         ],
         [
-          "She needs my notes",
-          "on water levels."
+          "The river's low.",
+          "Nests are drying."
         ],
         [
-          "Will you take her",
-          "this envelope?"
+          "She needs my logs.",
+          "Can you take them?"
         ],
         [
-          "Wild POKEMON live",
-          "along the trail."
-        ],
-        [
-          "Choose a partner",
-          "for your journey."
+          "Choose a partner.",
+          "The trail is wild."
         ]
       ],
       "MnNSEReedArrivalText": [
@@ -91,23 +87,15 @@
       "MnWReadingsText": [
         [
           "TAMARACK: You two",
-          "look ready!"
+          "make a great team!"
         ],
         [
-          "These are my",
-          "original notes."
+          "Take my original",
+          "river logs to IVY."
         ],
         [
-          "You received the",
-          "sealed envelope."
-        ],
-        [
-          "TAMARACK: IVY is",
-          "at the clinic."
-        ],
-        [
-          "Take ROUTE 01 west",
-          "to ROCHESTER."
+          "She's at the",
+          "ROCHESTER clinic."
         ]
       ]
     },

@@ -23,11 +23,18 @@ fn validate_room_checkpoints(checkpoints: &BTreeSet<String>) -> Result<()> {
         let prefix = format!("{room}-battle-");
         anyhow::ensure!(
             checkpoints.iter().any(|label| {
-                let Some((species, slot)) = label.strip_prefix(&prefix)
-                    .and_then(|suffix| suffix.rsplit_once("-slot")) else { return false; };
+                let Some((species, slot)) = label
+                    .strip_prefix(&prefix)
+                    .and_then(|suffix| suffix.rsplit_once("-slot"))
+                else {
+                    return false;
+                };
                 let species = species.split('-').collect::<Vec<_>>();
-                species.len() == 2 && species.iter().all(|id| !id.is_empty())
-                    && slot.parse::<usize>().is_ok_and(|slot| (1..=6).contains(&slot))
+                species.len() == 2
+                    && species.iter().all(|id| !id.is_empty())
+                    && slot
+                        .parse::<usize>()
+                        .is_ok_and(|slot| (1..=6).contains(&slot))
             }),
             "continuous native review missed {room} species-and-party-slot battle capture"
         );
@@ -310,9 +317,15 @@ impl LeagueReview {
         if battle {
             // Each opposing species needs its own paired evidence. A room's
             // first opponent cannot certify later replacements or AI switches.
-            return native_battle.then(|| format!("{}-battle-{}-slot{}",
-                runtime.shell.current_map_name(), modeled_species.join("-"),
-                enemy_party_index.map_or_else(||"unknown".into(),|index|(index+1).to_string())));
+            return native_battle.then(|| {
+                format!(
+                    "{}-battle-{}-slot{}",
+                    runtime.shell.current_map_name(),
+                    modeled_species.join("-"),
+                    enemy_party_index
+                        .map_or_else(|| "unknown".into(), |index| (index + 1).to_string())
+                )
+            });
         }
         if runtime.credits_screen.is_none()
             && runtime.title_menu.is_none()
@@ -411,7 +424,10 @@ impl LeagueReview {
             && runtime.ball_cursor.is_none()
             && runtime.key_item_cursor.is_none()
             && runtime.tmhm_cursor.is_none()
-            && !runtime.battle_level_stats.front().is_some_and(|stats| stats.active);
+            && !runtime
+                .battle_level_stats
+                .front()
+                .is_some_and(|stats| stats.active);
         self.saw_battle |= battle;
         if self.checkpoint.is_none() {
             if let Some(label) = self
@@ -422,7 +438,10 @@ impl LeagueReview {
                     battle,
                     native_battle_ready && native_command,
                     &battle_status.modeled_species,
-                    snapshot.battle.as_ref().and_then(|b|b.active_enemy_party_index),
+                    snapshot
+                        .battle
+                        .as_ref()
+                        .and_then(|b| b.active_enemy_party_index),
                 )
                 .filter(|label| !self.checkpoints.contains(label))
             {
@@ -591,8 +610,7 @@ impl LeagueReview {
         // Intro text must still advance through ordinary A. Once the actual
         // command surface owns input, wait for modeled GPU evidence before
         // issuing FIGHT; a source fallback cannot silently win the battle.
-        if native_command && !native_battle_ready
-        {
+        if native_command && !native_battle_ready {
             let waiting = self.battle_wait.get_or_insert_with(std::time::Instant::now);
             anyhow::ensure!(
                 waiting.elapsed().as_secs() < 120,
@@ -835,7 +853,9 @@ impl LeagueReview {
         }
         if won && !self.wins.contains(map) {
             anyhow::ensure!(
-                self.checkpoints.iter().any(|label|label.starts_with(&format!("{map}-battle-"))),
+                self.checkpoints
+                    .iter()
+                    .any(|label| label.starts_with(&format!("{map}-battle-"))),
                 "{map}: actual native battle presentation must be captured before victory"
             );
             anyhow::ensure!(
@@ -992,10 +1012,17 @@ mod tests {
     use super::*;
 
     fn completed_rooms() -> BTreeSet<String> {
-        ROOMS.into_iter().flat_map(|room| [
-            format!("{room}-arrival"), format!("{room}-walking"),
-            format!("{room}-earned"), format!("{room}-battle-MEW-XATU-slot1"),
-        ]).collect()
+        ROOMS
+            .into_iter()
+            .flat_map(|room| {
+                [
+                    format!("{room}-arrival"),
+                    format!("{room}-walking"),
+                    format!("{room}-earned"),
+                    format!("{room}-battle-MEW-XATU-slot1"),
+                ]
+            })
+            .collect()
     }
 
     #[test]
@@ -1012,15 +1039,24 @@ mod tests {
             for phase in ["arrival", "walking", "earned", "battle-MEW-XATU-slot1"] {
                 let mut checkpoints = completed_rooms();
                 checkpoints.remove(&format!("{room}-{phase}"));
-                assert!(validate_room_checkpoints(&checkpoints).is_err(), "{room} {phase}");
+                assert!(
+                    validate_room_checkpoints(&checkpoints).is_err(),
+                    "{room} {phase}"
+                );
             }
         }
     }
 
     #[test]
     fn league_completion_rejects_generic_unknown_and_malformed_battle_evidence() {
-        for suffix in ["battle", "battle-MEW-XATU-slotunknown", "battle-MEW-XATU-slot0",
-            "battle-MEW-XATU-slot7", "battle-MEW-slot1", "battle-MEW--slot1"] {
+        for suffix in [
+            "battle",
+            "battle-MEW-XATU-slotunknown",
+            "battle-MEW-XATU-slot0",
+            "battle-MEW-XATU-slot7",
+            "battle-MEW-slot1",
+            "battle-MEW--slot1",
+        ] {
             let mut checkpoints = completed_rooms();
             checkpoints.remove("WillsRoom-battle-MEW-XATU-slot1");
             checkpoints.insert(format!("WillsRoom-{suffix}"));

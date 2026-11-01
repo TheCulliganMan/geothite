@@ -10,7 +10,8 @@ use bevy::render::render_resource::{Extent3d, TextureDimension, TextureFormat};
 struct ElyWeatherOnly;
 
 pub(super) fn register_ely_snow(app: &mut App) {
-    app.insert_resource(ElyWeatherOnly).add_plugins(EnvironmentFxPlugin);
+    app.insert_resource(ElyWeatherOnly)
+        .add_plugins(EnvironmentFxPlugin);
 }
 
 pub(super) struct EnvironmentFxPlugin;
@@ -62,7 +63,7 @@ pub(super) fn frozen(frame: &VisualWorldFrame) -> bool {
 pub(super) fn coastal(frame: &VisualWorldFrame) -> bool {
     coastal_map(&frame.map_id)
 }
-pub(crate) fn coastal_map(map:&str)->bool {
+pub(crate) fn coastal_map(map: &str) -> bool {
     matches!(
         map,
         "NewBarkTown"
@@ -106,7 +107,8 @@ fn rebuild(frame: &VisualWorldFrame, emitters: &mut Emitters) {
         if frame.map_id.as_ref() == "MnEly" {
             emitters.ice.push(p);
         }
-        if frame.map_id.as_ref() != "MnEly" && !interior_cutaway::is_cave(frame)
+        if frame.map_id.as_ref() != "MnEly"
+            && !interior_cutaway::is_cave(frame)
             && matches!(
                 tile.source.tileset_id.as_ref(),
                 "johto" | "johto_modern" | "kanto" | "forest" | "park"
@@ -371,7 +373,9 @@ fn animate(
     scope: Option<Res<ElyWeatherOnly>>,
     mut particles: Query<(&Particle, &mut Transform, &mut Visibility)>,
 ) {
-    let active = frame.active && settings.enabled && status.active
+    let active = frame.active
+        && settings.enabled
+        && status.active
         && (scope.is_none() || frame.map_id.as_ref() == "MnEly");
     if active && emitters.key.as_ref() != Some(&TerrainCacheKey::from_frame(&frame)) {
         rebuild(&frame, &mut emitters);

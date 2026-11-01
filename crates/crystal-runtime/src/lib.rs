@@ -11,7 +11,7 @@ mod outdoor_mods;
 mod regional_item_descriptions;
 mod runtime_presentation_text;
 mod runtime_safari;
-pub use runtime_safari::{safari_result_lines, safari_catch_presentation_lines};
+pub use runtime_safari::{safari_catch_presentation_lines, safari_result_lines};
 
 use std::collections::{BTreeMap, BTreeSet};
 use std::path::Path;
@@ -80,10 +80,9 @@ use crystal_assets::{
     RuntimeScriptRuntimeQueueDrainResult, RuntimeScriptedWildBattleCompletionCommand,
     RuntimeScriptedWildBattleStartCommand, RuntimeShopTransactionCommand, RuntimeShuckieAction,
     RuntimeShuckieCommand, RuntimeSpawnPoint, RuntimeSpecialCryCommand,
-    RuntimeStaticWildBattleOrigin, RuntimeStoryGateSpecial,
-    RuntimeSweetScentEncounterCommand, RuntimeTitleScreen, RuntimeTmHmCommand,
-    RuntimeTrainerBattleCompletionCommand, RuntimeTrainerIdentityCommand,
-    RuntimeTreeMonEncounterCommand, RuntimeVerticalMenuOpenCommand,
+    RuntimeStaticWildBattleOrigin, RuntimeStoryGateSpecial, RuntimeSweetScentEncounterCommand,
+    RuntimeTitleScreen, RuntimeTmHmCommand, RuntimeTrainerBattleCompletionCommand,
+    RuntimeTrainerIdentityCommand, RuntimeTreeMonEncounterCommand, RuntimeVerticalMenuOpenCommand,
     RuntimeVerticalMenuSelectionCommand, TilesetDefinition, decode_runtime_mutation_command_frame,
     decode_runtime_mutation_command_payload, runtime_mutation_command_frame,
     runtime_mutation_result_frame as assets_runtime_mutation_result_frame,
@@ -262,9 +261,7 @@ pub fn read_runtime_asset_to_string(path: impl AsRef<Path>) -> std::io::Result<S
 }
 
 /// Decode a PNG presentation asset without creating graphics resources.
-pub fn open_runtime_image(
-    path: impl AsRef<Path>,
-) -> image::ImageResult<image::DynamicImage> {
+pub fn open_runtime_image(path: impl AsRef<Path>) -> image::ImageResult<image::DynamicImage> {
     let path = path.as_ref();
     #[cfg(target_arch = "wasm32")]
     {
@@ -475,7 +472,8 @@ fn reject_unexpected_gift_pokemon_inputs(
 pub struct RuntimeShellSnapshot {
     /// Capture expedition state; ordinary combat remains independent.
     pub safari: Option<crystal_core::systems::safari::SafariSession>,
-    pub safari_catch_presentation: Option<crystal_core::systems::safari_catch_presentation::SafariCatchPresentation>,
+    pub safari_catch_presentation:
+        Option<crystal_core::systems::safari_catch_presentation::SafariCatchPresentation>,
     pub safari_prompt: Option<crystal_core::systems::safari_prompt::SafariPrompt>,
     /// Present only for the competitive battle mod, shared by all frontends.
     pub competitive_battle: Option<RuntimeCompetitiveBattleSnapshot>,
@@ -2954,7 +2952,10 @@ impl RuntimeBattleSnapshot {
                     // battle memory used by save validation.
                     trainer_name: battle_trainer_display_name(
                         trainer_name,
-                        state.script_runtime.variables.get("_rival_name")
+                        state
+                            .script_runtime
+                            .variables
+                            .get("_rival_name")
                             .map(String::as_str),
                     ),
                     event_flag: event_flag.clone(),
@@ -3028,8 +3029,12 @@ impl RuntimeBattleSnapshot {
             enemy_transformed_species: combat
                 .and_then(|combat| combat.enemy_transform.as_ref())
                 .map(|transform| transform.species.id.clone()),
-            player_transformed_dvs: combat.and_then(|combat| combat.player_transform.as_ref()).map(|transform| transform.dvs),
-            enemy_transformed_dvs: combat.and_then(|combat| combat.enemy_transform.as_ref()).map(|transform| transform.dvs),
+            player_transformed_dvs: combat
+                .and_then(|combat| combat.player_transform.as_ref())
+                .map(|transform| transform.dvs),
+            enemy_transformed_dvs: combat
+                .and_then(|combat| combat.enemy_transform.as_ref())
+                .map(|transform| transform.dvs),
             player_substitute_hp: combat.map_or(0, |combat| combat.player_substitute_hp),
             enemy_substitute_hp: combat.map_or(0, |combat| combat.enemy_substitute_hp),
             player_semi_invulnerable: combat

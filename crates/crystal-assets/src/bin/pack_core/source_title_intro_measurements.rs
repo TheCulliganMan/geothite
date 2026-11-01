@@ -472,11 +472,27 @@ fn counted_helper_tape(source: &super::Source, routine: &str) -> Result<Vec<u64>
 fn attach_plain_instruction_costs(vendor: &Path, operations: &mut [Value]) -> Result<()> {
     let source = super::Source::read(vendor, "engine/movie/intro.asm")?;
     let sprite_source = super::Source::read(vendor, "engine/sprite_anims/core.asm")?;
-    ensure!(sprite_source.body("DeinitializeAllSprites")?.iter().skip(1)
-        .filter(|(_, line)| !line.starts_with('.')).map(|(_, line)| line.as_str()).collect::<Vec<_>>()
-        == ["ld hl, wSpriteAnimationStructs", "ld bc, SPRITEANIMSTRUCT_LENGTH", "ld e, NUM_SPRITE_ANIM_STRUCTS",
-            "xor a", "ld [hl], a", "add hl, bc", "dec e", "jr nz, .loop", "ret"],
-        "intro sprite deinitialization source changed");
+    ensure!(
+        sprite_source
+            .body("DeinitializeAllSprites")?
+            .iter()
+            .skip(1)
+            .filter(|(_, line)| !line.starts_with('.'))
+            .map(|(_, line)| line.as_str())
+            .collect::<Vec<_>>()
+            == [
+                "ld hl, wSpriteAnimationStructs",
+                "ld bc, SPRITEANIMSTRUCT_LENGTH",
+                "ld e, NUM_SPRITE_ANIM_STRUCTS",
+                "xor a",
+                "ld [hl], a",
+                "add hl, bc",
+                "dec e",
+                "jr nz, .loop",
+                "ret"
+            ],
+        "intro sprite deinitialization source changed"
+    );
     // These two expanded direct calls are certified against their exact bodies.
     for (routine, expected) in [
         (
@@ -573,7 +589,8 @@ fn attach_plain_instruction_costs(vendor: &Path, operations: &mut [Value]) -> Re
             // lowering can omit unreferenced blocks; their instructions cannot
             // become a prefix of the next reachable semantic operation.
             if let Some((line, _)) = source.lines.iter().rev().find(|(line, code)| {
-                u64::from(*line) < start && u64::from(*line) >= from
+                u64::from(*line) < start
+                    && u64::from(*line) >= from
                     && (code.ends_with(':') || (code.starts_with('.') && !code.contains(' ')))
             }) {
                 from = u64::from(*line) + 1;
@@ -608,17 +625,22 @@ fn attach_plain_instruction_costs(vendor: &Path, operations: &mut [Value]) -> Re
         let mut complete = true;
         for (_, line) in lines {
             if line == "farcall DeinitializeAllSprites" {
-                let (prefix, suffix) = crystal_assets::runtime_intro_farcall_instruction_machine_cycles();
+                let (prefix, suffix) =
+                    crystal_assets::runtime_intro_farcall_instruction_machine_cycles();
                 normal.extend(prefix);
-                normal.extend([3,3,2,1]);
-                for slot in 0..10 { normal.extend([2,2,1,if slot == 9 {2} else {3}]); }
+                normal.extend([3, 3, 2, 1]);
+                for slot in 0..10 {
+                    normal.extend([2, 2, 1, if slot == 9 { 2 } else { 3 }]);
+                }
                 normal.push(4);
                 normal.extend(suffix);
                 taken = normal.clone();
                 continue;
             }
             if line == "call Request2bpp" {
-                let tiles = operation["tile_count"].as_u64().filter(|tiles| (1..=255).contains(tiles))
+                let tiles = operation["tile_count"]
+                    .as_u64()
+                    .filter(|tiles| (1..=255).contains(tiles))
                     .context("direct intro Request2bpp tile count missing")?;
                 normal.push(6);
                 operation["source_request_caller_instruction_machine_cycles"] = json!(normal);
@@ -630,15 +652,25 @@ fn attach_plain_instruction_costs(vendor: &Path, operations: &mut [Value]) -> Re
                 break;
             }
             if let Some(routine) = line.strip_prefix("call ").filter(|routine| {
-                ["CrystalIntro_UnownFade", "Intro_Scene20_AppearUnown",
-                 "Intro_Scene24_ApplyPaletteFade", "Intro_FadeUnownWordPals"].contains(routine)
+                [
+                    "CrystalIntro_UnownFade",
+                    "Intro_Scene20_AppearUnown",
+                    "Intro_Scene24_ApplyPaletteFade",
+                    "Intro_FadeUnownWordPals",
+                ]
+                .contains(routine)
             }) {
                 let body = source.body(routine)?;
-                let return_index = body.iter().position(|(_, instruction)| instruction == "ret")
+                let return_index = body
+                    .iter()
+                    .position(|(_, instruction)| instruction == "ret")
                     .context("intro palette helper has no source return")?;
-                ensure!(return_index >= 2 && body[return_index - 2].1 == "ld a, TRUE"
-                    && body[return_index - 1].1 == "ldh [hCGBPalUpdate], a",
-                    "intro palette helper update boundary changed: {routine}");
+                ensure!(
+                    return_index >= 2
+                        && body[return_index - 2].1 == "ld a, TRUE"
+                        && body[return_index - 1].1 == "ldh [hCGBPalUpdate], a",
+                    "intro palette helper update boundary changed: {routine}"
+                );
                 operation["source_memory_effects"] = json!({"hCGBPalUpdate":1});
                 operation["source_memory_effect_instruction_index_from_end"] = json!(2);
             }
@@ -663,10 +695,23 @@ fn attach_plain_instruction_costs(vendor: &Path, operations: &mut [Value]) -> Re
             if line == "call Intro_ColoredSuicuneFrameSwap"
                 || line == "call Intro_Scene16_AnimateSuicune"
             {
-                source.operation("Intro_ColoredSuicuneFrameSwap", &["ld a, $1", "ldh [hBGMapMode], a", "ret"],
-                    "source_tilemap_update_boundary", json!({}))?;
-                source.operation("Intro_Scene16_AnimateSuicune", &[".PrepareForSuicuneSwap:", "xor a", "ldh [hBGMapMode], a", "ret"],
-                    "source_tilemap_prepare_boundary", json!({}))?;
+                source.operation(
+                    "Intro_ColoredSuicuneFrameSwap",
+                    &["ld a, $1", "ldh [hBGMapMode], a", "ret"],
+                    "source_tilemap_update_boundary",
+                    json!({}),
+                )?;
+                source.operation(
+                    "Intro_Scene16_AnimateSuicune",
+                    &[
+                        ".PrepareForSuicuneSwap:",
+                        "xor a",
+                        "ldh [hBGMapMode], a",
+                        "ret",
+                    ],
+                    "source_tilemap_prepare_boundary",
+                    json!({}),
+                )?;
                 operation["source_memory_effect_instruction_index_from_end"] = json!(2);
                 let mut caller = normal.clone();
                 caller.push(6);
@@ -679,11 +724,16 @@ fn attach_plain_instruction_costs(vendor: &Path, operations: &mut [Value]) -> Re
             }
             if line == "call Intro_RustleGrass" {
                 let body = source.body("Intro_RustleGrass")?;
-                let return_index = body.iter().position(|(_, instruction)| instruction == "ret")
+                let return_index = body
+                    .iter()
+                    .position(|(_, instruction)| instruction == "ret")
                     .context("intro grass helper has no source return")?;
-                ensure!(return_index >= 2 && body[return_index - 2].1 == "ld a, 4"
-                    && body[return_index - 1].1 == "ld [wRequested2bppSize], a",
-                    "intro grass request size boundary changed");
+                ensure!(
+                    return_index >= 2
+                        && body[return_index - 2].1 == "ld a, 4"
+                        && body[return_index - 1].1 == "ld [wRequested2bppSize], a",
+                    "intro grass request size boundary changed"
+                );
                 operation["source_memory_effects"] = json!({"wRequested2bppSize":4});
                 operation["source_memory_effect_condition"] = json!({"source":"wIntroSceneFrameCounter",
                     "predicate":"unsigned_less_than","operand":36});
@@ -1208,69 +1258,143 @@ fn attach_byte_loop_costs(
 mod byte_loop_cost_tests {
     #[test]
     fn unreachable_local_blocks_never_prefix_reachable_instruction_work() {
-        let Some(vendor) = std::env::var_os("CRYSTAL_PRET_SOURCE_ROOT") else { return; };
+        let Some(vendor) = std::env::var_os("CRYSTAL_PRET_SOURCE_ROOT") else {
+            return;
+        };
         let vendor = Path::new(&vendor);
-        let source = super::super::Source::read(vendor,"engine/movie/intro.asm").unwrap();
+        let source = super::super::Source::read(vendor, "engine/movie/intro.asm").unwrap();
         let body = source.body("IntroScene20").unwrap();
-        let unused = body.iter().position(|(_,code)| code == ".AppearUnownPal2:").unwrap();
-        let previous_return = body[..unused].iter().rev().find(|(_,code)|code == "ret").unwrap().0;
-        let finished = body.iter().position(|(_,code)| code == ".finished:").unwrap();
-        let call = body[finished+1].0;
-        let mut operations = vec![json!({"op":"return","source_span":{"file":source.file,
+        let unused = body
+            .iter()
+            .position(|(_, code)| code == ".AppearUnownPal2:")
+            .unwrap();
+        let previous_return = body[..unused]
+            .iter()
+            .rev()
+            .find(|(_, code)| code == "ret")
+            .unwrap()
+            .0;
+        let finished = body
+            .iter()
+            .position(|(_, code)| code == ".finished:")
+            .unwrap();
+        let call = body[finished + 1].0;
+        let mut operations = vec![
+            json!({"op":"return","source_span":{"file":source.file,
             "start_line":previous_return,"end_line":previous_return}}),
             json!({"op":"increment_memory_byte","target":"wJumptableIndex","source_span":{"file":source.file,
-            "start_line":call,"end_line":call}})];
-        attach_plain_instruction_costs(vendor,&mut operations).unwrap();
-        assert_eq!(operations[1]["source_instruction_machine_cycles"],json!([6,3,3,4]));
-        assert!(operations[1].get("source_instruction_timing_variants").is_none());
+            "start_line":call,"end_line":call}}),
+        ];
+        attach_plain_instruction_costs(vendor, &mut operations).unwrap();
+        assert_eq!(
+            operations[1]["source_instruction_machine_cycles"],
+            json!([6, 3, 3, 4])
+        );
+        assert!(
+            operations[1]
+                .get("source_instruction_timing_variants")
+                .is_none()
+        );
         assert!(operations[1].get("source_memory_effects").is_none());
     }
     #[test]
     fn remaining_intro_helpers_have_source_instruction_contracts() {
-        let Some(vendor) = std::env::var_os("CRYSTAL_PRET_SOURCE_ROOT") else { return; };
+        let Some(vendor) = std::env::var_os("CRYSTAL_PRET_SOURCE_ROOT") else {
+            return;
+        };
         let vendor = Path::new(&vendor);
         let source = super::super::Source::read(vendor, "engine/movie/intro.asm").unwrap();
-        for (instruction, op) in [("farcall DeinitializeAllSprites","deinitialize_all_sprites"),
-            ("call Request2bpp","request_2bpp_transfer"),("call Intro_RustleGrass","indexed_2bpp_request")] {
-            let line = source.lines.iter().find(|(_, code)| code == instruction).unwrap().0;
-            let mut operations = vec![json!({"op":"source_prefix","source_helper_timing":{},"source_span":{
+        for (instruction, op) in [
+            ("farcall DeinitializeAllSprites", "deinitialize_all_sprites"),
+            ("call Request2bpp", "request_2bpp_transfer"),
+            ("call Intro_RustleGrass", "indexed_2bpp_request"),
+        ] {
+            let line = source
+                .lines
+                .iter()
+                .find(|(_, code)| code == instruction)
+                .unwrap()
+                .0;
+            let mut operations = vec![
+                json!({"op":"source_prefix","source_helper_timing":{},"source_span":{
                 "file":"engine/movie/intro.asm","start_line":line-1,"end_line":line-1}}),
                 json!({"op":op,"tile_count":1,"source_span":{
-                "file":"engine/movie/intro.asm","start_line":line,"end_line":line}})];
-            attach_plain_instruction_costs(vendor,&mut operations).unwrap();
+                "file":"engine/movie/intro.asm","start_line":line,"end_line":line}}),
+            ];
+            attach_plain_instruction_costs(vendor, &mut operations).unwrap();
             let operation = &operations[1];
             if op == "deinitialize_all_sprites" {
-                let (prefix,suffix) = crystal_assets::runtime_intro_farcall_instruction_machine_cycles();
-                let modeled: Vec<u64> = serde_json::from_value(operation["source_instruction_machine_cycles"].clone()).unwrap();
-                let body = &modeled[prefix.len()..modeled.len()-suffix.len()];
-                let measured = source_intro_oracle::measure_routine(vendor,"DeinitializeAllSprites",&[]).unwrap();
-                let actual: Vec<u64> = measured["instructions"].as_array().unwrap().iter()
-                    .map(|instruction|instruction["machine_cycles"].as_u64().unwrap()).collect();
-                assert_eq!(body,actual);
+                let (prefix, suffix) =
+                    crystal_assets::runtime_intro_farcall_instruction_machine_cycles();
+                let modeled: Vec<u64> =
+                    serde_json::from_value(operation["source_instruction_machine_cycles"].clone())
+                        .unwrap();
+                let body = &modeled[prefix.len()..modeled.len() - suffix.len()];
+                let measured =
+                    source_intro_oracle::measure_routine(vendor, "DeinitializeAllSprites", &[])
+                        .unwrap();
+                let actual: Vec<u64> = measured["instructions"]
+                    .as_array()
+                    .unwrap()
+                    .iter()
+                    .map(|instruction| instruction["machine_cycles"].as_u64().unwrap())
+                    .collect();
+                assert_eq!(body, actual);
             } else if op == "request_2bpp_transfer" {
-                assert_eq!(operation["source_request_caller_instruction_machine_cycles"],json!([6]));
-                assert_eq!(operation["source_request_return_instruction_machine_cycles"],json!([]));
+                assert_eq!(
+                    operation["source_request_caller_instruction_machine_cycles"],
+                    json!([6])
+                );
+                assert_eq!(
+                    operation["source_request_return_instruction_machine_cycles"],
+                    json!([])
+                );
             } else {
-                assert_eq!(operation["source_memory_effects"],json!({"wRequested2bppSize":4}));
-                assert_eq!(operation["source_memory_effect_condition"]["operand"],json!(36));
+                assert_eq!(
+                    operation["source_memory_effects"],
+                    json!({"wRequested2bppSize":4})
+                );
+                assert_eq!(
+                    operation["source_memory_effect_condition"]["operand"],
+                    json!(36)
+                );
             }
         }
     }
     #[test]
     fn palette_helpers_publish_the_store_boundary_before_return() {
-        let Some(vendor) = std::env::var_os("CRYSTAL_PRET_SOURCE_ROOT") else { return; };
+        let Some(vendor) = std::env::var_os("CRYSTAL_PRET_SOURCE_ROOT") else {
+            return;
+        };
         let vendor = Path::new(&vendor);
         let source = super::super::Source::read(vendor, "engine/movie/intro.asm").unwrap();
-        for routine in ["CrystalIntro_UnownFade", "Intro_Scene20_AppearUnown",
-            "Intro_Scene24_ApplyPaletteFade", "Intro_FadeUnownWordPals"] {
-            let line = source.lines.iter().find(|(_, instruction)| instruction == &format!("call {routine}")).unwrap().0;
-            let mut operations = vec![json!({"op":"source_prefix", "source_helper_timing":{}, "source_span":{
+        for routine in [
+            "CrystalIntro_UnownFade",
+            "Intro_Scene20_AppearUnown",
+            "Intro_Scene24_ApplyPaletteFade",
+            "Intro_FadeUnownWordPals",
+        ] {
+            let line = source
+                .lines
+                .iter()
+                .find(|(_, instruction)| instruction == &format!("call {routine}"))
+                .unwrap()
+                .0;
+            let mut operations = vec![
+                json!({"op":"source_prefix", "source_helper_timing":{}, "source_span":{
                 "file":"engine/movie/intro.asm", "start_line":line - 1, "end_line":line - 1}}),
                 json!({"op":"palette_effect", "source_span":{
-                "file":"engine/movie/intro.asm", "start_line":line, "end_line":line}})];
+                "file":"engine/movie/intro.asm", "start_line":line, "end_line":line}}),
+            ];
             attach_plain_instruction_costs(vendor, &mut operations).unwrap();
-            assert_eq!(operations[1]["source_memory_effects"], json!({"hCGBPalUpdate":1}));
-            assert_eq!(operations[1]["source_memory_effect_instruction_index_from_end"], json!(2));
+            assert_eq!(
+                operations[1]["source_memory_effects"],
+                json!({"hCGBPalUpdate":1})
+            );
+            assert_eq!(
+                operations[1]["source_memory_effect_instruction_index_from_end"],
+                json!(2)
+            );
         }
     }
     use super::*;
@@ -2736,14 +2860,27 @@ mod control_tests {
 /// Memory effects remain the existing authored nineteen operations; timing
 /// includes the original outer calls and the helper returns between effects.
 pub(super) fn attach_cleanup(vendor: &Path, entry_cleanup: &mut Value) -> Result<()> {
-    let symbols = source_intro_oracle::symbols(&std::fs::read_to_string(vendor.join("pokecrystal.sym"))?)?;
-    let palette_bank = symbols.get("wGBCPalettes").context("intro palette bank symbol missing")?.0;
-    ensure!((1..=7).contains(&palette_bank), "intro palette bank exceeds CGB WRAM banks");
-    let entry_operations = entry_cleanup["entry_init"]["operations"].as_array_mut()
+    let symbols =
+        source_intro_oracle::symbols(&std::fs::read_to_string(vendor.join("pokecrystal.sym"))?)?;
+    let palette_bank = symbols
+        .get("wGBCPalettes")
+        .context("intro palette bank symbol missing")?
+        .0;
+    ensure!(
+        (1..=7).contains(&palette_bank),
+        "intro palette bank exceeds CGB WRAM banks"
+    );
+    let entry_operations = entry_cleanup["entry_init"]["operations"]
+        .as_array_mut()
         .context("intro entry operations missing")?;
-    let bank_write = entry_operations.iter_mut().find(|operation| operation["op"] == "write_memory_byte"
-        && operation["target"] == "rWBK").context("intro entry palette bank write missing")?;
-    ensure!(bank_write["value"] == "BANK(wGBCPalettes)", "intro entry bank expression changed");
+    let bank_write = entry_operations
+        .iter_mut()
+        .find(|operation| operation["op"] == "write_memory_byte" && operation["target"] == "rWBK")
+        .context("intro entry palette bank write missing")?;
+    ensure!(
+        bank_write["value"] == "BANK(wGBCPalettes)",
+        "intro entry bank expression changed"
+    );
     bank_write["source_memory_effects"] = json!({"rWBK":palette_bank});
     attach_byte_loop_costs(vendor, &mut [], &std::collections::BTreeMap::new())?;
     let operations = entry_cleanup["cleanup"]["operations"]

@@ -56,7 +56,8 @@ pub(crate) fn adapt(
                 // Match the identity's authored glove or plain arm island.
                 // The supplied palm UVs stretch painted crease bands across
                 // the reshaped fingers; geometry supplies the pad shading.
-                mesh.uvs.push(if gloves { [0.87, 0.69] } else { [0.90, 0.31] });
+                mesh.uvs
+                    .push(if gloves { [0.87, 0.69] } else { [0.90, 0.31] });
                 joints.push(joints[i]);
                 weights.push(weights[i]);
                 copy
@@ -80,7 +81,11 @@ mod tests {
     #[ignore = "requires the supplied character rig"]
     fn bare_hand_faces_keep_geometry_skin_and_nonhand_mapping() {
         use crate::new_bark_actors::character_meshes::CharacterKind;
-        for kind in [CharacterKind::Trainer, CharacterKind::TrainerFemale, CharacterKind::Nurse] {
+        for kind in [
+            CharacterKind::Trainer,
+            CharacterKind::TrainerFemale,
+            CharacterKind::Nurse,
+        ] {
             material_preserves_surface(kind);
         }
     }
@@ -90,11 +95,18 @@ mod tests {
     fn authored_dark_gloves_keep_their_complete_hand_painting() {
         use crate::new_bark_actors::character_meshes::CharacterKind;
         let root = std::path::PathBuf::from(std::env::var_os("CRYSTAL_OPEN_MODEL_ROOT").unwrap());
-        for kind in [CharacterKind::Biker, CharacterKind::Clair, CharacterKind::Janine,
-            CharacterKind::Rocket, CharacterKind::RocketGirl] {
+        for kind in [
+            CharacterKind::Biker,
+            CharacterKind::Clair,
+            CharacterKind::Janine,
+            CharacterKind::Rocket,
+            CharacterKind::RocketGirl,
+        ] {
             let look = crate::npc_appearance::look(kind);
-            let rig = PersonRig::parse(&std::fs::read(root.join(
-                format!("people/kenney/{}.glb", look.base))).unwrap()).unwrap();
+            let rig = PersonRig::parse(
+                &std::fs::read(root.join(format!("people/kenney/{}.glb", look.base))).unwrap(),
+            )
+            .unwrap();
             let mut mesh = rig.mesh.clone();
             let mut joints = rig.ids.clone();
             let mut weights = rig.weights.clone();
@@ -112,16 +124,19 @@ mod tests {
     fn material_preserves_surface(kind: crate::new_bark_actors::character_meshes::CharacterKind) {
         let root = std::path::PathBuf::from(std::env::var_os("CRYSTAL_OPEN_MODEL_ROOT").unwrap());
         let look = crate::npc_appearance::look(kind);
-        let rig =
-            PersonRig::parse(&std::fs::read(root.join(format!("people/kenney/{}.glb", look.base))).unwrap())
-                .unwrap();
+        let rig = PersonRig::parse(
+            &std::fs::read(root.join(format!("people/kenney/{}.glb", look.base))).unwrap(),
+        )
+        .unwrap();
         let mut mesh = rig.mesh.clone();
         let mut joints = rig.ids.clone();
         let mut weights = rig.weights.clone();
         let before = mesh.clone();
         let uv = if look.accessories.split(',').any(|a| a == "whitegloves") {
             [0.87, 0.69]
-        } else { [0.90, 0.31] };
+        } else {
+            [0.90, 0.31]
+        };
         adapt(&rig, &mut mesh, &mut joints, &mut weights, look);
         assert_eq!(mesh.indices.len(), before.indices.len());
         let hands: BTreeSet<_> = rig.hand_joints.iter().flatten().copied().collect();
@@ -155,10 +170,7 @@ mod tests {
                 assert_eq!(before.colors[a], mesh.colors[b]);
                 assert_eq!(rig.ids[a], joints[b]);
                 assert_eq!(rig.weights[a], weights[b]);
-                assert_eq!(
-                    mesh.uvs[b],
-                    if glove { uv } else { before.uvs[a] }
-                );
+                assert_eq!(mesh.uvs[b], if glove { uv } else { before.uvs[a] });
             }
         }
         assert!(

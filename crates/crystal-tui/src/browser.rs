@@ -7,10 +7,20 @@ use ratatui::{
 use std::fmt::Write;
 
 fn session_save_path(modpack: &str, session: &str) -> Result<std::path::PathBuf, &'static str> {
-    if session.len() > 64 || !session.bytes().all(|c| c.is_ascii_alphanumeric() || c == b'-' || c == b'_') {
-        return Err("Session must contain at most 64 ASCII letters, digits, hyphens or underscores");
+    if session.len() > 64
+        || !session
+            .bytes()
+            .all(|c| c.is_ascii_alphanumeric() || c == b'-' || c == b'_')
+    {
+        return Err(
+            "Session must contain at most 64 ASCII letters, digits, hyphens or underscores",
+        );
     }
-    let suffix = if session.is_empty() { "local".to_owned() } else { format!("session-{session}") };
+    let suffix = if session.is_empty() {
+        "local".to_owned()
+    } else {
+        format!("session-{session}")
+    };
     Ok(format!("saves/{modpack}-tui-{suffix}.crystalsave").into())
 }
 
@@ -107,14 +117,18 @@ mod wasm {
             let root = AssetRoot::new(".");
             let runtime =
                 CrystalRuntime::from_loaded_compiled_pack(&root, loaded).map_err(js_error)?;
-            let path = super::session_save_path(runtime.modpack().id(), session).map_err(js_error)?;
+            let path =
+                super::session_save_path(runtime.modpack().id(), session).map_err(js_error)?;
             let storage = web_sys::window()
                 .ok_or_else(|| js_error("No browser window"))?
                 .local_storage()?
                 .ok_or_else(|| js_error("Browser save storage unavailable"))?;
             let resume = storage
                 .get_item(&format!("crystal.save.v1.{}", path.display()))?
-                .is_some() || storage.get_item(&format!("crystal.save.v1.{}.bak", path.display()))?.is_some();
+                .is_some()
+                || storage
+                    .get_item(&format!("crystal.save.v1.{}.bak", path.display()))?
+                    .is_some();
             let mut tui = Self::from_runtime(root, runtime, path, "CHRIS", resume)?;
             tui.checkpoint()?;
             Ok(tui)
@@ -127,7 +141,8 @@ mod wasm {
             let root = AssetRoot::new(".");
             let runtime =
                 CrystalRuntime::from_loaded_compiled_pack(&root, loaded).map_err(js_error)?;
-            let save_path = super::session_save_path(runtime.modpack().id(), "").map_err(js_error)?;
+            let save_path =
+                super::session_save_path(runtime.modpack().id(), "").map_err(js_error)?;
             Self::from_runtime(root, runtime, save_path, name, resume)
         }
 
@@ -135,11 +150,19 @@ mod wasm {
             self.game.autosave(&self.save_path).map_err(js_error)
         }
 
-        pub fn session_path(&self) -> String { self.save_path.display().to_string() }
+        pub fn session_path(&self) -> String {
+            self.save_path.display().to_string()
+        }
     }
 
     impl BrowserTui {
-        fn from_runtime(root: AssetRoot, runtime: CrystalRuntime, save_path: PathBuf, name: &str, resume: bool) -> Result<Self, JsValue> {
+        fn from_runtime(
+            root: AssetRoot,
+            runtime: CrystalRuntime,
+            save_path: PathBuf,
+            name: &str,
+            resume: bool,
+        ) -> Result<Self, JsValue> {
             if name.trim().is_empty() || name.chars().count() > 7 {
                 return Err(js_error("Trainer name must contain 1–7 characters"));
             }
@@ -168,7 +191,6 @@ mod wasm {
 
     #[wasm_bindgen]
     impl BrowserTui {
-
         /// Game Boy inputs, suitable for both humans and browser agents.
         pub fn press(&mut self, button: &str) -> Result<(), JsValue> {
             self.painted.cancel_replay();
@@ -245,17 +267,33 @@ mod wasm {
             serde_json::to_string(&result.map_err(js_error)?).map_err(js_error)
         }
         /// A cosmetic clock only. Never ticks the controller or owns input.
-        pub fn advance_visual(&mut self) -> bool { self.painted.advance_replay() }
-        pub fn visual_active(&self) -> bool { self.painted.replay_active() }
-        pub fn cancel_visual(&mut self) { self.painted.cancel_replay(); }
-        /// High-density dot layer, same camera/tiles as the semantic terminal.
-        pub fn world_dots(&mut self) -> Result<String,JsValue> {
-            let source=self.game.presentation_snapshot().map_err(js_error)?;
-            Ok(self.painted.detailed_world(&source).map(|b|buffer_html(&b)).unwrap_or_default())
+        pub fn advance_visual(&mut self) -> bool {
+            self.painted.advance_replay()
         }
-        pub fn world_bounds(&self) -> Vec<u16> {self.painted.scene_bounds()}
-        pub fn advance_ink(&mut self, seconds: f64) {self.painted.advance_ink_by(seconds);}
-        pub fn world_dot_sizes(&self)->Vec<f64> {self.painted.animated_dot_sizes()}
+        pub fn visual_active(&self) -> bool {
+            self.painted.replay_active()
+        }
+        pub fn cancel_visual(&mut self) {
+            self.painted.cancel_replay();
+        }
+        /// High-density dot layer, same camera/tiles as the semantic terminal.
+        pub fn world_dots(&mut self) -> Result<String, JsValue> {
+            let source = self.game.presentation_snapshot().map_err(js_error)?;
+            Ok(self
+                .painted
+                .detailed_world(&source)
+                .map(|b| buffer_html(&b))
+                .unwrap_or_default())
+        }
+        pub fn world_bounds(&self) -> Vec<u16> {
+            self.painted.scene_bounds()
+        }
+        pub fn advance_ink(&mut self, seconds: f64) {
+            self.painted.advance_ink_by(seconds);
+        }
+        pub fn world_dot_sizes(&self) -> Vec<f64> {
+            self.painted.animated_dot_sizes()
+        }
 
         pub fn render(&mut self, columns: u16, rows: u16) -> Result<String, JsValue> {
             let columns = columns.clamp(40, 240);
@@ -360,8 +398,14 @@ mod tests {
     use ratatui::layout::Rect;
     #[test]
     fn session_slots_are_isolated_and_keep_legacy_default() {
-        assert_eq!(session_save_path("core", "").unwrap().to_string_lossy(), "saves/core-tui-local.crystalsave");
-        assert_ne!(session_save_path("core", "alice").unwrap(), session_save_path("core", "bob").unwrap());
+        assert_eq!(
+            session_save_path("core", "").unwrap().to_string_lossy(),
+            "saves/core-tui-local.crystalsave"
+        );
+        assert_ne!(
+            session_save_path("core", "alice").unwrap(),
+            session_save_path("core", "bob").unwrap()
+        );
         for id in ["../alice", "a/b", "a.b", "🎮", &"a".repeat(65)] {
             assert!(session_save_path("core", id).is_err());
         }

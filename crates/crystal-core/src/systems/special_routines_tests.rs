@@ -2819,11 +2819,24 @@ fn random_special_divider_exhaustion_is_atomic() {
 #[test]
 fn lucky_number_check_reports_expired_countdown_without_a_prize_claim() {
     let mut state = GameState::default();
-    assert!(!state.flags.is_engine_flag_set("ENGINE_LUCKY_NUMBER_SHOW").unwrap());
+    assert!(
+        !state
+            .flags
+            .is_engine_flag_set("ENGINE_LUCKY_NUMBER_SHOW")
+            .unwrap()
+    );
     let check = apply_special_routine(&mut state, &moves(), "CheckLuckyNumberShowFlag").unwrap();
-    assert_eq!(check.effect, SpecialRoutineEffect::CheckLuckyNumberShowFlag { flag: true });
+    assert_eq!(
+        check.effect,
+        SpecialRoutineEffect::CheckLuckyNumberShowFlag { flag: true }
+    );
     assert_eq!(state.script_runtime.script_value.as_deref(), Some("1"));
-    assert!(!state.flags.is_engine_flag_set("ENGINE_LUCKY_NUMBER_SHOW").unwrap());
+    assert!(
+        !state
+            .flags
+            .is_engine_flag_set("ENGINE_LUCKY_NUMBER_SHOW")
+            .unwrap()
+    );
 }
 
 #[test]
@@ -2834,25 +2847,51 @@ fn lucky_number_countdown_expires_on_friday_and_survives_day_wrap() {
         let mut state = GameState::default();
         state.time.current_day = start_day;
         state.lucky_number_day = Some(start_day);
-        state.flags.set_engine_flag("ENGINE_LUCKY_NUMBER_SHOW", true).unwrap();
+        state
+            .flags
+            .set_engine_flag("ENGINE_LUCKY_NUMBER_SHOW", true)
+            .unwrap();
         let mut divider = ReplayDivider::new([]);
         apply_random_special_routine(
-            &mut state, &moves(), "ResetLuckyNumberShowFlag", &mut divider,
-        ).unwrap();
-        assert!(!state.flags.is_engine_flag_set("ENGINE_LUCKY_NUMBER_SHOW").unwrap());
+            &mut state,
+            &moves(),
+            "ResetLuckyNumberShowFlag",
+            &mut divider,
+        )
+        .unwrap();
+        assert!(
+            !state
+                .flags
+                .is_engine_flag_set("ENGINE_LUCKY_NUMBER_SHOW")
+                .unwrap()
+        );
         assert_eq!(state.lucky_number_countdown.remaining_days, expected_days);
-        state.flags.set_engine_flag("ENGINE_LUCKY_NUMBER_SHOW", true).unwrap();
+        state
+            .flags
+            .set_engine_flag("ENGINE_LUCKY_NUMBER_SHOW", true)
+            .unwrap();
         for elapsed in 0..=expected_days {
             state.time.current_day = (start_day + elapsed) % 140;
             for _ in 0..2 {
-                let checked = apply_special_routine(
-                    &mut state, &moves(), "CheckLuckyNumberShowFlag",
-                ).unwrap();
-                assert_eq!(checked.effect, SpecialRoutineEffect::CheckLuckyNumberShowFlag {
-                    flag: elapsed == expected_days,
-                });
-                assert_eq!(state.lucky_number_countdown.remaining_days, expected_days - elapsed);
-                assert!(state.flags.is_engine_flag_set("ENGINE_LUCKY_NUMBER_SHOW").unwrap());
+                let checked =
+                    apply_special_routine(&mut state, &moves(), "CheckLuckyNumberShowFlag")
+                        .unwrap();
+                assert_eq!(
+                    checked.effect,
+                    SpecialRoutineEffect::CheckLuckyNumberShowFlag {
+                        flag: elapsed == expected_days,
+                    }
+                );
+                assert_eq!(
+                    state.lucky_number_countdown.remaining_days,
+                    expected_days - elapsed
+                );
+                assert!(
+                    state
+                        .flags
+                        .is_engine_flag_set("ENGINE_LUCKY_NUMBER_SHOW")
+                        .unwrap()
+                );
             }
         }
     }
@@ -2862,19 +2901,31 @@ fn lucky_number_countdown_expires_on_friday_and_survives_day_wrap() {
 fn lucky_number_reset_rolls_back_countdown_and_claim_on_rng_failure() {
     let mut state = GameState::default();
     state.time.current_day = 1;
-    state.flags.set_engine_flag("ENGINE_LUCKY_NUMBER_SHOW", true).unwrap();
+    state
+        .flags
+        .set_engine_flag("ENGINE_LUCKY_NUMBER_SHOW", true)
+        .unwrap();
     let before = state.clone();
     let mut divider = ReplayDivider::new([]);
-    assert!(apply_random_special_routine(
-        &mut state, &moves(), "ResetLuckyNumberShowFlag", &mut divider,
-    ).is_err());
+    assert!(
+        apply_random_special_routine(
+            &mut state,
+            &moves(),
+            "ResetLuckyNumberShowFlag",
+            &mut divider,
+        )
+        .is_err()
+    );
     assert_eq!(state, before);
 }
 
 #[test]
 fn lucky_number_show_flag_and_reset_use_daily_lucky_number() {
     let mut state = GameState::default();
-    state.flags.set_engine_flag("ENGINE_LUCKY_NUMBER_SHOW", true).unwrap();
+    state
+        .flags
+        .set_engine_flag("ENGINE_LUCKY_NUMBER_SHOW", true)
+        .unwrap();
     state.time.current_day = 6;
     state.script_runtime.script_value = Some("preserved".to_string());
 
@@ -2905,7 +2956,12 @@ fn lucky_number_show_flag_and_reset_use_daily_lucky_number() {
             random_state_after: CrystalRandomState { add: 2, sub: 2 },
         }
     );
-    assert!(!state.flags.is_engine_flag_set("ENGINE_LUCKY_NUMBER_SHOW").unwrap());
+    assert!(
+        !state
+            .flags
+            .is_engine_flag_set("ENGINE_LUCKY_NUMBER_SHOW")
+            .unwrap()
+    );
     assert_eq!(state.lucky_number_day, Some(6));
     assert_eq!(state.lucky_id_number, 513);
     assert_eq!(state.random_state, CrystalRandomState { add: 2, sub: 2 });
@@ -7968,7 +8024,14 @@ fn kurt_selection_removes_exact_apricorn_and_records_script_values() {
     );
     // RED_APRICORN is item byte $55; TRUE would lose the recipe identity.
     assert_eq!(state.script_runtime.script_value.as_deref(), Some("85"));
-    assert_eq!(state.script_runtime.variables.get("_value").map(String::as_str), Some("85"));
+    assert_eq!(
+        state
+            .script_runtime
+            .variables
+            .get("_value")
+            .map(String::as_str),
+        Some("85")
+    );
 
     let mut unselected = GameState::default();
     unselected.bag.add_item(&item, 3).expect("add apricorn");
@@ -9170,10 +9233,17 @@ fn day_care_collect_egg_clears_party_hp_like_the_source_handoff() {
     assert!(max_hp > 0);
     let mut divider = ReplayDivider::new(divider_trace_for_sub_values([150, 0x12, 0x34]));
     let mut rng = CrystalRandom::new(state.random_state, &mut divider);
-    assert!(day_care_collect_egg(&mut state, "DayCareManOutside", &mut rng).unwrap().success);
+    assert!(
+        day_care_collect_egg(&mut state, "DayCareManOutside", &mut rng)
+            .unwrap()
+            .success
+    );
     let egg = state.storage.party.pokemon[0].as_ref().unwrap();
     assert!(egg.is_egg);
-    assert_eq!(egg.hp, 0, "DayCare_GiveEgg writes both MON_HP bytes to zero");
+    assert_eq!(
+        egg.hp, 0,
+        "DayCare_GiveEgg writes both MON_HP bytes to zero"
+    );
     assert_eq!(egg.max_hp, max_hp);
 }
 
@@ -9482,21 +9552,38 @@ fn day_care_shiny_ditto_preserves_random_special_bit_and_derives_hp() {
                         ditto.dvs = Dv::from_non_hp(2, 10, 10, donor_special);
                         let mut mate = pokemon("CHIKORITA");
                         mate.dvs = Dv::from_non_hp(15, 1, 1, 1);
-                        let (first, second) = if ditto_first { (ditto, mate) } else { (mate, ditto) };
+                        let (first, second) = if ditto_first {
+                            (ditto, mate)
+                        } else {
+                            (mate, ditto)
+                        };
                         state.day_care.man.pokemon = Some(first);
                         state.day_care.lady.pokemon = Some(second);
                         let mut divider = ReplayDivider::new(divider_trace_for_sub_values([
-                            200, (attack << 4) | 1, (speed << 4) | special_high | 5,
+                            200,
+                            (attack << 4) | 1,
+                            (speed << 4) | special_high | 5,
                         ]));
                         let mut rng = CrystalRandom::new(state.random_state, &mut divider);
                         update_day_care_compatibility(&mut state, &mut rng).unwrap();
-                        let egg = state.day_care.egg.as_ref().expect("compatible parents generate egg");
-                        assert_eq!(egg.dvs, Dv::from_non_hp(attack, 10, speed, special_high | 2),
-                            "ditto_first={ditto_first}, donor_special={donor_special}");
+                        let egg = state
+                            .day_care
+                            .egg
+                            .as_ref()
+                            .expect("compatible parents generate egg");
+                        assert_eq!(
+                            egg.dvs,
+                            Dv::from_non_hp(attack, 10, speed, special_high | 2),
+                            "ditto_first={ditto_first}, donor_special={donor_special}"
+                        );
                         assert!(egg.is_egg);
                         let saved = serde_json::to_string(&egg.dvs).unwrap();
                         assert_eq!(serde_json::from_str::<Dv>(&saved).unwrap(), egg.dvs);
-                        if egg.dvs.defense == 10 && egg.dvs.speed == 10 && egg.dvs.special == 10 && egg.dvs.attack & 2 != 0 {
+                        if egg.dvs.defense == 10
+                            && egg.dvs.speed == 10
+                            && egg.dvs.special == 10
+                            && egg.dvs.attack & 2 != 0
+                        {
                             shiny_count += 1;
                         }
                         assert_eq!(divider.consumed(), 6);
@@ -9531,7 +9618,11 @@ fn bred_shiny_survives_collection_hatching_and_pokemon_save_round_trip() {
     state.day_care.egg_present = true;
     let mut divider = ReplayDivider::new(divider_trace_for_sub_values([200, 0x12, 0x34]));
     let mut rng = CrystalRandom::new(state.random_state, &mut divider);
-    assert!(day_care_collect_egg(&mut state, "DayCareManOutside", &mut rng).unwrap().success);
+    assert!(
+        day_care_collect_egg(&mut state, "DayCareManOutside", &mut rng)
+            .unwrap()
+            .success
+    );
     let egg = state.storage.party.pokemon[0].as_ref().unwrap();
     assert_eq!(egg.dvs, expected);
     assert!(egg.is_egg);
@@ -9542,14 +9633,28 @@ fn bred_shiny_survives_collection_hatching_and_pokemon_save_round_trip() {
     state.storage.party.pokemon[0].as_mut().unwrap().happiness = 1;
     state.step_events.step_count = 127;
     let rules = StepEventRules {
-        poison_step_interval: 4, egg_step_trigger: 128, hatched_egg_happiness: 120,
-        poison_status: "PSN".to_string(), egg_nickname: "EGG".to_string(),
-        happiness_step_counter_mask: 1, happiness_step_counter_target: 0,
+        poison_step_interval: 4,
+        egg_step_trigger: 128,
+        hatched_egg_happiness: 120,
+        poison_status: "PSN".to_string(),
+        egg_nickname: "EGG".to_string(),
+        happiness_step_counter_mask: 1,
+        happiness_step_counter_target: 0,
     };
     let mut divider = ReplayDivider::new([]);
     let mut rng = CrystalRandom::new(state.random_state, &mut divider);
-    let result = process_overworld_step(&mut state, &rules, &TEST_GROWTH_RATES, Some(42),
-        OverworldStepContext { movement_mode: crate::world::movement::MovementMode::Normal, map_phone_service: 0 }, &mut rng).unwrap();
+    let result = process_overworld_step(
+        &mut state,
+        &rules,
+        &TEST_GROWTH_RATES,
+        Some(42),
+        OverworldStepContext {
+            movement_mode: crate::world::movement::MovementMode::Normal,
+            map_phone_service: 0,
+        },
+        &mut rng,
+    )
+    .unwrap();
     assert_eq!(result.hatched_party_index, Some(0));
     let hatched = state.storage.party.pokemon[0].as_ref().unwrap();
     assert!(!hatched.is_egg);

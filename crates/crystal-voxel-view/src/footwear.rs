@@ -14,11 +14,47 @@ fn palette(look: Look) -> ([u8; 3], [u8; 3]) {
     }
     if matches!(look.texture_key, "cal" | "cooltrainer_m") {
         return (
-            look.shirt.map(|v| (f32::from(v) * 0.65 + 15.).round() as u8),
+            look.shirt
+                .map(|v| (f32::from(v) * 0.65 + 15.).round() as u8),
             [65, 68, 73],
         );
     }
-    if matches!(look.texture_key, "chris" | "kris" | "red" | "jasmine" | "karen" | "beauty" | "daisy" | "clair" | "sabrina" | "erika" | "bugsy" | "receptionist" | "whitney" | "misty" | "janine" | "koga" | "morty" | "falkner" | "lance" | "rival" | "blue" | "brock" | "elm" | "oak" | "scientist" | "blaine" | "pharmacist" | "elder" | "sage" | "pryce" | "kurt" | "kurt_outside" | "pokefan_m") {
+    if matches!(
+        look.texture_key,
+        "chris"
+            | "kris"
+            | "red"
+            | "jasmine"
+            | "karen"
+            | "beauty"
+            | "daisy"
+            | "clair"
+            | "sabrina"
+            | "erika"
+            | "bugsy"
+            | "receptionist"
+            | "whitney"
+            | "misty"
+            | "janine"
+            | "koga"
+            | "morty"
+            | "falkner"
+            | "lance"
+            | "rival"
+            | "blue"
+            | "brock"
+            | "elm"
+            | "oak"
+            | "scientist"
+            | "blaine"
+            | "pharmacist"
+            | "elder"
+            | "sage"
+            | "pryce"
+            | "kurt"
+            | "kurt_outside"
+            | "pokefan_m"
+    ) {
         // These painted shoes already carry their intended palette.
         // A vest/dress tint obscured both the laces and upper color.
         return ([255, 255, 255], [163, 168, 168]);
@@ -63,7 +99,10 @@ pub(crate) fn adapt(
     let player = matches!(look.texture_key, "chris" | "kris");
     let plain_laced = player || look.texture_key == "nurse";
     for _ in 0..2 {
-        let selected: Vec<_> = mesh.positions.iter().zip(&mesh.uvs)
+        let selected: Vec<_> = mesh
+            .positions
+            .iter()
+            .zip(&mesh.uvs)
             .map(|(&p, &uv)| shoe(p, uv) && p[1] > 0.015 && p[1] < 0.235)
             .collect();
         // Refine adjacent cuff/sole triangles along the same edges so the
@@ -74,12 +113,22 @@ pub(crate) fn adapt(
         // Keep floor height and the ankle ring while reducing the oversized
         // toe/heel footprint as well as its upper. Pin any shared non-shoe UV
         // seam so duplicate corners cannot separate during animation.
-        let smooth = |v: f32| { let t = v.clamp(0.0, 1.0); t * t * (3.0 - 2.0 * t) };
+        let smooth = |v: f32| {
+            let t = v.clamp(0.0, 1.0);
+            t * t * (3.0 - 2.0 * t)
+        };
         let key = |p: [f32; 3]| p.map(|v| (v * 100_000.0).round() as i32);
-        let pinned: std::collections::BTreeSet<_> = mesh.positions.iter().zip(&mesh.uvs)
-            .filter(|(p, uv)| !shoe(**p, **uv)).map(|(&p, _)| key(p)).collect();
+        let pinned: std::collections::BTreeSet<_> = mesh
+            .positions
+            .iter()
+            .zip(&mesh.uvs)
+            .filter(|(p, uv)| !shoe(**p, **uv))
+            .map(|(&p, _)| key(p))
+            .collect();
         for (p, &uv) in mesh.positions.iter_mut().zip(&mesh.uvs) {
-            if !shoe(*p, uv) || p[1] >= 0.235 || pinned.contains(&key(*p)) { continue; }
+            if !shoe(*p, uv) || p[1] >= 0.235 || pinned.contains(&key(*p)) {
+                continue;
+            }
             let fade = 1.0 - smooth((p[1] - 0.170) / 0.065);
             let above_floor = smooth((p[1] - 0.015) / 0.035);
             let center = if p[0] < 0.0 { -0.36 } else { 0.36 };
@@ -94,12 +143,16 @@ pub(crate) fn adapt(
     let key = |p: [f32; 3]| p.map(|v| (v * 100_000.0).round() as i32);
     let mut normals = std::collections::BTreeMap::<[i32; 3], Vec3>::new();
     for face in mesh.indices.chunks_exact(3) {
-        let points = [face[0], face[1], face[2]].map(|i| Vec3::from_array(mesh.positions[i as usize]));
-        let n = (points[1] - points[0]).cross(points[2] - points[0]).normalize_or_zero();
+        let points =
+            [face[0], face[1], face[2]].map(|i| Vec3::from_array(mesh.positions[i as usize]));
+        let n = (points[1] - points[0])
+            .cross(points[2] - points[0])
+            .normalize_or_zero();
         for corner in 0..3 {
             let a = (points[(corner + 1) % 3] - points[corner]).normalize_or_zero();
             let b = (points[(corner + 2) % 3] - points[corner]).normalize_or_zero();
-            *normals.entry(key(points[corner].to_array())).or_default() += n * a.dot(b).clamp(-1.0, 1.0).acos();
+            *normals.entry(key(points[corner].to_array())).or_default() +=
+                n * a.dot(b).clamp(-1.0, 1.0).acos();
         }
     }
     for ((&p, &uv), normal) in mesh.positions.iter().zip(&mesh.uvs).zip(&mut mesh.normals) {
@@ -115,8 +168,11 @@ pub(crate) fn adapt(
         if !shoe(p, uv) {
             continue;
         }
-        let blend = if plain_laced { ((p[1] - 0.025) / 0.035).clamp(0., 1.) }
-            else { ((p[1] - 0.055) / 0.045).clamp(0., 1.) };
+        let blend = if plain_laced {
+            ((p[1] - 0.025) / 0.035).clamp(0., 1.)
+        } else {
+            ((p[1] - 0.055) / 0.045).clamp(0., 1.)
+        };
         let blend = blend * blend * (3. - 2. * blend);
         for axis in 0..3 {
             color[axis] *= sole[axis] + (upper[axis] - sole[axis]) * blend;
@@ -130,7 +186,28 @@ pub(crate) fn adapt(
                 *channel *= 0.08 + 0.92 * front;
             }
         }
-        if matches!(look.texture_key, "koga" | "janine" | "morty" | "falkner" | "lance" | "rival" | "blue" | "brock" | "elm" | "oak" | "scientist" | "blaine" | "pharmacist" | "elder" | "sage" | "pryce" | "kurt" | "kurt_outside" | "pokefan_m") {
+        if matches!(
+            look.texture_key,
+            "koga"
+                | "janine"
+                | "morty"
+                | "falkner"
+                | "lance"
+                | "rival"
+                | "blue"
+                | "brock"
+                | "elm"
+                | "oak"
+                | "scientist"
+                | "blaine"
+                | "pharmacist"
+                | "elder"
+                | "sage"
+                | "pryce"
+                | "kurt"
+                | "kurt_outside"
+                | "pokefan_m"
+        ) {
             // These paintings have dark uppers, but the original
             // heel UVs sample their grey gutter. Retain the grey sole and
             // front panels while bringing the upper heel into that palette.
@@ -142,7 +219,11 @@ pub(crate) fn adapt(
         }
     }
     if plain_laced {
-        let plain_uv = if look.texture_key == "nurse" { [0.716, 0.435] } else { [0.716, 0.465] };
+        let plain_uv = if look.texture_key == "nurse" {
+            [0.716, 0.435]
+        } else {
+            [0.716, 0.465]
+        };
         plain_shoe_uvs(mesh, ids, weights, plain_uv);
         player_laces::append(mesh, ids, weights);
     }
@@ -150,12 +231,18 @@ pub(crate) fn adapt(
 
 /// Plain leather and rubber share a clean sample; crosslaces are modeled
 /// on the actual upper instead of stretching a top-down bitmap around it.
-fn plain_shoe_uvs(mesh: &mut SurfaceMeshData,
-    ids: &mut Vec<[u16; 4]>, weights: &mut Vec<[f32; 4]>, plain_uv: [f32; 2]) {
+fn plain_shoe_uvs(
+    mesh: &mut SurfaceMeshData,
+    ids: &mut Vec<[u16; 4]>,
+    weights: &mut Vec<[f32; 4]>,
+    plain_uv: [f32; 2],
+) {
     let mut copies = std::collections::HashMap::new();
     let old = std::mem::take(&mut mesh.indices);
     for face in old.chunks_exact(3) {
-        let shoe_face = face.iter().all(|&i| shoe(mesh.positions[i as usize], mesh.uvs[i as usize]));
+        let shoe_face = face
+            .iter()
+            .all(|&i| shoe(mesh.positions[i as usize], mesh.uvs[i as usize]));
         if !shoe_face {
             mesh.indices.extend_from_slice(face);
             continue;
@@ -181,79 +268,99 @@ fn plain_shoe_uvs(mesh: &mut SurfaceMeshData,
 /// Reshape the connected foot surface, retaining the ankle ring and floor.
 /// Toe contours belong to that surface, so no separate toe pieces can float
 /// away from the instep when the production skeleton bends the ankle.
-fn bare_feet(mesh: &mut SurfaceMeshData, ids: &mut Vec<[u16;4]>, weights: &mut Vec<[f32;4]>) {
+fn bare_feet(mesh: &mut SurfaceMeshData, ids: &mut Vec<[u16; 4]>, weights: &mut Vec<[f32; 4]>) {
     // Production shorts expose the lower leg before footwear is adapted.
     // Continue that actual ankle sample onto the foot instead of using a
     // lighter hand patch from elsewhere in the same identity painting.
     let ankle_uv: [Vec2; 2] = std::array::from_fn(|side| {
-        mesh.positions.iter().zip(&mesh.uvs)
-            .filter(|(p, uv)| usize::from(p[0] > 0.0) == side
-                && (0.27..0.50).contains(&p[1])
-                && uv[0] >= 0.80 && (0.16..0.60).contains(&uv[1]))
+        mesh.positions
+            .iter()
+            .zip(&mesh.uvs)
+            .filter(|(p, uv)| {
+                usize::from(p[0] > 0.0) == side
+                    && (0.27..0.50).contains(&p[1])
+                    && uv[0] >= 0.80
+                    && (0.16..0.60).contains(&uv[1])
+            })
             .min_by(|(a, _), (b, _)| (a[1] - 0.30).abs().total_cmp(&(b[1] - 0.30).abs()))
             .map(|(_, uv)| Vec2::from_array(*uv))
             .unwrap_or(Vec2::new(0.90, 0.31))
     });
     for _ in 0..2 {
-        let selected: Vec<_> = mesh.positions.iter().map(|p| p[1]>0.012 && p[1]<0.235).collect();
+        let selected: Vec<_> = mesh
+            .positions
+            .iter()
+            .map(|p| p[1] > 0.012 && p[1] < 0.235)
+            .collect();
         crate::hand_surface::smooth_selection_joined(mesh, ids, weights, &selected);
     }
-    let mut ankle_points = [std::collections::BTreeSet::new(), std::collections::BTreeSet::new()];
+    let mut ankle_points = [
+        std::collections::BTreeSet::new(),
+        std::collections::BTreeSet::new(),
+    ];
     for &p in &mesh.positions {
         if (0.235..0.27).contains(&p[1]) {
-            ankle_points[usize::from(p[0]>0.0)].insert(p.map(|v|(v*100_000.0).round() as i32));
+            ankle_points[usize::from(p[0] > 0.0)].insert(p.map(|v| (v * 100_000.0).round() as i32));
         }
     }
     let centers = ankle_points.map(|points| {
         assert!(!points.is_empty(), "supplied foot has no ankle ring");
-        points.iter().map(|p|p[0] as f32/100_000.0).sum::<f32>()/points.len() as f32
+        points.iter().map(|p| p[0] as f32 / 100_000.0).sum::<f32>() / points.len() as f32
     });
     for (p, uv) in mesh.positions.iter_mut().zip(&mut mesh.uvs) {
-        if p[1]>=0.27 {continue;}
-        let side = usize::from(p[0]>0.0);
-        let t=((p[1]-0.14)/0.095).clamp(0.0,1.0);
-        let fade=1.0-t*t*(3.0-2.0*t);
-        let forward=((p[2]+0.05)/0.28).clamp(0.0,1.0);
+        if p[1] >= 0.27 {
+            continue;
+        }
+        let side = usize::from(p[0] > 0.0);
+        let t = ((p[1] - 0.14) / 0.095).clamp(0.0, 1.0);
+        let fade = 1.0 - t * t * (3.0 - 2.0 * t);
+        let forward = ((p[2] + 0.05) / 0.28).clamp(0.0, 1.0);
         // A bare heel is narrower than the ball of the foot. The previous
         // nearly uniform width retained the shoe's straight side walls.
-        let width=0.58+0.26*forward;
-        if fade>0.0 {
-            p[0]=centers[side]+(p[0]-centers[side])*(1.0-(1.0-width)*fade);
-            if p[1]>0.012 {p[1]*=1.0-(0.22+0.20*forward)*fade;}
+        let width = 0.58 + 0.26 * forward;
+        if fade > 0.0 {
+            p[0] = centers[side] + (p[0] - centers[side]) * (1.0 - (1.0 - width) * fade);
+            if p[1] > 0.012 {
+                p[1] *= 1.0 - (0.22 + 0.20 * forward) * fade;
+            }
         }
         // The inside toe is longest; the outer toe tapers back. Shallow
         // valleys delineate five toes within one continuous rounded surface.
-        let across=((p[0]-centers[side])*p[0].signum()/0.26+0.5).clamp(0.0,1.0);
-        let toe=((p[2]-0.14)/0.12).clamp(0.0,1.0);
-        let lobes=(across*std::f32::consts::PI*5.0).sin().abs();
-        if fade>0.0 {p[2]-=fade*toe*(0.018+across*0.035+(1.0-lobes)*0.012);}
+        let across = ((p[0] - centers[side]) * p[0].signum() / 0.26 + 0.5).clamp(0.0, 1.0);
+        let toe = ((p[2] - 0.14) / 0.12).clamp(0.0, 1.0);
+        let lobes = (across * std::f32::consts::PI * 5.0).sin().abs();
+        if fade > 0.0 {
+            p[2] -= fade * toe * (0.018 + across * 0.035 + (1.0 - lobes) * 0.012);
+        }
         // Lift only the medial midsole into a shallow arch. Heel and toe
         // contact patches retain the source floor height; the ankle ring is
         // outside this field and remains exactly joined to the lower leg.
-        let medial=((centers[side]-p[0])*p[0].signum()/0.10+0.25).clamp(0.0,1.0);
-        let along=(1.0-((p[2]+0.025)/0.12).powi(2)).max(0.0);
-        let sole=(1.0-p[1]/0.09).clamp(0.0,1.0);
-        p[1]+=0.045*medial*medial*along*along*sole*sole;
+        let medial = ((centers[side] - p[0]) * p[0].signum() / 0.10 + 0.25).clamp(0.0, 1.0);
+        let along = (1.0 - ((p[2] + 0.025) / 0.12).powi(2)).max(0.0);
+        let sole = (1.0 - p[1] / 0.09).clamp(0.0, 1.0);
+        p[1] += 0.045 * medial * medial * along * along * sole * sole;
         // The same inspected plain skin patch as the exposed lower legs.
-        *uv=(ankle_uv[side]+Vec2::new((p[0]-centers[side])*0.025,p[2]*0.025)).to_array();
+        *uv = (ankle_uv[side] + Vec2::new((p[0] - centers[side]) * 0.025, p[2] * 0.025)).to_array();
     }
     // Recompute normals after changing the volume. Weld coincident UV seams
     // for shading, keeping the individual skinning influences untouched.
-    let key=|p:[f32;3]|p.map(|v|(v*100_000.0).round() as i32);
-    let mut normals=std::collections::HashMap::<[i32;3],Vec3>::new();
+    let key = |p: [f32; 3]| p.map(|v| (v * 100_000.0).round() as i32);
+    let mut normals = std::collections::HashMap::<[i32; 3], Vec3>::new();
     for face in mesh.indices.chunks_exact(3) {
-        let p=[face[0],face[1],face[2]].map(|i|Vec3::from_array(mesh.positions[i as usize]));
-        let normal=(p[1]-p[0]).cross(p[2]-p[0]);
+        let p = [face[0], face[1], face[2]].map(|i| Vec3::from_array(mesh.positions[i as usize]));
+        let normal = (p[1] - p[0]).cross(p[2] - p[0]);
         for &i in face {
-            if mesh.positions[i as usize][1]<0.27 {
-                *normals.entry(key(mesh.positions[i as usize])).or_default()+=normal;
+            if mesh.positions[i as usize][1] < 0.27 {
+                *normals.entry(key(mesh.positions[i as usize])).or_default() += normal;
             }
         }
     }
     for i in 0..mesh.positions.len() {
-        if mesh.positions[i][1]<0.27 {
-            if let Some(n)=normals.get(&key(mesh.positions[i])) {
-                if n.length_squared()>1e-16 {mesh.normals[i]=n.normalize().to_array();}
+        if mesh.positions[i][1] < 0.27 {
+            if let Some(n) = normals.get(&key(mesh.positions[i])) {
+                if n.length_squared() > 1e-16 {
+                    mesh.normals[i] = n.normalize().to_array();
+                }
             }
         }
     }
@@ -267,40 +374,66 @@ mod tests {
         use crate::new_bark_actors::character_meshes::CharacterKind;
         use crate::open_people::PersonRig;
         let root = std::path::PathBuf::from(std::env::var_os("CRYSTAL_OPEN_MODEL_ROOT").unwrap());
-        for kind in [CharacterKind::Trainer, CharacterKind::TrainerFemale, CharacterKind::Nurse] {
+        for kind in [
+            CharacterKind::Trainer,
+            CharacterKind::TrainerFemale,
+            CharacterKind::Nurse,
+        ] {
             let look = crate::npc_appearance::look(kind);
-            let rig = PersonRig::parse(&std::fs::read(
-                root.join(format!("people/kenney/{}.glb", look.base))).unwrap()).unwrap();
+            let rig = PersonRig::parse(
+                &std::fs::read(root.join(format!("people/kenney/{}.glb", look.base))).unwrap(),
+            )
+            .unwrap();
             let painting = crate::npc_textures::get(look.texture_key).unwrap();
             let sample = |uv: [f32; 2]| {
-                let x = (uv[0] * painting.size.0 as f32).clamp(0., painting.size.0 as f32 - 1.) as usize;
-                let y = (uv[1] * painting.size.1 as f32).clamp(0., painting.size.1 as f32 - 1.) as usize;
+                let x = (uv[0] * painting.size.0 as f32).clamp(0., painting.size.0 as f32 - 1.)
+                    as usize;
+                let y = (uv[1] * painting.size.1 as f32).clamp(0., painting.size.1 as f32 - 1.)
+                    as usize;
                 &painting.rgba[(y * painting.size.0 as usize + x) * 4..][..3]
             };
             let mut before = rig.mesh.clone();
             let mut before_ids = rig.ids.clone();
             let mut before_weights = rig.weights.clone();
-            adapt(&mut before, &mut before_ids, &mut before_weights,
-                crate::npc_appearance::look(CharacterKind::Officer));
+            adapt(
+                &mut before,
+                &mut before_ids,
+                &mut before_weights,
+                crate::npc_appearance::look(CharacterKind::Officer),
+            );
             let mut after = rig.mesh.clone();
             let mut ids = rig.ids.clone();
             let mut weights = rig.weights.clone();
             adapt(&mut after, &mut ids, &mut weights, look);
-            assert!(after.indices.len() > before.indices.len(), "modeled crosslaces missing");
+            assert!(
+                after.indices.len() > before.indices.len(),
+                "modeled crosslaces missing"
+            );
             assert_eq!(after.positions.len(), ids.len());
             assert_eq!(ids.len(), weights.len());
             let mut old_skin = 0;
             let mut soles = std::collections::BTreeSet::new();
-            for (old_face, new_face) in before.indices.chunks_exact(3).zip(after.indices.chunks_exact(3)) {
-                let shoe_face = old_face.iter().all(|&i| shoe(before.positions[i as usize], before.uvs[i as usize]));
-                let rubber = old_face.iter().any(|&i| before.positions[i as usize][1] <= 0.055);
+            for (old_face, new_face) in before
+                .indices
+                .chunks_exact(3)
+                .zip(after.indices.chunks_exact(3))
+            {
+                let shoe_face = old_face
+                    .iter()
+                    .all(|&i| shoe(before.positions[i as usize], before.uvs[i as usize]));
+                let rubber = old_face
+                    .iter()
+                    .any(|&i| before.positions[i as usize][1] <= 0.055);
                 for (&old, &new) in old_face.iter().zip(new_face) {
                     let (old, new) = (old as usize, new as usize);
                     if shoe(before.positions[old], before.uvs[old]) {
                         // These styles deliberately slim the footprint. Keep
                         // the same movement bound and actual ground height.
-                        assert!(Vec3::from_array(before.positions[old])
-                            .distance(Vec3::from_array(after.positions[new])) < 0.06);
+                        assert!(
+                            Vec3::from_array(before.positions[old])
+                                .distance(Vec3::from_array(after.positions[new]))
+                                < 0.06
+                        );
                         if before.positions[old][1] <= 0.015 {
                             assert_eq!(before.positions[old][1], after.positions[new][1]);
                         }
@@ -309,7 +442,10 @@ mod tests {
                         }
                         assert!((Vec3::from_array(after.normals[new]).length() - 1.0).abs() < 1e-5);
                     } else {
-                        assert_eq!(before.positions[old], after.positions[new], "non-shoe geometry changed");
+                        assert_eq!(
+                            before.positions[old], after.positions[new],
+                            "non-shoe geometry changed"
+                        );
                         assert_eq!(before.normals[old], after.normals[new]);
                     }
                     assert_eq!(before_ids[old], ids[new]);
@@ -317,34 +453,63 @@ mod tests {
                     if rubber {
                         soles.insert(old);
                         let rgb = sample(before.uvs[old]);
-                        old_skin += usize::from(i16::from(rgb[0]) - i16::from(rgb[1]) > 25
-                            && i16::from(rgb[1]) - i16::from(rgb[2]) > 20);
+                        old_skin += usize::from(
+                            i16::from(rgb[0]) - i16::from(rgb[1]) > 25
+                                && i16::from(rgb[1]) - i16::from(rgb[2]) > 20,
+                        );
                     } else if !shoe_face {
                         assert_eq!(after.uvs[new], before.uvs[old], "non-shoe UV changed");
                     }
-                    if shoe(before.positions[old], before.uvs[old]) && before.positions[old][1] >= 0.10 {
-                        let upper = palette(look).0.map(|v| Color::srgb_u8(v, v, v).to_linear().red);
+                    if shoe(before.positions[old], before.uvs[old])
+                        && before.positions[old][1] >= 0.10
+                    {
+                        let upper = palette(look)
+                            .0
+                            .map(|v| Color::srgb_u8(v, v, v).to_linear().red);
                         for axis in 0..3 {
-                            assert!((after.colors[new][axis] - rig.mesh.colors[0][axis] * upper[axis]).abs() < 1e-5,
-                                "{} upper does not retain its authored palette: {:?}", look.texture_key, after.colors[new]);
+                            assert!(
+                                (after.colors[new][axis] - rig.mesh.colors[0][axis] * upper[axis])
+                                    .abs()
+                                    < 1e-5,
+                                "{} upper does not retain its authored palette: {:?}",
+                                look.texture_key,
+                                after.colors[new]
+                            );
                         }
                     }
                 }
                 if shoe_face {
                     // Inspect interpolated UVs across the whole face, rather
                     // than allowing lace/skin stripes between good corners.
-                    for a in 0..=4 { for b in 0..=4-a {
-                        let blend = [a as f32 / 4., b as f32 / 4., (4-a-b) as f32 / 4.];
-                        let uv = std::array::from_fn(|axis| new_face.iter().zip(blend)
-                            .map(|(&i,w)| after.uvs[i as usize][axis] * w).sum());
-                        let rgb = sample(uv);
-                        assert!(rgb.iter().all(|&c| c > 230), "rubber face crosses dark/skin pixels");
-                        assert!(i16::from(*rgb.iter().max().unwrap()) - i16::from(*rgb.iter().min().unwrap()) < 5,
-                            "rubber albedo is not neutral");
-                    } }
+                    for a in 0..=4 {
+                        for b in 0..=4 - a {
+                            let blend = [a as f32 / 4., b as f32 / 4., (4 - a - b) as f32 / 4.];
+                            let uv = std::array::from_fn(|axis| {
+                                new_face
+                                    .iter()
+                                    .zip(blend)
+                                    .map(|(&i, w)| after.uvs[i as usize][axis] * w)
+                                    .sum()
+                            });
+                            let rgb = sample(uv);
+                            assert!(
+                                rgb.iter().all(|&c| c > 230),
+                                "rubber face crosses dark/skin pixels"
+                            );
+                            assert!(
+                                i16::from(*rgb.iter().max().unwrap())
+                                    - i16::from(*rgb.iter().min().unwrap())
+                                    < 5,
+                                "rubber albedo is not neutral"
+                            );
+                        }
+                    }
                 }
             }
-            assert!(soles.len() > 80 && old_skin > 10, "regression did not cover the skin-mapped soles");
+            assert!(
+                soles.len() > 80 && old_skin > 10,
+                "regression did not cover the skin-mapped soles"
+            );
             for i in 0..rig.mesh.positions.len() {
                 assert_eq!(ids[i], rig.ids[i]);
                 assert_eq!(weights[i], rig.weights[i]);
@@ -356,79 +521,149 @@ mod tests {
     #[test]
     #[ignore = "requires supplied swimmer rigs and paintings"]
     fn swimmer_feet_continue_the_production_ankle_skin_palette() {
-        let root=std::path::PathBuf::from(std::env::var_os("CRYSTAL_OPEN_MODEL_ROOT").unwrap());
-        for kind in [CharacterKind::SwimmerGuy,CharacterKind::SwimmerGirl] {
-            let look=crate::npc_appearance::look(kind);
-            let rig=PersonRig::parse(&std::fs::read(root.join(format!("people/kenney/{}.glb",look.base))).unwrap()).unwrap();
-            let painting=crate::npc_textures::decode(&std::fs::read(root.join(format!("people/npc-textures/{}.png",look.texture_key))).unwrap()).unwrap();
-            let mut mesh=rig.mesh.clone();let mut ids=rig.ids.clone();let mut weights=rig.weights.clone();
-            crate::npc_appearance::shorts_body(&rig,&mut mesh,&mut ids,&mut weights,look);
-            adapt(&mut mesh,&mut ids,&mut weights,look);
-            let visible=mesh.indices.iter().map(|&i|i as usize).collect::<std::collections::BTreeSet<_>>();
+        let root = std::path::PathBuf::from(std::env::var_os("CRYSTAL_OPEN_MODEL_ROOT").unwrap());
+        for kind in [CharacterKind::SwimmerGuy, CharacterKind::SwimmerGirl] {
+            let look = crate::npc_appearance::look(kind);
+            let rig = PersonRig::parse(
+                &std::fs::read(root.join(format!("people/kenney/{}.glb", look.base))).unwrap(),
+            )
+            .unwrap();
+            let painting = crate::npc_textures::decode(
+                &std::fs::read(root.join(format!("people/npc-textures/{}.png", look.texture_key)))
+                    .unwrap(),
+            )
+            .unwrap();
+            let mut mesh = rig.mesh.clone();
+            let mut ids = rig.ids.clone();
+            let mut weights = rig.weights.clone();
+            crate::npc_appearance::shorts_body(&rig, &mut mesh, &mut ids, &mut weights, look);
+            adapt(&mut mesh, &mut ids, &mut weights, look);
+            let visible = mesh
+                .indices
+                .iter()
+                .map(|&i| i as usize)
+                .collect::<std::collections::BTreeSet<_>>();
             let mean = |low: f32, high: f32, side: usize| {
-                let mut sum=Vec3::ZERO; let mut count=0;
+                let mut sum = Vec3::ZERO;
+                let mut count = 0;
                 for &i in &visible {
-                    let p=mesh.positions[i];let uv=mesh.uvs[i];
-                    if !(low..high).contains(&p[1]) || usize::from(p[0]>0.0)!=side
-                        || uv[0]<0.80 || !(0.16..0.60).contains(&uv[1]) {continue;}
-                    let x=(uv[0]*painting.size.0 as f32) as u32;
-                    let y=(uv[1]*painting.size.1 as f32) as u32;
-                    let rgb=&painting.rgba[((y*painting.size.0+x)*4) as usize..][..3];
-                    sum+=Vec3::new(rgb[0] as f32,rgb[1] as f32,rgb[2] as f32);count+=1;
+                    let p = mesh.positions[i];
+                    let uv = mesh.uvs[i];
+                    if !(low..high).contains(&p[1])
+                        || usize::from(p[0] > 0.0) != side
+                        || uv[0] < 0.80
+                        || !(0.16..0.60).contains(&uv[1])
+                    {
+                        continue;
+                    }
+                    let x = (uv[0] * painting.size.0 as f32) as u32;
+                    let y = (uv[1] * painting.size.1 as f32) as u32;
+                    let rgb = &painting.rgba[((y * painting.size.0 + x) * 4) as usize..][..3];
+                    sum += Vec3::new(rgb[0] as f32, rgb[1] as f32, rgb[2] as f32);
+                    count += 1;
                 }
-                assert!(count>20,"missing exposed skin samples for {}",look.texture_key);
-                sum/count as f32
+                assert!(
+                    count > 20,
+                    "missing exposed skin samples for {}",
+                    look.texture_key
+                );
+                sum / count as f32
             };
             for side in 0..2 {
-                let foot=mean(0.03,0.20,side);let ankle=mean(0.27,0.40,side);
-                assert!((foot-ankle).abs().max_element()<8.0,
-                    "{} foot changes skin palette at ankle: foot={foot:?}, ankle={ankle:?}",look.texture_key);
+                let foot = mean(0.03, 0.20, side);
+                let ankle = mean(0.27, 0.40, side);
+                assert!(
+                    (foot - ankle).abs().max_element() < 8.0,
+                    "{} foot changes skin palette at ankle: foot={foot:?}, ankle={ankle:?}",
+                    look.texture_key
+                );
             }
         }
     }
     #[test]
     #[ignore = "requires supplied swimmer rigs and paintings"]
     fn supplied_swimmer_feet_have_skin_round_contours_and_pinned_ankles() {
-        let root=std::path::PathBuf::from(std::env::var_os("CRYSTAL_OPEN_MODEL_ROOT").unwrap());
-        for kind in [CharacterKind::SwimmerGuy,CharacterKind::SwimmerGirl] {
-            let look=crate::npc_appearance::look(kind);
-            let rig=PersonRig::parse(&std::fs::read(root.join(format!("people/kenney/{}.glb",look.base))).unwrap()).unwrap();
-            let painting=crate::npc_textures::decode(&std::fs::read(root.join(format!("people/npc-textures/{}.png",look.texture_key))).unwrap()).unwrap();
-            let mut mesh=rig.mesh.clone();let mut ids=rig.ids.clone();let mut weights=rig.weights.clone();
-            adapt(&mut mesh,&mut ids,&mut weights,look);
-            let mut feet=[0;2];let mut changed=0;let mut arch=[0;2];let mut contact=[0;2];
+        let root = std::path::PathBuf::from(std::env::var_os("CRYSTAL_OPEN_MODEL_ROOT").unwrap());
+        for kind in [CharacterKind::SwimmerGuy, CharacterKind::SwimmerGirl] {
+            let look = crate::npc_appearance::look(kind);
+            let rig = PersonRig::parse(
+                &std::fs::read(root.join(format!("people/kenney/{}.glb", look.base))).unwrap(),
+            )
+            .unwrap();
+            let painting = crate::npc_textures::decode(
+                &std::fs::read(root.join(format!("people/npc-textures/{}.png", look.texture_key)))
+                    .unwrap(),
+            )
+            .unwrap();
+            let mut mesh = rig.mesh.clone();
+            let mut ids = rig.ids.clone();
+            let mut weights = rig.weights.clone();
+            adapt(&mut mesh, &mut ids, &mut weights, look);
+            let mut feet = [0; 2];
+            let mut changed = 0;
+            let mut arch = [0; 2];
+            let mut contact = [0; 2];
             for &i in &mesh.indices {
-                let i=i as usize;let p=mesh.positions[i];
-                assert!(p.iter().all(|v|v.is_finite()));
-                assert!((weights[i].iter().sum::<f32>()-1.0).abs()<0.001);
-                if p[1]>=0.27 {continue;}
-                feet[usize::from(p[0]>0.0)]+=1;
-                let [u,v]=mesh.uvs[i];
-                let x=(u*painting.size.0 as f32) as u32;let y=(v*painting.size.1 as f32) as u32;
-                let rgb=&painting.rgba[((y*painting.size.0+x)*4) as usize..][..3];
-                assert!(rgb[0]>160 && rgb[0]>rgb[1] && rgb[1]>rgb[2],"foot samples shoe or gutter: {rgb:?}");
-                assert!(p[1]>=rig.floor-1e-5,"foot through floor: {p:?}");
-                assert!((Vec3::from_array(mesh.normals[i]).length()-1.0).abs()<0.001);
+                let i = i as usize;
+                let p = mesh.positions[i];
+                assert!(p.iter().all(|v| v.is_finite()));
+                assert!((weights[i].iter().sum::<f32>() - 1.0).abs() < 0.001);
+                if p[1] >= 0.27 {
+                    continue;
+                }
+                feet[usize::from(p[0] > 0.0)] += 1;
+                let [u, v] = mesh.uvs[i];
+                let x = (u * painting.size.0 as f32) as u32;
+                let y = (v * painting.size.1 as f32) as u32;
+                let rgb = &painting.rgba[((y * painting.size.0 + x) * 4) as usize..][..3];
+                assert!(
+                    rgb[0] > 160 && rgb[0] > rgb[1] && rgb[1] > rgb[2],
+                    "foot samples shoe or gutter: {rgb:?}"
+                );
+                assert!(p[1] >= rig.floor - 1e-5, "foot through floor: {p:?}");
+                assert!((Vec3::from_array(mesh.normals[i]).length() - 1.0).abs() < 0.001);
             }
             for i in 0..rig.mesh.positions.len() {
-                if rig.mesh.positions[i][1]>=0.235 {
-                    assert_eq!(mesh.positions[i],rig.mesh.positions[i],"ankle/other body moved");
-                } else if mesh.positions[i]!=rig.mesh.positions[i] {changed+=1;}
-                if rig.mesh.positions[i][1]>=0.27 {assert_eq!(mesh.uvs[i],rig.mesh.uvs[i]);}
-                if rig.mesh.positions[i][1]<0.012 {
-                    let side=usize::from(mesh.positions[i][0]>0.0);
-                    if mesh.positions[i][1]>rig.mesh.positions[i][1]+0.008 {arch[side]+=1;}
-                    if rig.mesh.positions[i][2] < -0.15 || rig.mesh.positions[i][2]>0.16 {
-                        assert_eq!(mesh.positions[i][1],rig.mesh.positions[i][1],"heel/toe contact lifted");
-                        contact[side]+=1;
+                if rig.mesh.positions[i][1] >= 0.235 {
+                    assert_eq!(
+                        mesh.positions[i], rig.mesh.positions[i],
+                        "ankle/other body moved"
+                    );
+                } else if mesh.positions[i] != rig.mesh.positions[i] {
+                    changed += 1;
+                }
+                if rig.mesh.positions[i][1] >= 0.27 {
+                    assert_eq!(mesh.uvs[i], rig.mesh.uvs[i]);
+                }
+                if rig.mesh.positions[i][1] < 0.012 {
+                    let side = usize::from(mesh.positions[i][0] > 0.0);
+                    if mesh.positions[i][1] > rig.mesh.positions[i][1] + 0.008 {
+                        arch[side] += 1;
+                    }
+                    if rig.mesh.positions[i][2] < -0.15 || rig.mesh.positions[i][2] > 0.16 {
+                        assert_eq!(
+                            mesh.positions[i][1], rig.mesh.positions[i][1],
+                            "heel/toe contact lifted"
+                        );
+                        contact[side] += 1;
                     }
                 }
-                assert_eq!(ids[i],rig.ids[i]);assert_eq!(weights[i],rig.weights[i]);
+                assert_eq!(ids[i], rig.ids[i]);
+                assert_eq!(weights[i], rig.weights[i]);
             }
-            assert!(feet.iter().all(|&n|n>1000),"missing rounded feet {feet:?}");
-            assert!(changed>100,"shoe volume was only recolored: {changed}");
-            assert!(arch.iter().all(|&n|n>0),"missing medial arches {arch:?}");
-            assert!(contact.iter().all(|&n|n>4),"missing heel/toe contacts {contact:?}");
+            assert!(
+                feet.iter().all(|&n| n > 1000),
+                "missing rounded feet {feet:?}"
+            );
+            assert!(changed > 100, "shoe volume was only recolored: {changed}");
+            assert!(
+                arch.iter().all(|&n| n > 0),
+                "missing medial arches {arch:?}"
+            );
+            assert!(
+                contact.iter().all(|&n| n > 4),
+                "missing heel/toe contacts {contact:?}"
+            );
         }
     }
     #[test]
@@ -438,8 +673,13 @@ mod tests {
         for (name, kind) in ["human-male", "human-female", "skater-male", "skater-female"]
             .into_iter()
             .flat_map(|name| {
-                [CharacterKind::Officer, CharacterKind::Trainer, CharacterKind::TrainerFemale, CharacterKind::Nurse]
-                    .map(|kind| (name, kind))
+                [
+                    CharacterKind::Officer,
+                    CharacterKind::Trainer,
+                    CharacterKind::TrainerFemale,
+                    CharacterKind::Nurse,
+                ]
+                .map(|kind| (name, kind))
             })
         {
             let rig = PersonRig::parse(
@@ -491,13 +731,22 @@ mod tests {
             let mut edges = std::collections::BTreeMap::new();
             for face in mesh.indices.chunks_exact(3) {
                 let points = [face[0], face[1], face[2]].map(|i| key(mesh.positions[i as usize]));
-                for (a, b) in [(points[0], points[1]), (points[1], points[2]), (points[2], points[0])] {
-                    if a != b { *edges.entry((a.min(b), a.max(b))).or_insert(0usize) += 1; }
+                for (a, b) in [
+                    (points[0], points[1]),
+                    (points[1], points[2]),
+                    (points[2], points[0]),
+                ] {
+                    if a != b {
+                        *edges.entry((a.min(b), a.max(b))).or_insert(0usize) += 1;
+                    }
                 }
             }
             for ((a, b), count) in edges {
                 if a[1] < 23_000 || b[1] < 23_000 {
-                    assert_eq!(count, 2, "{name} {kind:?} opened a shoe seam at {a:?}/{b:?}");
+                    assert_eq!(
+                        count, 2,
+                        "{name} {kind:?} opened a shoe seam at {a:?}/{b:?}"
+                    );
                 }
             }
             for face in mesh.indices.chunks_exact(3) {
@@ -508,9 +757,11 @@ mod tests {
                     .iter()
                     .map(|&i| Vec3::from_array(mesh.normals[i as usize]))
                     .sum();
-                assert!(n.is_finite() && n.dot(normals) >= -1e-6,
+                assert!(
+                    n.is_finite() && n.dot(normals) >= -1e-6,
                     "{name} {kind:?} opposed face normal: face={face:?}, positions={p:?}, agreement={}",
-                    n.dot(normals));
+                    n.dot(normals)
+                );
             }
             for (j, w) in ids.iter().zip(&weights) {
                 assert!(j.iter().all(|&id| (id as usize) < rig.skin_nodes.len()));

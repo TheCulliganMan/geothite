@@ -77,6 +77,13 @@ pub(super) fn opening(index: usize) -> (AssetRoot, CrystalRuntime, VisibleShellC
     // That tile triggers Mom's approach before the first text is published.
     enter(&mut c, GameButton::Up, "MnWinonaHome1F");
     at(&mut c, "MnWinonaHome1F", (9, 1));
+    let speaking = c.snapshot().expect("Mom has approached before speaking");
+    let mom = speaking.visible_object_runtime_tiles["MN_W_GUARDIAN"];
+    assert_eq!((mom.x, mom.y), (9, 2));
+    assert_eq!(
+        speaking.visible_object_facings["MN_W_GUARDIAN"],
+        crystal_core::world::map::Direction::Up
+    );
     c.wait_frames(128).expect("Mom's approach animation");
     let snapshot = c.snapshot().expect("Mom approaches");
     let mom = snapshot
@@ -92,6 +99,22 @@ pub(super) fn opening(index: usize) -> (AssetRoot, CrystalRuntime, VisibleShellC
         &mut c,
         "MS_HOME",
         "MnWHomeIntroText",
+        "EVENT_MN_HOME_INTRO",
+    );
+    assert!(
+        c.shell
+            .shell
+            .session()
+            .state()
+            .flags
+            .is_engine_flag_set("ENGINE_POKEGEAR")
+            .expect("Pokégear receipt flag")
+    );
+    capture_checkpoint(&mut c, &format!("mom-gear-receipt-{index}"));
+    super::northstar_dialogue::acknowledge(
+        &mut c,
+        "MS_HOME",
+        "MnWHomeGearReceivedText",
         "EVENT_MN_HOME_INTRO",
     );
     finish(&mut c);
@@ -120,8 +143,32 @@ pub(super) fn opening(index: usize) -> (AssetRoot, CrystalRuntime, VisibleShellC
     );
     assert!(!event(&c, "EVENT_MN_TAMARACK_INTRO"));
     capture_checkpoint(&mut c, &format!("tamarack-introduction-{index}"));
+    super::northstar_dialogue::acknowledge(
+        &mut c,
+        "MS00",
+        "MnOverhaulTamarackIntroText",
+        "EVENT_MN_TAMARACK_INTRO",
+    );
     finish(&mut c);
     assert!(event(&c, "EVENT_MN_TAMARACK_INTRO"));
+    press(&mut c, GameButton::Right);
+    press(&mut c, GameButton::A);
+    assert_eq!(
+        c.snapshot()
+            .expect("brief repeat")
+            .ui
+            .text
+            .expect("reminder")
+            .asm_text,
+        Some("TAMARACK: No rush.\nTake your time.".into())
+    );
+    capture_checkpoint(&mut c, &format!("tamarack-choice-reminder-{index}"));
+    super::northstar_dialogue::acknowledge(
+        &mut c,
+        "MS00",
+        "MnWChooseText",
+        "EVENT_MN_STARTER_RECEIVED",
+    );
     let x = 6 + i16::try_from(index).expect("starter index");
     indoor_walk(&mut c, &r, (x, 4));
     press(&mut c, GameButton::Up);
@@ -162,6 +209,25 @@ pub(super) fn opening(index: usize) -> (AssetRoot, CrystalRuntime, VisibleShellC
         press(&mut c, GameButton::A);
     }
     // The received-partner page precedes completion and automatic repositioning.
+    super::northstar_dialogue::acknowledge(
+        &mut c,
+        "MS00",
+        "MnOverhaulStarterReceivedText",
+        "EVENT_MN_STARTER_RECEIVED",
+    );
+    at(&mut c, "MnWinonaFieldStation", (4, 2));
+    super::northstar_dialogue::acknowledge(
+        &mut c,
+        "MS00",
+        "MnWReadingsText",
+        "EVENT_MN_R01_PARCEL_RECEIVED",
+    );
+    super::northstar_dialogue::acknowledge(
+        &mut c,
+        "MS00",
+        "MnWPokedexReceivedText",
+        "EVENT_MN_REED_FIRST_MET",
+    );
     finish(&mut c);
     assert!(event(&c, "EVENT_MN_STARTER_RECEIVED"));
     assert!(event(&c, "EVENT_MN_R01_PARCEL_RECEIVED"));
@@ -264,6 +330,128 @@ fn overhaul_three_earned_starters_and_ivy_delivery() {
     for index in 0..3 {
         delivery(index);
     }
+}
+
+#[test]
+#[ignore = "requires revised external pack via CRYSTAL_WINONA_TEST_PACK"]
+fn overhaul_v28_story_scenes_pokegear_wardens_cousin_and_rochester_reed() {
+    let (root, r) = load();
+    let mut c = VisibleShellController::new_game(root.clone(), r.clone(), "CHRIS", None)
+        .expect("production New Game");
+    c.set_runtime_journal_enabled(false);
+
+    // 1. Check Home 2F cousin before starter (cousin is at (1, 3)):
+    indoor_walk(&mut c, &r, (2, 3));
+    press(&mut c, GameButton::Left);
+    press(&mut c, GameButton::A);
+    assert_eq!(
+        c.snapshot()
+            .expect("cousin greeting")
+            .ui
+            .text
+            .expect("cousin text")
+            .label,
+        "MN_SMALL_INTERIOR_WINONA_COUSINInteriorText"
+    );
+    finish(&mut c);
+
+    // 2. Step down stairs to Home 1F (9, 1): Mom walks to (9, 2) BEFORE opening dialogue,
+    // then hands over Pokegear and returns to (7, 4).
+    indoor_walk(&mut c, &r, (7, 1));
+    enter(&mut c, GameButton::Up, "MnWinonaHome1F");
+    at(&mut c, "MnWinonaHome1F", (9, 1));
+    c.wait_frames(128).expect("Mom's approach animation");
+    let snapshot = c.snapshot().expect("Mom approaches");
+    let mom = snapshot
+        .visible_object_runtime_tiles
+        .get("MN_W_GUARDIAN")
+        .expect("visible Mom");
+    assert_eq!((mom.x, mom.y), (9, 2));
+    assert_eq!(
+        snapshot.ui.text.expect("Mom intro").label,
+        "MnWHomeIntroText"
+    );
+    finish(&mut c);
+    assert!(event(&c, "EVENT_MN_HOME_INTRO"));
+    assert!(
+        c.shell
+            .shell
+            .session()
+            .state()
+            .flags
+            .is_engine_flag_set("ENGINE_POKEGEAR")
+            .expect("ENGINE_POKEGEAR")
+    );
+    assert!(
+        c.shell
+            .shell
+            .session()
+            .state()
+            .flags
+            .is_engine_flag_set("ENGINE_MAP_CARD")
+            .expect("ENGINE_MAP_CARD")
+    );
+
+    // 3. Before starter: Winona trail wardens block Driftless Trail at (2, 18) and (2, 19)
+    // and explain that wild Pokemon live in the tall grass.
+    indoor_walk(&mut c, &r, (6, 6));
+    travel(&mut c, GameButton::Down, "MnWinona", (7, 8));
+    indoor_walk(&mut c, &r, (4, 18));
+    for _ in 0..4 {
+        if c.snapshot().expect("warden check").ui.text.is_some() {
+            break;
+        }
+        press(&mut c, GameButton::Left);
+    }
+    assert_eq!(
+        c.snapshot()
+            .expect("trail warden warning")
+            .ui
+            .text
+            .expect("warden text")
+            .label,
+        "MnWTrailWardenText"
+    );
+    finish(&mut c);
+    at(&mut c, "MnWinona", (4, 18));
+    drop(c);
+
+    // 4. Complete delivery(0) which verifies Field Station intro, starter, Pokedex,
+    // Reed's approach & post-battle position, Aide's 5 Poke Balls, open Winona trail,
+    // and Ivy delivery in Rochester.
+    let (_root, r, mut c) = delivery(0);
+    assert!(
+        c.shell
+            .shell
+            .session()
+            .state()
+            .flags
+            .is_engine_flag_set("ENGINE_POKEDEX")
+            .expect("ENGINE_POKEDEX")
+    );
+
+    // 5. In MnRochesterPokecenter1F after delivering the parcel: step onto (11, 12)
+    // and verify Reed walks from (9, 10) to (11, 11) (adjacent to player at (11, 12))
+    // before opening MnArcRCPathsText.
+    indoor_walk(&mut c, &r, (11, 11));
+    for _ in 0..4 {
+        if c.snapshot().expect("Reed clinic check").ui.text.is_some() || c.has_pending_script_work()
+        {
+            break;
+        }
+        press(&mut c, GameButton::Down);
+    }
+    c.wait_frames(128).expect("Reed walks to (11, 11)");
+    let snapshot = c.snapshot().expect("Reed at clinic");
+    let reed = snapshot
+        .visible_object_runtime_tiles
+        .get("MN_ARC_RC_REED")
+        .expect("visible Reed in clinic");
+    assert_eq!((reed.x, reed.y), (11, 11));
+    assert_eq!(
+        snapshot.ui.text.expect("Reed clinic offer").label,
+        "MnArcRCPathsText"
+    );
 }
 
 #[test]

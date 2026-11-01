@@ -26,8 +26,10 @@ pub(super) fn export(root: &Path) -> Result<()> {
     let vendor = root.join("vendor/pokecrystal");
     let geometry = source_map_geometry::read(&vendor)?;
     let data = root.join("apps/web/assets/data");
-    let constants: Value = serde_json::from_slice(&std::fs::read(data.join("story_event_script_constants.json"))?)?;
-    let constants: BTreeMap<String,i64> = serde_json::from_value(constants["global"].clone())?;
+    let constants: Value = serde_json::from_slice(&std::fs::read(
+        data.join("story_event_script_constants.json"),
+    )?)?;
+    let constants: BTreeMap<String, i64> = serde_json::from_value(constants["global"].clone())?;
     let mut attributes = BTreeMap::new();
     let mut blocks = BTreeMap::new();
     let mut dimensions = BTreeMap::new();
@@ -56,11 +58,19 @@ pub(super) fn export(root: &Path) -> Result<()> {
         let mut attr = map.attributes;
         if attr.music.as_deref() == Some("RADIO_TOWER_MUSIC | MUSIC_GOLDENROD_CITY") {
             let source = std::fs::read_to_string(vendor.join("home/map.asm"))?;
-            ensure!(source.contains("bit STATUSFLAGS2_ROCKETS_IN_RADIO_TOWER_F, a") && source.contains("ld de, MUSIC_ROCKET_OVERTURE"), "authored Radio Tower music routing");
+            ensure!(
+                source.contains("bit STATUSFLAGS2_ROCKETS_IN_RADIO_TOWER_F, a")
+                    && source.contains("ld de, MUSIC_ROCKET_OVERTURE"),
+                "authored Radio Tower music routing"
+            );
             attr.music = Some("MUSIC_GOLDENROD_CITY".to_owned());
         } else if attr.music.as_deref() == Some("MUSIC_MAHOGANY_MART") {
             let source = std::fs::read_to_string(vendor.join("home/map.asm"))?;
-            ensure!(source.contains("bit STATUSFLAGS2_ROCKETS_IN_MAHOGANY_F, a") && source.contains("ld de, MUSIC_CHERRYGROVE_CITY"), "authored Mahogany music routing");
+            ensure!(
+                source.contains("bit STATUSFLAGS2_ROCKETS_IN_MAHOGANY_F, a")
+                    && source.contains("ld de, MUSIC_CHERRYGROVE_CITY"),
+                "authored Mahogany music routing"
+            );
             attr.music = Some("MUSIC_CHERRYGROVE_CITY".to_owned());
         }
         let palette = match attr.palette.as_deref().context("source palette")? {
@@ -97,10 +107,12 @@ pub(super) fn export(root: &Path) -> Result<()> {
         attributes.insert(name.clone(), serde_json::to_value(&attr)?);
         let source = std::fs::read_to_string(vendor.join("maps").join(format!("{name}.asm")))
             .with_context(|| format!("read map scripts {name}"))?;
-        let mut parsed = source_scripts::parse(&source).with_context(|| format!("parse map scripts {name}"))?;
+        let mut parsed =
+            source_scripts::parse(&source).with_context(|| format!("parse map scripts {name}"))?;
         source_scripts::materialize_event_fallthroughs(&vendor, &source, &mut parsed)
             .with_context(|| format!("preserve authored script fallthrough for {name}"))?;
-        super::source_expressions::normalize(&source, &mut parsed, &constants).with_context(|| format!("resolve source expressions for {name}"))?;
+        super::source_expressions::normalize(&source, &mut parsed, &constants)
+            .with_context(|| format!("resolve source expressions for {name}"))?;
         for (label, body) in parsed {
             ensure!(
                 scripts.insert(label.clone(), body).is_none(),
@@ -113,19 +125,32 @@ pub(super) fn export(root: &Path) -> Result<()> {
     write(&data, "map_dimensions", &dimensions)?;
     write(&data, "runtime_map_metadata", &metadata)?;
     let mut spawns = BTreeMap::new();
-    for line in std::fs::read_to_string(vendor.join("data/maps/spawn_points.asm"))?.lines().map(code_part) {
-        let Some(raw) = line.strip_prefix("spawn ") else {continue};
+    for line in std::fs::read_to_string(vendor.join("data/maps/spawn_points.asm"))?
+        .lines()
+        .map(code_part)
+    {
+        let Some(raw) = line.strip_prefix("spawn ") else {
+            continue;
+        };
         let args = source_arguments(raw)?;
         ensure!(args.len() == 3, "invalid source spawn row");
-        if args[0] == "N_A" { continue; }
+        if args[0] == "N_A" {
+            continue;
+        }
         let info = metadata.get(&args[0]).context("spawn map metadata")?;
-        let x: i16 = args[1].parse()?; let y: i16 = args[2].parse()?;
+        let x: i16 = args[1].parse()?;
+        let y: i16 = args[2].parse()?;
         let id = spawns.len();
         let spawn = json!({"identifier":id,"mapConstant":args[0],"mapName":info["name"],"groupId":info["groupId"],"mapId":info["mapId"],"tileX":x,"tileY":y,"groupName":info["groupName"],"metatileX":x/2,"metatileY":y/2,"subtileX":x%2,"subtileY":y%2});
-        let _: crystal_core::systems::special_routines::RuntimeSpawnPointRef = serde_json::from_value(spawn.clone())?;
-        spawns.insert(id.to_string(),spawn);
+        let _: crystal_core::systems::special_routines::RuntimeSpawnPointRef =
+            serde_json::from_value(spawn.clone())?;
+        spawns.insert(id.to_string(), spawn);
     }
-    ensure!(spawns.len() == usize::from(crystal_core::systems::special_routines::CRYSTAL_NUM_SPAWN_POINTS), "source spawn table incomplete");
+    ensure!(
+        spawns.len()
+            == usize::from(crystal_core::systems::special_routines::CRYSTAL_NUM_SPAWN_POINTS),
+        "source spawn table incomplete"
+    );
     write(&data, "runtime_spawn_points", &spawns)?;
     write(&data, "map_scripts", &scripts)?;
     Ok(())

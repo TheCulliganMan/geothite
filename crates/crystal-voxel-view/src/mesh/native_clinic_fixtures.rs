@@ -372,24 +372,47 @@ mod tests {
 
     #[test]
     fn external_indigo_stock_keeps_two_cabinets_and_closes_the_same_rear_wall_course() {
-        let Some(pack)=pack() else{return;};
-        let map="IndigoPlateauPokecenter1F";
-        let (tiles,g)=room(&pack,map);let refs=tiles.iter().collect::<Vec<_>>();
-        let placements=resolve(map,&refs,&g,Some(built_in_profiles()));
-        let stock=placements.iter().filter(|p|native_clinic::stock_source(map,p,&refs,&g)).collect::<Vec<_>>();
-        assert_eq!(stock.len(),2);
-        assert_eq!(stock.iter().map(|p|(p.column,p.row)).collect::<Vec<_>>(),vec![(28,12),(30,12)]);
+        let Some(pack) = pack() else {
+            return;
+        };
+        let map = "IndigoPlateauPokecenter1F";
+        let (tiles, g) = room(&pack, map);
+        let refs = tiles.iter().collect::<Vec<_>>();
+        let placements = resolve(map, &refs, &g, Some(built_in_profiles()));
+        let stock = placements
+            .iter()
+            .filter(|p| native_clinic::stock_source(map, p, &refs, &g))
+            .collect::<Vec<_>>();
+        assert_eq!(stock.len(), 2);
+        assert_eq!(
+            stock.iter().map(|p| (p.column, p.row)).collect::<Vec<_>>(),
+            vec![(28, 12), (30, 12)]
+        );
         for p in stock {
-            let mut out=SurfaceMeshData::default();
-            append_backing(&mut out,map,p,&refs,&g,&placements);
+            let mut out = SurfaceMeshData::default();
+            append_backing(&mut out, map, p, &refs, &g, &placements);
             assert!(!out.indices.is_empty());
-            assert_eq!(out.positions.iter().map(|v|v[1]).fold(0.,f32::max),32.);
-            assert_eq!(out.positions.iter().map(|v|v[2]).fold(0.,f32::max),112.,
-                "continue the wall at source row14, not the stair alcove wall at row2");
-            assert_eq!(out.positions.iter().map(|v|v[0]).fold(f32::INFINITY,f32::min),p.column as f32*8.);
-            assert_eq!(out.positions.iter().map(|v|v[0]).fold(0.,f32::max),(p.column+2)as f32*8.);
-            assert!(placements.iter().filter(|q|!std::ptr::eq(*q,p))
-                .all(|q|!q.indices(g.width).any(|i|p.indices(g.width).any(|j|i==j))));
+            assert_eq!(out.positions.iter().map(|v| v[1]).fold(0., f32::max), 32.);
+            assert_eq!(
+                out.positions.iter().map(|v| v[2]).fold(0., f32::max),
+                112.,
+                "continue the wall at source row14, not the stair alcove wall at row2"
+            );
+            assert_eq!(
+                out.positions
+                    .iter()
+                    .map(|v| v[0])
+                    .fold(f32::INFINITY, f32::min),
+                p.column as f32 * 8.
+            );
+            assert_eq!(
+                out.positions.iter().map(|v| v[0]).fold(0., f32::max),
+                (p.column + 2) as f32 * 8.
+            );
+            assert!(placements.iter().filter(|q| !std::ptr::eq(*q, p)).all(|q| {
+                !q.indices(g.width)
+                    .any(|i| p.indices(g.width).any(|j| i == j))
+            }));
         }
     }
     #[test]

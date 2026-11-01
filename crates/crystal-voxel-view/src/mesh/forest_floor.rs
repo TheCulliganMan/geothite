@@ -171,7 +171,9 @@ fn append_local(
     let first_stone = mesh.colors.len();
     append_scatter(mesh, positions, g, coordinates, false, false);
     for color in &mut mesh.colors[first_stone..] {
-        for channel in 0..3 { color[channel] *= 0.55; }
+        for channel in 0..3 {
+            color[channel] *= 0.55;
+        }
     }
     let seed = lattice(x + 379, z - 101);
     if canopy > 0.2 && seed > 0.83 {
@@ -344,24 +346,43 @@ mod tests {
     use super::*;
     #[test]
     fn clearing_stays_quiet_and_tree_contacts_keep_bounded_litter() {
-        let g = GridGeometry { width: 1, height: 1, tile_width: 8., tile_height: 8.,
-            origin_x: 0., origin_z: 0. };
-        let p = [[0.,0.,0.],[0.,0.,8.],[8.,0.,8.],[8.,0.,0.]];
+        let g = GridGeometry {
+            width: 1,
+            height: 1,
+            tile_width: 8.,
+            tile_height: 8.,
+            origin_x: 0.,
+            origin_z: 0.,
+        };
+        let p = [[0., 0., 0.], [0., 0., 8.], [8., 0., 8.], [8., 0., 0.]];
         let mut clear_triangles = 0;
         let mut canopy_triangles = 0;
-        for z in -8..8 { for x in -8..8 {
-            let mut clear = SurfaceMeshData::default();
-            let mut canopy = SurfaceMeshData::default();
-            append_with_canopy(&mut clear,p,&g,[x,z],0.);
-            append_with_canopy(&mut canopy,p,&g,[x,z],1.);
-            assert!(clear.indices.len() <= 18, "clearing has only sparse mineral grain");
-            assert!(clear.positions.iter().all(|p|p[1]<1.));
-            assert!(canopy.positions.iter().all(|p|p[0]>0. && p[0]<8. && p[2]>0. && p[2]<8.));
-            clear_triangles += clear.indices.len()/3;
-            canopy_triangles += canopy.indices.len()/3;
-        }}
+        for z in -8..8 {
+            for x in -8..8 {
+                let mut clear = SurfaceMeshData::default();
+                let mut canopy = SurfaceMeshData::default();
+                append_with_canopy(&mut clear, p, &g, [x, z], 0.);
+                append_with_canopy(&mut canopy, p, &g, [x, z], 1.);
+                assert!(
+                    clear.indices.len() <= 18,
+                    "clearing has only sparse mineral grain"
+                );
+                assert!(clear.positions.iter().all(|p| p[1] < 1.));
+                assert!(
+                    canopy
+                        .positions
+                        .iter()
+                        .all(|p| p[0] > 0. && p[0] < 8. && p[2] > 0. && p[2] < 8.)
+                );
+                clear_triangles += clear.indices.len() / 3;
+                canopy_triangles += canopy.indices.len() / 3;
+            }
+        }
         assert!(canopy_triangles > clear_triangles * 3);
-        assert!(clear_triangles < 256 * 2, "quiet walking space must dominate");
+        assert!(
+            clear_triangles < 256 * 2,
+            "quiet walking space must dominate"
+        );
     }
 
     #[test]
@@ -467,11 +488,12 @@ mod tests {
                     && v[1] < 3.0));
                 let mut b = SurfaceMeshData::default();
                 append(&mut b, p.map(|v| [v[0] + 8., v[1], v[2] - 8.]), &g, [x, z]);
-                assert!(a
-                    .colors
-                    .iter()
-                    .zip(&b.colors)
-                    .all(|(a, b)| a.iter().zip(b).all(|(a, b)| (a - b).abs() < 0.00001)));
+                assert!(
+                    a.colors
+                        .iter()
+                        .zip(&b.colors)
+                        .all(|(a, b)| a.iter().zip(b).all(|(a, b)| (a - b).abs() < 0.00001))
+                );
                 for (a, b) in a.positions.iter().zip(&b.positions) {
                     assert!(
                         (a[0] + 8. - b[0]).abs() < 0.00001 && (a[2] - 8. - b[2]).abs() < 0.00001

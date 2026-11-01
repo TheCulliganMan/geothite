@@ -48,20 +48,28 @@ fn drawing(block: u16) -> Option<[[u16; 4]; 4]> {
             [0x1e, 0x1f, 0x26, 1],
         ],
         0x21 => [
-            [0x22; 4], [0x40, 0x42, 0x22, 0x22],
-            [0x50, 0x52, 1, 0x26], [0x50, 0x52, 0x26, 1],
+            [0x22; 4],
+            [0x40, 0x42, 0x22, 0x22],
+            [0x50, 0x52, 1, 0x26],
+            [0x50, 0x52, 0x26, 1],
         ],
         4 => [
-            [1, 0x26, 0x10, 0x11], [0x26, 1, 0x20, 0x21],
-            [1, 0x26, 1, 0x26], [0x26, 1, 0x26, 1],
+            [1, 0x26, 0x10, 0x11],
+            [0x26, 1, 0x20, 0x21],
+            [1, 0x26, 1, 0x26],
+            [0x26, 1, 0x26, 1],
         ],
         0x3c => [
-            [0x40, 0x42, 0x40, 0x41], [0x50, 0x52, 0x4c, 0x4d],
-            [0x50, 0x52, 1, 0x26], [0x50, 0x52, 0x26, 1],
+            [0x40, 0x42, 0x40, 0x41],
+            [0x50, 0x52, 0x4c, 0x4d],
+            [0x50, 0x52, 1, 0x26],
+            [0x50, 0x52, 0x26, 1],
         ],
         0x3d => [
-            [0x41, 0x42, 0x40, 0x42], [0x4d, 0x4e, 0x50, 0x52],
-            [1, 0x26, 0x50, 0x52], [0x26, 1, 0x50, 0x52],
+            [0x41, 0x42, 0x40, 0x42],
+            [0x4d, 0x4e, 0x50, 0x52],
+            [1, 0x26, 0x50, 0x52],
+            [0x26, 1, 0x50, 0x52],
         ],
         0x3b => [
             [0x22; 4],
@@ -88,8 +96,13 @@ fn source(
         _ => return None,
     };
     let trainer_basement = frame.map_id.as_ref() == "TrainerHouseB1F";
-    let exits = if trainer_basement { vec![IVec2::new(9, 4)] } else {
-        vec![IVec2::new(2, size.y as i32 - 1), IVec2::new(3, size.y as i32 - 1)]
+    let exits = if trainer_basement {
+        vec![IVec2::new(9, 4)]
+    } else {
+        vec![
+            IVec2::new(2, size.y as i32 - 1),
+            IVec2::new(3, size.y as i32 - 1),
+        ]
     };
     if frame.source_map_size_core_tiles != Some(size)
         || g.width.checked_mul(g.height) != Some(cells.len())
@@ -110,8 +123,11 @@ fn source(
     };
     // Guard the complete rear drawings, including cabinets. A missing wall
     // sprite behind a complete cupboard is still a continuous room boundary.
-    let mut course = blocks.iter().enumerate()
-        .map(|(i, &b)| (i as i32 * 4, 0, b)).collect::<Vec<_>>();
+    let mut course = blocks
+        .iter()
+        .enumerate()
+        .map(|(i, &b)| (i as i32 * 4, 0, b))
+        .collect::<Vec<_>>();
     if trainer_basement {
         // Authenticate the actual east stair and both arena joins as well as
         // the rear drawing before replacing its generic perimeter.
@@ -128,7 +144,9 @@ fn source(
                     || s.subtile_column != x as u8
                     || s.subtile_row != y as u8
                     || s.tile_index != drawing(block)?[y as usize][x as usize]
-                { return None; }
+                {
+                    return None;
+                }
                 north.push(i);
             }
         }
@@ -274,7 +292,8 @@ pub(super) fn append(
     let size = frame.source_map_size_core_tiles.unwrap();
     let east = west + size.x as f32 * 2. * g.tile_width;
     let north = g.origin_z - frame.grid_origin.y as f32 * g.tile_height + 2. * g.tile_height;
-    let south = g.origin_z - frame.grid_origin.y as f32 * g.tile_height + size.y as f32 * 2. * g.tile_height;
+    let south = g.origin_z - frame.grid_origin.y as f32 * g.tile_height
+        + size.y as f32 * 2. * g.tile_height;
     // Overlap only outside the native floor. Both side walls meet the rear
     // course, and the actual two exit tiles remain open in the front course.
     let mut sections = Vec::new();
@@ -287,7 +306,9 @@ pub(super) fn append(
         sections.push((Edge::North, north, west - depth, east + depth));
     }
     if frame.map_id.as_ref() == "TrainerHouseB1F" {
-        let z = |row: f32| g.origin_z - frame.grid_origin.y as f32 * g.tile_height + row * g.tile_height;
+        let z = |row: f32| {
+            g.origin_z - frame.grid_origin.y as f32 * g.tile_height + row * g.tile_height
+        };
         // Existing authored gold arena walls own the lower room enclosure.
         // Green returns end at their joins; only the actual east landing opens.
         sections.extend([
@@ -296,12 +317,12 @@ pub(super) fn append(
             (Edge::East, east, z(10.), z(12.)),
         ]);
     } else {
-    sections.extend([
-        (Edge::West, west, north - depth, south),
-        (Edge::East, east, north - depth, south),
-        (Edge::South, south, west - depth, west + 4. * g.tile_width),
-        (Edge::South, south, west + 8. * g.tile_width, east + depth),
-    ]);
+        sections.extend([
+            (Edge::West, west, north - depth, south),
+            (Edge::East, east, north - depth, south),
+            (Edge::South, south, west - depth, west + 4. * g.tile_width),
+            (Edge::South, south, west + 8. * g.tile_width, east + depth),
+        ]);
     }
     for (edge, at, from, to) in sections {
         let mut start = from;

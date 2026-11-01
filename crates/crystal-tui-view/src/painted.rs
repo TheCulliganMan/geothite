@@ -140,7 +140,7 @@ impl PaintedRenderer {
                 let area = self.scene.expect("fine scene geometry").area;
                 for y in area.y..area.bottom() {
                     for x in area.x..area.right() {
-                        buffer[(x,y)].set_char(' ').set_fg(INK).set_bg(PAPER);
+                        buffer[(x, y)].set_char(' ').set_fg(INK).set_bg(PAPER);
                     }
                 }
             } else {
@@ -153,8 +153,14 @@ impl PaintedRenderer {
     /// composition, controller call or menu redraw.
     pub fn refresh_native_dots(&self, buffer: &mut Buffer) {
         if let (Some(scene), Some(fine)) = (self.scene, self.native_detail.as_ref()) {
-            crate::ink::pack_terminal_dots(buffer, scene.area, fine,
-                &self.animated_dot_sizes(), scene.left, scene.top);
+            crate::ink::pack_terminal_dots(
+                buffer,
+                scene.area,
+                fine,
+                &self.animated_dot_sizes(),
+                scene.left,
+                scene.top,
+            );
         }
     }
     /// Exact circle sizes/colors from the shared detailed dot field. Native
@@ -176,8 +182,8 @@ impl PaintedRenderer {
     /// Bound discontinuities after hidden tabs, suspension or slow transports.
     pub fn advance_ink_by(&mut self, seconds: f64) {
         if seconds.is_finite() && seconds > 0. {
-            self.ink_phase = (self.ink_phase + seconds.min(0.25) * 0.8)
-                % (std::f64::consts::TAU * 100.);
+            self.ink_phase =
+                (self.ink_phase + seconds.min(0.25) * 0.8) % (std::f64::consts::TAU * 100.);
         }
     }
     pub fn animated_dot_sizes(&self) -> Vec<f64> {
@@ -200,7 +206,8 @@ impl PaintedRenderer {
                 // transports and stay below the cap: no byte rounding or
                 // clipped plateaus before the final pixel/glyph adapter.
                 let position = (x * 0.43 + y * 0.31 + self.ink_phase)
-                    .rem_euclid(std::f64::consts::TAU) / std::f64::consts::PI;
+                    .rem_euclid(std::f64::consts::TAU)
+                    / std::f64::consts::PI;
                 let triangle = 1. - 2. * (position - 1.).abs();
                 f64::from(*size) * (0.86 + 0.12 * triangle)
             })
@@ -439,7 +446,11 @@ impl PaintedRenderer {
             if touchscreen {
                 "TOUCH"
             } else {
-                t.input_hints.first().map_or("ARROWS move · Z confirm · X back", |line| line.text.as_str())
+                t.input_hints
+                    .first()
+                    .map_or("ARROWS move · Z confirm · X back", |line| {
+                        line.text.as_str()
+                    })
             },
         );
         b
@@ -1212,11 +1223,7 @@ fn actor_palette(s: &RuntimeShellSnapshot, sprite: &str, override_id: u8) -> u8 
             & 7
     }
 }
-fn paint_effect(
-    b: &mut Buffer,
-    area: Rect,
-    piece: &crate::VisibleBattleReplayPiece,
-) {
+fn paint_effect(b: &mut Buffer, area: Rect, piece: &crate::VisibleBattleReplayPiece) {
     // The actual production OAM raster is reinterpreted as colored ASCII.
     // Anchor sampling to source coordinates, never screen-space random noise.
     for sy in (0..piece.height).step_by(4) {
@@ -1353,22 +1360,39 @@ mod tests {
     fn cosmetic_clock_is_elapsed_time_not_frontend_frame_count() {
         let mut terminal = PaintedRenderer::default();
         let mut browser = PaintedRenderer::default();
-        for _ in 0..8 { terminal.advance_ink_by(0.1); }
-        for _ in 0..5 { browser.advance_ink_by(0.16); }
+        for _ in 0..8 {
+            terminal.advance_ink_by(0.1);
+        }
+        for _ in 0..5 {
+            browser.advance_ink_by(0.16);
+        }
         assert!((terminal.ink_phase - browser.ink_phase).abs() < 1e-10);
-        assert!((terminal.ink_phase - 0.64).abs() < 1e-10, "Keep the slower eight-second breath");
+        assert!(
+            (terminal.ink_phase - 0.64).abs() < 1e-10,
+            "Keep the slower eight-second breath"
+        );
         let phase = terminal.ink_phase;
-        for seconds in [f64::NAN, f64::INFINITY, -1., 0.] { terminal.advance_ink_by(seconds); }
+        for seconds in [f64::NAN, f64::INFINITY, -1., 0.] {
+            terminal.advance_ink_by(seconds);
+        }
         assert_eq!(terminal.ink_phase, phase);
         terminal.advance_ink_by(1000.);
-        assert!((terminal.ink_phase - phase - 0.2).abs() < 1e-10, "No resume catch-up burst");
+        assert!(
+            (terminal.ink_phase - phase - 0.2).abs() < 1e-10,
+            "No resume catch-up burst"
+        );
     }
     #[test]
     fn ambient_ink_is_gentle_but_not_static() {
         let mut painter = PaintedRenderer::default();
         painter.scene = Some(SceneGeometry {
-            area: Rect::new(0, 0, 1, 1), left: 0, top: 0,
-            nx: 1, ny: 1, cw: 1, ch: 1,
+            area: Rect::new(0, 0, 1, 1),
+            left: 0,
+            top: 0,
+            nx: 1,
+            ny: 1,
+            cw: 1,
+            ch: 1,
         });
         painter.dot_width = 2;
         painter.dot_height = 2;
@@ -1383,7 +1407,10 @@ mod tests {
             for ((base, now), last) in painter.dot_sizes.iter().zip(&next).zip(&previous) {
                 assert!(*now >= f64::from(*base) * 0.74 - 1e-10);
                 assert!(*now <= f64::from(*base) * 0.98 + 1e-10);
-                assert!((now - last).abs() <= 1.53, "No aggressive radius jump per 100ms");
+                assert!(
+                    (now - last).abs() <= 1.53,
+                    "No aggressive radius jump per 100ms"
+                );
             }
             changed |= (next[3] - first[3]).abs() >= 25.;
             previous = next;
@@ -1394,8 +1421,13 @@ mod tests {
     fn fractional_ink_moves_on_every_frame_without_peak_plateaus() {
         let mut painter = PaintedRenderer::default();
         painter.scene = Some(SceneGeometry {
-            area: Rect::new(0, 0, 32, 8), left: 0, top: 0,
-            nx: 16, ny: 4, cw: 2, ch: 2,
+            area: Rect::new(0, 0, 32, 8),
+            left: 0,
+            top: 0,
+            nx: 16,
+            ny: 4,
+            cw: 2,
+            ch: 2,
         });
         painter.dot_width = 64;
         painter.dot_height = 32;
@@ -1405,11 +1437,21 @@ mod tests {
         for _ in 0..240 {
             painter.advance_ink_by(1. / 30.);
             let next = painter.animated_dot_sizes();
-            let moving = next.iter().zip(&previous)
-                .filter(|(a,b)| (*a - *b).abs() > 0.001).count();
-            assert!(moving > populated * 99 / 100, "Slow drift cannot hold for several frames at a peak");
-            assert!(next.iter().zip(&previous).all(|(a,b)| (a-b).abs() <= 0.51),
-                "Every frame is a small step, not a catch-up jump");
+            let moving = next
+                .iter()
+                .zip(&previous)
+                .filter(|(a, b)| (*a - *b).abs() > 0.001)
+                .count();
+            assert!(
+                moving > populated * 99 / 100,
+                "Slow drift cannot hold for several frames at a peak"
+            );
+            assert!(
+                next.iter()
+                    .zip(&previous)
+                    .all(|(a, b)| (a - b).abs() <= 0.51),
+                "Every frame is a small step, not a catch-up jump"
+            );
             previous = next;
         }
     }
@@ -1540,41 +1582,76 @@ mod tests {
                 painter.advance_ink();
             }
             let after = painter.animated_dot_sizes();
-            let visible_changes = sizes.iter().zip(&after)
-                .filter(|(a, b)| **a > 0. && (*a - *b).abs() >= 24.).count();
-            assert!(visible_changes > sizes.len() / 10,
-                "Two seconds of gentle motion must change dot diameters, not just frame hashes");
+            let visible_changes = sizes
+                .iter()
+                .zip(&after)
+                .filter(|(a, b)| **a > 0. && (*a - *b).abs() >= 24.)
+                .count();
+            assert!(
+                visible_changes > sizes.len() / 10,
+                "Two seconds of gentle motion must change dot diameters, not just frame hashes"
+            );
         }
         for (cols, rows) in [(80, 24), (93, 34), (128, 43)] {
             let buffer = painter.draw(&source, &text, cols, rows, None, false, false);
             let viewport = painter.viewport;
             let area = painter.scene.unwrap().area;
             let terminal = painter.draw_native(&source, &text, cols, rows, None, false);
-            let portable_image = painter.circle_image(u32::from(area.width) * 12, u32::from(area.height) * 24).unwrap();
-            let graphics = painter.draw_native_surface(&source, &text, cols, rows, None, false, true);
-            assert_eq!(painter.circle_image(portable_image.width(), portable_image.height()).unwrap(), portable_image,
-                "Graphics and portable clients share the exact cached pack dot field");
-            assert!((area.y..area.bottom()).all(|y| (area.x..area.right()).all(|x| graphics[(x,y)].symbol() == " ")),
-                "No hidden Braille churn under the image");
-            for y in 0..rows { for x in 0..cols {
-                if !area.contains(ratatui::layout::Position::new(x,y)) {
-                    assert_eq!(graphics[(x,y)], terminal[(x,y)], "Live captions and menus remain intact");
+            let portable_image = painter
+                .circle_image(u32::from(area.width) * 12, u32::from(area.height) * 24)
+                .unwrap();
+            let graphics =
+                painter.draw_native_surface(&source, &text, cols, rows, None, false, true);
+            assert_eq!(
+                painter
+                    .circle_image(portable_image.width(), portable_image.height())
+                    .unwrap(),
+                portable_image,
+                "Graphics and portable clients share the exact cached pack dot field"
+            );
+            assert!(
+                (area.y..area.bottom())
+                    .all(|y| (area.x..area.right()).all(|x| graphics[(x, y)].symbol() == " ")),
+                "No hidden Braille churn under the image"
+            );
+            for y in 0..rows {
+                for x in 0..cols {
+                    if !area.contains(ratatui::layout::Position::new(x, y)) {
+                        assert_eq!(
+                            graphics[(x, y)],
+                            terminal[(x, y)],
+                            "Live captions and menus remain intact"
+                        );
+                    }
                 }
-            }}
+            }
             let cached = painter.native_detail.as_ref().unwrap().clone();
             let cached_phase = painter.ink_phase;
-            painter.advance_ink_by(1./30.);
-            assert_eq!(painter.native_detail.as_ref().unwrap(), &cached,
-                "Cosmetic frames do not rebuild source tiles or actors");
+            painter.advance_ink_by(1. / 30.);
+            assert_eq!(
+                painter.native_detail.as_ref().unwrap(),
+                &cached,
+                "Cosmetic frames do not rebuild source tiles or actors"
+            );
             painter.ink_phase = cached_phase;
             let phase = painter.ink_phase;
-            let image = painter.circle_image(u32::from(area.width) * 12, u32::from(area.height) * 24).unwrap();
-            for _ in 0..20 { painter.advance_ink(); }
+            let image = painter
+                .circle_image(u32::from(area.width) * 12, u32::from(area.height) * 24)
+                .unwrap();
+            for _ in 0..20 {
+                painter.advance_ink();
+            }
             let animated = painter.circle_image(image.width(), image.height()).unwrap();
-            let pixel_change = image.pixels().zip(animated.pixels()).map(|(a,b)|
-                (0..3).map(|c| a[c].abs_diff(b[c])).max().unwrap() as f64
-            ).sum::<f64>() / f64::from(image.width() * image.height());
-            assert!(pixel_change > 6., "Native circle motion must be visibly substantial: {pixel_change}");
+            let pixel_change = image
+                .pixels()
+                .zip(animated.pixels())
+                .map(|(a, b)| (0..3).map(|c| a[c].abs_diff(b[c])).max().unwrap() as f64)
+                .sum::<f64>()
+                / f64::from(image.width() * image.height());
+            assert!(
+                pixel_change > 6.,
+                "Native circle motion must be visibly substantial: {pixel_change}"
+            );
             // Restore the phase for the existing unchanged-adapter comparison.
             painter.ink_phase = phase;
             assert_eq!(painter.viewport, viewport);

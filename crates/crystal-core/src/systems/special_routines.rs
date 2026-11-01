@@ -2951,9 +2951,12 @@ pub fn buena_password_category_issues(
 // SelectApricornForKurt returns the original item byte in wScriptVar, not TRUE.
 // Shared with the script operand resolver so recipe branches use the same values.
 pub const KURT_APRICORN_SCRIPT_VALUES: [(&str, u8); 7] = [
-    ("RED_APRICORN", 0x55), ("BLU_APRICORN", 0x59),
-    ("YLW_APRICORN", 0x5c), ("GRN_APRICORN", 0x5d),
-    ("WHT_APRICORN", 0x61), ("BLK_APRICORN", 0x63),
+    ("RED_APRICORN", 0x55),
+    ("BLU_APRICORN", 0x59),
+    ("YLW_APRICORN", 0x5c),
+    ("GRN_APRICORN", 0x5d),
+    ("WHT_APRICORN", 0x61),
+    ("BLK_APRICORN", 0x63),
     ("PNK_APRICORN", 0x65),
 ];
 
@@ -5442,7 +5445,9 @@ fn check_lucky_number_show_flag(
     state: &mut GameState,
     routine: &str,
 ) -> Result<SpecialRoutineOutcome, SpecialRoutineError> {
-    let flag = state.lucky_number_countdown.check_expired(state.time.current_day);
+    let flag = state
+        .lucky_number_countdown
+        .check_expired(state.time.current_day);
     set_script_bool_value(state, flag);
     state.script_runtime.last_special_routine = Some(routine.to_string());
     Ok(SpecialRoutineOutcome {
@@ -5460,7 +5465,9 @@ where
     S: DividerSource + ?Sized,
 {
     state.lucky_number_countdown.restart(state.time.current_day);
-    state.flags.clear_engine_flag("ENGINE_LUCKY_NUMBER_SHOW")
+    state
+        .flags
+        .clear_engine_flag("ENGINE_LUCKY_NUMBER_SHOW")
         .map_err(|error| SpecialRoutineError::EventFlag {
             routine: routine.to_string(),
             error,
@@ -9532,11 +9539,13 @@ fn select_apricorn_for_kurt(
             item_id: apricorn,
         });
     }
-    let script_value = KURT_APRICORN_SCRIPT_VALUES.iter()
+    let script_value = KURT_APRICORN_SCRIPT_VALUES
+        .iter()
         .find(|(item_id, _)| *item_id == apricorn)
         .map(|(_, value)| *value)
         .ok_or_else(|| SpecialRoutineError::UnknownItem {
-            routine: routine.to_string(), item_id: apricorn.clone(),
+            routine: routine.to_string(),
+            item_id: apricorn.clone(),
         })?;
     let item = item_catalog
         .get(&apricorn)
@@ -9721,8 +9730,7 @@ fn buenas_password(
     categories: &BuenaPasswordCategories,
     routine: &str,
 ) -> Result<SpecialRoutineOutcome, SpecialRoutineError> {
-    let (category_id, category, correct) =
-        stored_buenas_password(state, categories, routine)?;
+    let (category_id, category, correct) = stored_buenas_password(state, categories, routine)?;
     let guess = state
         .script_runtime
         .variables

@@ -41,16 +41,30 @@ pub(super) struct TiltShift {
 
 impl TiltShift {
     pub fn entry_only(effect: &crystal_render_api::VisualWorldEntryEffect) -> Self {
-        Self { band: Vec4::new(0.5, 0.5, 2.5, 0.), entry: Vec4::ZERO,
-            entry_rows: [Vec4::ZERO; 36], black_cells: [UVec4::ZERO; 3],
-            trainer_cells: [UVec4::ZERO; 3], trainer_pixels: UVec4::ZERO,
-            trainer_palette: [Vec4::ZERO; 4] }.with_entry(effect)
+        Self {
+            band: Vec4::new(0.5, 0.5, 2.5, 0.),
+            entry: Vec4::ZERO,
+            entry_rows: [Vec4::ZERO; 36],
+            black_cells: [UVec4::ZERO; 3],
+            trainer_cells: [UVec4::ZERO; 3],
+            trainer_pixels: UVec4::ZERO,
+            trainer_palette: [Vec4::ZERO; 4],
+        }
+        .with_entry(effect)
     }
 
     pub fn with_entry(mut self, effect: &crystal_render_api::VisualWorldEntryEffect) -> Self {
-        self.entry = Vec4::new(effect.dark, effect.light, if effect.active { 1. } else { 0. }, 0.);
-        self.entry_rows = std::array::from_fn(|row| Vec4::from_array(
-            std::array::from_fn(|lane| f32::from(effect.line_x_offsets[row * 4 + lane]))));
+        self.entry = Vec4::new(
+            effect.dark,
+            effect.light,
+            if effect.active { 1. } else { 0. },
+            0.,
+        );
+        self.entry_rows = std::array::from_fn(|row| {
+            Vec4::from_array(std::array::from_fn(|lane| {
+                f32::from(effect.line_x_offsets[row * 4 + lane])
+            }))
+        });
         self.black_cells = effect.black_cells;
         self.trainer_cells = effect.trainer_cells;
         self.trainer_pixels = effect.trainer_pixels;
@@ -195,9 +209,13 @@ fn prepare(
                     vertex: pipeline.vertex.clone(),
                     fragment: Some(FragmentState {
                         shader: SHADER,
-                        shader_defs: if std::env::var("CRYSTAL_TILT_SHIFT_KERNEL").as_deref() == Ok("direct") {
+                        shader_defs: if std::env::var("CRYSTAL_TILT_SHIFT_KERNEL").as_deref()
+                            == Ok("direct")
+                        {
                             vec!["DIRECT_GAUSSIAN".into()]
-                        } else { vec![] },
+                        } else {
+                            vec![]
+                        },
                         entry_point: Some(entry.into()),
                         targets: vec![Some(ColorTargetState {
                             format,

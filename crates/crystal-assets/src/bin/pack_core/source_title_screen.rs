@@ -11,30 +11,37 @@ pub(super) fn export(root: &Path) -> Result<()> {
 }
 
 pub(super) fn export_unvalidated(root: &Path) -> Result<()> {
-    let title = super::source_title_catalog::assemble_unvalidated(root, source_title_fragment::assemble(root)?)?;
+    let title = super::source_title_catalog::assemble_unvalidated(
+        root,
+        source_title_fragment::assemble(root)?,
+    )?;
     super::source_title_catalog::export_timing_graphics(root, &title.program)?;
     let output = root.join("apps/web/assets/data/runtime_title_screen.unvalidated.json");
     std::fs::write(&output, serde_json::to_vec_pretty(&title)?)?;
-    println!("wrote authored unvalidated title catalog {}", output.display());
+    println!(
+        "wrote authored unvalidated title catalog {}",
+        output.display()
+    );
     Ok(())
 }
 
-#[path = "source_intro_oracle.rs"]
-mod source_intro_oracle;
-#[path = "source_intro_audio_timing.rs"]
-mod source_intro_audio_timing;
-#[path = "source_intro_audio_commands.rs"]
-mod source_intro_audio_commands;
-#[path = "source_intro_vblank_timing.rs"]
-mod source_intro_vblank_timing;
 #[path = "source_intro_audio_certification.rs"]
 mod source_intro_audio_certification;
 #[path = "source_intro_audio_clock_certification.rs"]
 mod source_intro_audio_clock_certification;
+#[path = "source_intro_audio_commands.rs"]
+mod source_intro_audio_commands;
+#[path = "source_intro_audio_timing.rs"]
+mod source_intro_audio_timing;
+#[path = "source_intro_oracle.rs"]
+mod source_intro_oracle;
+#[path = "source_intro_vblank_timing.rs"]
+mod source_intro_vblank_timing;
 
 pub(super) fn certify_intro_audio(vendor: &Path, model: &Value, trace: &Value) -> Result<Value> {
-    let mut certificate=source_intro_audio_certification::certify(vendor, model, trace)?;
-    certificate["runtime_source_clock"]=source_intro_audio_clock_certification::certify(vendor,model,trace)?;
+    let mut certificate = source_intro_audio_certification::certify(vendor, model, trace)?;
+    certificate["runtime_source_clock"] =
+        source_intro_audio_clock_certification::certify(vendor, model, trace)?;
     Ok(certificate)
 }
 
@@ -53,17 +60,31 @@ mod source_title_intro_measurements;
 mod source_title_intro_scenes;
 
 pub(super) fn intro_clock(vendor: &Path, trace: &Value) -> Result<Value> {
-    let mut clock=source_title_intro_clock::lower(vendor,trace)?;
-    clock["vblank_normal"]["audio_update"]=source_intro_audio_timing::export(vendor)?;
-    clock["vblank_normal"]["cost_models"]=source_intro_vblank_timing::export(vendor)?;
+    let mut clock = source_title_intro_clock::lower(vendor, trace)?;
+    clock["vblank_normal"]["audio_update"] = source_intro_audio_timing::export(vendor)?;
+    clock["vblank_normal"]["cost_models"] = source_intro_vblank_timing::export(vendor)?;
     Ok(clock)
 }
 pub(super) fn intro_trace(vendor: &Path) -> Result<Value> {
     source_intro_oracle::trace(vendor)
 }
-pub(super) fn intro_setup_phases(vendor:&Path,constants:&BTreeMap<String,i64>)->Result<Value> {source_title_intro_scenes::setup_phases(vendor,constants)}
-pub(super) fn intro_transfer_metadata(vendor:&Path)->Result<Value> {source_title_intro_scenes::transfer_metadata(vendor)}
-pub(super) fn intro_bind_measurements(vendor:&Path,phase:&mut Value,metadata:&Value,trace:&Value)->Result<Value> {source_title_intro_measurements::attach(vendor,phase,metadata,trace)}
+pub(super) fn intro_setup_phases(
+    vendor: &Path,
+    constants: &BTreeMap<String, i64>,
+) -> Result<Value> {
+    source_title_intro_scenes::setup_phases(vendor, constants)
+}
+pub(super) fn intro_transfer_metadata(vendor: &Path) -> Result<Value> {
+    source_title_intro_scenes::transfer_metadata(vendor)
+}
+pub(super) fn intro_bind_measurements(
+    vendor: &Path,
+    phase: &mut Value,
+    metadata: &Value,
+    trace: &Value,
+) -> Result<Value> {
+    source_title_intro_measurements::attach(vendor, phase, metadata, trace)
+}
 #[path = "source_title_setup.rs"]
 mod source_title_setup;
 #[path = "source_title_sprites.rs"]

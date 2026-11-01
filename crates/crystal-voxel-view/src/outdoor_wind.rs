@@ -180,7 +180,8 @@ fn sync(
                 .copied()
                 .filter(|p| {
                     let world = *p + offset;
-                    (Vec2::new(world.x, -world.z) - frame.view_center).length_squared() < radius * radius
+                    (Vec2::new(world.x, -world.z) - frame.view_center).length_squared()
+                        < radius * radius
                 })
                 .collect()
         };

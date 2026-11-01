@@ -274,7 +274,9 @@ fn shore_wet_mask(width: usize, grid_width: usize, known: &[bool], data: &[u8]) 
     let mut wet = vec![false; data.len() / 4];
     for (row, tiles) in known.chunks_exact(grid_width).enumerate() {
         for (column, &available) in tiles.iter().enumerate() {
-            if !available { continue; }
+            if !available {
+                continue;
+            }
             for sample_row in 0..SAMPLES {
                 let start = (row * SAMPLES + sample_row) * width + column * SAMPLES;
                 for sample in start..start + SAMPLES {
@@ -293,13 +295,16 @@ fn wet_stencil(width: usize, height: usize, wet: &[bool]) -> Vec<(usize, [usize;
     for y in 0..height {
         for x in 0..width {
             let i = y * width + x;
-            if !wet[i] { continue; }
+            if !wet[i] {
+                continue;
+            }
             let neighbors = [
                 y * width + x.saturating_sub(1),
                 y * width + (x + 1).min(width - 1),
                 y.saturating_sub(1) * width + x,
                 (y + 1).min(height - 1) * width + x,
-            ].map(|j| if wet[j] { j } else { i });
+            ]
+            .map(|j| if wet[j] { j } else { i });
             stencil.push((i, neighbors));
         }
     }
@@ -330,7 +335,11 @@ mod tests {
                 let height = field.heights[i];
                 let neighbor = |nx: usize, ny: usize| {
                     let j = ny * field.width + nx;
-                    if field.wet[j] { field.heights[j] } else { height }
+                    if field.wet[j] {
+                        field.heights[j]
+                    } else {
+                        height
+                    }
                 };
                 // No-flux banks reflect incoming waves; a dry strip cannot
                 // transmit ripples between disconnected ponds.
@@ -350,13 +359,18 @@ mod tests {
     fn tile_block_mask_matches_sample_scan_with_missing_source() {
         for (columns, rows) in [(1, 1), (3, 7), (128, 128)] {
             let width = columns * SAMPLES;
-            let known = (0..columns * rows).map(|i|hash(i as u32) % 3 != 0).collect::<Vec<_>>();
+            let known = (0..columns * rows)
+                .map(|i| hash(i as u32) % 3 != 0)
+                .collect::<Vec<_>>();
             let data = (0..width * rows * SAMPLES * 4)
-                .map(|i|hash(i as u32) as u8).collect::<Vec<_>>();
-            let expected = (0..data.len()/4).map(|i| {
-                let tile = (i / width / SAMPLES) * columns + i % width / SAMPLES;
-                known[tile] && data[i*4] > 127
-            }).collect::<Vec<_>>();
+                .map(|i| hash(i as u32) as u8)
+                .collect::<Vec<_>>();
+            let expected = (0..data.len() / 4)
+                .map(|i| {
+                    let tile = (i / width / SAMPLES) * columns + i % width / SAMPLES;
+                    known[tile] && data[i * 4] > 127
+                })
+                .collect::<Vec<_>>();
             assert_eq!(shore_wet_mask(width, columns, &known, &data), expected);
         }
     }
@@ -366,12 +380,14 @@ mod tests {
         let frame = frame();
         for (width, height) in [(1, 1), (1, 17), (19, 1), (48, 48), (127, 93)] {
             for pattern in 0..4 {
-                let wet = (0..width * height).map(|i| match pattern {
-                    0 => true,
-                    1 => false,
-                    2 => hash(i as u32) % 7 < 2,
-                    _ => i % width < width / 3,
-                }).collect();
+                let wet = (0..width * height)
+                    .map(|i| match pattern {
+                        0 => true,
+                        1 => false,
+                        2 => hash(i as u32) % 7 < 2,
+                        _ => i % width < width / 3,
+                    })
+                    .collect();
                 let mut fast = Field::new(&frame, width, height, wet, None);
                 for i in 0..width * height {
                     if fast.wet[i] {
@@ -383,8 +399,14 @@ mod tests {
                 for _ in 0..80 {
                     fast.step();
                     reference_step(&mut original);
-                    assert_eq!(fast.heights.iter().map(|v|v.to_bits()).collect::<Vec<_>>(),
-                        original.heights.iter().map(|v|v.to_bits()).collect::<Vec<_>>());
+                    assert_eq!(
+                        fast.heights.iter().map(|v| v.to_bits()).collect::<Vec<_>>(),
+                        original
+                            .heights
+                            .iter()
+                            .map(|v| v.to_bits())
+                            .collect::<Vec<_>>()
+                    );
                     assert_eq!(fast.velocity, original.velocity);
                     assert_eq!(fast.scratch, original.scratch);
                 }
@@ -397,28 +419,42 @@ mod tests {
         let frame = frame();
         let mut image = crate::water_surface::shoreline(&frame).unwrap();
         let mut ripples = WaterRipples::default();
-        for pixel in image.data.as_mut().unwrap().chunks_exact_mut(4) { pixel[0] = 255; }
-        ripples.update(&frame, Vec4::new(5.,5.,1.,1.), steps(), &mut image);
-        for (i,pixel) in image.data.as_mut().unwrap().chunks_exact_mut(4).enumerate() {
-            if i % 48 < 24 { pixel[0] = 0; }
+        for pixel in image.data.as_mut().unwrap().chunks_exact_mut(4) {
+            pixel[0] = 255;
+        }
+        ripples.update(&frame, Vec4::new(5., 5., 1., 1.), steps(), &mut image);
+        for (i, pixel) in image.data.as_mut().unwrap().chunks_exact_mut(4).enumerate() {
+            if i % 48 < 24 {
+                pixel[0] = 0;
+            }
         }
         ripples.update(&frame, Vec4::ZERO, Vec2::ZERO, &mut image);
         let field = ripples.field.as_ref().unwrap();
-        assert_eq!(field.stencil.len(),48*24);
-        for i in 0..48*48 {
+        assert_eq!(field.stencil.len(), 48 * 24);
+        for i in 0..48 * 48 {
             if i % 48 < 24 {
-                assert_eq!([field.heights[i],field.previous[i],field.velocity[i],field.scratch[i]], [0.;4]);
+                assert_eq!(
+                    [
+                        field.heights[i],
+                        field.previous[i],
+                        field.velocity[i],
+                        field.scratch[i]
+                    ],
+                    [0.; 4]
+                );
             }
         }
         let mut original = field.clone();
-        ripples.update(&frame, Vec4::ZERO, Vec2::new(PHYSICS_PHASE,0.), &mut image);
+        ripples.update(&frame, Vec4::ZERO, Vec2::new(PHYSICS_PHASE, 0.), &mut image);
         original.previous.copy_from_slice(&original.heights);
         original.move_contact(Vec4::ZERO);
-        if original.tick & 1 == 0 { original.ambient_drop(); }
+        if original.tick & 1 == 0 {
+            original.ambient_drop();
+        }
         reference_step(&mut original);
         let field = ripples.field.as_ref().unwrap();
-        assert_eq!(field.heights,original.heights);
-        assert_eq!(field.velocity,original.velocity);
+        assert_eq!(field.heights, original.heights);
+        assert_eq!(field.velocity, original.velocity);
     }
 
     fn frame() -> VisualWorldFrame {

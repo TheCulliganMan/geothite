@@ -171,11 +171,11 @@ pub(crate) const BUILDING_TEMPLATES: &[BuildingTemplate] = &[
     template("johto_modern", &[&[0x18, 0x19], &[0x1a, 0x1b]], 4, 0x06),
     template("johto_modern", &[&[0x18, 0x19], &[0x10, 0x11]], 4, 0x06),
     template("johto_modern", &[&[0x18, 0x19], &[0x1c, 0x1e]], 4, 0x06),
-    template("johto_modern", &[&[0x08,0x09], &[0x1c,0x1e]], 4, 0x06),
+    template("johto_modern", &[&[0x08, 0x09], &[0x1c, 0x1e]], 4, 0x06),
     // The complete14/15 pair uses exactly the same compact-house drawing as
     // Johto, including its one off-center37/38,39/3a door. Match it before
     // individual blocks: Azalea's two houses must not become paired shops.
-    template("johto_modern", &[&[0x14,0x15]], 2, 0x06),
+    template("johto_modern", &[&[0x14, 0x15]], 2, 0x06),
     // Goldenrod's separate14/13 and12/13 neighbors remain independent4x4
     // drawings; adjacency alone does not authorize joining their plots.
     template("johto_modern", &[&[0x12]], 2, 0x06),

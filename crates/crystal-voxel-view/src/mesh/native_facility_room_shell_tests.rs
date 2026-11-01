@@ -164,9 +164,11 @@ fn native_facility_room_shell_closes_rear_cabinets_side_joins_and_retains_exit_a
         let uv = g.uv(donor % g.width, donor / g.width);
         for uv2 in &mesh.textured.uvs {
             assert!((uv2[0] - (uv.0 + (uv.1 - uv.0) * 3.5 / 8.)).abs() < 0.00001);
-            assert!([1.5, 3.5, 4.5]
-                .iter()
-                .any(|y| (uv2[1] - (uv.2 + (uv.3 - uv.2) * y / 8.)).abs() < 0.00001));
+            assert!(
+                [1.5, 3.5, 4.5]
+                    .iter()
+                    .any(|y| (uv2[1] - (uv.2 + (uv.3 - uv.2) * y / 8.)).abs() < 0.00001)
+            );
         }
         // Padding changes grid coordinates, never the physical room boundary.
         let pg = GridGeometry {
@@ -242,8 +244,8 @@ fn native_facility_room_shell_rejects_edited_clipped_unreviewed_and_custom_north
 }
 
 #[test]
-fn native_facility_room_shell_removes_only_original_flat_wall_art_and_keeps_floor_and_borrowed_donors(
-) {
+fn native_facility_room_shell_removes_only_original_flat_wall_art_and_keeps_floor_and_borrowed_donors()
+ {
     let loaded = crystal_assets::read_loaded_verified_compiled_game_pack(
         std::env::var_os("CRYSTAL_RENDER_TEST_PACK").unwrap(),
     )
@@ -318,7 +320,8 @@ fn native_facility_room_shell_removes_only_original_flat_wall_art_and_keeps_floo
 fn native_facility_room_shell_power_plant_backing_is_continuous_and_source_guarded() {
     let loaded = crystal_assets::read_loaded_verified_compiled_game_pack(
         std::env::var_os("CRYSTAL_RENDER_TEST_PACK").unwrap(),
-    ).unwrap();
+    )
+    .unwrap();
     let (tiles, g, f) = fixture("PowerPlant", &loaded);
     let refs = tiles.iter().collect::<Vec<_>>();
     assert_eq!((g.width, g.height), (40, 36));
@@ -335,19 +338,34 @@ fn native_facility_room_shell_power_plant_backing_is_continuous_and_source_guard
     for x in 0..40 {
         for dx in [0.1, 0.5, 0.9] {
             for y in [1., 7., 15., 23., 31.] {
-                assert!(ray(&mesh.textured, 2, [(x as f32 + dx) * 8., y], [12.9, 16.2]),
-                    "continuous backing behind cupboards, sofas, divider join and machines");
+                assert!(
+                    ray(&mesh.textured, 2, [(x as f32 + dx) * 8., y], [12.9, 16.2]),
+                    "continuous backing behind cupboards, sofas, divider join and machines"
+                );
             }
         }
     }
     for z in 2..36 {
         for y in [1., 15., 31.] {
-            assert!(ray(&mesh.textured, 0, [(z as f32 + 0.5) * 8., y], [-3.1, 0.2]));
-            assert!(ray(&mesh.textured, 0, [(z as f32 + 0.5) * 8., y], [319.8, 323.1]));
+            assert!(ray(
+                &mesh.textured,
+                0,
+                [(z as f32 + 0.5) * 8., y],
+                [-3.1, 0.2]
+            ));
+            assert!(ray(
+                &mesh.textured,
+                0,
+                [(z as f32 + 0.5) * 8., y],
+                [319.8, 323.1]
+            ));
         }
     }
     for x in [40., 56.] {
-        assert!(!ray(&mesh.textured, 2, [x, 15.], [287.8, 291.1]), "both exit tiles stay open");
+        assert!(
+            !ray(&mesh.textured, 2, [x, 15.], [287.8, 291.1]),
+            "both exit tiles stay open"
+        );
     }
     for x in [8., 24., 72., 312.] {
         assert!(ray(&mesh.textured, 2, [x, 15.], [287.8, 291.1]));
@@ -355,18 +373,29 @@ fn native_facility_room_shell_power_plant_backing_is_continuous_and_source_guard
     for (range, plane) in &mesh.camera_wall_textured_ranges {
         assert!(mesh.textured.cutaway_ranges.contains(range));
         for p in &mesh.textured.positions[range.clone()] {
-            assert!(plane[0]*p[0]+plane[1]*p[2] <= plane[2]+0.001);
+            assert!(plane[0] * p[0] + plane[1] * p[2] <= plane[2] + 0.001);
         }
     }
     let donor = source(&f, &refs, &g, None).unwrap();
     assert_eq!(tiles[donor].source.tile_index, 0x22);
     let uv = g.uv(donor % g.width, donor / g.width);
-    assert!(mesh.textured.uvs.iter().all(|p| p[0] > uv.0 && p[0] < uv.1 && p[1] > uv.2 && p[1] < uv.3));
+    assert!(
+        mesh.textured
+            .uvs
+            .iter()
+            .all(|p| p[0] > uv.0 && p[0] < uv.1 && p[1] > uv.2 && p[1] < uv.3)
+    );
     for i in 0..160 {
         let mut changed = tiles.clone();
         changed[i].source.tile_index ^= 1;
         let mut rejected = TerrainMeshData::default();
-        assert!(!append(&mut rejected, &f, &changed.iter().collect::<Vec<_>>(), &g, None));
+        assert!(!append(
+            &mut rejected,
+            &f,
+            &changed.iter().collect::<Vec<_>>(),
+            &g,
+            None
+        ));
         assert!(rejected.textured.positions.is_empty());
     }
     let mut wrong = f.clone();
@@ -376,124 +405,265 @@ fn native_facility_room_shell_power_plant_backing_is_continuous_and_source_guard
     // Only this wall drawing is folded away; the floor and source support survive.
     let mut flat = SurfaceMeshData::default();
     for i in 0..tiles.len() {
-        append_top(&mut flat, g.bounds(i%g.width, i/g.width).into(), 0., g.uv(i%g.width, i/g.width));
+        append_top(
+            &mut flat,
+            g.bounds(i % g.width, i / g.width).into(),
+            0.,
+            g.uv(i % g.width, i / g.width),
+        );
     }
     remove_flat_wall_drawing(&mut flat, &f, &refs, &g);
-    let removed = tiles.iter().enumerate().filter(|(i,t)| i/g.width < 2 && t.source.tile_index==0x22).count();
+    let removed = tiles
+        .iter()
+        .enumerate()
+        .filter(|(i, t)| i / g.width < 2 && t.source.tile_index == 0x22)
+        .count();
     assert_eq!(removed, 38);
-    assert_eq!(flat.indices.len()/3, (tiles.len()-removed)*2);
+    assert_eq!(flat.indices.len() / 3, (tiles.len() - removed) * 2);
 }
 
 #[test]
 fn native_facility_room_shell_silph_backing_keeps_north_stair_and_real_exits_open() {
     let loaded = crystal_assets::read_loaded_verified_compiled_game_pack(
         std::env::var_os("CRYSTAL_RENDER_TEST_PACK").unwrap(),
-    ).unwrap();
-    let (tiles,g,f)=fixture("SilphCo1F",&loaded);
-    assert_eq!((g.width,g.height),(32,16));
-    let refs=tiles.iter().collect::<Vec<_>>();
-    let mut mesh=TerrainMeshData { footing_heights:vec![2.75;tiles.len()],authored_cells:vec![None;tiles.len()],..Default::default() };
-    let before=tiles.clone();
-    assert!(append(&mut mesh,&f,&refs,&g,None));
-    assert_eq!(tiles,before);
-    assert_eq!(mesh.footing_heights,vec![2.75;tiles.len()]);
-    assert_eq!(mesh.authored_cells,vec![None;tiles.len()]);
+    )
+    .unwrap();
+    let (tiles, g, f) = fixture("SilphCo1F", &loaded);
+    assert_eq!((g.width, g.height), (32, 16));
+    let refs = tiles.iter().collect::<Vec<_>>();
+    let mut mesh = TerrainMeshData {
+        footing_heights: vec![2.75; tiles.len()],
+        authored_cells: vec![None; tiles.len()],
+        ..Default::default()
+    };
+    let before = tiles.clone();
+    assert!(append(&mut mesh, &f, &refs, &g, None));
+    assert_eq!(tiles, before);
+    assert_eq!(mesh.footing_heights, vec![2.75; tiles.len()]);
+    assert_eq!(mesh.authored_cells, vec![None; tiles.len()]);
     for x in 0..32 {
-        for dx in [0.1,0.5,0.9] {
-            for y in [1.,7.,15.,23.,31.] {
-                assert_eq!(ray(&mesh.textured,2,[(x as f32+dx)*8.,y],[12.9,16.2]),
-                    !matches!(x,26|27),"rear backing continues through furniture, with only the actual stair landing open");
+        for dx in [0.1, 0.5, 0.9] {
+            for y in [1., 7., 15., 23., 31.] {
+                assert_eq!(
+                    ray(&mesh.textured, 2, [(x as f32 + dx) * 8., y], [12.9, 16.2]),
+                    !matches!(x, 26 | 27),
+                    "rear backing continues through furniture, with only the actual stair landing open"
+                );
             }
         }
     }
     for z in 2..16 {
-        for y in [1.,15.,31.] {
-            assert!(ray(&mesh.textured,0,[(z as f32+0.5)*8.,y],[-3.1,0.2]));
-            assert!(ray(&mesh.textured,0,[(z as f32+0.5)*8.,y],[255.8,259.1]));
+        for y in [1., 15., 31.] {
+            assert!(ray(
+                &mesh.textured,
+                0,
+                [(z as f32 + 0.5) * 8., y],
+                [-3.1, 0.2]
+            ));
+            assert!(ray(
+                &mesh.textured,
+                0,
+                [(z as f32 + 0.5) * 8., y],
+                [255.8, 259.1]
+            ));
         }
     }
-    for x in [40.,56.] {assert!(!ray(&mesh.textured,2,[x,15.],[127.8,131.1]));}
-    for x in [8.,24.,72.,248.] {assert!(ray(&mesh.textured,2,[x,15.],[127.8,131.1]));}
+    for x in [40., 56.] {
+        assert!(!ray(&mesh.textured, 2, [x, 15.], [127.8, 131.1]));
+    }
+    for x in [8., 24., 72., 248.] {
+        assert!(ray(&mesh.textured, 2, [x, 15.], [127.8, 131.1]));
+    }
     for i in 0..128 {
-        let mut changed=tiles.clone();changed[i].source.tile_index^=1;
-        let mut rejected=TerrainMeshData::default();
-        assert!(!append(&mut rejected,&f,&changed.iter().collect::<Vec<_>>(),&g,None));
+        let mut changed = tiles.clone();
+        changed[i].source.tile_index ^= 1;
+        let mut rejected = TerrainMeshData::default();
+        assert!(!append(
+            &mut rejected,
+            &f,
+            &changed.iter().collect::<Vec<_>>(),
+            &g,
+            None
+        ));
         assert!(rejected.textured.positions.is_empty());
     }
-    let mut original=SurfaceMeshData::default();
+    let mut original = SurfaceMeshData::default();
     for i in 0..tiles.len() {
-        append_top(&mut original,g.bounds(i%g.width,i/g.width).into(),0.,g.uv(i%g.width,i/g.width));
+        append_top(
+            &mut original,
+            g.bounds(i % g.width, i / g.width).into(),
+            0.,
+            g.uv(i % g.width, i / g.width),
+        );
     }
-    remove_flat_wall_drawing(&mut original,&f,&refs,&g);
-    assert_eq!(original.indices.len()/3,(tiles.len()-58)*2);
-    for y in 0..2 {for x in 26..28 {
-        let i=y*g.width+x;
-        assert_eq!(original.indices.iter().filter(|&&v| v as usize>=i*4 && (v as usize)<i*4+4).count(),6,
-            "the source stair drawing remains intact");
-    }}
-    let mut custom=built_in_profiles().objects[0].clone();
-    custom.name="Custom Silph rear wall".into();custom.map=Some("SilphCo1F".into());custom.maps=None;
-    custom.tileset="facility".into();custom.metatile=tiles[0].source.metatile_id;custom.metatiles=None;
-    custom.origin=[0,0];custom.tiles=vec![vec![0x22]];custom.ground=1;custom.parts.clear();custom.footing_pixels=None;
-    let mut rejected=TerrainMeshData::default();
-    assert!(!append(&mut rejected,&f,&refs,&g,Some(&Document {objects:vec![custom],atmosphere:None})));
+    remove_flat_wall_drawing(&mut original, &f, &refs, &g);
+    assert_eq!(original.indices.len() / 3, (tiles.len() - 58) * 2);
+    for y in 0..2 {
+        for x in 26..28 {
+            let i = y * g.width + x;
+            assert_eq!(
+                original
+                    .indices
+                    .iter()
+                    .filter(|&&v| v as usize >= i * 4 && (v as usize) < i * 4 + 4)
+                    .count(),
+                6,
+                "the source stair drawing remains intact"
+            );
+        }
+    }
+    let mut custom = built_in_profiles().objects[0].clone();
+    custom.name = "Custom Silph rear wall".into();
+    custom.map = Some("SilphCo1F".into());
+    custom.maps = None;
+    custom.tileset = "facility".into();
+    custom.metatile = tiles[0].source.metatile_id;
+    custom.metatiles = None;
+    custom.origin = [0, 0];
+    custom.tiles = vec![vec![0x22]];
+    custom.ground = 1;
+    custom.parts.clear();
+    custom.footing_pixels = None;
+    let mut rejected = TerrainMeshData::default();
+    assert!(!append(
+        &mut rejected,
+        &f,
+        &refs,
+        &g,
+        Some(&Document {
+            objects: vec![custom],
+            atmosphere: None
+        })
+    ));
     assert!(rejected.textured.positions.is_empty());
 }
 
 #[test]
-fn native_facility_room_shell_trainer_basement_backs_cabinets_and_joins_arena_without_sealing_stairs() {
+fn native_facility_room_shell_trainer_basement_backs_cabinets_and_joins_arena_without_sealing_stairs()
+ {
     let loaded = crystal_assets::read_loaded_verified_compiled_game_pack(
         std::env::var_os("CRYSTAL_RENDER_TEST_PACK").unwrap(),
-    ).unwrap();
-    let (tiles, base, f)=fixture("TrainerHouseB1F",&loaded);
-    assert_eq!((base.width,base.height),(20,32));
-    let refs=tiles.iter().collect::<Vec<_>>();
-    assert_eq!(tiles[source(&f,&refs,&base,None).unwrap()].source.tile_index,0x22);
-    for tile_size in [8.,32.] {
-        let g=GridGeometry {tile_width:tile_size,tile_height:tile_size,..base};
-        let mut mesh=TerrainMeshData {footing_heights:vec![3.25;tiles.len()],authored_cells:vec![None;tiles.len()],..Default::default()};
-        let before=tiles.clone();
-        assert!(append(&mut mesh,&f,&refs,&g,None));
-        assert_eq!(tiles,before);
-        assert_eq!(mesh.footing_heights,vec![3.25;tiles.len()]);
-        assert_eq!(mesh.authored_cells,vec![None;tiles.len()]);
-        for x in 0..20 {for dx in [0.1,0.5,0.9] {for source_y in [1.,7.,15.,23.,31.] {
-            assert!(ray(&mesh.textured,2,[(x as f32+dx)*tile_size,source_y*tile_size/8.],[1.6*tile_size,2.02*tile_size]),
-                "rear backing continues behind all four cabinets at source and production scale");
-        }}}
-        for z in 2..12 {for source_y in [1.,15.,31.] {
-            assert!(ray(&mesh.textured,0,[(z as f32+0.5)*tile_size,source_y*tile_size/8.],[-0.4*tile_size,0.02*tile_size]));
-            assert_eq!(ray(&mesh.textured,0,[(z as f32+0.5)*tile_size,source_y*tile_size/8.],[19.98*tile_size,20.4*tile_size]),
-                !matches!(z,8|9),"the actual east stair landing stays open");
-        }}
-        assert!(mesh.textured.positions.iter().all(|p|p[2]<=12.*tile_size+0.001),
-            "the authored lower arena owns its enclosure without a second green wall");
-        for (range,plane) in &mesh.camera_wall_textured_ranges {
+    )
+    .unwrap();
+    let (tiles, base, f) = fixture("TrainerHouseB1F", &loaded);
+    assert_eq!((base.width, base.height), (20, 32));
+    let refs = tiles.iter().collect::<Vec<_>>();
+    assert_eq!(
+        tiles[source(&f, &refs, &base, None).unwrap()]
+            .source
+            .tile_index,
+        0x22
+    );
+    for tile_size in [8., 32.] {
+        let g = GridGeometry {
+            tile_width: tile_size,
+            tile_height: tile_size,
+            ..base
+        };
+        let mut mesh = TerrainMeshData {
+            footing_heights: vec![3.25; tiles.len()],
+            authored_cells: vec![None; tiles.len()],
+            ..Default::default()
+        };
+        let before = tiles.clone();
+        assert!(append(&mut mesh, &f, &refs, &g, None));
+        assert_eq!(tiles, before);
+        assert_eq!(mesh.footing_heights, vec![3.25; tiles.len()]);
+        assert_eq!(mesh.authored_cells, vec![None; tiles.len()]);
+        for x in 0..20 {
+            for dx in [0.1, 0.5, 0.9] {
+                for source_y in [1., 7., 15., 23., 31.] {
+                    assert!(
+                        ray(
+                            &mesh.textured,
+                            2,
+                            [(x as f32 + dx) * tile_size, source_y * tile_size / 8.],
+                            [1.6 * tile_size, 2.02 * tile_size]
+                        ),
+                        "rear backing continues behind all four cabinets at source and production scale"
+                    );
+                }
+            }
+        }
+        for z in 2..12 {
+            for source_y in [1., 15., 31.] {
+                assert!(ray(
+                    &mesh.textured,
+                    0,
+                    [(z as f32 + 0.5) * tile_size, source_y * tile_size / 8.],
+                    [-0.4 * tile_size, 0.02 * tile_size]
+                ));
+                assert_eq!(
+                    ray(
+                        &mesh.textured,
+                        0,
+                        [(z as f32 + 0.5) * tile_size, source_y * tile_size / 8.],
+                        [19.98 * tile_size, 20.4 * tile_size]
+                    ),
+                    !matches!(z, 8 | 9),
+                    "the actual east stair landing stays open"
+                );
+            }
+        }
+        assert!(
+            mesh.textured
+                .positions
+                .iter()
+                .all(|p| p[2] <= 12. * tile_size + 0.001),
+            "the authored lower arena owns its enclosure without a second green wall"
+        );
+        for (range, plane) in &mesh.camera_wall_textured_ranges {
             assert!(mesh.textured.cutaway_ranges.contains(range));
             for p in &mesh.textured.positions[range.clone()] {
-                assert!(plane[0]*p[0]+plane[1]*p[2]<=plane[2]+0.001);
+                assert!(plane[0] * p[0] + plane[1] * p[2] <= plane[2] + 0.001);
             }
         }
     }
-    let guarded=(0..4).flat_map(|y|(0..20).map(move |x|y*20+x))
-        .chain([(16,8),(0,12),(16,12)].into_iter().flat_map(|(x,y)|
-            (0..4).flat_map(move |dy|(0..4).map(move |dx|(y+dy)*20+x+dx)))).collect::<Vec<_>>();
-    assert_eq!(guarded.len(),128);
+    let guarded = (0..4)
+        .flat_map(|y| (0..20).map(move |x| y * 20 + x))
+        .chain([(16, 8), (0, 12), (16, 12)].into_iter().flat_map(|(x, y)| {
+            (0..4).flat_map(move |dy| (0..4).map(move |dx| (y + dy) * 20 + x + dx))
+        }))
+        .collect::<Vec<_>>();
+    assert_eq!(guarded.len(), 128);
     for i in guarded {
-        let mut changed=tiles.clone();changed[i].source.tile_index^=1;
-        let mut rejected=TerrainMeshData::default();
-        assert!(!append(&mut rejected,&f,&changed.iter().collect::<Vec<_>>(),&base,None));
+        let mut changed = tiles.clone();
+        changed[i].source.tile_index ^= 1;
+        let mut rejected = TerrainMeshData::default();
+        assert!(!append(
+            &mut rejected,
+            &f,
+            &changed.iter().collect::<Vec<_>>(),
+            &base,
+            None
+        ));
         assert!(rejected.textured.positions.is_empty());
     }
-    let mut wrong=f.clone();wrong.boundary_warps=Default::default();
-    assert!(source(&wrong,&refs,&base,None).is_none());
-    let mut flat=SurfaceMeshData::default();
-    for i in 0..tiles.len() {append_top(&mut flat,base.bounds(i%20,i/20).into(),0.,base.uv(i%20,i/20));}
-    remove_flat_wall_drawing(&mut flat,&f,&refs,&base);
-    assert_eq!(flat.indices.len()/3,(tiles.len()-22)*2);
-    for y in 8..10 {for x in 18..20 {
-        let i=y*20+x;
-        assert_eq!(flat.indices.iter().filter(|&&v|v as usize>=i*4&&(v as usize)<i*4+4).count(),6,
-            "stair source art remains intact");
-    }}
+    let mut wrong = f.clone();
+    wrong.boundary_warps = Default::default();
+    assert!(source(&wrong, &refs, &base, None).is_none());
+    let mut flat = SurfaceMeshData::default();
+    for i in 0..tiles.len() {
+        append_top(
+            &mut flat,
+            base.bounds(i % 20, i / 20).into(),
+            0.,
+            base.uv(i % 20, i / 20),
+        );
+    }
+    remove_flat_wall_drawing(&mut flat, &f, &refs, &base);
+    assert_eq!(flat.indices.len() / 3, (tiles.len() - 22) * 2);
+    for y in 8..10 {
+        for x in 18..20 {
+            let i = y * 20 + x;
+            assert_eq!(
+                flat.indices
+                    .iter()
+                    .filter(|&&v| v as usize >= i * 4 && (v as usize) < i * 4 + 4)
+                    .count(),
+                6,
+                "stair source art remains intact"
+            );
+        }
+    }
 }

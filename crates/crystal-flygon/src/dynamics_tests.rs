@@ -77,7 +77,8 @@ fn integration_mode_cannot_silently_change_live_or_on_restore() {
 #[test]
 fn imported_clock_near_overflow_is_rejected_before_mutating_dynamics() {
     let mut brain = isolated(0.5, 5.0, true);
-    let mut checkpoint: serde_json::Value = serde_json::from_str(&brain.checkpoint().unwrap()).unwrap();
+    let mut checkpoint: serde_json::Value =
+        serde_json::from_str(&brain.checkpoint().unwrap()).unwrap();
     checkpoint["tick"] = serde_json::json!(u64::MAX - 1);
     brain.restore(&checkpoint.to_string()).unwrap();
     let before = brain.checkpoint().unwrap();

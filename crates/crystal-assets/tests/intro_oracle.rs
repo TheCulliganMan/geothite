@@ -29,8 +29,20 @@ fn pinned_rom_trace_completes_every_authored_intro_scene() {
     assert_eq!(trace["validated"], false);
     assert_eq!(trace["scenes"].as_array().unwrap().len(), 28);
     let records = trace["records"].as_array().unwrap();
-    assert_eq!((trace["first_input"]["cpu_t_cycles"].as_u64().unwrap()-trace["entry"]["cpu_t_cycles"].as_u64().unwrap()-trace["first_input"]["interrupt_t_cycles_since_entry"].as_u64().unwrap())/4,59);
-    assert!(records.iter().all(|record|record["instruction_machine_cycles"].as_u64().is_some_and(|cycles|cycles>0)));
+    assert_eq!(
+        (trace["first_input"]["cpu_t_cycles"].as_u64().unwrap()
+            - trace["entry"]["cpu_t_cycles"].as_u64().unwrap()
+            - trace["first_input"]["interrupt_t_cycles_since_entry"]
+                .as_u64()
+                .unwrap())
+            / 4,
+        59
+    );
+    assert!(records.iter().all(|record| {
+        record["instruction_machine_cycles"]
+            .as_u64()
+            .is_some_and(|cycles| cycles > 0)
+    }));
     assert_eq!(
         records
             .iter()

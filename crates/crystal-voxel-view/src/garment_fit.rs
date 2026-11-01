@@ -54,8 +54,14 @@ pub(crate) fn section(rig: &PersonRig, y: f32, direction: Vec2) -> Option<Sample
         let delta = hits[0].0 - center;
         let radius = cross(delta, segment) / denominator;
         let t = cross(delta, direction) / denominator;
-        if radius <= 0.0 || (if outer { radius <= closest } else { radius >= closest })
-            || !(-1e-5..=1.00001).contains(&t) {
+        if radius <= 0.0
+            || (if outer {
+                radius <= closest
+            } else {
+                radius >= closest
+            })
+            || !(-1e-5..=1.00001).contains(&t)
+        {
             continue;
         }
         let t = t.clamp(0.0, 1.0);
@@ -91,13 +97,25 @@ pub(crate) fn waist_influences(rig: &PersonRig, p: [f32; 3]) -> Option<Vec<(usiz
 
 /// Returns interpolated body influences for vertices in the fitted seam.
 /// The rest of the garment retains its authored profile and leg weight field.
-pub(crate) fn fit(mesh: &mut SurfaceMeshData, rig: &PersonRig, look: crate::npc_appearance::Look) -> Vec<Option<Vec<(usize, f32)>>> {
+pub(crate) fn fit(
+    mesh: &mut SurfaceMeshData,
+    rig: &PersonRig,
+    look: crate::npc_appearance::Look,
+) -> Vec<Option<Vec<(usize, f32)>>> {
     let outer_vertices = mesh.positions.len() / 2;
     // Nurse's short fitted skirt needs a gradual flare below the waist. The
     // short generic seam blend makes a steep shelf that catches the light.
     // Keep the fully fitted waist and leave other authored garments unchanged.
-    let fit_bottom = if look.texture_key == "nurse" { 1.10 } else { 1.46 };
-    let fit_span = if look.texture_key == "nurse" { 0.52 } else { 0.16 };
+    let fit_bottom = if look.texture_key == "nurse" {
+        1.10
+    } else {
+        1.46
+    };
+    let fit_span = if look.texture_key == "nurse" {
+        0.52
+    } else {
+        0.16
+    };
     mesh.positions
         .iter_mut()
         .enumerate()
@@ -127,27 +145,45 @@ pub(crate) fn fit(mesh: &mut SurfaceMeshData, rig: &PersonRig, look: crate::npc_
 /// Diffuse local fitted-body influences over the closed two-layer skirt.
 /// Both layers share a weight field below the pinned waist, so thickness and
 /// small body-section sampling changes cannot fold adjacent panels backwards.
-pub(crate) fn smooth_fitted_skin(cloth: &mut crate::npc_appearance::CostumeMesh, skin_count: usize) {
+pub(crate) fn smooth_fitted_skin(
+    cloth: &mut crate::npc_appearance::CostumeMesh,
+    skin_count: usize,
+) {
     use std::collections::{BTreeMap, BTreeSet};
     let layer = cloth.surface.positions.len() / 2;
     assert_eq!(cloth.surface.positions.len(), layer * 2);
-    let ring = cloth.surface.positions[..layer].iter()
-        .take_while(|p| p[1] == cloth.surface.positions[0][1]).count();
+    let ring = cloth.surface.positions[..layer]
+        .iter()
+        .take_while(|p| p[1] == cloth.surface.positions[0][1])
+        .count();
     assert!(ring > 0 && layer % ring == 0);
     let bottom = cloth.surface.positions[layer - 1][1];
-    let hem_row = (0..layer / ring).min_by(|&a, &b| {
-        (cloth.surface.positions[a * ring][1] - bottom - 0.045).abs()
-            .total_cmp(&(cloth.surface.positions[b * ring][1] - bottom - 0.045).abs())
-    }).unwrap();
+    let hem_row = (0..layer / ring)
+        .min_by(|&a, &b| {
+            (cloth.surface.positions[a * ring][1] - bottom - 0.045)
+                .abs()
+                .total_cmp(&(cloth.surface.positions[b * ring][1] - bottom - 0.045).abs())
+        })
+        .unwrap();
     let key = |p: [f32; 3]| p.map(|v| (v * 100_000.0).round() as i32);
     let mut welded = BTreeMap::new();
-    let canonical: Vec<_> = cloth.surface.positions[..layer].iter().enumerate()
-        .map(|(i, &p)| *welded.entry(key(p)).or_insert(i)).collect();
+    let canonical: Vec<_> = cloth.surface.positions[..layer]
+        .iter()
+        .enumerate()
+        .map(|(i, &p)| *welded.entry(key(p)).or_insert(i))
+        .collect();
     let mut neighbors = vec![BTreeSet::new(); layer];
     for face in cloth.surface.indices.chunks_exact(3) {
         let points = [face[0], face[1], face[2]].map(|i| canonical[i as usize % layer]);
-        for (a, b) in [(points[0], points[1]), (points[1], points[2]), (points[2], points[0])] {
-            if a != b { neighbors[a].insert(b); neighbors[b].insert(a); }
+        for (a, b) in [
+            (points[0], points[1]),
+            (points[1], points[2]),
+            (points[2], points[0]),
+        ] {
+            if a != b {
+                neighbors[a].insert(b);
+                neighbors[b].insert(a);
+            }
         }
     }
     let mut fields = vec![vec![0.0; skin_count]; layer];
@@ -161,27 +197,35 @@ pub(crate) fn smooth_fitted_skin(cloth: &mut crate::npc_appearance::CostumeMesh,
     for _ in 0..8 {
         let mut next = fields.clone();
         for i in 0..layer {
-            if canonical[i] != i || cloth.surface.positions[i][1] >= 1.62 || neighbors[i].is_empty() {
+            if canonical[i] != i || cloth.surface.positions[i][1] >= 1.62 || neighbors[i].is_empty()
+            {
                 continue;
             }
             for joint in 0..skin_count {
-                let mean = neighbors[i].iter().map(|&j| fields[j][joint]).sum::<f32>() / neighbors[i].len() as f32;
+                let mean = neighbors[i].iter().map(|&j| fields[j][joint]).sum::<f32>()
+                    / neighbors[i].len() as f32;
                 next[i][joint] = fields[i][joint] * 0.5 + mean * 0.5;
             }
         }
         fields = next;
     }
     for i in 0..layer {
-        if cloth.surface.positions[i][1] >= 1.62 { continue; }
+        if cloth.surface.positions[i][1] >= 1.62 {
+            continue;
+        }
         let t = ((1.62 - cloth.surface.positions[i][1]) / 0.10).clamp(0.0, 1.0);
         let blend = t * t * (3.0 - 2.0 * t);
         // The narrow rolled hem moves with one ring field. Weight gradients
         // across its .015-height fold can turn that fold inside out in Run.
         let sample = if cloth.surface.positions[i][1] <= bottom + 0.04501 {
             hem_row * ring + i % ring
-        } else { i };
+        } else {
+            i
+        };
         let mut field = fields[canonical[sample]].clone();
-        for value in &mut field { *value *= blend; }
+        for value in &mut field {
+            *value *= blend;
+        }
         for slot in 0..4 {
             field[cloth.joints[i][slot] as usize] += cloth.weights[i][slot] * (1.0 - blend);
         }
@@ -207,12 +251,17 @@ pub(crate) fn finish_normals(cloth: &mut crate::npc_appearance::CostumeMesh) {
         let p = [face[0], face[1], face[2]].map(|i| Vec3::from_array(mesh.positions[i as usize]));
         let normal = (p[1] - p[0]).cross(p[2] - p[0]);
         assert!(normal.is_finite() && normal.length_squared() > 1e-18);
-        let (low, high) = p.iter().fold((f32::INFINITY, f32::NEG_INFINITY),
-            |(low, high), p| (low.min(p.y), high.max(p.y)));
+        let (low, high) = p
+            .iter()
+            .fold((f32::INFINITY, f32::NEG_INFINITY), |(low, high), p| {
+                (low.min(p.y), high.max(p.y))
+            });
         if high - low < 1e-6 {
             rims.push((face_index, normal.normalize()));
         } else {
-            for &i in face { *normals.entry(key(mesh.positions[i as usize])).or_default() += normal; }
+            for &i in face {
+                *normals.entry(key(mesh.positions[i as usize])).or_default() += normal;
+            }
         }
     }
     for (p, normal) in mesh.positions.iter().zip(&mut mesh.normals) {
@@ -292,7 +341,12 @@ mod tests {
             // This is a waist-attachment regression, not a clearance limit
             // for raised collars, emblems or lapels elsewhere on the costume.
             // Only credit roles that actually have geometry in the seam band.
-            if !cloth.surface.positions.iter().any(|p| (1.62..=1.67).contains(&p[1])) {
+            if !cloth
+                .surface
+                .positions
+                .iter()
+                .any(|p| (1.62..=1.67).contains(&p[1]))
+            {
                 continue;
             }
             count += 1;

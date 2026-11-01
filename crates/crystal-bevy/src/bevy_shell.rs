@@ -1,44 +1,44 @@
 mod boot_font;
 mod evolution_dex_finalization;
-mod save_prompt_pages;
-mod minnesota_town_map;
 mod minnesota_badges;
-mod renderer_policy;
+mod minnesota_town_map;
 #[cfg(not(target_arch = "wasm32"))]
 mod preview_audio_policy;
+mod renderer_policy;
+mod save_prompt_pages;
 pub use renderer_policy::runtime_supports_voxel_view;
 #[cfg(any(test, feature = "intro-certification"))]
 mod intro_certification;
 #[cfg(any(test, feature = "intro-certification"))]
 pub use intro_certification::certify_source_intro_timeline;
+mod battle_anim_graphics;
 #[cfg(feature = "dev-tools")]
 mod dev_tools;
-#[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
-mod render_record;
+mod field_fly;
+mod field_move_prompt_projection;
+mod field_notice_effects;
+mod field_waterfall;
+#[cfg(feature = "location-tester")]
+mod model_preview;
+#[cfg(not(target_arch = "wasm32"))]
+mod native_tasks;
+mod outdoor_precipitation;
+mod outdoor_weather_policy;
+mod overworld_step_events;
+#[cfg(all(feature = "performance-audit", not(target_arch = "wasm32")))]
+mod performance_audit;
 #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
 mod render_measure_validation;
+#[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
+mod render_record;
+#[cfg(feature = "location-tester")]
+mod render_walk;
 #[cfg(all(
     feature = "location-tester",
     feature = "voxel-view",
     not(target_arch = "wasm32")
 ))]
 mod visibility_census;
-#[cfg(all(feature = "performance-audit", not(target_arch = "wasm32")))]
-mod performance_audit;
-#[cfg(feature = "location-tester")]
-mod render_walk;
-#[cfg(feature = "location-tester")]
-mod model_preview;
-mod battle_anim_graphics;
-mod field_fly;
-mod field_notice_effects;
-mod field_waterfall;
-mod field_move_prompt_projection;
-mod outdoor_precipitation;
-mod outdoor_weather_policy;
-#[cfg(not(target_arch = "wasm32"))]
-mod native_tasks;
-mod overworld_step_events;
 use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet, VecDeque};
 use std::fmt::Display;
 use std::hash::{Hash, Hasher};
@@ -53,12 +53,12 @@ use std::time::Instant;
 
 // Shadow Bevy's ContextExt with anyhow's error context for runtime loading.
 use anyhow::{Context as ContextExt, Result};
+use bevy::asset::RenderAssetUsages;
 use bevy::ecs::query::QueryFilter;
 use bevy::ecs::system::SystemParam;
-use bevy::prelude::*;
-use bevy::asset::RenderAssetUsages;
-use bevy::render::render_resource::{Extent3d, TextureDimension, TextureFormat};
 use bevy::image::ImageSampler;
+use bevy::prelude::*;
+use bevy::render::render_resource::{Extent3d, TextureDimension, TextureFormat};
 #[cfg(feature = "location-tester")]
 use bevy::render::view::screenshot::{Screenshot, ScreenshotCaptured};
 #[cfg(all(not(target_arch = "wasm32"), feature = "voxel-view"))]
@@ -152,9 +152,9 @@ use crate::{
 };
 
 mod intro_renderer;
+mod startup_policy;
 #[path = "bevy_shell/static_title.rs"]
 mod static_title;
-mod startup_policy;
 
 const GAME_TICK_SECONDS: f32 = GB_FRAME_DURATION_SECONDS as f32;
 const VIEWPORT_TILES_X: i16 = 20;
@@ -714,7 +714,10 @@ impl VisibleShellController {
             }
         }
         if let Some(session) = &snapshot.safari
-            && matches!(session.phase, crate::core::systems::safari::SafariPhase::Encounter(_))
+            && matches!(
+                session.phase,
+                crate::core::systems::safari::SafariPhase::Encounter(_)
+            )
         {
             return (usize::from(session.command_cursor), 0);
         }
@@ -790,7 +793,9 @@ impl VisibleShellController {
             return Ok(());
         }
         let mut buttons: Vec<_> = buttons.into_iter().collect();
-        if !buttons.is_empty() && let Some(replays) = self.shell.text_battle_replays.as_mut() {
+        if !buttons.is_empty()
+            && let Some(replays) = self.shell.text_battle_replays.as_mut()
+        {
             replays.clear();
         }
         // Match the graphical credits owner: only A/B reach its handlers;
@@ -836,7 +841,11 @@ impl VisibleShellController {
     }
 
     pub fn take_battle_replays(&mut self) -> Vec<VisibleBattleReplay> {
-        self.shell.text_battle_replays.as_mut().map(std::mem::take).unwrap_or_default()
+        self.shell
+            .text_battle_replays
+            .as_mut()
+            .map(std::mem::take)
+            .unwrap_or_default()
     }
     pub fn set_battle_replay_enabled(&mut self, enabled: bool) {
         self.shell.text_battle_replays = enabled.then(Vec::new);
@@ -1821,7 +1830,8 @@ impl NativeAudioBackend {
             .with_context(|| format!("spawn audio preparation worker for {}", command.audio_id))?;
         native_audio_trace!(
             "crystal-bevy audio queued preparation {:?} {}",
-            command.kind, command.audio_id
+            command.kind,
+            command.audio_id
         );
         self.preparations.insert(
             cache_key,
@@ -1845,23 +1855,40 @@ impl NativeAudioBackend {
     }
 
     fn set_master_volume(&mut self, volume: f32) {
-        let volume = if volume.is_finite() { volume.clamp(0.0, 1.0) } else { 1.0 };
-        if self.master_volume == volume { return; }
+        let volume = if volume.is_finite() {
+            volume.clamp(0.0, 1.0)
+        } else {
+            1.0
+        };
+        if self.master_volume == volume {
+            return;
+        }
         self.master_volume = volume;
         self.refresh_music_volume();
-        for sink in &self.transient_sinks { sink.set_volume(self.output_volume()); }
-        native_audio_trace!("crystal-bevy master volume={} music_sink_volume={:?}",
-            self.output_volume(), self.music_sink.as_ref().map(rodio::Sink::volume));
+        for sink in &self.transient_sinks {
+            sink.set_volume(self.output_volume());
+        }
+        native_audio_trace!(
+            "crystal-bevy master volume={} music_sink_volume={:?}",
+            self.output_volume(),
+            self.music_sink.as_ref().map(rodio::Sink::volume)
+        );
     }
 
     fn output_volume(&self) -> f32 {
-        if self.preview_muted { 0.0 } else { self.master_volume }
+        if self.preview_muted {
+            0.0
+        } else {
+            self.master_volume
+        }
     }
 
     fn refresh_music_volume(&self) {
         if let Some(sink) = self.music_sink.as_ref() {
             sink.set_volume(music_volume_during_transient(
-                self.music_volume * self.output_volume(), self.transient_audio_id.as_deref()));
+                self.music_volume * self.output_volume(),
+                self.transient_audio_id.as_deref(),
+            ));
         }
     }
 
@@ -1915,7 +1942,9 @@ impl NativeAudioBackend {
                 self.music_volume * self.output_volume(),
                 self.transient_audio_id.as_deref(),
             ));
-        } else { sink.set_volume(self.output_volume()); }
+        } else {
+            sink.set_volume(self.output_volume());
+        }
         let samples = pcm_samples_for_audio_command(&pcm_i16_samples(audio)?, sound, command);
         let channels = u16::from(audio.format.channels);
         let sample_rate = audio.format.sample_rate_hz;
@@ -2639,7 +2668,10 @@ struct VisibleIntroSourceAudioClock {
 
 impl VisibleIntroSourceAudioClock {
     fn new() -> Result<Self> {
-        Ok(Self { clock: crystal_audio::synth::SourceAudioClock::new()?, current_sfx_priority: 0 })
+        Ok(Self {
+            clock: crystal_audio::synth::SourceAudioClock::new()?,
+            current_sfx_priority: 0,
+        })
     }
 }
 
@@ -5410,7 +5442,8 @@ fn present_fullscreen_frame(
         || size.depth_or_array_layers != 1
         || next_image.texture_descriptor.dimension != TextureDimension::D2
         || next_image.texture_descriptor.format != TextureFormat::Rgba8UnormSrgb
-        || next_image.data.as_ref().expect("CPU image pixels").len() != expected_width as usize * expected_height as usize * 4
+        || next_image.data.as_ref().expect("CPU image pixels").len()
+            != expected_width as usize * expected_height as usize * 4
     {
         anyhow::bail!(
             "full-screen LCD frame must be {}x{} RGBA8, got {}x{} {:?} with {} bytes",
@@ -5431,7 +5464,9 @@ fn present_fullscreen_frame(
             // A retained strong handle should keep this asset alive. Reinsert
             // defensively under the same id so the visible sprite never has to
             // swap handles if an external asset operation removed it.
-            images.insert(surface.handle.id(), next_image).context("restore retained fullscreen image")?;
+            images
+                .insert(surface.handle.id(), next_image)
+                .context("restore retained fullscreen image")?;
         }
         return Ok(surface.clone());
     }
@@ -5468,11 +5503,14 @@ fn ensure_presented_fullscreen_entity(
     }
     let entity = commands
         .spawn((
-            (Sprite { image: frame.handle.clone(),
+            (
+                Sprite {
+                    image: frame.handle.clone(),
                     custom_size: Some(Vec2::new(PLAYFIELD_WIDTH, PLAYFIELD_HEIGHT)),
                     ..default()
                 },
-Transform::from_xyz(0.0, 0.0, z),),
+                Transform::from_xyz(0.0, 0.0, z),
+            ),
             TitleScreenMarker,
             VisibleIntroSurface,
         ))
@@ -5894,7 +5932,11 @@ pub fn run_bevy_shell(
     let audit_request = config.performance_audit.clone();
     #[cfg(all(feature = "performance-audit", not(target_arch = "wasm32")))]
     let auditing = audit_request.is_some();
-    #[cfg(all(feature = "location-tester", not(target_arch = "wasm32"), not(feature = "performance-audit")))]
+    #[cfg(all(
+        feature = "location-tester",
+        not(target_arch = "wasm32"),
+        not(feature = "performance-audit")
+    ))]
     let auditing = false;
     #[cfg(feature = "voxel-view")]
     let voxel_view_enabled =
@@ -5963,7 +6005,16 @@ pub fn run_bevy_shell(
     let battle_reduced_flashes = config.battle_reduced_flashes;
     #[cfg(feature = "location-tester")]
     anyhow::ensure!(
-        !(render_test_battle || render_test_route36_encounter || render_test_fishing_encounter || render_test_surf_encounter || render_test_walking_encounter || render_test_cave_encounter || render_test_ice_encounter || render_test_gym_encounter || render_test_falkner_encounter || render_test_rival_encounter)
+        !(render_test_battle
+            || render_test_route36_encounter
+            || render_test_fishing_encounter
+            || render_test_surf_encounter
+            || render_test_walking_encounter
+            || render_test_cave_encounter
+            || render_test_ice_encounter
+            || render_test_gym_encounter
+            || render_test_falkner_encounter
+            || render_test_rival_encounter)
             || matches!(&start, BevyShellStart::NewGameAtRuntimeTile { .. }),
         "battle preview only supports a fresh disposable location session"
     );
@@ -5998,38 +6049,74 @@ pub fn run_bevy_shell(
     };
     #[cfg(feature = "location-tester")]
     let runtime_shell = if render_test_rival_encounter {
-        anyhow::ensure!(!(render_test_battle || render_test_route36_encounter || render_test_fishing_encounter
-            || render_test_surf_encounter || render_test_walking_encounter || render_test_cave_encounter
-            || render_test_ice_encounter || render_test_gym_encounter || render_test_falkner_encounter),
-            "field and direct battle fixtures are mutually exclusive");
+        anyhow::ensure!(
+            !(render_test_battle
+                || render_test_route36_encounter
+                || render_test_fishing_encounter
+                || render_test_surf_encounter
+                || render_test_walking_encounter
+                || render_test_cave_encounter
+                || render_test_ice_encounter
+                || render_test_gym_encounter
+                || render_test_falkner_encounter),
+            "field and direct battle fixtures are mutually exclusive"
+        );
         prepare_rival_encounter_preview(runtime_shell)?
     } else if render_test_surf_encounter {
-        anyhow::ensure!(!(render_test_battle || render_test_route36_encounter
-            || render_test_fishing_encounter || render_test_walking_encounter
-            || render_test_cave_encounter || render_test_ice_encounter
-            || render_test_gym_encounter || render_test_falkner_encounter),
-            "field and direct battle fixtures are mutually exclusive");
+        anyhow::ensure!(
+            !(render_test_battle
+                || render_test_route36_encounter
+                || render_test_fishing_encounter
+                || render_test_walking_encounter
+                || render_test_cave_encounter
+                || render_test_ice_encounter
+                || render_test_gym_encounter
+                || render_test_falkner_encounter),
+            "field and direct battle fixtures are mutually exclusive"
+        );
         prepare_surf_encounter_preview(runtime_shell)?
     } else if render_test_falkner_encounter {
         anyhow::ensure!(
-            !(render_test_battle || render_test_route36_encounter || render_test_fishing_encounter
-                || render_test_surf_encounter || render_test_walking_encounter || render_test_cave_encounter || render_test_ice_encounter
+            !(render_test_battle
+                || render_test_route36_encounter
+                || render_test_fishing_encounter
+                || render_test_surf_encounter
+                || render_test_walking_encounter
+                || render_test_cave_encounter
+                || render_test_ice_encounter
                 || render_test_gym_encounter),
             "field and direct battle fixtures are mutually exclusive"
         );
         prepare_falkner_encounter_preview(runtime_shell)?
     } else if render_test_gym_encounter {
         anyhow::ensure!(
-            !(render_test_battle || render_test_route36_encounter || render_test_fishing_encounter
-                || render_test_surf_encounter || render_test_walking_encounter || render_test_cave_encounter || render_test_ice_encounter),
+            !(render_test_battle
+                || render_test_route36_encounter
+                || render_test_fishing_encounter
+                || render_test_surf_encounter
+                || render_test_walking_encounter
+                || render_test_cave_encounter
+                || render_test_ice_encounter),
             "field and direct battle fixtures are mutually exclusive"
         );
         prepare_gym_encounter_preview(runtime_shell)?
-    } else if render_test_walking_encounter || render_test_cave_encounter || render_test_ice_encounter {
+    } else if render_test_walking_encounter
+        || render_test_cave_encounter
+        || render_test_ice_encounter
+    {
         anyhow::ensure!(
-            !render_test_battle && !render_test_route36_encounter && !render_test_fishing_encounter
-                && [render_test_walking_encounter, render_test_cave_encounter, render_test_ice_encounter]
-                    .into_iter().filter(|selected| *selected).count() == 1,
+            !render_test_battle
+                && !render_test_route36_encounter
+                && !render_test_fishing_encounter
+                && [
+                    render_test_walking_encounter,
+                    render_test_cave_encounter,
+                    render_test_ice_encounter
+                ]
+                .into_iter()
+                .filter(|selected| *selected)
+                .count()
+                    == 1,
             "field and direct battle fixtures are mutually exclusive"
         );
         let preview = if render_test_ice_encounter {
@@ -6047,7 +6134,10 @@ pub fn run_bevy_shell(
         );
         prepare_fishing_encounter_preview(runtime_shell)?
     } else if render_test_route36_encounter {
-        anyhow::ensure!(!render_test_battle, "field and direct battle fixtures are mutually exclusive");
+        anyhow::ensure!(
+            !render_test_battle,
+            "field and direct battle fixtures are mutually exclusive"
+        );
         prepare_route36_encounter_preview(runtime_shell)?
     } else if render_test_battle {
         prepare_immersive_battle_preview(
@@ -6139,35 +6229,54 @@ pub fn run_bevy_shell(
     let headless_capture = match std::env::var("CRYSTAL_RENDER_TEST_HEADLESS") {
         Ok(value) if value == "1" => true,
         Ok(value) if value == "0" => false,
-        Err(std::env::VarError::NotPresent) => render_test_screenshot.is_some()
-            && !render_test_live && render_capture::requested_image_target(false)?,
+        Err(std::env::VarError::NotPresent) => {
+            render_test_screenshot.is_some()
+                && !render_test_live
+                && render_capture::requested_image_target(false)?
+        }
         _ => anyhow::bail!("CRYSTAL_RENDER_TEST_HEADLESS must be 0 or 1"),
     };
     #[cfg(not(all(feature = "location-tester", not(target_arch = "wasm32"))))]
     let headless_capture = false;
     #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
-    anyhow::ensure!(!headless_capture || ((auditing || render_test_screenshot.is_some() || render_test_measure.is_some() || render_test_record.is_some())
-        && !render_test_live && render_capture::requested_image_target(render_test_live)?),
-        "headless capture requires a screenshot, recording or measurement with an image target");
+    anyhow::ensure!(
+        !headless_capture
+            || ((auditing
+                || render_test_screenshot.is_some()
+                || render_test_measure.is_some()
+                || render_test_record.is_some())
+                && !render_test_live
+                && render_capture::requested_image_target(render_test_live)?),
+        "headless capture requires a screenshot, recording or measurement with an image target"
+    );
     #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
-    anyhow::ensure!(!headless_capture || render_test_measure.is_none()
-        || std::env::var("CRYSTAL_MEASURE_3D_VALIDATION").as_deref() == Ok("on"),
-        "headless measurement requires CRYSTAL_MEASURE_3D_VALIDATION=on");
+    anyhow::ensure!(
+        !headless_capture
+            || render_test_measure.is_none()
+            || std::env::var("CRYSTAL_MEASURE_3D_VALIDATION").as_deref() == Ok("on"),
+        "headless measurement requires CRYSTAL_MEASURE_3D_VALIDATION=on"
+    );
     let plugins = DefaultPlugins.build();
     #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
     let plugins = if headless_capture {
         plugins.disable::<bevy::winit::WinitPlugin>()
-    } else { plugins };
+    } else {
+        plugins
+    };
     #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
     let plugins = if headless_capture && bevy::log::tracing::dispatcher::has_been_set() {
         // A headless batch creates fresh Apps but keeps the process subscriber.
         plugins.disable::<bevy::log::LogPlugin>()
-    } else { plugins };
+    } else {
+        plugins
+    };
     #[cfg(not(target_arch = "wasm32"))]
     let plugins = plugins.set(native_tasks::plugin());
     #[cfg(all(target_arch = "wasm32", feature = "browser-webgpu"))]
     let plugins = plugins.set(bevy::render::RenderPlugin {
-        render_creation: bevy::render::settings::RenderCreation::Automatic(Box::new(crate::browser_backend::settings())),
+        render_creation: bevy::render::settings::RenderCreation::Automatic(Box::new(
+            crate::browser_backend::settings(),
+        )),
         ..default()
     });
     #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
@@ -6313,7 +6422,10 @@ pub fn run_bevy_shell(
             Update,
             apply_visible_battle_screen_offset.after(render_playfield),
         )
-        .add_systems(Update, outdoor_precipitation::animate.after(render_playfield))
+        .add_systems(
+            Update,
+            outdoor_precipitation::animate.after(render_playfield),
+        )
         .add_systems(Update, render_screen_fade_overlay.after(render_playfield))
         .add_systems(
             Update,
@@ -6333,8 +6445,10 @@ pub fn run_bevy_shell(
     // image pipeline even when the optional voxel renderer is not compiled.
     app.add_plugins(crystal_render_api::VisualWorldRenderPlugin);
     #[cfg(feature = "voxel-view")]
-    app.add_systems(Update,sync_native_healing_sprite_visibility
-        .after(crystal_render_api::WorldRenderSet::RenderSync));
+    app.add_systems(
+        Update,
+        sync_native_healing_sprite_visibility.after(crystal_render_api::WorldRenderSet::RenderSync),
+    );
     #[cfg(feature = "voxel-view")]
     app.add_systems(
         Update,
@@ -6385,12 +6499,20 @@ pub fn run_bevy_shell(
             .in_set(crystal_render_api::WorldRenderSet::PresentationExtract),
     );
     #[cfg(feature = "voxel-view")]
-    app.add_systems(Update, publish_visual_world_entry_effect.after(publish_visual_world_frame)
-        .in_set(crystal_render_api::WorldRenderSet::PresentationExtract));
+    app.add_systems(
+        Update,
+        publish_visual_world_entry_effect
+            .after(publish_visual_world_frame)
+            .in_set(crystal_render_api::WorldRenderSet::PresentationExtract),
+    );
     #[cfg(feature = "voxel-view")]
     app.init_resource::<destination_preload::PublishedDestination>()
-        .add_systems(Update, destination_preload::publish.after(publish_visual_world_frame)
-            .in_set(crystal_render_api::WorldRenderSet::PresentationExtract));
+        .add_systems(
+            Update,
+            destination_preload::publish
+                .after(publish_visual_world_frame)
+                .in_set(crystal_render_api::WorldRenderSet::PresentationExtract),
+        );
     #[cfg(feature = "voxel-view")]
     app.add_systems(
         PostUpdate,
@@ -6428,7 +6550,10 @@ pub fn run_bevy_shell(
             .before(apply_keyboard_input),
     )
     .add_systems(PostUpdate, finish_webmcp_request)
-    .add_systems(PostUpdate, publish_browser_text_view.after(finish_webmcp_request))
+    .add_systems(
+        PostUpdate,
+        publish_browser_text_view.after(finish_webmcp_request),
+    )
     .add_systems(PostUpdate, autosave_browser_progress);
     #[cfg(all(target_arch = "wasm32", feature = "voxel-view"))]
     app.add_systems(PostUpdate, trace_browser_render_memory);
@@ -6587,8 +6712,11 @@ pub fn run_bevy_shell(
     }
     #[cfg(all(feature = "location-tester", not(target_arch = "wasm32")))]
     if headless_capture {
-        let interval = if auditing || render_test_measure.is_some() { std::time::Duration::ZERO }
-            else { std::time::Duration::from_millis(16) };
+        let interval = if auditing || render_test_measure.is_some() {
+            std::time::Duration::ZERO
+        } else {
+            std::time::Duration::from_millis(16)
+        };
         app.add_plugins(bevy::app::ScheduleRunnerPlugin::run_loop(interval));
     }
     #[cfg(all(feature = "performance-audit", not(target_arch = "wasm32")))]
@@ -6596,13 +6724,17 @@ pub fn run_bevy_shell(
         performance_audit::install(&mut app, request)?;
     }
     #[cfg(all(target_os = "macos", feature = "desktop-app"))]
-    if !headless_capture { desktop_settings::install(&mut app); }
+    if !headless_capture {
+        desktop_settings::install(&mut app);
+    }
     #[cfg(target_os = "macos")]
-    let native_window_keepalive = if headless_capture { None } else {
+    let native_window_keepalive = if headless_capture {
+        None
+    } else {
         Some(native_window_lifetime::retain_primary(&mut app)?)
     };
     #[cfg(feature = "location-tester")]
-    let verified_pc_lcd=VerifiedPcLcdCapture::default();
+    let verified_pc_lcd = VerifiedPcLcdCapture::default();
     #[cfg(feature = "location-tester")]
     app.insert_resource(verified_pc_lcd.clone());
     #[cfg(not(target_arch = "wasm32"))]
@@ -6616,11 +6748,17 @@ pub fn run_bevy_shell(
 
     #[cfg(feature = "location-tester")]
     if let Some(path) = render_test_screenshot.as_deref() {
-        validate_render_test_screenshot_with_pc_lcd(path,verified_pc_lcd.0.load(std::sync::atomic::Ordering::Relaxed))?;
+        validate_render_test_screenshot_with_pc_lcd(
+            path,
+            verified_pc_lcd.0.load(std::sync::atomic::Ordering::Relaxed),
+        )?;
     }
     #[cfg(feature = "location-tester")]
     if let Some(path) = render_test_second_screenshot.as_deref() {
-        validate_render_test_screenshot_with_pc_lcd(path,verified_pc_lcd.0.load(std::sync::atomic::Ordering::Relaxed))?;
+        validate_render_test_screenshot_with_pc_lcd(
+            path,
+            verified_pc_lcd.0.load(std::sync::atomic::Ordering::Relaxed),
+        )?;
     }
 
     Ok(())
@@ -6635,23 +6773,35 @@ fn trace_browser_render_memory(
     draws: Query<&ViewVisibility, With<Mesh3d>>,
 ) {
     use wasm_bindgen::JsCast;
-    let enabled = enabled.get_or_insert_with(|| web_sys::window()
-        .and_then(|window| window.location().search().ok())
-        .and_then(|search| web_sys::UrlSearchParams::new_with_str(&search).ok())
-        .and_then(|params| params.get("loading-trace"))
-        .as_deref() == Some("on"));
-    if !*enabled || time.elapsed_secs_f64() - *last < 5.0 { return; }
+    let enabled = enabled.get_or_insert_with(|| {
+        web_sys::window()
+            .and_then(|window| window.location().search().ok())
+            .and_then(|search| web_sys::UrlSearchParams::new_with_str(&search).ok())
+            .and_then(|params| params.get("loading-trace"))
+            .as_deref()
+            == Some("on")
+    });
+    if !*enabled || time.elapsed_secs_f64() - *last < 5.0 {
+        return;
+    }
     *last = time.elapsed_secs_f64();
     let memory = wasm_bindgen::memory().unchecked_into::<js_sys::WebAssembly::Memory>();
-    let bytes = memory.buffer().unchecked_into::<js_sys::ArrayBuffer>().byte_length();
+    let bytes = memory
+        .buffer()
+        .unchecked_into::<js_sys::ArrayBuffer>()
+        .byte_length();
     #[wasm_bindgen::prelude::wasm_bindgen]
     extern "C" {
         #[wasm_bindgen(js_namespace = console, js_name = info)]
         fn report_render_memory(message: &str);
     }
-    report_render_memory(&format!("geothite render memory: wasm_mib={} meshes={} entities={} visible={}",
-        bytes / (1024 * 1024), meshes.len(), draws.iter().count(),
-        draws.iter().filter(|visible| visible.get()).count()));
+    report_render_memory(&format!(
+        "geothite render memory: wasm_mib={} meshes={} entities={} visible={}",
+        bytes / (1024 * 1024),
+        meshes.len(),
+        draws.iter().count(),
+        draws.iter().filter(|visible| visible.get()).count()
+    ));
 }
 
 #[cfg(all(not(target_arch = "wasm32"), feature = "voxel-view"))]
@@ -6741,10 +6891,7 @@ fn trace_native_overworld_movement(
     trace.last_at = Some(now);
     trace.frame = trace.frame.saturating_add(1);
 
-    let player_position = players
-        .single()
-        .ok()
-        .map(|transform| transform.translation);
+    let player_position = players.single().ok().map(|transform| transform.translation);
     let delta = player_position
         .zip(trace.last_player_position)
         .map_or(Vec3::ZERO, |(current, previous)| current - previous);
@@ -6784,10 +6931,10 @@ fn configure_voxel_composite_camera(
     for (entity, mut camera) in &mut cameras {
         camera.order = 1;
         camera.clear_color = bevy::camera::ClearColorConfig::None;
-        commands
-            .entity(entity)
-            .insert((bevy::camera::visibility::RenderLayers::layer(0),
-                crystal_voxel_view::WorldOverlayCamera));
+        commands.entity(entity).insert((
+            bevy::camera::visibility::RenderLayers::layer(0),
+            crystal_voxel_view::WorldOverlayCamera,
+        ));
     }
 }
 
@@ -6848,16 +6995,16 @@ fn sync_manual_world_view_layers(
 mod render_capture;
 
 #[cfg(feature = "location-tester")]
-#[derive(Resource,Clone,Default)]
+#[derive(Resource, Clone, Default)]
 struct VerifiedPcLcdCapture(std::sync::Arc<std::sync::atomic::AtomicBool>);
 
 #[cfg(feature = "location-tester")]
-fn validate_render_test_screenshot(path:&Path)->Result<()> {
-    validate_render_test_screenshot_with_pc_lcd(path,false)
+fn validate_render_test_screenshot(path: &Path) -> Result<()> {
+    validate_render_test_screenshot_with_pc_lcd(path, false)
 }
 
 #[cfg(feature = "location-tester")]
-fn validate_render_test_screenshot_with_pc_lcd(path: &Path, verified_pc_lcd:bool) -> Result<()> {
+fn validate_render_test_screenshot_with_pc_lcd(path: &Path, verified_pc_lcd: bool) -> Result<()> {
     let screenshot = image::open(path)
         .with_context(|| format!("read Bevy render-test screenshot {}", path.display()))?
         .into_rgba8();
@@ -6882,7 +7029,7 @@ fn validate_render_test_screenshot_with_pc_lcd(path: &Path, verified_pc_lcd:bool
         max_luma = max_luma.max(luma);
     }
     anyhow::ensure!(
-        colors.len() >= if verified_pc_lcd {3}else{4}
+        colors.len() >= if verified_pc_lcd { 3 } else { 4 }
             && max_luma.saturating_sub(min_luma) >= 32_000,
         "Bevy render-test screenshot {} is a blank/uniform frame ({} colors, luma range {})",
         path.display(),
@@ -7792,10 +7939,15 @@ fn apply_visible_shell_smoke_frame(
         }
         let before = runtime_shell.last_error.clone();
         apply_visible_name_input_keys(&keys, runtime_shell);
-        if runtime_shell.last_error != before && let Some(error) = &runtime_shell.last_error {
+        if runtime_shell.last_error != before
+            && let Some(error) = &runtime_shell.last_error
+        {
             anyhow::bail!("name entry: {error}");
         }
-        return Ok(VisibleShellSmokeFrameOutcome { frame: None, interaction: false });
+        return Ok(VisibleShellSmokeFrameOutcome {
+            frame: None,
+            interaction: false,
+        });
     }
     let mut overworld_buttons = Vec::new();
     let mut interaction = false;
@@ -7971,18 +8123,24 @@ fn settle_visible_shell_controller(
                 advance_visible_pokedex_search(runtime_shell, 1);
                 continue;
             }
-            if runtime_shell.pokegear_map_radio_delay.is_some_and(|frames| frames != 0) {
+            if runtime_shell
+                .pokegear_map_radio_delay
+                .is_some_and(|frames| frames != 0)
+            {
                 advance_visible_map_radio_delay(runtime_shell, 1);
                 continue;
             }
-            if !radio_call_completed && runtime_shell.pokegear_menu_open
+            if !radio_call_completed
+                && runtime_shell.pokegear_menu_open
                 && runtime_shell.pokegear_page == PokegearPage::Radio
                 && runtime_shell.pokegear_radio_broadcast.is_some()
             {
                 // Complete one real program/print call per input, not the
                 // endlessly repeating radio show. Never invent a JS timer.
                 advance_visible_radio_broadcast(runtime_shell, 1, false)?;
-                radio_call_completed = !runtime_shell.pokegear_radio_broadcast.as_ref()
+                radio_call_completed = !runtime_shell
+                    .pokegear_radio_broadcast
+                    .as_ref()
                     .is_some_and(|broadcast| broadcast.playback.call_suspended());
                 if radio_call_completed {
                     runtime_shell.pokegear_radio_input_blocked = false;
@@ -8012,7 +8170,8 @@ fn settle_visible_shell_controller(
             advance_visible_pokegear_exit(runtime_shell, 1)?;
             continue;
         }
-        if runtime_shell.visible_blackout_phase
+        if runtime_shell
+            .visible_blackout_phase
             .is_some_and(|phase| phase != VisibleBlackoutPhase::AwaitText)
         {
             advance_visible_screen_fade(runtime_shell, GAME_TICK_SECONDS, false);
@@ -8131,10 +8290,14 @@ fn settle_visible_shell_controller(
             advance_visible_battle_transition(runtime_shell);
             continue;
         }
-        if !runtime_shell.battle_hp_tween.as_ref().is_some_and(visible_battle_hp_tween_active)
+        if !runtime_shell
+            .battle_hp_tween
+            .as_ref()
+            .is_some_and(visible_battle_hp_tween_active)
             && let Some(animation) = runtime_shell.visible_move_animations.front_mut()
             && (animation.waiting_for_hp
-                || (animation.move_id == "FAINT_MON" && !animation.started
+                || (animation.move_id == "FAINT_MON"
+                    && !animation.started
                     && runtime_shell.battle_messages.front() == Some(&animation.trigger_message)))
         {
             animation.waiting_for_hp = false;
@@ -8309,17 +8472,22 @@ fn settle_visible_shell_controller(
                 mark_runtime_presentation_dirty(runtime_shell);
                 continue;
             }
+            if snapshot.battle.is_some() {
+                // Narration can return directly to the action menu. Restore
+                // its cursor before exposing that input boundary to clients.
+                sync_visible_battle_action_cursor(runtime_shell);
+            }
             return Ok(());
         }
-        if runtime_shell.battle_level_stats.front().is_some_and(|stats| stats.active) {
+        if runtime_shell
+            .battle_level_stats
+            .front()
+            .is_some_and(|stats| stats.active)
+        {
             return Ok(());
         }
         if finish_visible_empty_battle_reward_presentation(runtime_shell)? {
             continue;
-        }
-        if snapshot.battle.is_some() {
-            sync_visible_battle_action_cursor(runtime_shell);
-            return Ok(());
         }
         if runtime_shell.pending_gender_selection.is_some() {
             return Ok(());
@@ -8480,7 +8648,12 @@ fn settle_visible_shell_controller(
         has_visible_pending_non_audio_script_events(&snapshot),
         runtime_shell.field_notice,
         runtime_shell.visible_wait_sfx_boundary,
-        runtime_shell.shell.session().state().script_runtime.item_notify_queued,
+        runtime_shell
+            .shell
+            .session()
+            .state()
+            .script_runtime
+            .item_notify_queued,
         snapshot.script_events.item_notify_queued,
         runtime_shell.last_audio_events
     )
@@ -8729,28 +8902,36 @@ fn initialize_bevy_runtime_shell(
             .as_deref()
             .filter(|name| !name.is_empty())
             .unwrap_or("RENDER");
-        let party_size=std::env::var("CRYSTAL_RENDER_TEST_PARTY_SIZE")
-            .map_or(Ok(1usize),|v|v.parse::<usize>().context("render party size must be an integer"))?;
-        anyhow::ensure!((1..=6).contains(&party_size),"render party size must be between 1 and 6");
+        let party_size =
+            std::env::var("CRYSTAL_RENDER_TEST_PARTY_SIZE").map_or(Ok(1usize), |v| {
+                v.parse::<usize>()
+                    .context("render party size must be an integer")
+            })?;
+        anyhow::ensure!(
+            (1..=6).contains(&party_size),
+            "render party size must be between 1 and 6"
+        );
         let party_species = std::env::var("CRYSTAL_RENDER_TEST_PARTY_SPECIES")
-            .unwrap_or_else(|_| "TOTODILE".into()).to_ascii_uppercase();
+            .unwrap_or_else(|_| "TOTODILE".into())
+            .to_ascii_uppercase();
         for _ in 0..party_size {
-        shell.add_party_pokemon(
-            &party_species,
-            30,
-            None,
-            None,
-            owner_name,
-            trainer.player_id,
-            Dv::from_non_hp(9, 9, 9, 9),
-        )?;
+            shell.add_party_pokemon(
+                &party_species,
+                30,
+                None,
+                None,
+                owner_name,
+                trainer.player_id,
+                Dv::from_non_hp(9, 9, 9, 9),
+            )?;
         }
-
     }
     #[cfg(feature = "location-tester")]
     if config.render_test_league {
-        anyhow::ensure!(runtime_tile_start && !config.render_test_party,
-            "League review requires its own fresh location fixture");
+        anyhow::ensure!(
+            runtime_tile_start && !config.render_test_party,
+            "League review requires its own fresh location fixture"
+        );
         render_walk::league::seed(&mut shell)?;
     }
     if let Some(save_path) = title_menu
@@ -8773,18 +8954,24 @@ fn initialize_bevy_runtime_shell(
     }
     #[cfg(feature = "location-tester")]
     if let Some(flag) = config.render_test_preview_flag.as_deref() {
-        anyhow::ensure!(runtime_tile_start && config.quick_save_path.is_none(),
-            "preview flag requires a fresh disposable location session without saving");
+        anyhow::ensure!(
+            runtime_tile_start && config.quick_save_path.is_none(),
+            "preview flag requires a fresh disposable location session without saving"
+        );
         for name in flag.split(',').map(str::trim) {
             shell.set_script_flag_for_smoke(name)?;
         }
     }
     #[cfg(feature = "location-tester")]
     if config.render_test_preview_doll.is_some() {
-        anyhow::ensure!(runtime_tile_start && config.quick_save_path.is_none()
-            && config.render_test_screenshot.is_some() && !config.render_test_live
-            && shell.current_map_name() == "PlayersHouse2F",
-            "doll preview requires a fresh bedroom screenshot without saving");
+        anyhow::ensure!(
+            runtime_tile_start
+                && config.quick_save_path.is_none()
+                && config.render_test_screenshot.is_some()
+                && !config.render_test_live
+                && shell.current_map_name() == "PlayersHouse2F",
+            "doll preview requires a fresh bedroom screenshot without saving"
+        );
     }
     if title_menu.is_some() || initial_player_name_prompt {
         // MainMenu clears GAME_TIMER_COUNTING_F. The bit is armed only when
@@ -9198,9 +9385,9 @@ fn initialize_bevy_runtime_shell(
         // Finish its terminal EndCallback/control records before exposing the
         // first test joypad frame, just as an ordinary arrival does.
         #[cfg(feature = "location-tester")]
-        let preview_flag=config.render_test_preview_flag.as_deref();
+        let preview_flag = config.render_test_preview_flag.as_deref();
         #[cfg(not(feature = "location-tester"))]
-        let preview_flag:Option<&str>=None;
+        let preview_flag: Option<&str> = None;
         #[cfg(feature = "location-tester")]
         let preview_doll = config.render_test_preview_doll.as_deref();
         #[cfg(not(feature = "location-tester"))]
@@ -9208,30 +9395,55 @@ fn initialize_bevy_runtime_shell(
         // The session constructor can decide a callback branch before the
         // fixture flag is installed. Settle that initial callback, then rerun
         // the same production map-entry callback path for the disposable state.
-        for refresh in 0..if preview_flag.is_some() || preview_doll.is_some(){2}else{1} {
-            if refresh==1 {
+        for refresh in 0..if preview_flag.is_some() || preview_doll.is_some() {
+            2
+        } else {
+            1
+        } {
+            if refresh == 1 {
                 if let Some(flag) = preview_flag {
                     for name in flag.split(',').map(str::trim) {
                         runtime_shell.shell.set_script_flag_for_smoke(name)?;
                     }
                 }
                 if let Some(id) = preview_doll {
-                    let decoration = runtime_shell.runtime.data().decorations.decorations.iter()
-                        .find(|entry| entry.id == id && matches!(entry.category,
-                            DecorationCategory::BigDoll | DecorationCategory::Ornament))
-                        .with_context(|| format!("unknown doll preview {id}"))?.clone();
-                    runtime_shell.shell.set_script_flag_for_smoke(&decoration.event_flag)?;
-                    let side=(decoration.category==DecorationCategory::Ornament)
+                    let decoration = runtime_shell
+                        .runtime
+                        .data()
+                        .decorations
+                        .decorations
+                        .iter()
+                        .find(|entry| {
+                            entry.id == id
+                                && matches!(
+                                    entry.category,
+                                    DecorationCategory::BigDoll | DecorationCategory::Ornament
+                                )
+                        })
+                        .with_context(|| format!("unknown doll preview {id}"))?
+                        .clone();
+                    runtime_shell
+                        .shell
+                        .set_script_flag_for_smoke(&decoration.event_flag)?;
+                    let side = (decoration.category == DecorationCategory::Ornament)
                         .then_some(DecorationSide::Left);
-                    runtime_shell.shell.set_up_decoration(&decoration.id, side)?;
+                    runtime_shell
+                        .shell
+                        .set_up_decoration(&decoration.id, side)?;
                     // Reload through ordinary map entry so the newly visible
                     // doll receives a loaded object struct as well as a flag.
                     let spawn = runtime_shell.runtime.title_new_game_spawn_identifier()?;
-                    runtime_shell.shell.transition_to_spawn_point(spawn, "MAPSETUP_WARP")?;
-                    anyhow::ensure!(runtime_shell.shell.current_map_name() == "PlayersHouse2F",
-                        "doll preview requires the title spawn to be in PlayersHouse2F");
+                    runtime_shell
+                        .shell
+                        .transition_to_spawn_point(spawn, "MAPSETUP_WARP")?;
+                    anyhow::ensure!(
+                        runtime_shell.shell.current_map_name() == "PlayersHouse2F",
+                        "doll preview requires the title spawn to be in PlayersHouse2F"
+                    );
                 } else {
-                    runtime_shell.shell.apply_current_map_setup_callbacks("MAPSETUP_WARP")?;
+                    runtime_shell
+                        .shell
+                        .apply_current_map_setup_callbacks("MAPSETUP_WARP")?;
                 }
             }
             continue_visible_script_after_prompt(&mut runtime_shell)?;
@@ -9250,16 +9462,27 @@ fn initialize_bevy_runtime_shell(
                 .any(|flag| flag.trim() == "ENGINE_GOLDENROD_DEPT_STORE_SALE_IS_ON")
         }) && runtime_shell.shell.current_map_name() == "GoldenrodDeptStoreRoof"
         {
-            let declared=&runtime_shell.runtime.data().maps["GoldenrodDeptStoreRoof"].script_block_changes;
-            let state=runtime_shell.shell.session().state();
-            let actual=state.map_block_overrides.get("GoldenrodDeptStoreRoof")
+            let declared =
+                &runtime_shell.runtime.data().maps["GoldenrodDeptStoreRoof"].script_block_changes;
+            let state = runtime_shell.shell.session().state();
+            let actual = state
+                .map_block_overrides
+                .get("GoldenrodDeptStoreRoof")
                 .context("sale preview callback did not produce rooftop block overrides")?;
-            let sale:Vec<_>=declared.iter().filter(|c|c.source_script.starts_with(".SaleIsOn@")).collect();
-            anyhow::ensure!(!sale.is_empty(),"sale preview requires declared sale block changes");
+            let sale: Vec<_> = declared
+                .iter()
+                .filter(|c| c.source_script.starts_with(".SaleIsOn@"))
+                .collect();
+            anyhow::ensure!(
+                !sale.is_empty(),
+                "sale preview requires declared sale block changes"
+            );
             for change in sale {
-                let stride=crate::core::systems::script_blocks::CHANGE_BLOCK_COORD_STRIDE;
-                anyhow::ensure!(actual.get(&(change.x/stride,change.y/stride))==Some(&change.block_id),
-                    "sale preview callback did not apply its declared block change");
+                let stride = crate::core::systems::script_blocks::CHANGE_BLOCK_COORD_STRIDE;
+                anyhow::ensure!(
+                    actual.get(&(change.x / stride, change.y / stride)) == Some(&change.block_id),
+                    "sale preview callback did not apply its declared block change"
+                );
             }
         }
     }
@@ -9332,18 +9555,21 @@ include!("bevy_shell/menu_rendering.rs");
 include!("bevy_shell/stats_screen.rs");
 #[cfg(any(test, feature = "voxel-view"))]
 include!("bevy_shell/render_mod.rs");
-#[path = "bevy_shell/terrain_ledges.rs"]
-mod terrain_ledges;
-#[cfg(feature = "voxel-view")]
-mod summit_backdrop;
 #[cfg(feature = "voxel-view")]
 mod destination_preload;
+#[cfg(feature = "voxel-view")]
+mod summit_backdrop;
+#[path = "bevy_shell/terrain_ledges.rs"]
+mod terrain_ledges;
 /// Read-only authored ledge metadata shared by native rendering and pack
 /// verification. Collision remains authoritative in the production controller.
-pub fn authored_visual_jump_ledges(width:u16,blocks:&[u16],
-    collision:&crystal_core::world::collision::TilesetCollision,origin:IVec2)
-    ->anyhow::Result<std::sync::Arc<[crystal_render_api::VisualJumpLedge]>> {
-    terrain_ledges::from_map(width,blocks,collision,origin)
+pub fn authored_visual_jump_ledges(
+    width: u16,
+    blocks: &[u16],
+    collision: &crystal_core::world::collision::TilesetCollision,
+    origin: IVec2,
+) -> anyhow::Result<std::sync::Arc<[crystal_render_api::VisualJumpLedge]>> {
+    terrain_ledges::from_map(width, blocks, collision, origin)
 }
 include!("bevy_shell/overworld_rendering.rs");
 include!("bevy_shell/start_menu.rs");
@@ -9384,10 +9610,10 @@ include!("bevy_shell/battle_objects.rs");
 
 include!("bevy_shell/catch_tutorial.rs");
 
-#[cfg(not(target_arch = "wasm32"))]
-mod native_navigation;
 #[cfg(all(target_os = "macos", feature = "desktop-app"))]
 mod desktop_settings;
+#[cfg(not(target_arch = "wasm32"))]
+mod native_navigation;
 #[cfg(target_os = "macos")]
 mod native_window_lifetime;
 
@@ -9395,206 +9621,228 @@ mod native_window_lifetime;
 #[path = "bevy_shell/handheld_input.rs"]
 mod handheld_input;
 
-#[path = "bevy_shell/safari_visible.rs"]
-mod safari_visible;
 #[path = "bevy_shell/safari_catch_visible.rs"]
 mod safari_catch_visible;
+#[path = "bevy_shell/safari_visible.rs"]
+mod safari_visible;
 
-mod field_text_program;
 mod card_flip_art;
-mod field_text_timing;
 mod field_dialogue_resume;
-mod standard_capture_resume;
-mod natural_movement;
+mod field_text_program;
+mod field_text_timing;
 #[cfg(feature = "voxel-view")]
 mod mouse_movement;
+mod natural_movement;
+mod standard_capture_resume;
 
-
-fn visible_controller_snapshot(runtime_shell: &mut BevyRuntimeShell) -> Result<RuntimeShellSnapshot> {
-        let mut snapshot = runtime_shell.shell.presentation_snapshot()?;
-        if let Some(scene) = visible_controller_fishing_scene(runtime_shell) {
-            snapshot.clone_from(scene);
-        }
-        if runtime_shell.pending_gift_pokemon_nickname.is_some()
-            && (runtime_shell.pending_name_choice.is_some()
-                || runtime_shell.pending_name_input.is_some())
-        {
-            // The gift's nickname surface owns input above the suspended
-            // source script. Its earlier confirmation is no longer visible.
-            snapshot.ui.pending_yes_no = None;
-            snapshot.ui.menu = None;
-            snapshot.ui.text = None;
-            snapshot.ui.text_window_open = false;
-            snapshot.ui.window_open = false;
-        }
-        if let Some(pages) = visible_field_dialog_pages(&snapshot, &runtime_shell)
-            && let Some(reveal) = runtime_shell.field_text_reveal.as_ref()
-            && reveal.text == pages.join("\u{1e}")
-            && let Some(page) = pages.get(reveal.page_index)
-            && let Some(text) = snapshot.ui.text.as_mut()
-        {
-            // Runtime text bodies contain every authored page. Graphical Bevy
-            // crops that stream through its printer; renderer-neutral clients
-            // need the same current-page projection or A appears to do nothing.
-            text.asm_text = Some(page.clone());
-            text.body = None;
-        }
-        if snapshot.battle.is_none()
-            && (runtime_shell.field_notice.is_some() || runtime_shell.pc_notice.is_some()
-                || visible_pokecenter_pc_text_boundary(&runtime_shell).is_some())
-            && let Some(pages) = visible_field_dialog_pages(&snapshot, &runtime_shell)
-        {
-            // Match the graphical notice owner rather than exposing a source
-            // menu or stale writetext history underneath it to text clients.
-            let page_index = runtime_shell.field_text_reveal.as_ref()
-                .filter(|reveal| reveal.text == pages.join("\u{1e}"))
-                .map_or(0, |reveal| reveal.page_index.min(pages.len().saturating_sub(1)));
-            if let Some(page) = pages.get(page_index) {
-                snapshot.phase = RuntimeShellPhase::Text;
-                snapshot.ui.menu = None;
-                snapshot.ui.text = Some(RuntimeTextSnapshot {
-                    label: if runtime_shell.field_notice.is_some() {
-                        "visible-shell:field-notice"
-                    } else if runtime_shell.pc_notice.is_some() {
-                        "visible-shell:pc-notice"
-                    } else {
-                        &visible_pokecenter_pc_text_boundary(&runtime_shell).unwrap().label
-                    }.to_string(),
-                    source: RuntimeTextSource::AsmText,
-                    asm_text: Some(page.clone()),
-                    body: None,
-                    queued_text_events: pages.len().saturating_sub(page_index+1)
-                        + runtime_shell.field_notice_queue.len(),
-                });
-                snapshot.ui.text_window_open = true;
-                snapshot.ui.window_open = true;
-            }
-        }
-        if runtime_shell.pc_hub_session_open
-            && visible_field_dialog_pages(&snapshot, &runtime_shell).is_none()
-        {
-            // PCScript suspends the core chooser while the visible controller
-            // owns Bill's menus and storage lists. Do not expose that retained
-            // chooser in place of the menu that accepts keyboard/MCP input.
-            // Boot text and transfer notices keep the field printer above it.
-            snapshot.ui.menu = None;
-            snapshot.ui.text = None;
-            snapshot.ui.text_window_open = false;
-        }
-        if let Some(message) = runtime_shell.battle_messages.front() {
-            // Battle dialogue is owned by the visible controller rather than
-            // RuntimeGameShell's script text surface. Project the currently
-            // revealed page so renderer-neutral clients see the same textbox
-            // that the graphical battle renderer draws instead of a blank HUD
-            // or the command menu hidden underneath it.
-            snapshot.ui.menu = None;
-            snapshot.ui.text = Some(RuntimeTextSnapshot {
-                label: "visible-shell:battle-message".to_string(),
-                source: RuntimeTextSource::AsmText,
-                asm_text: Some(visible_battle_message_text(&runtime_shell, message)),
-                body: None,
-                queued_text_events: runtime_shell.battle_messages.len().saturating_sub(1),
+fn visible_controller_snapshot(
+    runtime_shell: &mut BevyRuntimeShell,
+) -> Result<RuntimeShellSnapshot> {
+    let mut snapshot = runtime_shell.shell.presentation_snapshot()?;
+    if let Some(scene) = visible_controller_fishing_scene(runtime_shell) {
+        snapshot.clone_from(scene);
+    }
+    if runtime_shell.pending_gift_pokemon_nickname.is_some()
+        && (runtime_shell.pending_name_choice.is_some()
+            || runtime_shell.pending_name_input.is_some())
+    {
+        // The gift's nickname surface owns input above the suspended
+        // source script. Its earlier confirmation is no longer visible.
+        snapshot.ui.pending_yes_no = None;
+        snapshot.ui.menu = None;
+        snapshot.ui.text = None;
+        snapshot.ui.text_window_open = false;
+        snapshot.ui.window_open = false;
+    }
+    if let Some(pages) = visible_field_dialog_pages(&snapshot, &runtime_shell)
+        && let Some(reveal) = runtime_shell.field_text_reveal.as_ref()
+        && reveal.text == pages.join("\u{1e}")
+        && let Some(page) = pages.get(reveal.page_index)
+        && let Some(text) = snapshot.ui.text.as_mut()
+    {
+        // Runtime text bodies contain every authored page. Graphical Bevy
+        // crops that stream through its printer; renderer-neutral clients
+        // need the same current-page projection or A appears to do nothing.
+        text.asm_text = Some(page.clone());
+        text.body = None;
+    }
+    if snapshot.battle.is_none()
+        && (runtime_shell.field_notice.is_some()
+            || runtime_shell.pc_notice.is_some()
+            || visible_pokecenter_pc_text_boundary(&runtime_shell).is_some())
+        && let Some(pages) = visible_field_dialog_pages(&snapshot, &runtime_shell)
+    {
+        // Match the graphical notice owner rather than exposing a source
+        // menu or stale writetext history underneath it to text clients.
+        let page_index = runtime_shell
+            .field_text_reveal
+            .as_ref()
+            .filter(|reveal| reveal.text == pages.join("\u{1e}"))
+            .map_or(0, |reveal| {
+                reveal.page_index.min(pages.len().saturating_sub(1))
             });
-            snapshot.ui.text_window_open = true;
-        }
-        if let Some(stats) = runtime_shell
-            .battle_level_stats
-            .front()
-            .filter(|stats| stats.active)
-        {
+        if let Some(page) = pages.get(page_index) {
             snapshot.phase = RuntimeShellPhase::Text;
             snapshot.ui.menu = None;
             snapshot.ui.text = Some(RuntimeTextSnapshot {
-                label: "visible-shell:level-up-stats".into(),
+                label: if runtime_shell.field_notice.is_some() {
+                    "visible-shell:field-notice"
+                } else if runtime_shell.pc_notice.is_some() {
+                    "visible-shell:pc-notice"
+                } else {
+                    &visible_pokecenter_pc_text_boundary(&runtime_shell)
+                        .unwrap()
+                        .label
+                }
+                .to_string(),
                 source: RuntimeTextSource::AsmText,
-                asm_text: Some(format!(
-                    "ATTACK {}\nDEFENSE {}\nSPEED {}\nSPCL.ATK {}\nSPCL.DEF {}",
-                    stats.attack, stats.defense, stats.speed, stats.special_attack,
-                    stats.special_defense,
-                )),
+                asm_text: Some(page.clone()),
                 body: None,
-                queued_text_events: 0,
+                queued_text_events: pages.len().saturating_sub(page_index + 1)
+                    + runtime_shell.field_notice_queue.len(),
             });
             snapshot.ui.text_window_open = true;
+            snapshot.ui.window_open = true;
         }
-        if snapshot.pending_shop.is_some()
-            && runtime_shell.field_notice.is_none()
-            && runtime_shell.pc_notice.is_none()
-        {
-            // The mart owns its welcome, notice, quantity and menu surfaces.
-            // Core retains the script's text-window bit while the mart is open;
-            // expose the live production owner through the normal entries below.
-            snapshot.ui.menu = None;
-            snapshot.ui.text = None;
-            snapshot.ui.text_window_open = false;
-            snapshot.ui.window_open = false;
-        }
-        let tower_entries = if snapshot.battle.is_none() {
-            visible_battle_tower_controller_entries(&runtime_shell)?
-        } else { None };
-        if tower_entries.is_some() { snapshot.ui.menu = None; }
-        if tower_entries.is_some() || (snapshot.ui.menu.is_none() && !snapshot.ui.text_window_open) {
-            // Runtime text records are retained as execution history after
-            // closetext. They are not a visible surface and must not hide a
-            // production-controller menu such as Start, Pack, or Party.
-            if tower_entries.is_none() { snapshot.ui.text = None; }
-            let mut entries = if let Some(entries) = tower_entries {
-                entries
-            } else if let Some(battle) = snapshot.battle.as_ref() {
-                visible_battle_command_menu_entries(&snapshot, &runtime_shell, battle)?
-            } else {
-                visible_field_command_entries(&snapshot, &runtime_shell)?
-            };
-            if entries.is_empty() {
-                entries = visible_scene_dialog_entries(&snapshot, &runtime_shell)?;
-            }
-            if !entries.is_empty() {
-                if entries
-                    .iter()
-                    .any(|entry| entry.trim_start().starts_with('>'))
-                {
-                    if snapshot.battle.is_none() {
-                        snapshot.phase = RuntimeShellPhase::Menu;
-                    }
-                    snapshot.ui.menu = Some(RuntimeMenuSnapshot {
-                        menu_id: "visible-shell:text-frontend".to_string(),
-                        source: RuntimeMenuSource::SpecialRoutine,
-                        definition: None,
-                        layout: RuntimeMenuLayoutSnapshot {
-                            declared_coords: None,
-                            data_commands: Vec::new(),
-                            vertical_menus: vec![RuntimeVerticalMenuSnapshot {
-                                source_script: "visible-shell:text-frontend".to_string(),
-                                loadmenu_command_index: 0,
-                                verticalmenu_command_index: 0,
-                                header_label: "visible-shell:text-frontend".to_string(),
-                                data_label: None,
-                                options: entries,
-                                two_dimensional: false,
-                                rows: None,
-                                columns: None,
-                                spacing: None,
-                            }],
-                        },
-                        window_open: true,
-                        coords: None,
-                        menu_2d_requested: false,
-                    });
-                } else {
-                    snapshot.phase = RuntimeShellPhase::Text;
-                    snapshot.ui.text = Some(RuntimeTextSnapshot {
-                        label: "visible-shell:text-frontend".to_string(),
-                        source: RuntimeTextSource::AsmText,
-                        asm_text: Some(entries.join("\n")),
-                        body: None,
-                        queued_text_events: 0,
-                    });
-                    snapshot.ui.text_window_open = true;
-                }
-            }
-        }
-        field_move_prompt_projection::project(runtime_shell, &mut snapshot)?;
-        Ok(snapshot)
     }
+    if runtime_shell.pc_hub_session_open
+        && visible_field_dialog_pages(&snapshot, &runtime_shell).is_none()
+    {
+        // PCScript suspends the core chooser while the visible controller
+        // owns Bill's menus and storage lists. Do not expose that retained
+        // chooser in place of the menu that accepts keyboard/MCP input.
+        // Boot text and transfer notices keep the field printer above it.
+        snapshot.ui.menu = None;
+        snapshot.ui.text = None;
+        snapshot.ui.text_window_open = false;
+    }
+    if let Some(message) = runtime_shell.battle_messages.front() {
+        // Battle dialogue is owned by the visible controller rather than
+        // RuntimeGameShell's script text surface. Project the currently
+        // revealed page so renderer-neutral clients see the same textbox
+        // that the graphical battle renderer draws instead of a blank HUD
+        // or the command menu hidden underneath it.
+        snapshot.ui.menu = None;
+        snapshot.ui.text = Some(RuntimeTextSnapshot {
+            label: "visible-shell:battle-message".to_string(),
+            source: RuntimeTextSource::AsmText,
+            asm_text: Some(visible_battle_message_text(&runtime_shell, message)),
+            body: None,
+            queued_text_events: runtime_shell.battle_messages.len().saturating_sub(1),
+        });
+        snapshot.ui.text_window_open = true;
+    }
+    if let Some(stats) = runtime_shell
+        .battle_level_stats
+        .front()
+        .filter(|stats| stats.active)
+    {
+        snapshot.phase = RuntimeShellPhase::Text;
+        snapshot.ui.menu = None;
+        snapshot.ui.text = Some(RuntimeTextSnapshot {
+            label: "visible-shell:level-up-stats".into(),
+            source: RuntimeTextSource::AsmText,
+            asm_text: Some(format!(
+                "ATTACK {}\nDEFENSE {}\nSPEED {}\nSPCL.ATK {}\nSPCL.DEF {}",
+                stats.attack,
+                stats.defense,
+                stats.speed,
+                stats.special_attack,
+                stats.special_defense,
+            )),
+            body: None,
+            queued_text_events: 0,
+        });
+        snapshot.ui.text_window_open = true;
+    }
+    if snapshot.pending_shop.is_some()
+        && runtime_shell.field_notice.is_none()
+        && runtime_shell.pc_notice.is_none()
+    {
+        // The mart owns its welcome, notice, quantity and menu surfaces.
+        // Core retains the script's text-window bit while the mart is open;
+        // expose the live production owner through the normal entries below.
+        snapshot.ui.menu = None;
+        snapshot.ui.text = None;
+        snapshot.ui.text_window_open = false;
+        snapshot.ui.window_open = false;
+    }
+    let tower_entries = if snapshot.battle.is_none() {
+        visible_battle_tower_controller_entries(&runtime_shell)?
+    } else {
+        None
+    };
+    if tower_entries.is_some() {
+        snapshot.ui.menu = None;
+    }
+    if tower_entries.is_some() || (snapshot.ui.menu.is_none() && !snapshot.ui.text_window_open) {
+        // Runtime text records are retained as execution history after
+        // closetext. They are not a visible surface and must not hide a
+        // production-controller menu such as Start, Pack, or Party.
+        if tower_entries.is_none() {
+            snapshot.ui.text = None;
+        }
+        let mut entries = if let Some(entries) = tower_entries {
+            entries
+        } else if let Some(battle) = snapshot.battle.as_ref() {
+            if visible_battle_command_animation_active(&runtime_shell) {
+                Vec::new()
+            } else {
+                visible_battle_command_menu_entries(&snapshot, &runtime_shell, battle)?
+            }
+        } else {
+            visible_field_command_entries(&snapshot, &runtime_shell)?
+        };
+        if entries.is_empty() {
+            entries = visible_scene_dialog_entries(&snapshot, &runtime_shell)?;
+        }
+        if !entries.is_empty() {
+            if entries
+                .iter()
+                .any(|entry| entry.trim_start().starts_with('>'))
+            {
+                if snapshot.battle.is_none() {
+                    snapshot.phase = RuntimeShellPhase::Menu;
+                }
+                snapshot.ui.menu = Some(RuntimeMenuSnapshot {
+                    menu_id: "visible-shell:text-frontend".to_string(),
+                    source: RuntimeMenuSource::SpecialRoutine,
+                    definition: None,
+                    layout: RuntimeMenuLayoutSnapshot {
+                        declared_coords: None,
+                        data_commands: Vec::new(),
+                        vertical_menus: vec![RuntimeVerticalMenuSnapshot {
+                            source_script: "visible-shell:text-frontend".to_string(),
+                            loadmenu_command_index: 0,
+                            verticalmenu_command_index: 0,
+                            header_label: "visible-shell:text-frontend".to_string(),
+                            data_label: None,
+                            options: entries,
+                            two_dimensional: false,
+                            rows: None,
+                            columns: None,
+                            spacing: None,
+                        }],
+                    },
+                    window_open: true,
+                    coords: None,
+                    menu_2d_requested: false,
+                });
+            } else {
+                snapshot.phase = RuntimeShellPhase::Text;
+                snapshot.ui.text = Some(RuntimeTextSnapshot {
+                    label: "visible-shell:text-frontend".to_string(),
+                    source: RuntimeTextSource::AsmText,
+                    asm_text: Some(entries.join("\n")),
+                    body: None,
+                    queued_text_events: 0,
+                });
+                snapshot.ui.text_window_open = true;
+            }
+        }
+    }
+    field_move_prompt_projection::project(runtime_shell, &mut snapshot)?;
+    Ok(snapshot)
+}
 
 include!("bevy_shell/browser_text_view.rs");

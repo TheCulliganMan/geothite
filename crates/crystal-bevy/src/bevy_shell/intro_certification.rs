@@ -92,9 +92,12 @@ pub fn certify_source_intro_timeline(
     shell.intro_sprite_bundle = Some(sprite_bundle);
     shell.intro_display_screen = Some(intro.clone());
     shell.intro_screen = Some(intro);
-    let expected_live_inputs: Vec<_> = trace["records"].as_array()
-        .context("independent input records missing")?.iter()
-        .filter(|record| record["hook"] == "JoyTextDelay").collect();
+    let expected_live_inputs: Vec<_> = trace["records"]
+        .as_array()
+        .context("independent input records missing")?
+        .iter()
+        .filter(|record| record["hook"] == "JoyTextDelay")
+        .collect();
     let mut checked_inputs = 0;
     let mut ended = false;
     for _ in 0..10000 {
@@ -103,30 +106,50 @@ pub fn certify_source_intro_timeline(
             break;
         }
         tick_visible_intro_screen(&mut shell).context("execute continuous production intro")?;
-        let inputs = shell.intro_screen.as_ref().map(|intro| &intro.source_input_boundaries)
+        let inputs = shell
+            .intro_screen
+            .as_ref()
+            .map(|intro| &intro.source_input_boundaries)
             .unwrap_or(&shell.intro_completed_input_boundaries);
         while checked_inputs < inputs.len() {
             let actual = &inputs[checked_inputs];
-            let expected = expected_live_inputs.get(checked_inputs)
+            let expected = expected_live_inputs
+                .get(checked_inputs)
                 .context("production intro produced an extra input boundary")?;
-            let elapsed = actual.clock.elapsed_t_cycles.checked_sub(initial_elapsed)
+            let elapsed = actual
+                .clock
+                .elapsed_t_cycles
+                .checked_sub(initial_elapsed)
                 .context("production input clock moved backwards")?;
             let frame = (initial_phase + elapsed) / frame_cycles;
-            let expected_frame = expected["start_frame"].as_u64().context("ROM input frame missing")?
-                .checked_sub(initial_frame).context("ROM input precedes intro")?;
-            let expected_phase = expected["start_phase_t_cycles"].as_u64().context("ROM input phase missing")?;
-            anyhow::ensure!((frame,u64::from(actual.clock.phase_t_cycles)) == (expected_frame,expected_phase),
-                "production input {checked_inputs} clock differs from ROM: actual=({frame},{}), expected=({expected_frame},{expected_phase})", actual.clock.phase_t_cycles);
-            for (name, byte) in [("wIntroSceneFrameCounter",actual.scene_frame_counter),
-                ("wIntroSceneTimer",actual.scene_timer),("wTextDelayFrames",actual.text_delay_frames)] {
-                let expected_byte = expected["start_memory"][name].as_u64()
+            let expected_frame = expected["start_frame"]
+                .as_u64()
+                .context("ROM input frame missing")?
+                .checked_sub(initial_frame)
+                .context("ROM input precedes intro")?;
+            let expected_phase = expected["start_phase_t_cycles"]
+                .as_u64()
+                .context("ROM input phase missing")?;
+            anyhow::ensure!(
+                (frame, u64::from(actual.clock.phase_t_cycles)) == (expected_frame, expected_phase),
+                "production input {checked_inputs} clock differs from ROM: actual=({frame},{}), expected=({expected_frame},{expected_phase})",
+                actual.clock.phase_t_cycles
+            );
+            for (name, byte) in [
+                ("wIntroSceneFrameCounter", actual.scene_frame_counter),
+                ("wIntroSceneTimer", actual.scene_timer),
+                ("wTextDelayFrames", actual.text_delay_frames),
+            ] {
+                let expected_byte = expected["start_memory"][name]
+                    .as_u64()
                     .with_context(|| format!("ROM input {checked_inputs} scalar {name} missing"))?;
-                anyhow::ensure!(u64::from(byte) == expected_byte,
-                    "production input {checked_inputs} scalar {name} differs from ROM: actual={byte}, expected={expected_byte}");
+                anyhow::ensure!(
+                    u64::from(byte) == expected_byte,
+                    "production input {checked_inputs} scalar {name} differs from ROM: actual={byte}, expected={expected_byte}"
+                );
             }
             checked_inputs += 1;
         }
-
     }
     anyhow::ensure!(
         ended,
@@ -139,39 +162,68 @@ pub fn certify_source_intro_timeline(
     let completion = shell
         .intro_completion_clock
         .context("production intro did not retain its return clock")?;
-    anyhow::ensure!(trace["completion"]["boundary"] == "CrystalIntro_return",
-        "independent intro trace stops before the actual source return");
-    let return_absolute = trace["completion"]["lcd_t_cycles"].as_u64()
+    anyhow::ensure!(
+        trace["completion"]["boundary"] == "CrystalIntro_return",
+        "independent intro trace stops before the actual source return"
+    );
+    let return_absolute = trace["completion"]["lcd_t_cycles"]
+        .as_u64()
         .context("ROM intro return clock missing")?;
     let actual_elapsed = completion
         .elapsed_t_cycles
         .checked_sub(initial_elapsed)
         .context("production return clock moved backwards")?;
-    let expected_joy: Vec<_> = trace["records"].as_array()
-        .context("independent hook records missing")?.iter()
-        .filter(|record| record["hook"] == "JoyTextDelay").collect();
-    for (ordinal, (actual, expected)) in shell.intro_completed_input_boundaries.iter()
-        .zip(&expected_joy).enumerate() {
-        let elapsed = actual.clock.elapsed_t_cycles.checked_sub(initial_elapsed)
+    let expected_joy: Vec<_> = trace["records"]
+        .as_array()
+        .context("independent hook records missing")?
+        .iter()
+        .filter(|record| record["hook"] == "JoyTextDelay")
+        .collect();
+    for (ordinal, (actual, expected)) in shell
+        .intro_completed_input_boundaries
+        .iter()
+        .zip(&expected_joy)
+        .enumerate()
+    {
+        let elapsed = actual
+            .clock
+            .elapsed_t_cycles
+            .checked_sub(initial_elapsed)
             .context("production input clock moved backwards")?;
         let frame = (initial_phase + elapsed) / frame_cycles;
-        let expected_frame = expected["start_frame"].as_u64().context("ROM input frame missing")?
-            .checked_sub(initial_frame).context("ROM input precedes intro")?;
-        let expected_phase = expected["start_phase_t_cycles"].as_u64().context("ROM input phase missing")?;
-        anyhow::ensure!((frame, u64::from(actual.clock.phase_t_cycles)) == (expected_frame,expected_phase),
+        let expected_frame = expected["start_frame"]
+            .as_u64()
+            .context("ROM input frame missing")?
+            .checked_sub(initial_frame)
+            .context("ROM input precedes intro")?;
+        let expected_phase = expected["start_phase_t_cycles"]
+            .as_u64()
+            .context("ROM input phase missing")?;
+        anyhow::ensure!(
+            (frame, u64::from(actual.clock.phase_t_cycles)) == (expected_frame, expected_phase),
             "production input {ordinal} clock differs from ROM: actual=({frame},{}), expected=({expected_frame},{expected_phase})",
-            actual.clock.phase_t_cycles);
-        for (name, actual_byte) in [("wIntroSceneFrameCounter",actual.scene_frame_counter),
-            ("wIntroSceneTimer",actual.scene_timer),("wTextDelayFrames",actual.text_delay_frames)] {
-            let expected_byte = expected["start_memory"][name].as_u64()
+            actual.clock.phase_t_cycles
+        );
+        for (name, actual_byte) in [
+            ("wIntroSceneFrameCounter", actual.scene_frame_counter),
+            ("wIntroSceneTimer", actual.scene_timer),
+            ("wTextDelayFrames", actual.text_delay_frames),
+        ] {
+            let expected_byte = expected["start_memory"][name]
+                .as_u64()
                 .with_context(|| format!("ROM input {ordinal} scalar {name} missing"))?;
-            anyhow::ensure!(u64::from(actual_byte) == expected_byte,
-                "production input {ordinal} scalar {name} differs from ROM: actual={actual_byte}, expected={expected_byte}");
+            anyhow::ensure!(
+                u64::from(actual_byte) == expected_byte,
+                "production input {ordinal} scalar {name} differs from ROM: actual={actual_byte}, expected={expected_byte}"
+            );
         }
     }
-    anyhow::ensure!(shell.intro_completed_input_boundaries.len() == expected_joy.len(),
+    anyhow::ensure!(
+        shell.intro_completed_input_boundaries.len() == expected_joy.len(),
         "production input count including exit {} differs from ROM {}",
-        shell.intro_completed_input_boundaries.len(), expected_joy.len());
+        shell.intro_completed_input_boundaries.len(),
+        expected_joy.len()
+    );
     anyhow::ensure!(
         (
             (initial_phase + actual_elapsed) / frame_cycles,
@@ -284,7 +336,10 @@ pub fn certify_source_intro_timeline(
         );
     }
     let mut value = serde_json::to_value(title)?;
-    fn certify_oracles(value: &mut serde_json::Value, certificate: &serde_json::Value) -> Result<usize> {
+    fn certify_oracles(
+        value: &mut serde_json::Value,
+        certificate: &serde_json::Value,
+    ) -> Result<usize> {
         let mut count = 0;
         match value {
             serde_json::Value::Object(fields) => {
@@ -323,10 +378,14 @@ pub fn certify_source_intro_timeline(
         .find(|subprogram| subprogram["id"] == "crystal_intro")
         .context("source CrystalIntro subprogram missing")?;
     let mut certificate = intro["required_consumer"]["certification"].clone();
-    anyhow::ensure!(certificate["scene_count"] == 28 && certificate["decompression_count"] == 37
-        && certificate["sprite_allocation_count"] == 19 && certificate["audio_irq_model_matches_rom"] == true
-        && certificate["control_dispatch_calls"] == 1753,
-        "source certificate lacks the independently checked helper and audio counts");
+    anyhow::ensure!(
+        certificate["scene_count"] == 28
+            && certificate["decompression_count"] == 37
+            && certificate["sprite_allocation_count"] == 19
+            && certificate["audio_irq_model_matches_rom"] == true
+            && certificate["control_dispatch_calls"] == 1753,
+        "source certificate lacks the independently checked helper and audio counts"
+    );
     certificate["complete_phase_machine_matches_rom"] = serde_json::Value::Bool(true);
     certificate["production_input_boundary_count"] = serde_json::json!(checked_inputs);
     certificate["production_return_matches_rom"] = serde_json::Value::Bool(true);

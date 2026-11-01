@@ -11,22 +11,37 @@ use crate::profile::{CellShape, SolidKind};
 pub(crate) const TOWER_FLOOR_TILE: u16 = 0x02;
 
 /// Block 26's lower half is the entrance carpet, including both warp cells.
-pub(crate) fn entrance_carpet_source(s:&VisualTileSource)->bool {
-    if s.tileset_id.as_ref()!="tower" || s.metatile_id!=0x26 || s.subtile_column>=4 || !(2..4).contains(&s.subtile_row) {return false;}
-    s.tile_index==[[0x07,0x08,0x08,0x09],[0x17,0x18,0x18,0x19]]
-        [(s.subtile_row-2)as usize][s.subtile_column as usize]
+pub(crate) fn entrance_carpet_source(s: &VisualTileSource) -> bool {
+    if s.tileset_id.as_ref() != "tower"
+        || s.metatile_id != 0x26
+        || s.subtile_column >= 4
+        || !(2..4).contains(&s.subtile_row)
+    {
+        return false;
+    }
+    s.tile_index
+        == [[0x07, 0x08, 0x08, 0x09], [0x17, 0x18, 0x18, 0x19]][(s.subtile_row - 2) as usize]
+            [s.subtile_column as usize]
 }
 
-pub(crate) fn sprout_statue_local(s:&VisualTileSource)->Option<(u8,u8,usize,usize)> {
-    if s.tileset_id.as_ref()!="tower" || s.subtile_column>=4 || s.subtile_row>=4 {return None;}
-    let (offset,head)=match s.metatile_id {
-        0x30=>(0,[0x4a,0x4b]),0x31=>(2,[0x4a,0x4b]),
-        0x2e=>(0,[0x42,0x43]),0x2f=>(2,[0x42,0x43]),_=>return None,
+pub(crate) fn sprout_statue_local(s: &VisualTileSource) -> Option<(u8, u8, usize, usize)> {
+    if s.tileset_id.as_ref() != "tower" || s.subtile_column >= 4 || s.subtile_row >= 4 {
+        return None;
+    }
+    let (offset, head) = match s.metatile_id {
+        0x30 => (0, [0x4a, 0x4b]),
+        0x31 => (2, [0x4a, 0x4b]),
+        0x2e => (0, [0x42, 0x43]),
+        0x2f => (2, [0x42, 0x43]),
+        _ => return None,
     };
-    if s.subtile_column<offset || s.subtile_column>=offset+2 {return None;}
-    let x=s.subtile_column-offset;let y=s.subtile_row;
-    (s.tile_index==[head,[0x5a,0x5b],[0x4c,0x5c],[0x36,0x37]][y as usize][x as usize])
-        .then_some((x,y,2,4))
+    if s.subtile_column < offset || s.subtile_column >= offset + 2 {
+        return None;
+    }
+    let x = s.subtile_column - offset;
+    let y = s.subtile_row;
+    (s.tile_index == [head, [0x5a, 0x5b], [0x4c, 0x5c], [0x36, 0x37]][y as usize][x as usize])
+        .then_some((x, y, 2, 4))
 }
 
 pub(crate) fn boulder_local(source: &VisualTileSource) -> Option<(u8, u8)> {
@@ -132,7 +147,8 @@ pub(crate) fn tower_shape(source: &VisualTileSource) -> Option<CellShape> {
         && source.subtile_row < 2
         && matches!(source.tile_index, 0x11 | 0x20..=0x23 | 0x40))
         || (matches!(source.metatile_id, 0x18 | 0x3b)
-            && source.subtile_column < 4 && source.subtile_row < 2
+            && source.subtile_column < 4
+            && source.subtile_row < 2
             && source.tile_index == [0x11, 0x21][source.subtile_row as usize]);
     let partition = matches!(source.metatile_id, 0x0c..=0x0e | 0x16 | 0x17)
         && source.subtile_row >= 2
@@ -179,12 +195,10 @@ mod tests {
 
     #[test]
     fn entrance_carpet_remains_source_art_and_is_never_a_statue() {
-        for (column, tile) in [
-            (0, 0x07), (1, 0x08), (2, 0x08), (3, 0x09),
-        ] {
+        for (column, tile) in [(0, 0x07), (1, 0x08), (2, 0x08), (3, 0x09)] {
             let cell = source(0x26, column, 2, tile);
             assert!(entrance_carpet_source(&cell));
-            assert_eq!(sprout_statue_local(&cell),None);
+            assert_eq!(sprout_statue_local(&cell), None);
             assert_eq!(tower_shape(&cell), None);
         }
         assert!(entrance_carpet_source(&source(0x26, 0, 3, 0x17)));

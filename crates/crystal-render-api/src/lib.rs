@@ -13,12 +13,13 @@ mod battle_location;
 mod streamed_images;
 pub use battle::*;
 pub use battle_location::*;
-pub use streamed_images::{stream_composed_image, is_streamed_image};
+pub use streamed_images::{is_streamed_image, stream_composed_image};
 
 use std::{collections::HashSet, sync::Arc};
 
 use bevy::prelude::{
-    App, Handle, Image, IntoScheduleConfigs, Plugin, Resource, SystemSet, UVec2, UVec4, Update, Vec2, Vec4,
+    App, Handle, Image, IntoScheduleConfigs, Plugin, Resource, SystemSet, UVec2, UVec4, Update,
+    Vec2, Vec4,
 };
 
 /// Ordered phases for publishing and consuming one visual world frame.
@@ -81,9 +82,16 @@ pub struct VisualWorldEntryEffect {
 }
 impl Default for VisualWorldEntryEffect {
     fn default() -> Self {
-        Self { active: false, dark: 0., light: 0., line_x_offsets: [0; 144],
-            black_cells: [UVec4::ZERO; 3], trainer_cells: [UVec4::ZERO; 3],
-            trainer_pixels: UVec4::ZERO, trainer_palette: [Vec4::ZERO; 4] }
+        Self {
+            active: false,
+            dark: 0.,
+            light: 0.,
+            line_x_offsets: [0; 144],
+            black_cells: [UVec4::ZERO; 3],
+            trainer_cells: [UVec4::ZERO; 3],
+            trainer_pixels: UVec4::ZERO,
+            trainer_palette: [Vec4::ZERO; 4],
+        }
     }
 }
 
@@ -112,9 +120,13 @@ impl VisualWorldLighting {
 
 /// Known open-air terraces sharing otherwise enclosed source atlases.
 /// Their 3D sky can use the RTC while native fixed-palette pixels stay exact.
-pub fn is_open_air_rooftop(map:&str,tileset:&str)->bool {
-    matches!((map,tileset),("CeladonMansionRoof","mansion")
-        |("GoldenrodDeptStoreRoof","mart")|("TinTowerRoof","tower"))
+pub fn is_open_air_rooftop(map: &str, tileset: &str) -> bool {
+    matches!(
+        (map, tileset),
+        ("CeladonMansionRoof", "mansion")
+            | ("GoldenrodDeptStoreRoof", "mart")
+            | ("TinTowerRoof", "tower")
+    )
 }
 
 /// Read-only local clock for PALETTE_AUTO maps and known open-air terraces.
@@ -274,7 +286,7 @@ pub struct VisualTerraceDatum {
     pub size: UVec2,
     /// Calibrated NW/SW/SE/NE corner levels, in authored ledge-rise units.
     /// Standing-water entries stay flat and never carry an inland slope.
-    pub levels: Arc<[[f32;4]]>,
+    pub levels: Arc<[[f32; 4]]>,
     /// Source-complete water-backed barrier cells, sorted by (y,x), not camera crop.
     /// Empty preserves the legacy authored-underlay classification.
     pub water_barriers: Arc<[bevy::prelude::IVec2]>,
@@ -291,38 +303,56 @@ pub struct VisualOpenWaterDatum {
     pub cells: Arc<[bevy::prelude::IVec2]>,
 }
 impl VisualTerraceDatum {
-    pub fn water_barrier_at(&self,point:bevy::prelude::IVec2)->bool {
-        self.water_barriers.binary_search_by_key(&(point.y,point.x),|p|(p.y,p.x)).is_ok()
+    pub fn water_barrier_at(&self, point: bevy::prelude::IVec2) -> bool {
+        self.water_barriers
+            .binary_search_by_key(&(point.y, point.x), |p| (p.y, p.x))
+            .is_ok()
     }
-    pub fn open_water_at(&self,point:bevy::prelude::IVec2)->Option<f32> {
-        let river=self.open_water.as_ref()?;
-        let p=point-self.origin;
-        (p.x<0 || p.y<0 || p.x>=self.size.x as i32 || p.y>=self.size.y as i32
-            || river.cells.binary_search_by_key(&(point.y,point.x),|p|(p.y,p.x)).is_ok())
-            .then_some(river.level)
+    pub fn open_water_at(&self, point: bevy::prelude::IVec2) -> Option<f32> {
+        let river = self.open_water.as_ref()?;
+        let p = point - self.origin;
+        (p.x < 0
+            || p.y < 0
+            || p.x >= self.size.x as i32
+            || p.y >= self.size.y as i32
+            || river
+                .cells
+                .binary_search_by_key(&(point.y, point.x), |p| (p.y, p.x))
+                .is_ok())
+        .then_some(river.level)
     }
-    pub fn valid_open_water(&self)->bool {
-        self.open_water.as_ref().is_none_or(|river|river.level.is_finite() && river.level>=0.
-            && river.cells.len()as u64<=u64::from(self.size.x)*u64::from(self.size.y)
-            && river.cells.iter().all(|p| {
-                let x=i64::from(p.x)-i64::from(self.origin.x);
-                let y=i64::from(p.y)-i64::from(self.origin.y);
-                x>=0 && y>=0 && x<i64::from(self.size.x) && y<i64::from(self.size.y)
-            }) && river.cells.windows(2).all(|p|(p[0].y,p[0].x)<(p[1].y,p[1].x)))
+    pub fn valid_open_water(&self) -> bool {
+        self.open_water.as_ref().is_none_or(|river| {
+            river.level.is_finite()
+                && river.level >= 0.
+                && river.cells.len() as u64 <= u64::from(self.size.x) * u64::from(self.size.y)
+                && river.cells.iter().all(|p| {
+                    let x = i64::from(p.x) - i64::from(self.origin.x);
+                    let y = i64::from(p.y) - i64::from(self.origin.y);
+                    x >= 0 && y >= 0 && x < i64::from(self.size.x) && y < i64::from(self.size.y)
+                })
+                && river
+                    .cells
+                    .windows(2)
+                    .all(|p| (p[0].y, p[0].x) < (p[1].y, p[1].x))
+        })
     }
-    pub fn valid_water_barriers(&self)->bool {
+    pub fn valid_water_barriers(&self) -> bool {
         self.valid_source_cells(&self.water_barriers)
     }
-    pub fn valid_walkable_mineral(&self)->bool {
+    pub fn valid_walkable_mineral(&self) -> bool {
         self.valid_source_cells(&self.walkable_mineral)
     }
-    fn valid_source_cells(&self,cells:&[bevy::prelude::IVec2])->bool {
-        cells.len() as u64<=u64::from(self.size.x)*u64::from(self.size.y)
+    fn valid_source_cells(&self, cells: &[bevy::prelude::IVec2]) -> bool {
+        cells.len() as u64 <= u64::from(self.size.x) * u64::from(self.size.y)
             && cells.iter().all(|p| {
-                let x=i64::from(p.x)-i64::from(self.origin.x);
-                let y=i64::from(p.y)-i64::from(self.origin.y);
-                x>=0 && y>=0 && x<i64::from(self.size.x) && y<i64::from(self.size.y)
-            }) && cells.windows(2).all(|p|(p[0].y,p[0].x)<(p[1].y,p[1].x))
+                let x = i64::from(p.x) - i64::from(self.origin.x);
+                let y = i64::from(p.y) - i64::from(self.origin.y);
+                x >= 0 && y >= 0 && x < i64::from(self.size.x) && y < i64::from(self.size.y)
+            })
+            && cells
+                .windows(2)
+                .all(|p| (p[0].y, p[0].x) < (p[1].y, p[1].x))
     }
 }
 
@@ -384,21 +414,46 @@ impl VisualWorldFrame {
     /// map. This proves a coordinate basis only, not retained geometry coverage.
     pub fn connected_source_shift(&self, next: &Self) -> Option<bevy::prelude::IVec2> {
         use bevy::prelude::IVec2;
-        if self.map_id == next.map_id { return Some(IVec2::ZERO); }
+        if self.map_id == next.map_id {
+            return Some(IVec2::ZERO);
+        }
         let a = self.source_regions.first()?;
         let b = next.source_regions.first()?;
-        if a.map_id != self.map_id || b.map_id != next.map_id
-            || a.origin != IVec2::ZERO || b.origin != IVec2::ZERO { return None; }
-        let target = self.source_regions.iter().find(|r| r.map_id == next.map_id)?;
-        let back = next.source_regions.iter().find(|r| r.map_id == self.map_id)?;
-        let add = |point: IVec2, shift: IVec2| Some(IVec2::new(
-            point.x.checked_add(shift.x)?, point.y.checked_add(shift.y)?));
+        if a.map_id != self.map_id
+            || b.map_id != next.map_id
+            || a.origin != IVec2::ZERO
+            || b.origin != IVec2::ZERO
+        {
+            return None;
+        }
+        let target = self
+            .source_regions
+            .iter()
+            .find(|r| r.map_id == next.map_id)?;
+        let back = next
+            .source_regions
+            .iter()
+            .find(|r| r.map_id == self.map_id)?;
+        let add = |point: IVec2, shift: IVec2| {
+            Some(IVec2::new(
+                point.x.checked_add(shift.x)?,
+                point.y.checked_add(shift.y)?,
+            ))
+        };
         let shift = back.origin;
-        if target.size != b.size || back.size != a.size
-            || add(target.origin, shift)? != IVec2::ZERO { return None; }
+        if target.size != b.size || back.size != a.size || add(target.origin, shift)? != IVec2::ZERO
+        {
+            return None;
+        }
         for old in self.source_regions.iter() {
-            for new in next.source_regions.iter().filter(|r| r.map_id == old.map_id) {
-                if old.size != new.size || add(old.origin, shift)? != new.origin { return None; }
+            for new in next
+                .source_regions
+                .iter()
+                .filter(|r| r.map_id == old.map_id)
+            {
+                if old.size != new.size || add(old.origin, shift)? != new.origin {
+                    return None;
+                }
             }
         }
         Some(shift)
@@ -412,47 +467,70 @@ impl VisualWorldFrame {
                 && local.cmplt(region.size.as_ivec2()).all()
         };
         let base = self.source_regions.first()?;
-        if contains(&base) { return Some(base); }
-        self.source_regions.iter().skip(1).rev().find(contains).or(Some(base))
+        if contains(&base) {
+            return Some(base);
+        }
+        self.source_regions
+            .iter()
+            .skip(1)
+            .rev()
+            .find(contains)
+            .or(Some(base))
     }
     /// Presentation-only border fill follows the nearest native rectangle.
     /// Authored ownership remains available through `source_region_at`.
     fn scenery_region_at(&self, column: u32, row: u32) -> Option<&VisualSourceRegion> {
-        let point=self.grid_origin.as_i64vec2()+bevy::math::I64Vec2::new(i64::from(column),i64::from(row));
-        let source=self.source_region_at(column,row)?;
-        let local=point-source.origin.as_i64vec2();
+        let point = self.grid_origin.as_i64vec2()
+            + bevy::math::I64Vec2::new(i64::from(column), i64::from(row));
+        let source = self.source_region_at(column, row)?;
+        let local = point - source.origin.as_i64vec2();
         if local.cmpge(bevy::math::I64Vec2::ZERO).all()
-            && local.cmplt(source.size.as_i64vec2()).all() { return Some(source); }
+            && local.cmplt(source.size.as_i64vec2()).all()
+        {
+            return Some(source);
+        }
         self.source_regions.iter().min_by_key(|region| {
-            let lo=region.origin.as_i64vec2();
-            let hi=lo+region.size.as_i64vec2()-bevy::math::I64Vec2::ONE;
-            let d=(lo-point).max(bevy::math::I64Vec2::ZERO)+(point-hi).max(bevy::math::I64Vec2::ZERO);
-            (d.element_sum(),region.map_id.as_ref())
+            let lo = region.origin.as_i64vec2();
+            let hi = lo + region.size.as_i64vec2() - bevy::math::I64Vec2::ONE;
+            let d = (lo - point).max(bevy::math::I64Vec2::ZERO)
+                + (point - hi).max(bevy::math::I64Vec2::ZERO);
+            (d.element_sum(), region.map_id.as_ref())
         })
     }
     pub fn scenery_map_at(&self, column: u32, row: u32) -> &str {
-        self.scenery_region_at(column,row).map_or(self.map_id.as_ref(),|r|r.map_id.as_ref())
+        self.scenery_region_at(column, row)
+            .map_or(self.map_id.as_ref(), |r| r.map_id.as_ref())
     }
     pub fn scenery_grid_origin_at(&self, column: u32, row: u32) -> bevy::prelude::IVec2 {
-        self.grid_origin-self.scenery_region_at(column,row).map_or(bevy::prelude::IVec2::ZERO,|r|r.origin)
+        self.grid_origin
+            - self
+                .scenery_region_at(column, row)
+                .map_or(bevy::prelude::IVec2::ZERO, |r| r.origin)
     }
     pub fn source_map_at(&self, column: u32, row: u32) -> &str {
-        self.source_region_at(column, row).map_or(self.map_id.as_ref(), |region| region.map_id.as_ref())
+        self.source_region_at(column, row)
+            .map_or(self.map_id.as_ref(), |region| region.map_id.as_ref())
     }
     pub fn source_grid_origin_at(&self, column: u32, row: u32) -> bevy::prelude::IVec2 {
-        self.grid_origin - self.source_region_at(column, row)
-            .map_or(bevy::prelude::IVec2::ZERO, |region| region.origin)
+        self.grid_origin
+            - self
+                .source_region_at(column, row)
+                .map_or(bevy::prelude::IVec2::ZERO, |region| region.origin)
     }
     /// Rebase presentation coordinates into stable source-map space without
     /// changing source tiles, actor offsets, geometry or gameplay state.
     /// Returns the translation to apply to external presentation endpoints.
     pub fn anchor_to_map(&mut self) -> Vec2 {
-        if !self.active { return Vec2::ZERO; }
+        if !self.active {
+            return Vec2::ZERO;
+        }
         let center = self.grid_origin.as_vec2() * self.tile_size * Vec2::new(1., -1.);
         let shift = center - self.center;
         self.center = center;
         self.view_center += shift;
-        for actor in &mut self.actors { actor.center += shift; }
+        for actor in &mut self.actors {
+            actor.center += shift;
+        }
         shift
     }
 
@@ -465,11 +543,16 @@ impl VisualWorldFrame {
             return Ok(());
         }
         if self.source_regions.len() > 512
-            || self.source_regions.first().is_some_and(|base|
-                base.map_id != self.map_id || base.origin != bevy::prelude::IVec2::ZERO)
-            || self.source_regions.iter().any(|region| region.map_id.is_empty()
-                || region.size.min_element() == 0 || region.size.max_element() > 1_000_000
-                || region.origin.as_i64vec2().abs().max_element() > 1_000_000) {
+            || self.source_regions.first().is_some_and(|base| {
+                base.map_id != self.map_id || base.origin != bevy::prelude::IVec2::ZERO
+            })
+            || self.source_regions.iter().any(|region| {
+                region.map_id.is_empty()
+                    || region.size.min_element() == 0
+                    || region.size.max_element() > 1_000_000
+                    || region.origin.as_i64vec2().abs().max_element() > 1_000_000
+            })
+        {
             return Err(VisualWorldFrameError::InvalidSourceRegions);
         }
 
@@ -485,11 +568,16 @@ impl VisualWorldFrame {
         if self.map_texture == Handle::<Image>::default() {
             return Err(VisualWorldFrameError::MissingMapTexture);
         }
-        if self.terrace_datum.as_ref().is_some_and(|d|d.size.x==0 || d.size.y==0
-            || u64::from(d.size.x)*u64::from(d.size.y)>2_000_000
-            || d.levels.len()as u64!=u64::from(d.size.x)*u64::from(d.size.y)
-            || d.levels.iter().flatten().any(|&v|!v.is_finite() || v<0.) || !d.valid_water_barriers()
-            || !d.valid_walkable_mineral() || !d.valid_open_water()) {
+        if self.terrace_datum.as_ref().is_some_and(|d| {
+            d.size.x == 0
+                || d.size.y == 0
+                || u64::from(d.size.x) * u64::from(d.size.y) > 2_000_000
+                || d.levels.len() as u64 != u64::from(d.size.x) * u64::from(d.size.y)
+                || d.levels.iter().flatten().any(|&v| !v.is_finite() || v < 0.)
+                || !d.valid_water_barriers()
+                || !d.valid_walkable_mineral()
+                || !d.valid_open_water()
+        }) {
             return Err(VisualWorldFrameError::InvalidTerraceDatum);
         }
         if !self.center.is_finite() || !self.view_center.is_finite() {
@@ -639,53 +727,95 @@ mod tests {
     fn connected_owner_and_local_seed_coordinates_survive_map_handoff() {
         use bevy::prelude::IVec2;
         let region = |map: &str, x, width| VisualSourceRegion {
-            map_id: Arc::from(map), origin: IVec2::new(x, 0), size: UVec2::new(width, 40),
+            map_id: Arc::from(map),
+            origin: IVec2::new(x, 0),
+            size: UVec2::new(width, 40),
         };
         let mut before = active_frame();
         before.map_id = "Route29".into();
         before.grid_origin = IVec2::new(72, 0);
-        before.source_regions = vec![region("Route29", 0, 80), region("NewBarkTown", 80, 40)].into();
+        before.source_regions =
+            vec![region("Route29", 0, 80), region("NewBarkTown", 80, 40)].into();
         let mut after = before.clone();
         after.map_id = "NewBarkTown".into();
         after.grid_origin -= IVec2::new(80, 0);
-        after.source_regions = vec![region("NewBarkTown", 0, 40), region("Route29", -80, 80)].into();
+        after.source_regions =
+            vec![region("NewBarkTown", 0, 40), region("Route29", -80, 80)].into();
         for (column, owner) in [(4, "Route29"), (12, "NewBarkTown")] {
             assert_eq!(before.source_map_at(column, 8), owner);
             assert_eq!(after.source_map_at(column, 8), owner);
             let position = IVec2::new(column as i32, 8);
-            assert_eq!(before.source_grid_origin_at(column, 8) + position,
-                after.source_grid_origin_at(column, 8) + position);
+            assert_eq!(
+                before.source_grid_origin_at(column, 8) + position,
+                after.source_grid_origin_at(column, 8) + position
+            );
         }
-        for (column,owner) in [(4,"Route29"),(12,"NewBarkTown")] {
-            assert_eq!(before.scenery_map_at(column,48),owner);
-            assert_eq!(after.scenery_map_at(column,48),owner,
-                "off-map 3D fill must not switch with the active map");
-            let p=IVec2::new(column as i32,48);
-            assert_eq!(before.scenery_grid_origin_at(column,48)+p,
-                after.scenery_grid_origin_at(column,48)+p);
+        for (column, owner) in [(4, "Route29"), (12, "NewBarkTown")] {
+            assert_eq!(before.scenery_map_at(column, 48), owner);
+            assert_eq!(
+                after.scenery_map_at(column, 48),
+                owner,
+                "off-map 3D fill must not switch with the active map"
+            );
+            let p = IVec2::new(column as i32, 48);
+            assert_eq!(
+                before.scenery_grid_origin_at(column, 48) + p,
+                after.scenery_grid_origin_at(column, 48) + p
+            );
         }
-        assert_eq!(before.connected_source_shift(&after), Some(IVec2::new(-80, 0)));
-        assert_eq!(after.connected_source_shift(&before), Some(IVec2::new(80, 0)));
+        assert_eq!(
+            before.connected_source_shift(&after),
+            Some(IVec2::new(-80, 0))
+        );
+        assert_eq!(
+            after.connected_source_shift(&before),
+            Some(IVec2::new(80, 0))
+        );
         let mut inconsistent = after.clone();
         Arc::make_mut(&mut inconsistent.source_regions)[1].origin.x += 1;
         assert_eq!(before.connected_source_shift(&inconsistent), None);
-        assert_eq!(before.source_map_at(1000, 1000), "Route29", "off-map borders belong to the base");
+        assert_eq!(
+            before.source_map_at(1000, 1000),
+            "Route29",
+            "off-map borders belong to the base"
+        );
         before.source_regions = Arc::from([]);
-        assert_eq!(before.source_map_at(12, 8), "Route29", "legacy frames keep their map identity");
+        assert_eq!(
+            before.source_map_at(12, 8),
+            "Route29",
+            "legacy frames keep their map identity"
+        );
     }
 
     #[test]
     fn connected_regions_require_a_valid_base_and_bounded_dimensions() {
         let mut frame = active_frame();
-        let valid = VisualSourceRegion { map_id: frame.map_id.clone(),
-            origin: bevy::prelude::IVec2::ZERO, size: UVec2::splat(20) };
+        let valid = VisualSourceRegion {
+            map_id: frame.map_id.clone(),
+            origin: bevy::prelude::IVec2::ZERO,
+            size: UVec2::splat(20),
+        };
         frame.source_regions = vec![valid.clone()].into();
         assert!(frame.validate().is_ok());
-        for invalid in [VisualSourceRegion { map_id: "other".into(), ..valid.clone() },
-            VisualSourceRegion { size: UVec2::ZERO, ..valid.clone() },
-            VisualSourceRegion { origin: bevy::prelude::IVec2::splat(i32::MIN), ..valid }] {
+        for invalid in [
+            VisualSourceRegion {
+                map_id: "other".into(),
+                ..valid.clone()
+            },
+            VisualSourceRegion {
+                size: UVec2::ZERO,
+                ..valid.clone()
+            },
+            VisualSourceRegion {
+                origin: bevy::prelude::IVec2::splat(i32::MIN),
+                ..valid
+            },
+        ] {
             frame.source_regions = vec![invalid].into();
-            assert_eq!(frame.validate(), Err(VisualWorldFrameError::InvalidSourceRegions));
+            assert_eq!(
+                frame.validate(),
+                Err(VisualWorldFrameError::InvalidSourceRegions)
+            );
         }
     }
 
@@ -704,7 +834,10 @@ mod tests {
                 subtile_row: u8::try_from(row).expect("test row fits u8"),
                 tile_index,
             },
-            texture: Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(100 + u128::from(tile_index)), std::marker::PhantomData),
+            texture: Handle::Uuid(
+                bevy::asset::uuid::Uuid::from_u128(100 + u128::from(tile_index)),
+                std::marker::PhantomData,
+            ),
             animation_frames: None,
             priority: false,
         }
@@ -723,7 +856,7 @@ mod tests {
         assert_eq!(frame.grid_origin, source.grid_origin);
         for (actor, old) in frame.actors.iter().zip(&source.actors) {
             assert_eq!(actor.center, old.center + shift);
-            assert_eq!(actor.center-frame.center, old.center-source.center);
+            assert_eq!(actor.center - frame.center, old.center - source.center);
         }
         let anchored = frame.clone();
         assert_eq!(frame.anchor_to_map(), Vec2::ZERO);
@@ -744,7 +877,10 @@ mod tests {
             source_map_size_core_tiles: None,
             terrain_revision: 7,
             grid_origin: bevy::prelude::IVec2::ZERO,
-            map_texture: Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(1), std::marker::PhantomData),
+            map_texture: Handle::Uuid(
+                bevy::asset::uuid::Uuid::from_u128(1),
+                std::marker::PhantomData,
+            ),
             center: Vec2::new(8.0, 4.0),
             view_center: Vec2::ZERO,
             viewport_size: Vec2::new(16.0, 8.0),
@@ -757,10 +893,14 @@ mod tests {
                     ..visual_tile(1, 0, 9)
                 },
             ],
-            actors: vec![VisualActor { model_palette: None,
+            actors: vec![VisualActor {
+                model_palette: None,
                 id: VisualActorId::Player,
                 source_id: Arc::from("player"),
-                texture: Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(2), std::marker::PhantomData),
+                texture: Handle::Uuid(
+                    bevy::asset::uuid::Uuid::from_u128(2),
+                    std::marker::PhantomData,
+                ),
                 center: Vec2::new(8.0, 4.0),
                 size: Vec2::splat(16.0),
                 flip_x: false,
@@ -900,10 +1040,14 @@ mod tests {
     #[test]
     fn active_frame_rejects_duplicate_stable_actor_ids() {
         let mut frame = active_frame();
-        frame.actors.push(VisualActor { model_palette: None,
+        frame.actors.push(VisualActor {
+            model_palette: None,
             id: VisualActorId::Player,
             source_id: Arc::from("player"),
-            texture: Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(3), std::marker::PhantomData),
+            texture: Handle::Uuid(
+                bevy::asset::uuid::Uuid::from_u128(3),
+                std::marker::PhantomData,
+            ),
             center: Vec2::new(96.0, 72.0),
             size: Vec2::splat(16.0),
             flip_x: true,
@@ -949,10 +1093,14 @@ mod tests {
     #[test]
     fn presentation_effect_identity_is_distinct_and_stable() {
         let mut frame = active_frame();
-        let grass_rustle = VisualActor { model_palette: None,
+        let grass_rustle = VisualActor {
+            model_palette: None,
             id: VisualActorId::Effect(VisualEffectId::GrassRustle),
             source_id: Arc::from("effect_grass_rustle"),
-            texture: Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(3), std::marker::PhantomData),
+            texture: Handle::Uuid(
+                bevy::asset::uuid::Uuid::from_u128(3),
+                std::marker::PhantomData,
+            ),
             center: Vec2::new(8.0, 4.0),
             size: Vec2::splat(16.0),
             flip_x: false,
@@ -997,40 +1145,86 @@ mod tests {
 
     #[test]
     fn coastal_terrace_field_rejects_invalid_corner_evidence() {
-        let mut frame=active_frame();
-        for (size,levels) in [(UVec2::ZERO,vec![]),(UVec2::new(2,1),vec![[0.;4]]),
-            (UVec2::ONE,vec![[f32::NAN;4]]),(UVec2::ONE,vec![[-1.;4]])] {
-            frame.terrace_datum=Some(Arc::new(VisualTerraceDatum {walkable_mineral:Default::default(),origin:bevy::prelude::IVec2::ZERO,size,levels:levels.into(),open_water:None,water_barriers:Arc::from([])}));
-            assert_eq!(frame.validate(),Err(VisualWorldFrameError::InvalidTerraceDatum));
+        let mut frame = active_frame();
+        for (size, levels) in [
+            (UVec2::ZERO, vec![]),
+            (UVec2::new(2, 1), vec![[0.; 4]]),
+            (UVec2::ONE, vec![[f32::NAN; 4]]),
+            (UVec2::ONE, vec![[-1.; 4]]),
+        ] {
+            frame.terrace_datum = Some(Arc::new(VisualTerraceDatum {
+                walkable_mineral: Default::default(),
+                origin: bevy::prelude::IVec2::ZERO,
+                size,
+                levels: levels.into(),
+                open_water: None,
+                water_barriers: Arc::from([]),
+            }));
+            assert_eq!(
+                frame.validate(),
+                Err(VisualWorldFrameError::InvalidTerraceDatum)
+            );
         }
-        frame.terrace_datum=Some(Arc::new(VisualTerraceDatum {walkable_mineral:Default::default(),
-            open_water:None,water_barriers:Arc::from([]),
-            origin:bevy::prelude::IVec2::new(-40,20),size:UVec2::ONE,levels:vec![[0.,1.,2.,1.]].into(),
+        frame.terrace_datum = Some(Arc::new(VisualTerraceDatum {
+            walkable_mineral: Default::default(),
+            open_water: None,
+            water_barriers: Arc::from([]),
+            origin: bevy::prelude::IVec2::new(-40, 20),
+            size: UVec2::ONE,
+            levels: vec![[0., 1., 2., 1.]].into(),
         }));
         assert!(frame.validate().is_ok());
-        let mut valid=frame.terrace_datum.as_ref().unwrap().as_ref().clone();
-        valid.size=UVec2::splat(2);valid.levels=vec![[0.;4];4].into();
-        for cells in [vec![bevy::prelude::IVec2::ZERO],vec![valid.origin,valid.origin],
-            vec![valid.origin+bevy::prelude::IVec2::X,valid.origin]] {
-            let mut invalid=valid.clone();invalid.water_barriers=cells.into();
-            frame.terrace_datum=Some(Arc::new(invalid));
-            assert_eq!(frame.validate(),Err(VisualWorldFrameError::InvalidTerraceDatum));
+        let mut valid = frame.terrace_datum.as_ref().unwrap().as_ref().clone();
+        valid.size = UVec2::splat(2);
+        valid.levels = vec![[0.; 4]; 4].into();
+        for cells in [
+            vec![bevy::prelude::IVec2::ZERO],
+            vec![valid.origin, valid.origin],
+            vec![valid.origin + bevy::prelude::IVec2::X, valid.origin],
+        ] {
+            let mut invalid = valid.clone();
+            invalid.water_barriers = cells.into();
+            frame.terrace_datum = Some(Arc::new(invalid));
+            assert_eq!(
+                frame.validate(),
+                Err(VisualWorldFrameError::InvalidTerraceDatum)
+            );
         }
-        for cells in [vec![bevy::prelude::IVec2::ZERO],vec![valid.origin,valid.origin],
-            vec![valid.origin+bevy::prelude::IVec2::X,valid.origin]] {
-            let mut invalid=valid.clone();invalid.walkable_mineral=cells.into();
-            frame.terrace_datum=Some(Arc::new(invalid));
-            assert_eq!(frame.validate(),Err(VisualWorldFrameError::InvalidTerraceDatum));
+        for cells in [
+            vec![bevy::prelude::IVec2::ZERO],
+            vec![valid.origin, valid.origin],
+            vec![valid.origin + bevy::prelude::IVec2::X, valid.origin],
+        ] {
+            let mut invalid = valid.clone();
+            invalid.walkable_mineral = cells.into();
+            frame.terrace_datum = Some(Arc::new(invalid));
+            assert_eq!(
+                frame.validate(),
+                Err(VisualWorldFrameError::InvalidTerraceDatum)
+            );
         }
-        let mut valid=valid;valid.water_barriers=vec![valid.origin].into();
+        let mut valid = valid;
+        valid.water_barriers = vec![valid.origin].into();
         assert!(valid.water_barrier_at(valid.origin));
-        for (level,cells) in [(f32::NAN,vec![valid.origin]),(-1.,vec![valid.origin]),
-            (1.,vec![valid.origin,valid.origin]),(1.,vec![valid.origin-bevy::prelude::IVec2::ONE])] {
-            let mut invalid=valid.clone();invalid.open_water=Some(VisualOpenWaterDatum {level,cells:cells.into()});
-            frame.terrace_datum=Some(Arc::new(invalid));
-            assert_eq!(frame.validate(),Err(VisualWorldFrameError::InvalidTerraceDatum));
+        for (level, cells) in [
+            (f32::NAN, vec![valid.origin]),
+            (-1., vec![valid.origin]),
+            (1., vec![valid.origin, valid.origin]),
+            (1., vec![valid.origin - bevy::prelude::IVec2::ONE]),
+        ] {
+            let mut invalid = valid.clone();
+            invalid.open_water = Some(VisualOpenWaterDatum {
+                level,
+                cells: cells.into(),
+            });
+            frame.terrace_datum = Some(Arc::new(invalid));
+            assert_eq!(
+                frame.validate(),
+                Err(VisualWorldFrameError::InvalidTerraceDatum)
+            );
         }
-        frame.terrace_datum=Some(Arc::new(valid));assert!(frame.validate().is_ok());
+        frame.terrace_datum = Some(Arc::new(valid));
+        assert!(frame.validate().is_ok());
     }
 
     #[test]
@@ -1097,14 +1291,17 @@ mod tests {
     }
     #[test]
     fn open_air_rooftop_identity_does_not_reclassify_roof_houses_or_other_atlases() {
-        for (map,atlas) in [("CeladonMansionRoof","mansion"),("GoldenrodDeptStoreRoof","mart"),("TinTowerRoof","tower")] {
-            assert!(is_open_air_rooftop(map,atlas));
-            assert!(!is_open_air_rooftop(map,"house"));
+        for (map, atlas) in [
+            ("CeladonMansionRoof", "mansion"),
+            ("GoldenrodDeptStoreRoof", "mart"),
+            ("TinTowerRoof", "tower"),
+        ] {
+            assert!(is_open_air_rooftop(map, atlas));
+            assert!(!is_open_air_rooftop(map, "house"));
         }
-        assert!(!is_open_air_rooftop("CeladonMansionRoofHouse","mansion"));
-        assert!(!is_open_air_rooftop("CeladonMansion1F","mansion"));
-        assert!(!is_open_air_rooftop("GoldenrodDeptStore1F","mart"));
-        assert!(!is_open_air_rooftop("TinTower1F","tower"));
+        assert!(!is_open_air_rooftop("CeladonMansionRoofHouse", "mansion"));
+        assert!(!is_open_air_rooftop("CeladonMansion1F", "mansion"));
+        assert!(!is_open_air_rooftop("GoldenrodDeptStore1F", "mart"));
+        assert!(!is_open_air_rooftop("TinTower1F", "tower"));
     }
-
 }

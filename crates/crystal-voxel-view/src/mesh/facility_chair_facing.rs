@@ -31,11 +31,7 @@ pub(super) fn choose(chair: &source::Match, all: &[source::Match]) -> (u8, Optio
                 continue;
             }
             let turn = if dx.abs() > dz.abs() {
-                if dx > 0. {
-                    1
-                } else {
-                    3
-                }
+                if dx > 0. { 1 } else { 3 }
             } else if dz < 0. {
                 2
             } else {

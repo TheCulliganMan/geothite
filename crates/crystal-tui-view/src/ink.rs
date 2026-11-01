@@ -110,7 +110,9 @@ pub(crate) fn pack_terminal_dots(
                 for dx in 0..2 {
                     let x = col * 2 + dx;
                     let y = row * 4 + dy;
-                    let size = sizes[usize::from(y) * usize::from(fine.area.width) + usize::from(x)] / 255.;
+                    let size = sizes
+                        [usize::from(y) * usize::from(fine.area.width) + usize::from(x)]
+                        / 255.;
                     let area = size * size;
                     // A Braille dot cannot change diameter. Ordered density
                     // encodes circle area on its 2x4 subcell lattice instead.
@@ -367,7 +369,14 @@ mod tests {
     #[test]
     fn warm_shadows_are_not_promoted_to_full_bright_yellow() {
         let mut b = Buffer::empty(Rect::new(0, 0, 16, 16));
-        tile(&mut b, Rect::new(0, 0, 16, 16), &[[100, 80, 40]; 256], 0, 0, 0.);
+        tile(
+            &mut b,
+            Rect::new(0, 0, 16, 16),
+            &[[100, 80, 40]; 256],
+            0,
+            0,
+            0.,
+        );
         assert!(b.content.iter().all(|c| c.fg == Color::Rgb(93, 78, 49)));
         tile(&mut b, Rect::new(0, 0, 16, 16), &[[128; 3]; 256], 0, 0, 0.);
         assert!(b.content.iter().all(|c| c.fg == Color::Rgb(128, 128, 128)));

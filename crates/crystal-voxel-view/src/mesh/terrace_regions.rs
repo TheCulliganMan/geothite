@@ -113,8 +113,10 @@ fn build(
             .cells
             .iter()
             .all(|(_, s, _)| s.tileset_id.as_ref() == "kanto");
-        let native_outdoor = r.cells.iter().all(|(_, s, _)|
-            matches!(s.tileset_id.as_ref(), "kanto" | "johto" | "johto_modern"));
+        let native_outdoor = r
+            .cells
+            .iter()
+            .all(|(_, s, _)| matches!(s.tileset_id.as_ref(), "kanto" | "johto" | "johto_modern"));
         let origin = if native_outdoor {
             r.cells
                 .iter()
@@ -144,8 +146,10 @@ fn build(
         } else {
             legacy.clone()
         };
-        let fallback =
-            terrace_levels::get_for_family(if native_outdoor { &local_edges } else { edges }, is_kanto);
+        let fallback = terrace_levels::get_for_family(
+            if native_outdoor { &local_edges } else { edges },
+            is_kanto,
+        );
         for (p, s, _) in &r.cells {
             let i = index(*p)?;
             if native[&(p.y, p.x)].0 != owner {
@@ -268,9 +272,15 @@ fn build(
             levels[i][corner] = sum / samples.len() as f32;
         }
     }
-    let known=(0..w*h).map(|i|owners[i]!=usize::MAX && native.get(&(point(i).y,point(i).x))
-        .is_some_and(|(_,source,_)|shape_for_source(source)!=CellShape::Waterfall)).collect::<Vec<_>>();
-    terrace_datum::fit_shore_corners(w,h,&known,&wet,&mut levels);
+    let known = (0..w * h)
+        .map(|i| {
+            owners[i] != usize::MAX
+                && native
+                    .get(&(point(i).y, point(i).x))
+                    .is_some_and(|(_, source, _)| shape_for_source(source) != CellShape::Waterfall)
+        })
+        .collect::<Vec<_>>();
+    terrace_datum::fit_shore_corners(w, h, &known, &wet, &mut levels);
     barriers.sort_unstable_by_key(|p| (p.y, p.x));
     barriers.dedup();
     let river_level = (0..w * h)
@@ -294,9 +304,13 @@ fn build(
         size: UVec2::new(w as u32, h as u32),
         levels: levels.into(),
         water_barriers: barriers.into(),
-        walkable_mineral:native.iter().filter_map(|(&(y,x),(_,s,land))|
-            (*land && outdoor_mountains::permanent(s,shape_for_source(s)))
-                .then_some(IVec2::new(x,y))).collect(),
+        walkable_mineral: native
+            .iter()
+            .filter_map(|(&(y, x), (_, s, land))| {
+                (*land && outdoor_mountains::permanent(s, shape_for_source(s)))
+                    .then_some(IVec2::new(x, y))
+            })
+            .collect(),
         open_water,
     }))
 }
@@ -339,47 +353,60 @@ mod tests {
 
     #[test]
     fn walkable_mineral_keeps_native_ownership_at_overlapping_connections() {
-        let mut main=region("Route26",IVec2::new(-16,32),4,Vec::new());
-        let mut neighbor=main.clone();
-        neighbor.map="Route27".into();
-        for (i,land) in [(18,true),(20,false)] {
-            main.cells[i].1=crate::mesh::tests::source_with_tile(0x0a,1,1,0x3c);
-            main.cells[i].2=land;
-            neighbor.cells[i].1=main.cells[i].1.clone();
-            neighbor.cells[i].2=!land;
+        let mut main = region("Route26", IVec2::new(-16, 32), 4, Vec::new());
+        let mut neighbor = main.clone();
+        neighbor.map = "Route27".into();
+        for (i, land) in [(18, true), (20, false)] {
+            main.cells[i].1 = crate::mesh::tests::source_with_tile(0x0a, 1, 1, 0x3c);
+            main.cells[i].2 = land;
+            neighbor.cells[i].1 = main.cells[i].1.clone();
+            neighbor.cells[i].2 = !land;
         }
-        let expected=vec![main.cells[18].0];
-        let datum=connected_source_terrace_datum("Route26",&[main.clone(),neighbor],&[]).unwrap();
-        assert_eq!(&*datum.walkable_mineral,&expected);
+        let expected = vec![main.cells[18].0];
+        let datum =
+            connected_source_terrace_datum("Route26", &[main.clone(), neighbor], &[]).unwrap();
+        assert_eq!(&*datum.walkable_mineral, &expected);
         assert!(datum.valid_walkable_mineral());
-        let standalone=connected_source_terrace_datum("Route26",&[main],&[]).unwrap();
-        assert_eq!(datum.walkable_mineral,standalone.walkable_mineral,
-            "a connected overlap cannot bury or invent a native walking cap");
+        let standalone = connected_source_terrace_datum("Route26", &[main], &[]).unwrap();
+        assert_eq!(
+            datum.walkable_mineral, standalone.walkable_mineral,
+            "a connected overlap cannot bury or invent a native walking cap"
+        );
     }
 
     #[test]
     fn johto_town_shore_does_not_inherit_connected_route_courses() {
         let main = region("NewBarkTown", IVec2::ZERO, 16, Vec::new());
         let edges = vec![VisualJumpLedge {
-            start: IVec2::new(0, 24), end: IVec2::new(14, 24), descent: IVec2::Y,
+            start: IVec2::new(0, 24),
+            end: IVec2::new(14, 24),
+            descent: IVec2::Y,
         }];
         let remote = region("Route27", IVec2::new(0, 16), 32, edges.clone());
         let mut regions = vec![main, remote];
         for region in &mut regions {
             for (_, source, land) in &mut region.cells {
                 source.tileset_id = "johto".into();
-                source.metatile_id = if *land {1} else {0x54};
-                source.tile_index = if *land {6} else {0x14};
+                source.metatile_id = if *land { 1 } else { 0x54 };
+                source.tile_index = if *land { 6 } else { 0x14 };
             }
         }
         let datum = connected_source_terrace_datum("NewBarkTown", &regions, &edges).unwrap();
-        for y in 0..14 { for x in 0..16 {
-            assert_eq!(datum.levels[y*16+x], [0.;4],
-                "a remote ledge must not turn the town shore into a ramp");
-        }}
-        let high = terrace_datum::sample(Some(&datum), Vec2::new(6.5,23.99)).unwrap();
-        let low = terrace_datum::sample(Some(&datum), Vec2::new(6.5,24.01)).unwrap();
-        assert!((high-low-1.).abs()<0.002, "the route retains its own ledge");
+        for y in 0..14 {
+            for x in 0..16 {
+                assert_eq!(
+                    datum.levels[y * 16 + x],
+                    [0.; 4],
+                    "a remote ledge must not turn the town shore into a ramp"
+                );
+            }
+        }
+        let high = terrace_datum::sample(Some(&datum), Vec2::new(6.5, 23.99)).unwrap();
+        let low = terrace_datum::sample(Some(&datum), Vec2::new(6.5, 24.01)).unwrap();
+        assert!(
+            (high - low - 1.).abs() < 0.002,
+            "the route retains its own ledge"
+        );
     }
 
     #[test]

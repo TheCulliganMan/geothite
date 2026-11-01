@@ -77,11 +77,7 @@ fn expected(block: u16, x: usize, y: usize) -> Option<u16> {
         0x78 => {
             // Bridge junction bank: authenticate its own ink instead of
             // borrowing the brick deck or ordinary checker-bank drawing.
-            if y == 0 {
-                0x31
-            } else {
-                0x14
-            }
+            if y == 0 { 0x31 } else { 0x14 }
         }
         _ => return None,
     })
@@ -89,9 +85,14 @@ fn expected(block: u16, x: usize, y: usize) -> Option<u16> {
 fn bank(tile: u16) -> bool {
     matches!(tile, 0x31 | 0x33 | 0x54)
 }
-pub(super) fn source_bank(s:&VisualTileSource)->bool {
-    s.tileset_id.as_ref()=="kanto" && bank(s.tile_index)
-        && expected(s.metatile_id,s.subtile_column as usize,s.subtile_row as usize)==Some(s.tile_index)
+pub(super) fn source_bank(s: &VisualTileSource) -> bool {
+    s.tileset_id.as_ref() == "kanto"
+        && bank(s.tile_index)
+        && expected(
+            s.metatile_id,
+            s.subtile_column as usize,
+            s.subtile_row as usize,
+        ) == Some(s.tile_index)
 }
 
 fn ink(tile: u16, p: usize) -> usize {
@@ -336,14 +337,16 @@ pub(super) fn finish(
                 let p = old.positions[q * 4..q * 4 + 4].try_into().unwrap();
                 if old.normals[q * 4] == [0., 1., 0.] {
                     super::rocky_shore_cap::append(&mut mesh.solid, p, g, origin, palette);
-                } else {new_bark::ledge_finish::append_natural_bank(
-                    &mut mesh.solid,
-                    p,
-                    old.normals[q * 4],
-                    g,
-                    origin,
-                    palette,
-                );}
+                } else {
+                    new_bark::ledge_finish::append_natural_bank(
+                        &mut mesh.solid,
+                        p,
+                        old.normals[q * 4],
+                        g,
+                        origin,
+                        palette,
+                    );
+                }
                 removed.insert(q);
             }
             mesh.authored_cells[i] = Some(LABEL);
@@ -477,7 +480,16 @@ mod tests {
                 {
                     continue;
                 }
-                append_textured_shoreline(&mut mesh.textured, &g, x, y, d, [w, e, n, s], crate::profile::WATER_HEIGHT, 0.);
+                append_textured_shoreline(
+                    &mut mesh.textured,
+                    &g,
+                    x,
+                    y,
+                    d,
+                    [w, e, n, s],
+                    crate::profile::WATER_HEIGHT,
+                    0.,
+                );
             }
         }
         (cells, shapes, g, images, mesh)
@@ -487,15 +499,25 @@ mod tests {
         let (cells, shapes, grid, images, mut mesh) = fixture(0x1f);
         let cells = cells.iter().collect::<Vec<_>>();
         finish(&mut mesh, &cells, &shapes, &grid, [13, 17], &images);
-        let crowns = mesh.solid.positions.iter().enumerate()
+        let crowns = mesh
+            .solid
+            .positions
+            .iter()
+            .enumerate()
             .filter(|(_, point)| point[1] > 0.)
             .map(|(i, _)| (i, mesh.solid.colors[i], mesh.solid.uvs[i]))
             .collect::<Vec<_>>();
         assert!(!crowns.is_empty());
         new_bark::ledge_finish::continue_shore_cap_ground(&mut mesh, &cells, &grid, [13, 17]);
         for (i, color, uv) in crowns {
-            assert_eq!(mesh.solid.colors[i], color, "the crown keeps native mineral pigment");
-            assert_eq!(mesh.solid.uvs[i], uv, "the crown keeps its world-anchored bedrock grain");
+            assert_eq!(
+                mesh.solid.colors[i], color,
+                "the crown keeps native mineral pigment"
+            );
+            assert_eq!(
+                mesh.solid.uvs[i], uv,
+                "the crown keeps its world-anchored bedrock grain"
+            );
         }
     }
 
@@ -515,9 +537,14 @@ mod tests {
                     }
                 }
             }
-            let source_corners: Vec<_> = mesh.textured.uvs.chunks_exact(4).enumerate()
-                .filter(|(_, uv)| new_bark::sampled_cell(uv, &g)
-                    .is_some_and(|i| bank(cells[i].source.tile_index)))
+            let source_corners: Vec<_> = mesh
+                .textured
+                .uvs
+                .chunks_exact(4)
+                .enumerate()
+                .filter(|(_, uv)| {
+                    new_bark::sampled_cell(uv, &g).is_some_and(|i| bank(cells[i].source.tile_index))
+                })
                 .flat_map(|(q, _)| mesh.textured.positions[q * 4..q * 4 + 4].iter().copied())
                 .collect();
             finish(
@@ -536,30 +563,57 @@ mod tests {
                     assert_eq!(mesh.authored_cells[i], old_claims[i]);
                 }
             }
-            assert!(mesh
-                .textured
-                .uvs
-                .chunks_exact(4)
-                .all(|uv| new_bark::sampled_cell(uv, &g)
-                    .is_none_or(|i| !bank(cells[i].source.tile_index))));
-            assert!(mesh
-                .solid
-                .positions
-                .iter()
-                .all(|p| p.iter().all(|v| v.is_finite()) && p[1] >= crate::profile::WATER_HEIGHT - g.tile_height * 0.20 && p[1] <= g.tile_height * 0.32));
-            assert!(source_corners.iter().all(|p| mesh.solid.positions.contains(p)),
-                "fractured shelves and walls preserve all source contact corners");
-            assert!(mesh.solid.positions.iter().all(|p|p[1]>=crate::profile::WATER_HEIGHT && p[1]<g.tile_height*0.1),
-                "bedrock crowns stay low and inside the native bank; contacts stay fixed");
-            assert!(mesh.solid.positions.iter().zip(&mesh.solid.normals).any(|(p,n)|
-                p[1]>crate::profile::WATER_HEIGHT && p[1]<0. && n[1].abs()>0.001 && n[1].abs()<0.9),
-                "the shared cliff wall must retain real fractured relief");
-            assert!(mesh.solid.uvs.iter().all(|uv| *uv == crate::scenery_finish::SOURCE_PAINT_UV
-                || *uv == new_bark::ledge_finish::BANK_GROUND_UV
-                || (uv[0] > 87000. && uv[0] < 90000. && uv[1] < -10000.)),
-                "shore rock must never sample a 2D sprite");
+            assert!(mesh.textured.uvs.chunks_exact(4).all(|uv| {
+                new_bark::sampled_cell(uv, &g).is_none_or(|i| !bank(cells[i].source.tile_index))
+            }));
+            assert!(
+                mesh.solid
+                    .positions
+                    .iter()
+                    .all(|p| p.iter().all(|v| v.is_finite())
+                        && p[1] >= crate::profile::WATER_HEIGHT - g.tile_height * 0.20
+                        && p[1] <= g.tile_height * 0.32)
+            );
+            assert!(
+                source_corners
+                    .iter()
+                    .all(|p| mesh.solid.positions.contains(p)),
+                "fractured shelves and walls preserve all source contact corners"
+            );
+            assert!(
+                mesh.solid
+                    .positions
+                    .iter()
+                    .all(|p| p[1] >= crate::profile::WATER_HEIGHT && p[1] < g.tile_height * 0.1),
+                "bedrock crowns stay low and inside the native bank; contacts stay fixed"
+            );
+            assert!(
+                mesh.solid
+                    .positions
+                    .iter()
+                    .zip(&mesh.solid.normals)
+                    .any(|(p, n)| p[1] > crate::profile::WATER_HEIGHT
+                        && p[1] < 0.
+                        && n[1].abs() > 0.001
+                        && n[1].abs() < 0.9),
+                "the shared cliff wall must retain real fractured relief"
+            );
+            assert!(
+                mesh.solid
+                    .uvs
+                    .iter()
+                    .all(|uv| *uv == crate::scenery_finish::SOURCE_PAINT_UV
+                        || *uv == new_bark::ledge_finish::BANK_GROUND_UV
+                        || (uv[0] > 87000. && uv[0] < 90000. && uv[1] < -10000.)),
+                "shore rock must never sample a 2D sprite"
+            );
             assert!(mesh.solid.positions.iter().any(|p| p[1] == 0.));
-            assert!(mesh.solid.positions.iter().any(|p| p[1] == crate::profile::WATER_HEIGHT));
+            assert!(
+                mesh.solid
+                    .positions
+                    .iter()
+                    .any(|p| p[1] == crate::profile::WATER_HEIGHT)
+            );
             for (tri, n) in mesh.solid.indices.chunks_exact(3).zip(
                 mesh.solid
                     .indices

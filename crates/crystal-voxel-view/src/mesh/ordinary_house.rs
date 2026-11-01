@@ -96,15 +96,24 @@ fn append_course(
         for local_column in 0..width {
             let plain_wall = (2..4).all(|r| {
                 cells[(row + r) * geometry.width + column + local_column]
-                    .source.tile_index == crate::house::HOUSE_FLOOR_TILE
+                    .source
+                    .tile_index
+                    == crate::house::HOUSE_FLOOR_TILE
             });
             // Wall tile00 above a fixture belongs to the same rear panel as
             // the plain columns; only fixture art stays on the forward fold.
-            let panel_tile = local_row < 2 && matches!(
-                cells[(row + local_row) * geometry.width + column + local_column].source.tile_index,
-                0x00 | 0x24 | 0x4a | 0x34 | 0x2c
-            );
-            let wall_rows = if plain_wall || panel_tile { 2 } else { COURSE_HEIGHT };
+            let panel_tile = local_row < 2
+                && matches!(
+                    cells[(row + local_row) * geometry.width + column + local_column]
+                        .source
+                        .tile_index,
+                    0x00 | 0x24 | 0x4a | 0x34 | 0x2c
+                );
+            let wall_rows = if plain_wall || panel_tile {
+                2
+            } else {
+                COURSE_HEIGHT
+            };
             if local_row >= wall_rows {
                 continue;
             }

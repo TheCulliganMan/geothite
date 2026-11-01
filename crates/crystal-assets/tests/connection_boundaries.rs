@@ -415,31 +415,53 @@ fn dormant_warp_certificate_requires_blocked_authored_geometry() {
     let mut start = test_map_module("Start", "START_MAP", None);
     let mut dormant = test_map_module("UnusedBeta", "UNUSED_BETA", None);
     dormant.events.warps.push(crystal_core::map::WarpEvent {
-        index: 1, x: 0, y: 0, target_map: "START_MAP".into(),
-        target_map_constant: "START_MAP".into(), target_warp_id: 1,
+        index: 1,
+        x: 0,
+        y: 0,
+        target_map: "START_MAP".into(),
+        target_map_constant: "START_MAP".into(),
+        target_warp_id: 1,
     });
     start.events.warps.push(crystal_core::map::WarpEvent {
-        index: 1, x: 0, y: 0, target_map: "UNUSED_BETA".into(),
-        target_map_constant: "UNUSED_BETA".into(), target_warp_id: 1,
+        index: 1,
+        x: 0,
+        y: 0,
+        target_map: "UNUSED_BETA".into(),
+        target_map_constant: "UNUSED_BETA".into(),
+        target_warp_id: 1,
     });
     let mut tileset = test_tileset_definition();
     tileset.collision.insert("1".into(), vec!["WALL".into(); 4]);
     let mut data = GameDataSet {
-        maps: [("Start".into(), start), ("UnusedBeta".into(), dormant)].into_iter().collect(),
+        maps: [("Start".into(), start), ("UnusedBeta".into(), dormant)]
+            .into_iter()
+            .collect(),
         tilesets: [("johto".into(), tileset)].into_iter().collect(),
         playability: PlayabilityRules {
             dormant_maps: vec!["UnusedBeta".into()],
             inaccessible_dormant_warps: [("Start".into(), vec![1])].into_iter().collect(),
             ..Default::default()
-        }, ..Default::default()
+        },
+        ..Default::default()
     };
     let assets = AssetRoot::new(env!("CARGO_MANIFEST_DIR"));
     let report = ModpackCompiler::new(&assets).audit(&data);
-    assert!(!report.diagnostics.iter().any(|error| matches!(error.code.as_str(),
-        "invalid_inaccessible_dormant_warp" | "unreachable_warp" | "unknown_warp_index")));
-    data.tilesets.get_mut("johto").unwrap().collision.insert("1".into(), vec!["FLOOR".into(); 4]);
-    assert!(ModpackCompiler::new(&assets).audit(&data).diagnostics.iter()
-        .any(|error| error.code == "invalid_inaccessible_dormant_warp"));
+    assert!(!report.diagnostics.iter().any(|error| matches!(
+        error.code.as_str(),
+        "invalid_inaccessible_dormant_warp" | "unreachable_warp" | "unknown_warp_index"
+    )));
+    data.tilesets
+        .get_mut("johto")
+        .unwrap()
+        .collision
+        .insert("1".into(), vec!["FLOOR".into(); 4]);
+    assert!(
+        ModpackCompiler::new(&assets)
+            .audit(&data)
+            .diagnostics
+            .iter()
+            .any(|error| error.code == "invalid_inaccessible_dormant_warp")
+    );
 }
 
 #[test]
@@ -448,30 +470,61 @@ fn retired_gs_warp_pair_retains_structural_checks_and_requires_blocked_endpoint(
     let mut basement = test_map_module("Basement", "BASEMENT_MAP", None);
     basement.blocks = vec![2];
     start.events.warps.push(crystal_core::map::WarpEvent {
-        index: 1, x: 0, y: 0, target_map: "BASEMENT_MAP".into(),
-        target_map_constant: "BASEMENT_MAP".into(), target_warp_id: 1,
+        index: 1,
+        x: 0,
+        y: 0,
+        target_map: "BASEMENT_MAP".into(),
+        target_map_constant: "BASEMENT_MAP".into(),
+        target_warp_id: 1,
     });
     basement.events.warps.push(crystal_core::map::WarpEvent {
-        index: 1, x: 0, y: 0, target_map: "START_MAP".into(),
-        target_map_constant: "START_MAP".into(), target_warp_id: 1,
+        index: 1,
+        x: 0,
+        y: 0,
+        target_map: "START_MAP".into(),
+        target_map_constant: "START_MAP".into(),
+        target_warp_id: 1,
     });
     let mut tileset = test_tileset_definition();
     tileset.collision.insert("2".into(), vec!["WALL".into(); 4]);
     let mut data = GameDataSet {
-        maps: [("Start".into(), start), ("Basement".into(), basement)].into_iter().collect(),
+        maps: [("Start".into(), start), ("Basement".into(), basement)]
+            .into_iter()
+            .collect(),
         tilesets: [("johto".into(), tileset)].into_iter().collect(),
         playability: PlayabilityRules {
-            retired_gs_warps: [("Start".into(), vec![1]), ("Basement".into(), vec![1])].into_iter().collect(),
+            retired_gs_warps: [("Start".into(), vec![1]), ("Basement".into(), vec![1])]
+                .into_iter()
+                .collect(),
             ..Default::default()
-        }, ..Default::default()
+        },
+        ..Default::default()
     };
     let assets = AssetRoot::new(env!("CARGO_MANIFEST_DIR"));
     let report = ModpackCompiler::new(&assets).audit(&data);
-    assert!(!report.diagnostics.iter().any(|error| matches!(error.code.as_str(),
-        "invalid_retired_gs_warp" | "unreachable_warp" | "unreachable_warp_destination")));
+    assert!(!report.diagnostics.iter().any(|error| matches!(
+        error.code.as_str(),
+        "invalid_retired_gs_warp" | "unreachable_warp" | "unreachable_warp_destination"
+    )));
     data.maps.get_mut("Start").unwrap().events.warps[0].target_warp_id = 2;
-    assert!(ModpackCompiler::new(&assets).audit(&data).diagnostics.iter().any(|error| error.code == "unknown_warp_index"));
+    assert!(
+        ModpackCompiler::new(&assets)
+            .audit(&data)
+            .diagnostics
+            .iter()
+            .any(|error| error.code == "unknown_warp_index")
+    );
     data.maps.get_mut("Start").unwrap().events.warps[0].target_warp_id = 1;
-    data.tilesets.get_mut("johto").unwrap().collision.insert("2".into(), vec!["FLOOR".into(); 4]);
-    assert!(ModpackCompiler::new(&assets).audit(&data).diagnostics.iter().any(|error| error.code == "invalid_retired_gs_warp"));
+    data.tilesets
+        .get_mut("johto")
+        .unwrap()
+        .collision
+        .insert("2".into(), vec!["FLOOR".into(); 4]);
+    assert!(
+        ModpackCompiler::new(&assets)
+            .audit(&data)
+            .diagnostics
+            .iter()
+            .any(|error| error.code == "invalid_retired_gs_warp")
+    );
 }

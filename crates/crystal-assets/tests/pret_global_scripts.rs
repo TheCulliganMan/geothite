@@ -5,10 +5,10 @@ mod radio_text_export {
 }
 #[path = "../src/bin/pack_core/source_global_scripts.rs"]
 mod source_global_scripts;
-#[path = "../src/bin/pack_core/source_playability.rs"]
-mod source_playability;
 #[path = "../src/bin/pack_core/source_map_geometry.rs"]
 mod source_map_geometry;
+#[path = "../src/bin/pack_core/source_playability.rs"]
+mod source_playability;
 
 #[test]
 fn playability_uses_authored_home_and_keeps_strict_map_checks() {

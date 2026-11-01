@@ -2,9 +2,9 @@
 //! Geometric welding crosses texture seams; attribute islands remain separate.
 use crate::{mesh::SurfaceMeshData, open_people::PersonRig};
 use bevy::prelude::*;
-use std::collections::{BTreeSet, HashMap, HashSet};
 #[cfg(test)]
 use std::collections::BTreeMap;
+use std::collections::{BTreeSet, HashMap, HashSet};
 fn key(p: [f32; 3]) -> [i32; 3] {
     p.map(|v| (v * 100_000.0).round() as i32)
 }
@@ -29,25 +29,31 @@ pub(crate) fn smooth(
                 > 0.85
         })
         .collect();
-    smooth_selection(mesh,ids,weights,&selected);
+    smooth_selection(mesh, ids, weights, &selected);
     // Pinning the wrist geometry must not retain a stale normal on the hand
     // side of that boundary. Shade the refined surface across geometric UV
     // welds, while leaving every non-hand vertex's normal untouched.
     let mut normals = HashMap::<[i32; 3], Vec3>::new();
     for face in mesh.indices.chunks_exact(3) {
         let p = [face[0], face[1], face[2]].map(|i| Vec3::from_array(mesh.positions[i as usize]));
-        let n = (p[1]-p[0]).cross(p[2]-p[0]).normalize_or_zero();
+        let n = (p[1] - p[0]).cross(p[2] - p[0]).normalize_or_zero();
         for corner in 0..3 {
-            let a = (p[(corner+1)%3]-p[corner]).normalize_or_zero();
-            let b = (p[(corner+2)%3]-p[corner]).normalize_or_zero();
-            *normals.entry(key(p[corner].to_array())).or_default() += n * a.dot(b).clamp(-1.0,1.0).acos();
+            let a = (p[(corner + 1) % 3] - p[corner]).normalize_or_zero();
+            let b = (p[(corner + 2) % 3] - p[corner]).normalize_or_zero();
+            *normals.entry(key(p[corner].to_array())).or_default() +=
+                n * a.dot(b).clamp(-1.0, 1.0).acos();
         }
     }
     for i in 0..mesh.positions.len() {
-        let hand = (0..4).filter(|&slot| groups.contains(&(ids[i][slot] as usize)))
-            .map(|slot| weights[i][slot]).sum::<f32>() > 0.85;
+        let hand = (0..4)
+            .filter(|&slot| groups.contains(&(ids[i][slot] as usize)))
+            .map(|slot| weights[i][slot])
+            .sum::<f32>()
+            > 0.85;
         if hand {
-            mesh.normals[i] = normals[&key(mesh.positions[i])].normalize_or_zero().to_array();
+            mesh.normals[i] = normals[&key(mesh.positions[i])]
+                .normalize_or_zero()
+                .to_array();
         }
     }
 }
@@ -56,8 +62,8 @@ pub(crate) fn smooth(
 /// islands and the original skin palette remain separate from geometric welds.
 pub(crate) fn smooth_selection(
     mesh: &mut SurfaceMeshData,
-    ids: &mut Vec<[u16;4]>,
-    weights: &mut Vec<[f32;4]>,
+    ids: &mut Vec<[u16; 4]>,
+    weights: &mut Vec<[f32; 4]>,
     selected: &[bool],
 ) {
     refine_selection(mesh, ids, weights, selected, false, 0.55, 0., None);
@@ -68,8 +74,8 @@ pub(crate) fn smooth_selection(
 /// during skinning, even when the bind-pose surface appears joined.
 pub(crate) fn smooth_selection_joined(
     mesh: &mut SurfaceMeshData,
-    ids: &mut Vec<[u16;4]>,
-    weights: &mut Vec<[f32;4]>,
+    ids: &mut Vec<[u16; 4]>,
+    weights: &mut Vec<[f32; 4]>,
     selected: &[bool],
 ) {
     refine_selection(mesh, ids, weights, selected, true, 0.55, 0., None);
@@ -91,8 +97,8 @@ pub(crate) fn round_selection_joined(
 /// Add joined, collinear edges without rounding positions or moving artwork.
 pub(crate) fn linear_selection_joined(
     mesh: &mut SurfaceMeshData,
-    ids: &mut Vec<[u16;4]>,
-    weights: &mut Vec<[f32;4]>,
+    ids: &mut Vec<[u16; 4]>,
+    weights: &mut Vec<[f32; 4]>,
     selected: &[bool],
 ) {
     refine_selection(mesh, ids, weights, selected, true, 0.0, 0., None);
@@ -101,40 +107,61 @@ pub(crate) fn linear_selection_joined(
 /// Carry an unchanged decision surface through the same linear edge splits.
 /// Sculpting can then retain its original tessellation and attribute islands.
 pub(crate) fn linear_selection_joined_reference(
-    mesh: &mut SurfaceMeshData, ids: &mut Vec<[u16;4]>, weights: &mut Vec<[f32;4]>,
-    selected: &[bool], reference: &mut Vec<[f32;3]>,
+    mesh: &mut SurfaceMeshData,
+    ids: &mut Vec<[u16; 4]>,
+    weights: &mut Vec<[f32; 4]>,
+    selected: &[bool],
+    reference: &mut Vec<[f32; 3]>,
 ) {
-    refine_selection(mesh,ids,weights,selected,true,0.,0.,Some(reference));
+    refine_selection(mesh, ids, weights, selected, true, 0., 0., Some(reference));
 }
 
 fn refine_selection(
     mesh: &mut SurfaceMeshData,
-    ids: &mut Vec<[u16;4]>,
-    weights: &mut Vec<[f32;4]>,
+    ids: &mut Vec<[u16; 4]>,
+    weights: &mut Vec<[f32; 4]>,
     selected: &[bool],
     join_boundary: bool,
     rounding: f32,
     minimum_edge: f32,
-    mut reference: Option<&mut Vec<[f32;3]>>,
+    mut reference: Option<&mut Vec<[f32; 3]>>,
 ) {
-    let _trace = crate::loading_trace::span("actor.refine_surface", || serde_json::json!({
+    let _trace = crate::loading_trace::span("actor.refine_surface", || {
+        serde_json::json!({
         "vertices":mesh.positions.len(), "triangles":mesh.indices.len()/3,
-        "selected":selected.iter().filter(|&&v|v).count(), "joined":join_boundary}));
+        "selected":selected.iter().filter(|&&v|v).count(), "joined":join_boundary})
+    });
     let old = mesh.indices.clone();
     let original = mesh.positions.clone();
-    let decision_points=reference.as_ref().map(|p|p.as_slice()).unwrap_or(&original);
-    assert_eq!(decision_points.len(),original.len(),"refinement reference lost its vertices");
-    let original_keys = decision_points.iter().map(|&p|key(p)).collect::<Vec<_>>();
+    let decision_points = reference
+        .as_ref()
+        .map(|p| p.as_slice())
+        .unwrap_or(&original);
+    assert_eq!(
+        decision_points.len(),
+        original.len(),
+        "refinement reference lost its vertices"
+    );
+    let original_keys = decision_points.iter().map(|&p| key(p)).collect::<Vec<_>>();
     // Lookup order has no geometric meaning. Neighbor sums keep their ordered
     // set so changing the outer tables cannot change floating-point results.
     let mut adjacent = HashMap::<[i32; 3], BTreeSet<[i32; 3]>>::new();
-    let target_pins = original.len() >= 16_384
-        && selected.iter().filter(|&&v| v).count() < original.len() / 4;
+    let target_pins =
+        original.len() >= 16_384 && selected.iter().filter(|&&v| v).count() < original.len() / 4;
     let selected_keys = if target_pins {
-        original_keys.iter().zip(selected).filter_map(|(&key, &selected)| selected.then_some(key))
+        original_keys
+            .iter()
+            .zip(selected)
+            .filter_map(|(&key, &selected)| selected.then_some(key))
             .collect::<HashSet<_>>()
-    } else { HashSet::new() };
-    let mut pinned_original = if target_pins { vec![false; original.len()] } else { Vec::new() };
+    } else {
+        HashSet::new()
+    };
+    let mut pinned_original = if target_pins {
+        vec![false; original.len()]
+    } else {
+        Vec::new()
+    };
     let mut pinned = HashSet::new();
     let mut points = HashMap::new();
     let mut edge_faces = HashMap::<([i32; 3], [i32; 3]), Vec<[i32; 3]>>::new();
@@ -142,8 +169,13 @@ fn refine_selection(
         let face = [face[0] as usize, face[1] as usize, face[2] as usize];
         let keys = face.map(|i| original_keys[i]);
         if !face.iter().all(|&i| selected[i]) {
-            if target_pins { for i in face { pinned_original[i] = true; } }
-            else { pinned.extend(keys); }
+            if target_pins {
+                for i in face {
+                    pinned_original[i] = true;
+                }
+            } else {
+                pinned.extend(keys);
+            }
             continue;
         }
         for i in 0..3 {
@@ -165,7 +197,9 @@ fn refine_selection(
         // A compact vertex mask retains every other original pin for the
         // later check of newly created midpoint coincidences.
         for (i, &key) in original_keys.iter().enumerate() {
-            if pinned_original[i] && selected_keys.contains(&key) { pinned.insert(key); }
+            if pinned_original[i] && selected_keys.contains(&key) {
+                pinned.insert(key);
+            }
         }
     }
     for (&(a, b), faces) in &edge_faces {
@@ -208,8 +242,10 @@ fn refine_selection(
             let ka = original_keys[a as usize];
             let kb = original_keys[b as usize];
             (whole || (join_boundary && edge_faces.contains_key(&(ka.min(kb), ka.max(kb)))))
-                && (minimum_edge == 0. || Vec3::from_array(original[a as usize])
-                    .distance_squared(Vec3::from_array(original[b as usize])) > minimum_edge.powi(2))
+                && (minimum_edge == 0.
+                    || Vec3::from_array(original[a as usize])
+                        .distance_squared(Vec3::from_array(original[b as usize]))
+                        > minimum_edge.powi(2))
         });
         if !split.iter().any(|&split| split) {
             mesh.indices.extend_from_slice(face);
@@ -231,8 +267,8 @@ fn refine_selection(
                     straight
                 };
                 let index = mesh.positions.len() as u32;
-                if let Some(reference)=reference.as_deref_mut() {
-                    let p=(Vec3::from_array(reference[a])+Vec3::from_array(reference[b]))*0.5;
+                if let Some(reference) = reference.as_deref_mut() {
+                    let p = (Vec3::from_array(reference[a]) + Vec3::from_array(reference[b])) * 0.5;
                     reference.push(p.to_array());
                 }
                 mesh.positions.push(p.to_array());
@@ -288,18 +324,27 @@ fn refine_selection(
             }
             3 => {
                 let [ab, bc, ca] = mids.map(Option::unwrap);
-                mesh.indices.extend([a, ab, ca, ab, b, bc, ca, bc, c, ab, bc, ca]);
+                mesh.indices
+                    .extend([a, ab, ca, ab, b, bc, ca, bc, c, ab, bc, ca]);
             }
             _ => unreachable!(),
         }
     }
     // Linear refinement did not change the surface. Keep its authored normal
     // field, including the interpolated normals on newly split edges.
-    if rounding == 0.0 { return; }
+    if rounding == 0.0 {
+        return;
+    }
     if target_pins {
-        let new_keys = mesh.positions[original.len()..].iter().copied().map(key).collect::<HashSet<_>>();
+        let new_keys = mesh.positions[original.len()..]
+            .iter()
+            .copied()
+            .map(key)
+            .collect::<HashSet<_>>();
         for (i, &key) in original_keys.iter().enumerate() {
-            if pinned_original[i] && new_keys.contains(&key) { pinned.insert(key); }
+            if pinned_original[i] && new_keys.contains(&key) {
+                pinned.insert(key);
+            }
         }
     }
     if mesh.positions.len() < 16_384 {
@@ -307,16 +352,26 @@ fn refine_selection(
         // than the original normal scan.
         let mut normals = HashMap::<[i32; 3], Vec3>::new();
         for face in mesh.indices.chunks_exact(3) {
-            let p = [face[0], face[1], face[2]].map(|i| Vec3::from_array(mesh.positions[i as usize]));
+            let p =
+                [face[0], face[1], face[2]].map(|i| Vec3::from_array(mesh.positions[i as usize]));
             let n = (p[1] - p[0]).cross(p[2] - p[0]);
-            for &i in face { *normals.entry(key(mesh.positions[i as usize])).or_default() += n; }
+            for &i in face {
+                *normals.entry(key(mesh.positions[i as usize])).or_default() += n;
+            }
         }
         for i in 0..mesh.positions.len() {
             if (i >= selected.len() || selected[i])
-                && !pinned.contains(&original_keys.get(i).copied().unwrap_or_else(|| key(mesh.positions[i])))
+                && !pinned.contains(
+                    &original_keys
+                        .get(i)
+                        .copied()
+                        .unwrap_or_else(|| key(mesh.positions[i])),
+                )
             {
                 if let Some(n) = normals.get(&key(mesh.positions[i])) {
-                    if n.length_squared() > 1e-12 { mesh.normals[i] = n.normalize().to_array(); }
+                    if n.length_squared() > 1e-12 {
+                        mesh.normals[i] = n.normalize().to_array();
+                    }
                 }
             }
         }
@@ -326,24 +381,35 @@ fn refine_selection(
     // every face contributing to their geometric welds, but avoid accumulating
     // normals for the hundreds of thousands of unrelated costume vertices.
     let current_keys = mesh.positions.iter().copied().map(key).collect::<Vec<_>>();
-    let update_normal = (0..mesh.positions.len()).map(|i|
-        (i >= selected.len() || selected[i])
-            && !pinned.contains(&original_keys.get(i).copied().unwrap_or(current_keys[i])))
+    let update_normal = (0..mesh.positions.len())
+        .map(|i| {
+            (i >= selected.len() || selected[i])
+                && !pinned.contains(&original_keys.get(i).copied().unwrap_or(current_keys[i]))
+        })
         .collect::<Vec<_>>();
-    let needed = current_keys.iter().zip(&update_normal)
-        .filter_map(|(&key, &update)| update.then_some(key)).collect::<HashSet<_>>();
-    if needed.is_empty() { return; }
+    let needed = current_keys
+        .iter()
+        .zip(&update_normal)
+        .filter_map(|(&key, &update)| update.then_some(key))
+        .collect::<HashSet<_>>();
+    if needed.is_empty() {
+        return;
+    }
     // Small/densely selected surfaces cost less to accumulate directly.
     let targeted = current_keys.len() >= 16_384 && needed.len() < current_keys.len() / 4;
     let mut normals = HashMap::<[i32; 3], Vec3>::new();
     for face in mesh.indices.chunks_exact(3) {
         let keys = [face[0], face[1], face[2]].map(|i| current_keys[i as usize]);
-        if targeted && !keys.iter().any(|key| needed.contains(key)) { continue; }
+        if targeted && !keys.iter().any(|key| needed.contains(key)) {
+            continue;
+        }
         let p = [face[0], face[1], face[2]].map(|i| Vec3::from_array(mesh.positions[i as usize]));
         let n = (p[1] - p[0]).cross(p[2] - p[0]);
         // Retain the original face and corner order of all floating-point sums.
         for key in keys {
-            if !targeted || needed.contains(&key) { *normals.entry(key).or_default() += n; }
+            if !targeted || needed.contains(&key) {
+                *normals.entry(key).or_default() += n;
+            }
         }
     }
     for (i, &update) in update_normal.iter().enumerate() {
@@ -365,49 +431,80 @@ mod tests {
         // Two triangles share a diagonal through separate UV islands and
         // different joint influences at its ends. Only the first is rounded.
         let mut mesh = SurfaceMeshData {
-            positions: vec![[0.,0.,0.], [1.,0.,0.], [0.,1.,0.],
-                [1.,0.,0.], [1.,1.,0.], [0.,1.,0.]],
-            normals: vec![[0.,0.,1.]; 6],
-            colors: vec![[1.;4]; 6],
-            uvs: vec![[0.,0.], [1.,0.], [0.,1.], [0.2,0.], [1.,1.], [0.,0.2]],
-            indices: vec![0,1,2,3,4,5],
+            positions: vec![
+                [0., 0., 0.],
+                [1., 0., 0.],
+                [0., 1., 0.],
+                [1., 0., 0.],
+                [1., 1., 0.],
+                [0., 1., 0.],
+            ],
+            normals: vec![[0., 0., 1.]; 6],
+            colors: vec![[1.; 4]; 6],
+            uvs: vec![[0., 0.], [1., 0.], [0., 1.], [0.2, 0.], [1., 1.], [0., 0.2]],
+            indices: vec![0, 1, 2, 3, 4, 5],
             ..Default::default()
         };
-        let mut ids = vec![[0,1,0,0];6];
-        let mut weights = vec![[1.,0.,0.,0.], [0.,1.,0.,0.], [1.,0.,0.,0.],
-            [0.,1.,0.,0.], [0.,1.,0.,0.], [1.,0.,0.,0.]];
-        smooth_selection_joined(&mut mesh, &mut ids, &mut weights,
-            &[true,true,true,false,false,false]);
+        let mut ids = vec![[0, 1, 0, 0]; 6];
+        let mut weights = vec![
+            [1., 0., 0., 0.],
+            [0., 1., 0., 0.],
+            [1., 0., 0., 0.],
+            [0., 1., 0., 0.],
+            [0., 1., 0., 0.],
+            [1., 0., 0., 0.],
+        ];
+        smooth_selection_joined(
+            &mut mesh,
+            &mut ids,
+            &mut weights,
+            &[true, true, true, false, false, false],
+        );
         let mut edges = BTreeMap::new();
         for face in mesh.indices.chunks_exact(3) {
-            let p = [face[0],face[1],face[2]]
-                .map(|i| Vec3::from_array(mesh.positions[i as usize]));
-            assert!((p[1]-p[0]).cross(p[2]-p[0]).z > 0., "reversed or degenerate face");
-            for (a,b) in [(0,1),(1,2),(2,0)] {
-                let a=key(p[a].to_array()); let b=key(p[b].to_array());
-                *edges.entry((a.min(b),a.max(b))).or_insert(0) += 1;
+            let p =
+                [face[0], face[1], face[2]].map(|i| Vec3::from_array(mesh.positions[i as usize]));
+            assert!(
+                (p[1] - p[0]).cross(p[2] - p[0]).z > 0.,
+                "reversed or degenerate face"
+            );
+            for (a, b) in [(0, 1), (1, 2), (2, 0)] {
+                let a = key(p[a].to_array());
+                let b = key(p[b].to_array());
+                *edges.entry((a.min(b), a.max(b))).or_insert(0) += 1;
             }
         }
-        for ((a,b),count) in edges {
+        for ((a, b), count) in edges {
             if count == 1 {
-                assert!((a[0]==b[0] && [0,100_000].contains(&a[0]))
-                    || (a[1]==b[1] && [0,100_000].contains(&a[1])),
-                    "open interior edge across refined boundary: {a:?} {b:?}");
-            } else { assert_eq!(count,2,"non-manifold refined surface"); }
+                assert!(
+                    (a[0] == b[0] && [0, 100_000].contains(&a[0]))
+                        || (a[1] == b[1] && [0, 100_000].contains(&a[1])),
+                    "open interior edge across refined boundary: {a:?} {b:?}"
+                );
+            } else {
+                assert_eq!(count, 2, "non-manifold refined surface");
+            }
         }
         for step in 0..16 {
             let moving = Mat4::from_rotation_y(step as f32 * 0.1)
-                * Mat4::from_translation(Vec3::new(0.2,0.1,0.));
+                * Mat4::from_translation(Vec3::new(0.2, 0.1, 0.));
             let mut welded = BTreeMap::new();
-            for (i,&p) in mesh.positions.iter().enumerate() {
-                let p3=Vec3::from_array(p);
-                let deformed=(0..4).map(|slot| {
-                    if ids[i][slot]==0 { p3*weights[i][slot] }
-                    else { moving.transform_point3(p3)*weights[i][slot] }
-                }).sum::<Vec3>();
-                if let Some(previous) = welded.insert(key(p),deformed) {
-                    assert!(previous.distance(deformed)<0.000001,
-                        "UV copies separate during skinning at step {step}");
+            for (i, &p) in mesh.positions.iter().enumerate() {
+                let p3 = Vec3::from_array(p);
+                let deformed = (0..4)
+                    .map(|slot| {
+                        if ids[i][slot] == 0 {
+                            p3 * weights[i][slot]
+                        } else {
+                            moving.transform_point3(p3) * weights[i][slot]
+                        }
+                    })
+                    .sum::<Vec3>();
+                if let Some(previous) = welded.insert(key(p), deformed) {
+                    assert!(
+                        previous.distance(deformed) < 0.000001,
+                        "UV copies separate during skinning at step {step}"
+                    );
                 }
             }
         }

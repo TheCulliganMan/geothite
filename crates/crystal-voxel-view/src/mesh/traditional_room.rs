@@ -8,13 +8,23 @@ pub(super) struct Placement {
     resolved: source::Match,
 }
 impl Placement {
-    pub(super) fn owns_jump_edge(&self,edge:&crystal_render_api::VisualJumpLedge,
-        origin:[i32;2])->bool {
-        let p=&self.resolved;
-        if p.kind!=Kind::Theater {return false;}
-        let west=origin[0]+p.column as i32;let north=origin[1]+p.row as i32;
-        [edge.start,edge.end].iter().all(|v|v.x>=west&&v.x<=west+p.width as i32
-            &&v.y>=north&&v.y<=north+p.height as i32)
+    pub(super) fn owns_jump_edge(
+        &self,
+        edge: &crystal_render_api::VisualJumpLedge,
+        origin: [i32; 2],
+    ) -> bool {
+        let p = &self.resolved;
+        if p.kind != Kind::Theater {
+            return false;
+        }
+        let west = origin[0] + p.column as i32;
+        let north = origin[1] + p.row as i32;
+        [edge.start, edge.end].iter().all(|v| {
+            v.x >= west
+                && v.x <= west + p.width as i32
+                && v.y >= north
+                && v.y <= north + p.height as i32
+        })
     }
     pub(super) fn indices(&self, w: usize) -> impl Iterator<Item = usize> + '_ {
         self.resolved.indices(w)
@@ -140,12 +150,16 @@ pub(super) fn append(
     let scale = g.tile_height / SOURCE_TILE_HEIGHT;
     let (west, _, north, _) = g.bounds(p.column, p.row);
     if p.kind == Kind::Theater {
-        let diagnostic=std::env::var("CRYSTAL_THEATER_SURFACE_DIAGNOSTIC").unwrap_or_default();
+        let diagnostic = std::env::var("CRYSTAL_THEATER_SURFACE_DIAGNOSTIC").unwrap_or_default();
         // Entire top stays precisely 8px high, including source access columns.
-        let uv=g.uv(p.column,p.row+2);
-        let sample=|x:f32,y:f32|[uv.0+(uv.1-uv.0)*(x+0.5)/8.,
-            uv.2+(uv.3-uv.2)*(y+0.5)/8.];
-        let first_index=mesh.textured.indices.len();
+        let uv = g.uv(p.column, p.row + 2);
+        let sample = |x: f32, y: f32| {
+            [
+                uv.0 + (uv.1 - uv.0) * (x + 0.5) / 8.,
+                uv.2 + (uv.3 - uv.2) * (y + 0.5) / 8.,
+            ]
+        };
+        let first_index = mesh.textured.indices.len();
         if !crate::dungeon_models::traditional_model(1).append_native_theater_stage(
             &mut mesh.textured,
             [
@@ -155,35 +169,72 @@ pub(super) fn append(
                 north + 10. * g.tile_height,
             ],
             8. * scale,
-            [sample(0.,2.),sample(1.,1.),sample(0.,0.)],
-        ) {return false;}
+            [sample(0., 2.), sample(1., 1.), sample(0., 0.)],
+        ) {
+            return false;
+        }
         // The original coarse cap includes exposed foundation faces. Replace
         // its upward triangles with one level timber finish, retaining the
         // closed foundation, sides, access relief and authoritative support.
-        let cap=mesh.textured.indices.split_off(first_index);
+        let cap = mesh.textured.indices.split_off(first_index);
         for triangle in cap.chunks_exact(3) {
-            let upward=triangle.iter().all(|&i|mesh.textured.normals[i as usize][1]>0.5);
-            let thin_cap=triangle.iter().all(|&i|mesh.textured.positions[i as usize][1]>=7.79*scale);
-            if !upward&&!thin_cap&&diagnostic!="omit_base" {
+            let upward = triangle
+                .iter()
+                .all(|&i| mesh.textured.normals[i as usize][1] > 0.5);
+            let thin_cap = triangle
+                .iter()
+                .all(|&i| mesh.textured.positions[i as usize][1] >= 7.79 * scale);
+            if !upward && !thin_cap && diagnostic != "omit_base" {
                 mesh.textured.indices.extend_from_slice(triangle);
             }
         }
-        let top=8.*scale;
-        if diagnostic!="omit_cap" {for row in 0..10 {for column in 0..24 {
-            let x0=west+column as f32*g.tile_width;let z0=north+row as f32*g.tile_height;
-            let joint=(column+row*2)%6==0;
-            let xs=if joint {vec![0.,0.025,0.05,1.]}else{vec![0.,0.5,1.]};
-            super::modeled_interiors::native_source_surface_patches(&mut mesh.textured,
-                &xs,&[0.,0.025,0.05,0.5,0.95,0.975,1.],
-                |x,z|[x0+x*g.tile_width,top-if z==0.025||z==0.975
-                    ||joint&&x==0.025 {0.025*scale}else{0.},z0+z*g.tile_height],
-                |_,_|sample(0.,2.),
-                |x,z|if z<0.05||z>0.95||joint&&x<0.05 {0.72}
-                    else {0.96+0.025*((column as f32+x)*7.+z*19.).sin()},true);
-        }}}
-        let screen=g.uv(p.column,p.row);
-        let screen_sample=|x:f32,y:f32|[screen.0+(screen.1-screen.0)*(x+0.5)/8.,
-            screen.2+(screen.3-screen.2)*(y+0.5)/8.];
+        let top = 8. * scale;
+        if diagnostic != "omit_cap" {
+            for row in 0..10 {
+                for column in 0..24 {
+                    let x0 = west + column as f32 * g.tile_width;
+                    let z0 = north + row as f32 * g.tile_height;
+                    let joint = (column + row * 2) % 6 == 0;
+                    let xs = if joint {
+                        vec![0., 0.025, 0.05, 1.]
+                    } else {
+                        vec![0., 0.5, 1.]
+                    };
+                    super::modeled_interiors::native_source_surface_patches(
+                        &mut mesh.textured,
+                        &xs,
+                        &[0., 0.025, 0.05, 0.5, 0.95, 0.975, 1.],
+                        |x, z| {
+                            [
+                                x0 + x * g.tile_width,
+                                top - if z == 0.025 || z == 0.975 || joint && x == 0.025 {
+                                    0.025 * scale
+                                } else {
+                                    0.
+                                },
+                                z0 + z * g.tile_height,
+                            ]
+                        },
+                        |_, _| sample(0., 2.),
+                        |x, z| {
+                            if z < 0.05 || z > 0.95 || joint && x < 0.05 {
+                                0.72
+                            } else {
+                                0.96 + 0.025 * ((column as f32 + x) * 7. + z * 19.).sin()
+                            }
+                        },
+                        true,
+                    );
+                }
+            }
+        }
+        let screen = g.uv(p.column, p.row);
+        let screen_sample = |x: f32, y: f32| {
+            [
+                screen.0 + (screen.1 - screen.0) * (x + 0.5) / 8.,
+                screen.2 + (screen.3 - screen.2) * (y + 0.5) / 8.,
+            ]
+        };
         if !crate::dungeon_models::traditional_model(2).append_native_theater_backdrop(
             &mut mesh.textured,
             [
@@ -194,8 +245,14 @@ pub(super) fn append(
             ],
             8. * scale,
             16. * scale,
-            [screen_sample(0.,0.),screen_sample(1.,1.),screen_sample(4.,5.)],
-        ) {return false;}
+            [
+                screen_sample(0., 0.),
+                screen_sample(1., 1.),
+                screen_sample(4., 5.),
+            ],
+        ) {
+            return false;
+        }
     } else {
         let uv = g.uv(p.ground % g.width, p.ground / g.width);
         for i in p.indices(g.width) {

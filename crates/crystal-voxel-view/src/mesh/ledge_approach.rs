@@ -16,16 +16,29 @@ fn bank(source: &VisualTileSource) -> bool {
 /// Broad phase for detached source groves. The shaping pass can inspect the
 /// adjacent cell, half-unit base probes and the quarter-cell south lip. Two
 /// full cells conservatively contain all of those lookups and tolerances.
-pub(super) fn grove_bank_regions(cells: &[VisualTile], g: &GridGeometry) -> Vec<[f32;4]> {
-    cells.iter().enumerate().filter(|(_,cell)| bank(&cell.source)).map(|(i,_)| {
-        let (w,e,n,s) = g.bounds(i%g.width,i/g.width);
-        [w-g.tile_width*2.,e+g.tile_width*2.,n-g.tile_height*2.,s+g.tile_height*2.]
-    }).collect()
+pub(super) fn grove_bank_regions(cells: &[VisualTile], g: &GridGeometry) -> Vec<[f32; 4]> {
+    cells
+        .iter()
+        .enumerate()
+        .filter(|(_, cell)| bank(&cell.source))
+        .map(|(i, _)| {
+            let (w, e, n, s) = g.bounds(i % g.width, i / g.width);
+            [
+                w - g.tile_width * 2.,
+                e + g.tile_width * 2.,
+                n - g.tile_height * 2.,
+                s + g.tile_height * 2.,
+            ]
+        })
+        .collect()
 }
-pub(super) fn grove_may_touch_bank(bounds: (Vec3,Vec3), regions: &[[f32;4]]) -> bool {
-    if !bounds.0.is_finite() || !bounds.1.is_finite() { return true; }
-    regions.iter().any(|&[w,e,n,s]|
-        bounds.1.x>=w && bounds.0.x<=e && bounds.1.z>=n && bounds.0.z<=s)
+pub(super) fn grove_may_touch_bank(bounds: (Vec3, Vec3), regions: &[[f32; 4]]) -> bool {
+    if !bounds.0.is_finite() || !bounds.1.is_finite() {
+        return true;
+    }
+    regions.iter().any(|&[w, e, n, s]| {
+        bounds.1.x >= w && bounds.0.x <= e && bounds.1.z >= n && bounds.0.z <= s
+    })
 }
 
 /// Heights at west/north, west/south, east/south, east/north after the
@@ -93,10 +106,16 @@ pub(super) fn shape_approaches(
         // Kanto banks retain source ownership for directed terrace replacement.
         // Without authored edges they keep their original geometry; consume
         // only the temporary tag before the material/batching boundary.
-        for surface in [&mut mesh.solid,&mut mesh.textured,
-            &mut mesh.animated_solid,&mut mesh.animated_textured] {
-            for (position,uv) in surface.positions.iter().zip(&mut surface.uvs) {
-                if uv[0]==BANK_OWNER_UV {*uv=new_bark::ledge_finish::cliff_material_uv(*position,g,origin);}
+        for surface in [
+            &mut mesh.solid,
+            &mut mesh.textured,
+            &mut mesh.animated_solid,
+            &mut mesh.animated_textured,
+        ] {
+            for (position, uv) in surface.positions.iter().zip(&mut surface.uvs) {
+                if uv[0] == BANK_OWNER_UV {
+                    *uv = new_bark::ledge_finish::cliff_material_uv(*position, g, origin);
+                }
             }
         }
         return;
@@ -159,7 +178,12 @@ pub(super) fn mark_bank_surface(s: &mut SurfaceMeshData, first: usize, owner: us
     s.uvs[first..].fill([BANK_OWNER_UV, owner as f32]);
 }
 
-fn shape_surface(s: &mut SurfaceMeshData, cells: &[&VisualTile], g: &GridGeometry, origin:[i32;2]) {
+fn shape_surface(
+    s: &mut SurfaceMeshData,
+    cells: &[&VisualTile],
+    g: &GridGeometry,
+    origin: [i32; 2],
+) {
     let original = s.positions.clone();
     let mut changed = vec![false; original.len()];
     let mut toe_blend = vec![None; original.len()];
@@ -173,7 +197,9 @@ fn shape_surface(s: &mut SurfaceMeshData, cells: &[&VisualTile], g: &GridGeometr
         ];
         let p = ids.map(|i| Vec3::from_array(original[i]));
         let n = Vec3::from_array(s.normals[ids[0]]);
-        let source_owner = ids.iter().all(|&i| s.uvs[i][0] == BANK_OWNER_UV)
+        let source_owner = ids
+            .iter()
+            .all(|&i| s.uvs[i][0] == BANK_OWNER_UV)
             .then(|| s.uvs[ids[0]][1] as usize)
             .filter(|&i| i < cells.len() && bank(&cells[i].source));
         let center = (p[0] + p[1] + p[2]) / 3.0 - n * 0.001;
@@ -188,8 +214,8 @@ fn shape_surface(s: &mut SurfaceMeshData, cells: &[&VisualTile], g: &GridGeometr
         // A relieved cliff face can protrude across the bank's cell boundary.
         // Its centroid may therefore belong to the bank even though its high
         // vertices belong to the cliff. Lower its base and retain its top.
-        let mut boundary_wall = source_owner.is_none()
-            && n.y.abs() < 0.9 && p.iter().any(|v| v.y > h + 2.0);
+        let mut boundary_wall =
+            source_owner.is_none() && n.y.abs() < 0.9 && p.iter().any(|v| v.y > h + 2.0);
         // Native side bands can carry a painted normal which points into the
         // neighboring cell. Resolve a boundary wall from either side of its
         // plane rather than leaving the old vertical back of a bank standing.
@@ -256,11 +282,14 @@ fn shape_surface(s: &mut SurfaceMeshData, cells: &[&VisualTile], g: &GridGeometr
                 // differently before and after material tessellation.
                 let native = Vec3::from_array(s.normals[i]);
                 let vertical_scale = if v.y <= h { rise } else { 1. };
-                cap_normals[i] = Some(Vec3::new(
-                    native.x * vertical_scale,
-                    native.y,
-                    native.z * vertical_scale - native.y * v.y.min(h) / (4.0 * g.tile_height),
-                ).normalize());
+                cap_normals[i] = Some(
+                    Vec3::new(
+                        native.x * vertical_scale,
+                        native.y,
+                        native.z * vertical_scale - native.y * v.y.min(h) / (4.0 * g.tile_height),
+                    )
+                    .normalize(),
+                );
             }
             v.y = if v.y <= h {
                 v.y * rise
@@ -285,9 +314,9 @@ fn shape_surface(s: &mut SurfaceMeshData, cells: &[&VisualTile], g: &GridGeometr
             }
         }
     }
-    for (position,uv) in s.positions.iter().zip(&mut s.uvs) {
+    for (position, uv) in s.positions.iter().zip(&mut s.uvs) {
         if uv[0] == BANK_OWNER_UV {
-            *uv = new_bark::ledge_finish::cliff_material_uv(*position,g,origin);
+            *uv = new_bark::ledge_finish::cliff_material_uv(*position, g, origin);
         }
     }
     refresh_normals(s, &changed);
@@ -298,8 +327,10 @@ fn shape_surface(s: &mut SurfaceMeshData, cells: &[&VisualTile], g: &GridGeometr
     }
     for (i, blend) in toe_blend.into_iter().enumerate() {
         if let Some(t) = blend {
-            s.normals[i] = Vec3::Y.lerp(Vec3::from_array(s.normals[i]), t)
-                .normalize().to_array();
+            s.normals[i] = Vec3::Y
+                .lerp(Vec3::from_array(s.normals[i]), t)
+                .normalize()
+                .to_array();
         }
     }
 }
@@ -387,10 +418,14 @@ fn soften_lips_with_claims(
         bank(&cells[i].source)
             && cells[i].source.subtile_row == 3
             && !matches!(shapes[i], CellShape::RampEast { .. })
-            && claims.map_or_else(|| mesh
-                .authored_cells
-                .get(i)
-                .is_none_or(|claim| claim.is_none()), |claims| claims.unclaimed(i))
+            && claims.map_or_else(
+                || {
+                    mesh.authored_cells
+                        .get(i)
+                        .is_none_or(|claim| claim.is_none())
+                },
+                |claims| claims.unclaimed(i),
+            )
     };
     let interior = |i: usize| {
         let col = i % g.width;
@@ -411,8 +446,11 @@ fn soften_lips_with_claims(
             // Nearly constant recession still read as a machined straight
             // strip at 45 degrees. Shared half-cell knots keep the cap and
             // detailed face sealed while revealing shallow natural notches.
-            g.tile_height * 0.10 * (0.55 + (x * 1.31 + z * 0.73).sin() * 0.28
-                + meadow_noise(x * 0.83 + 17., z * 0.71 - 29.) * 0.30)
+            g.tile_height
+                * 0.10
+                * (0.55
+                    + (x * 1.31 + z * 0.73).sin() * 0.28
+                    + meadow_noise(x * 0.83 + 17., z * 0.71 - 29.) * 0.30)
         };
         rims[i] = Some((
             w,
@@ -461,7 +499,11 @@ fn soften_lips_with_claims(
             let shift = amplitude * edge * rise * rise;
             let dx = (knots[segment + 1] - knots[segment]) * 2. / (e - w);
             let dy = if p[1] <= h { 2. * rise / h } else { 0. };
-            let dz = if edge > 0. && p[2] <= south { 2. / g.tile_height } else { 0. };
+            let dz = if edge > 0. && p[2] <= south {
+                2. / g.tile_height
+            } else {
+                0.
+            };
             let a = -dx * edge * rise * rise;
             let b = -amplitude * edge * dy;
             let c = 1. - amplitude * dz * rise * rise;
@@ -472,7 +514,9 @@ fn soften_lips_with_claims(
                 c * normal.x - a * normal.z,
                 c * normal.y - b * normal.z,
                 normal.z,
-            ).normalize().to_array();
+            )
+            .normalize()
+            .to_array();
             p[2] -= shift;
         }
     }
@@ -484,44 +528,130 @@ mod normal_fields {
 
     #[test]
     fn grove_bank_broad_phase_keeps_exact_near_and_far_surfaces() {
-        let frame = super::super::tests::frame(4,4,(0..4).flat_map(|row|
-            (0..4).map(move |column| super::super::tests::source_with_tile(
-                0x56,column,row,if row==3 {0x4c} else {0x06}))).collect());
-        let cells=frame.tiles.iter().collect::<Vec<_>>();
-        let shapes=cells.iter().map(|cell|shape_for_source(&cell.source)).collect::<Vec<_>>();
-        let g=GridGeometry {width:4,height:4,tile_width:8.,tile_height:8.,origin_x:-16.,origin_z:-16.};
-        let regions=grove_bank_regions(&frame.tiles,&g);
+        let frame = super::super::tests::frame(
+            4,
+            4,
+            (0..4)
+                .flat_map(|row| {
+                    (0..4).map(move |column| {
+                        super::super::tests::source_with_tile(
+                            0x56,
+                            column,
+                            row,
+                            if row == 3 { 0x4c } else { 0x06 },
+                        )
+                    })
+                })
+                .collect(),
+        );
+        let cells = frame.tiles.iter().collect::<Vec<_>>();
+        let shapes = cells
+            .iter()
+            .map(|cell| shape_for_source(&cell.source))
+            .collect::<Vec<_>>();
+        let g = GridGeometry {
+            width: 4,
+            height: 4,
+            tile_width: 8.,
+            tile_height: 8.,
+            origin_x: -16.,
+            origin_z: -16.,
+        };
+        let regions = grove_bank_regions(&frame.tiles, &g);
         assert!(!regions.is_empty());
-        for bounds in [[-8.,8.,-8.,8.],[1000.,1016.,1000.,1016.]] {
-            let mut raw=TerrainMeshData::default();
-            crate::foliage::append_grove_tree(&mut raw,bounds,3.,8.,[8,12],[true,false,true,false]);
-            let low=raw.solid.positions.iter().map(|p|Vec3::from_array(*p)).fold(Vec3::splat(f32::INFINITY),Vec3::min);
-            let high=raw.solid.positions.iter().map(|p|Vec3::from_array(*p)).fold(Vec3::splat(f32::NEG_INFINITY),Vec3::max);
-            let touches=grove_may_touch_bank((low,high),&regions);
-            assert_eq!(touches,bounds[0]<100.);
-            let mut reference=raw.clone();
-            finish_detached_grove(&mut reference,&cells,&g,&shapes,[0,0]);
-            if touches {finish_detached_grove(&mut raw,&cells,&g,&shapes,[0,0]);}
-            assert_eq!(raw.solid.positions.iter().flatten().map(|v|v.to_bits()).collect::<Vec<_>>(),
-                reference.solid.positions.iter().flatten().map(|v|v.to_bits()).collect::<Vec<_>>());
-            assert_eq!(raw.solid.normals.iter().flatten().map(|v|v.to_bits()).collect::<Vec<_>>(),
-                reference.solid.normals.iter().flatten().map(|v|v.to_bits()).collect::<Vec<_>>());
-            assert_eq!(raw.solid.indices,reference.solid.indices);
+        for bounds in [[-8., 8., -8., 8.], [1000., 1016., 1000., 1016.]] {
+            let mut raw = TerrainMeshData::default();
+            crate::foliage::append_grove_tree(
+                &mut raw,
+                bounds,
+                3.,
+                8.,
+                [8, 12],
+                [true, false, true, false],
+            );
+            let low = raw
+                .solid
+                .positions
+                .iter()
+                .map(|p| Vec3::from_array(*p))
+                .fold(Vec3::splat(f32::INFINITY), Vec3::min);
+            let high = raw
+                .solid
+                .positions
+                .iter()
+                .map(|p| Vec3::from_array(*p))
+                .fold(Vec3::splat(f32::NEG_INFINITY), Vec3::max);
+            let touches = grove_may_touch_bank((low, high), &regions);
+            assert_eq!(touches, bounds[0] < 100.);
+            let mut reference = raw.clone();
+            finish_detached_grove(&mut reference, &cells, &g, &shapes, [0, 0]);
+            if touches {
+                finish_detached_grove(&mut raw, &cells, &g, &shapes, [0, 0]);
+            }
+            assert_eq!(
+                raw.solid
+                    .positions
+                    .iter()
+                    .flatten()
+                    .map(|v| v.to_bits())
+                    .collect::<Vec<_>>(),
+                reference
+                    .solid
+                    .positions
+                    .iter()
+                    .flatten()
+                    .map(|v| v.to_bits())
+                    .collect::<Vec<_>>()
+            );
+            assert_eq!(
+                raw.solid
+                    .normals
+                    .iter()
+                    .flatten()
+                    .map(|v| v.to_bits())
+                    .collect::<Vec<_>>(),
+                reference
+                    .solid
+                    .normals
+                    .iter()
+                    .flatten()
+                    .map(|v| v.to_bits())
+                    .collect::<Vec<_>>()
+            );
+            assert_eq!(raw.solid.indices, reference.solid.indices);
         }
     }
 
     #[test]
     fn shared_cap_normals_do_not_depend_on_material_tessellation() {
-        let frame = super::super::tests::frame(4, 4, (0..4).flat_map(|row| {
-            (0..4).map(move |column| super::super::tests::source_with_tile(
-                0x56, column, row, if row == 3 { 0x4c } else { 0x06 },
-            ))
-        }).collect());
+        let frame = super::super::tests::frame(
+            4,
+            4,
+            (0..4)
+                .flat_map(|row| {
+                    (0..4).map(move |column| {
+                        super::super::tests::source_with_tile(
+                            0x56,
+                            column,
+                            row,
+                            if row == 3 { 0x4c } else { 0x06 },
+                        )
+                    })
+                })
+                .collect(),
+        );
         let cells: Vec<_> = frame.tiles.iter().collect();
-        let shapes: Vec<_> = cells.iter().map(|cell| shape_for_source(&cell.source)).collect();
+        let shapes: Vec<_> = cells
+            .iter()
+            .map(|cell| shape_for_source(&cell.source))
+            .collect();
         let g = GridGeometry {
-            width: 4, height: 4, tile_width: 8., tile_height: 8.,
-            origin_x: -16., origin_z: -16.,
+            width: 4,
+            height: 4,
+            tile_width: 8.,
+            tile_height: 8.,
+            origin_x: -16.,
+            origin_z: -16.,
         };
         for height in [6., 6.012] {
             for origin in [[0, 0], [20, -11]] {
@@ -533,15 +663,29 @@ mod normal_fields {
                             for z in 0..steps {
                                 for x in 0..steps {
                                     let x0 = w + (e - w) * x as f32 / steps as f32;
-                                    let x1 = if x + 1 == steps { e }
-                                        else { w + (e - w) * (x + 1) as f32 / steps as f32 };
+                                    let x1 = if x + 1 == steps {
+                                        e
+                                    } else {
+                                        w + (e - w) * (x + 1) as f32 / steps as f32
+                                    };
                                     let z0 = n + (south - n) * z as f32 / steps as f32;
-                                    let z1 = if z + 1 == steps { south }
-                                        else { n + (south - n) * (z + 1) as f32 / steps as f32 };
-                                    append_quad_colors(&mut mesh.solid,
-                                        [[x0, height, z0], [x0, height, z1],
-                                            [x1, height, z1], [x1, height, z0]],
-                                        [0., 1., 0.], [[0.; 2]; 4], [[1.; 4]; 4]);
+                                    let z1 = if z + 1 == steps {
+                                        south
+                                    } else {
+                                        n + (south - n) * (z + 1) as f32 / steps as f32
+                                    };
+                                    append_quad_colors(
+                                        &mut mesh.solid,
+                                        [
+                                            [x0, height, z0],
+                                            [x0, height, z1],
+                                            [x1, height, z1],
+                                            [x1, height, z0],
+                                        ],
+                                        [0., 1., 0.],
+                                        [[0.; 2]; 4],
+                                        [[1.; 4]; 4],
+                                    );
                                 }
                             }
                         }
@@ -553,9 +697,15 @@ mod normal_fields {
                 let coarse = build(1);
                 let detailed = build(6);
                 for (position, normal) in coarse.solid.positions.iter().zip(&coarse.solid.normals) {
-                    assert!(detailed.solid.positions.iter().zip(&detailed.solid.normals)
-                        .any(|(p, n)| position == p && normal == n),
-                        "shared source corner {position:?} must retain its normal across detail levels");
+                    assert!(
+                        detailed
+                            .solid
+                            .positions
+                            .iter()
+                            .zip(&detailed.solid.normals)
+                            .any(|(p, n)| position == p && normal == n),
+                        "shared source corner {position:?} must retain its normal across detail levels"
+                    );
                     assert!((Vec3::from_array(*normal).length() - 1.).abs() < 0.00001);
                 }
             }
@@ -568,57 +718,116 @@ mod tests {
     use super::*;
     #[test]
     fn undirected_kanto_bank_clears_only_temporary_material_ownership() {
-        let mut source=super::super::tests::source_with_tile(0x07,0,0,0x2c);
-        source.tileset_id="kanto".into();
-        let frame=super::super::tests::frame(1,1,vec![source]);
-        let cells=frame.tiles.iter().collect::<Vec<_>>();
-        let g=GridGeometry {width:1,height:1,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
-        let mut mesh=TerrainMeshData {footing_heights:vec![6.],..Default::default()};
-        append_solid_quad(&mut mesh.solid,[[0.,0.,0.],[0.,6.,0.],[8.,6.,0.],[8.,0.,0.]],
-            [0.,0.,-1.],[0.4,0.3,0.2,1.]);
-        mark_bank_surface(&mut mesh.solid,0,0);
-        let before=mesh.solid.clone();
-        shape_approaches(&mut mesh,&cells,&g,&[CellShape::Flat],[0,0]);
-        assert_eq!(mesh.solid.positions,before.positions);assert_eq!(mesh.solid.normals,before.normals);
-        assert_eq!(mesh.solid.colors,before.colors);assert_eq!(mesh.solid.indices,before.indices);
-        assert!(mesh.solid.positions.iter().zip(&mesh.solid.uvs).all(|(p,uv)|
-            *uv==new_bark::ledge_finish::cliff_material_uv(*p,&g,[0,0])));assert_eq!(mesh.footing_heights,[6.]);
+        let mut source = super::super::tests::source_with_tile(0x07, 0, 0, 0x2c);
+        source.tileset_id = "kanto".into();
+        let frame = super::super::tests::frame(1, 1, vec![source]);
+        let cells = frame.tiles.iter().collect::<Vec<_>>();
+        let g = GridGeometry {
+            width: 1,
+            height: 1,
+            tile_width: 8.,
+            tile_height: 8.,
+            origin_x: 0.,
+            origin_z: 0.,
+        };
+        let mut mesh = TerrainMeshData {
+            footing_heights: vec![6.],
+            ..Default::default()
+        };
+        append_solid_quad(
+            &mut mesh.solid,
+            [[0., 0., 0.], [0., 6., 0.], [8., 6., 0.], [8., 0., 0.]],
+            [0., 0., -1.],
+            [0.4, 0.3, 0.2, 1.],
+        );
+        mark_bank_surface(&mut mesh.solid, 0, 0);
+        let before = mesh.solid.clone();
+        shape_approaches(&mut mesh, &cells, &g, &[CellShape::Flat], [0, 0]);
+        assert_eq!(mesh.solid.positions, before.positions);
+        assert_eq!(mesh.solid.normals, before.normals);
+        assert_eq!(mesh.solid.colors, before.colors);
+        assert_eq!(mesh.solid.indices, before.indices);
+        assert!(
+            mesh.solid
+                .positions
+                .iter()
+                .zip(&mesh.solid.uvs)
+                .all(|(p, uv)| *uv == new_bark::ledge_finish::cliff_material_uv(*p, &g, [0, 0]))
+        );
+        assert_eq!(mesh.footing_heights, [6.]);
     }
 
     #[test]
     fn relieved_bank_sod_follows_its_source_without_extra_upright_foliage() {
-        let frame = super::super::tests::frame(2, 4, (0..4).flat_map(|row| {
-            [super::super::tests::source_with_tile(0x56, 1, row,
-                if row == 3 { 0x4c } else { 0x06 }),
-             super::super::tests::source_with_tile(0x01, 0, 0, 0x01)]
-        }).collect());
+        let frame = super::super::tests::frame(
+            2,
+            4,
+            (0..4)
+                .flat_map(|row| {
+                    [
+                        super::super::tests::source_with_tile(
+                            0x56,
+                            1,
+                            row,
+                            if row == 3 { 0x4c } else { 0x06 },
+                        ),
+                        super::super::tests::source_with_tile(0x01, 0, 0, 0x01),
+                    ]
+                })
+                .collect(),
+        );
         let cells: Vec<_> = frame.tiles.iter().collect();
         for (ox, oz) in [(0., 0.), (-80., 120.)] {
-            let g = GridGeometry { width: 2, height: 4, tile_width: 8., tile_height: 8.,
-                origin_x: ox, origin_z: oz };
+            let g = GridGeometry {
+                width: 2,
+                height: 4,
+                tile_width: 8.,
+                tile_height: 8.,
+                origin_x: ox,
+                origin_z: oz,
+            };
             for row in 0..4 {
                 let (w, e, north, south) = g.bounds(0, row);
                 for (x, normal) in [(w, [-1., 0., 0.]), (e, [1., 0., 0.])] {
                     let mut surface = SurfaceMeshData::default();
-                    let mut p = [[x, 0., north], [x, 6., north],
-                        [x, 6., south], [x, 0., south]];
-                    if normal[0] < 0. { p.reverse(); }
-                    assert!(new_bark::ledge_finish::append(&mut surface, p, normal, &g, [10, -7]));
+                    let mut p = [
+                        [x, 0., north],
+                        [x, 6., north],
+                        [x, 6., south],
+                        [x, 0., south],
+                    ];
+                    if normal[0] < 0. {
+                        p.reverse();
+                    }
+                    assert!(new_bark::ledge_finish::append(
+                        &mut surface,
+                        p,
+                        normal,
+                        &g,
+                        [10, -7]
+                    ));
                     let original = surface.positions.clone();
-                    assert!(original.iter().all(|p| (0. ..=8.).contains(&p[1])),
-                        "rock masses stay low instead of adding upright grass curtains");
+                    assert!(
+                        original.iter().all(|p| (0. ..=8.).contains(&p[1])),
+                        "rock masses stay low instead of adding upright grass curtains"
+                    );
                     mark_bank_surface(&mut surface, 0, row * 2);
-                    shape_surface(&mut surface, &cells, &g, [10,-7]);
+                    shape_surface(&mut surface, &cells, &g, [10, -7]);
                     for (before, after) in original.iter().zip(&surface.positions) {
                         let rise = ((before[2] - oz) / 32.).clamp(0., 1.);
-                        let expected = if before[1] <= 6. { before[1] * rise }
-                            else { before[1] + 6. * (rise - 1.) };
-                        assert!((after[1] - expected).abs() < 0.00001,
-                            "source row {row}, normal {normal:?}: {before:?} became {after:?}");
+                        let expected = if before[1] <= 6. {
+                            before[1] * rise
+                        } else {
+                            before[1] + 6. * (rise - 1.)
+                        };
+                        assert!(
+                            (after[1] - expected).abs() < 0.00001,
+                            "source row {row}, normal {normal:?}: {before:?} became {after:?}"
+                        );
                         assert_eq!([after[0], after[2]], [before[0], before[2]]);
                     }
-                    assert!(surface.positions.iter().zip(&surface.uvs).all(|(p,uv)|
-                        *uv==new_bark::ledge_finish::cliff_material_uv(*p,&g,[10,-7])));
+                    assert!(surface.positions.iter().zip(&surface.uvs).all(|(p, uv)| *uv
+                        == new_bark::ledge_finish::cliff_material_uv(*p, &g, [10, -7])));
                 }
             }
         }
@@ -941,7 +1150,11 @@ mod tests {
         {
             assert!((p[1] - 6.0 * (p[2] - 8.0) / 32.0).abs() < 0.0001);
             if p[2] == 8. {
-                assert_eq!(*n, Vec3::Y.to_array(), "toe lighting must meet the level lawn");
+                assert_eq!(
+                    *n,
+                    Vec3::Y.to_array(),
+                    "toe lighting must meet the level lawn"
+                );
             } else {
                 assert!(n[1] > 0.9 && n[2] < 0.0);
             }
@@ -954,8 +1167,10 @@ mod tests {
         );
         assert_eq!(mesh.solid.positions[top_count + 5][1], 6.0);
         assert_eq!(mesh.solid.positions[top_count + 4][1], 0.0);
-        assert!(mesh.solid.normals[top_count + 4][2] > 0.999,
-            "toe shading cannot soften the sharp front earth face");
+        assert!(
+            mesh.solid.normals[top_count + 4][2] > 0.999,
+            "toe shading cannot soften the sharp front earth face"
+        );
         assert_eq!(mesh.footing_heights, [0.0, 0.75, 2.25, 3.75, 5.25]);
     }
 }

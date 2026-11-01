@@ -18,27 +18,17 @@ impl Asset {
         static MODELS: OnceLock<[Model; 7]> = OnceLock::new();
         &MODELS.get_or_init(|| {
             [
-                crate::model_storage::include_model!(
-                    "models/ship_rooms/tea_table_short.mesh.json"
-                ),
+                crate::model_storage::include_model!("models/ship_rooms/tea_table_short.mesh.json"),
                 crate::model_storage::include_model!(
                     "models/lighthouse_chamber/tea_table.mesh.json"
                 ),
-                crate::model_storage::include_model!(
-                    "models/ship_rooms/tea_table_long.mesh.json"
-                ),
-                crate::model_storage::include_model!(
-                    "models/ship_rooms/tea_table_mess.mesh.json"
-                ),
-                crate::model_storage::include_model!(
-                    "models/ship_rooms/captains_desk.mesh.json"
-                ),
+                crate::model_storage::include_model!("models/ship_rooms/tea_table_long.mesh.json"),
+                crate::model_storage::include_model!("models/ship_rooms/tea_table_mess.mesh.json"),
+                crate::model_storage::include_model!("models/ship_rooms/captains_desk.mesh.json"),
                 crate::model_storage::include_model!(
                     "models/ship_rooms/lower_bulkhead_u.mesh.json"
                 ),
-                crate::model_storage::include_model!(
-                    "models/ship_rooms/captains_chair.mesh.json"
-                ),
+                crate::model_storage::include_model!("models/ship_rooms/captains_chair.mesh.json"),
             ]
             .map(|s| Model::parse(s).expect("validated original ship room asset"))
         })[if self == Self::CaptainsChair {
@@ -415,11 +405,12 @@ mod tests {
                     }
                 }
                 let (w, _, n, _) = g.bounds(4, 4);
-                assert!(mesh
-                    .solid
-                    .positions
-                    .iter()
-                    .all(|v| sources::bulkhead_contains(v[0] - w, v[2] - n)));
+                assert!(
+                    mesh.solid
+                        .positions
+                        .iter()
+                        .all(|v| sources::bulkhead_contains(v[0] - w, v[2] - n))
+                );
             }
             let before = mesh.clone();
             assert!(!append(&mut mesh, &refs, &g, &p, &mut claimed));
@@ -494,14 +485,16 @@ mod tests {
                 "ground":13, "top_pixels":8, "depth_pixels":12
             }]})).unwrap();
             let empty = vec![false; cells.len()];
-            assert!(resolve(
-                "FastShipB1F",
-                &cells.iter().collect::<Vec<_>>(),
-                &g,
-                Some(&custom),
-                &empty
-            )
-            .is_empty());
+            assert!(
+                resolve(
+                    "FastShipB1F",
+                    &cells.iter().collect::<Vec<_>>(),
+                    &g,
+                    Some(&custom),
+                    &empty
+                )
+                .is_empty()
+            );
             if asset == Asset::JoinedBunk {
                 for start in [0, 2] {
                     // A custom upper or lower half owns the entire compound
@@ -514,14 +507,16 @@ mod tests {
                     half.objects[0].tiles = (start..start + 2)
                         .map(|dy| (0..2).map(|dx| asset.expected(dx, dy).unwrap().3).collect())
                         .collect();
-                    assert!(resolve(
-                        "FastShipB1F",
-                        &cells.iter().collect::<Vec<_>>(),
-                        &g,
-                        Some(&half),
-                        &empty
-                    )
-                    .is_empty());
+                    assert!(
+                        resolve(
+                            "FastShipB1F",
+                            &cells.iter().collect::<Vec<_>>(),
+                            &g,
+                            Some(&half),
+                            &empty
+                        )
+                        .is_empty()
+                    );
                 }
             }
             let out = resolve(

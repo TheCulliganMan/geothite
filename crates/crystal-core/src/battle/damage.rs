@@ -2087,23 +2087,54 @@ mod tests {
 
     #[test]
     fn weather_modifier_keeps_sparse_sandstorm_pairs_neutral() {
-        for move_type in ["NORMAL","FIRE","WATER","ELECTRIC","GRASS","ICE","FIGHTING",
-            "POISON","GROUND","FLYING","PSYCHIC","BUG","ROCK","GHOST","DRAGON","DARK","STEEL"] {
-            assert_eq!(apply_weather_type_modifier(40,Weather::Sandstorm,move_type,&weather_modifiers()),
-                Ok(40),"{move_type}: the source table has no Sandstorm damage exception");
+        for move_type in [
+            "NORMAL", "FIRE", "WATER", "ELECTRIC", "GRASS", "ICE", "FIGHTING", "POISON", "GROUND",
+            "FLYING", "PSYCHIC", "BUG", "ROCK", "GHOST", "DRAGON", "DARK", "STEEL",
+        ] {
+            assert_eq!(
+                apply_weather_type_modifier(
+                    40,
+                    Weather::Sandstorm,
+                    move_type,
+                    &weather_modifiers()
+                ),
+                Ok(40),
+                "{move_type}: the source table has no Sandstorm damage exception"
+            );
         }
-        assert!(matches!(apply_weather_type_modifier(40,Weather::Sandstorm,"WA TER",&weather_modifiers()),
-            Err(DamageCalculationError::InvalidWeatherModifierType {..})));
+        assert!(matches!(
+            apply_weather_type_modifier(40, Weather::Sandstorm, "WA TER", &weather_modifiers()),
+            Err(DamageCalculationError::InvalidWeatherModifierType { .. })
+        ));
     }
 
     #[test]
     fn weather_modifier_retains_explicit_sandstorm_mod_overrides() {
-        let mut modifiers=weather_modifiers();
-        modifiers.type_modifiers.insert("WEATHER_SANDSTORM".into(),
-            [("WATER".into(),TypeMultiplier {numerator:2,denominator:1})].into_iter().collect());
-        assert_eq!(apply_weather_type_modifier(40,Weather::Sandstorm,"WATER",&modifiers),Ok(80));
-        assert_eq!(apply_weather_type_modifier(40,Weather::Rain,"WATER",&modifiers),Ok(60));
-        assert_eq!(apply_weather_type_modifier(40,Weather::Sun,"WATER",&modifiers),Ok(20));
+        let mut modifiers = weather_modifiers();
+        modifiers.type_modifiers.insert(
+            "WEATHER_SANDSTORM".into(),
+            [(
+                "WATER".into(),
+                TypeMultiplier {
+                    numerator: 2,
+                    denominator: 1,
+                },
+            )]
+            .into_iter()
+            .collect(),
+        );
+        assert_eq!(
+            apply_weather_type_modifier(40, Weather::Sandstorm, "WATER", &modifiers),
+            Ok(80)
+        );
+        assert_eq!(
+            apply_weather_type_modifier(40, Weather::Rain, "WATER", &modifiers),
+            Ok(60)
+        );
+        assert_eq!(
+            apply_weather_type_modifier(40, Weather::Sun, "WATER", &modifiers),
+            Ok(20)
+        );
     }
 
     #[test]

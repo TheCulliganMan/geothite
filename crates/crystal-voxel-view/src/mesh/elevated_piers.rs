@@ -94,9 +94,12 @@ pub(super) fn has_piers(map: &str) -> bool {
     )
 }
 pub(super) fn level_surface(map: &str, s: &VisualTileSource) -> bool {
-    deck(map,s) || (has_piers(map) && (entry(map,s) || face(map,s)
-        || (s.tile_index == 0x14
-            && matches!(s.tileset_id.as_ref(), "kanto" | "johto" | "port"))))
+    deck(map, s)
+        || (has_piers(map)
+            && (entry(map, s)
+                || face(map, s)
+                || (s.tile_index == 0x14
+                    && matches!(s.tileset_id.as_ref(), "kanto" | "johto" | "port"))))
 }
 pub(super) fn structural_edge(map: &str, s: &VisualTileSource) -> bool {
     face(map, s)
@@ -104,45 +107,77 @@ pub(super) fn structural_edge(map: &str, s: &VisualTileSource) -> bool {
 pub(super) fn walkway(map: &str, s: &VisualTileSource) -> bool {
     deck(map, s) || entry(map, s)
 }
-pub(super) fn water_under_deck(map: &str, s: &VisualTileSource, north: Option<&VisualTileSource>) -> bool {
-    (deck(map, s) && !garden(map, s))
-        || edge_below_deck(map, s, north)
+pub(super) fn water_under_deck(
+    map: &str,
+    s: &VisualTileSource,
+    north: Option<&VisualTileSource>,
+) -> bool {
+    (deck(map, s) && !garden(map, s)) || edge_below_deck(map, s, north)
 }
 
 // The edge drawing alone is ambiguous (it also appears in city scenery).
 // Require its real deck immediately north before recognizing a connected
 // bridge edge; never extend the host's standalone face classification.
 fn edge_below_deck(map: &str, s: &VisualTileSource, north: Option<&VisualTileSource>) -> bool {
-    let connected = s.tileset_id.as_ref() == "kanto" && s.metatile_id == 0x78
-        && s.tile_index == 0x31 && s.subtile_row == 0 && s.subtile_column < 4;
-    (face(map,s) || connected) && north.is_some_and(|source| deck(map,source))
+    let connected = s.tileset_id.as_ref() == "kanto"
+        && s.metatile_id == 0x78
+        && s.tile_index == 0x31
+        && s.subtile_row == 0
+        && s.subtile_column < 4;
+    (face(map, s) || connected) && north.is_some_and(|source| deck(map, source))
 }
 // A native timber sample must be an actual support drawing below an
 // authenticated deck, not the gray bank strip or an unrelated port tile.
-pub(super) fn cerulean_timber_uv(cells: &[&VisualTile], g: &GridGeometry) -> Option<(f32,f32,f32,f32)> {
-    cells.iter().enumerate().find_map(|(i,tile)|
-        (tile.source.tileset_id.as_ref()=="port" && tile.source.tile_index==0x22
-            && edge_below_deck("CeruleanGym", &tile.source,
-                i.checked_sub(g.width).map(|j| &cells[j].source)))
-        .then(|| g.uv(i%g.width,i/g.width)))
+pub(super) fn cerulean_timber_uv(
+    cells: &[&VisualTile],
+    g: &GridGeometry,
+) -> Option<(f32, f32, f32, f32)> {
+    cells.iter().enumerate().find_map(|(i, tile)| {
+        (tile.source.tileset_id.as_ref() == "port"
+            && tile.source.tile_index == 0x22
+            && edge_below_deck(
+                "CeruleanGym",
+                &tile.source,
+                i.checked_sub(g.width).map(|j| &cells[j].source),
+            ))
+        .then(|| g.uv(i % g.width, i / g.width))
+    })
 }
 
-pub(super) fn cerulean_timber_sample(uv: (f32,f32,f32,f32), normal: [f32;3], post: bool) -> [f32;2] {
+pub(super) fn cerulean_timber_sample(
+    uv: (f32, f32, f32, f32),
+    normal: [f32; 3],
+    post: bool,
+) -> [f32; 2] {
     // Tile22: pale upper edge, dark beam, gold post centre, ink underside.
-    let [x,y] = if normal[1] < -0.5 { [0.,2.] }
-        else if normal[1] > 0.5 { [0.,1.] }
-        else if post && normal[2].abs()>0.5 { [3.,3.] }
-        else { [0.,0.] };
-    [uv.0+(uv.1-uv.0)*(x+0.5)/8.,uv.2+(uv.3-uv.2)*(y+0.5)/8.]
+    let [x, y] = if normal[1] < -0.5 {
+        [0., 2.]
+    } else if normal[1] > 0.5 {
+        [0., 1.]
+    } else if post && normal[2].abs() > 0.5 {
+        [3., 3.]
+    } else {
+        [0., 0.]
+    };
+    [
+        uv.0 + (uv.1 - uv.0) * (x + 0.5) / 8.,
+        uv.2 + (uv.3 - uv.2) * (y + 0.5) / 8.,
+    ]
 }
 
-fn native_cerulean_timber(out: &mut SurfaceMeshData, bounds: [f32;4], low:f32, high:f32,
-    uv: (f32,f32,f32,f32), post: bool) {
-    let first=out.positions.len();
-    beam(out,bounds,low,high);
+fn native_cerulean_timber(
+    out: &mut SurfaceMeshData,
+    bounds: [f32; 4],
+    low: f32,
+    high: f32,
+    uv: (f32, f32, f32, f32),
+    post: bool,
+) {
+    let first = out.positions.len();
+    beam(out, bounds, low, high);
     for i in first..out.positions.len() {
-        out.uvs[i]=cerulean_timber_sample(uv,out.normals[i],post);
-        out.colors[i]=TEXTURED_SHADE;
+        out.uvs[i] = cerulean_timber_sample(uv, out.normals[i], post);
+        out.colors[i] = TEXTURED_SHADE;
     }
 }
 
@@ -208,101 +243,161 @@ fn garden_ground<'a>(
     None
 }
 
-fn planting_pigment(tile:&VisualTile,images:&TerrainImageSamples)->Option<[f32;4]> {
-    let rgba=tile_rgba(images,tile).ok()?;
-    if rgba.len()!=256 || rgba.chunks_exact(4).any(|p|p[3]!=255) {return None;}
-    let mut colors=std::collections::BTreeMap::<[u8;3],usize>::new();
-    for p in rgba.chunks_exact(4) {
-        *colors.entry([p[0],p[1],p[2]]).or_default()+=1;
+fn planting_pigment(tile: &VisualTile, images: &TerrainImageSamples) -> Option<[f32; 4]> {
+    let rgba = tile_rgba(images, tile).ok()?;
+    if rgba.len() != 256 || rgba.chunks_exact(4).any(|p| p[3] != 255) {
+        return None;
     }
-    if !(1..=4).contains(&colors.len()) {return None;}
+    let mut colors = std::collections::BTreeMap::<[u8; 3], usize>::new();
+    for p in rgba.chunks_exact(4) {
+        *colors.entry([p[0], p[1], p[2]]).or_default() += 1;
+    }
+    if !(1..=4).contains(&colors.len()) {
+        return None;
+    }
     // Native night grass is blue: a green-channel test silently lost its
     // live pigment. The dominant opaque ground pigment owns both exposures.
-    let (rgb,_)=colors.into_iter().max_by_key(|(_,count)|*count)?;
-    let native=rgb.map(|v| {
-        let s=v as f32/255.;
-        if s<=0.04045 {s/12.92}else{((s+0.055)/1.055).powf(2.4)}
+    let (rgb, _) = colors.into_iter().max_by_key(|(_, count)| *count)?;
+    let native = rgb.map(|v| {
+        let s = v as f32 / 255.;
+        if s <= 0.04045 {
+            s / 12.92
+        } else {
+            ((s + 0.055) / 1.055).powf(2.4)
+        }
     });
-    let energy=native[0]*0.2126+native[1]*0.7152+native[2]*0.0722;
-    let exposure=(energy/0.65).clamp(0.,1.25);
-    let organic=[0.19,0.29,0.075];
-    Some([organic[0]*exposure*0.84+native[0]*0.16,
-        organic[1]*exposure*0.84+native[1]*0.16,
-        organic[2]*exposure*0.84+native[2]*0.16,1.])
+    let energy = native[0] * 0.2126 + native[1] * 0.7152 + native[2] * 0.0722;
+    let exposure = (energy / 0.65).clamp(0., 1.25);
+    let organic = [0.19, 0.29, 0.075];
+    Some([
+        organic[0] * exposure * 0.84 + native[0] * 0.16,
+        organic[1] * exposure * 0.84 + native[1] * 0.16,
+        organic[2] * exposure * 0.84 + native[2] * 0.16,
+        1.,
+    ])
 }
 // The mixed landing also includes shrub cells. Keep their previous pigment;
 // walkable cells have their own live paving treatment.
-fn landing_pigment(tile:&VisualTile,images:&TerrainImageSamples)->Option<[f32;4]> {
-    let rgba=tile_rgba(images,tile).ok()?;
-    let mut colors=std::collections::BTreeMap::<[u8;3],usize>::new();
-    for p in rgba.chunks_exact(4).filter(|p|p[1]>p[0] && p[1]>p[2] && p[3]==255) {
-        *colors.entry([p[0],p[1],p[2]]).or_default()+=1;
+fn landing_pigment(tile: &VisualTile, images: &TerrainImageSamples) -> Option<[f32; 4]> {
+    let rgba = tile_rgba(images, tile).ok()?;
+    let mut colors = std::collections::BTreeMap::<[u8; 3], usize>::new();
+    for p in rgba
+        .chunks_exact(4)
+        .filter(|p| p[1] > p[0] && p[1] > p[2] && p[3] == 255)
+    {
+        *colors.entry([p[0], p[1], p[2]]).or_default() += 1;
     }
-    let (rgb,_)=colors.into_iter().max_by_key(|(_,count)|*count)?;
-    let c=rgb.map(|v| {let s=v as f32/255.;
-        if s<=0.04045 {s/12.92}else{((s+0.055)/1.055).powf(2.4)}});
-    Some([c[0],c[1],c[2],1.])
+    let (rgb, _) = colors.into_iter().max_by_key(|(_, count)| *count)?;
+    let c = rgb.map(|v| {
+        let s = v as f32 / 255.;
+        if s <= 0.04045 {
+            s / 12.92
+        } else {
+            ((s + 0.055) / 1.055).powf(2.4)
+        }
+    });
+    Some([c[0], c[1], c[2], 1.])
 }
-fn landing_paving_pigment(tile:&VisualTile,images:&TerrainImageSamples)->Option<[f32;4]> {
-    let rgba=tile_rgba(images,tile).ok()?;
-    if rgba.len()!=256 || rgba.chunks_exact(4).any(|p|p[3]!=255) {return None;}
-    let mut c=[0.,0.,0.,1.];
-    for p in rgba.chunks_exact(4) {for i in 0..3 {
-        let s=p[i] as f32/255.;
-        c[i]+=(if s<=0.04045 {s/12.92}else{((s+0.055)/1.055).powf(2.4)})/64.;
-    }}
+fn landing_paving_pigment(tile: &VisualTile, images: &TerrainImageSamples) -> Option<[f32; 4]> {
+    let rgba = tile_rgba(images, tile).ok()?;
+    if rgba.len() != 256 || rgba.chunks_exact(4).any(|p| p[3] != 255) {
+        return None;
+    }
+    let mut c = [0., 0., 0., 1.];
+    for p in rgba.chunks_exact(4) {
+        for i in 0..3 {
+            let s = p[i] as f32 / 255.;
+            c[i] += (if s <= 0.04045 {
+                s / 12.92
+            } else {
+                ((s + 0.055) / 1.055).powf(2.4)
+            }) / 64.;
+        }
+    }
     Some(c)
 }
-fn landing_ground<'a>(cells:&[&'a VisualTile],g:&GridGeometry,i:usize)->Option<&'a VisualTile> {
-    let source=&cells[i].source;
-    let bx=(i%g.width) as isize-source.subtile_column as isize;
-    let by=(i/g.width) as isize-source.subtile_row as isize;
-    for y in 0..4 {for x in 0..4 {
-        let (cx,cy)=(bx+x,by+y);
-        if cx<0 || cy<0 || cx>=g.width as isize || cy>=g.height as isize {continue;}
-        let tile=cells[cy as usize*g.width+cx as usize];
-        let s=&tile.source;
-        if s.tileset_id==source.tileset_id && s.metatile_id==0x79 && s.tile_index==0x30
-            && s.subtile_column as isize==x && s.subtile_row as isize==y {return Some(tile);}
-    }}
+fn landing_ground<'a>(
+    cells: &[&'a VisualTile],
+    g: &GridGeometry,
+    i: usize,
+) -> Option<&'a VisualTile> {
+    let source = &cells[i].source;
+    let bx = (i % g.width) as isize - source.subtile_column as isize;
+    let by = (i / g.width) as isize - source.subtile_row as isize;
+    for y in 0..4 {
+        for x in 0..4 {
+            let (cx, cy) = (bx + x, by + y);
+            if cx < 0 || cy < 0 || cx >= g.width as isize || cy >= g.height as isize {
+                continue;
+            }
+            let tile = cells[cy as usize * g.width + cx as usize];
+            let s = &tile.source;
+            if s.tileset_id == source.tileset_id
+                && s.metatile_id == 0x79
+                && s.tile_index == 0x30
+                && s.subtile_column as isize == x
+                && s.subtile_row as isize == y
+            {
+                return Some(tile);
+            }
+        }
+    }
     None
 }
 // A short brick strip enclosed by authenticated dry ground on opposite sides is a
 // ground-supported causeway, not a suspended deck. Require actual native
 // ground at both contacts; clipped/missing context keeps the pier fallback.
-fn grounded_path(map:&str,cells:&[&VisualTile],g:&GridGeometry,i:usize)->bool {
-    let s=&cells[i].source;
-    if !route_deck(map,s) || s.tileset_id.as_ref()!="kanto" || s.metatile_id!=5 {return false;}
-    let contact=|dx:isize,dz:isize| {
+fn grounded_path(map: &str, cells: &[&VisualTile], g: &GridGeometry, i: usize) -> bool {
+    let s = &cells[i].source;
+    if !route_deck(map, s) || s.tileset_id.as_ref() != "kanto" || s.metatile_id != 5 {
+        return false;
+    }
+    let contact = |dx: isize, dz: isize| {
         for step in 1..=4 {
-            let x=(i%g.width)as isize+dx*step;
-            let z=(i/g.width)as isize+dz*step;
-            if x<0||z<0||x>=g.width as isize||z>=g.height as isize {return false;}
-            let s=&cells[z as usize*g.width+x as usize].source;
-            if s.tileset_id.as_ref()=="kanto" && s.metatile_id==0x31 && s.tile_index==0x39
-                && s.subtile_column<4 && s.subtile_row<4 {return true;}
-            if !route_deck(map,s) {return false;}
+            let x = (i % g.width) as isize + dx * step;
+            let z = (i / g.width) as isize + dz * step;
+            if x < 0 || z < 0 || x >= g.width as isize || z >= g.height as isize {
+                return false;
+            }
+            let s = &cells[z as usize * g.width + x as usize].source;
+            if s.tileset_id.as_ref() == "kanto"
+                && s.metatile_id == 0x31
+                && s.tile_index == 0x39
+                && s.subtile_column < 4
+                && s.subtile_row < 4
+            {
+                return true;
+            }
+            if !route_deck(map, s) {
+                return false;
+            }
         }
         false
     };
-    (contact(-1,0)&&contact(1,0)) || (contact(0,-1)&&contact(0,1))
+    (contact(-1, 0) && contact(1, 0)) || (contact(0, -1) && contact(0, 1))
 }
 
 // Opposing water contacts prove a real crossing, even when its connected
 // land approaches also contain short brick strips enclosed by dry terrain.
-fn crosses_water(map:&str,cells:&[&VisualTile],g:&GridGeometry,i:usize)->bool {
-    let contact=|dx:isize,dy:isize| {
+fn crosses_water(map: &str, cells: &[&VisualTile], g: &GridGeometry, i: usize) -> bool {
+    let contact = |dx: isize, dy: isize| {
         for step in 1..=g.width.max(g.height) as isize {
-            let x=(i%g.width)as isize+dx*step;
-            let y=(i/g.width)as isize+dy*step;
-            if x<0||y<0||x>=g.width as isize||y>=g.height as isize {return false;}
-            let s=&cells[y as usize*g.width+x as usize].source;
-            if crate::cave_water::standing_water_source(s) {return true;}
-            if !route_deck(map,s) {return false;}
+            let x = (i % g.width) as isize + dx * step;
+            let y = (i / g.width) as isize + dy * step;
+            if x < 0 || y < 0 || x >= g.width as isize || y >= g.height as isize {
+                return false;
+            }
+            let s = &cells[y as usize * g.width + x as usize].source;
+            if crate::cave_water::standing_water_source(s) {
+                return true;
+            }
+            if !route_deck(map, s) {
+                return false;
+            }
         }
         false
     };
-    (contact(-1,0)&&contact(1,0)) || (contact(0,-1)&&contact(0,1))
+    (contact(-1, 0) && contact(1, 0)) || (contact(0, -1) && contact(0, 1))
 }
 
 struct PierLevels {
@@ -446,47 +541,78 @@ impl PierLevels {
         }
         // Ground-supported strips meet their actual land datum along the
         // whole width. They must not dip under a cave landing or bow upward.
-        let mut ground_cells=(0..cells.len()).map(|i|grounded_path(map,cells,g,i)).collect::<Vec<_>>();
-        let mut ground_queue=ground_cells.iter().enumerate().filter_map(|(i,&yes)|yes.then_some(i))
+        let mut ground_cells = (0..cells.len())
+            .map(|i| grounded_path(map, cells, g, i))
+            .collect::<Vec<_>>();
+        let mut ground_queue = ground_cells
+            .iter()
+            .enumerate()
+            .filter_map(|(i, &yes)| yes.then_some(i))
             .collect::<std::collections::VecDeque<_>>();
-        while let Some(i)=ground_queue.pop_front() {
-            let (x,y)=((i%g.width)as isize,(i/g.width)as isize);
-            for (dx,dy) in [(-1,0),(1,0),(0,-1),(0,1)] {
-                let Some(j)=cell(x+dx,y+dy) else {continue;};
-                let s=&cells[j].source;
-                if !ground_cells[j] && decks[j] && s.tileset_id.as_ref()=="kanto" && s.metatile_id==5 {
-                    ground_cells[j]=true;ground_queue.push_back(j);
+        while let Some(i) = ground_queue.pop_front() {
+            let (x, y) = ((i % g.width) as isize, (i / g.width) as isize);
+            for (dx, dy) in [(-1, 0), (1, 0), (0, -1), (0, 1)] {
+                let Some(j) = cell(x + dx, y + dy) else {
+                    continue;
+                };
+                let s = &cells[j].source;
+                if !ground_cells[j]
+                    && decks[j]
+                    && s.tileset_id.as_ref() == "kanto"
+                    && s.metatile_id == 5
+                {
+                    ground_cells[j] = true;
+                    ground_queue.push_back(j);
                 }
             }
         }
-        let mut water_queue=ground_cells.iter().enumerate()
-            .filter_map(|(i,&yes)|(yes&&crosses_water(map,cells,g,i)).then_some(i))
+        let mut water_queue = ground_cells
+            .iter()
+            .enumerate()
+            .filter_map(|(i, &yes)| (yes && crosses_water(map, cells, g, i)).then_some(i))
             .collect::<std::collections::VecDeque<_>>();
-        while let Some(i)=water_queue.pop_front() {
-            if !ground_cells[i] {continue;}
-            ground_cells[i]=false;
-            let (x,y)=((i%g.width)as isize,(i/g.width)as isize);
-            for (dx,dy) in [(-1,0),(1,0),(0,-1),(0,1)] {
-                if let Some(j)=cell(x+dx,y+dy) {if ground_cells[j] {water_queue.push_back(j);}}
+        while let Some(i) = water_queue.pop_front() {
+            if !ground_cells[i] {
+                continue;
+            }
+            ground_cells[i] = false;
+            let (x, y) = ((i % g.width) as isize, (i / g.width) as isize);
+            for (dx, dy) in [(-1, 0), (1, 0), (0, -1), (0, 1)] {
+                if let Some(j) = cell(x + dx, y + dy) {
+                    if ground_cells[j] {
+                        water_queue.push_back(j);
+                    }
+                }
             }
         }
-        let mut grounded=vec![None::<f32>;count];
+        let mut grounded = vec![None::<f32>; count];
         for i in 0..cells.len() {
-            if !ground_cells[i] {continue;}
-            let x=i%g.width;let y=i/g.width;
-            for (dx,dy) in [(0,0),(0,1),(1,1),(1,0)] {
-                let point=Vec2::new(g.origin_x+(x+dx)as f32*g.tile_width,
-                    g.origin_z+(y+dy)as f32*g.tile_height);
-                grounded[(y+dy)*width+x+dx]=Some(field.map_or(0.,|f|f.height(point))*8./g.tile_height);
+            if !ground_cells[i] {
+                continue;
+            }
+            let x = i % g.width;
+            let y = i / g.width;
+            for (dx, dy) in [(0, 0), (0, 1), (1, 1), (1, 0)] {
+                let point = Vec2::new(
+                    g.origin_x + (x + dx) as f32 * g.tile_width,
+                    g.origin_z + (y + dy) as f32 * g.tile_height,
+                );
+                grounded[(y + dy) * width + x + dx] =
+                    Some(field.map_or(0., |f| f.height(point)) * 8. / g.tile_height);
             }
         }
         let values = (0..count)
             .map(|i| {
-                if let Some(land)=grounded[i] {return land;}
-                let position=Vec2::new(g.origin_x+(i%width)as f32*g.tile_width,
-                    g.origin_z+(i/width)as f32*g.tile_height);
-                let river=field.map_or(0.,|f|f.water_surface_offset(position))*8./g.tile_height;
-                let deck_height=HEIGHT+river;
+                if let Some(land) = grounded[i] {
+                    return land;
+                }
+                let position = Vec2::new(
+                    g.origin_x + (i % width) as f32 * g.tile_width,
+                    g.origin_z + (i / width) as f32 * g.tile_height,
+                );
+                let river =
+                    field.map_or(0., |f| f.water_surface_offset(position)) * 8. / g.tile_height;
+                let deck_height = HEIGHT + river;
                 if distance[i] > SHORE_APPROACH_CELLS {
                     deck_height
                 } else {
@@ -522,13 +648,22 @@ fn heights(
 /// Bank closures meet the actual sloping deck's underside, rather than the
 /// nominal height of a distant, level pier. Heights are in world units.
 pub(super) fn bank_contact_floors(
-    map: &str, cells: &[&VisualTile], g: &GridGeometry, field: &terraces::Field<'_>,
+    map: &str,
+    cells: &[&VisualTile],
+    g: &GridGeometry,
+    field: &terraces::Field<'_>,
 ) -> Vec<Option<[f32; 4]>> {
     let levels = PierLevels::new(map, cells, g, Some(field));
-    cells.iter().enumerate().map(|(i, tile)| {
-        deck(map, &tile.source).then(|| heights(map, cells, g, i, &levels)
-            .map(|h| (h - FRAME_DEPTH) * g.tile_height / SOURCE_TILE_HEIGHT))
-    }).collect()
+    cells
+        .iter()
+        .enumerate()
+        .map(|(i, tile)| {
+            deck(map, &tile.source).then(|| {
+                heights(map, cells, g, i, &levels)
+                    .map(|h| (h - FRAME_DEPTH) * g.tile_height / SOURCE_TILE_HEIGHT)
+            })
+        })
+        .collect()
 }
 
 pub(super) fn support(
@@ -574,13 +709,19 @@ fn face(map: &str, s: &VisualTileSource) -> bool {
         s.tile_index,
         s.subtile_row,
     ) {
-        ("CeruleanCity" | "Route12" | "Route13" | "Route20" | "Route21" | "Route24" | "Route25", "kanto", 0x78, 0x31, 0) => true,
+        (
+            "CeruleanCity" | "Route12" | "Route13" | "Route20" | "Route21" | "Route24" | "Route25",
+            "kanto",
+            0x78,
+            0x31,
+            0,
+        ) => true,
         ("Route26" | "Route27" | "Route32", "johto", 0x43, 0x49, 0) => true,
         ("CeruleanGym", "port", 0x08, 0x22, 0) => true,
-        ("CeruleanGym", "port", 0x14, 0x22, 0) => s.subtile_column<2,
-        ("CeruleanGym", "port", 0x34, 0x22, 0) => s.subtile_column>=2,
+        ("CeruleanGym", "port", 0x14, 0x22, 0) => s.subtile_column < 2,
+        ("CeruleanGym", "port", 0x34, 0x22, 0) => s.subtile_column >= 2,
         ("CeruleanGym", "port", 0x27, 0x22, 2) => true,
-        ("CeruleanGym", "port", 0x29, 0x22, 2) => s.subtile_column<2,
+        ("CeruleanGym", "port", 0x29, 0x22, 2) => s.subtile_column < 2,
         _ => false,
     }
 }
@@ -623,7 +764,7 @@ pub(super) fn append(
     claimed: &mut [bool],
     images: Option<&TerrainImageSamples>,
     field: Option<&terraces::Field<'_>>,
-    map_origin: [i32;2],
+    map_origin: [i32; 2],
 ) {
     let scale = g.tile_height / 8.;
     let levels = PierLevels::new(map, cells, g, field);
@@ -638,15 +779,32 @@ pub(super) fn append(
             let first = mesh.solid.positions.len();
             beam(&mut mesh.solid, [w, e, n, s], -6. * scale, HEIGHT * scale);
             mesh.solid.colors[first..].fill([0.25, 0.16, 0.075, 1.]);
-            let pigment=(source.metatile_id==0x74).then(||images.and_then(|images|
-                garden_ground(cells,g,i).and_then(|ground|planting_pigment(ground,images)))).flatten();
-            let paving=(source.metatile_id==0x79 && matches!(source.tile_index,0x30|0x39))
-                .then(||images.and_then(|images|landing_ground(cells,g,i)
-                    .and_then(|ground|landing_paving_pigment(ground,images)))).flatten();
-            let green=pigment.or(paving).or_else(||images.and_then(|images|
-                garden_ground(cells,g,i).and_then(|ground|landing_pigment(ground,images))))
-                .unwrap_or([0.23,0.40,0.07,1.]);
-            let top_first=mesh.solid.positions.len();
+            let pigment = (source.metatile_id == 0x74)
+                .then(|| {
+                    images.and_then(|images| {
+                        garden_ground(cells, g, i)
+                            .and_then(|ground| planting_pigment(ground, images))
+                    })
+                })
+                .flatten();
+            let paving = (source.metatile_id == 0x79 && matches!(source.tile_index, 0x30 | 0x39))
+                .then(|| {
+                    images.and_then(|images| {
+                        landing_ground(cells, g, i)
+                            .and_then(|ground| landing_paving_pigment(ground, images))
+                    })
+                })
+                .flatten();
+            let green = pigment
+                .or(paving)
+                .or_else(|| {
+                    images.and_then(|images| {
+                        garden_ground(cells, g, i)
+                            .and_then(|ground| landing_pigment(ground, images))
+                    })
+                })
+                .unwrap_or([0.23, 0.40, 0.07, 1.]);
+            let top_first = mesh.solid.positions.len();
             append_solid_quad(
                 &mut mesh.solid,
                 [
@@ -662,13 +820,17 @@ pub(super) fn append(
                 // Reuse the retained granular ground material with live
                 // pigment. Coordinates stay anchored while the viewport moves.
                 for k in top_first..mesh.solid.positions.len() {
-                    let p=mesh.solid.positions[k];
-                    let x=map_origin[0] as f32+tile.column as f32+(p[0]-w)/g.tile_width;
-                    let y=map_origin[1] as f32+tile.row as f32+(p[2]-n)/g.tile_height;
-                    mesh.solid.uvs[k]=if paving.is_some() {
-                        [crate::scenery_finish::PAVING_GRAIN_BASE[0]+x,
-                            crate::scenery_finish::PAVING_GRAIN_BASE[1]-y]
-                    } else {[78000.+x,-80000.+y]};
+                    let p = mesh.solid.positions[k];
+                    let x = map_origin[0] as f32 + tile.column as f32 + (p[0] - w) / g.tile_width;
+                    let y = map_origin[1] as f32 + tile.row as f32 + (p[2] - n) / g.tile_height;
+                    mesh.solid.uvs[k] = if paving.is_some() {
+                        [
+                            crate::scenery_finish::PAVING_GRAIN_BASE[0] + x,
+                            crate::scenery_finish::PAVING_GRAIN_BASE[1] - y,
+                        ]
+                    } else {
+                        [78000. + x, -80000. + y]
+                    };
                 }
             }
             if source.metatile_id == 0x74 && source.tile_index == 3 {
@@ -699,7 +861,11 @@ pub(super) fn append(
             }
             continue;
         }
-        if edge_below_deck(map, source, i.checked_sub(g.width).map(|j| &cells[j].source)) {
+        if edge_below_deck(
+            map,
+            source,
+            i.checked_sub(g.width).map(|j| &cells[j].source),
+        ) {
             let Some(water) = water else {
                 continue;
             };
@@ -711,14 +877,29 @@ pub(super) fn append(
             );
             let deck = heights(map, cells, g, i - g.width, &levels);
             let [west, east] = [deck[1] * scale, deck[2] * scale];
-            let native=map=="CeruleanGym";
-            let timber=if native { &mut mesh.textured } else { &mut mesh.solid };
+            let native = map == "CeruleanGym";
+            let timber = if native {
+                &mut mesh.textured
+            } else {
+                &mut mesh.solid
+            };
             let first = timber.positions.len();
             if native {
-                native_cerulean_timber(timber,[w,e,n,n+1.2*scale],(HEIGHT-3.)*scale,HEIGHT*scale,
-                    g.uv(i%g.width,i/g.width),false);
+                native_cerulean_timber(
+                    timber,
+                    [w, e, n, n + 1.2 * scale],
+                    (HEIGHT - 3.) * scale,
+                    HEIGHT * scale,
+                    g.uv(i % g.width, i / g.width),
+                    false,
+                );
             } else {
-                beam(timber,[w,e,n,n+1.2*scale],(HEIGHT-3.)*scale,HEIGHT*scale);
+                beam(
+                    timber,
+                    [w, e, n, n + 1.2 * scale],
+                    (HEIGHT - 3.) * scale,
+                    HEIGHT * scale,
+                );
             }
             let slope = (east - west) / (e - w);
             for (point, normal) in timber.positions[first..]
@@ -733,10 +914,21 @@ pub(super) fn append(
             if source.subtile_column % 2 == 0 {
                 let high = west + 2.5 * scale * slope - 3. * scale;
                 if native {
-                    native_cerulean_timber(timber,[w+scale,w+2.5*scale,n,n+1.5*scale],-6.*scale,high,
-                        g.uv(i%g.width,i/g.width),true);
+                    native_cerulean_timber(
+                        timber,
+                        [w + scale, w + 2.5 * scale, n, n + 1.5 * scale],
+                        -6. * scale,
+                        high,
+                        g.uv(i % g.width, i / g.width),
+                        true,
+                    );
                 } else {
-                    beam(timber,[w+scale,w+2.5*scale,n,n+1.5*scale],-6.*scale,high);
+                    beam(
+                        timber,
+                        [w + scale, w + 2.5 * scale, n, n + 1.5 * scale],
+                        -6. * scale,
+                        high,
+                    );
                 }
             }
             mesh.authored_cells[i] = Some("outdoor/elevated-pier-edge");
@@ -803,15 +995,35 @@ pub(super) fn append(
                 .cross(Vec3::from_array(face[2]) - Vec3::from_array(face[0]))
                 .normalize()
                 .to_array();
-            let (dx,dz)=[(-1,0),(0,1),(1,0),(0,-1)][j];
-            let (nx,nz)=((i%g.width)as isize+dx,(i/g.width)as isize+dz);
-            let continues=nx>=0 && nz>=0 && nx<g.width as isize && nz<g.height as isize
-                && deck(map,&cells[nz as usize*g.width+nx as usize].source);
+            let (dx, dz) = [(-1, 0), (0, 1), (1, 0), (0, -1)][j];
+            let (nx, nz) = ((i % g.width) as isize + dx, (i / g.width) as isize + dz);
+            let continues = nx >= 0
+                && nz >= 0
+                && nx < g.width as isize
+                && nz < g.height as isize
+                && deck(map, &cells[nz as usize * g.width + nx as usize].source);
             // Interior source-cell seams are not exposed structural edges.
             // Beveling them would push bright grout through the paved deck.
-            if !(native && !continues && images.is_some_and(|images|kanto_paving::raised_brick_side(
-                &mut mesh.solid,tile,images,face,normal,g.tile_width.min(g.tile_height)))) {
-                append_quad(&mut mesh.solid,face,normal,[[0.;2];4],[0.47,0.34,0.19,1.]);
+            if !(native
+                && !continues
+                && images.is_some_and(|images| {
+                    kanto_paving::raised_brick_side(
+                        &mut mesh.solid,
+                        tile,
+                        images,
+                        face,
+                        normal,
+                        g.tile_width.min(g.tile_height),
+                    )
+                }))
+            {
+                append_quad(
+                    &mut mesh.solid,
+                    face,
+                    normal,
+                    [[0.; 2]; 4],
+                    [0.47, 0.34, 0.19, 1.],
+                );
             }
         }
         let bottom = [p[3], p[2], p[1], p[0]].map(|mut v| {
@@ -921,170 +1133,470 @@ mod tests {
     use bevy::math::IVec2;
     #[test]
     fn inland_river_bridge_keeps_its_clearance_above_the_shared_water_plane() {
-        let mut frame=super::super::tests::frame(4,20,(0..80).map(|i| {
-            let mut s=super::super::tests::source_with_tile(5,(i%4)as u8,(i/4%4)as u8,0x4b);
-            s.tileset_id="kanto".into();s
-        }).collect());
-        frame.map_id="CeruleanCity".into();
-        let g=GridGeometry {width:4,height:20,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
-        let cells=frame.tiles.iter().collect::<Vec<_>>();
-        let datum=crystal_render_api::VisualTerraceDatum {walkable_mineral:Default::default(),origin:bevy::prelude::IVec2::ZERO,
-            size:bevy::prelude::UVec2::new(4,20),levels:vec![[2.;4];80].into(),water_barriers:Default::default(),
-            open_water:Some(crystal_render_api::VisualOpenWaterDatum {level:2.,
-                cells:(0..80).map(|i|bevy::prelude::IVec2::new(i%4,i/4)).collect()})};
-        let field=terraces::Field::new(&[],&g,[0,0]).with_datum(Some(&datum));
-        let levels=PierLevels::new("CeruleanCity",&cells,&g,Some(&field));
-        assert!(levels.values.iter().all(|&v|(v-(HEIGHT+12.)).abs()<0.001),
-            "raising the river must raise the suspended deck, never flood it");
-        let mut closed=datum.clone();closed.open_water=None;
-        let field=terraces::Field::new(&[],&g,[0,0]).with_datum(Some(&closed));
-        let closed_levels=PierLevels::new("CeruleanCity",&cells,&g,Some(&field));
-        assert_eq!(closed_levels.values,levels.values,
-            "complete connected source maps cannot drop the bridge back to sea level");
+        let mut frame = super::super::tests::frame(
+            4,
+            20,
+            (0..80)
+                .map(|i| {
+                    let mut s = super::super::tests::source_with_tile(
+                        5,
+                        (i % 4) as u8,
+                        (i / 4 % 4) as u8,
+                        0x4b,
+                    );
+                    s.tileset_id = "kanto".into();
+                    s
+                })
+                .collect(),
+        );
+        frame.map_id = "CeruleanCity".into();
+        let g = GridGeometry {
+            width: 4,
+            height: 20,
+            tile_width: 8.,
+            tile_height: 8.,
+            origin_x: 0.,
+            origin_z: 0.,
+        };
+        let cells = frame.tiles.iter().collect::<Vec<_>>();
+        let datum = crystal_render_api::VisualTerraceDatum {
+            walkable_mineral: Default::default(),
+            origin: bevy::prelude::IVec2::ZERO,
+            size: bevy::prelude::UVec2::new(4, 20),
+            levels: vec![[2.; 4]; 80].into(),
+            water_barriers: Default::default(),
+            open_water: Some(crystal_render_api::VisualOpenWaterDatum {
+                level: 2.,
+                cells: (0..80)
+                    .map(|i| bevy::prelude::IVec2::new(i % 4, i / 4))
+                    .collect(),
+            }),
+        };
+        let field = terraces::Field::new(&[], &g, [0, 0]).with_datum(Some(&datum));
+        let levels = PierLevels::new("CeruleanCity", &cells, &g, Some(&field));
+        assert!(
+            levels
+                .values
+                .iter()
+                .all(|&v| (v - (HEIGHT + 12.)).abs() < 0.001),
+            "raising the river must raise the suspended deck, never flood it"
+        );
+        let mut closed = datum.clone();
+        closed.open_water = None;
+        let field = terraces::Field::new(&[], &g, [0, 0]).with_datum(Some(&closed));
+        let closed_levels = PierLevels::new("CeruleanCity", &cells, &g, Some(&field));
+        assert_eq!(
+            closed_levels.values, levels.values,
+            "complete connected source maps cannot drop the bridge back to sea level"
+        );
     }
 
     #[test]
     fn connected_kanto_bridge_matches_its_native_route_without_promoting_city_edges() {
-        let loaded=crystal_assets::read_loaded_verified_compiled_game_pack(
-            std::path::PathBuf::from(std::env::var_os("CRYSTAL_RENDER_TEST_PACK").unwrap())).unwrap();
-        let pack=loaded.pack();
-        let art=&pack.runtime_files()["data/tilesets/kanto_metatiles.bin"];
-        assert_eq!(&art[5*16..6*16],&[0x4b;16],"exact shared native deck drawing");
-        let data=&pack.data().maps["Route21"];
-        let w=data.attributes.width as usize*4;
-        let h=data.attributes.height as usize*4;
-        let tiles=(0..w*h).map(|i| {
-            let x=i%w;let y=i/w;let block=data.blocks[y/4*(w/4)+x/4];
-            VisualTile {column:x as u32,row:y as u32,texture:Default::default(),priority:false,
-                animation_frames:None,source:VisualTileSource {tileset_id:"kanto".into(),
-                    metatile_id:block,subtile_column:(x%4) as u8,subtile_row:(y%4) as u8,
-                    tile_index:art[block as usize*16+y%4*4+x%4] as u16}}
-        }).collect::<Vec<_>>();
-        let cells=tiles.iter().collect::<Vec<_>>();
-        let g=GridGeometry {width:w,height:h,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
-        let build=|map| {
-            let mut mesh=TerrainMeshData {footing_heights:vec![0.;w*h],authored_cells:vec![None;w*h],..Default::default()};
-            support(&mut mesh,map,&cells,&g,None);
-            append(&mut mesh,map,&cells,&g,&mut vec![false;w*h],None,None,[0,0]);
+        let loaded = crystal_assets::read_loaded_verified_compiled_game_pack(
+            std::path::PathBuf::from(std::env::var_os("CRYSTAL_RENDER_TEST_PACK").unwrap()),
+        )
+        .unwrap();
+        let pack = loaded.pack();
+        let art = &pack.runtime_files()["data/tilesets/kanto_metatiles.bin"];
+        assert_eq!(
+            &art[5 * 16..6 * 16],
+            &[0x4b; 16],
+            "exact shared native deck drawing"
+        );
+        let data = &pack.data().maps["Route21"];
+        let w = data.attributes.width as usize * 4;
+        let h = data.attributes.height as usize * 4;
+        let tiles = (0..w * h)
+            .map(|i| {
+                let x = i % w;
+                let y = i / w;
+                let block = data.blocks[y / 4 * (w / 4) + x / 4];
+                VisualTile {
+                    column: x as u32,
+                    row: y as u32,
+                    texture: Default::default(),
+                    priority: false,
+                    animation_frames: None,
+                    source: VisualTileSource {
+                        tileset_id: "kanto".into(),
+                        metatile_id: block,
+                        subtile_column: (x % 4) as u8,
+                        subtile_row: (y % 4) as u8,
+                        tile_index: art[block as usize * 16 + y % 4 * 4 + x % 4] as u16,
+                    },
+                }
+            })
+            .collect::<Vec<_>>();
+        let cells = tiles.iter().collect::<Vec<_>>();
+        let g = GridGeometry {
+            width: w,
+            height: h,
+            tile_width: 8.,
+            tile_height: 8.,
+            origin_x: 0.,
+            origin_z: 0.,
+        };
+        let build = |map| {
+            let mut mesh = TerrainMeshData {
+                footing_heights: vec![0.; w * h],
+                authored_cells: vec![None; w * h],
+                ..Default::default()
+            };
+            support(&mut mesh, map, &cells, &g, None);
+            append(
+                &mut mesh,
+                map,
+                &cells,
+                &g,
+                &mut vec![false; w * h],
+                None,
+                None,
+                [0, 0],
+            );
             mesh
         };
-        let native=build("Route21");let connected=build("CinnabarIsland");
-        assert!(native.authored_cells.iter().any(|c|*c==Some("outdoor/elevated-pier")));
-        assert!(native.authored_cells.iter().any(|c|*c==Some("outdoor/elevated-pier-edge")));
-        assert_eq!(connected.footing_heights,native.footing_heights);
-        assert_eq!(connected.authored_cells,native.authored_cells);
-        assert_eq!(connected.solid.positions,native.solid.positions);
-        assert_eq!(connected.solid.normals,native.solid.normals);
-        assert_eq!(connected.solid.indices,native.solid.indices);
-        assert_eq!(connected.textured.positions,native.textured.positions,"water stays below the suspended deck");
+        let native = build("Route21");
+        let connected = build("CinnabarIsland");
+        assert!(
+            native
+                .authored_cells
+                .iter()
+                .any(|c| *c == Some("outdoor/elevated-pier"))
+        );
+        assert!(
+            native
+                .authored_cells
+                .iter()
+                .any(|c| *c == Some("outdoor/elevated-pier-edge"))
+        );
+        assert_eq!(connected.footing_heights, native.footing_heights);
+        assert_eq!(connected.authored_cells, native.authored_cells);
+        assert_eq!(connected.solid.positions, native.solid.positions);
+        assert_eq!(connected.solid.normals, native.solid.normals);
+        assert_eq!(connected.solid.indices, native.solid.indices);
+        assert_eq!(
+            connected.textured.positions, native.textured.positions,
+            "water stays below the suspended deck"
+        );
         for tile in &tiles {
-            let s=&tile.source;
-            if deck("Route21",s) {assert!(level_surface("CinnabarIsland",s));}
-            if s.metatile_id==0x78 && s.subtile_row==0 && s.tile_index==0x31 {
-                assert!(!level_surface("CeladonCity",s));
-                assert!(!structural_edge("CeladonCity",s));
-                assert!(!water_under_deck("CeladonCity",s,None));
-                let mut unrelated=s.clone();unrelated.metatile_id=1;
-                assert!(!water_under_deck("CeladonCity",s,Some(&unrelated)));
+            let s = &tile.source;
+            if deck("Route21", s) {
+                assert!(level_surface("CinnabarIsland", s));
+            }
+            if s.metatile_id == 0x78 && s.subtile_row == 0 && s.tile_index == 0x31 {
+                assert!(!level_surface("CeladonCity", s));
+                assert!(!structural_edge("CeladonCity", s));
+                assert!(!water_under_deck("CeladonCity", s, None));
+                let mut unrelated = s.clone();
+                unrelated.metatile_id = 1;
+                assert!(!water_under_deck("CeladonCity", s, Some(&unrelated)));
             }
         }
-        let edge=tiles.iter().find(|t|t.source.metatile_id==0x78 && t.source.subtile_row==0).unwrap();
-        let g=GridGeometry {width:1,height:1,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
-        let mut mesh=TerrainMeshData {footing_heights:vec![0.],authored_cells:vec![None],..Default::default()};
-        append(&mut mesh,"CeladonCity",&[edge],&g,&mut vec![false],None,None,[0,0]);
+        let edge = tiles
+            .iter()
+            .find(|t| t.source.metatile_id == 0x78 && t.source.subtile_row == 0)
+            .unwrap();
+        let g = GridGeometry {
+            width: 1,
+            height: 1,
+            tile_width: 8.,
+            tile_height: 8.,
+            origin_x: 0.,
+            origin_z: 0.,
+        };
+        let mut mesh = TerrainMeshData {
+            footing_heights: vec![0.],
+            authored_cells: vec![None],
+            ..Default::default()
+        };
+        append(
+            &mut mesh,
+            "CeladonCity",
+            &[edge],
+            &g,
+            &mut vec![false],
+            None,
+            None,
+            [0, 0],
+        );
         assert!(mesh.solid.positions.is_empty() && mesh.textured.positions.is_empty());
-        assert_eq!(mesh.authored_cells,vec![None]);
+        assert_eq!(mesh.authored_cells, vec![None]);
     }
     #[test]
     fn raised_planting_keeps_geometry_and_accepts_native_blue_night_ground() {
-        let tile=VisualTile {column:0,row:0,texture:Default::default(),priority:false,
-            animation_frames:None,source:VisualTileSource {tileset_id:"kanto".into(),
-                metatile_id:0x74,subtile_column:0,subtile_row:0,tile_index:0x2c}};
-        let cells=vec![&tile];
-        let mut previous:Option<TerrainMeshData>=None;
-        let mut paint=Vec::new();
-        for (rgb,origin) in [([156,222,0],0.),([57,99,156],-16.)] {
-            let mut images=TerrainImageSamples::default();
-            images.pixels.insert(tile.texture.id(),TileImageSample::Rgba(
-                [rgb[0],rgb[1],rgb[2],255].repeat(64)));
-            let color=planting_pigment(&tile,&images).expect("uniform native ground is valid paint");
+        let tile = VisualTile {
+            column: 0,
+            row: 0,
+            texture: Default::default(),
+            priority: false,
+            animation_frames: None,
+            source: VisualTileSource {
+                tileset_id: "kanto".into(),
+                metatile_id: 0x74,
+                subtile_column: 0,
+                subtile_row: 0,
+                tile_index: 0x2c,
+            },
+        };
+        let cells = vec![&tile];
+        let mut previous: Option<TerrainMeshData> = None;
+        let mut paint = Vec::new();
+        for (rgb, origin) in [([156, 222, 0], 0.), ([57, 99, 156], -16.)] {
+            let mut images = TerrainImageSamples::default();
+            images.pixels.insert(
+                tile.texture.id(),
+                TileImageSample::Rgba([rgb[0], rgb[1], rgb[2], 255].repeat(64)),
+            );
+            let color =
+                planting_pigment(&tile, &images).expect("uniform native ground is valid paint");
             paint.push(color);
-            let g=GridGeometry{width:1,height:1,tile_width:8.,tile_height:8.,origin_x:origin,origin_z:origin};
-            let mut mesh=TerrainMeshData{footing_heights:vec![HEIGHT],authored_cells:vec![None],..Default::default()};
-            append(&mut mesh,"Route12",&cells,&g,&mut vec![false],Some(&images),None,[24,36]);
-            assert_eq!(mesh.footing_heights,vec![HEIGHT]);
-            assert_eq!(mesh.solid.positions.len(),28,"existing box and top quad only");
-            assert_eq!(mesh.solid.positions[24..].iter().map(|p|p[1]).collect::<Vec<_>>(),vec![HEIGHT+0.01;4]);
-            if let Some(before)=previous {
-                assert_eq!(mesh.solid.indices,before.solid.indices);
-                assert_eq!(mesh.solid.normals,before.solid.normals);
-                assert_eq!(mesh.solid.uvs,before.solid.uvs,"scrolling cannot slide planting grain");
-                for (a,b) in mesh.solid.positions.iter().zip(&before.solid.positions) {
-                    assert_eq!([a[0]-origin,a[1],a[2]-origin],*b);
+            let g = GridGeometry {
+                width: 1,
+                height: 1,
+                tile_width: 8.,
+                tile_height: 8.,
+                origin_x: origin,
+                origin_z: origin,
+            };
+            let mut mesh = TerrainMeshData {
+                footing_heights: vec![HEIGHT],
+                authored_cells: vec![None],
+                ..Default::default()
+            };
+            append(
+                &mut mesh,
+                "Route12",
+                &cells,
+                &g,
+                &mut vec![false],
+                Some(&images),
+                None,
+                [24, 36],
+            );
+            assert_eq!(mesh.footing_heights, vec![HEIGHT]);
+            assert_eq!(
+                mesh.solid.positions.len(),
+                28,
+                "existing box and top quad only"
+            );
+            assert_eq!(
+                mesh.solid.positions[24..]
+                    .iter()
+                    .map(|p| p[1])
+                    .collect::<Vec<_>>(),
+                vec![HEIGHT + 0.01; 4]
+            );
+            if let Some(before) = previous {
+                assert_eq!(mesh.solid.indices, before.solid.indices);
+                assert_eq!(mesh.solid.normals, before.solid.normals);
+                assert_eq!(
+                    mesh.solid.uvs, before.solid.uvs,
+                    "scrolling cannot slide planting grain"
+                );
+                for (a, b) in mesh.solid.positions.iter().zip(&before.solid.positions) {
+                    assert_eq!([a[0] - origin, a[1], a[2] - origin], *b);
                 }
             }
-            previous=Some(mesh);
-            images.pixels.insert(tile.texture.id(),TileImageSample::Rgba([57,99,156,0].repeat(64)));
-            assert!(planting_pigment(&tile,&images).is_none(),"transparent art supplies no ground pigment");
+            previous = Some(mesh);
+            images.pixels.insert(
+                tile.texture.id(),
+                TileImageSample::Rgba([57, 99, 156, 0].repeat(64)),
+            );
+            assert!(
+                planting_pigment(&tile, &images).is_none(),
+                "transparent art supplies no ground pigment"
+            );
         }
-        assert!(paint[0][1]<0.7,"planting must not become a lime-colored light panel");
-        assert!(paint[1][2]>paint[1][0],"blue night pigment cannot fall back to daytime green");
-        assert!(paint[1][1]<paint[0][1]);
-        let mut landing=tile.clone();landing.source.metatile_id=0x79;landing.source.tile_index=0x30;
-        let mut images=TerrainImageSamples::default();
-        images.pixels.insert(landing.texture.id(),TileImageSample::Rgba([220,220,220,255].repeat(64)));
-        let g=GridGeometry{width:1,height:1,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
-        let mut mesh=TerrainMeshData{footing_heights:vec![HEIGHT],authored_cells:vec![None],..Default::default()};
-        append(&mut mesh,"Route12",&[&landing],&g,&mut vec![false],Some(&images),None,[24,36]);
-        assert!(mesh.solid.uvs[24..].iter().all(|uv|crate::scenery_finish::paving_coordinates(*uv).is_some()),
-            "the mixed landing receives paving grain instead of becoming a planting bed");
-        images.pixels.insert(landing.texture.id(),TileImageSample::Rgba([90,100,150,255].repeat(64)));
-        let dark=landing_paving_pigment(&landing,&images).unwrap();
-        assert!(dark[2]>dark[1] && dark[1]>dark[0],"native blue-gray night paving cannot become green");
-        let mut patterned=landing.clone();patterned.column=1;patterned.source.subtile_column=1;
-        patterned.source.tile_index=0x39;
-        patterned.texture=bevy::asset::Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(99123),std::marker::PhantomData);
-        images.pixels.insert(patterned.texture.id(),TileImageSample::Rgba([220,220,220,255].repeat(64)));
-        let g=GridGeometry{width:2,..g};
-        let mut mesh=TerrainMeshData{footing_heights:vec![HEIGHT;2],authored_cells:vec![None;2],..Default::default()};
-        append(&mut mesh,"Route12",&[&landing,&patterned],&g,&mut vec![false;2],Some(&images),None,[24,36]);
-        assert_eq!(mesh.solid.colors[24..28],mesh.solid.colors[52..56],
-            "different patterned source tiles share one continuous landing background");
+        assert!(
+            paint[0][1] < 0.7,
+            "planting must not become a lime-colored light panel"
+        );
+        assert!(
+            paint[1][2] > paint[1][0],
+            "blue night pigment cannot fall back to daytime green"
+        );
+        assert!(paint[1][1] < paint[0][1]);
+        let mut landing = tile.clone();
+        landing.source.metatile_id = 0x79;
+        landing.source.tile_index = 0x30;
+        let mut images = TerrainImageSamples::default();
+        images.pixels.insert(
+            landing.texture.id(),
+            TileImageSample::Rgba([220, 220, 220, 255].repeat(64)),
+        );
+        let g = GridGeometry {
+            width: 1,
+            height: 1,
+            tile_width: 8.,
+            tile_height: 8.,
+            origin_x: 0.,
+            origin_z: 0.,
+        };
+        let mut mesh = TerrainMeshData {
+            footing_heights: vec![HEIGHT],
+            authored_cells: vec![None],
+            ..Default::default()
+        };
+        append(
+            &mut mesh,
+            "Route12",
+            &[&landing],
+            &g,
+            &mut vec![false],
+            Some(&images),
+            None,
+            [24, 36],
+        );
+        assert!(
+            mesh.solid.uvs[24..]
+                .iter()
+                .all(|uv| crate::scenery_finish::paving_coordinates(*uv).is_some()),
+            "the mixed landing receives paving grain instead of becoming a planting bed"
+        );
+        images.pixels.insert(
+            landing.texture.id(),
+            TileImageSample::Rgba([90, 100, 150, 255].repeat(64)),
+        );
+        let dark = landing_paving_pigment(&landing, &images).unwrap();
+        assert!(
+            dark[2] > dark[1] && dark[1] > dark[0],
+            "native blue-gray night paving cannot become green"
+        );
+        let mut patterned = landing.clone();
+        patterned.column = 1;
+        patterned.source.subtile_column = 1;
+        patterned.source.tile_index = 0x39;
+        patterned.texture = bevy::asset::Handle::Uuid(
+            bevy::asset::uuid::Uuid::from_u128(99123),
+            std::marker::PhantomData,
+        );
+        images.pixels.insert(
+            patterned.texture.id(),
+            TileImageSample::Rgba([220, 220, 220, 255].repeat(64)),
+        );
+        let g = GridGeometry { width: 2, ..g };
+        let mut mesh = TerrainMeshData {
+            footing_heights: vec![HEIGHT; 2],
+            authored_cells: vec![None; 2],
+            ..Default::default()
+        };
+        append(
+            &mut mesh,
+            "Route12",
+            &[&landing, &patterned],
+            &g,
+            &mut vec![false; 2],
+            Some(&images),
+            None,
+            [24, 36],
+        );
+        assert_eq!(
+            mesh.solid.colors[24..28],
+            mesh.solid.colors[52..56],
+            "different patterned source tiles share one continuous landing background"
+        );
     }
     #[test]
     fn native_tall_grass_bank_meets_the_pier_grade_without_a_height_gap() {
-        let loaded=crystal_assets::read_loaded_verified_compiled_game_pack(
-            std::path::PathBuf::from(std::env::var_os("CRYSTAL_RENDER_TEST_PACK").unwrap())).unwrap();
-        let art=&loaded.pack().runtime_files()["data/tilesets/johto_metatiles.bin"];
-        assert_eq!(&art[3*16..4*16],&[4;16],"native tall-grass contact identity");
-        let g=GridGeometry {width:20,height:4,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
-        let tiles=(0..80).map(|i|VisualTile {column:(i%20) as u32,row:(i/20) as u32,
-            texture:Default::default(),priority:false,animation_frames:None,
-            source:VisualTileSource {tileset_id:"johto".into(),metatile_id:if i%20<4 {3}else{6},
-                subtile_column:(i%4) as u8,subtile_row:(i/20) as u8,
-                tile_index:if i%20<4 {4}else{7}}}).collect::<Vec<_>>();
-        let cells=tiles.iter().collect::<Vec<_>>();
-        let edges=[crystal_render_api::VisualJumpLedge {start:IVec2::new(0,4),end:IVec2::new(20,4),descent:IVec2::Y}];
-        let field=terraces::Field::with_source(&edges,&g,[0,0],&cells);
-        let shore=field.height(Vec2::new(31.999,12.));assert!(shore>HEIGHT);
-        let levels=PierLevels::new("Route32",&cells,&g,Some(&field));
-        let h=heights("Route32",&cells,&g,24,&levels);
-        assert!((h[0]-shore).abs()<0.001 && (h[1]-shore).abs()<0.001,"deck starts on the native bank");
-        assert!((h[3]-h[0]).abs()<=(shore-HEIGHT).abs()/16.+0.001);
-        let next=heights("Route32",&cells,&g,25,&levels);
-        assert_eq!([h[3],h[2]],[next[0],next[1]],"the approach has no internal step");
-        let mut mesh=TerrainMeshData {footing_heights:vec![0.;80],authored_cells:vec![None;80],..Default::default()};
-        support(&mut mesh,"Route32",&cells,&g,Some(&field));
-        assert!((mesh.footing_heights[24]-h.iter().sum::<f32>()/4.).abs()<0.001);
-        append(&mut mesh,"Route32",&cells,&g,&mut vec![false;80],None,Some(&field),[0,0]);
-        let before=mesh.textured.positions.clone();let footing=mesh.footing_heights.clone();
-        terraces::finish_on_map(&mut mesh,"Route32",&cells,&g,[0,0],&edges);
-        assert_eq!(mesh.textured.positions,before,"water and fitted deck are not lifted twice");
-        for i in 0..80 {if i%20>=4 {assert_eq!(mesh.footing_heights[i],footing[i]);}}
-        let mut unknown=tiles.clone();for tile in &mut unknown {if tile.source.metatile_id==3 {tile.source.tile_index=3;}}
-        let cells=unknown.iter().collect::<Vec<_>>();
-        let levels=PierLevels::new("Route32",&cells,&g,Some(&field));
-        assert_eq!(heights("Route32",&cells,&g,24,&levels),[HEIGHT;4],"unproven art is not a land contact");
+        let loaded = crystal_assets::read_loaded_verified_compiled_game_pack(
+            std::path::PathBuf::from(std::env::var_os("CRYSTAL_RENDER_TEST_PACK").unwrap()),
+        )
+        .unwrap();
+        let art = &loaded.pack().runtime_files()["data/tilesets/johto_metatiles.bin"];
+        assert_eq!(
+            &art[3 * 16..4 * 16],
+            &[4; 16],
+            "native tall-grass contact identity"
+        );
+        let g = GridGeometry {
+            width: 20,
+            height: 4,
+            tile_width: 8.,
+            tile_height: 8.,
+            origin_x: 0.,
+            origin_z: 0.,
+        };
+        let tiles = (0..80)
+            .map(|i| VisualTile {
+                column: (i % 20) as u32,
+                row: (i / 20) as u32,
+                texture: Default::default(),
+                priority: false,
+                animation_frames: None,
+                source: VisualTileSource {
+                    tileset_id: "johto".into(),
+                    metatile_id: if i % 20 < 4 { 3 } else { 6 },
+                    subtile_column: (i % 4) as u8,
+                    subtile_row: (i / 20) as u8,
+                    tile_index: if i % 20 < 4 { 4 } else { 7 },
+                },
+            })
+            .collect::<Vec<_>>();
+        let cells = tiles.iter().collect::<Vec<_>>();
+        let edges = [crystal_render_api::VisualJumpLedge {
+            start: IVec2::new(0, 4),
+            end: IVec2::new(20, 4),
+            descent: IVec2::Y,
+        }];
+        let field = terraces::Field::with_source(&edges, &g, [0, 0], &cells);
+        let shore = field.height(Vec2::new(31.999, 12.));
+        assert!(shore > HEIGHT);
+        let levels = PierLevels::new("Route32", &cells, &g, Some(&field));
+        let h = heights("Route32", &cells, &g, 24, &levels);
+        assert!(
+            (h[0] - shore).abs() < 0.001 && (h[1] - shore).abs() < 0.001,
+            "deck starts on the native bank"
+        );
+        assert!((h[3] - h[0]).abs() <= (shore - HEIGHT).abs() / 16. + 0.001);
+        let next = heights("Route32", &cells, &g, 25, &levels);
+        assert_eq!(
+            [h[3], h[2]],
+            [next[0], next[1]],
+            "the approach has no internal step"
+        );
+        let mut mesh = TerrainMeshData {
+            footing_heights: vec![0.; 80],
+            authored_cells: vec![None; 80],
+            ..Default::default()
+        };
+        support(&mut mesh, "Route32", &cells, &g, Some(&field));
+        assert!((mesh.footing_heights[24] - h.iter().sum::<f32>() / 4.).abs() < 0.001);
+        append(
+            &mut mesh,
+            "Route32",
+            &cells,
+            &g,
+            &mut vec![false; 80],
+            None,
+            Some(&field),
+            [0, 0],
+        );
+        let before = mesh.textured.positions.clone();
+        let footing = mesh.footing_heights.clone();
+        terraces::finish_on_map(&mut mesh, "Route32", &cells, &g, [0, 0], &edges);
+        assert_eq!(
+            mesh.textured.positions, before,
+            "water and fitted deck are not lifted twice"
+        );
+        for i in 0..80 {
+            if i % 20 >= 4 {
+                assert_eq!(mesh.footing_heights[i], footing[i]);
+            }
+        }
+        let mut unknown = tiles.clone();
+        for tile in &mut unknown {
+            if tile.source.metatile_id == 3 {
+                tile.source.tile_index = 3;
+            }
+        }
+        let cells = unknown.iter().collect::<Vec<_>>();
+        let levels = PierLevels::new("Route32", &cells, &g, Some(&field));
+        assert_eq!(
+            heights("Route32", &cells, &g, 24, &levels),
+            [HEIGHT; 4],
+            "unproven art is not a land contact"
+        );
     }
     #[test]
     fn elevated_pier_ramp_meets_raised_native_paving_without_a_step() {
@@ -1151,7 +1663,7 @@ mod tests {
             &mut claimed,
             None,
             Some(&field),
-            [0,0],
+            [0, 0],
         );
         let old = mesh.solid.positions.clone();
         terraces::finish_on_map(&mut mesh, "Route25", &cells, &g, [0, 0], &edges);
@@ -1160,43 +1672,111 @@ mod tests {
     }
     #[test]
     fn source_brick_bevels_at_shore_contact_keep_their_already_fitted_pier_height() {
-        let g=GridGeometry {width:16,height:4,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
-        let mut assets=Assets::<Image>::default();let texture=assets.add(Image::default());
-        let rows=["00000000","11111110","11111110","00000000",
-            "11101111","11101111","00000000","01111110"];
-        let rgba=rows.iter().flat_map(|row|row.bytes().flat_map(|b|
-            if b==b'0' {[222,255,222,255]} else {[255,156,198,255]})).collect();
-        let mut images=TerrainImageSamples::default();
-        images.pixels.insert(texture.id(),TileImageSample::Rgba(rgba));
-        for (map,family,land_block,land_tile,deck_block,deck_tile) in [
-            ("Route25","kanto",0x55,0x5b,5,0x4b),
-            ("Route27","johto",1,6,6,7)] {
-            let tiles=(0..64).map(|i|VisualTile {
-                column:(i%16)as u32,row:(i/16)as u32,texture:texture.clone(),
-                priority:false,animation_frames:None,
-                source:VisualTileSource {tileset_id:family.into(),
-                    metatile_id:if i%16<4 {land_block}else{deck_block},
-                    tile_index:if i%16<4 {land_tile}else{deck_tile},
-                    subtile_column:(i%4)as u8,subtile_row:(i/16)as u8}
-            }).collect::<Vec<_>>();
-            let cells=tiles.iter().collect::<Vec<_>>();
-            let edges=[crystal_render_api::VisualJumpLedge {start:IVec2::new(0,4),
-                end:IVec2::new(16,4),descent:IVec2::Y}];
-            let field=terraces::Field::with_source(&edges,&g,[0,0],&cells);
-            let mut mesh=TerrainMeshData {footing_heights:vec![0.;64],
-                authored_cells:vec![None;64],..Default::default()};
-            support(&mut mesh,map,&cells,&g,Some(&field));
-            append(&mut mesh,map,&cells,&g,&mut vec![false;64],Some(&images),Some(&field),[0,0]);
-            let before=mesh.clone();
-            assert!(before.solid.positions.len()>2000,"exercise modeled brick bevels");
-            terraces::finish_on_map(&mut mesh,map,&cells,&g,[0,0],&edges);
-            for (i,(after,before)) in mesh.solid.positions.iter().zip(&before.solid.positions).enumerate() {
-                assert_eq!(after,before,"{map}: land must not lift fitted pier vertex {i} a second time");
+        let g = GridGeometry {
+            width: 16,
+            height: 4,
+            tile_width: 8.,
+            tile_height: 8.,
+            origin_x: 0.,
+            origin_z: 0.,
+        };
+        let mut assets = Assets::<Image>::default();
+        let texture = assets.add(Image::default());
+        let rows = [
+            "00000000", "11111110", "11111110", "00000000", "11101111", "11101111", "00000000",
+            "01111110",
+        ];
+        let rgba = rows
+            .iter()
+            .flat_map(|row| {
+                row.bytes().flat_map(|b| {
+                    if b == b'0' {
+                        [222, 255, 222, 255]
+                    } else {
+                        [255, 156, 198, 255]
+                    }
+                })
+            })
+            .collect();
+        let mut images = TerrainImageSamples::default();
+        images
+            .pixels
+            .insert(texture.id(), TileImageSample::Rgba(rgba));
+        for (map, family, land_block, land_tile, deck_block, deck_tile) in [
+            ("Route25", "kanto", 0x55, 0x5b, 5, 0x4b),
+            ("Route27", "johto", 1, 6, 6, 7),
+        ] {
+            let tiles = (0..64)
+                .map(|i| VisualTile {
+                    column: (i % 16) as u32,
+                    row: (i / 16) as u32,
+                    texture: texture.clone(),
+                    priority: false,
+                    animation_frames: None,
+                    source: VisualTileSource {
+                        tileset_id: family.into(),
+                        metatile_id: if i % 16 < 4 { land_block } else { deck_block },
+                        tile_index: if i % 16 < 4 { land_tile } else { deck_tile },
+                        subtile_column: (i % 4) as u8,
+                        subtile_row: (i / 16) as u8,
+                    },
+                })
+                .collect::<Vec<_>>();
+            let cells = tiles.iter().collect::<Vec<_>>();
+            let edges = [crystal_render_api::VisualJumpLedge {
+                start: IVec2::new(0, 4),
+                end: IVec2::new(16, 4),
+                descent: IVec2::Y,
+            }];
+            let field = terraces::Field::with_source(&edges, &g, [0, 0], &cells);
+            let mut mesh = TerrainMeshData {
+                footing_heights: vec![0.; 64],
+                authored_cells: vec![None; 64],
+                ..Default::default()
+            };
+            support(&mut mesh, map, &cells, &g, Some(&field));
+            append(
+                &mut mesh,
+                map,
+                &cells,
+                &g,
+                &mut vec![false; 64],
+                Some(&images),
+                Some(&field),
+                [0, 0],
+            );
+            let before = mesh.clone();
+            assert!(
+                before.solid.positions.len() > 2000,
+                "exercise modeled brick bevels"
+            );
+            terraces::finish_on_map(&mut mesh, map, &cells, &g, [0, 0], &edges);
+            for (i, (after, before)) in mesh
+                .solid
+                .positions
+                .iter()
+                .zip(&before.solid.positions)
+                .enumerate()
+            {
+                assert_eq!(
+                    after, before,
+                    "{map}: land must not lift fitted pier vertex {i} a second time"
+                );
             }
-            assert_eq!(&mesh.solid.normals[..before.solid.normals.len()],&before.solid.normals);
-            assert_eq!(&mesh.solid.colors[..before.solid.colors.len()],&before.solid.colors);
-            assert_eq!(&mesh.solid.uvs[..before.solid.uvs.len()],&before.solid.uvs);
-            for i in 0..64 {if i%16>=4 {assert_eq!(mesh.footing_heights[i],before.footing_heights[i]);}}
+            assert_eq!(
+                &mesh.solid.normals[..before.solid.normals.len()],
+                &before.solid.normals
+            );
+            assert_eq!(
+                &mesh.solid.colors[..before.solid.colors.len()],
+                &before.solid.colors
+            );
+            assert_eq!(&mesh.solid.uvs[..before.solid.uvs.len()], &before.solid.uvs);
+            for i in 0..64 {
+                if i % 16 >= 4 {
+                    assert_eq!(mesh.footing_heights[i], before.footing_heights[i]);
+                }
+            }
         }
     }
 
@@ -1302,16 +1882,34 @@ mod tests {
                     assert_eq!([h[1], h[2]], [south[0], south[3]], "{map}: south join");
                 }
             }
-            if map=="Route20" {
-                assert_eq!(raised.iter().filter(|&&i|mesh.footing_heights[i]==0.).count(),32,
-                    "the complete Seafoam cave approach stays at sea-level ground");
-                assert_eq!(raised.iter().filter(|&&i|mesh.footing_heights[i]==HEIGHT).count(),32,
-                    "the separate offshore bridge retains its raised deck");
+            if map == "Route20" {
+                assert_eq!(
+                    raised
+                        .iter()
+                        .filter(|&&i| mesh.footing_heights[i] == 0.)
+                        .count(),
+                    32,
+                    "the complete Seafoam cave approach stays at sea-level ground"
+                );
+                assert_eq!(
+                    raised
+                        .iter()
+                        .filter(|&&i| mesh.footing_heights[i] == HEIGHT)
+                        .count(),
+                    32,
+                    "the separate offshore bridge retains its raised deck"
+                );
             }
             for &i in &raised {
                 assert!(mesh.footing_heights[i] <= HEIGHT);
-                assert!(if map=="Route20" {mesh.footing_heights[i]>=0.} else {mesh.footing_heights[i]>0.},
-                    "{map}: ordinary crossings retain their raised support");
+                assert!(
+                    if map == "Route20" {
+                        mesh.footing_heights[i] >= 0.
+                    } else {
+                        mesh.footing_heights[i] > 0.
+                    },
+                    "{map}: ordinary crossings retain their raised support"
+                );
             }
             for (i, tile) in cells.iter().enumerate() {
                 if !deck(map, &tile.source) && !entry(map, &tile.source) {
@@ -1322,17 +1920,33 @@ mod tests {
                 }
             }
             let mut claimed = vec![false; w * h];
-            append(&mut mesh, map, &cells, &g, &mut claimed, None, None,[0,0]);
-            if map=="CeruleanGym" {
-                assert!(mesh.textured.positions.iter().zip(&mesh.textured.normals)
-                    .any(|(point,normal)|point[1] < -5.9 && normal[1].abs()<0.5),
-                    "native timber pilings extend below the water quad, not merely to its surface");
-                assert!(mesh.textured.positions.iter().zip(&mesh.textured.normals)
-                    .any(|(point,normal)|point[1]>=HEIGHT-0.03 && normal[2].abs()>0.5),
-                    "native timber keeps an actual raised beam face");
+            append(&mut mesh, map, &cells, &g, &mut claimed, None, None, [0, 0]);
+            if map == "CeruleanGym" {
+                assert!(
+                    mesh.textured
+                        .positions
+                        .iter()
+                        .zip(&mesh.textured.normals)
+                        .any(|(point, normal)| point[1] < -5.9 && normal[1].abs() < 0.5),
+                    "native timber pilings extend below the water quad, not merely to its surface"
+                );
+                assert!(
+                    mesh.textured
+                        .positions
+                        .iter()
+                        .zip(&mesh.textured.normals)
+                        .any(|(point, normal)| point[1] >= HEIGHT - 0.03 && normal[2].abs() > 0.5),
+                    "native timber keeps an actual raised beam face"
+                );
             } else {
-                assert!(mesh.solid.positions.iter().any(|p|p[1]<0.),"{map}: pilings extend into water");
-                assert!(mesh.solid.positions.iter().any(|p|p[1]>=HEIGHT-0.03),"{map}: raised beam");
+                assert!(
+                    mesh.solid.positions.iter().any(|p| p[1] < 0.),
+                    "{map}: pilings extend into water"
+                );
+                assert!(
+                    mesh.solid.positions.iter().any(|p| p[1] >= HEIGHT - 0.03),
+                    "{map}: raised beam"
+                );
             }
             if map == "CeruleanGym" {
                 let x = 8;
@@ -1355,8 +1969,14 @@ mod tests {
                 let (w, e, n, _) = g.bounds(i % g.width, i / g.width);
                 let edge = heights(map, &cells, &g, i - g.width, &levels);
                 for (x, expected) in [(w, edge[1]), (e, edge[2])] {
-                    let timber=if map=="CeruleanGym" { &mesh.textured } else { &mesh.solid };
-                    let actual = timber.positions.iter()
+                    let timber = if map == "CeruleanGym" {
+                        &mesh.textured
+                    } else {
+                        &mesh.solid
+                    };
+                    let actual = timber
+                        .positions
+                        .iter()
                         .filter(|p| (p[0] - x).abs() < 0.0001 && (p[2] - n - 1.2).abs() < 0.0001)
                         .map(|p| p[1])
                         .fold(f32::NEG_INFINITY, f32::max);
@@ -1445,78 +2065,148 @@ mod tests {
 mod cerulean_timber_tests {
     use super::*;
     fn fixture() -> (GridGeometry, Vec<VisualTile>) {
-        let g=GridGeometry { width:4,height:4,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0. };
-        let tiles=(0..16).map(|i| VisualTile {
-            column:(i%4) as u32,row:(i/4) as u32,texture:Default::default(),priority:false,animation_frames:None,
-            source:VisualTileSource {tileset_id:"port".into(),metatile_id:0x27,
-                subtile_column:(i%4) as u8,subtile_row:(i/4) as u8,
-                tile_index:if i<8 {5} else if i==8 {0x22} else if i>=12 {0x14} else {0xffff} }
-        }).collect();
-        (g,tiles)
+        let g = GridGeometry {
+            width: 4,
+            height: 4,
+            tile_width: 8.,
+            tile_height: 8.,
+            origin_x: 0.,
+            origin_z: 0.,
+        };
+        let tiles = (0..16)
+            .map(|i| VisualTile {
+                column: (i % 4) as u32,
+                row: (i / 4) as u32,
+                texture: Default::default(),
+                priority: false,
+                animation_frames: None,
+                source: VisualTileSource {
+                    tileset_id: "port".into(),
+                    metatile_id: 0x27,
+                    subtile_column: (i % 4) as u8,
+                    subtile_row: (i / 4) as u8,
+                    tile_index: if i < 8 {
+                        5
+                    } else if i == 8 {
+                        0x22
+                    } else if i >= 12 {
+                        0x14
+                    } else {
+                        0xffff
+                    },
+                },
+            })
+            .collect();
+        (g, tiles)
     }
     #[test]
     fn donor_requires_the_native_timber_and_a_deck_above_it() {
-        let (g,tiles)=fixture();
-        assert_eq!(cerulean_timber_uv(&tiles.iter().collect::<Vec<_>>(),&g),Some(g.uv(0,2)));
+        let (g, tiles) = fixture();
+        assert_eq!(
+            cerulean_timber_uv(&tiles.iter().collect::<Vec<_>>(), &g),
+            Some(g.uv(0, 2))
+        );
         for field in 0..6 {
-            let mut changed=tiles.clone();let source=&mut changed[8].source;
-            match field {0=>source.tileset_id="kanto".into(),1=>source.metatile_id=0x36,
-                2=>source.tile_index=0x0b,3=>source.subtile_column=4,4=>source.subtile_row=3,
-                _=>changed[4].source.tile_index=0x14}
-            assert!(cerulean_timber_uv(&changed.iter().collect::<Vec<_>>(),&g).is_none(),"mutation {field}");
+            let mut changed = tiles.clone();
+            let source = &mut changed[8].source;
+            match field {
+                0 => source.tileset_id = "kanto".into(),
+                1 => source.metatile_id = 0x36,
+                2 => source.tile_index = 0x0b,
+                3 => source.subtile_column = 4,
+                4 => source.subtile_row = 3,
+                _ => changed[4].source.tile_index = 0x14,
+            }
+            assert!(
+                cerulean_timber_uv(&changed.iter().collect::<Vec<_>>(), &g).is_none(),
+                "mutation {field}"
+            );
         }
     }
     #[test]
     fn native_timber_keeps_every_beam_and_post_vertex() {
-        for post in [false,true] {
-            let mut old=SurfaceMeshData::default();let mut new=SurfaceMeshData::default();
-            beam(&mut old,[1.,2.5,3.,4.5],-6.,1.);
-            native_cerulean_timber(&mut new,[1.,2.5,3.,4.5],-6.,1.,(0.2,0.3,0.6,0.7),post);
-            assert_eq!(new.positions,old.positions);assert_eq!(new.normals,old.normals);
-            assert_eq!(new.indices,old.indices);
-            assert!(new.colors.iter().all(|c|*c==TEXTURED_SHADE));
-            let allowed=[[0.,0.],[0.,1.],[0.,2.],[3.,3.]].map(|[x,y]|
-                [0.2+0.1*(x+0.5)/8.,0.6+0.1*(y+0.5)/8.]);
-            assert!(new.uvs.iter().all(|uv|allowed.iter().any(|p|
-                (p[0]-uv[0]).abs()<1e-6&&(p[1]-uv[1]).abs()<1e-6)));
-            assert!(new.uvs.iter().any(|uv|(uv[0]-0.20625).abs()<1e-6));
+        for post in [false, true] {
+            let mut old = SurfaceMeshData::default();
+            let mut new = SurfaceMeshData::default();
+            beam(&mut old, [1., 2.5, 3., 4.5], -6., 1.);
+            native_cerulean_timber(
+                &mut new,
+                [1., 2.5, 3., 4.5],
+                -6.,
+                1.,
+                (0.2, 0.3, 0.6, 0.7),
+                post,
+            );
+            assert_eq!(new.positions, old.positions);
+            assert_eq!(new.normals, old.normals);
+            assert_eq!(new.indices, old.indices);
+            assert!(new.colors.iter().all(|c| *c == TEXTURED_SHADE));
+            let allowed = [[0., 0.], [0., 1.], [0., 2.], [3., 3.]]
+                .map(|[x, y]| [0.2 + 0.1 * (x + 0.5) / 8., 0.6 + 0.1 * (y + 0.5) / 8.]);
+            assert!(new.uvs.iter().all(|uv| {
+                allowed
+                    .iter()
+                    .any(|p| (p[0] - uv[0]).abs() < 1e-6 && (p[1] - uv[1]).abs() < 1e-6)
+            }));
+            assert!(new.uvs.iter().any(|uv| (uv[0] - 0.20625).abs() < 1e-6));
         }
     }
     #[test]
     fn actual_edge_consumes_its_own_timber_without_changing_support() {
-        let (g,tiles)=fixture();let cells=tiles.iter().collect::<Vec<_>>();
-        for map in ["CeruleanGym","OtherRoom"] {
-            let mut mesh=TerrainMeshData {footing_heights:vec![1.25;16],authored_cells:vec![None;16],..Default::default()};
-            let mut claimed=vec![true;16];claimed[8]=false;
-            append(&mut mesh,map,&cells,&g,&mut claimed,None,None,[0,0]);
-            assert_eq!(mesh.footing_heights,vec![1.25;16]);
+        let (g, tiles) = fixture();
+        let cells = tiles.iter().collect::<Vec<_>>();
+        for map in ["CeruleanGym", "OtherRoom"] {
+            let mut mesh = TerrainMeshData {
+                footing_heights: vec![1.25; 16],
+                authored_cells: vec![None; 16],
+                ..Default::default()
+            };
+            let mut claimed = vec![true; 16];
+            claimed[8] = false;
+            append(&mut mesh, map, &cells, &g, &mut claimed, None, None, [0, 0]);
+            assert_eq!(mesh.footing_heights, vec![1.25; 16]);
             assert!(mesh.solid.indices.is_empty());
-            if map=="CeruleanGym" {
-                assert_eq!(mesh.authored_cells[8],Some("outdoor/elevated-pier-edge"));
-                assert!(claimed[8]);assert!(!mesh.textured.indices.is_empty());
+            if map == "CeruleanGym" {
+                assert_eq!(mesh.authored_cells[8], Some("outdoor/elevated-pier-edge"));
+                assert!(claimed[8]);
+                assert!(!mesh.textured.indices.is_empty());
                 // Four water vertices precede the original beam/post body.
-                let uv=g.uv(0,2);
-                assert!(mesh.textured.uvs[4..].iter().all(|p|p[0]>uv.0&&p[0]<uv.1&&p[1]>uv.2&&p[1]<uv.3));
-            } else {assert!(!claimed[8]);assert!(mesh.textured.indices.is_empty());}
+                let uv = g.uv(0, 2);
+                assert!(
+                    mesh.textured.uvs[4..]
+                        .iter()
+                        .all(|p| p[0] > uv.0 && p[0] < uv.1 && p[1] > uv.2 && p[1] < uv.3)
+                );
+            } else {
+                assert!(!claimed[8]);
+                assert!(mesh.textured.indices.is_empty());
+            }
         }
     }
     #[test]
-    #[ignore="requires the verified external pack"]
+    #[ignore = "requires the verified external pack"]
     fn external_bank_and_timber_art_have_distinct_source_materials() {
-        let loaded=crystal_assets::read_loaded_verified_compiled_game_pack(
-            std::path::PathBuf::from(std::env::var_os("CRYSTAL_RENDER_TEST_PACK").unwrap())).unwrap();
-        let pack=loaded.pack();let palette=&pack.data().tilesets["port"].palette_map;
-        assert_eq!(palette[0x0b]&7,0,"bank uses source GRAY, never BROWN");
-        assert_eq!(palette[0x22]&7,5,"support drawing uses source BROWN");
-        let sheet=image::load_from_memory(&pack.runtime_files()["gfx/tilesets/port.png"]).unwrap().to_rgba8();
-        let columns=sheet.width()/8;
-        for y in 0..8 {for x in 0..8 {
-            let pixel=sheet.get_pixel((0x0b%columns)*8+x,(0x0b/columns)*8+y);
-            assert_eq!(&pixel.0[..3],&[85,85,85],"bank is a flat shadow course");
-        }}
-        for ([x,y],gray) in [([0,0],85),([0,1],255),([0,2],0),([3,3],170)] {
-            let pixel=sheet.get_pixel((0x22%columns)*8+x,(0x22/columns)*8+y);
-            assert_eq!(&pixel.0[..3],&[gray;3],"source timber role {x},{y}");
+        let loaded = crystal_assets::read_loaded_verified_compiled_game_pack(
+            std::path::PathBuf::from(std::env::var_os("CRYSTAL_RENDER_TEST_PACK").unwrap()),
+        )
+        .unwrap();
+        let pack = loaded.pack();
+        let palette = &pack.data().tilesets["port"].palette_map;
+        assert_eq!(palette[0x0b] & 7, 0, "bank uses source GRAY, never BROWN");
+        assert_eq!(palette[0x22] & 7, 5, "support drawing uses source BROWN");
+        let sheet = image::load_from_memory(&pack.runtime_files()["gfx/tilesets/port.png"])
+            .unwrap()
+            .to_rgba8();
+        let columns = sheet.width() / 8;
+        for y in 0..8 {
+            for x in 0..8 {
+                let pixel = sheet.get_pixel((0x0b % columns) * 8 + x, (0x0b / columns) * 8 + y);
+                assert_eq!(&pixel.0[..3], &[85, 85, 85], "bank is a flat shadow course");
+            }
+        }
+        for ([x, y], gray) in [([0, 0], 85), ([0, 1], 255), ([0, 2], 0), ([3, 3], 170)] {
+            let pixel = sheet.get_pixel((0x22 % columns) * 8 + x, (0x22 / columns) * 8 + y);
+            assert_eq!(&pixel.0[..3], &[gray; 3], "source timber role {x},{y}");
         }
     }
 }

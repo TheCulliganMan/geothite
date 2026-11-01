@@ -153,7 +153,12 @@ pub(super) fn paint(
             return None;
         }
         windows.push(linear(pane[0]?));
-        lit_windows.push(cells[(p.row+8)*g.width+p.column+x].source.tile_index==0x0a);
+        lit_windows.push(
+            cells[(p.row + 8) * g.width + p.column + x]
+                .source
+                .tile_index
+                == 0x0a,
+        );
     }
     Some(Paint {
         roof: [linear(roof[1]?), linear(roof[2]?)],
@@ -219,30 +224,36 @@ fn roof(out: &mut SurfaceMeshData, width: f32, depth: f32, unit: f32, p: &Paint)
             mix(p.roof[0], p.ink, 0.25),
             unit,
         );
-        let rows=9;
+        let rows = 9;
         for row in 0..rows {
-            let c=row as f32/rows as f32;
-            let d=((row as f32+1.08)/rows as f32).min(0.995);
+            let c = row as f32 / rows as f32;
+            let d = ((row as f32 + 1.08) / rows as f32).min(0.995);
             let at = |u: f32, t: f32| {
-                    let upper = if plane.len() == 4 {
-                        plane[3]+(plane[2]-plane[3])*u
-                    } else {
-                        plane[2]
-                    };
-                    let lower=plane[0]+(plane[1]-plane[0])*u;
-                    lower+(upper-lower)*t
-                        + Vec3::Y * unit * (0.025+row as f32*0.003)
+                let upper = if plane.len() == 4 {
+                    plane[3] + (plane[2] - plane[3]) * u
+                } else {
+                    plane[2]
                 };
-            let span=(at(1.,(c+d)*0.5)-at(0.,(c+d)*0.5)).length();
-            let cols=(span/(unit*0.62)).ceil().max(1.) as usize;
+                let lower = plane[0] + (plane[1] - plane[0]) * u;
+                lower + (upper - lower) * t + Vec3::Y * unit * (0.025 + row as f32 * 0.003)
+            };
+            let span = (at(1., (c + d) * 0.5) - at(0., (c + d) * 0.5)).length();
+            let cols = (span / (unit * 0.62)).ceil().max(1.) as usize;
             for col in 0..=cols {
-                let stagger=if row%2==0 {0.} else {0.5};
-                let a=((col as f32-stagger)/cols as f32).max(0.)+0.009/cols as f32;
-                let b=((col as f32+1.-stagger)/cols as f32).min(1.)-0.009/cols as f32;
-                if b<=a {continue;}
+                let stagger = if row % 2 == 0 { 0. } else { 0.5 };
+                let a = ((col as f32 - stagger) / cols as f32).max(0.) + 0.009 / cols as f32;
+                let b = ((col as f32 + 1. - stagger) / cols as f32).min(1.) - 0.009 / cols as f32;
+                if b <= a {
+                    continue;
+                }
                 let gain = 0.91 + ((row * 3 + col * 7 + side) % 5) as f32 * 0.016;
-                ceramic_tile(out,[[at(a,c),at(b,c)],[at(a,d),at(b,d)]],unit,
-                    unit*0.045,ceramic.map(|v|v*gain));
+                ceramic_tile(
+                    out,
+                    [[at(a, c), at(b, c)], [at(a, d), at(b, d)]],
+                    unit,
+                    unit * 0.045,
+                    ceramic.map(|v| v * gain),
+                );
             }
         }
     }
@@ -261,13 +272,26 @@ fn roof(out: &mut SurfaceMeshData, width: f32, depth: f32, unit: f32, p: &Paint)
         0.,
         unit,
     );
-    let count=((width-2.*inset)/(unit*0.70)).ceil().max(1.) as usize;
+    let count = ((width - 2. * inset) / (unit * 0.70)).ceil().max(1.) as usize;
     for i in 0..count {
-        let a=inset+(width-2.*inset)*i as f32/count as f32;
-        let b=inset+(width-2.*inset)*(i+1) as f32/count as f32-unit*0.012;
-        ceramic_tile(out,[[v(a,high+unit*0.06,mid-unit*0.12),v(a,high+unit*0.06,mid+unit*0.12)],
-            [v(b,high+unit*0.06,mid-unit*0.12),v(b,high+unit*0.06,mid+unit*0.12)]],
-            unit,unit*0.07,ceramic);
+        let a = inset + (width - 2. * inset) * i as f32 / count as f32;
+        let b = inset + (width - 2. * inset) * (i + 1) as f32 / count as f32 - unit * 0.012;
+        ceramic_tile(
+            out,
+            [
+                [
+                    v(a, high + unit * 0.06, mid - unit * 0.12),
+                    v(a, high + unit * 0.06, mid + unit * 0.12),
+                ],
+                [
+                    v(b, high + unit * 0.06, mid - unit * 0.12),
+                    v(b, high + unit * 0.06, mid + unit * 0.12),
+                ],
+            ],
+            unit,
+            unit * 0.07,
+            ceramic,
+        );
     }
 }
 fn masonry(out: &mut SurfaceMeshData, width: f32, depth: f32, unit: f32, p: &Paint) {
@@ -380,7 +404,7 @@ pub(super) fn append(out: &mut SurfaceMeshData, b: [f32; 4], unit: f32, p: Paint
             1.,
             u,
         );
-        let first_glass=out.positions.len();
+        let first_glass = out.positions.len();
         block(
             out,
             [
@@ -396,8 +420,12 @@ pub(super) fn append(out: &mut SurfaceMeshData, b: [f32; 4], unit: f32, p: Paint
             -1.,
             u,
         );
-        crate::scenery_finish::mark_source_glass(out,first_glass..out.positions.len(),
-            [x-half,x+half,u*3.20,u*4.21],p.lit_windows[index]);
+        crate::scenery_finish::mark_source_glass(
+            out,
+            first_glass..out.positions.len(),
+            [x - half, x + half, u * 3.20, u * 4.21],
+            p.lit_windows[index],
+        );
         for xx in [x - half - u * 0.028, x + half + u * 0.028] {
             block(
                 out,
@@ -468,17 +496,23 @@ pub(super) fn append(out: &mut SurfaceMeshData, b: [f32; 4], unit: f32, p: Paint
     // Deep museum hips and wide halls exceed the town material's bounded
     // local UV domain. Fit only those paint coordinates before placement;
     // source-colored panes retain their separate normalized glass domain.
-    let paint_coordinates=|uv:[f32;2]| {
-        let kind=((uv[1]-crate::scenery_finish::TOWN_PAINT_BASE)/32.).round();
-        let v=uv[1]-(crate::scenery_finish::TOWN_PAINT_BASE+kind*32.);
-        ((0. ..=3.).contains(&kind) && v.abs()<16.).then_some((kind,v))
+    let paint_coordinates = |uv: [f32; 2]| {
+        let kind = ((uv[1] - crate::scenery_finish::TOWN_PAINT_BASE) / 32.).round();
+        let v = uv[1] - (crate::scenery_finish::TOWN_PAINT_BASE + kind * 32.);
+        ((0. ..=3.).contains(&kind) && v.abs() < 16.).then_some((kind, v))
     };
-    let scale=out.uvs[start..].iter().filter_map(|&uv|
-        paint_coordinates(uv).map(|(_,v)|(uv[0].abs()/15.).max(v.abs()/7.5)))
-        .fold(1.,f32::max);
+    let scale = out.uvs[start..]
+        .iter()
+        .filter_map(|&uv| {
+            paint_coordinates(uv).map(|(_, v)| (uv[0].abs() / 15.).max(v.abs() / 7.5))
+        })
+        .fold(1., f32::max);
     for uv in &mut out.uvs[start..] {
-        if let Some((kind,v))=paint_coordinates(*uv) {
-            *uv=[uv[0]/scale,crate::scenery_finish::TOWN_PAINT_BASE+kind*32.+v/scale];
+        if let Some((kind, v)) = paint_coordinates(*uv) {
+            *uv = [
+                uv[0] / scale,
+                crate::scenery_finish::TOWN_PAINT_BASE + kind * 32. + v / scale,
+            ];
         }
     }
     let origin = Vec3::new(b[0], 0., b[2]);
@@ -586,31 +620,56 @@ mod tests {
     use super::*;
     #[test]
     fn museum_glass_retains_each_native_lamp_without_lighting_dark_panes() {
-        for width in [8,16,20] {
-            let (tiles,g,p,images)=fixture(width);
-            let cells=tiles.iter().collect::<Vec<_>>();
-            let paint=paint(&cells,&g,p,&images).unwrap();
-            let expected=(1..width-1).filter(|&x|cells[8*width+x].source.tile_index==0x0a).count();
-            let mut day=SurfaceMeshData::default();
-            append(&mut day,[0.,width as f32*8.,0.,96.],8.,paint.clone());
-            assert_eq!(crate::city_lights::collect(&day).len(),expected,
-                "exact native lamp count, not every pane");
-            let tagged=day.uvs.iter().filter_map(|&uv|crate::scenery_finish::source_glass_coordinates(uv))
+        for width in [8, 16, 20] {
+            let (tiles, g, p, images) = fixture(width);
+            let cells = tiles.iter().collect::<Vec<_>>();
+            let paint = paint(&cells, &g, p, &images).unwrap();
+            let expected = (1..width - 1)
+                .filter(|&x| cells[8 * width + x].source.tile_index == 0x0a)
+                .count();
+            let mut day = SurfaceMeshData::default();
+            append(
+                &mut day,
+                [0., width as f32 * 8., 0., 96.],
+                8.,
+                paint.clone(),
+            );
+            assert_eq!(
+                crate::city_lights::collect(&day).len(),
+                expected,
+                "exact native lamp count, not every pane"
+            );
+            let tagged = day
+                .uvs
+                .iter()
+                .filter_map(|&uv| crate::scenery_finish::source_glass_coordinates(uv))
                 .collect::<Vec<_>>();
-            assert!(tagged.iter().any(|(_,lit)|*lit));
-            assert!(tagged.iter().any(|(_,lit)|!*lit));
-            let mut changed=paint.clone();changed.windows.fill([0.01,0.02,0.03]);
-            let mut dim=SurfaceMeshData::default();
-            append(&mut dim,[0.,width as f32*8.,0.,96.],8.,changed.clone());
-            assert_eq!(crate::city_lights::collect(&dim).len(),expected,
-                "day/dusk pigment cannot remove an authored lamp");
-            assert_eq!(dim.positions,day.positions);assert_eq!(dim.indices,day.indices);
-            assert_eq!(dim.uvs,day.uvs);assert_ne!(dim.colors,day.colors);
+            assert!(tagged.iter().any(|(_, lit)| *lit));
+            assert!(tagged.iter().any(|(_, lit)| !*lit));
+            let mut changed = paint.clone();
+            changed.windows.fill([0.01, 0.02, 0.03]);
+            let mut dim = SurfaceMeshData::default();
+            append(
+                &mut dim,
+                [0., width as f32 * 8., 0., 96.],
+                8.,
+                changed.clone(),
+            );
+            assert_eq!(
+                crate::city_lights::collect(&dim).len(),
+                expected,
+                "day/dusk pigment cannot remove an authored lamp"
+            );
+            assert_eq!(dim.positions, day.positions);
+            assert_eq!(dim.indices, day.indices);
+            assert_eq!(dim.uvs, day.uvs);
+            assert_ne!(dim.colors, day.colors);
             changed.lit_windows.fill(false);
-            let mut dark=SurfaceMeshData::default();
-            append(&mut dark,[0.,width as f32*8.,0.,96.],8.,changed);
+            let mut dark = SurfaceMeshData::default();
+            append(&mut dark, [0., width as f32 * 8., 0., 96.], 8., changed);
             assert!(crate::city_lights::collect(&dark).is_empty());
-            assert_eq!(dark.positions,day.positions);assert_eq!(dark.indices,day.indices);
+            assert_eq!(dark.positions, day.positions);
+            assert_eq!(dark.indices, day.indices);
         }
     }
 
@@ -653,39 +712,67 @@ mod tests {
     }
     #[test]
     fn ceramic_courses_are_closed_curved_volumes_even_at_narrow_hips() {
-        for narrow in [1.,0.35,0.04] {
-            let mut mesh=SurfaceMeshData::default();
-            ceramic_tile(&mut mesh,[[Vec3::ZERO,Vec3::X],
-                [Vec3::new(0.5-narrow*0.5,0.4,0.8),Vec3::new(0.5+narrow*0.5,0.4,0.8)]],
-                1.,0.045,[0.3,0.6,0.8]);
-            assert_eq!(mesh.indices.len()/3,20);
-            let mut edges=std::collections::BTreeMap::new();let mut volume=0.;
+        for narrow in [1., 0.35, 0.04] {
+            let mut mesh = SurfaceMeshData::default();
+            ceramic_tile(
+                &mut mesh,
+                [
+                    [Vec3::ZERO, Vec3::X],
+                    [
+                        Vec3::new(0.5 - narrow * 0.5, 0.4, 0.8),
+                        Vec3::new(0.5 + narrow * 0.5, 0.4, 0.8),
+                    ],
+                ],
+                1.,
+                0.045,
+                [0.3, 0.6, 0.8],
+            );
+            assert_eq!(mesh.indices.len() / 3, 20);
+            let mut edges = std::collections::BTreeMap::new();
+            let mut volume = 0.;
             for tri in mesh.indices.chunks_exact(3) {
-                let p=[tri[0],tri[1],tri[2]].map(|i|Vec3::from_array(mesh.positions[i as usize]));
-                assert!((p[1]-p[0]).cross(p[2]-p[0]).length()>0.000001);
-                volume+=p[0].dot(p[1].cross(p[2]))/6.;
-                for i in 0..3 {let mut e=[p[i].to_array().map(f32::to_bits),p[(i+1)%3].to_array().map(f32::to_bits)];
-                    e.sort();*edges.entry(e).or_insert(0)+=1;}
+                let p =
+                    [tri[0], tri[1], tri[2]].map(|i| Vec3::from_array(mesh.positions[i as usize]));
+                assert!((p[1] - p[0]).cross(p[2] - p[0]).length() > 0.000001);
+                volume += p[0].dot(p[1].cross(p[2])) / 6.;
+                for i in 0..3 {
+                    let mut e = [
+                        p[i].to_array().map(f32::to_bits),
+                        p[(i + 1) % 3].to_array().map(f32::to_bits),
+                    ];
+                    e.sort();
+                    *edges.entry(e).or_insert(0) += 1;
+                }
             }
-            assert!(volume>0.);assert!(edges.values().all(|&n|n==2));
-            let shoulders=mesh.normals.iter().filter(|n|n[1]>0.5)
-                .map(|n|n.map(|v|(v*1000.).round() as i32)).collect::<std::collections::BTreeSet<_>>();
-            assert!(shoulders.len()>=3,"curved shoulders must be real geometry");
+            assert!(volume > 0.);
+            assert!(edges.values().all(|&n| n == 2));
+            let shoulders = mesh
+                .normals
+                .iter()
+                .filter(|n| n[1] > 0.5)
+                .map(|n| n.map(|v| (v * 1000.).round() as i32))
+                .collect::<std::collections::BTreeSet<_>>();
+            assert!(
+                shoulders.len() >= 3,
+                "curved shoulders must be real geometry"
+            );
         }
     }
 
     #[test]
     fn museum_paint_keeps_native_material_roles_across_wide_and_deep_roofs() {
-        for width in [8,12,16,20] {
-            let (tiles,g,p,images)=fixture(width);
-            let paint=paint(&tiles.iter().collect::<Vec<_>>(),&g,p,&images).unwrap();
-            let mut mesh=SurfaceMeshData::default();
-            append(&mut mesh,[0.,width as f32*8.,0.,96.],8.,paint);
+        for width in [8, 12, 16, 20] {
+            let (tiles, g, p, images) = fixture(width);
+            let paint = paint(&tiles.iter().collect::<Vec<_>>(), &g, p, &images).unwrap();
+            let mut mesh = SurfaceMeshData::default();
+            append(&mut mesh, [0., width as f32 * 8., 0., 96.], 8., paint);
             for &uv in &mesh.uvs {
-                assert!(crate::scenery_finish::town_paint_kind(uv).is_some()
-                    ||crate::scenery_finish::source_glass_coordinates(uv).is_some()
-                    ||uv==crate::scenery_finish::SOURCE_PAINT_UV,
-                    "every museum face must retain its source material, including the front hip: {uv:?}");
+                assert!(
+                    crate::scenery_finish::town_paint_kind(uv).is_some()
+                        || crate::scenery_finish::source_glass_coordinates(uv).is_some()
+                        || uv == crate::scenery_finish::SOURCE_PAINT_UV,
+                    "every museum face must retain its source material, including the front hip: {uv:?}"
+                );
             }
         }
     }

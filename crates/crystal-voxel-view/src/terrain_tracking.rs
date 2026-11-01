@@ -26,35 +26,70 @@ pub(super) fn offset(built: &VisualWorldFrame, live: &VisualWorldFrame) -> Vec2 
 
 /// Prove that the same retained source cells cover a connected viewport.
 /// The atlas and build receipt remain owned by their original source frame.
-pub fn connected_frame_shift(built: &VisualWorldFrame, live: &VisualWorldFrame) -> Result<IVec2, &'static str> {
-    if built.map_id == live.map_id { return Err("same map uses ordinary retention"); }
-    let _trace=crate::loading_trace::span("region.prove_connected", || serde_json::json!({"map":live.map_id.as_ref()}));
+pub fn connected_frame_shift(
+    built: &VisualWorldFrame,
+    live: &VisualWorldFrame,
+) -> Result<IVec2, &'static str> {
+    if built.map_id == live.map_id {
+        return Err("same map uses ordinary retention");
+    }
+    let _trace = crate::loading_trace::span(
+        "region.prove_connected",
+        || serde_json::json!({"map":live.map_id.as_ref()}),
+    );
     if !built.active || !live.active || built.validate().is_err() || live.validate().is_err() {
         return Err("invalid connected frame");
     }
-    let shift = built.connected_source_shift(live).ok_or("unproven connected placement")?;
-    if built.grid_size != live.grid_size || built.tile_size != live.tile_size
-        || built.viewport_size != live.viewport_size || built.tiles.len() != live.tiles.len()
-        || built.tiles.is_empty() { return Err("different retained grid geometry"); }
-    if crate::interior_cutaway::is_cave(built) || crate::interior_cutaway::is_cave(live)
-        || built.tiles.iter().chain(&live.tiles).any(|t| crate::interior::has_back_wall(&t.source.tileset_id)) {
+    let shift = built
+        .connected_source_shift(live)
+        .ok_or("unproven connected placement")?;
+    if built.grid_size != live.grid_size
+        || built.tile_size != live.tile_size
+        || built.viewport_size != live.viewport_size
+        || built.tiles.len() != live.tiles.len()
+        || built.tiles.is_empty()
+    {
+        return Err("different retained grid geometry");
+    }
+    if crate::interior_cutaway::is_cave(built)
+        || crate::interior_cutaway::is_cave(live)
+        || built
+            .tiles
+            .iter()
+            .chain(&live.tiles)
+            .any(|t| crate::interior::has_back_wall(&t.source.tileset_id))
+    {
         return Err("connected retention requires outdoor terrain");
     }
     let delta = live.grid_origin - built.grid_origin - shift;
     let allowance = retention_allowance(live);
-    if delta.abs().cmpgt(allowance).any() { return Err("connected view exhausts retained halo"); }
-    let owned = |frame: &VisualWorldFrame, p: IVec2| frame.source_regions.iter().any(|r| {
-        let q = p - r.origin;
-        q.cmpge(IVec2::ZERO).all() && q.cmplt(r.size.as_ivec2()).all()
-    });
+    if delta.abs().cmpgt(allowance).any() {
+        return Err("connected view exhausts retained halo");
+    }
+    let owned = |frame: &VisualWorldFrame, p: IVec2| {
+        frame.source_regions.iter().any(|r| {
+            let q = p - r.origin;
+            q.cmpge(IVec2::ZERO).all() && q.cmplt(r.size.as_ivec2()).all()
+        })
+    };
     let levels = |frame: &VisualWorldFrame, p: IVec2| -> ([f32; 4], bool, Option<f32>, bool) {
-        let Some(d) = frame.terrace_datum.as_deref() else { return ([0.; 4], false, None, false); };
+        let Some(d) = frame.terrace_datum.as_deref() else {
+            return ([0.; 4], false, None, false);
+        };
         let q = p - d.origin;
         let height = if q.cmpge(IVec2::ZERO).all() && q.cmplt(d.size.as_ivec2()).all() {
             d.levels[(q.y as u32 * d.size.x + q.x as u32) as usize]
-        } else { [0.; 4] };
-        (height, d.water_barrier_at(p), d.open_water_at(p),
-            d.walkable_mineral.binary_search_by_key(&(p.y, p.x), |point| (point.y, point.x)).is_ok())
+        } else {
+            [0.; 4]
+        };
+        (
+            height,
+            d.water_barrier_at(p),
+            d.open_water_at(p),
+            d.walkable_mineral
+                .binary_search_by_key(&(p.y, p.x), |point| (point.y, point.x))
+                .is_ok(),
+        )
     };
     let width = built.grid_size.x as i32;
     let height = built.grid_size.y as i32;
@@ -64,41 +99,54 @@ pub fn connected_frame_shift(built: &VisualWorldFrame, live: &VisualWorldFrame) 
         // The outer quarter halo is reserved for replacement work, as in
         // ordinary same-map retention. Compare the complete retained inner
         // band, including its context beyond the LCD viewport.
-        if new.cmplt(allowance).any()
-            || new.cmpge(live.grid_size.as_ivec2() - allowance).any() { continue; }
-        if old.x < 0 || old.y < 0 || old.x >= width || old.y >= height { continue; }
+        if new.cmplt(allowance).any() || new.cmpge(live.grid_size.as_ivec2() - allowance).any() {
+            continue;
+        }
+        if old.x < 0 || old.y < 0 || old.x >= width || old.y >= height {
+            continue;
+        }
         let previous = &built.tiles[(old.y * width + old.x) as usize];
         let old_point = built.grid_origin + old;
         let new_point = live.grid_origin + new;
         if previous.source != tile.source || previous.priority != tile.priority {
             return Err("connected source cells differ");
         }
-        if previous.texture != tile.texture && !(previous.animation_frames.is_some()
-            && previous.animation_frames == tile.animation_frames) {
+        if previous.texture != tile.texture
+            && !(previous.animation_frames.is_some()
+                && previous.animation_frames == tile.animation_frames)
+        {
             return Err("connected source art differs");
         }
         if !owned(built, old_point) && !owned(live, new_point) {
             // Synthetic fill is not native acreage, but its source border,
             // local seeds and paint must remain stable through the handoff.
-            if built.scenery_map_at(old.x as u32,old.y as u32) != live.scenery_map_at(tile.column,tile.row)
-                || built.scenery_grid_origin_at(old.x as u32,old.y as u32)+old
-                    != live.scenery_grid_origin_at(tile.column,tile.row)+new {
+            if built.scenery_map_at(old.x as u32, old.y as u32)
+                != live.scenery_map_at(tile.column, tile.row)
+                || built.scenery_grid_origin_at(old.x as u32, old.y as u32) + old
+                    != live.scenery_grid_origin_at(tile.column, tile.row) + new
+            {
                 return Err("connected border style differs");
             }
             continue;
         }
         if owned(built, old_point) || owned(live, new_point) {
-            if !owned(built, old_point) || !owned(live, new_point)
-                || built.source_map_at(old.x as u32, old.y as u32) != live.source_map_at(tile.column, tile.row)
+            if !owned(built, old_point)
+                || !owned(live, new_point)
+                || built.source_map_at(old.x as u32, old.y as u32)
+                    != live.source_map_at(tile.column, tile.row)
                 || built.source_grid_origin_at(old.x as u32, old.y as u32) + old
-                    != live.source_grid_origin_at(tile.column, tile.row) + new {
+                    != live.source_grid_origin_at(tile.column, tile.row) + new
+            {
                 return Err("connected source ownership differs");
             }
         }
         if crate::profile::shape_for_source_on_map(
-            built.scenery_map_at(old.x as u32, old.y as u32), &previous.source)
-            != crate::profile::shape_for_source_on_map(
-                live.scenery_map_at(tile.column, tile.row), &tile.source) {
+            built.scenery_map_at(old.x as u32, old.y as u32),
+            &previous.source,
+        ) != crate::profile::shape_for_source_on_map(
+            live.scenery_map_at(tile.column, tile.row),
+            &tile.source,
+        ) {
             return Err("connected shape context differs");
         }
         if levels(built, old_point) != levels(live, new_point) {
@@ -127,7 +175,8 @@ pub(super) fn can_reuse(built: &VisualWorldFrame, live: &VisualWorldFrame) -> bo
     {
         return false;
     }
-    let delta = live.grid_origin - built.grid_origin
+    let delta = live.grid_origin
+        - built.grid_origin
         - built.connected_source_shift(live).unwrap_or(IVec2::ZERO);
     // Retain half the authored halo for camera pitch and complete objects.
     let allowance = retention_allowance(live);
@@ -159,16 +208,18 @@ pub(super) fn can_reuse(built: &VisualWorldFrame, live: &VisualWorldFrame) -> bo
                     || (matches!(b.source.metatile_id, 0x0a | 0x0b)
                         && b.source.tile_index == 0x4f));
             if a.texture != b.texture
-                && (well_paint || park_paint || !matches!(
-                    crate::profile::shape_for_source_on_map(live.map_id.as_ref(), &b.source),
-                    crate::profile::CellShape::Flat
-                        | crate::profile::CellShape::Water
-                        | crate::profile::CellShape::Waterfall
-                        | crate::profile::CellShape::Cutout {
-                            solid: crate::profile::SolidKind::Flower,
-                            ..
-                        }
-                ))
+                && (well_paint
+                    || park_paint
+                    || !matches!(
+                        crate::profile::shape_for_source_on_map(live.map_id.as_ref(), &b.source),
+                        crate::profile::CellShape::Flat
+                            | crate::profile::CellShape::Water
+                            | crate::profile::CellShape::Waterfall
+                            | crate::profile::CellShape::Cutout {
+                                solid: crate::profile::SolidKind::Flower,
+                                ..
+                            }
+                    ))
             {
                 return false;
             }
@@ -184,7 +235,8 @@ pub(super) fn refresh_animation(
     live: &VisualWorldFrame,
     images: &mut Assets<Image>,
 ) -> Result<bool, ()> {
-    let delta = live.grid_origin - built.grid_origin
+    let delta = live.grid_origin
+        - built.grid_origin
         - built.connected_source_shift(live).unwrap_or(IVec2::ZERO);
     let width = built.grid_size.x as i32;
     let height = built.grid_size.y as i32;
@@ -198,12 +250,19 @@ pub(super) fn refresh_animation(
         let index = (old.y * width + old.x) as usize;
         if built.tiles[index].texture != tile.texture {
             let image = images.get(&tile.texture).ok_or(())?;
-            if image.width() != 8 || image.height() != 8 || image.data.as_ref().expect("CPU image pixels").len() != 256 {
+            if image.width() != 8
+                || image.height() != 8
+                || image.data.as_ref().expect("CPU image pixels").len() != 256
+            {
                 return Err(());
             }
             flowers_changed |= crate::flower::flower_shape(&tile.source).is_some()
                 || crate::mesh::animated_pillar_source(live.map_id.as_ref(), &tile.source);
-            updates.push((index, tile.texture.clone(), image.data.as_ref().expect("CPU image pixels").clone()));
+            updates.push((
+                index,
+                tile.texture.clone(),
+                image.data.as_ref().expect("CPU image pixels").clone(),
+            ));
         }
     }
     if !updates.is_empty() {
@@ -216,7 +275,8 @@ pub(super) fn refresh_animation(
             let y = index / width as usize * 8;
             for row in 0..8 {
                 let start = ((y + row) * width as usize * 8 + x) * 4;
-                atlas.data.as_mut().expect("CPU image pixels")[start..start + 32].copy_from_slice(&pixels[row * 32..row * 32 + 32]);
+                atlas.data.as_mut().expect("CPU image pixels")[start..start + 32]
+                    .copy_from_slice(&pixels[row * 32..row * 32 + 32]);
             }
             built.tiles[index].texture = handle;
         }
@@ -232,7 +292,8 @@ pub(super) fn align_footings(
     output: &mut Vec<f32>,
 ) {
     output.clear();
-    let delta = live.grid_origin - built.grid_origin
+    let delta = live.grid_origin
+        - built.grid_origin
         - built.connected_source_shift(live).unwrap_or(IVec2::ZERO);
     let width = built.grid_size.x as i32;
     let height = built.grid_size.y as i32;
@@ -281,7 +342,10 @@ mod tests {
                         subtile_row: 0,
                         tile_index: id,
                     },
-                    texture: Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(id as u128 + 1), std::marker::PhantomData),
+                    texture: Handle::Uuid(
+                        bevy::asset::uuid::Uuid::from_u128(id as u128 + 1),
+                        std::marker::PhantomData,
+                    ),
                     priority: false,
                 });
             }
@@ -290,23 +354,31 @@ mod tests {
     }
     #[test]
     fn source_painted_johto_fences_and_roofs_refresh_when_palette_handles_change() {
-        for (metatile,row,tile) in [(0x40,0,0x5a),(0x40,1,0x59),(0x18,0,0x20)] {
-            let mut built=frame(IVec2::ZERO);
-            built.map_id="CherrygroveCity".into();
-            built.tiles[400].source=VisualTileSource {
-                tileset_id:"johto".into(),metatile_id:metatile,
-                subtile_column:0,subtile_row:row,tile_index:tile,
+        for (metatile, row, tile) in [(0x40, 0, 0x5a), (0x40, 1, 0x59), (0x18, 0, 0x20)] {
+            let mut built = frame(IVec2::ZERO);
+            built.map_id = "CherrygroveCity".into();
+            built.tiles[400].source = VisualTileSource {
+                tileset_id: "johto".into(),
+                metatile_id: metatile,
+                subtile_column: 0,
+                subtile_row: row,
+                tile_index: tile,
             };
-            let mut live=built.clone();
-            assert!(can_reuse(&built,&live));
+            let mut live = built.clone();
+            assert!(can_reuse(&built, &live));
             // The source renderer publishes a different paletted image handle
             // at a time-of-day boundary. Baked source paint must be resampled,
             // even though the map layout and authoritative footing are identical.
-            live.tiles[400].texture=Handle::Uuid(
-                bevy::asset::uuid::Uuid::from_u128(999999),std::marker::PhantomData);
-            assert!(!can_reuse(&built,&live),"stale source paint for {metatile:x}/{tile:x}");
-            assert_eq!(built.grid_origin,live.grid_origin);
-            assert_eq!(built.tiles[400].source,live.tiles[400].source);
+            live.tiles[400].texture = Handle::Uuid(
+                bevy::asset::uuid::Uuid::from_u128(999999),
+                std::marker::PhantomData,
+            );
+            assert!(
+                !can_reuse(&built, &live),
+                "stale source paint for {metatile:x}/{tile:x}"
+            );
+            assert_eq!(built.grid_origin, live.grid_origin);
+            assert_eq!(built.tiles[400].source, live.tiles[400].source);
         }
     }
 
@@ -338,20 +410,30 @@ mod tests {
                     bevy::asset::uuid::Uuid::from_u128(999999),
                     std::marker::PhantomData,
                 );
-                assert!(!can_reuse(&built, &live), "stale park paint: {map}/{block:x}");
+                assert!(
+                    !can_reuse(&built, &live),
+                    "stale park paint: {map}/{block:x}"
+                );
                 assert_eq!(built.tiles[400].source, live.tiles[400].source);
             }
             let mut built = frame(IVec2::ZERO);
             built.map_id = map.into();
             built.tiles[400].source = VisualTileSource {
-                tileset_id: "park".into(), metatile_id: 1,
-                subtile_column: 0, subtile_row: 0, tile_index: 0,
+                tileset_id: "park".into(),
+                metatile_id: 1,
+                subtile_column: 0,
+                subtile_row: 0,
+                tile_index: 0,
             };
             let mut live = built.clone();
             live.tiles[400].texture = Handle::Uuid(
-                bevy::asset::uuid::Uuid::from_u128(999999), std::marker::PhantomData,
+                bevy::asset::uuid::Uuid::from_u128(999999),
+                std::marker::PhantomData,
             );
-            assert!(can_reuse(&built, &live), "ordinary flat paving still uses atlas refresh");
+            assert!(
+                can_reuse(&built, &live),
+                "ordinary flat paving still uses atlas refresh"
+            );
         }
     }
 
@@ -361,15 +443,22 @@ mod tests {
             let mut built = frame(IVec2::ZERO);
             built.map_id = "AzaleaTown".into();
             built.tiles[400].source = VisualTileSource {
-                tileset_id: "johto_modern".into(), metatile_id: block,
-                subtile_column: column, subtile_row: row, tile_index: tile,
+                tileset_id: "johto_modern".into(),
+                metatile_id: block,
+                subtile_column: column,
+                subtile_row: row,
+                tile_index: tile,
             };
-            assert!(matches!(crate::profile::shape_for_source(&built.tiles[400].source),
-                crate::profile::CellShape::Flat));
+            assert!(matches!(
+                crate::profile::shape_for_source(&built.tiles[400].source),
+                crate::profile::CellShape::Flat
+            ));
             let mut live = built.clone();
             assert!(can_reuse(&built, &live));
             live.tiles[400].texture = Handle::Uuid(
-                bevy::asset::uuid::Uuid::from_u128(999999), std::marker::PhantomData);
+                bevy::asset::uuid::Uuid::from_u128(999999),
+                std::marker::PhantomData,
+            );
             assert!(!can_reuse(&built, &live));
             assert_eq!(built.tiles[400].source, live.tiles[400].source);
             // Flat lawn animation still follows the atlas-only refresh path.
@@ -396,27 +485,59 @@ mod tests {
         assert!(!can_reuse(&built, &changed));
         changed = frame(IVec2::new(2, 0));
         changed.source_map_size_core_tiles = Some(UVec2::splat(20));
-        assert!(!can_reuse(&built, &changed), "changed source acreage requires a new partition");
+        assert!(
+            !can_reuse(&built, &changed),
+            "changed source acreage requires a new partition"
+        );
         changed = frame(IVec2::new(2, 0));
         changed.boundary_warps = vec![IVec2::new(3, 7)].into();
-        assert!(!can_reuse(&built, &changed), "changed exits require new wall openings");
+        assert!(
+            !can_reuse(&built, &changed),
+            "changed exits require new wall openings"
+        );
         changed = frame(IVec2::new(2, 0));
         changed.jump_ledges = vec![crystal_render_api::VisualJumpLedge {
-            start: IVec2::new(0,4), end: IVec2::new(8,4), descent: IVec2::Y,
-        }].into();
-        assert!(!can_reuse(&built, &changed), "changed authored jump levels require new terrain support");
+            start: IVec2::new(0, 4),
+            end: IVec2::new(8, 4),
+            descent: IVec2::Y,
+        }]
+        .into();
+        assert!(
+            !can_reuse(&built, &changed),
+            "changed authored jump levels require new terrain support"
+        );
         changed = frame(IVec2::new(2, 0));
-        changed.terrace_datum=Some(std::sync::Arc::new(crystal_render_api::VisualTerraceDatum {walkable_mineral:Default::default(),open_water:None,water_barriers:std::sync::Arc::from([]),
-            origin:IVec2::ZERO,size:UVec2::ONE,levels:vec![[0.;4]].into(),
-        }));
-        assert!(!can_reuse(&built,&changed),"changed source land domains require new terrain and support");
-        let previous=changed.clone();
-        std::sync::Arc::make_mut(changed.terrace_datum.as_mut().unwrap()).water_barriers=vec![IVec2::ZERO].into();
-        assert!(!can_reuse(&previous,&changed),"a water-backing-only change must rebuild terrain");
-        let previous=changed.clone();
-        std::sync::Arc::make_mut(changed.terrace_datum.as_mut().unwrap()).open_water=
-            Some(crystal_render_api::VisualOpenWaterDatum {level:2.,cells:vec![IVec2::ZERO].into()});
-        assert!(!can_reuse(&previous,&changed),"a river-level-only change must rebuild terrain and support");
+        changed.terrace_datum = Some(std::sync::Arc::new(
+            crystal_render_api::VisualTerraceDatum {
+                walkable_mineral: Default::default(),
+                open_water: None,
+                water_barriers: std::sync::Arc::from([]),
+                origin: IVec2::ZERO,
+                size: UVec2::ONE,
+                levels: vec![[0.; 4]].into(),
+            },
+        ));
+        assert!(
+            !can_reuse(&built, &changed),
+            "changed source land domains require new terrain and support"
+        );
+        let previous = changed.clone();
+        std::sync::Arc::make_mut(changed.terrace_datum.as_mut().unwrap()).water_barriers =
+            vec![IVec2::ZERO].into();
+        assert!(
+            !can_reuse(&previous, &changed),
+            "a water-backing-only change must rebuild terrain"
+        );
+        let previous = changed.clone();
+        std::sync::Arc::make_mut(changed.terrace_datum.as_mut().unwrap()).open_water =
+            Some(crystal_render_api::VisualOpenWaterDatum {
+                level: 2.,
+                cells: vec![IVec2::ZERO].into(),
+            });
+        assert!(
+            !can_reuse(&previous, &changed),
+            "a river-level-only change must rebuild terrain and support"
+        );
     }
     #[test]
     fn flower_animation_does_not_rebuild_static_terrain() {
@@ -424,17 +545,16 @@ mod tests {
         built.tiles[400].source.tileset_id = "johto".into();
         built.tiles[400].source.tile_index = 3;
         let mut live = built.clone();
-        live.tiles[400].texture = Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(900000), std::marker::PhantomData);
+        live.tiles[400].texture = Handle::Uuid(
+            bevy::asset::uuid::Uuid::from_u128(900000),
+            std::marker::PhantomData,
+        );
         assert!(can_reuse(&built, &live));
     }
 
     #[test]
     fn animated_pixels_update_the_built_slot_after_viewport_shift() {
-        use bevy::{
-
-            render::render_resource::{
-            Extent3d, TextureDimension, TextureFormat},
-        };
+        use bevy::render::render_resource::{Extent3d, TextureDimension, TextureFormat};
         let mut images = Assets::<Image>::default();
         let make = |size: u32, color: [u8; 4]| {
             Image::new_fill(
@@ -465,14 +585,31 @@ mod tests {
         }
         live.tiles[14 * 28 + 12].texture = animated;
         // Host scroll overwrites its own image while the old mesh is visible.
-        images.get_mut(&live_atlas).unwrap().data.as_mut().expect("CPU image pixels").fill(222);
-        assert_eq!(&images.get(&owned).unwrap().data.as_ref().expect("CPU image pixels")[..4], &[10, 20, 30, 255]);
+        images
+            .get_mut(&live_atlas)
+            .unwrap()
+            .data
+            .as_mut()
+            .expect("CPU image pixels")
+            .fill(222);
+        assert_eq!(
+            &images
+                .get(&owned)
+                .unwrap()
+                .data
+                .as_ref()
+                .expect("CPU image pixels")[..4],
+            &[10, 20, 30, 255]
+        );
         assert!(can_reuse(&built, &live));
         refresh_animation(&mut built, &live, &mut images).unwrap();
         let image = images.get(&owned).unwrap();
         let old_slot = ((14 * 8) * 224 + 14 * 8) * 4;
         let scrolling_slot = ((14 * 8) * 224 + 12 * 8) * 4;
-        assert_eq!(&image.data.as_ref().expect("CPU image pixels")[old_slot..old_slot + 4], &[80, 90, 100, 255]);
+        assert_eq!(
+            &image.data.as_ref().expect("CPU image pixels")[old_slot..old_slot + 4],
+            &[80, 90, 100, 255]
+        );
         assert_eq!(
             &image.data.as_ref().expect("CPU image pixels")[scrolling_slot..scrolling_slot + 4],
             &[10, 20, 30, 255]

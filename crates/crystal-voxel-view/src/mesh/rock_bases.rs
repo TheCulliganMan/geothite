@@ -130,10 +130,10 @@ pub(super) fn round_geometry(
                 // contact projection bows every height ring into a padded
                 // shoulder; one diagonal mineral plane keeps these rings
                 // straight and shares the same cut across cap and wall.
-                let cut=radius*(2.-std::f32::consts::SQRT_2);
-                let shift=((cut-local.x-local.y)*0.5).max(0.);
-                p[0]+=inward.x*shift;
-                p[2]+=inward.y*shift;
+                let cut = radius * (2. - std::f32::consts::SQRT_2);
+                let shift = ((cut - local.x - local.y) * 0.5).max(0.);
+                p[0] += inward.x * shift;
+                p[2] += inward.y * shift;
             } else {
                 let center = corner + inward * radius;
                 let radial = original.xz() - center;
@@ -150,8 +150,14 @@ pub(super) fn round_geometry(
 }
 
 #[cfg(test)]
-fn round(mesh: &mut TerrainMeshData, map: &str, cells: &[&VisualTile],
-    shapes: &[CellShape], g: &GridGeometry, origin: [i32; 2]) {
+fn round(
+    mesh: &mut TerrainMeshData,
+    map: &str,
+    cells: &[&VisualTile],
+    shapes: &[CellShape],
+    g: &GridGeometry,
+    origin: [i32; 2],
+) {
     round_geometry(mesh, map, cells, shapes, g, origin);
     outdoor_stone::smooth_normals(&mut mesh.solid);
 }
@@ -250,27 +256,34 @@ mod tests {
         let frame = super::super::tests::frame(width as u32, g.height as u32, sources);
         let cells: Vec<_> = frame.tiles.iter().collect();
         let shapes: Vec<_> = cells.iter().map(|c| shape_for_source(&c.source)).collect();
-        for origin in [[0,0], [-31,-7], [17,43]] {
+        for origin in [[0, 0], [-31, -7], [17, 43]] {
             let mut indexed = mesh.clone();
-            indexed.footing_heights = shapes.iter().map(|s| s.surface_height(g.tile_height)).collect();
+            indexed.footing_heights = shapes
+                .iter()
+                .map(|s| s.surface_height(g.tile_height))
+                .collect();
             indexed.authored_cells = vec![None; cells.len()];
             let mut reference = indexed.clone();
             outdoor_stone::sculpt_rock_rims(&mut indexed, &cells, &shapes, &g, origin);
             outdoor_stone::sculpt_rock_rims_reference(&mut reference, &cells, &shapes, &g, origin);
-            assert_eq!(indexed, reference,
-                "discarding distant zero-influence edges must preserve every output at {origin:?}");
+            assert_eq!(
+                indexed, reference,
+                "discarding distant zero-influence edges must preserve every output at {origin:?}"
+            );
         }
     }
 
     #[test]
     fn blackthorn_angular_contacts_keep_combined_mineral_winding_and_support() {
-        for z in -3..=3 {for x in -3..=3 {
-            check_production_rock_finish_for_map([x*17,z*19],"BlackthornCity");
-        }}
+        for z in -3..=3 {
+            for x in -3..=3 {
+                check_production_rock_finish_for_map([x * 17, z * 19], "BlackthornCity");
+            }
+        }
     }
 
     fn check_production_rock_finish(origin: [i32; 2]) {
-        check_production_rock_finish_for_map(origin,"Route26");
+        check_production_rock_finish_for_map(origin, "Route26");
     }
 
     fn check_production_rock_finish_for_map(origin: [i32; 2], map: &str) {
@@ -279,36 +292,73 @@ mod tests {
         // and walls, rather than six across the entire diagnostic shelf.
         let h = mesh.footing_heights[7];
         mesh.solid = SurfaceMeshData::default();
-        for row in 1..5 { for column in 1..5 {
-            let (w, e, n, south) = g.bounds(column, row);
-            outdoor_stone::append(&mut mesh.solid,
-                [[w, h, n], [w, h, south], [e, h, south], [e, h, n]],
-                Vec3::Y.to_array(), &g, [0, 0]);
-            for (exposed, points, normal) in [
-                (column == 1, [[w,0.,south],[w,h,south],[w,h,n],[w,0.,n]], Vec3::NEG_X),
-                (column == 4, [[e,0.,n],[e,h,n],[e,h,south],[e,0.,south]], Vec3::X),
-                (row == 1, [[w,0.,n],[w,h,n],[e,h,n],[e,0.,n]], Vec3::NEG_Z),
-                (row == 4, [[e,0.,south],[e,h,south],[w,h,south],[w,0.,south]], Vec3::Z),
-            ] {
-                if exposed {
-                    outdoor_stone::append(&mut mesh.solid, points, normal.to_array(), &g, [0,0]);
+        for row in 1..5 {
+            for column in 1..5 {
+                let (w, e, n, south) = g.bounds(column, row);
+                outdoor_stone::append(
+                    &mut mesh.solid,
+                    [[w, h, n], [w, h, south], [e, h, south], [e, h, n]],
+                    Vec3::Y.to_array(),
+                    &g,
+                    [0, 0],
+                );
+                for (exposed, points, normal) in [
+                    (
+                        column == 1,
+                        [[w, 0., south], [w, h, south], [w, h, n], [w, 0., n]],
+                        Vec3::NEG_X,
+                    ),
+                    (
+                        column == 4,
+                        [[e, 0., n], [e, h, n], [e, h, south], [e, 0., south]],
+                        Vec3::X,
+                    ),
+                    (
+                        row == 1,
+                        [[w, 0., n], [w, h, n], [e, h, n], [e, 0., n]],
+                        Vec3::NEG_Z,
+                    ),
+                    (
+                        row == 4,
+                        [[e, 0., south], [e, h, south], [w, h, south], [w, 0., south]],
+                        Vec3::Z,
+                    ),
+                ] {
+                    if exposed {
+                        outdoor_stone::append(
+                            &mut mesh.solid,
+                            points,
+                            normal.to_array(),
+                            &g,
+                            [0, 0],
+                        );
+                    }
                 }
             }
-        }}
+        }
         let cells: Vec<_> = frame.tiles.iter().collect();
         let shapes: Vec<_> = cells.iter().map(|c| shape_for_source(&c.source)).collect();
-        let corner = mesh.solid.positions.iter().position(|p| *p == [8., 0., 8.]).unwrap();
+        let corner = mesh
+            .solid
+            .positions
+            .iter()
+            .position(|p| *p == [8., 0., 8.])
+            .unwrap();
         let angle = 50_f32.to_radians();
         let center = Vec3::new(200., 48., 200.);
         let side = Vec3::new(angle.cos(), angle.sin(), 0.) * 4.;
         let first = mesh.solid.positions.len();
-        for points in [[center, center - Vec3::X * 4., center + Vec3::Z * 4.],
-            [center, center + Vec3::Z * 4., center + side]] {
+        for points in [
+            [center, center - Vec3::X * 4., center + Vec3::Z * 4.],
+            [center, center + Vec3::Z * 4., center + side],
+        ] {
             let start = mesh.solid.positions.len() as u32;
             mesh.solid.positions.extend(points.map(|p| p.to_array()));
             mesh.solid.normals.extend([Vec3::Y.to_array(); 3]);
             mesh.solid.colors.extend([[0.2, 0.2, 0.2, 1.]; 3]);
-            mesh.solid.uvs.extend(points.map(|p| [-10000. - p.x, -20000. - p.z]));
+            mesh.solid
+                .uvs
+                .extend(points.map(|p| [-10000. - p.x, -20000. - p.z]));
             mesh.solid.indices.extend([start, start + 1, start + 2]);
         }
         let footing = mesh.footing_heights.clone();
@@ -327,33 +377,64 @@ mod tests {
         let mut classified = mesh.clone();
         outdoor_stone::sculpt_rock_rims_on_map(&mut classified, map, &cells, &shapes, &g, origin);
         let mut reference = mesh.clone();
-        outdoor_stone::sculpt_rock_rims_reference_on_map(&mut reference, map, &cells, &shapes, &g, origin);
-        assert_eq!(classified.solid, reference.solid,
-            "local edge candidates must preserve the full mineral field exactly at {origin:?}");
+        outdoor_stone::sculpt_rock_rims_reference_on_map(
+            &mut reference,
+            map,
+            &cells,
+            &shapes,
+            &g,
+            origin,
+        );
+        assert_eq!(
+            classified.solid, reference.solid,
+            "local edge candidates must preserve the full mineral field exactly at {origin:?}"
+        );
         let sculpted_positions = classified.solid.positions.clone();
         outdoor_stone::retain_mineral_cap_ownership(&mut classified);
         round_geometry(&mut classified, map, &cells, &shapes, &g, origin);
-        super::super::outdoor_mountains::finish(&mut classified, map, &cells, &shapes, &g, origin,None);
-        super::super::outdoor_mountains::append_reveal_floor(&mut classified, map, &cells, &shapes, &g, origin);
-        outdoor_stone::finish_rock_geometry(&mut mesh, map, &cells, &shapes, &g, origin,None);
+        super::super::outdoor_mountains::finish(
+            &mut classified,
+            map,
+            &cells,
+            &shapes,
+            &g,
+            origin,
+            None,
+        );
+        super::super::outdoor_mountains::append_reveal_floor(
+            &mut classified,
+            map,
+            &cells,
+            &shapes,
+            &g,
+            origin,
+        );
+        outdoor_stone::finish_rock_geometry(&mut mesh, map, &cells, &shapes, &g, origin, None);
         assert_eq!(mesh.solid.positions, classified.solid.positions);
         assert_eq!(mesh.solid.indices, classified.solid.indices);
         let mut shared_source_positions = HashMap::new();
         for (i, source_position) in source_positions.iter().enumerate() {
-            if mesh.solid.uvs[i][0] >= -9000. || source_position[0] > 100.
-                || sculpted_positions[i] == *source_position {
+            if mesh.solid.uvs[i][0] >= -9000.
+                || source_position[0] > 100.
+                || sculpted_positions[i] == *source_position
+            {
                 continue;
             }
             // Independent cap/wall interpolation can differ by one float ULP.
             // Those shared authored samples must not become a visible crack
             // after the steep shoulder deformation amplifies the difference.
             let key = source_position.map(|value| (value * 10000.).round() as i64);
-            let changed = [0, 1, 2].map(|axis| sculpted_positions[i][axis] != source_position[axis]);
-            if let Some((previous, previous_changed)) = shared_source_positions.insert(key, (mesh.solid.positions[i], changed)) {
+            let changed =
+                [0, 1, 2].map(|axis| sculpted_positions[i][axis] != source_position[axis]);
+            if let Some((previous, previous_changed)) =
+                shared_source_positions.insert(key, (mesh.solid.positions[i], changed))
+            {
                 for axis in 0..3 {
                     if changed[axis] && previous_changed[axis] {
-                        assert_eq!(previous[axis], mesh.solid.positions[i][axis],
-                            "coincident source samples must retain one deformed coordinate at {origin:?}: {source_position:?}, axis {axis}");
+                        assert_eq!(
+                            previous[axis], mesh.solid.positions[i][axis],
+                            "coincident source samples must retain one deformed coordinate at {origin:?}: {source_position:?}, axis {axis}"
+                        );
                     }
                 }
             }
@@ -362,8 +443,8 @@ mod tests {
         assert_eq!(mesh.footing_heights, footing);
         assert_eq!(mesh.authored_cells, claims);
         let faces = [first, first + 3].map(|start| {
-            let p = [start, start + 1, start + 2]
-                .map(|i| Vec3::from_array(mesh.solid.positions[i]));
+            let p =
+                [start, start + 1, start + 2].map(|i| Vec3::from_array(mesh.solid.positions[i]));
             (p[1] - p[0]).cross(p[2] - p[0]).normalize()
         });
         // World-phase erosion changes the injected planes' final angle too.
@@ -372,12 +453,17 @@ mod tests {
         // source-space separation after the geometry has actually changed.
         if faces[0].dot(faces[1]) < 25_f32.to_radians().cos() {
             for (start, face) in [first, first + 3].into_iter().zip(faces) {
-                assert!(Vec3::from_array(mesh.solid.normals[start]).dot(face) > 0.99999,
-                    "the production base pass must not erase the cap's fracture plane at {origin:?}");
+                assert!(
+                    Vec3::from_array(mesh.solid.normals[start]).dot(face) > 0.99999,
+                    "the production base pass must not erase the cap's fracture plane at {origin:?}"
+                );
             }
         } else {
-            assert_eq!(mesh.solid.normals[first], mesh.solid.normals[first + 3],
-                "shallow deformed planes must share their production normal at {origin:?}");
+            assert_eq!(
+                mesh.solid.normals[first],
+                mesh.solid.normals[first + 3],
+                "shallow deformed planes must share their production normal at {origin:?}"
+            );
         }
         let mut caps = 0;
         let mut walls = 0;
@@ -395,11 +481,15 @@ mod tests {
             // original cardinal normal. This convex fixture's interior is
             // at (24,24); test walls against that interior, caps against Y.
             let center = (p[0] + p[1] + p[2]) / 3.;
-            let outward = if cap { Vec3::Y } else {
+            let outward = if cap {
+                Vec3::Y
+            } else {
                 Vec3::new(center.x - 24., 0., center.z - 24.).normalize()
             };
-            assert!(cross.dot(outward) >= -0.0001,
-                "source phase {origin:?} must retain outward winding: {p:?}; cap: {cap}; before base rounding: {sculpted:?}");
+            assert!(
+                cross.dot(outward) >= -0.0001,
+                "source phase {origin:?} must retain outward winding: {p:?}; cap: {cap}; before base rounding: {sculpted:?}"
+            );
             if cap {
                 caps += 1;
             } else {
@@ -413,120 +503,129 @@ mod tests {
     #[test]
     fn rounded_contacts_share_wall_vertices_and_expose_a_closed_floor() {
         for map in ["Route26", "BlackthornCity"] {
-        let (frame, g, mut mesh) = fixture();
-        let cells: Vec<_> = frame.tiles.iter().collect();
-        let shapes: Vec<_> = cells.iter().map(|c| shape_for_source(&c.source)).collect();
-        let before = mesh.solid.positions.clone();
-        let footing = mesh.footing_heights.clone();
-        round(&mut mesh, map, &cells, &shapes, &g, [0, 0]);
-        let corner: Vec<_> = before
-            .iter()
-            .zip(&mesh.solid.positions)
-            .filter(|(p, _)| **p == [8., 0., 8.])
-            .map(|(_, p)| *p)
-            .collect();
-        assert!(corner.len() >= 2);
-        assert!(corner.iter().all(|p| *p == corner[0]));
-        assert!(corner[0][0] > 9.5 && corner[0][2] > 9.5 && corner[0][1] == 0.);
-        assert_eq!(footing, mesh.footing_heights);
-        let point = Vec2::new(8.25, 8.25);
-        let covered = mesh.solid.indices.chunks_exact(3).any(|tri| {
-            let ids = [tri[0] as usize, tri[1] as usize, tri[2] as usize];
-            if ids
+            let (frame, g, mut mesh) = fixture();
+            let cells: Vec<_> = frame.tiles.iter().collect();
+            let shapes: Vec<_> = cells.iter().map(|c| shape_for_source(&c.source)).collect();
+            let before = mesh.solid.positions.clone();
+            let footing = mesh.footing_heights.clone();
+            round(&mut mesh, map, &cells, &shapes, &g, [0, 0]);
+            let corner: Vec<_> = before
                 .iter()
-                .any(|&i| mesh.solid.uvs[i][0] < -9000. || mesh.solid.positions[i][1].abs() > 0.001)
-            {
-                return false;
+                .zip(&mesh.solid.positions)
+                .filter(|(p, _)| **p == [8., 0., 8.])
+                .map(|(_, p)| *p)
+                .collect();
+            assert!(corner.len() >= 2);
+            assert!(corner.iter().all(|p| *p == corner[0]));
+            assert!(corner[0][0] > 9.5 && corner[0][2] > 9.5 && corner[0][1] == 0.);
+            assert_eq!(footing, mesh.footing_heights);
+            let point = Vec2::new(8.25, 8.25);
+            let covered = mesh.solid.indices.chunks_exact(3).any(|tri| {
+                let ids = [tri[0] as usize, tri[1] as usize, tri[2] as usize];
+                if ids.iter().any(|&i| {
+                    mesh.solid.uvs[i][0] < -9000. || mesh.solid.positions[i][1].abs() > 0.001
+                }) {
+                    return false;
+                }
+                let [a, b, c] = ids.map(|i| Vec3::from_array(mesh.solid.positions[i]).xz());
+                let area = (b - a).perp_dot(c - a);
+                if area.abs() < 0.0001 {
+                    return false;
+                }
+                [
+                    (b - point).perp_dot(c - point) / area,
+                    (c - point).perp_dot(a - point) / area,
+                    (a - point).perp_dot(b - point) / area,
+                ]
+                .iter()
+                .all(|v| *v >= -0.0001)
+            });
+            assert!(
+                covered,
+                "ground must close the space revealed by rounding the contact corner"
+            );
+            for (original, after) in before.iter().zip(&mesh.solid.positions) {
+                if original[0] == 24. && original[2] == 24. {
+                    assert_eq!(original, after);
+                }
             }
-            let [a, b, c] = ids.map(|i| Vec3::from_array(mesh.solid.positions[i]).xz());
-            let area = (b - a).perp_dot(c - a);
-            if area.abs() < 0.0001 {
-                return false;
-            }
-            [
-                (b - point).perp_dot(c - point) / area,
-                (c - point).perp_dot(a - point) / area,
-                (a - point).perp_dot(b - point) / area,
-            ]
-            .iter()
-            .all(|v| *v >= -0.0001)
-        });
-        assert!(
-            covered,
-            "ground must close the space revealed by rounding the contact corner"
-        );
-        for (original, after) in before.iter().zip(&mesh.solid.positions) {
-            if original[0] == 24. && original[2] == 24. {
-                assert_eq!(original, after);
-            }
-        }
         }
     }
     #[test]
     fn blackthorn_contact_samples_form_one_straight_mineral_plane() {
-        let (frame,g,mut mesh)=fixture();
-        let original=mesh.solid.positions.clone();
-        let cells:Vec<_>=frame.tiles.iter().collect();
-        let shapes:Vec<_>=cells.iter().map(|c|shape_for_source(&c.source)).collect();
-        round_geometry(&mut mesh,"BlackthornCity",&cells,&shapes,&g,[0,0]);
-        let mut cut=original.iter().zip(&mesh.solid.positions).filter_map(|(p,q)| {
-            (p[0]==8. && p[1]==0. && p[2]>=8. && p[2]<=11. && q[0]>8.0001)
-                .then_some(Vec2::new(q[0],q[2]))
-        }).collect::<Vec<_>>();
-        cut.sort_by(|a,b|a.x.total_cmp(&b.x));
+        let (frame, g, mut mesh) = fixture();
+        let original = mesh.solid.positions.clone();
+        let cells: Vec<_> = frame.tiles.iter().collect();
+        let shapes: Vec<_> = cells.iter().map(|c| shape_for_source(&c.source)).collect();
+        round_geometry(&mut mesh, "BlackthornCity", &cells, &shapes, &g, [0, 0]);
+        let mut cut = original
+            .iter()
+            .zip(&mesh.solid.positions)
+            .filter_map(|(p, q)| {
+                (p[0] == 8. && p[1] == 0. && p[2] >= 8. && p[2] <= 11. && q[0] > 8.0001)
+                    .then_some(Vec2::new(q[0], q[2]))
+            })
+            .collect::<Vec<_>>();
+        cut.sort_by(|a, b| a.x.total_cmp(&b.x));
         cut.dedup();
-        assert!(cut.len()>=3,"inspect more than the single corner endpoint");
-        let axis=(cut[cut.len()-1]-cut[0]).normalize();
-        assert!(cut.iter().all(|p|axis.perp_dot(*p-cut[0]).abs()<0.0001),
-            "contact rings must lie on a straight cut rather than a circular arc");
+        assert!(
+            cut.len() >= 3,
+            "inspect more than the single corner endpoint"
+        );
+        let axis = (cut[cut.len() - 1] - cut[0]).normalize();
+        assert!(
+            cut.iter()
+                .all(|p| axis.perp_dot(*p - cut[0]).abs() < 0.0001),
+            "contact rings must lie on a straight cut rather than a circular arc"
+        );
     }
 
     #[test]
     fn contact_outline_stays_fixed_when_the_source_viewport_scrolls() {
-        for map in ["Route26","BlackthornCity"] {
-        let (frame, g, mut mesh) = fixture();
-        let original_count = mesh.solid.positions.len();
-        let mut shifted = mesh.clone();
-        for p in &mut shifted.solid.positions {
-            p[0] += 8.;
-            p[2] += 8.;
-        }
-        shifted.authored_cells = vec![None; 49];
-        let flat = super::super::tests::source_with_tile(0, 0, 0, 5);
-        let mut sources = vec![flat; 49];
-        for z in 0..4 {
-            for x in 0..4 {
-                sources[(z + 2) * 7 + x + 2] =
-                    super::super::tests::source_with_tile(0x0a, x as u8, z as u8, 0x3c);
+        for map in ["Route26", "BlackthornCity"] {
+            let (frame, g, mut mesh) = fixture();
+            let original_count = mesh.solid.positions.len();
+            let mut shifted = mesh.clone();
+            for p in &mut shifted.solid.positions {
+                p[0] += 8.;
+                p[2] += 8.;
             }
-        }
-        let shifted_frame = super::super::tests::frame(7, 7, sources);
-        let shifted_g = GridGeometry {
-            width: 7,
-            height: 7,
-            ..g
-        };
-        let cells: Vec<_> = frame.tiles.iter().collect();
-        let shapes: Vec<_> = cells.iter().map(|c| shape_for_source(&c.source)).collect();
-        let other: Vec<_> = shifted_frame.tiles.iter().collect();
-        let other_shapes: Vec<_> = other.iter().map(|c| shape_for_source(&c.source)).collect();
-        round(&mut mesh, map, &cells, &shapes, &g, [0, 0]);
-        round(
-            &mut shifted,
-            map,
-            &other,
-            &other_shapes,
-            &shifted_g,
-            [-1, -1],
-        );
-        for i in 0..original_count {
-            let a = Vec3::from_array(mesh.solid.positions[i]);
-            let b = Vec3::from_array(shifted.solid.positions[i]) - Vec3::new(8., 0., 8.);
-            assert!(
-                a.distance(b) < 0.0001,
-                "viewport changes cannot reshape an existing rock contact"
+            shifted.authored_cells = vec![None; 49];
+            let flat = super::super::tests::source_with_tile(0, 0, 0, 5);
+            let mut sources = vec![flat; 49];
+            for z in 0..4 {
+                for x in 0..4 {
+                    sources[(z + 2) * 7 + x + 2] =
+                        super::super::tests::source_with_tile(0x0a, x as u8, z as u8, 0x3c);
+                }
+            }
+            let shifted_frame = super::super::tests::frame(7, 7, sources);
+            let shifted_g = GridGeometry {
+                width: 7,
+                height: 7,
+                ..g
+            };
+            let cells: Vec<_> = frame.tiles.iter().collect();
+            let shapes: Vec<_> = cells.iter().map(|c| shape_for_source(&c.source)).collect();
+            let other: Vec<_> = shifted_frame.tiles.iter().collect();
+            let other_shapes: Vec<_> = other.iter().map(|c| shape_for_source(&c.source)).collect();
+            round(&mut mesh, map, &cells, &shapes, &g, [0, 0]);
+            round(
+                &mut shifted,
+                map,
+                &other,
+                &other_shapes,
+                &shifted_g,
+                [-1, -1],
             );
-        }
+            for i in 0..original_count {
+                let a = Vec3::from_array(mesh.solid.positions[i]);
+                let b = Vec3::from_array(shifted.solid.positions[i]) - Vec3::new(8., 0., 8.);
+                assert!(
+                    a.distance(b) < 0.0001,
+                    "viewport changes cannot reshape an existing rock contact"
+                );
+            }
         }
     }
     #[test]
@@ -579,9 +678,11 @@ mod tests {
             .map(|(_, p)| *p)
             .collect();
         assert!(corners.len() >= 2);
-        assert!(corners
-            .iter()
-            .all(|p| p[0] > 9.5 && p[2] > 9.5 && p[1] == 0.));
+        assert!(
+            corners
+                .iter()
+                .all(|p| p[0] > 9.5 && p[2] > 9.5 && p[1] == 0.)
+        );
     }
     #[test]
     fn altered_or_authored_corner_neighbors_do_not_infer_ground() {

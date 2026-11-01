@@ -67,7 +67,11 @@ fn mixed_tatami_drawings_preserve_floor_around_real_props_and_reject_damage() {
             }
             let cells: Vec<_> = tiles.iter().collect();
             let mask = tatami_floor_mask(map, &cells, &g, [0, 0], &[]);
-            assert_eq!(mask.iter().filter(|&&v| v).count(), count, "{map} block {block:#x}");
+            assert_eq!(
+                mask.iter().filter(|&&v| v).count(),
+                count,
+                "{map} block {block:#x}"
+            );
             let props: Vec<_> = mask.iter().map(|v| !*v).collect();
             assert_eq!(
                 tatami_floor_mask(map, &cells, &g, [0, 0], &props),
@@ -77,21 +81,19 @@ fn mixed_tatami_drawings_preserve_floor_around_real_props_and_reject_damage() {
             for i in 0..16 {
                 let mut changed = tiles.clone();
                 changed[i].source.tile_index ^= 1;
-                assert!(tatami_floor_mask(
-                    map,
-                    &changed.iter().collect::<Vec<_>>(),
-                    &g,
-                    [0, 0],
-                    &[]
-                )
-                .iter()
-                .all(|v| !*v));
+                assert!(
+                    tatami_floor_mask(map, &changed.iter().collect::<Vec<_>>(), &g, [0, 0], &[])
+                        .iter()
+                        .all(|v| !*v)
+                );
                 if mask[i] {
                     let mut excluded = props.clone();
                     excluded[i] = true;
-                    assert!(tatami_floor_mask(map, &cells, &g, [0, 0], &excluded)
-                        .iter()
-                        .all(|v| !*v));
+                    assert!(
+                        tatami_floor_mask(map, &cells, &g, [0, 0], &excluded)
+                            .iter()
+                            .all(|v| !*v)
+                    );
                 }
             }
         }
@@ -147,16 +149,20 @@ fn tatami_rejects_changed_drawing_phase_custom_height_and_distorted_uv() {
                 .count(),
             16
         );
-        assert!(tatami_floor_mask(map, &c, &g, [1, 0], &[])
-            .iter()
-            .all(|v| !*v));
+        assert!(
+            tatami_floor_mask(map, &c, &g, [1, 0], &[])
+                .iter()
+                .all(|v| !*v)
+        );
         for i in 0..16 {
             let mut bad = t.clone();
             bad[i].source.tile_index ^= 1;
             let c: Vec<_> = bad.iter().collect();
-            assert!(tatami_floor_mask(map, &c, &g, [0, 0], &[])
-                .iter()
-                .all(|v| !*v));
+            assert!(
+                tatami_floor_mask(map, &c, &g, [0, 0], &[])
+                    .iter()
+                    .all(|v| !*v)
+            );
             let mut excluded = vec![false; 16];
             excluded[i] = true;
             assert!(
@@ -198,9 +204,11 @@ fn tatami_rejects_changed_drawing_phase_custom_height_and_distorted_uv() {
         "MountMoonGiftShop",
     ] {
         assert!(!floor_map(map));
-        assert!(tatami_floor_mask(map, &c, &g, [0, 0], &[])
-            .iter()
-            .all(|v| !v));
+        assert!(
+            tatami_floor_mask(map, &c, &g, [0, 0], &[])
+                .iter()
+                .all(|v| !v)
+        );
     }
 }
 fn theater_fixture() -> (Vec<VisualTile>, GridGeometry) {
@@ -262,60 +270,117 @@ fn theater_fixture() -> (Vec<VisualTile>, GridGeometry) {
 }
 #[test]
 fn theater_external_pack_scene_has_no_interior_stage_overlap() {
-    let path=std::path::PathBuf::from(std::env::var_os("CRYSTAL_RENDER_TEST_PACK")
-        .unwrap_or_else(||"content-packs/core-modular.browser.crystalpack".into()));
-    if !path.exists() {return;}
-    let loaded=crystal_assets::read_loaded_verified_compiled_game_pack(&path).unwrap();
-    let map=&loaded.pack().data().maps["DanceTheater"];
-    let layout=&loaded.pack().runtime_files()["data/tilesets/traditional_house_metatiles.bin"];
-    let w=map.attributes.width as usize*4;let h=map.attributes.height as usize*4;
-    let sources=(0..w*h).map(|i| {let x=i%w;let y=i/w;
-        let b=map.blocks[y/4*(w/4)+x/4]as u16;
-        VisualTileSource{tileset_id:"traditional_house".into(),metatile_id:b,
-            subtile_column:(x%4)as u8,subtile_row:(y%4)as u8,
-            tile_index:layout[b as usize*16+y%4*4+x%4]as u16}
-    }).collect();
-    let mut frame=super::super::tests::frame(w as u32,h as u32,sources);
-    frame.map_id="DanceTheater".into();
-    frame.jump_ledges=vec![crystal_render_api::VisualJumpLedge {
-        start:bevy::prelude::IVec2::new(0,8),end:bevy::prelude::IVec2::new(w as i32,8),
-        descent:bevy::prelude::IVec2::Y,
-    }].into();
-    let mut samples=TerrainImageSamples::default();
-    for tile in &frame.tiles {samples.pixels.insert(tile.texture.id(),
-        TileImageSample::Rgba([128,100,20,255].repeat(64)));}
-    let profiles=crate::live_profiles::LiveProfiles::default();
-    let mesh=build_terrain_mesh_internal(&frame,Some(&samples),true,Some(&profiles.document),None,None).unwrap();
-    let north=-(h as f32)*4.;
-    for (label,surface) in [("textured",&mesh.textured),("solid",&mesh.solid)] {
+    let path = std::path::PathBuf::from(
+        std::env::var_os("CRYSTAL_RENDER_TEST_PACK")
+            .unwrap_or_else(|| "content-packs/core-modular.browser.crystalpack".into()),
+    );
+    if !path.exists() {
+        return;
+    }
+    let loaded = crystal_assets::read_loaded_verified_compiled_game_pack(&path).unwrap();
+    let map = &loaded.pack().data().maps["DanceTheater"];
+    let layout = &loaded.pack().runtime_files()["data/tilesets/traditional_house_metatiles.bin"];
+    let w = map.attributes.width as usize * 4;
+    let h = map.attributes.height as usize * 4;
+    let sources = (0..w * h)
+        .map(|i| {
+            let x = i % w;
+            let y = i / w;
+            let b = map.blocks[y / 4 * (w / 4) + x / 4] as u16;
+            VisualTileSource {
+                tileset_id: "traditional_house".into(),
+                metatile_id: b,
+                subtile_column: (x % 4) as u8,
+                subtile_row: (y % 4) as u8,
+                tile_index: layout[b as usize * 16 + y % 4 * 4 + x % 4] as u16,
+            }
+        })
+        .collect();
+    let mut frame = super::super::tests::frame(w as u32, h as u32, sources);
+    frame.map_id = "DanceTheater".into();
+    frame.jump_ledges = vec![crystal_render_api::VisualJumpLedge {
+        start: bevy::prelude::IVec2::new(0, 8),
+        end: bevy::prelude::IVec2::new(w as i32, 8),
+        descent: bevy::prelude::IVec2::Y,
+    }]
+    .into();
+    let mut samples = TerrainImageSamples::default();
+    for tile in &frame.tiles {
+        samples.pixels.insert(
+            tile.texture.id(),
+            TileImageSample::Rgba([128, 100, 20, 255].repeat(64)),
+        );
+    }
+    let profiles = crate::live_profiles::LiveProfiles::default();
+    let mesh = build_terrain_mesh_internal(
+        &frame,
+        Some(&samples),
+        true,
+        Some(&profiles.document),
+        None,
+        None,
+    )
+    .unwrap();
+    let north = -(h as f32) * 4.;
+    for (label, surface) in [("textured", &mesh.textured), ("solid", &mesh.solid)] {
         for tri in surface.indices.chunks_exact(3) {
-            let p=tri.iter().map(|&i|surface.positions[i as usize]).collect::<Vec<_>>();
-            if p.iter().all(|v|v[0].abs()<80.&&v[2]>north+16.&&v[2]<north+79.9) {
-                assert!(p.iter().all(|v|v[1]<=8.0001),"{label} geometry above stage {p:?}");
+            let p = tri
+                .iter()
+                .map(|&i| surface.positions[i as usize])
+                .collect::<Vec<_>>();
+            if p.iter()
+                .all(|v| v[0].abs() < 80. && v[2] > north + 16. && v[2] < north + 79.9)
+            {
+                assert!(
+                    p.iter().all(|v| v[1] <= 8.0001),
+                    "{label} geometry above stage {p:?}"
+                );
             }
         }
     }
 }
 #[test]
 fn theater_full_scene_retains_level_cap_without_interior_crossing_faces() {
-    let (tiles,g)=theater_fixture();
-    let mut frame=super::super::tests::frame(g.width as u32,g.height as u32,
-        tiles.iter().map(|t|t.source.clone()).collect());
-    frame.map_id="DanceTheater".into();
-    let mut samples=TerrainImageSamples::default();
-    for tile in &frame.tiles {samples.pixels.insert(tile.texture.id(),
-        TileImageSample::Rgba([128,100,20,255].repeat(64)));}
-    let profiles=crate::live_profiles::LiveProfiles::default();
-    let mesh=build_terrain_mesh_internal(&frame,Some(&samples),true,Some(&profiles.document),None,None).unwrap();
-    for (label,surface) in [("textured",&mesh.textured),("solid",&mesh.solid)] {
+    let (tiles, g) = theater_fixture();
+    let mut frame = super::super::tests::frame(
+        g.width as u32,
+        g.height as u32,
+        tiles.iter().map(|t| t.source.clone()).collect(),
+    );
+    frame.map_id = "DanceTheater".into();
+    let mut samples = TerrainImageSamples::default();
+    for tile in &frame.tiles {
+        samples.pixels.insert(
+            tile.texture.id(),
+            TileImageSample::Rgba([128, 100, 20, 255].repeat(64)),
+        );
+    }
+    let profiles = crate::live_profiles::LiveProfiles::default();
+    let mesh = build_terrain_mesh_internal(
+        &frame,
+        Some(&samples),
+        true,
+        Some(&profiles.document),
+        None,
+        None,
+    )
+    .unwrap();
+    for (label, surface) in [("textured", &mesh.textured), ("solid", &mesh.solid)] {
         for tri in surface.indices.chunks_exact(3) {
-            let points=tri.iter().map(|&i|surface.positions[i as usize]).collect::<Vec<_>>();
-            let x=points.iter().map(|p|p[0]).sum::<f32>()/3.;
-            if x.abs()<80.&&points.iter().all(|p|p[2]>-24.&&p[2]<31.) {
-                assert!(points.iter().all(|p|p[1]>=7.9749)||points.iter().all(|p|p[1]<=0.001),
-                    "{label} crossing stage face {points:?}");
-                assert!(points.iter().all(|p|p[1]<=8.0001),
-                    "{label} extra geometry above stage cap {points:?}");
+            let points = tri
+                .iter()
+                .map(|&i| surface.positions[i as usize])
+                .collect::<Vec<_>>();
+            let x = points.iter().map(|p| p[0]).sum::<f32>() / 3.;
+            if x.abs() < 80. && points.iter().all(|p| p[2] > -24. && p[2] < 31.) {
+                assert!(
+                    points.iter().all(|p| p[1] >= 7.9749) || points.iter().all(|p| p[1] <= 0.001),
+                    "{label} crossing stage face {points:?}"
+                );
+                assert!(
+                    points.iter().all(|p| p[1] <= 8.0001),
+                    "{label} extra geometry above stage cap {points:?}"
+                );
             }
         }
     }
@@ -342,30 +407,53 @@ fn theater_atomic_ownership_keeps_native_footing_and_floor_accounting() {
     assert_eq!(mesh.footing_heights, footing);
     assert!(!mesh.textured.positions.is_empty());
     assert!(mesh.solid.cutaway_ranges.is_empty());
-    assert!(mesh.solid.positions.iter().chain(&mesh.textured.positions).all(|p| p[0] >= -96.001
-        && p[0] <= 96.001
-        && p[2] >= -48.001
-        && p[2] <= 32.001
-        && p[1] >= 0.
-        && p[1] <= 24.001));
+    assert!(
+        mesh.solid
+            .positions
+            .iter()
+            .chain(&mesh.textured.positions)
+            .all(|p| p[0] >= -96.001
+                && p[0] <= 96.001
+                && p[2] >= -48.001
+                && p[2] <= 32.001
+                && p[1] >= 0.
+                && p[1] <= 24.001)
+    );
     // Actor-facing floor rows retain a single, exactly 8px visible top datum.
-    assert!(mesh
-        .textured
-        .positions
-        .iter()
-        .filter(|p| p[2] > -32. && p[1] > 7.81)
-        .all(|p| p[1]<=8.0001&&p[1]>=7.9749));
-    assert!(mesh.textured.positions.iter().any(|p|(p[1]-8.).abs()<0.0001));
+    assert!(
+        mesh.textured
+            .positions
+            .iter()
+            .filter(|p| p[2] > -32. && p[1] > 7.81)
+            .all(|p| p[1] <= 8.0001 && p[1] >= 7.9749)
+    );
+    assert!(
+        mesh.textured
+            .positions
+            .iter()
+            .any(|p| (p[1] - 8.).abs() < 0.0001)
+    );
     for tri in mesh.textured.indices.chunks_exact(3) {
-        let points=tri.iter().map(|&i|mesh.textured.positions[i as usize]).collect::<Vec<_>>();
-        if points.iter().all(|p|p[2]>-32.&&p[2]<24.) {
-            assert!(points.iter().all(|p|p[1]>=7.9749)||points.iter().all(|p|p[1]<=0.001),
-                "interior stage cap must not retain crossing side faces: {points:?}");
+        let points = tri
+            .iter()
+            .map(|&i| mesh.textured.positions[i as usize])
+            .collect::<Vec<_>>();
+        if points.iter().all(|p| p[2] > -32. && p[2] < 24.) {
+            assert!(
+                points.iter().all(|p| p[1] >= 7.9749) || points.iter().all(|p| p[1] <= 0.001),
+                "interior stage cap must not retain crossing side faces: {points:?}"
+            );
         }
     }
     for tri in mesh.textured.indices.chunks_exact(3) {
-        if tri.iter().all(|&i|mesh.textured.normals[i as usize][1]>0.5) {
-            assert!(tri.iter().all(|&i|mesh.textured.positions[i as usize][1]>=7.9749));
+        if tri
+            .iter()
+            .all(|&i| mesh.textured.normals[i as usize][1] > 0.5)
+        {
+            assert!(
+                tri.iter()
+                    .all(|&i| mesh.textured.positions[i as usize][1] >= 7.9749)
+            );
         }
     }
     let before = mesh.solid.positions.len();
@@ -388,13 +476,15 @@ fn custom_stage_profile_has_first_refusal_even_with_same_native_art() {
     let (t, g) = theater_fixture();
     let c: Vec<_> = t.iter().collect();
     let custom:Document=serde_json::from_str(r#"{"objects":[{"name":"My stage screen","map":"DanceTheater","tileset":"traditional_house","metatile":45,"origin":[0,0],"tiles":[[78,79],[94,94]],"ground":69,"top_pixels":8,"depth_pixels":4}]}"#).unwrap();
-    assert!(resolve(
-        "DanceTheater",
-        &c,
-        &g,
-        [0, 0],
-        Some(&custom),
-        &vec![false; t.len()]
-    )
-    .is_empty());
+    assert!(
+        resolve(
+            "DanceTheater",
+            &c,
+            &g,
+            [0, 0],
+            Some(&custom),
+            &vec![false; t.len()]
+        )
+        .is_empty()
+    );
 }

@@ -1234,11 +1234,19 @@ fn validate_menu_choice_identity(value: &str) -> Result<(), MultiplayerMessageEr
     if value.is_empty() {
         return Err(MultiplayerMessageError::EmptyText { field });
     }
-    let source_label=value.strip_prefix('.').and_then(|local|local.split_once('@'))
-        .is_some_and(|(local,parent)|is_exact_multiplayer_token(parent)
-            &&local.split('.').all(|part|!part.is_empty()&&part.bytes().all(|byte|
-                byte.is_ascii_alphanumeric()||matches!(byte,b'_'|b'-'|b':'))));
-    if !is_exact_multiplayer_token(value)&&!source_label {
+    let source_label = value
+        .strip_prefix('.')
+        .and_then(|local| local.split_once('@'))
+        .is_some_and(|(local, parent)| {
+            is_exact_multiplayer_token(parent)
+                && local.split('.').all(|part| {
+                    !part.is_empty()
+                        && part.bytes().all(|byte| {
+                            byte.is_ascii_alphanumeric() || matches!(byte, b'_' | b'-' | b':')
+                        })
+                })
+        });
+    if !is_exact_multiplayer_token(value) && !source_label {
         return Err(MultiplayerMessageError::InvalidText { field });
     }
     Ok(())
@@ -7236,12 +7244,29 @@ mod tests {
         let message = LinkMessage::MenuChoice(choice);
         let encoded = serde_json::to_string(&message).unwrap();
         assert!(encoded.contains(id));
-        assert_eq!(serde_json::from_str::<LinkMessage>(&encoded).unwrap(), message);
+        assert_eq!(
+            serde_json::from_str::<LinkMessage>(&encoded).unwrap(),
+            message
+        );
         assert!(validate_multiplayer_token("session_id", id).is_err());
-        for invalid in [".MenuHeader", ".MenuHeader@", ".@Script", ".Menu@@Script",
-            ".Menu@Script@Other", ".Menu Header@Script", " .Menu@Script", ".Menu@Script\n",
-            ".Menu/Name@Script", ".Menu@fallback-script", ".Menu@legacy-script", "Script.Menu"] {
-            assert!(MenuChoiceFrame::new(2, Frame(144), invalid, 0, 4).is_err(), "{invalid:?}");
+        for invalid in [
+            ".MenuHeader",
+            ".MenuHeader@",
+            ".@Script",
+            ".Menu@@Script",
+            ".Menu@Script@Other",
+            ".Menu Header@Script",
+            " .Menu@Script",
+            ".Menu@Script\n",
+            ".Menu/Name@Script",
+            ".Menu@fallback-script",
+            ".Menu@legacy-script",
+            "Script.Menu",
+        ] {
+            assert!(
+                MenuChoiceFrame::new(2, Frame(144), invalid, 0, 4).is_err(),
+                "{invalid:?}"
+            );
         }
     }
 

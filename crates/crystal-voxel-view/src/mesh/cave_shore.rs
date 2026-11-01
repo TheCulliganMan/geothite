@@ -35,14 +35,26 @@ fn edges(s: &VisualTileSource) -> Option<u8> {
 }
 /// Keep wet source corners backed by the nearest live pool's own paint/phase.
 /// Native rock may cover that water, but fading it must not expose a void.
-pub(super) fn water_underlay_source(cells:&[&VisualTile],index:usize)->Option<usize> {
-    let target=cells.get(index)?;
+pub(super) fn water_underlay_source(cells: &[&VisualTile], index: usize) -> Option<usize> {
+    let target = cells.get(index)?;
     edges(&target.source)?;
-    cells.iter().enumerate().filter(|(_,tile)|
-        tile.source.tileset_id==target.source.tileset_id && tile.source.tile_index==0x14
-            && tile.animation_frames.as_ref().is_some_and(|f|f.len()>1 && f.contains(&tile.texture)))
-        .min_by_key(|(_,tile)|tile.column.abs_diff(target.column).saturating_add(tile.row.abs_diff(target.row)))
-        .map(|(index,_)|index)
+    cells
+        .iter()
+        .enumerate()
+        .filter(|(_, tile)| {
+            tile.source.tileset_id == target.source.tileset_id
+                && tile.source.tile_index == 0x14
+                && tile
+                    .animation_frames
+                    .as_ref()
+                    .is_some_and(|f| f.len() > 1 && f.contains(&tile.texture))
+        })
+        .min_by_key(|(_, tile)| {
+            tile.column
+                .abs_diff(target.column)
+                .saturating_add(tile.row.abs_diff(target.row))
+        })
+        .map(|(index, _)| index)
 }
 
 fn mineral_triangle(
@@ -73,19 +85,45 @@ fn rim_width(p: Vec3, g: &GridGeometry, origin: [i32; 2]) -> f32 {
         / SOURCE_TILE_HEIGHT
 }
 
-pub(super) fn append(mesh:&mut TerrainMeshData,points:[[f32;3];4],normal:[f32;3],
-    cells:&[&VisualTile],g:&GridGeometry,index:usize,origin:[i32;2])->bool {
-    append_impl(mesh,points,normal,cells,g,index,origin,false)
+pub(super) fn append(
+    mesh: &mut TerrainMeshData,
+    points: [[f32; 3]; 4],
+    normal: [f32; 3],
+    cells: &[&VisualTile],
+    g: &GridGeometry,
+    index: usize,
+    origin: [i32; 2],
+) -> bool {
+    append_impl(mesh, points, normal, cells, g, index, origin, false)
 }
-pub(super) fn append_over_water(mesh:&mut TerrainMeshData,points:[[f32;3];4],normal:[f32;3],
-    cells:&[&VisualTile],g:&GridGeometry,index:usize,origin:[i32;2])->bool {
-    append_impl(mesh,points,normal,cells,g,index,origin,true)
+pub(super) fn append_over_water(
+    mesh: &mut TerrainMeshData,
+    points: [[f32; 3]; 4],
+    normal: [f32; 3],
+    cells: &[&VisualTile],
+    g: &GridGeometry,
+    index: usize,
+    origin: [i32; 2],
+) -> bool {
+    append_impl(mesh, points, normal, cells, g, index, origin, true)
 }
-pub(super) fn append_over_water_at(mesh:&mut TerrainMeshData,points:[[f32;3];4],normal:[f32;3],
-    cells:&[&VisualTile],g:&GridGeometry,index:usize,origin:[i32;2],level:f32)->bool {
-    let start=mesh.solid.positions.len();
-    if !append_over_water(mesh,points,normal,cells,g,index,origin) {return false;}
-    for p in &mut mesh.solid.positions[start..] {p[1]+=level;}
+pub(super) fn append_over_water_at(
+    mesh: &mut TerrainMeshData,
+    points: [[f32; 3]; 4],
+    normal: [f32; 3],
+    cells: &[&VisualTile],
+    g: &GridGeometry,
+    index: usize,
+    origin: [i32; 2],
+    level: f32,
+) -> bool {
+    let start = mesh.solid.positions.len();
+    if !append_over_water(mesh, points, normal, cells, g, index, origin) {
+        return false;
+    }
+    for p in &mut mesh.solid.positions[start..] {
+        p[1] += level;
+    }
     true
 }
 fn append_impl(
@@ -112,16 +150,18 @@ fn append_impl(
     {
         return false;
     }
-    let Some(water)=water_underlay_source(cells,index) else {return false;};
+    let Some(water) = water_underlay_source(cells, index) else {
+        return false;
+    };
     // Sampling the owned animated water slot preserves the existing palette,
     // phase updates and shader provenance. No synthesized animation clock.
     if !water_present {
-    append_top(
-        &mut mesh.textured,
-        [w, e, n, s],
-        0.,
-        cave_pool_uv(cells[water], g.uv(water % g.width, water / g.width)),
-    );
+        append_top(
+            &mut mesh.textured,
+            [w, e, n, s],
+            0.,
+            cave_pool_uv(cells[water], g.uv(water % g.width, water / g.width)),
+        );
     }
     let u = g.tile_height / SOURCE_TILE_HEIGHT;
     let width = 1.4 * u;
@@ -189,52 +229,99 @@ mod tests {
     #[test]
     fn water_edge_art_keeps_the_lower_ladder_landing_clear() {
         for (block, column, row, glyph, edge) in [
-            (0x25,3,2,0x15,EAST), (0x26,0,2,0x17,WEST),
-            (0x27,2,0,0x26,NORTH),
+            (0x25, 3, 2, 0x15, EAST),
+            (0x26, 0, 2, 0x17, WEST),
+            (0x27, 2, 0, 0x26, NORTH),
         ] {
-            let source = VisualTileSource { tileset_id:"dark_cave".into(),
-                metatile_id:block, subtile_column:column, subtile_row:row, tile_index:glyph };
-            assert_eq!(edges(&source),Some(edge));
-            assert_eq!(crate::cave::cave_shape(&source),Some(CellShape::Flat));
-            let mut tiles=(0..16).map(|i|VisualTile {
-                column:i%4,row:i/4,priority:false,texture:Handle::default(),
-                animation_frames:None,source:source.clone(),
-            }).collect::<Vec<_>>();
-            tiles[0].source=source.clone();
-            tiles[1].source.tile_index=0x14;
-            tiles[1].animation_frames=Some(vec![Handle::default();2].into());
-            let cells=tiles.iter().collect::<Vec<_>>();
-            let g=GridGeometry {width:4,height:4,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
-            let mut mesh=TerrainMeshData::default();
-            assert!(append(&mut mesh,[[0.,0.,0.],[0.,0.,8.],[8.,0.,8.],[8.,0.,0.]],
-                [0.,1.,0.],&cells,&g,0,[0,0]));
-            assert!(mesh.textured.positions.iter().all(|p|p[1]==0.),"water retains its datum");
-            assert!(mesh.solid.positions.iter().all(|p|(0. ..=0.65).contains(&p[1])),
-                "shore art cannot become a shelf above the lower landing");
-            let mut unknown=source.clone(); unknown.tile_index=0xff;
-            assert_eq!(edges(&unknown),None);
+            let source = VisualTileSource {
+                tileset_id: "dark_cave".into(),
+                metatile_id: block,
+                subtile_column: column,
+                subtile_row: row,
+                tile_index: glyph,
+            };
+            assert_eq!(edges(&source), Some(edge));
+            assert_eq!(crate::cave::cave_shape(&source), Some(CellShape::Flat));
+            let mut tiles = (0..16)
+                .map(|i| VisualTile {
+                    column: i % 4,
+                    row: i / 4,
+                    priority: false,
+                    texture: Handle::default(),
+                    animation_frames: None,
+                    source: source.clone(),
+                })
+                .collect::<Vec<_>>();
+            tiles[0].source = source.clone();
+            tiles[1].source.tile_index = 0x14;
+            tiles[1].animation_frames = Some(vec![Handle::default(); 2].into());
+            let cells = tiles.iter().collect::<Vec<_>>();
+            let g = GridGeometry {
+                width: 4,
+                height: 4,
+                tile_width: 8.,
+                tile_height: 8.,
+                origin_x: 0.,
+                origin_z: 0.,
+            };
+            let mut mesh = TerrainMeshData::default();
+            assert!(append(
+                &mut mesh,
+                [[0., 0., 0.], [0., 0., 8.], [8., 0., 8.], [8., 0., 0.]],
+                [0., 1., 0.],
+                &cells,
+                &g,
+                0,
+                [0, 0]
+            ));
+            assert!(
+                mesh.textured.positions.iter().all(|p| p[1] == 0.),
+                "water retains its datum"
+            );
+            assert!(
+                mesh.solid
+                    .positions
+                    .iter()
+                    .all(|p| (0. ..=0.65).contains(&p[1])),
+                "shore art cannot become a shelf above the lower landing"
+            );
+            let mut unknown = source.clone();
+            unknown.tile_index = 0xff;
+            assert_eq!(edges(&unknown), None);
         }
     }
     #[test]
     fn cave_pool_atlas_endpoints_stay_in_the_live_slot() {
         let mut tile = VisualTile {
-            column: 12, row: 57, priority: false, texture: Handle::default(),
+            column: 12,
+            row: 57,
+            priority: false,
+            texture: Handle::default(),
             animation_frames: Some(vec![Handle::default(); 2].into()),
             source: VisualTileSource {
-                tileset_id: "dark_cave".into(), metatile_id: 0x27,
-                subtile_column: 0, subtile_row: 1, tile_index: 0x14,
+                tileset_id: "dark_cave".into(),
+                metatile_id: 0x27,
+                subtile_column: 0,
+                subtile_row: 1,
+                tile_index: 0x14,
             },
         };
         let g = GridGeometry {
-            width: 40, height: 72, tile_width: 8., tile_height: 8.,
-            origin_x: -160., origin_z: -288.,
+            width: 40,
+            height: 72,
+            tile_width: 8.,
+            tile_height: 8.,
+            origin_x: -160.,
+            origin_z: -288.,
         };
         let original = g.uv(12, 57);
         let (u0, u1, v0, v1) = cave_pool_uv(&tile, original);
-        for u in [u0, u1] { for v in [v0, v1] {
-            assert_eq!((u * 40.).floor() as u32, 12);
-            assert_eq!((v * 72.).floor() as u32, 57);
-        }}
+        for u in [u0, u1] {
+            for v in [v0, v1] {
+                assert_eq!((u * 40.).floor() as u32, 12);
+                assert_eq!((v * 72.).floor() as u32, 57);
+            }
+        }
         tile.animation_frames = None;
         assert_eq!(cave_pool_uv(&tile, original), original);
         tile.animation_frames = Some(vec![Handle::default(); 2].into());
@@ -365,8 +452,12 @@ mod tests {
         assert_eq!(mesh.textured.positions, p);
         assert_eq!(
             mesh.textured.uvs,
-            [[0.53125, 0.0625], [0.53125, 0.9375],
-                [0.96875, 0.9375], [0.96875, 0.0625]]
+            [
+                [0.53125, 0.0625],
+                [0.53125, 0.9375],
+                [0.96875, 0.9375],
+                [0.96875, 0.0625]
+            ]
         );
         assert_eq!(mesh.footing_heights, vec![0.; 2]);
         assert!(mesh.solid.positions.iter().all(|p| p[1] <= 0.65));

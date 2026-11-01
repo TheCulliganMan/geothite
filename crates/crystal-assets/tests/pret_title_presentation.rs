@@ -5,27 +5,47 @@ mod radio_text_export {
 }
 #[path = "../src/bin/pack_core/source_expressions.rs"]
 mod source_expressions;
-#[path = "../src/bin/pack_core/source_title_screen.rs"]
-mod source_title_screen;
 #[path = "../src/bin/pack_core/source_title_catalog.rs"]
 mod source_title_catalog;
+#[path = "../src/bin/pack_core/source_title_screen.rs"]
+mod source_title_screen;
 
 #[test]
 fn source_transfers_bind_to_exact_rom_resources_and_vram_banks() {
-    let Some(root)=std::env::var_os("CRYSTAL_EXPORT_WORKSPACE") else {return};
-    let root=std::path::Path::new(&root);let vendor=root.join("vendor/pokecrystal");
-    let constants:serde_json::Value=serde_json::from_slice(&std::fs::read(root.join("apps/web/assets/data/story_event_script_constants.json")).unwrap()).unwrap();
-    let constants=serde_json::from_value(constants["global"].clone()).unwrap();
-    let trace=source_title_screen::intro_trace(&vendor).unwrap();
-    let phases=source_title_screen::intro_setup_phases(&vendor,&constants).unwrap();
-    let operations=(1..=28).filter_map(|number|phases.get(format!("IntroScene{number}"))).flat_map(|phase|phase["operations"].as_array().unwrap().iter().cloned()).collect::<Vec<_>>();
-    let mut phase=serde_json::json!({"operations":operations});
-    let metadata=source_title_screen::intro_transfer_metadata(&vendor).unwrap();
-    let scheduler=source_title_screen::intro_bind_measurements(&vendor,&mut phase,&metadata,&trace).unwrap();
-    assert_eq!(scheduler["rom_frame_crossings"].as_array().unwrap().len(),23);
-    for operation in phase["operations"].as_array().unwrap().iter().filter(|operation|operation["op"]=="decompress_lz3_resource") {
-        assert!(operation["decompress_machine_cycles"].as_u64().unwrap()>0);
-        assert_eq!(operation["timing_oracle"]["validated"],false);
+    let Some(root) = std::env::var_os("CRYSTAL_EXPORT_WORKSPACE") else {
+        return;
+    };
+    let root = std::path::Path::new(&root);
+    let vendor = root.join("vendor/pokecrystal");
+    let constants: serde_json::Value = serde_json::from_slice(
+        &std::fs::read(root.join("apps/web/assets/data/story_event_script_constants.json"))
+            .unwrap(),
+    )
+    .unwrap();
+    let constants = serde_json::from_value(constants["global"].clone()).unwrap();
+    let trace = source_title_screen::intro_trace(&vendor).unwrap();
+    let phases = source_title_screen::intro_setup_phases(&vendor, &constants).unwrap();
+    let operations = (1..=28)
+        .filter_map(|number| phases.get(format!("IntroScene{number}")))
+        .flat_map(|phase| phase["operations"].as_array().unwrap().iter().cloned())
+        .collect::<Vec<_>>();
+    let mut phase = serde_json::json!({"operations":operations});
+    let metadata = source_title_screen::intro_transfer_metadata(&vendor).unwrap();
+    let scheduler =
+        source_title_screen::intro_bind_measurements(&vendor, &mut phase, &metadata, &trace)
+            .unwrap();
+    assert_eq!(
+        scheduler["rom_frame_crossings"].as_array().unwrap().len(),
+        23
+    );
+    for operation in phase["operations"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .filter(|operation| operation["op"] == "decompress_lz3_resource")
+    {
+        assert!(operation["decompress_machine_cycles"].as_u64().unwrap() > 0);
+        assert_eq!(operation["timing_oracle"]["validated"], false);
     }
 }
 
@@ -65,9 +85,21 @@ fn program() -> Option<crystal_assets::RuntimePresentationProgram> {
     let constants = serde_json::from_value(constants["global"].clone()).unwrap();
     let vendor = root.join("vendor/pokecrystal");
     let entry_cleanup = source_title_screen::intro_entry_cleanup(&vendor, &constants).unwrap();
-    assert_eq!(entry_cleanup["button_cancel"]["operations"].as_array().unwrap().len(), 1);
-    assert_eq!(entry_cleanup["button_cancel"]["operations"][0]["op"], "stop_audio");
-    assert_eq!(entry_cleanup["button_cancel"]["operations"][0]["audio"], "MUSIC_NONE");
+    assert_eq!(
+        entry_cleanup["button_cancel"]["operations"]
+            .as_array()
+            .unwrap()
+            .len(),
+        1
+    );
+    assert_eq!(
+        entry_cleanup["button_cancel"]["operations"][0]["op"],
+        "stop_audio"
+    );
+    assert_eq!(
+        entry_cleanup["button_cancel"]["operations"][0]["audio"],
+        "MUSIC_NONE"
+    );
     assert_eq!(
         entry_cleanup["entry_init"]["operations"]
             .as_array()

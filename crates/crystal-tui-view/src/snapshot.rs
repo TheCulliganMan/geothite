@@ -110,9 +110,6 @@ impl RuntimeTextRenderer {
         }
     }
 
-    pub fn set_viewport(&mut self, viewport: ViewportSize) {
-        self.viewport = ViewportSize { width: viewport.width.clamp(1, 21), height: viewport.height.clamp(1, 15) };
-    }
     /// Display-only mirror of the authoritative frontend cursors.
     pub fn set_selection(&mut self, menu_index: usize, yes_no_index: usize) {
         self.menu_index = menu_index;
@@ -165,7 +162,8 @@ impl RuntimeTextRenderer {
         if !menu.is_empty() {
             self.menu_index = self.menu_index.min(menu.len().saturating_sub(1));
         }
-        let prompt = safari::prompt(source).unwrap_or_else(|| prompt_lines(source, self.yes_no_index));
+        let prompt =
+            safari::prompt(source).unwrap_or_else(|| prompt_lines(source, self.yes_no_index));
         let dialogue = safari::dialogue(source).unwrap_or_else(|| dialogue_lines(source));
         let input_hints = hint_lines(
             source,

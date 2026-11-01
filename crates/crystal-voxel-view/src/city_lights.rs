@@ -127,8 +127,8 @@ pub(crate) fn collect(mesh: &SurfaceMeshData) -> Vec<Emitter> {
     for i in 0..mesh.positions.len() {
         let native = crate::scenery_finish::town_glass_coordinates(mesh.uvs[i]).is_some();
         let source_glass = crate::scenery_finish::source_glass_coordinates(mesh.uvs[i]);
-        let native = native || (source_glass.is_some_and(|(_, lit)| lit)
-            && mesh.normals[i][2] > 0.9);
+        let native =
+            native || (source_glass.is_some_and(|(_, lit)| lit) && mesh.normals[i][2] > 0.9);
         if mesh.uvs[i][1] != UV_BASE && mesh.uvs[i][1] != SOURCE_UV_BASE && !native {
             continue;
         }
@@ -235,7 +235,10 @@ pub(crate) fn nearest(
 // Preserve holes and emitter order, but never send the shader through unused
 // trailing slots. A zero-width emitter cannot contribute to the existing loop.
 fn emitter_span(positions: &[Vec4; MAX_LIGHTS]) -> usize {
-    positions.iter().rposition(|p| p.w > 0.).map_or(0, |i| i + 1)
+    positions
+        .iter()
+        .rposition(|p| p.w > 0.)
+        .map_or(0, |i| i + 1)
 }
 
 pub(crate) fn sync(
@@ -269,11 +272,7 @@ pub(crate) fn sync(
             .as_ref()
             .is_some_and(|built| built.map_id == frame.map_id);
     let seconds = clock.as_ref().and_then(|v| v.seconds_of_day());
-    let strength = if active {
-        seconds.map_or(0., gain)
-    } else {
-        0.
-    };
+    let strength = if active { seconds.map_or(0., gain) } else { 0. };
     // All palette materials consume world positions. Use the exact retained
     // terrain transform, shared with rendering, so camera scrolling cannot
     // slide the light pools relative to the authored facade.
@@ -302,9 +301,16 @@ pub(crate) fn sync(
     // Summit materials use the existing isolated-town lighting mode. Their
     // authored windows still emit at night even though the foreground atlas
     // belongs to a tower room. No rooftop-local spill rectangles belong below.
-    let panorama_night = Vec4::new(if status.active && crate::summit_vista::enabled(&frame) {
-        seconds.map_or(0., gain)
-    } else { 0. }, 0., 0., 0.);
+    let panorama_night = Vec4::new(
+        if status.active && crate::summit_vista::enabled(&frame) {
+            seconds.map_or(0., gain)
+        } else {
+            0.
+        },
+        0.,
+        0.,
+        0.,
+    );
     material_sync::sync(
         &mut materials,
         &mut previous,
@@ -324,45 +330,97 @@ mod tests {
     #[test]
     fn summit_windows_follow_the_clock_without_foreground_light_spill_or_idle_material_churn() {
         use bevy::asset::{AssetEvent, AssetPlugin};
-        use crystal_render_api::{VisualWorldClock, VisualWorldFrame, VisualTile, VisualTileSource};
-        let frame = VisualWorldFrame { active: true, map_id: "TinTowerRoof".into(),
-            tile_size: Vec2::splat(32.), tiles: vec![VisualTile { column: 0, row: 0,
-                texture: Handle::default(), priority: false, animation_frames: None,
-                source: VisualTileSource { tileset_id: "tower".into(), metatile_id: 2,
-                    tile_index: 2, subtile_column: 0, subtile_row: 0 } }], ..default() };
+        use crystal_render_api::{
+            VisualTile, VisualTileSource, VisualWorldClock, VisualWorldFrame,
+        };
+        let frame = VisualWorldFrame {
+            active: true,
+            map_id: "TinTowerRoof".into(),
+            tile_size: Vec2::splat(32.),
+            tiles: vec![VisualTile {
+                column: 0,
+                row: 0,
+                texture: Handle::default(),
+                priority: false,
+                animation_frames: None,
+                source: VisualTileSource {
+                    tileset_id: "tower".into(),
+                    metatile_id: 2,
+                    tile_index: 2,
+                    subtile_column: 0,
+                    subtile_row: 0,
+                },
+            }],
+            ..default()
+        };
         let mut app = App::new();
-        app.add_plugins((MinimalPlugins, AssetPlugin::default())).init_asset::<crate::VoxelMaterial>();
+        app.add_plugins((MinimalPlugins, AssetPlugin::default()))
+            .init_asset::<crate::VoxelMaterial>();
         app.insert_resource(frame.clone())
-            .insert_resource(VisualWorldClock { minute_of_day: Some(22*60), second_of_minute: 0 })
-            .insert_resource(crate::VoxelViewStatus { active: true, ..default() })
-            .insert_resource(crate::TerrainRevisionCache { built_frame: Some(frame),
-                city_emitters: vec![Emitter { position: Vec4::new(1., 16., 2., 64.), direction: Vec4::Z }],
-                ..default() })
+            .insert_resource(VisualWorldClock {
+                minute_of_day: Some(22 * 60),
+                second_of_minute: 0,
+            })
+            .insert_resource(crate::VoxelViewStatus {
+                active: true,
+                ..default()
+            })
+            .insert_resource(crate::TerrainRevisionCache {
+                built_frame: Some(frame),
+                city_emitters: vec![Emitter {
+                    position: Vec4::new(1., 16., 2., 64.),
+                    direction: Vec4::Z,
+                }],
+                ..default()
+            })
             .init_resource::<Assets<crate::VoxelMaterial>>()
             .add_systems(Update, sync);
         let mut distant = crate::solid_terrain_material();
         distant.extension.cave_reveal.z = 2.;
-        let distant = app.world_mut().resource_mut::<Assets<crate::VoxelMaterial>>().add(distant);
-        let foreground = app.world_mut().resource_mut::<Assets<crate::VoxelMaterial>>()
+        let distant = app
+            .world_mut()
+            .resource_mut::<Assets<crate::VoxelMaterial>>()
+            .add(distant);
+        let foreground = app
+            .world_mut()
+            .resource_mut::<Assets<crate::VoxelMaterial>>()
             .add(crate::solid_terrain_material());
-        for (hour, expected) in [(22,1.), (5,0.5), (12,0.), (22,1.)] {
-            app.world_mut().resource_mut::<VisualWorldClock>().minute_of_day = Some(hour*60);
+        for (hour, expected) in [(22, 1.), (5, 0.5), (12, 0.), (22, 1.)] {
+            app.world_mut()
+                .resource_mut::<VisualWorldClock>()
+                .minute_of_day = Some(hour * 60);
             app.update();
             let materials = app.world().resource::<Assets<crate::VoxelMaterial>>();
             let m = materials.get(&distant).unwrap();
             assert_eq!(m.extension.city_night, Vec4::new(expected, 0., 0., 0.));
             assert_eq!(m.extension.city_windows, [Vec4::ZERO; MAX_LIGHTS]);
             assert_eq!(m.extension.city_window_planes, [Vec4::ZERO; MAX_LIGHTS]);
-            assert_eq!(materials.get(&foreground).unwrap().extension.city_night, Vec4::ZERO);
+            assert_eq!(
+                materials.get(&foreground).unwrap().extension.city_night,
+                Vec4::ZERO
+            );
         }
-        app.world_mut().resource_mut::<Messages<AssetEvent<crate::VoxelMaterial>>>().clear();
+        app.world_mut()
+            .resource_mut::<Messages<AssetEvent<crate::VoxelMaterial>>>()
+            .clear();
         app.update();
-        assert!(!app.world_mut().resource_mut::<Messages<AssetEvent<crate::VoxelMaterial>>>().drain()
-            .any(|event| matches!(event, AssetEvent::Modified { .. })));
+        assert!(
+            !app.world_mut()
+                .resource_mut::<Messages<AssetEvent<crate::VoxelMaterial>>>()
+                .drain()
+                .any(|event| matches!(event, AssetEvent::Modified { .. }))
+        );
         app.world_mut().resource_mut::<VisualWorldFrame>().map_id = "TinTower9F".into();
         app.update();
-        assert_eq!(app.world().resource::<Assets<crate::VoxelMaterial>>().get(&distant).unwrap()
-            .extension.city_night, Vec4::ZERO);
+        assert_eq!(
+            app.world()
+                .resource::<Assets<crate::VoxelMaterial>>()
+                .get(&distant)
+                .unwrap()
+                .extension
+                .city_night,
+            Vec4::ZERO
+        );
     }
     #[test]
     fn shader_emitter_span_keeps_holes_and_every_original_contributor() {
@@ -371,9 +429,16 @@ mod tests {
             positions[last] = Vec4::new(1., 2., 3., 4.);
             positions[0].w = if last > 0 { -1. } else { 4. };
             assert_eq!(emitter_span(&positions), last + 1);
-            let original: Vec<_> = positions.iter().enumerate().filter(|(_, p)| p.w > 0.).collect();
-            let bounded: Vec<_> = positions[..emitter_span(&positions)].iter().enumerate()
-                .filter(|(_, p)| p.w > 0.).collect();
+            let original: Vec<_> = positions
+                .iter()
+                .enumerate()
+                .filter(|(_, p)| p.w > 0.)
+                .collect();
+            let bounded: Vec<_> = positions[..emitter_span(&positions)]
+                .iter()
+                .enumerate()
+                .filter(|(_, p)| p.w > 0.)
+                .collect();
             assert_eq!(original, bounded);
         }
         assert_eq!(emitter_span(&[Vec4::ZERO; MAX_LIGHTS]), 0);
@@ -438,13 +503,21 @@ mod tests {
         // Deferred building/actor parts can create materials after the map and
         // clock have settled. They must inherit the same night state at once.
         app.update();
-        let late = app.world_mut().resource_mut::<Assets<crate::VoxelMaterial>>()
+        let late = app
+            .world_mut()
+            .resource_mut::<Assets<crate::VoxelMaterial>>()
             .add(crate::solid_terrain_material());
         app.update();
-        let material = app.world().resource::<Assets<crate::VoxelMaterial>>()
-            .get(&late).unwrap();
+        let material = app
+            .world()
+            .resource::<Assets<crate::VoxelMaterial>>()
+            .get(&late)
+            .unwrap();
         assert_eq!(material.extension.city_night, Vec4::new(1., 1., 0., 0.));
-        assert_eq!(material.extension.city_windows[0], Vec4::new(65., 16., 34., 64.));
+        assert_eq!(
+            material.extension.city_windows[0],
+            Vec4::new(65., 16., 34., 64.)
+        );
         app.world_mut()
             .resource_mut::<VisualWorldFrame>()
             .grid_origin
@@ -476,10 +549,17 @@ mod tests {
             .resource_mut::<VisualWorldClock>()
             .minute_of_day = Some(0);
         // No receiving lights must not disable authored night pane emission.
-        app.world_mut().resource_mut::<TerrainRevisionCache>().city_emitters.clear();
+        app.world_mut()
+            .resource_mut::<TerrainRevisionCache>()
+            .city_emitters
+            .clear();
         app.update();
         for handle in &handles {
-            let material = app.world().resource::<Assets<crate::VoxelMaterial>>().get(handle).unwrap();
+            let material = app
+                .world()
+                .resource::<Assets<crate::VoxelMaterial>>()
+                .get(handle)
+                .unwrap();
             assert_eq!(material.extension.city_night, Vec4::new(1., 0., 0., 0.));
             assert_eq!(material.extension.city_windows, [Vec4::ZERO; MAX_LIGHTS]);
         }
@@ -579,37 +659,71 @@ mod tests {
 
     #[test]
     fn radio_tower_name_is_five_solid_glyphs_in_front_of_its_panel_with_a_separate_light_role() {
-        let m=crate::exterior_models::model(Kind::RadioTower);
-        let panel=m.surface.positions.iter().enumerate().filter(|(i,_)|m.vertex_material(*i)=="violet_dark")
-            .map(|(_,p)|*p).collect::<Vec<_>>();
-        let front=panel.iter().map(|p|p[2]).fold(f32::NEG_INFINITY,f32::max);
-        let bounds=[panel.iter().map(|p|p[0]).fold(f32::INFINITY,f32::min),
-            panel.iter().map(|p|p[0]).fold(f32::NEG_INFINITY,f32::max),
-            panel.iter().map(|p|p[1]).fold(f32::INFINITY,f32::min),
-            panel.iter().map(|p|p[1]).fold(f32::NEG_INFINITY,f32::max)];
-        let mut spans=Vec::new();
+        let m = crate::exterior_models::model(Kind::RadioTower);
+        let panel = m
+            .surface
+            .positions
+            .iter()
+            .enumerate()
+            .filter(|(i, _)| m.vertex_material(*i) == "violet_dark")
+            .map(|(_, p)| *p)
+            .collect::<Vec<_>>();
+        let front = panel.iter().map(|p| p[2]).fold(f32::NEG_INFINITY, f32::max);
+        let bounds = [
+            panel.iter().map(|p| p[0]).fold(f32::INFINITY, f32::min),
+            panel.iter().map(|p| p[0]).fold(f32::NEG_INFINITY, f32::max),
+            panel.iter().map(|p| p[1]).fold(f32::INFINITY, f32::min),
+            panel.iter().map(|p| p[1]).fold(f32::NEG_INFINITY, f32::max),
+        ];
+        let mut spans = Vec::new();
         for tri in m.surface.indices.chunks_exact(3) {
-            if m.vertex_material(tri[0]as usize)!="cream" {continue;}
-            let p=tri.iter().map(|i|m.surface.positions[*i as usize]).collect::<Vec<_>>();
-            assert!(p.iter().all(|p|p[2]>front && p[0]>bounds[0] && p[0]<bounds[1] && p[1]>bounds[2] && p[1]<bounds[3]),
-                "name strokes sit entirely in front of and within the existing sign");
-            spans.push([p.iter().map(|p|p[0]).fold(f32::INFINITY,f32::min),
-                p.iter().map(|p|p[0]).fold(f32::NEG_INFINITY,f32::max)]);
+            if m.vertex_material(tri[0] as usize) != "cream" {
+                continue;
+            }
+            let p = tri
+                .iter()
+                .map(|i| m.surface.positions[*i as usize])
+                .collect::<Vec<_>>();
+            assert!(
+                p.iter().all(|p| p[2] > front
+                    && p[0] > bounds[0]
+                    && p[0] < bounds[1]
+                    && p[1] > bounds[2]
+                    && p[1] < bounds[3]),
+                "name strokes sit entirely in front of and within the existing sign"
+            );
+            spans.push([
+                p.iter().map(|p| p[0]).fold(f32::INFINITY, f32::min),
+                p.iter().map(|p| p[0]).fold(f32::NEG_INFINITY, f32::max),
+            ]);
         }
-        spans.sort_by(|a,b|a[0].total_cmp(&b[0]));
-        let mut groups=Vec::<[f32;2]>::new();
+        spans.sort_by(|a, b| a[0].total_cmp(&b[0]));
+        let mut groups = Vec::<[f32; 2]>::new();
         for span in spans {
-            if let Some(last)=groups.last_mut() && span[0]<=last[1]+0.00001 {last[1]=last[1].max(span[1]);}
-            else {groups.push(span);}
+            if let Some(last) = groups.last_mut()
+                && span[0] <= last[1] + 0.00001
+            {
+                last[1] = last[1].max(span[1]);
+            } else {
+                groups.push(span);
+            }
         }
-        assert_eq!(groups.len(),5,"five separate readable RADIO glyphs");
-        let mut mesh=SurfaceMeshData::default();m.append_fitted(&mut mesh,[0.,64.,0.,96.],0.,16.,Some(24.));
-        let before=mesh.clone();mark(&mut mesh,0,m,Kind::RadioTower);
-        assert_eq!(mesh.positions,before.positions);assert_eq!(mesh.colors,before.colors);
-        assert_eq!(mesh.normals,before.normals);assert_eq!(mesh.indices,before.indices);
+        assert_eq!(groups.len(), 5, "five separate readable RADIO glyphs");
+        let mut mesh = SurfaceMeshData::default();
+        m.append_fitted(&mut mesh, [0., 64., 0., 96.], 0., 16., Some(24.));
+        let before = mesh.clone();
+        mark(&mut mesh, 0, m, Kind::RadioTower);
+        assert_eq!(mesh.positions, before.positions);
+        assert_eq!(mesh.colors, before.colors);
+        assert_eq!(mesh.normals, before.normals);
+        assert_eq!(mesh.indices, before.indices);
         for i in 0..mesh.positions.len() {
-            if m.vertex_material(i)=="cream" {assert_eq!(mesh.uvs[i][1],UV_BASE+1.);}
-            if m.vertex_material(i)=="coral" {assert_eq!(mesh.uvs[i][1],UV_BASE+3.);}
+            if m.vertex_material(i) == "cream" {
+                assert_eq!(mesh.uvs[i][1], UV_BASE + 1.);
+            }
+            if m.vertex_material(i) == "coral" {
+                assert_eq!(mesh.uvs[i][1], UV_BASE + 3.);
+            }
         }
     }
 

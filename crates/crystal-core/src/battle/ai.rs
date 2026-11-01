@@ -2230,26 +2230,58 @@ mod tests {
     fn ai_zero_power_curse_needs_no_damage_category_and_consumes_no_rng() {
         let state = ai_test_state();
         let move_data = Move {
-            source_index: 174, name: "CURSE".into(), move_type: pokemon_type("CURSE_TYPE"),
-            power: 0, accuracy: 100, pp: 10, effect: "CURSE".into(),
-            effect_chance: 0, stat: None, amount: None,
+            source_index: 174,
+            name: "CURSE".into(),
+            move_type: pokemon_type("CURSE_TYPE"),
+            power: 0,
+            accuracy: 100,
+            pp: 10,
+            effect: "CURSE".into(),
+            effect_chance: 0,
+            stat: None,
+            amount: None,
         };
         let mut rng = ScriptedRandom(VecDeque::from([42]));
         let before = state.clone();
-        let categories = TypeCategories { physical: vec!["NORMAL".into()],
-            special: vec!["PSYCHIC".into()], ..Default::default() };
-        assert_eq!(trainer_ai_damage(&state, &move_data,
-            &BattleStatMultiplierTables::default(), &categories,
-            &TypeEffectivenessTable::default(), &WeatherModifiers::default(), 0, &mut rng).unwrap(), 0);
+        let categories = TypeCategories {
+            physical: vec!["NORMAL".into()],
+            special: vec!["PSYCHIC".into()],
+            ..Default::default()
+        };
+        assert_eq!(
+            trainer_ai_damage(
+                &state,
+                &move_data,
+                &BattleStatMultiplierTables::default(),
+                &categories,
+                &TypeEffectivenessTable::default(),
+                &WeatherModifiers::default(),
+                0,
+                &mut rng
+            )
+            .unwrap(),
+            0
+        );
         assert_eq!(rng.0, VecDeque::from([42]));
         assert_eq!(state, before);
         let mut damaging = move_data;
         damaging.power = 40;
-        assert_eq!(trainer_ai_damage(&state, &damaging,
-            &BattleStatMultiplierTables::default(), &categories,
-            &TypeEffectivenessTable::default(), &WeatherModifiers::default(), 0, &mut rng),
-            Err(DamageCalculationError::MissingTypeCategory { move_type: "CURSE_TYPE".into() }),
-            "damaging moves still require the real damage category table");
+        assert_eq!(
+            trainer_ai_damage(
+                &state,
+                &damaging,
+                &BattleStatMultiplierTables::default(),
+                &categories,
+                &TypeEffectivenessTable::default(),
+                &WeatherModifiers::default(),
+                0,
+                &mut rng
+            ),
+            Err(DamageCalculationError::MissingTypeCategory {
+                move_type: "CURSE_TYPE".into()
+            }),
+            "damaging moves still require the real damage category table"
+        );
     }
 
     #[test]

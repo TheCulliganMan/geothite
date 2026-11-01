@@ -55,7 +55,9 @@ fn support_center(rig: &SpeciesRig) -> Vec3 {
         return center;
     }
     let hip_x = |suffix: &str| {
-        rig.joints.iter().find(|joint| joint.parent == Some(0) && joint.name.ends_with(suffix))
+        rig.joints
+            .iter()
+            .find(|joint| joint.parent == Some(0) && joint.name.ends_with(suffix))
             .map(|joint| joint.bind.translation.x)
     };
     let authored = (!matches!(rig.species, Species::Procedural(_)))
@@ -68,14 +70,33 @@ fn support_center(rig: &SpeciesRig) -> Vec3 {
         let mut left = f32::NEG_INFINITY;
         let mut right = f32::INFINITY;
         for part in &rig.anatomy {
-            if non_support(&part.name) { continue; }
-            if role(&part.name) != Role::Leg || words(&part.name, &["foot", "feet", "toe", "toes", "claw", "claws", "talon", "paw", "hoof", "proleg", "shoe", "boot", "sole", "heel"]) {
+            if non_support(&part.name) {
                 continue;
             }
-            let (lo, hi) = point_bounds(rig.neutral.positions[part.vertices.clone()].iter().copied().map(Vec3::from_array));
+            if role(&part.name) != Role::Leg
+                || words(
+                    &part.name,
+                    &[
+                        "foot", "feet", "toe", "toes", "claw", "claws", "talon", "paw", "hoof",
+                        "proleg", "shoe", "boot", "sole", "heel",
+                    ],
+                )
+            {
+                continue;
+            }
+            let (lo, hi) = point_bounds(
+                rig.neutral.positions[part.vertices.clone()]
+                    .iter()
+                    .copied()
+                    .map(Vec3::from_array),
+            );
             let x = (lo.x + hi.x) * 0.5;
-            if x < 0. { left = left.max(x); }
-            if x > 0. { right = right.min(x); }
+            if x < 0. {
+                left = left.max(x);
+            }
+            if x > 0. {
+                right = right.min(x);
+            }
         }
         (left, right)
     });
@@ -101,14 +122,18 @@ pub(super) fn build(rig: &mut SpeciesRig) {
     let style = travel::style(rig.species.name());
     // The inverted spinner travels on its crown point. Its raised kicking
     // limbs retain their authored skin and must never become walking supports.
-    if style == travel::Style::Spin { return; }
+    if style == travel::Style::Spin {
+        return;
+    }
     let mut groups: std::collections::BTreeMap<usize, Vec<(Range<usize>, bool)>> =
         Default::default();
     let mut seeds = Vec::new();
     // An authored leg-root is stronger evidence than the bounding box.
     for part in &rig.anatomy {
         // A raised foot hidden in plumage is anatomy, not a walking support.
-        if non_support(&part.name) { continue; }
+        if non_support(&part.name) {
+            continue;
+        }
         if rig.joints[rig.joint_indices[part.vertices.start][0] as usize]
             .name
             .contains("/crawl_tentacle_")
@@ -183,7 +208,9 @@ pub(super) fn build(rig: &mut SpeciesRig) {
         .collect();
     // A single complete leg may straddle the body's left/right axis. Its toes
     // belong to that support even when their centers have opposite X signs.
-    let sole_support = anchors.first().map(|(_, key)| *key)
+    let sole_support = anchors
+        .first()
+        .map(|(_, key)| *key)
         .filter(|key| anchors.iter().all(|(_, candidate)| candidate == key));
     for (center, key, vertices, foot) in &seeds {
         let key = if *foot && sole_support.is_some() {
@@ -246,15 +273,22 @@ pub(super) fn build(rig: &mut SpeciesRig) {
         );
         // Feet and long toes must not pull the hip pivot forward. Locate the
         // attachment in the upper quarter of the actual leg, when available.
-        let leg_points: Vec<_> = parts.iter().filter(|(_, foot)| !*foot)
+        let leg_points: Vec<_> = parts
+            .iter()
+            .filter(|(_, foot)| !*foot)
             .flat_map(|(range, _)| range.clone())
-            .map(|v| Vec3::from_array(rig.neutral.positions[v])).collect();
+            .map(|v| Vec3::from_array(rig.neutral.positions[v]))
+            .collect();
         let attachment = if is_crawl || is_quad || leg_points.is_empty() {
             (lo + hi) * 0.5
         } else {
             let (min, max) = point_bounds(leg_points.iter().copied());
-            let (min, max) = point_bounds(leg_points.iter().copied()
-                .filter(|p| p.y >= max.y - (max.y - min.y) * 0.25));
+            let (min, max) = point_bounds(
+                leg_points
+                    .iter()
+                    .copied()
+                    .filter(|p| p.y >= max.y - (max.y - min.y) * 0.25),
+            );
             (min + max) * 0.5
         };
         let hip = Vec3::new(
@@ -273,7 +307,11 @@ pub(super) fn build(rig: &mut SpeciesRig) {
         let side = if ankle.x < center.x { -1. } else { 1. };
         // Preserve the anatomical front/rear grouping. A long tail can move
         // the silhouette midpoint behind all four paws (notably Furret).
-        let rear = if is_quad { group >= 2 } else { ankle.z < center.z };
+        let rear = if is_quad {
+            group >= 2
+        } else {
+            ankle.z < center.z
+        };
         let pole = if is_crawl {
             Vec3::X * side
         } else {
@@ -373,7 +411,8 @@ pub(super) fn build(rig: &mut SpeciesRig) {
         .iter()
         .map(|leg| leg.a.distance(leg.b) + leg.b.distance(leg.c))
         .fold(f32::INFINITY, f32::min)
-        * 0.75 * style.stride();
+        * 0.75
+        * style.stride();
     if !rig.walk_cycle.is_finite() {
         rig.walk_cycle = height * 0.5;
     }
@@ -424,8 +463,7 @@ pub(super) fn assert_supports(rig: &SpeciesRig, pose: &[Transform]) {
             rig.species.name()
         );
         assert!(
-            (foot_matrix.to_scale_rotation_translation().1 * Vec3::Y)
-                .distance(Vec3::Y) < 0.001,
+            (foot_matrix.to_scale_rotation_translation().1 * Vec3::Y).distance(Vec3::Y) < 0.001,
             "{} planted foot tipped",
             rig.species.name()
         );
@@ -462,9 +500,12 @@ pub(super) fn sample(rig: &SpeciesRig, phase: f32, weight: f32, pose: &mut [Tran
             travel::Style::Toad => 0.14,
             _ => 0.18,
         };
-        let target =
-            leg.c + Vec3::new(0., lift * height.min(leg.a.distance(leg.c)) * clearance,
-                z + leg.support_z - leg.c.z) * weight;
+        let target = leg.c
+            + Vec3::new(
+                0.,
+                lift * height.min(leg.a.distance(leg.c)) * clearance,
+                z + leg.support_z - leg.c.z,
+            ) * weight;
         let parent = rig.joints[leg.hip].parent.unwrap();
         let parent_world = world(rig, pose, parent);
         let hip = parent_world.transform_point3(rig.joints[leg.hip].bind.translation);
@@ -503,7 +544,12 @@ pub(super) fn settle(rig: &SpeciesRig, pose: &mut [Transform]) {
             .fold(f32::INFINITY, f32::min);
         // Slugs and seals keep belly/foot contact with the substrate even
         // when the entire contact surface rises during their pulling wave.
-        if floor < 0. || matches!(rig.species.name(), "slugma" | "magcargo" | "seel" | "dewgong") {
+        if floor < 0.
+            || matches!(
+                rig.species.name(),
+                "slugma" | "magcargo" | "seel" | "dewgong"
+            )
+        {
             pose[0].translation.y -= floor;
         }
     }
@@ -516,20 +562,41 @@ mod support_center_tests {
     #[test]
     fn furret_long_tail_does_not_turn_its_diagonal_scurry_into_a_pace() {
         let rig = world_rig(crate::species_rig::for_species("FURRET").unwrap());
-        assert_eq!(rig.walk_legs.len(),4);
-        let legs=&rig.walk_legs;
-        assert!(legs[0].a.z>legs[2].a.z && legs[1].a.z>legs[3].a.z);
-        assert_eq!(legs[0].phase,legs[3].phase);
-        assert_eq!(legs[1].phase,legs[2].phase);
-        assert_eq!((legs[0].phase-legs[1].phase).abs(),0.5);
+        assert_eq!(rig.walk_legs.len(), 4);
+        let legs = &rig.walk_legs;
+        assert!(legs[0].a.z > legs[2].a.z && legs[1].a.z > legs[3].a.z);
+        assert_eq!(legs[0].phase, legs[3].phase);
+        assert_eq!(legs[1].phase, legs[2].phase);
+        assert_eq!((legs[0].phase - legs[1].phase).abs(), 0.5);
     }
 
     #[test]
     fn pokemon_motion_biped_steps_are_centered_under_hips_not_toes() {
-        for name in ["PIKACHU", "RAICHU", "MACHOP", "MACHOKE", "MACHAMP",
-            "CHARMANDER", "CHARMELEON", "ELECTABUZZ", "MAGMAR", "KANGASKHAN",
-            "MEOWTH", "RATICATE", "AMPHAROS", "GRANBULL", "MEWTWO", "ELEKID", "MAGBY",
-            "HITMONCHAN", "HITMONLEE", "TYROGUE", "SMOOCHUM", "RHYDON", "LARVITAR"] {
+        for name in [
+            "PIKACHU",
+            "RAICHU",
+            "MACHOP",
+            "MACHOKE",
+            "MACHAMP",
+            "CHARMANDER",
+            "CHARMELEON",
+            "ELECTABUZZ",
+            "MAGMAR",
+            "KANGASKHAN",
+            "MEOWTH",
+            "RATICATE",
+            "AMPHAROS",
+            "GRANBULL",
+            "MEWTWO",
+            "ELEKID",
+            "MAGBY",
+            "HITMONCHAN",
+            "HITMONLEE",
+            "TYROGUE",
+            "SMOOCHUM",
+            "RHYDON",
+            "LARVITAR",
+        ] {
             let rig = world_rig(crate::species_rig::for_species(name).unwrap());
             assert_eq!(rig.walk_legs.len(), 2, "{name}");
             let mut pose = vec![Transform::IDENTITY; rig.joints.len()];
@@ -540,8 +607,10 @@ mod support_center_tests {
                 rig.sample_locomotion(0., (0.6 - leg.phase) * TAU, 1., &mut pose);
                 let back = world(rig, &pose, leg.foot).transform_point3(Vec3::ZERO).z;
                 let height = rig.neutral_bounds.1.y - rig.neutral_bounds.0.y;
-                assert!(((front + back) * 0.5 - leg.a.z).abs() < height * 0.02,
-                    "{name}: stance is ahead of the hip");
+                assert!(
+                    ((front + back) * 0.5 - leg.a.z).abs() < height * 0.02,
+                    "{name}: stance is ahead of the hip"
+                );
             }
         }
         for name in ["PONYTA", "RAPIDASH", "BULBASAUR", "CATERPIE", "WEEDLE"] {
@@ -557,9 +626,20 @@ mod support_center_tests {
     fn raichu_skin_support_center_uses_authored_hips_past_the_long_tail() {
         let rig = crate::species_rig::for_species("RAICHU").unwrap();
         let bounds = (rig.neutral_bounds.0 + rig.neutral_bounds.1) * 0.5;
-        let hips: Vec<_> = rig.joints.iter().filter(|j| j.parent == Some(0) && (j.name.ends_with("/leg_left") || j.name.ends_with("/leg_right"))).map(|j| j.bind.translation.x).collect();
+        let hips: Vec<_> = rig
+            .joints
+            .iter()
+            .filter(|j| {
+                j.parent == Some(0)
+                    && (j.name.ends_with("/leg_left") || j.name.ends_with("/leg_right"))
+            })
+            .map(|j| j.bind.translation.x)
+            .collect();
         assert_eq!(hips.len(), 2);
-        assert!(hips.iter().all(|x| *x < bounds.x), "tail must expose the former one-leg classification");
+        assert!(
+            hips.iter().all(|x| *x < bounds.x),
+            "tail must expose the former one-leg classification"
+        );
         let center = support_center(rig);
         assert_eq!(center.x.to_bits(), ((hips[0] + hips[1]) * 0.5).to_bits());
         assert_eq!(center.y.to_bits(), bounds.y.to_bits());
@@ -571,35 +651,68 @@ mod support_center_tests {
         let mut rig = crate::species_rig::for_species("RAICHU").unwrap().clone();
         rig.neutral_bounds.1.x = -rig.neutral_bounds.0.x + 0.02;
         let bounds = (rig.neutral_bounds.0 + rig.neutral_bounds.1) * 0.5;
-        assert_eq!(support_center(&rig).to_array().map(f32::to_bits), bounds.to_array().map(f32::to_bits));
+        assert_eq!(
+            support_center(&rig).to_array().map(f32::to_bits),
+            bounds.to_array().map(f32::to_bits)
+        );
         for name in ["BELLSPROUT", "GLOOM", "KABUTOPS", "PINECO"] {
             let rig = crate::species_rig::for_species(name).unwrap();
             let bounds = (rig.neutral_bounds.0 + rig.neutral_bounds.1) * 0.5;
-            assert_eq!(support_center(rig).to_array().map(f32::to_bits), bounds.to_array().map(f32::to_bits), "{name} keeps its existing axis");
+            assert_eq!(
+                support_center(rig).to_array().map(f32::to_bits),
+                bounds.to_array().map(f32::to_bits),
+                "{name} keeps its existing axis"
+            );
         }
     }
 
     #[test]
     fn raichu_skin_support_center_requires_bilateral_leg_evidence() {
         let mut rig = crate::species_rig::for_species("RAICHU").unwrap().clone();
-        let right = rig.joints.iter_mut().find(|j| j.name.ends_with("/leg_right")).unwrap();
+        let right = rig
+            .joints
+            .iter_mut()
+            .find(|j| j.name.ends_with("/leg_right"))
+            .unwrap();
         right.parent = Some(1);
-        rig.anatomy.retain(|part| role(&part.name) != Role::Leg || words(&part.name, &["foot", "feet", "toe", "toes"]));
+        rig.anatomy.retain(|part| {
+            role(&part.name) != Role::Leg || words(&part.name, &["foot", "feet", "toe", "toes"])
+        });
         let bounds = (rig.neutral_bounds.0 + rig.neutral_bounds.1) * 0.5;
-        assert_eq!(support_center(&rig).to_array().map(f32::to_bits), bounds.to_array().map(f32::to_bits));
+        assert_eq!(
+            support_center(&rig).to_array().map(f32::to_bits),
+            bounds.to_array().map(f32::to_bits)
+        );
     }
 
     #[test]
     fn raichu_skin_support_center_handles_pikachu_without_authored_leg_roots() {
         let rig = crate::species_rig::for_species("PIKACHU").unwrap();
-        assert!(!rig.joints.iter().any(|j| j.name.ends_with("/leg_left") || j.name.ends_with("/leg_right")));
+        assert!(
+            !rig.joints
+                .iter()
+                .any(|j| j.name.ends_with("/leg_left") || j.name.ends_with("/leg_right"))
+        );
         let bounds = (rig.neutral_bounds.0 + rig.neutral_bounds.1) * 0.5;
-        let haunches: Vec<_> = rig.anatomy.iter().filter(|p| p.name.starts_with("Haunch /")).map(|part| {
-            let (lo, hi) = point_bounds(rig.neutral.positions[part.vertices.clone()].iter().copied().map(Vec3::from_array));
-            (lo.x + hi.x) * 0.5
-        }).collect();
+        let haunches: Vec<_> = rig
+            .anatomy
+            .iter()
+            .filter(|p| p.name.starts_with("Haunch /"))
+            .map(|part| {
+                let (lo, hi) = point_bounds(
+                    rig.neutral.positions[part.vertices.clone()]
+                        .iter()
+                        .copied()
+                        .map(Vec3::from_array),
+                );
+                (lo.x + hi.x) * 0.5
+            })
+            .collect();
         assert_eq!(haunches.len(), 2);
         assert!(haunches.iter().all(|x| *x < bounds.x));
-        assert_eq!(support_center(rig).x.to_bits(), ((haunches[0] + haunches[1]) * 0.5).to_bits());
+        assert_eq!(
+            support_center(rig).x.to_bits(),
+            ((haunches[0] + haunches[1]) * 0.5).to_bits()
+        );
     }
 }

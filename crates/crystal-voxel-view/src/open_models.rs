@@ -7,8 +7,7 @@ const MAX_BYTES: u64 = 16 * 1024 * 1024;
 const MAX_BUNDLE_BYTES: usize = 64 * 1024 * 1024;
 static BUNDLE: std::sync::OnceLock<
     Option<std::sync::Mutex<std::collections::BTreeMap<String, String>>>,
-> =
-    std::sync::OnceLock::new();
+> = std::sync::OnceLock::new();
 
 /// Install optional external furniture before the first scenery lookup.
 /// The versioned JSON bundle is `{ "version": 1, "models": { "models/interiors/…": mesh } }`.
@@ -48,8 +47,9 @@ fn parse_bundle(json: &str) -> Result<std::collections::BTreeMap<String, String>
         if json.len() as u64 > MAX_BYTES {
             return Err(format!("open model exceeds 16 MiB: {path}"));
         }
-        crate::interior_models::Model::parse(json).map(|_| ())
-        .map_err(|e| format!("invalid bundled scenery {path}: {e}"))?;
+        crate::interior_models::Model::parse(json)
+            .map(|_| ())
+            .map_err(|e| format!("invalid bundled scenery {path}: {e}"))?;
         models.insert(path, json.to_owned());
     }
     Ok(models)
@@ -109,15 +109,24 @@ pub(crate) fn load_required<T>(
 }
 
 #[cfg(not(target_arch = "wasm32"))]
-fn required_from_root<T>(root: &std::path::Path, path: &str,
-    parse: impl for<'a> Fn(Source<'a>) -> Result<T, String>) -> Option<T> {
+fn required_from_root<T>(
+    root: &std::path::Path,
+    path: &str,
+    parse: impl for<'a> Fn(Source<'a>) -> Result<T, String>,
+) -> Option<T> {
     match read(root, path) {
         Ok(Some(json)) => match parse(Source::Plain(&json)) {
             Ok(asset) => Some(asset),
-            Err(error) => { trace(path, &error); None }
+            Err(error) => {
+                trace(path, &error);
+                None
+            }
         },
         Ok(None) => None,
-        Err(error) => { trace(path, &error); None }
+        Err(error) => {
+            trace(path, &error);
+            None
+        }
     }
 }
 
@@ -136,15 +145,17 @@ mod tests {
     #[test]
     fn bundle_retains_exact_model_source_without_generic_json_expansion() {
         let model = r#"{ "primitives": [{ "positions": [0,0,-0.0, 2,0,0, 0,3,0, 0,0,4], "normals": [0,1,0, 0,1,0, 0,1,0, 0,1,0], "indices": [0,2,1, 0,1,3, 0,3,2, 1,2,3], "base_color": [0.25,0.5,0.75,1] }] }"#;
-        let bundle = format!(r#"{{"version":1,"models":{{"models/interiors/television.mesh.json":{model}}}}}"#);
+        let bundle = format!(
+            r#"{{"version":1,"models":{{"models/interiors/television.mesh.json":{model}}}}}"#
+        );
         let models = parse_bundle(&bundle).unwrap();
         assert_eq!(models["models/interiors/television.mesh.json"], model);
     }
     #[test]
     fn bundles_validate_real_geometry_and_reject_partial_or_out_of_scope_installs() {
-        let model: serde_json::Value = crate::model_storage::parse(
-            Source::Plain(include_str!("../../../assets/open-models/interiors/television.mesh.json")),
-        )
+        let model: serde_json::Value = crate::model_storage::parse(Source::Plain(include_str!(
+            "../../../assets/open-models/interiors/television.mesh.json"
+        )))
         .unwrap();
         let valid = serde_json::json!({"version":1,"models":{"models/interiors/television.mesh.json":model}});
         let models = parse_bundle(&valid.to_string()).unwrap();
@@ -195,14 +206,35 @@ mod tests {
         install_open_model_bundle(&bundle).unwrap();
         // An installed bundle is the selected source. Missing bundle entries
         // cannot silently be filled from another local asset directory.
-        assert!(load_required("models/interiors/missing.mesh.json",
-            |source| crate::new_bark_models::Model::parse(source)).is_none());
-        let model = crate::interior_models::selected_model(crate::interior_models::ModelKind::Television).unwrap();
-        assert!(!BUNDLE.get().unwrap().as_ref().unwrap().lock().unwrap()
-            .contains_key("models/interiors/television.mesh.json"));
-        assert!(std::ptr::eq(model,
-            crate::interior_models::selected_model(crate::interior_models::ModelKind::Television).unwrap()),
-            "selected geometry remains cached after releasing redundant source JSON");
+        assert!(
+            load_required("models/interiors/missing.mesh.json", |source| {
+                crate::new_bark_models::Model::parse(source)
+            })
+            .is_none()
+        );
+        let model =
+            crate::interior_models::selected_model(crate::interior_models::ModelKind::Television)
+                .unwrap();
+        assert!(
+            !BUNDLE
+                .get()
+                .unwrap()
+                .as_ref()
+                .unwrap()
+                .lock()
+                .unwrap()
+                .contains_key("models/interiors/television.mesh.json")
+        );
+        assert!(
+            std::ptr::eq(
+                model,
+                crate::interior_models::selected_model(
+                    crate::interior_models::ModelKind::Television
+                )
+                .unwrap()
+            ),
+            "selected geometry remains cached after releasing redundant source JSON"
+        );
         let mut mesh = crate::mesh::SurfaceMeshData::default();
         model.append_fitted(&mut mesh, [0., 2., 0., 4.], 0., 3.);
         assert_eq!(mesh.positions.len(), 4);
@@ -258,11 +290,9 @@ mod tests {
         let _cleanup = Cleanup(root.clone());
         let file = root.join("interiors/chair.mesh.json");
         let load = || {
-            required_from_root(
-                &root,
-                "models/interiors/chair.mesh.json",
-                |s| crate::model_storage::parse::<Vec<i32>>(s),
-            )
+            required_from_root(&root, "models/interiors/chair.mesh.json", |s| {
+                crate::model_storage::parse::<Vec<i32>>(s)
+            })
         };
         assert_eq!(load(), None);
         std::fs::write(&file, "[11,12]").unwrap();

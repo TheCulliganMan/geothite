@@ -186,7 +186,9 @@ mod tests {
     #[test]
     fn clock_updates_real_lights_camera_and_shadows_without_mutating_the_world() {
         use crate::{VoxelSun, VoxelViewSettings, VoxelWorldCamera, sync_voxel_atmosphere};
-        use crystal_render_api::{VisualTile,VisualTileSource,VisualWorldClock,VisualWorldFrame};
+        use crystal_render_api::{
+            VisualTile, VisualTileSource, VisualWorldClock, VisualWorldFrame,
+        };
         let mut app = App::new();
         app.init_resource::<VisualWorldFrame>()
             .init_resource::<VisualWorldClock>()
@@ -196,15 +198,28 @@ mod tests {
             .add_systems(Update, sync_voxel_atmosphere);
         // The production clock applies only to source-proven outdoor scenes.
         // An empty default frame exercises the indoor fallback instead.
-        app.world_mut().resource_mut::<VoxelViewSettings>().enabled=true;
-        *app.world_mut().resource_mut::<VisualWorldFrame>()=VisualWorldFrame {
-            active:true,map_id:"Route30".into(),grid_size:UVec2::ONE,
-            tile_size:Vec2::splat(8.),viewport_size:Vec2::splat(8.),
-            tiles:vec![VisualTile {column:0,row:0,texture:Default::default(),
-                animation_frames:None,priority:false,source:VisualTileSource {
-                    tileset_id:"johto".into(),metatile_id:1,tile_index:6,
-                    subtile_column:0,subtile_row:0,
-                }}],..Default::default()
+        app.world_mut().resource_mut::<VoxelViewSettings>().enabled = true;
+        *app.world_mut().resource_mut::<VisualWorldFrame>() = VisualWorldFrame {
+            active: true,
+            map_id: "Route30".into(),
+            grid_size: UVec2::ONE,
+            tile_size: Vec2::splat(8.),
+            viewport_size: Vec2::splat(8.),
+            tiles: vec![VisualTile {
+                column: 0,
+                row: 0,
+                texture: Default::default(),
+                animation_frames: None,
+                priority: false,
+                source: VisualTileSource {
+                    tileset_id: "johto".into(),
+                    metatile_id: 1,
+                    tile_index: 6,
+                    subtile_column: 0,
+                    subtile_row: 0,
+                },
+            }],
+            ..Default::default()
         };
         let sun = app
             .world_mut()

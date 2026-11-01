@@ -31,7 +31,7 @@ pub(super) fn supported_bodies(
 mod tests {
     use super::*;
     use crate::battle_layout::{
-        model_scale, reference_span, BattleSceneLayout, WORLD_UNITS_PER_METER,
+        BattleSceneLayout, WORLD_UNITS_PER_METER, model_scale, reference_span,
     };
     use bevy::prelude::*;
 
@@ -99,9 +99,10 @@ mod tests {
                         < 0.00001
                 );
                 let pose = layout.body_poses[index].unwrap();
-                assert!(pose
-                    .transform_point(Vec3::Y * after.support_y)
-                    .abs_diff_eq(anchors[index], 0.00001));
+                assert!(
+                    pose.transform_point(Vec3::Y * after.support_y)
+                        .abs_diff_eq(anchors[index], 0.00001)
+                );
                 assert!(pose.transform_point(Vec3::Y * after.min.y).y < anchors[index].y);
             }
             assert_eq!(layout.origins, anchors);
@@ -109,10 +110,12 @@ mod tests {
                 BattleSceneLayout::for_anchored_bodies(original, anchors, Vec2::new(800.0, 600.0))
                     .unwrap();
             for index in 0..2 {
-                assert!(ground.body_poses[index]
-                    .unwrap()
-                    .transform_point(Vec3::Y * original[index].unwrap().min.y)
-                    .abs_diff_eq(anchors[index], 0.00001));
+                assert!(
+                    ground.body_poses[index]
+                        .unwrap()
+                        .transform_point(Vec3::Y * original[index].unwrap().min.y)
+                        .abs_diff_eq(anchors[index], 0.00001)
+                );
             }
         }
     }
@@ -126,10 +129,12 @@ mod tests {
         assert!(
             supported_bodies([None, Some(body)], [Some("TOTODILE"), Some("POLIWAG")]).is_none()
         );
-        assert!(supported_bodies(
-            [Some(BattleBody::source_card(1.0)), Some(body)],
-            [Some("TOTODILE"), Some("POLIWAG")]
-        )
-        .is_none());
+        assert!(
+            supported_bodies(
+                [Some(BattleBody::source_card(1.0)), Some(body)],
+                [Some("TOTODILE"), Some("POLIWAG")]
+            )
+            .is_none()
+        );
     }
 }

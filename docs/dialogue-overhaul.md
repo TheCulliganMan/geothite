@@ -1,5 +1,82 @@
 # Minnesota dialogue overhaul
 
+## November 1: focused dialogue and scene fixes
+
+The local, unselected review candidate is
+`content-packs/minnesota-story-review-fixes-v09.crystalpack` (743 maps;
+SHA-256 `175e419ac0abd0261d6417fdb825eabd3de0a7223b51f45baf1390ea8f29259a`).
+It extends the selected v11 regional descendant through the guarded story
+consolidation, public-road revision, and scene fixes. World selection, deployment,
+and existing saves are unchanged.
+
+Tamarack's pre-choice repeat is one page. Mom, the cousin, wardens, fossil hunter,
+and Tamarack's investigation reminders now use explicit pages from
+`story.json`, through `authored_dialogue::install_canonical`; their prose is no
+longer wrapped and repaginated inside the Rust scene builders. The cousin's
+milestone replies are short family conversations. Tamarack's later directions
+follow the manifest, reference record, recovered meter, depot, radio contact,
+and completed intake work. The current train, intake-control, island, and
+starter-research wording is retained. The final public-road clerk reply also
+reads the canonical source.
+
+The new return scripts are connected to the actual egg and rival-arc return
+paths, preserving the existing Master Ball handoff. Rochester Reed approaches
+only the four walkable trigger columns. In column eight he stops beside the
+player at `(9,12)`; the former `(8,11)` destination is a wall. Both the original
+builder and regional reviser use the corrected paths. The text controller also
+initializes the battle action cursor before returning from narration, through
+its normal cursor handler; snapshot rendering still rejects an invalid cursor.
+
+Executed acceptance for this candidate:
+
+- All three starters from production New Game through Rochester delivery,
+  including refusal/naming, exact introduction and receipt pages, repositioning,
+  Reed's battle, supplies, and Save/Continue.
+- Eight cousin milestone states, eleven Tamarack return states, and seven native
+  clinic approaches, checking actual pages, input ownership, position/facing,
+  reward preservation, and Save/Continue where applicable. These later chapter
+  states are declared fixtures, not earned campaign progress.
+- Production stdio MCP opening, explicit Pokégear receipt, short repeat, starter
+  refusal, Start, and byte-empty gameplay stderr.
+- Independent readback comparison of all 125 pages in 42 changed canonical
+  conversations, plus exact preservation of the parent's audio payloads/manifest.
+  Rust synthesis verifies all 602 programs' PCM hashes, frame counts, and loops.
+- Visually reviewed 68 native 2D captures of reached opening, cousin, and
+  Tamarack return pages, checking readable complete text against the authored
+  pages and visible actor placement. Later return captures use declared fixtures.
+- Paragraph/scroll/pause timing, held-button acceleration, non-silent receipt
+  cues, Mom's continuous/diagonal interception, and the invalid-cursor renderer
+  regression. Both affected crates pass all-target Clippy with existing warnings.
+  Focused formatting and `git diff --check` pass. Workspace formatting remains
+  blocked by existing unrelated formatting differences, beginning in
+  `crates/offset-allocator`.
+
+The ignored evidence directory is `.local/story-review-fixes-v01/`.
+`story-v09.json` is the exact reviewed source. Native screenshots load actual
+same-pack controller checkpoints with `render_saved_session --2d`; set
+`CRYSTAL_RENDER_TEST_WAIT_FIELD_TEXT=1` to wait for the real printer before
+capture. A screenshot taken without that setting can show only part of a page.
+The page gallery is `captures-v09/index.html` beneath that directory.
+
+Reproduce the scene checks with the external candidate selected explicitly:
+
+```sh
+export CRYSTAL_WINONA_TEST_PACK="$PWD/content-packs/minnesota-story-review-fixes-v09.crystalpack"
+export CRYSTAL_WINONA_SAVE_DIR="$PWD/.local/story-review-fixes-v01/recheck-saves"
+export CRYSTAL_NORTHSTAR_EVENTS_SAVE_DIR="$PWD/.local/story-review-fixes-v01/recheck-scenes"
+export CRYSTAL_NORTHSTAR_CANONICAL_STORY_SOURCE="$PWD/.local/story-review-fixes-v01/story-v09.json"
+export RUST_MIN_STACK=67108864
+cargo test --locked -p crystal-bevy --lib dialogue_scene_fixtures::story_review:: -- --ignored --test-threads=1
+cargo test --locked -p crystal-bevy --lib overhaul_three_earned_starters_and_ivy_delivery -- --ignored --test-threads=1
+```
+
+A complete earned New Game-to-ending run and native/browser listening review
+remain outstanding. This focused pass does not establish campaign balance,
+public deployment, or audible device playback. The original overhaul records
+below are retained history.
+
+## Original overhaul and retained revision history
+
 The revision replaces remote opening conversations with staged scenes, gives the
 survey errand an explicit introduction and handoff, and rewrites the required
 campaign conversations as authored native pages. It retains current geography,

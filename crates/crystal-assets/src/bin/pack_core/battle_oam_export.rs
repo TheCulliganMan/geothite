@@ -125,7 +125,13 @@ mod tests {
     }
     #[test]
     fn every_oam_piece_matches_pinned_cartridge() {
-        let data = parse_oam(&std::fs::read_to_string(crate::source_syntax::test_workspace().join("vendor/pokecrystal/data/battle_anims/oam.asm")).unwrap())
+        let data = parse_oam(
+            &std::fs::read_to_string(
+                crate::source_syntax::test_workspace()
+                    .join("vendor/pokecrystal/data/battle_anims/oam.asm"),
+            )
+            .unwrap(),
+        )
         .unwrap();
         let bank = include_bytes!("../../../../crystal-bevy/src/battle_anim_program/bank.bin");
         for (id, (_, value)) in data.as_object().unwrap().iter().enumerate() {

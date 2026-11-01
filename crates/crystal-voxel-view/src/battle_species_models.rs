@@ -44,8 +44,10 @@ fn parse_model<'a>(
         }
         let base = mesh.positions.len() as u32;
         anatomy.push(crate::species_rig::Anatomy {
-            name: p.part, vertices: base as usize..base as usize+n,
-            indices: mesh.indices.len()..mesh.indices.len()+p.indices.len(), material: 0,
+            name: p.part,
+            vertices: base as usize..base as usize + n,
+            indices: mesh.indices.len()..mesh.indices.len() + p.indices.len(),
+            material: 0,
         });
         for point in p.positions.chunks_exact(3) {
             mesh.positions.push([point[0], point[1], point[2]]);

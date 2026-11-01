@@ -69,10 +69,7 @@ fn refine(
             continue;
         }
         for n in 0..3 {
-            cuts.insert(edge(
-                keys[f[n] as usize],
-                keys[f[(n + 1) % 3] as usize],
-            ));
+            cuts.insert(edge(keys[f[n] as usize], keys[f[(n + 1) % 3] as usize]));
         }
     }
     let mut cache = HashMap::new();
@@ -82,10 +79,7 @@ fn refine(
         for n in 0..3 {
             let a = v[n];
             let b = v[(n + 1) % 3];
-            if cuts.contains(&edge(
-                keys[a as usize],
-                keys[b as usize],
-            )) {
+            if cuts.contains(&edge(keys[a as usize], keys[b as usize])) {
                 mid[n] = Some(
                     *cache
                         .entry((a.min(b), a.max(b)))
@@ -262,30 +256,51 @@ impl Roof {
             min = min.min(p);
             max = max.max(p);
         }
-        if triangles.is_empty() { min = Vec2::ZERO; max = Vec2::ONE; }
+        if triangles.is_empty() {
+            min = Vec2::ZERO;
+            max = Vec2::ONE;
+        }
         let scale = Vec2::splat(Self::SIDE as f32) / (max - min).max(Vec2::splat(1e-6));
-        let mut roof = Self { triangles, min, scale, bins: vec![Vec::new(); Self::SIDE * Self::SIDE] };
+        let mut roof = Self {
+            triangles,
+            min,
+            scale,
+            bins: vec![Vec::new(); Self::SIDE * Self::SIDE],
+        };
         for (i, triangle) in roof.triangles.iter().enumerate() {
             let mut lo = Vec2::splat(f32::INFINITY);
             let mut hi = Vec2::splat(f32::NEG_INFINITY);
-            for p in triangle { let p = Vec2::new(p.x, p.z); lo = lo.min(p); hi = hi.max(p); }
+            for p in triangle {
+                let p = Vec2::new(p.x, p.z);
+                lo = lo.min(p);
+                hi = hi.max(p);
+            }
             // The acceptance threshold permits barycentric coordinates down
             // to -1e-5. Include that fringe and arithmetic rounding in bins.
-            let padding = (hi - lo) * 4e-5 + lo.abs().max(hi.abs()).max(Vec2::ONE) * (32. * f32::EPSILON);
+            let padding =
+                (hi - lo) * 4e-5 + lo.abs().max(hi.abs()).max(Vec2::ONE) * (32. * f32::EPSILON);
             let a = roof.cell(lo - padding);
             let b = roof.cell(hi + padding);
-            for z in a[1]..=b[1] { for x in a[0]..=b[0] {
-                roof.bins[z * Self::SIDE + x].push(i);
-            }}
+            for z in a[1]..=b[1] {
+                for x in a[0]..=b[0] {
+                    roof.bins[z * Self::SIDE + x].push(i);
+                }
+            }
         }
         roof
     }
     fn cell(&self, p: Vec2) -> [usize; 2] {
-        ((p - self.min) * self.scale).floor().clamp(Vec2::ZERO, Vec2::splat((Self::SIDE - 1) as f32)).to_array().map(|v| v as usize)
+        ((p - self.min) * self.scale)
+            .floor()
+            .clamp(Vec2::ZERO, Vec2::splat((Self::SIDE - 1) as f32))
+            .to_array()
+            .map(|v| v as usize)
     }
     fn candidates(&self, p: Vec3) -> impl Iterator<Item = &[Vec3; 3]> {
         let [x, z] = self.cell(Vec2::new(p.x, p.z));
-        self.bins[z * Self::SIDE + x].iter().map(|&i| &self.triangles[i])
+        self.bins[z * Self::SIDE + x]
+            .iter()
+            .map(|&i| &self.triangles[i])
     }
 }
 
@@ -295,7 +310,10 @@ pub(crate) fn sculpt(
     j: &mut Vec<[u16; 4]>,
     w: &mut Vec<[f32; 4]>,
 ) {
-    let _trace = crate::loading_trace::span("actor.sculpt_digits", || serde_json::json!({"vertices": mesh.positions.len(), "triangles": mesh.indices.len() / 3}));
+    let _trace = crate::loading_trace::span(
+        "actor.sculpt_digits",
+        || serde_json::json!({"vertices": mesh.positions.len(), "triangles": mesh.indices.len() / 3}),
+    );
     let hands = hands(rig);
     if hands.is_empty() {
         return;
@@ -313,14 +331,33 @@ pub(crate) fn sculpt(
     // Measure the supplied terminal dome before reshaping it. Subtracting a
     // lobe field from that dome retains its unequal outer finger heights.
     // A vertical, monotone remap instead gives every pad its authored profile.
-    let roofs: Vec<Roof> = hands.iter().map(|h| {
-        Roof::new(
-        mesh.indices.chunks_exact(3).filter(|face| face.iter().any(|&i|
-            eligible(mesh.positions[i as usize], j[i as usize], w[i as usize], h, 0.19)))
-            .map(|face| [face[0], face[1], face[2]].map(|i|
-                h.bind.transform_point3(Vec3::from_array(mesh.positions[i as usize]))))
-            .collect())
-    }).collect();
+    let roofs: Vec<Roof> = hands
+        .iter()
+        .map(|h| {
+            Roof::new(
+                mesh.indices
+                    .chunks_exact(3)
+                    .filter(|face| {
+                        face.iter().any(|&i| {
+                            eligible(
+                                mesh.positions[i as usize],
+                                j[i as usize],
+                                w[i as usize],
+                                h,
+                                0.19,
+                            )
+                        })
+                    })
+                    .map(|face| {
+                        [face[0], face[1], face[2]].map(|i| {
+                            h.bind
+                                .transform_point3(Vec3::from_array(mesh.positions[i as usize]))
+                        })
+                    })
+                    .collect(),
+            )
+        })
+        .collect();
     let mut changed = vec![false; mesh.positions.len()];
     for (i, p) in mesh.positions.iter_mut().enumerate() {
         for (h, roof) in hands.iter().zip(&roofs) {
@@ -340,8 +377,7 @@ pub(crate) fn sculpt(
             // profile made four pointed teeth instead of rounded fingers.
             // Soften the circular arc's vertical tangent only near the web;
             // its broad crown remains round and has zero slope at the apex.
-            let shoulder = ((1.04_f32).sqrt()
-                - (1.04 - lateral * lateral).max(0.04).sqrt())
+            let shoulder = ((1.04_f32).sqrt() - (1.04 - lateral * lateral).max(0.04).sqrt())
                 / ((1.04_f32).sqrt() - 0.2);
             let cap_drop = pad_height * shoulder;
             let web = ((lateral - 0.50) / 0.50).clamp(0., 1.);
@@ -354,15 +390,20 @@ pub(crate) fn sculpt(
             // This bounded height field retains the connected surface and
             // uses the supplied slab's actual depth, without adding pieces.
             let depth = ((q.z - h.cap_center_z) / h.cap_depth).clamp(-1., 1.);
-            let source_top = roof.candidates(q).filter_map(|tri| {
-                let [a,b,c] = *tri;
-                let denominator = (b.z-c.z)*(a.x-c.x)+(c.x-b.x)*(a.z-c.z);
-                if denominator.abs() < 1e-10 { return None; }
-                let u = ((b.z-c.z)*(q.x-c.x)+(c.x-b.x)*(q.z-c.z))/denominator;
-                let v = ((c.z-a.z)*(q.x-c.x)+(a.x-c.x)*(q.z-c.z))/denominator;
-                (u.min(v).min(1.-u-v) >= -1e-5)
-                    .then_some(u*a.y+v*b.y+(1.-u-v)*c.y)
-            }).fold(q.y, f32::max);
+            let source_top = roof
+                .candidates(q)
+                .filter_map(|tri| {
+                    let [a, b, c] = *tri;
+                    let denominator = (b.z - c.z) * (a.x - c.x) + (c.x - b.x) * (a.z - c.z);
+                    if denominator.abs() < 1e-10 {
+                        return None;
+                    }
+                    let u = ((b.z - c.z) * (q.x - c.x) + (c.x - b.x) * (q.z - c.z)) / denominator;
+                    let v = ((c.z - a.z) * (q.x - c.x) + (a.x - c.x) * (q.z - c.z)) / denominator;
+                    (u.min(v).min(1. - u - v) >= -1e-5)
+                        .then_some(u * a.y + v * b.y + (1. - u - v) * c.y)
+                })
+                .fold(q.y, f32::max);
             let target_top = h.tip - lateral_drop - 0.025 * depth * depth;
             let scale = ((target_top - 0.22) / (source_top - 0.22)).clamp(0.45, 1.25);
             q.y = 0.22 + (q.y - 0.22) * (1. + activation * (scale - 1.));
@@ -392,18 +433,24 @@ pub(crate) fn sculpt(
     let mut points = HashMap::<[i32; 3], Vec3>::new();
     let mut pinned = HashSet::new();
     for face in mesh.indices.chunks_exact(3) {
-        let ids = [face[0],face[1],face[2]].map(|i| i as usize);
+        let ids = [face[0], face[1], face[2]].map(|i| i as usize);
         let keys = ids.map(|i| key(mesh.positions[i]));
-        if !ids.iter().all(|&i| changed[i]) { pinned.extend(keys); }
+        if !ids.iter().all(|&i| changed[i]) {
+            pinned.extend(keys);
+        }
         for corner in 0..3 {
             points.insert(keys[corner], Vec3::from_array(mesh.positions[ids[corner]]));
-            neighbors.entry(keys[corner]).or_default()
-                .extend([keys[(corner+1)%3], keys[(corner+2)%3]]);
+            neighbors
+                .entry(keys[corner])
+                .or_default()
+                .extend([keys[(corner + 1) % 3], keys[(corner + 2) % 3]]);
         }
     }
     for (p, &changed) in mesh.positions.iter_mut().zip(&changed) {
         let k = key(*p);
-        if !changed || pinned.contains(&k) { continue; }
+        if !changed || pinned.contains(&k) {
+            continue;
+        }
         let adjacent = &neighbors[&k];
         let mean = adjacent.iter().map(|k| points[k]).sum::<Vec3>() / adjacent.len() as f32;
         *p = points[&k].lerp(mean, 0.25).to_array();
@@ -441,20 +488,46 @@ mod tests {
     use super::*;
     #[test]
     fn roof_bins_preserve_barycentric_hits_and_source_order() {
-        let triangles = (0..24).flat_map(|z| (0..24).map(move |x| {
-            let x = x as f32 * 0.031 - 0.4;
-            let z = z as f32 * 0.019 - 0.2;
-            [Vec3::new(x, 0.2, z), Vec3::new(x + 0.031, 0.3, z), Vec3::new(x, 0.4, z + 0.019)]
-        })).collect::<Vec<_>>();
+        let triangles = (0..24)
+            .flat_map(|z| {
+                (0..24).map(move |x| {
+                    let x = x as f32 * 0.031 - 0.4;
+                    let z = z as f32 * 0.019 - 0.2;
+                    [
+                        Vec3::new(x, 0.2, z),
+                        Vec3::new(x + 0.031, 0.3, z),
+                        Vec3::new(x, 0.4, z + 0.019),
+                    ]
+                })
+            })
+            .collect::<Vec<_>>();
         let roof = Roof::new(triangles.clone());
         for (index, &[a, b, c]) in triangles.iter().enumerate() {
-            for [u, v] in [[0., 0.], [0.5, 0.5], [1., 0.], [-0.000009, 0.5], [0.5, -0.000009], [0.5, 0.500009]] {
+            for [u, v] in [
+                [0., 0.],
+                [0.5, 0.5],
+                [1., 0.],
+                [-0.000009, 0.5],
+                [0.5, -0.000009],
+                [0.5, 0.500009],
+            ] {
                 let p = a * u + b * v + c * (1. - u - v);
                 let candidates = roof.candidates(p).collect::<Vec<_>>();
-                assert!(candidates.iter().any(|&&triangle| triangle == triangles[index]), "accepted fringe must remain a candidate");
-                let indices = candidates.iter().map(|&&triangle| triangles.iter().position(|t| *t == triangle).unwrap()).collect::<Vec<_>>();
+                assert!(
+                    candidates
+                        .iter()
+                        .any(|&&triangle| triangle == triangles[index]),
+                    "accepted fringe must remain a candidate"
+                );
+                let indices = candidates
+                    .iter()
+                    .map(|&&triangle| triangles.iter().position(|t| *t == triangle).unwrap())
+                    .collect::<Vec<_>>();
                 assert!(indices.windows(2).all(|pair| pair[0] < pair[1]));
-                assert!(candidates.len() < triangles.len() / 4, "broad phase must reject unrelated triangles");
+                assert!(
+                    candidates.len() < triangles.len() / 4,
+                    "broad phase must reject unrelated triangles"
+                );
             }
         }
         assert_eq!(Roof::new(Vec::new()).candidates(Vec3::ZERO).count(), 0);
@@ -531,7 +604,8 @@ mod tests {
                     let radius = (hand.right - hand.left) / 8.0;
                     let sag = apex - (shoulders[0] + shoulders[1]) * 0.5;
                     if !(shoulders.iter().all(|p| p.is_finite())
-                        && sag > radius * 0.04 && sag < radius * 0.35)
+                        && sag > radius * 0.04
+                        && sag < radius * 0.35)
                     {
                         shape_failures.push(format!(
                             "{name} side{side} fingertip is flat or pointed: center {center}, apex {apex}, shoulders {shoulders:?}, sag {sag}, radius {radius}"

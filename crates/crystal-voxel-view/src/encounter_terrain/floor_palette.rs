@@ -146,7 +146,9 @@ pub(super) fn grade_violet_floor(
         for row in y..y + TILE_PIXELS as usize {
             let start = (row * width as usize + x) * 4;
             let end = start + TILE_PIXELS as usize * 4;
-            for pixel in atlas.data.as_mut().expect("CPU image pixels")[start..end].chunks_exact_mut(4) {
+            for pixel in
+                atlas.data.as_mut().expect("CPU image pixels")[start..end].chunks_exact_mut(4)
+            {
                 let before = [pixel[0], pixel[1], pixel[2]];
                 if let Some(after) = palette.get(&before) {
                     pixel[..3].copy_from_slice(after);
@@ -167,8 +169,8 @@ pub(super) fn grade_violet_floor(
 mod tests {
     use super::*;
     use bevy::{
-        prelude::{Handle, UVec2, Vec2},
         asset::RenderAssetUsages,
+        prelude::{Handle, UVec2, Vec2},
         render::render_resource::Extent3d,
     };
     use crystal_render_api::VisualTile;
@@ -194,7 +196,10 @@ mod tests {
         let frame = VisualWorldFrame {
             active: true,
             map_id: Arc::from("VioletGym"),
-            map_texture: Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(11), std::marker::PhantomData),
+            map_texture: Handle::Uuid(
+                bevy::asset::uuid::Uuid::from_u128(11),
+                std::marker::PhantomData,
+            ),
             grid_size: UVec2::new(2, 2),
             tile_size: Vec2::splat(32.0),
             viewport_size: Vec2::splat(64.0),
@@ -205,7 +210,10 @@ mod tests {
                     column: i as u32 % 2,
                     row: i as u32 / 2,
                     source,
-                    texture: Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(20 + i as u128), std::marker::PhantomData),
+                    texture: Handle::Uuid(
+                        bevy::asset::uuid::Uuid::from_u128(20 + i as u128),
+                        std::marker::PhantomData,
+                    ),
                     animation_frames: None,
                     priority: false,
                 })
@@ -223,7 +231,13 @@ mod tests {
             TextureFormat::Rgba8UnormSrgb,
             RenderAssetUsages::default(),
         );
-        for (i, pixel) in atlas.data.as_mut().expect("CPU image pixels").chunks_exact_mut(4).enumerate() {
+        for (i, pixel) in atlas
+            .data
+            .as_mut()
+            .expect("CPU image pixels")
+            .chunks_exact_mut(4)
+            .enumerate()
+        {
             pixel[3] = i as u8;
         }
         (frame, atlas)
@@ -243,9 +257,17 @@ mod tests {
             1
         );
         for (i, (before, after)) in original
-            .data.as_ref().expect("CPU image pixels")
+            .data
+            .as_ref()
+            .expect("CPU image pixels")
             .chunks_exact(4)
-            .zip(owned.data.as_mut().expect("CPU image pixels").chunks_exact(4))
+            .zip(
+                owned
+                    .data
+                    .as_mut()
+                    .expect("CPU image pixels")
+                    .chunks_exact(4),
+            )
             .enumerate()
         {
             if i % 16 < 8 && i / 16 < 8 {
@@ -255,7 +277,10 @@ mod tests {
                 assert_eq!(after, before, "non-floor texel {i}");
             }
         }
-        assert_eq!(original.data.as_ref().expect("CPU image pixels").as_slice(), original_bytes.as_slice());
+        assert_eq!(
+            original.data.as_ref().expect("CPU image pixels").as_slice(),
+            original_bytes.as_slice()
+        );
         assert_eq!(frame, frame_before);
         assert_eq!(
             owned.texture_descriptor.size,
@@ -301,11 +326,8 @@ mod tests {
         let (frame, mut original) = fixture();
         for i in 0..64 {
             let offset = ((i / 8) * 16 + i % 8) * 4;
-            original.data.as_mut().expect("CPU image pixels")[offset..offset + 3].copy_from_slice(&[
-                64 + i as u8,
-                200 - i as u8,
-                96 + i as u8,
-            ]);
+            original.data.as_mut().expect("CPU image pixels")[offset..offset + 3]
+                .copy_from_slice(&[64 + i as u8, 200 - i as u8, 96 + i as u8]);
         }
         let linear = std::array::from_fn(|value| to_linear(value as u8));
         let mut expected = original.clone();
@@ -313,7 +335,10 @@ mod tests {
         // 32-color boundary. Non-floor bytes remain in this exact reference.
         for i in 0..64 {
             let offset = ((i / 8) * 16 + i % 8) * 4;
-            grade(&mut expected.data.as_mut().expect("CPU image pixels")[offset..offset + 4], &linear);
+            grade(
+                &mut expected.data.as_mut().expect("CPU image pixels")[offset..offset + 4],
+                &linear,
+            );
             assert_ne!(
                 expected.data.as_mut().expect("CPU image pixels")[offset..offset + 3],
                 original.data.as_mut().expect("CPU image pixels")[offset..offset + 3],
@@ -326,7 +351,10 @@ mod tests {
                 grade_violet_floor(&frame, Some(&Document::default()), &mut owned),
                 1
             );
-            assert_eq!(owned.data.as_mut().expect("CPU image pixels"), expected.data.as_mut().expect("CPU image pixels"));
+            assert_eq!(
+                owned.data.as_mut().expect("CPU image pixels"),
+                expected.data.as_mut().expect("CPU image pixels")
+            );
         }
     }
 
@@ -369,7 +397,11 @@ mod tests {
                 0,
                 "case {case}"
             );
-            assert_eq!(atlas.data.as_ref().expect("CPU image pixels").as_slice(), before.as_slice(), "case {case}");
+            assert_eq!(
+                atlas.data.as_ref().expect("CPU image pixels").as_slice(),
+                before.as_slice(),
+                "case {case}"
+            );
         }
     }
 
@@ -390,7 +422,10 @@ mod tests {
                 expected
             );
             if expected == 0 {
-                assert_eq!(owned.data.as_mut().expect("CPU image pixels"), atlas.data.as_mut().expect("CPU image pixels"));
+                assert_eq!(
+                    owned.data.as_mut().expect("CPU image pixels"),
+                    atlas.data.as_mut().expect("CPU image pixels")
+                );
             }
         }
         let document: Document = serde_json::from_str(
@@ -398,7 +433,10 @@ mod tests {
         ).unwrap();
         let mut owned = atlas.clone();
         assert_eq!(grade_violet_floor(&frame, Some(&document), &mut owned), 0);
-        assert_eq!(owned.data.as_mut().expect("CPU image pixels"), atlas.data.as_mut().expect("CPU image pixels"));
+        assert_eq!(
+            owned.data.as_mut().expect("CPU image pixels"),
+            atlas.data.as_mut().expect("CPU image pixels")
+        );
         for (maps, expected) in [("[\"VioletGym\",\"OtherGym\"]", 0), ("[\"OtherGym\"]", 1)] {
             let document: Document = serde_json::from_str(&format!(
                 r#"{{"objects":[{{"name":"Scoped override","maps":{maps},"tileset":"elite_four_room","metatile":45,"origin":[0,0],"tiles":[[1]],"ground":3,"top_pixels":0,"depth_pixels":1}}]}}"#,
@@ -409,7 +447,10 @@ mod tests {
                 expected
             );
             if expected == 0 {
-                assert_eq!(owned.data.as_mut().expect("CPU image pixels"), atlas.data.as_mut().expect("CPU image pixels"));
+                assert_eq!(
+                    owned.data.as_mut().expect("CPU image pixels"),
+                    atlas.data.as_mut().expect("CPU image pixels")
+                );
             }
         }
     }

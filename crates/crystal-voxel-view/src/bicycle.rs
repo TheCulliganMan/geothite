@@ -146,48 +146,92 @@ pub(crate) fn mesh(female: bool) -> SurfaceMeshData {
 fn pedal_center(phase: f32, side: usize) -> Vec3 {
     let sign = if side == 0 { 1. } else { -1. };
     let angle = phase + if side == 0 { 0. } else { std::f32::consts::PI };
-    Vec3::new(sign * 0.11, 0.265 + 0.078 * angle.sin(),
-        -0.015 + 0.078 * angle.cos())
+    Vec3::new(
+        sign * 0.11,
+        0.265 + 0.078 * angle.sin(),
+        -0.015 + 0.078 * angle.cos(),
+    )
 }
 
 /// Independent entities keep each rider's pedal phase independent, while the
 /// platforms remain level rather than rotating through the shoes.
-pub(crate) struct Pedals { crank: Entity, platforms: [Entity; 2] }
+pub(crate) struct Pedals {
+    crank: Entity,
+    platforms: [Entity; 2],
+}
 impl Pedals {
     pub(crate) fn set_phase(&self, commands: &mut Commands, phase: f32) {
-        commands.entity(self.crank).insert(Transform::from_xyz(0., 0.265, -0.015)
-            .with_rotation(Quat::from_rotation_x(-phase)));
+        commands.entity(self.crank).insert(
+            Transform::from_xyz(0., 0.265, -0.015).with_rotation(Quat::from_rotation_x(-phase)),
+        );
         for side in 0..2 {
-            commands.entity(self.platforms[side])
+            commands
+                .entity(self.platforms[side])
                 .insert(Transform::from_translation(pedal_center(phase, side)));
         }
     }
 }
 
-pub(crate) fn spawn_pedals(commands: &mut Commands, meshes: &mut Assets<Mesh>,
-    material: Handle<StandardMaterial>, root: Entity, phase: f32) -> Pedals {
-    use bevy::camera::visibility::RenderLayers;
+pub(crate) fn spawn_pedals(
+    commands: &mut Commands,
+    meshes: &mut Assets<Mesh>,
+    material: Handle<StandardMaterial>,
+    root: Entity,
+    phase: f32,
+) -> Pedals {
     use crate::new_bark_actors::ModeledActor;
+    use bevy::camera::visibility::RenderLayers;
     let mut crank = SurfaceMeshData::default();
     let metal = [0.58, 0.64, 0.68, 1.0];
     for sign in [-1., 1.] {
-        tube(&mut crank, Vec3::new(sign * 0.075, 0., 0.),
-            Vec3::new(sign * 0.075, 0., sign * 0.078), 0.011, metal);
-        tube(&mut crank, Vec3::new(sign * 0.075, 0., sign * 0.078),
-            Vec3::new(sign * 0.11, 0., sign * 0.078), 0.011, metal);
+        tube(
+            &mut crank,
+            Vec3::new(sign * 0.075, 0., 0.),
+            Vec3::new(sign * 0.075, 0., sign * 0.078),
+            0.011,
+            metal,
+        );
+        tube(
+            &mut crank,
+            Vec3::new(sign * 0.075, 0., sign * 0.078),
+            Vec3::new(sign * 0.11, 0., sign * 0.078),
+            0.011,
+            metal,
+        );
     }
-    let crank = commands.spawn((Mesh3d(meshes.add(crank.into_mesh())),
-        MeshMaterial3d(material.clone()), Transform::default(), ModeledActor,
-        RenderLayers::layer(crate::VOXEL_RENDER_LAYER))).id();
+    let crank = commands
+        .spawn((
+            Mesh3d(meshes.add(crank.into_mesh())),
+            MeshMaterial3d(material.clone()),
+            Transform::default(),
+            ModeledActor,
+            RenderLayers::layer(crate::VOXEL_RENDER_LAYER),
+        ))
+        .id();
     let mut platform = SurfaceMeshData::default();
     // A broad, level rubber platform supports the shoe sole.
-    tube(&mut platform, Vec3::new(-0.030, 0., 0.),
-        Vec3::new(0.030, 0., 0.), 0.016, [0.025, 0.035, 0.045, 1.]);
+    tube(
+        &mut platform,
+        Vec3::new(-0.030, 0., 0.),
+        Vec3::new(0.030, 0., 0.),
+        0.016,
+        [0.025, 0.035, 0.045, 1.],
+    );
     let platform = meshes.add(platform.into_mesh());
-    let platforms = std::array::from_fn(|_| commands.spawn((Mesh3d(platform.clone()),
-        MeshMaterial3d(material.clone()), Transform::default(), ModeledActor,
-        RenderLayers::layer(crate::VOXEL_RENDER_LAYER))).id());
-    commands.entity(root).add_children(&[crank, platforms[0], platforms[1]]);
+    let platforms = std::array::from_fn(|_| {
+        commands
+            .spawn((
+                Mesh3d(platform.clone()),
+                MeshMaterial3d(material.clone()),
+                Transform::default(),
+                ModeledActor,
+                RenderLayers::layer(crate::VOXEL_RENDER_LAYER),
+            ))
+            .id()
+    });
+    commands
+        .entity(root)
+        .add_children(&[crank, platforms[0], platforms[1]]);
     let pedals = Pedals { crank, platforms };
     pedals.set_phase(commands, phase);
     pedals
@@ -203,12 +247,27 @@ mod tests {
         let mut transforms = rig.nodes.clone();
         let mut cache = vec![None; transforms.len()];
         for step in 0..32 {
-            rig.sample("Idle", step as f32 / 32. * rig.duration("Idle"), &mut transforms);
-            pose(rig, &mut transforms, step as f32 / 32. * TAU, Vec3::splat(0.35));
+            rig.sample(
+                "Idle",
+                step as f32 / 32. * rig.duration("Idle"),
+                &mut transforms,
+            );
+            pose(
+                rig,
+                &mut transforms,
+                step as f32 / 32. * TAU,
+                Vec3::splat(0.35),
+            );
             cache.fill(None);
             for node in (0..transforms.len()).rev() {
-                assert_eq!(joint_world(rig, &transforms, node).to_cols_array().map(f32::to_bits),
-                    cached_joint_world(rig, &transforms, node, &mut cache).to_cols_array().map(f32::to_bits));
+                assert_eq!(
+                    joint_world(rig, &transforms, node)
+                        .to_cols_array()
+                        .map(f32::to_bits),
+                    cached_joint_world(rig, &transforms, node, &mut cache)
+                        .to_cols_array()
+                        .map(f32::to_bits)
+                );
             }
         }
     }
@@ -231,15 +290,34 @@ mod tests {
             queue.apply(&mut world);
             assert_eq!(*world.get::<Transform>(b.crank).unwrap(), other);
             let crank = world.get::<Transform>(a.crank).unwrap();
-            let crank_mesh = meshes.get(&world.get::<Mesh3d>(a.crank).unwrap().0).unwrap();
+            let crank_mesh = meshes
+                .get(&world.get::<Mesh3d>(a.crank).unwrap().0)
+                .unwrap();
             let Some(bevy::mesh::VertexAttributeValues::Float32x3(vertices)) =
-                crank_mesh.attribute(Mesh::ATTRIBUTE_POSITION) else { panic!("crank positions"); };
+                crank_mesh.attribute(Mesh::ATTRIBUTE_POSITION)
+            else {
+                panic!("crank positions");
+            };
             for platform in a.platforms {
                 let pad = world.get::<Transform>(platform).unwrap();
-                assert_eq!(pad.rotation, Quat::IDENTITY, "shoe platform must stay level");
-                assert!(pad.translation.y - 0.016 > 0., "pedal must clear the ground");
-                let gap = vertices.iter().map(|p| crank.to_matrix().transform_point3(
-                    Vec3::from_array(*p)).distance(pad.translation)).fold(f32::INFINITY, f32::min);
+                assert_eq!(
+                    pad.rotation,
+                    Quat::IDENTITY,
+                    "shoe platform must stay level"
+                );
+                assert!(
+                    pad.translation.y - 0.016 > 0.,
+                    "pedal must clear the ground"
+                );
+                let gap = vertices
+                    .iter()
+                    .map(|p| {
+                        crank
+                            .to_matrix()
+                            .transform_point3(Vec3::from_array(*p))
+                            .distance(pad.translation)
+                    })
+                    .fold(f32::INFINITY, f32::min);
                 assert!(gap < 1e-6, "actual crank mesh misses its platform: {gap}");
                 assert_eq!(world.get::<ChildOf>(platform).unwrap().parent(), root_a);
             }
@@ -250,8 +328,15 @@ mod tests {
     fn bicycle_surfaces_have_finite_unit_normals_and_outward_triangles() {
         for female in [false, true] {
             let m = mesh(female);
-            let bottom = m.positions.iter().map(|p| p[1]).fold(f32::INFINITY, f32::min);
-            assert!(bottom.abs() < 1e-6, "bicycle tyres must rest on the floor: {bottom}");
+            let bottom = m
+                .positions
+                .iter()
+                .map(|p| p[1])
+                .fold(f32::INFINITY, f32::min);
+            assert!(
+                bottom.abs() < 1e-6,
+                "bicycle tyres must rest on the floor: {bottom}"
+            );
             assert_eq!(m.positions.len(), m.normals.len());
             assert_eq!(m.positions.len(), m.colors.len());
             for n in &m.normals {
@@ -276,14 +361,23 @@ mod tests {
 }
 
 fn joint_world(rig: &crate::open_people::PersonRig, pose: &[Transform], node: usize) -> Mat4 {
-    rig.parents[node].map(|parent| joint_world(rig, pose, parent))
-        .unwrap_or(Mat4::IDENTITY) * pose[node].to_matrix()
+    rig.parents[node]
+        .map(|parent| joint_world(rig, pose, parent))
+        .unwrap_or(Mat4::IDENTITY)
+        * pose[node].to_matrix()
 }
 
-fn cached_joint_world(rig: &crate::open_people::PersonRig, pose: &[Transform],
-    node: usize, cache: &mut [Option<Mat4>]) -> Mat4 {
-    if let Some(matrix) = cache[node] { return matrix; }
-    let parent = rig.parents[node].map(|parent| cached_joint_world(rig, pose, parent, cache))
+fn cached_joint_world(
+    rig: &crate::open_people::PersonRig,
+    pose: &[Transform],
+    node: usize,
+    cache: &mut [Option<Mat4>],
+) -> Mat4 {
+    if let Some(matrix) = cache[node] {
+        return matrix;
+    }
+    let parent = rig.parents[node]
+        .map(|parent| cached_joint_world(rig, pose, parent, cache))
         .unwrap_or(Mat4::IDENTITY);
     let matrix = parent * pose[node].to_matrix();
     cache[node] = Some(matrix);
@@ -293,12 +387,21 @@ fn cached_joint_world(rig: &crate::open_people::PersonRig, pose: &[Transform],
 /// Include the final painted body in the mounted culling envelope. A weighted
 /// vertex lies inside the union of its contributing joint boxes, so this avoids
 /// reskinning every vertex for every sample during asset construction.
-pub(crate) fn body_bounds(rig: &crate::open_people::PersonRig,
-    positions: &[[f32; 3]], ids: &[[u16; 4]], weights: &[[f32; 4]],
-    scale: Vec3, head_scale: f32, hand_scale: f32) -> (Vec3, Vec3) {
-    let _trace = crate::loading_trace::span("actor.mounted_envelope", || serde_json::json!({"vertices":positions.len()}));
-    let mut boxes = vec![(Vec3::splat(f32::INFINITY),
-        Vec3::splat(f32::NEG_INFINITY)); rig.skin_nodes.len()];
+pub(crate) fn body_bounds(
+    rig: &crate::open_people::PersonRig,
+    positions: &[[f32; 3]],
+    ids: &[[u16; 4]],
+    weights: &[[f32; 4]],
+    scale: Vec3,
+    head_scale: f32,
+    hand_scale: f32,
+) -> (Vec3, Vec3) {
+    let _trace = crate::loading_trace::span(
+        "actor.mounted_envelope",
+        || serde_json::json!({"vertices":positions.len()}),
+    );
+    let mut boxes =
+        vec![(Vec3::splat(f32::INFINITY), Vec3::splat(f32::NEG_INFINITY)); rig.skin_nodes.len()];
     for ((p, ids), weights) in positions.iter().zip(ids).zip(weights) {
         let p = Vec3::from_array(*p);
         for i in 0..4 {
@@ -314,7 +417,11 @@ pub(crate) fn body_bounds(rig: &crate::open_people::PersonRig,
     let mut world = vec![None; transforms.len()];
     for idle in 0..8 {
         for step in 0..73 {
-            rig.sample("Idle", idle as f32 / 8. * rig.duration("Idle"), &mut transforms);
+            rig.sample(
+                "Idle",
+                idle as f32 / 8. * rig.duration("Idle"),
+                &mut transforms,
+            );
             if step < 64 {
                 pose(rig, &mut transforms, step as f32 / 64. * TAU, scale);
             } else if step < 68 {
@@ -322,7 +429,12 @@ pub(crate) fn body_bounds(rig: &crate::open_people::PersonRig,
                 // Include them in the same production skin culling envelope.
                 seat_pose(rig, &mut transforms, scale, 0.15 * (step - 63) as f32);
             } else {
-                surf_pose(rig, &mut transforms, scale, 0.15 + (step - 68) as f32 * 0.08);
+                surf_pose(
+                    rig,
+                    &mut transforms,
+                    scale,
+                    0.15 + (step - 68) as f32 * 0.08,
+                );
             }
             transforms[rig.skin_nodes[rig.head_joint]].scale *= head_scale;
             for hand in &rig.hand_joints {
@@ -337,7 +449,9 @@ pub(crate) fn body_bounds(rig: &crate::open_people::PersonRig,
                         }
                         parent = rig.parents[ancestor];
                     }
-                    if !descendant { transforms[node].scale *= hand_scale; }
+                    if !descendant {
+                        transforms[node].scale *= hand_scale;
+                    }
                 }
             }
             // The pose is final here. All joint boxes share ancestor matrices;
@@ -345,8 +459,11 @@ pub(crate) fn body_bounds(rig: &crate::open_people::PersonRig,
             world.fill(None);
             let inverse = cached_joint_world(rig, &transforms, rig.mesh_node, &mut world).inverse();
             for (joint, &(min, max)) in boxes.iter().enumerate() {
-                if !min.is_finite() { continue; }
-                let matrix = inverse * cached_joint_world(rig, &transforms, rig.skin_nodes[joint], &mut world)
+                if !min.is_finite() {
+                    continue;
+                }
+                let matrix = inverse
+                    * cached_joint_world(rig, &transforms, rig.skin_nodes[joint], &mut world)
                     * rig.inverse_binds[joint];
                 for x in [min.x, max.x] {
                     for y in [min.y, max.y] {
@@ -364,41 +481,64 @@ pub(crate) fn body_bounds(rig: &crate::open_people::PersonRig,
     bounds
 }
 
-fn rotate_world(rig: &crate::open_people::PersonRig, pose: &mut [Transform], node: usize, delta: Quat) {
-    let parent = rig.parents[node].map(|p| joint_world(rig, pose, p).to_scale_rotation_translation().1)
+fn rotate_world(
+    rig: &crate::open_people::PersonRig,
+    pose: &mut [Transform],
+    node: usize,
+    delta: Quat,
+) {
+    let parent = rig.parents[node]
+        .map(|p| joint_world(rig, pose, p).to_scale_rotation_translation().1)
         .unwrap_or(Quat::IDENTITY);
     pose[node].rotation = (parent.inverse() * delta * parent * pose[node].rotation).normalize();
 }
 
 fn wrist_node(rig: &crate::open_people::PersonRig, side: usize) -> usize {
     let hand = &rig.hand_joints[side];
-    let joint = hand.iter().find(|&&joint| {
-        rig.parents[rig.skin_nodes[joint]].is_none_or(|parent|
-            !hand.iter().any(|&other| rig.skin_nodes[other] == parent))
-    }).expect("mounted supplied rig requires a wrist");
+    let joint = hand
+        .iter()
+        .find(|&&joint| {
+            rig.parents[rig.skin_nodes[joint]]
+                .is_none_or(|parent| !hand.iter().any(|&other| rig.skin_nodes[other] == parent))
+        })
+        .expect("mounted supplied rig requires a wrist");
     rig.skin_nodes[*joint]
 }
 
 fn foot_node(rig: &crate::open_people::PersonRig, side: usize) -> usize {
     let shin = rig.skin_nodes[rig.leg_joints[side][1]];
-    *rig.skin_nodes.iter().find(|&&node| rig.parents[node] == Some(shin))
+    *rig.skin_nodes
+        .iter()
+        .find(|&&node| rig.parents[node] == Some(shin))
         .expect("mounted supplied rig requires a foot")
 }
 
 // Two-joint CCD retains the seeded bend direction and bone lengths. Targets
 // are in the supplied hierarchy's world coordinates, before the actor root.
-fn solve_limb(rig: &crate::open_people::PersonRig, pose: &mut [Transform],
-    upper: usize, lower: usize, end: usize, target: Vec3) {
+fn solve_limb(
+    rig: &crate::open_people::PersonRig,
+    pose: &mut [Transform],
+    upper: usize,
+    lower: usize,
+    end: usize,
+    target: Vec3,
+) {
     for _ in 0..48 {
         let endpoint = joint_world(rig, pose, end).transform_point3(Vec3::ZERO);
-        if endpoint.distance_squared(target) < 1e-10 { break; }
+        if endpoint.distance_squared(target) < 1e-10 {
+            break;
+        }
         for node in [lower, upper] {
             let origin = joint_world(rig, pose, node).transform_point3(Vec3::ZERO);
             let from = joint_world(rig, pose, end).transform_point3(Vec3::ZERO) - origin;
             let to = target - origin;
             if from.length_squared() > 1e-10 && to.length_squared() > 1e-10 {
-                rotate_world(rig, pose, node,
-                    Quat::from_rotation_arc(from.normalize(), to.normalize()));
+                rotate_world(
+                    rig,
+                    pose,
+                    node,
+                    Quat::from_rotation_arc(from.normalize(), to.normalize()),
+                );
             }
         }
     }
@@ -406,22 +546,32 @@ fn solve_limb(rig: &crate::open_people::PersonRig, pose: &mut [Transform],
 
 /// Pose the actual weighted rider against bike-local contact targets. Scale
 /// is the production person root scale, including the player's width.
-pub(crate) fn pose(rig: &crate::open_people::PersonRig, transforms: &mut [Transform],
-    phase: f32, scale: Vec3) {
+pub(crate) fn pose(
+    rig: &crate::open_people::PersonRig,
+    transforms: &mut [Transform],
+    phase: f32,
+    scale: Vec3,
+) {
     let strength = 1.;
     #[cfg(all(feature = "people-review", not(target_arch = "wasm32")))]
     let strength = std::env::var("CRYSTAL_PEOPLE_REVIEW_BICYCLE_ARM_UNTWIST")
-        .map(|value|value.parse().expect("bicycle arm untwist must be a number"))
+        .map(|value| value.parse().expect("bicycle arm untwist must be a number"))
         .unwrap_or(strength);
-    pose_with_arm_roll(rig,transforms,phase,scale,strength);
+    pose_with_arm_roll(rig, transforms, phase, scale, strength);
 }
 
-fn pose_with_arm_roll(rig: &crate::open_people::PersonRig, transforms: &mut [Transform],
-    phase: f32, scale: Vec3, strength: f32) {
+fn pose_with_arm_roll(
+    rig: &crate::open_people::PersonRig,
+    transforms: &mut [Transform],
+    phase: f32,
+    scale: Vec3,
+    strength: f32,
+) {
     let target = |p: Vec3| p / scale + Vec3::Y * rig.floor;
     let hips = rig.skin_nodes[rig.hips_joint];
     let desired_hips = target(Vec3::new(0., 0.540, -0.12));
-    let parent = rig.parents[hips].map(|p| joint_world(rig, transforms, p))
+    let parent = rig.parents[hips]
+        .map(|p| joint_world(rig, transforms, p))
         .unwrap_or(Mat4::IDENTITY);
     transforms[hips].translation = parent.inverse().transform_point3(desired_hips);
     // A small forward torso lean brings the shoulder within arm reach of
@@ -444,11 +594,14 @@ fn pose_with_arm_roll(rig: &crate::open_people::PersonRig, transforms: &mut [Tra
         rotate_world(rig, transforms, shin, Quat::from_rotation_x(1.7));
         // Preserve the fitted player sole clearance, then account for the
         // taller NPC's floor-to-ankle distance without stretching its bones.
-        let ankle_clearance = 0.0775 + (foot_rest.transform_point3(Vec3::ZERO).y - rig.floor)
-            * (scale.y - 1.20 / rig.height);
+        let ankle_clearance = 0.0775
+            + (foot_rest.transform_point3(Vec3::ZERO).y - rig.floor)
+                * (scale.y - 1.20 / rig.height);
         let ankle = target(pedal + Vec3::new(0., ankle_clearance, -0.035));
         solve_limb(rig, transforms, thigh, shin, foot, ankle);
-        let current = joint_world(rig, transforms, foot).to_scale_rotation_translation().1;
+        let current = joint_world(rig, transforms, foot)
+            .to_scale_rotation_translation()
+            .1;
         rotate_world(rig, transforms, foot, foot_rotation * current.inverse());
         let wrist = wrist_node(rig, side);
         let lower = rig.parents[wrist].expect("mounted wrist requires a forearm");
@@ -460,22 +613,43 @@ fn pose_with_arm_roll(rig: &crate::open_people::PersonRig, transforms: &mut [Tra
         // than placing the reshaped fingers inside the previous grip datum.
         // The supplied right hand is asymmetric. Its larger NPC palm needs
         // a little more radial clearance; retain both fitted player grips.
-        let clearance = if side == 1 { (scale.y * rig.height - 1.20).max(0.) * 0.01 } else { 0. };
-        solve_limb(rig, transforms, upper, lower, wrist,
-            target(Vec3::new(sign * 0.215, 0.7365 + clearance, 0.1965 - clearance)));
+        let clearance = if side == 1 {
+            (scale.y * rig.height - 1.20).max(0.) * 0.01
+        } else {
+            0.
+        };
+        solve_limb(
+            rig,
+            transforms,
+            upper,
+            lower,
+            wrist,
+            target(Vec3::new(
+                sign * 0.215,
+                0.7365 + clearance,
+                0.1965 - clearance,
+            )),
+        );
         // Align the finger hinge with the horizontal grip, rather than
         // inheriting the sideways fist orientation from a walking arm.
-        let desired = Quat::from_rotation_x(1.05) * if side == 0 {
-            Quat::IDENTITY
-        } else { Quat::from_rotation_y(std::f32::consts::PI) };
-        let current = joint_world(rig, transforms, wrist).to_scale_rotation_translation().1;
+        let desired = Quat::from_rotation_x(1.05)
+            * if side == 0 {
+                Quat::IDENTITY
+            } else {
+                Quat::from_rotation_y(std::f32::consts::PI)
+            };
+        let current = joint_world(rig, transforms, wrist)
+            .to_scale_rotation_translation()
+            .1;
         rotate_world(rig, transforms, wrist, desired * current.inverse());
     }
     // A partly closed grip leaves room for the bar between palm and fingers.
     // The fully closed Idle fist has no such space and intersects the grip.
     for &finger in &rig.finger_nodes {
-        transforms[finger].rotation = rig.nodes[finger].rotation
-            .slerp(transforms[finger].rotation, 0.55).normalize();
+        transforms[finger].rotation = rig.nodes[finger]
+            .rotation
+            .slerp(transforms[finger].rotation, 0.55)
+            .normalize();
     }
     // The source right thumb is not an exact mirror of the left. Fold its
     // base around the bar axis so its tip clears the inner metal section.
@@ -484,17 +658,24 @@ fn pose_with_arm_roll(rig: &crate::open_people::PersonRig, transforms: &mut [Tra
     // IK fixes the elbow and wrist positions, but retains axial roll from
     // the imported combat Idle. Use the bind arm's swing while retaining the
     // complete forearm/hand frame and its fitted contact with the grip.
-    steering_arm_roll::align(rig,transforms,strength);
+    steering_arm_roll::align(rig, transforms, strength);
 }
 
 /// Fit the rider's legs around a narrow back or fold them onto a broad back.
 /// The Pokémon keeps its physical size and the supplied bones keep their lengths.
-pub(crate) fn surf_pose(rig: &crate::open_people::PersonRig, transforms: &mut [Transform], scale: Vec3, half_width: f32) {
+pub(crate) fn surf_pose(
+    rig: &crate::open_people::PersonRig,
+    transforms: &mut [Transform],
+    scale: Vec3,
+    half_width: f32,
+) {
     let target = |point: Vec3| point / scale + Vec3::Y * rig.floor;
     let hips = rig.skin_nodes[rig.hips_joint];
-    let parent = rig.parents[hips].map(|p| joint_world(rig, transforms, p))
+    let parent = rig.parents[hips]
+        .map(|p| joint_world(rig, transforms, p))
         .unwrap_or(Mat4::IDENTITY);
-    transforms[hips].translation = parent.inverse()
+    transforms[hips].translation = parent
+        .inverse()
         .transform_point3(target(Vec3::new(0., 0.09, 0.)));
     for side in 0..2 {
         let sign = if side == 0 { 1. } else { -1. };
@@ -506,17 +687,36 @@ pub(crate) fn surf_pose(rig: &crate::open_people::PersonRig, transforms: &mut [T
         // A shell wider than the rider's legs must support their feet on top;
         // forcing the small-mount straddle would put both shins inside it.
         let folded = ((half_width - 0.24) / 0.18).clamp(0., 1.);
-        solve_limb(rig, transforms, thigh, shin, foot,
-            target(Vec3::new(sign * (half_width + 0.07).clamp(0.22, 0.38),
-                -0.26 + 0.42 * folded, 0.06 + 0.20 * folded)));
-        let level = joint_world(rig, &rig.nodes, foot).to_scale_rotation_translation().1;
-        let current = joint_world(rig, transforms, foot).to_scale_rotation_translation().1;
+        solve_limb(
+            rig,
+            transforms,
+            thigh,
+            shin,
+            foot,
+            target(Vec3::new(
+                sign * (half_width + 0.07).clamp(0.22, 0.38),
+                -0.26 + 0.42 * folded,
+                0.06 + 0.20 * folded,
+            )),
+        );
+        let level = joint_world(rig, &rig.nodes, foot)
+            .to_scale_rotation_translation()
+            .1;
+        let current = joint_world(rig, transforms, foot)
+            .to_scale_rotation_translation()
+            .1;
         rotate_world(rig, transforms, foot, level * current.inverse());
         let wrist = wrist_node(rig, side);
         let lower = rig.parents[wrist].unwrap();
         let upper = rig.parents[lower].unwrap();
-        solve_limb(rig, transforms, upper, lower, wrist,
-            target(Vec3::new(sign * 0.18, 0.16, 0.26)));
+        solve_limb(
+            rig,
+            transforms,
+            upper,
+            lower,
+            wrist,
+            target(Vec3::new(sign * 0.18, 0.16, 0.26)),
+        );
     }
     crate::hand_pose::relax(rig, transforms);
 }
@@ -530,7 +730,9 @@ mod mounted_tests {
         let root = std::path::PathBuf::from(std::env::var_os("CRYSTAL_OPEN_MODEL_ROOT").unwrap());
         for name in ["human-male", "human-female"] {
             let rig = crate::open_people::PersonRig::parse(
-                &std::fs::read(root.join(format!("people/kenney/{name}.glb"))).unwrap()).unwrap();
+                &std::fs::read(root.join(format!("people/kenney/{name}.glb"))).unwrap(),
+            )
+            .unwrap();
             let scale = Vec3::splat(1.20 / rig.height);
             for half_width in [0.12, 0.30, 0.50, 0.80] {
                 let mut transforms = rig.nodes.clone();
@@ -538,16 +740,24 @@ mod mounted_tests {
                 let before = transforms.clone();
                 surf_pose(&rig, &mut transforms, scale, half_width);
                 for (node, transform) in transforms.iter().enumerate() {
-                    assert_eq!(transform.scale, before[node].scale, "the rider never stretches to fit");
+                    assert_eq!(
+                        transform.scale, before[node].scale,
+                        "the rider never stretches to fit"
+                    );
                     if node != rig.skin_nodes[rig.hips_joint] {
                         assert_eq!(transform.translation, before[node].translation);
                     }
                 }
                 for side in 0..2 {
                     let ankle = (joint_world(&rig, &transforms, foot_node(&rig, side))
-                        .transform_point3(Vec3::ZERO) - Vec3::Y * rig.floor) * scale;
+                        .transform_point3(Vec3::ZERO)
+                        - Vec3::Y * rig.floor)
+                        * scale;
                     if half_width >= 0.50 {
-                        assert!(ankle.y > 0.12, "broad backs support both feet above the seat: {ankle:?}");
+                        assert!(
+                            ankle.y > 0.12,
+                            "broad backs support both feet above the seat: {ankle:?}"
+                        );
                     } else if half_width == 0.12 {
                         assert!(ankle.y < -0.20, "narrow mounts retain a hanging straddle");
                     }
@@ -562,7 +772,9 @@ mod mounted_tests {
         let root = std::path::PathBuf::from(std::env::var_os("CRYSTAL_OPEN_MODEL_ROOT").unwrap());
         for (name, width) in [("human-male", 1.0), ("human-female", 0.94)] {
             let rig = crate::open_people::PersonRig::parse(
-                &std::fs::read(root.join(format!("people/kenney/{name}.glb"))).unwrap()).unwrap();
+                &std::fs::read(root.join(format!("people/kenney/{name}.glb"))).unwrap(),
+            )
+            .unwrap();
             let unit = 1.20 / rig.height;
             let scale = Vec3::new(unit * width, unit, unit);
             for step in 0..32 {
@@ -571,25 +783,43 @@ mod mounted_tests {
                 rig.sample("Idle", 0., &mut transforms);
                 let before = transforms.clone();
                 pose(&rig, &mut transforms, phase, scale);
-                let position = |node| (joint_world(&rig, &transforms, node)
-                    .transform_point3(Vec3::ZERO) - Vec3::Y * rig.floor) * scale;
-                assert!(position(rig.skin_nodes[rig.hips_joint])
-                    .distance(Vec3::new(0., 0.540, -0.12)) < 0.0001);
+                let position = |node| {
+                    (joint_world(&rig, &transforms, node).transform_point3(Vec3::ZERO)
+                        - Vec3::Y * rig.floor)
+                        * scale
+                };
+                assert!(
+                    position(rig.skin_nodes[rig.hips_joint]).distance(Vec3::new(0., 0.540, -0.12))
+                        < 0.0001
+                );
                 for side in 0..2 {
                     let sign = if side == 0 { 1. } else { -1. };
                     let angle = phase + if side == 0 { 0. } else { std::f32::consts::PI };
-                    let grip_error = position(wrist_node(&rig, side))
-                        .distance(Vec3::new(sign * 0.215, 0.735, 0.195));
+                    let grip_error = position(wrist_node(&rig, side)).distance(Vec3::new(
+                        sign * 0.215,
+                        0.735,
+                        0.195,
+                    ));
                     let ankle_error = position(foot_node(&rig, side)).distance(Vec3::new(
-                        sign * 0.11, 0.3425 + 0.078 * angle.sin(),
-                        -0.050 + 0.078 * angle.cos()));
-                    assert!(grip_error < 0.006, "{name} step{step} side{side} grip error {grip_error}");
-                    assert!(ankle_error < 0.006, "{name} step{step} side{side} ankle error {ankle_error}");
+                        sign * 0.11,
+                        0.3425 + 0.078 * angle.sin(),
+                        -0.050 + 0.078 * angle.cos(),
+                    ));
+                    assert!(
+                        grip_error < 0.006,
+                        "{name} step{step} side{side} grip error {grip_error}"
+                    );
+                    assert!(
+                        ankle_error < 0.006,
+                        "{name} step{step} side{side} ankle error {ankle_error}"
+                    );
                 }
                 for (i, t) in transforms.iter().enumerate() {
-                    assert!(t.rotation.is_finite() && (t.rotation.length()-1.).abs() < 1e-5);
+                    assert!(t.rotation.is_finite() && (t.rotation.length() - 1.).abs() < 1e-5);
                     assert_eq!(t.scale, before[i].scale);
-                    if i != rig.skin_nodes[rig.hips_joint] { assert_eq!(t.translation, before[i].translation); }
+                    if i != rig.skin_nodes[rig.hips_joint] {
+                        assert_eq!(t.translation, before[i].translation);
+                    }
                 }
             }
         }
@@ -598,55 +828,80 @@ mod mounted_tests {
     #[test]
     #[ignore = "requires supplied rider rigs in CRYSTAL_OPEN_MODEL_ROOT"]
     fn supplied_steering_untwist_preserves_elbows_and_complete_hand_frames() {
-        let root=std::path::PathBuf::from(std::env::var_os("CRYSTAL_OPEN_MODEL_ROOT").unwrap());
-        for (name,height,width) in [("human-male",1.20,1.0),("human-female",1.20,0.94),
-            ("human-male",1.38,1.22)] {
-            let rig=crate::open_people::PersonRig::parse(&std::fs::read(root.join(
-                format!("people/kenney/{name}.glb"))).unwrap()).unwrap();
-            let unit=height/rig.height;let scale=Vec3::new(unit*width,unit,unit);
-            let mut changes=0;
+        let root = std::path::PathBuf::from(std::env::var_os("CRYSTAL_OPEN_MODEL_ROOT").unwrap());
+        for (name, height, width) in [
+            ("human-male", 1.20, 1.0),
+            ("human-female", 1.20, 0.94),
+            ("human-male", 1.38, 1.22),
+        ] {
+            let rig = crate::open_people::PersonRig::parse(
+                &std::fs::read(root.join(format!("people/kenney/{name}.glb"))).unwrap(),
+            )
+            .unwrap();
+            let unit = height / rig.height;
+            let scale = Vec3::new(unit * width, unit, unit);
+            let mut changes = 0;
             for step in 0..32 {
-                let mut before=rig.nodes.clone();
-                rig.sample("Idle",step as f32*0.17,&mut before);
-                let mut after=before.clone();let phase=step as f32/32.*TAU;
-                pose_with_arm_roll(&rig,&mut before,phase,scale,0.);
-                pose_with_arm_roll(&rig,&mut after,phase,scale,1.);
+                let mut before = rig.nodes.clone();
+                rig.sample("Idle", step as f32 * 0.17, &mut before);
+                let mut after = before.clone();
+                let phase = step as f32 / 32. * TAU;
+                pose_with_arm_roll(&rig, &mut before, phase, scale, 0.);
+                pose_with_arm_roll(&rig, &mut after, phase, scale, 1.);
                 for side in 0..2 {
-                    let wrist=wrist_node(&rig,side);let lower=rig.parents[wrist].unwrap();
-                    let upper=rig.parents[lower].unwrap();
-                    changes+=usize::from(before[upper].rotation.dot(after[upper].rotation).abs()<0.99999);
+                    let wrist = wrist_node(&rig, side);
+                    let lower = rig.parents[wrist].unwrap();
+                    let upper = rig.parents[lower].unwrap();
+                    changes += usize::from(
+                        before[upper].rotation.dot(after[upper].rotation).abs() < 0.99999,
+                    );
                     // The whole elbow/hand frame, including grip orientation
                     // and posed fingertips, survives the upper-arm correction.
-                    for node in std::iter::once(lower).chain(rig.hand_joints[side].iter()
-                        .map(|&j|rig.skin_nodes[j])) {
-                        let a=joint_world(&rig,&before,node).to_cols_array();
-                        let b=joint_world(&rig,&after,node).to_cols_array();
-                        assert!(a.iter().zip(b).all(|(a,b)|(*a-b).abs()<0.00002),
-                            "{name} step{step} steering contact frame moved at node {node}");
+                    for node in std::iter::once(lower)
+                        .chain(rig.hand_joints[side].iter().map(|&j| rig.skin_nodes[j]))
+                    {
+                        let a = joint_world(&rig, &before, node).to_cols_array();
+                        let b = joint_world(&rig, &after, node).to_cols_array();
+                        assert!(
+                            a.iter().zip(b).all(|(a, b)| (*a - b).abs() < 0.00002),
+                            "{name} step{step} steering contact frame moved at node {node}"
+                        );
                     }
                 }
-                for (a,b) in before.iter().zip(&after) {
-                    assert_eq!(a.translation,b.translation);assert_eq!(a.scale,b.scale);
+                for (a, b) in before.iter().zip(&after) {
+                    assert_eq!(a.translation, b.translation);
+                    assert_eq!(a.scale, b.scale);
                 }
             }
-            assert!(changes>32,"{name} retained the imported upper-arm roll");
+            assert!(changes > 32, "{name} retained the imported upper-arm roll");
         }
     }
 }
 
 /// Upright seated rest with knees forward, soles below the cushion and hands
 /// resting on the lap. Bone lengths remain those of the supplied character rig.
-pub(crate) fn seat_pose(rig: &crate::open_people::PersonRig, transforms: &mut [Transform], scale: Vec3, height: f32) {
+pub(crate) fn seat_pose(
+    rig: &crate::open_people::PersonRig,
+    transforms: &mut [Transform],
+    scale: Vec3,
+    height: f32,
+) {
     let target = |point: Vec3| point / scale + Vec3::Y * rig.floor;
     let hips = rig.skin_nodes[rig.hips_joint];
-    let parent = rig.parents[hips].map(|p| joint_world(rig, transforms, p)).unwrap_or(Mat4::IDENTITY);
-    transforms[hips].translation = parent.inverse().transform_point3(target(Vec3::new(0., 0.08, 0.)));
+    let parent = rig.parents[hips]
+        .map(|p| joint_world(rig, transforms, p))
+        .unwrap_or(Mat4::IDENTITY);
+    transforms[hips].translation = parent
+        .inverse()
+        .transform_point3(target(Vec3::new(0., 0.08, 0.)));
     for side in 0..2 {
         let thigh = rig.skin_nodes[rig.leg_joints[side][0]];
         let shin = rig.skin_nodes[rig.leg_joints[side][1]];
         let foot = foot_node(rig, side);
-        let point = |node| (joint_world(rig, transforms, node).transform_point3(Vec3::ZERO)
-            - Vec3::Y * rig.floor) * scale;
+        let point = |node| {
+            (joint_world(rig, transforms, node).transform_point3(Vec3::ZERO) - Vec3::Y * rig.floor)
+                * scale
+        };
         let thigh_position = point(thigh);
         let knee_position = point(shin);
         let ankle_position = point(foot);
@@ -657,16 +912,40 @@ pub(crate) fn seat_pose(rig: &crate::open_people::PersonRig, transforms: &mut [T
         let ankle_height = (-height + 0.0775).max(thigh_position.y - lower_length);
         rotate_world(rig, transforms, thigh, Quat::from_rotation_x(-1.4));
         rotate_world(rig, transforms, shin, Quat::from_rotation_x(1.5));
-        solve_limb(rig, transforms, thigh, shin, foot,
-            target(Vec3::new(thigh_position.x, ankle_height, thigh_position.z + upper_length)));
-        let level = joint_world(rig, &rig.nodes, foot).to_scale_rotation_translation().1;
-        let current = joint_world(rig, transforms, foot).to_scale_rotation_translation().1;
+        solve_limb(
+            rig,
+            transforms,
+            thigh,
+            shin,
+            foot,
+            target(Vec3::new(
+                thigh_position.x,
+                ankle_height,
+                thigh_position.z + upper_length,
+            )),
+        );
+        let level = joint_world(rig, &rig.nodes, foot)
+            .to_scale_rotation_translation()
+            .1;
+        let current = joint_world(rig, transforms, foot)
+            .to_scale_rotation_translation()
+            .1;
         rotate_world(rig, transforms, foot, level * current.inverse());
         let wrist = wrist_node(rig, side);
         let lower = rig.parents[wrist].unwrap();
         let upper = rig.parents[lower].unwrap();
-        solve_limb(rig, transforms, upper, lower, wrist,
-            target(Vec3::new(thigh_position.x, thigh_position.y + 0.10, thigh_position.z + upper_length * 0.7)));
+        solve_limb(
+            rig,
+            transforms,
+            upper,
+            lower,
+            wrist,
+            target(Vec3::new(
+                thigh_position.x,
+                thigh_position.y + 0.10,
+                thigh_position.z + upper_length * 0.7,
+            )),
+        );
     }
     crate::hand_pose::relax(rig, transforms);
 }
@@ -685,8 +964,12 @@ mod seating_tests {
                 let mut sitting = crate::seating::Sitting::default();
                 for _ in 0..16 {
                     // A low seat lets every tested rig plant both feet.
-                    sitting.advance(Some((Vec3::new(0., 1., -8.), 1., None)), true,
-                        1. / 60., pixel_scale);
+                    sitting.advance(
+                        Some((Vec3::new(0., 1., -8.), 1., None)),
+                        true,
+                        1. / 60.,
+                        pixel_scale,
+                    );
                 }
                 let mut transforms = rig.nodes.clone();
                 rig.sample("Idle", 0., &mut transforms);
@@ -694,10 +977,12 @@ mod seating_tests {
                 for side in 0..2 {
                     let ankle = joint_world(rig, &transforms, foot_node(rig, side))
                         .transform_point3(Vec3::ZERO);
-                    let world_y = sitting.offset.y + (ankle.y - rig.floor)
-                        * model_scale.y * pixel_scale;
-                    assert!((world_y - 0.0775 * pixel_scale).abs() < 0.05,
-                        "{name} height {body_height}: ankle {world_y} misses floor-level shoe padding");
+                    let world_y =
+                        sitting.offset.y + (ankle.y - rig.floor) * model_scale.y * pixel_scale;
+                    assert!(
+                        (world_y - 0.0775 * pixel_scale).abs() < 0.05,
+                        "{name} height {body_height}: ankle {world_y} misses floor-level shoe padding"
+                    );
                 }
             }
         }
@@ -713,15 +998,25 @@ mod seating_tests {
                 let mut transforms = rig.nodes.clone();
                 rig.sample("Idle", 0., &mut transforms);
                 seat_pose(rig, &mut transforms, scale, height);
-                let position = |node| (joint_world(rig, &transforms, node)
-                    .transform_point3(Vec3::ZERO) - Vec3::Y * rig.floor) * scale;
-                assert!(position(rig.skin_nodes[rig.hips_joint]).distance(Vec3::new(0., 0.08, 0.)) < 1e-5);
+                let position = |node| {
+                    (joint_world(rig, &transforms, node).transform_point3(Vec3::ZERO)
+                        - Vec3::Y * rig.floor)
+                        * scale
+                };
+                assert!(
+                    position(rig.skin_nodes[rig.hips_joint]).distance(Vec3::new(0., 0.08, 0.))
+                        < 1e-5
+                );
                 for side in 0..2 {
                     let foot = position(foot_node(rig, side));
                     assert!(foot.y + height > 0., "{name} foot below floor: {foot:?}");
                     assert!(foot.z > 0.05, "{name} knee must bend forward");
                 }
-                assert!(transforms.iter().all(|t|t.translation.is_finite() && t.rotation.is_finite()));
+                assert!(
+                    transforms
+                        .iter()
+                        .all(|t| t.translation.is_finite() && t.rotation.is_finite())
+                );
             }
         }
     }

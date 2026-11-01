@@ -14,7 +14,11 @@ pub(crate) fn sculpt(
         capped_short(rig, mesh, ids, weights);
         return 0.;
     }
-    if look.hat != "none" || !(matches!(look.hairstyle, "spikes" | "flattop" | "sidepart" | "curls" | "bob" | "long") || matches!(look.texture_key, "whitney" | "misty" | "janine"))
+    if look.hat != "none"
+        || !(matches!(
+            look.hairstyle,
+            "spikes" | "flattop" | "sidepart" | "curls" | "bob" | "long"
+        ) || matches!(look.texture_key, "whitney" | "misty" | "janine"))
     {
         return 0.0;
     }
@@ -44,13 +48,19 @@ pub(crate) fn sculpt(
     // Midpoints are shared along each indexed edge and remain in bind space.
     let refinements = if look.texture_key == "falkner" { 2 } else { 3 };
     for _ in 0..refinements {
-        let needs_detail=mesh.indices.chunks_exact(3).any(|face| {
-            let i=[face[0]as usize,face[1]as usize,face[2]as usize];
-            if i.iter().any(|&i|!head(i,ids,weights)) {return false;}
-            let p=i.map(|i|Vec3::from_array(mesh.positions[i])/half);
-            [(0,1),(1,2),(2,0)].iter().any(|&(a,b)|p[a].distance(p[b])>0.16)
+        let needs_detail = mesh.indices.chunks_exact(3).any(|face| {
+            let i = [face[0] as usize, face[1] as usize, face[2] as usize];
+            if i.iter().any(|&i| !head(i, ids, weights)) {
+                return false;
+            }
+            let p = i.map(|i| Vec3::from_array(mesh.positions[i]) / half);
+            [(0, 1), (1, 2), (2, 0)]
+                .iter()
+                .any(|&(a, b)| p[a].distance(p[b]) > 0.16)
         });
-        if !needs_detail {break;}
+        if !needs_detail {
+            break;
+        }
         let mut edges = HashMap::new();
         let old = std::mem::take(&mut mesh.indices);
         for face in old.chunks_exact(3) {
@@ -248,7 +258,7 @@ pub(crate) fn sculpt(
             };
             // The curtain is smooth, but its visible source crown was still
             // faceted. Keep a quiet swept crown rather than adding spikes.
-            p.y += half.y * volume * blend * (-(x-part).powi(2)/0.6).exp();
+            p.y += half.y * volume * blend * (-(x - part).powi(2) / 0.6).exp();
         } else if look.hairstyle == "long" {
             let (part, volume, sweep) = match look.texture_key {
                 "beauty" => (-0.25, 0.055, 0.025),
@@ -260,32 +270,32 @@ pub(crate) fn sculpt(
             };
             // Long curtains already curve around the scalp; round the exposed
             // source crown with quiet swept volume and a shallow part.
-            let seam = part + 0.10*z;
-            let mass = (-(x-seam).powi(2)/0.60-z*z/1.50).exp();
-            let groove = (-(x-seam).powi(2)/0.020).exp();
-            p.y += half.y*volume*blend*mass*(1.0-0.35*groove);
-            p.z += half.z*sweep*blend*mass;
+            let seam = part + 0.10 * z;
+            let mass = (-(x - seam).powi(2) / 0.60 - z * z / 1.50).exp();
+            let groove = (-(x - seam).powi(2) / 0.020).exp();
+            p.y += half.y * volume * blend * mass * (1.0 - 0.35 * groove);
+            p.z += half.z * sweep * blend * mass;
         } else if look.hairstyle == "sidepony" {
             // A softly swept support surface leads toward Misty's side gather.
             // The source hairline and lower ponytail root remain fixed.
-            let part = -0.25 + 0.10*z;
-            let mass = (-(x-part).powi(2)/0.85-z*z/1.45).exp();
-            let groove = (-(x-part).powi(2)/0.022).exp();
-            p.y += half.y*0.050*blend*mass*(1.0-0.30*groove);
-            p.z -= half.z*0.025*blend*mass;
+            let part = -0.25 + 0.10 * z;
+            let mass = (-(x - part).powi(2) / 0.85 - z * z / 1.45).exp();
+            let groove = (-(x - part).powi(2) / 0.022).exp();
+            p.y += half.y * 0.050 * blend * mass * (1.0 - 0.30 * groove);
+            p.z -= half.z * 0.025 * blend * mass;
         } else if look.hairstyle == "highpony" {
             // Round Janine's scalp toward the raised rear gather while
             // leaving the original hairline and attachment root fixed.
-            let mass = (-x*x/1.10-(z+0.20).powi(2)/1.30).exp();
-            p.y += half.y*0.040*blend*mass;
-            p.z -= half.z*0.018*blend*mass;
+            let mass = (-x * x / 1.10 - (z + 0.20).powi(2) / 1.30).exp();
+            p.y += half.y * 0.040 * blend * mass;
+            p.z -= half.z * 0.018 * blend * mass;
         } else if look.hairstyle == "pigtails" {
             // Whitney's two gathers meet a shallow center part. Keep their
             // source roots fixed while rounding the broad polygonal crown.
-            let part = 0.06 + 0.08*z;
-            let mass = (-x*x/1.20-z*z/1.50).exp();
-            let groove = (-(x-part).powi(2)/0.025).exp();
-            p.y += half.y*0.045*blend*mass*(1.0-0.45*groove);
+            let part = 0.06 + 0.08 * z;
+            let mass = (-x * x / 1.20 - z * z / 1.50).exp();
+            let groove = (-(x - part).powi(2) / 0.025).exp();
+            p.y += half.y * 0.045 * blend * mass * (1.0 - 0.45 * groove);
         } else if look.hairstyle == "flattop" {
             p.y = p.y.lerp(hi.y - half.y * 0.10, blend);
         } else {
@@ -305,12 +315,17 @@ pub(crate) fn sculpt(
             let mut peak = 0.0_f32;
             for &(cx, cz, strength) in clumps {
                 let distance = (x - cx).powi(2) + (z - cz).powi(2);
-                let mass = if matches!(look.texture_key, "lance" | "rival" | "blue" | "brock" | "elm") {
+                let mass = if matches!(
+                    look.texture_key,
+                    "lance" | "rival" | "blue" | "brock" | "elm"
+                ) {
                     // Broader cosine clumps have rounded tips and fade into
                     // the scalp instead of forming three long conical peaks.
-                    let t = (distance.sqrt()/0.50).clamp(0.0,1.0);
-                    0.5*(1.0+(std::f32::consts::PI*t).cos())
-                } else { (1.0 - distance.sqrt() / 0.42).max(0.0).powf(0.85) };
+                    let t = (distance.sqrt() / 0.50).clamp(0.0, 1.0);
+                    0.5 * (1.0 + (std::f32::consts::PI * t).cos())
+                } else {
+                    (1.0 - distance.sqrt() / 0.42).max(0.0).powf(0.85)
+                };
                 peak = peak.max(mass * strength);
             }
             p.y += half.y * rise * peak * blend;
@@ -351,35 +366,54 @@ pub(crate) fn sculpt(
 
 /// Refine only the exposed dark rear scalp under the player's cap. The painted
 /// hairline, skin/ears, front face and crown support retain their boundaries.
-fn capped_short(rig: &PersonRig, mesh: &mut SurfaceMeshData,
-    ids: &mut Vec<[u16; 4]>, weights: &mut Vec<[f32; 4]>) {
+fn capped_short(
+    rig: &PersonRig,
+    mesh: &mut SurfaceMeshData,
+    ids: &mut Vec<[u16; 4]>,
+    weights: &mut Vec<[f32; 4]>,
+) {
     let mut min = Vec3::splat(f32::INFINITY);
     let mut max = Vec3::splat(f32::NEG_INFINITY);
     for ((p, joints), weights) in mesh.positions.iter().zip(ids.iter()).zip(weights.iter()) {
-        let head: f32 = (0..4).filter(|&j| joints[j] as usize == rig.head_joint)
-            .map(|j| weights[j]).sum();
+        let head: f32 = (0..4)
+            .filter(|&j| joints[j] as usize == rig.head_joint)
+            .map(|j| weights[j])
+            .sum();
         if head > 0.5 {
             min = min.min(Vec3::from_array(*p));
             max = max.max(Vec3::from_array(*p));
         }
     }
-    if !min.is_finite() || !max.is_finite() { return; }
+    if !min.is_finite() || !max.is_finite() {
+        return;
+    }
     let center = (min + max) * 0.5;
     let half = (max - min) * 0.5;
     let (width, height) = rig.texture_size;
     let selection = |mesh: &SurfaceMeshData, ids: &[[u16; 4]], weights: &[[f32; 4]]| {
-         mesh.positions.iter().zip(&mesh.uvs).zip(ids.iter()).zip(weights.iter())
+        mesh.positions
+            .iter()
+            .zip(&mesh.uvs)
+            .zip(ids.iter())
+            .zip(weights.iter())
             .map(|(((p, uv), joints), weights)| {
-                let head: f32 = (0..4).filter(|&j| joints[j] as usize == rig.head_joint)
-                    .map(|j| weights[j]).sum();
-                if head < 0.85 || p[2] >= center.z + half.z * 0.3
+                let head: f32 = (0..4)
+                    .filter(|&j| joints[j] as usize == rig.head_joint)
+                    .map(|j| weights[j])
+                    .sum();
+                if head < 0.85
+                    || p[2] >= center.z + half.z * 0.3
                     || p[1] <= center.y - half.y * 0.45
-                    || p[1] >= max.y - half.y * 0.10 { return false; }
+                    || p[1] >= max.y - half.y * 0.10
+                {
+                    return false;
+                }
                 let x = (uv[0] * width as f32).clamp(0., width as f32 - 1.) as usize;
                 let y = (uv[1] * height as f32).clamp(0., height as f32 - 1.) as usize;
                 let pixel = &rig.rgba[(y * width as usize + x) * 4..][..3];
                 pixel[0] < 125 && pixel[1] < 120 && pixel[2] < 115
-            }).collect::<Vec<_>>()
+            })
+            .collect::<Vec<_>>()
     };
     let selected = selection(mesh, ids, weights);
     crate::hand_surface::smooth_selection(mesh, ids, weights, &selected);
@@ -388,11 +422,15 @@ fn capped_short(rig: &PersonRig, mesh: &mut SurfaceMeshData,
     let mut pinned = std::collections::BTreeSet::new();
     for face in mesh.indices.chunks_exact(3) {
         if face.iter().any(|&i| !selected[i as usize]) {
-            for &i in face { pinned.insert(key(mesh.positions[i as usize])); }
+            for &i in face {
+                pinned.insert(key(mesh.positions[i as usize]));
+            }
         }
     }
     for i in 0..mesh.positions.len() {
-        if !selected[i] || pinned.contains(&key(mesh.positions[i])) { continue; }
+        if !selected[i] || pinned.contains(&key(mesh.positions[i])) {
+            continue;
+        }
         let original = Vec3::from_array(mesh.positions[i]);
         let local = (original - center) / half;
         let lower = ((local.y + 0.45) / 0.45).clamp(0., 1.);
@@ -404,7 +442,9 @@ fn capped_short(rig: &PersonRig, mesh: &mut SurfaceMeshData,
         let normal = (p - center) / (half * half);
         if normal.length_squared() > 1e-12 {
             mesh.normals[i] = Vec3::from_array(mesh.normals[i])
-                .lerp(normal.normalize(), blend).normalize_or_zero().to_array();
+                .lerp(normal.normalize(), blend)
+                .normalize_or_zero()
+                .to_array();
         }
     }
 }
@@ -425,8 +465,10 @@ mod tests {
         let mut min = Vec3::splat(f32::INFINITY);
         let mut max = Vec3::splat(f32::NEG_INFINITY);
         for (i, &p) in before.positions.iter().enumerate() {
-            let head: f32 = (0..4).filter(|&j| old_ids[i][j] as usize == rig.head_joint)
-                .map(|j| old_weights[i][j]).sum();
+            let head: f32 = (0..4)
+                .filter(|&j| old_ids[i][j] as usize == rig.head_joint)
+                .map(|j| old_weights[i][j])
+                .sum();
             if head > 0.5 {
                 min = min.min(Vec3::from_array(p));
                 max = max.max(Vec3::from_array(p));
@@ -446,38 +488,57 @@ mod tests {
             assert_eq!(mesh.colors[i], before.colors[i]);
             assert_eq!(ids[i], old_ids[i]);
             assert_eq!(weights[i], old_weights[i]);
-            let head: f32 = (0..4).filter(|&j| old_ids[i][j] as usize == rig.head_joint)
-                .map(|j| old_weights[i][j]).sum();
+            let head: f32 = (0..4)
+                .filter(|&j| old_ids[i][j] as usize == rig.head_joint)
+                .map(|j| old_weights[i][j])
+                .sum();
             let uv = before.uvs[i];
             let x = (uv[0] * width as f32).clamp(0., width as f32 - 1.) as usize;
             let y = (uv[1] * height as f32).clamp(0., height as f32 - 1.) as usize;
             let pixel = &rig.rgba[(y * width as usize + x) * 4..][..3];
             let skin = pixel[0] >= 125 || pixel[1] >= 120 || pixel[2] >= 115;
             // Protect body, neck, facial plane, cap support, ears and skin.
-            if head < 0.85 || before.positions[i][2] >= center.z + half.z * 0.3
-                || before.positions[i][1] >= max.y - half.y * 0.10 || skin {
-                assert_eq!(mesh.positions[i], before.positions[i], "protected player surface moved");
-                assert_eq!(mesh.normals[i], before.normals[i], "protected player shading changed");
+            if head < 0.85
+                || before.positions[i][2] >= center.z + half.z * 0.3
+                || before.positions[i][1] >= max.y - half.y * 0.10
+                || skin
+            {
+                assert_eq!(
+                    mesh.positions[i], before.positions[i],
+                    "protected player surface moved"
+                );
+                assert_eq!(
+                    mesh.normals[i], before.normals[i],
+                    "protected player shading changed"
+                );
             }
-            if mesh.positions[i] != before.positions[i] { moved += 1; }
+            if mesh.positions[i] != before.positions[i] {
+                moved += 1;
+            }
         }
         assert!(moved > 0, "hair candidate must change its support surface");
         for i in 0..mesh.positions.len() {
             assert!(Vec3::from_array(mesh.positions[i]).is_finite());
-            assert!((Vec3::from_array(mesh.normals[i]).length()-1.).abs() < 0.001);
+            assert!((Vec3::from_array(mesh.normals[i]).length() - 1.).abs() < 0.001);
             assert!(weights[i].iter().all(|&w| w.is_finite() && w >= 0.));
-            assert!((weights[i].iter().sum::<f32>()-1.).abs() < 0.001);
+            assert!((weights[i].iter().sum::<f32>() - 1.).abs() < 0.001);
             assert!(ids[i].iter().all(|&j| (j as usize) < rig.skin_nodes.len()));
         }
-        assert!(mesh.indices.iter().all(|&i| (i as usize) < mesh.positions.len()));
+        assert!(
+            mesh.indices
+                .iter()
+                .all(|&i| (i as usize) < mesh.positions.len())
+        );
     }
     #[test]
     #[ignore = "requires supplied player rig in CRYSTAL_OPEN_MODEL_ROOT"]
     fn capped_player_hair_preserves_mapping_face_body_and_skin() {
         let root = std::path::PathBuf::from(std::env::var_os("CRYSTAL_OPEN_MODEL_ROOT").unwrap());
         for base in ["human-male", "human-female"] {
-            let rig = PersonRig::parse(&std::fs::read(root.join(format!("people/kenney/{base}.glb")))
-                .unwrap()).unwrap();
+            let rig = PersonRig::parse(
+                &std::fs::read(root.join(format!("people/kenney/{base}.glb"))).unwrap(),
+            )
+            .unwrap();
             verify_capped_player(&rig);
         }
     }
@@ -507,7 +568,10 @@ mod tests {
                 continue;
             }
             if look.hat != "none"
-                || !(matches!(look.hairstyle, "spikes" | "flattop" | "sidepart" | "curls" | "bob" | "long") || matches!(look.texture_key, "whitney" | "misty" | "janine"))
+                || !(matches!(
+                    look.hairstyle,
+                    "spikes" | "flattop" | "sidepart" | "curls" | "bob" | "long"
+                ) || matches!(look.texture_key, "whitney" | "misty" | "janine"))
             {
                 assert_eq!(extension, 0.0);
                 assert_eq!(mesh.positions, rig.mesh.positions);

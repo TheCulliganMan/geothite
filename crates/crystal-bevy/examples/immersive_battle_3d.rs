@@ -71,8 +71,14 @@ fn main() -> Result<()> {
             "--enemy-gust" => enemy_gust = true,
             "--shiny" => shiny = true,
             "--unown-form" => {
-                let letter = args.next().context("--unown-form A..Z")?.to_ascii_uppercase();
-                anyhow::ensure!(letter.len() == 1 && letter.as_bytes()[0].is_ascii_uppercase(), "--unown-form expects A..Z");
+                let letter = args
+                    .next()
+                    .context("--unown-form A..Z")?
+                    .to_ascii_uppercase();
+                anyhow::ensure!(
+                    letter.len() == 1 && letter.as_bytes()[0].is_ascii_uppercase(),
+                    "--unown-form expects A..Z"
+                );
                 unown_form = Some(letter.as_bytes()[0] - b'A' + 1);
             }
             "--starter" => {
@@ -82,18 +88,25 @@ fn main() -> Result<()> {
                     .context("--starter chikorita|bayleef|meganium|cyndaquil|totodile")?
                     .to_ascii_uppercase();
                 anyhow::ensure!(
-                    matches!(name.as_str(), "CHIKORITA" | "BAYLEEF" | "MEGANIUM" | "CYNDAQUIL" | "TOTODILE"),
+                    matches!(
+                        name.as_str(),
+                        "CHIKORITA" | "BAYLEEF" | "MEGANIUM" | "CYNDAQUIL" | "TOTODILE"
+                    ),
                     "--starter expects chikorita, bayleef, meganium, cyndaquil or totodile"
                 );
                 starter = Some(name);
             }
             "--species" | "--wild-species" => {
                 wild_species = flag == "--wild-species";
-                let name = args.next().context("--species authored Pokémon name")?
+                let name = args
+                    .next()
+                    .context("--species authored Pokémon name")?
                     .to_ascii_uppercase();
                 anyhow::ensure!(starter.is_none(), "choose only one --starter or --species");
-                anyhow::ensure!(crystal_voxel_view::has_authored_battle_species(&name),
-                    "--species requires an authored battle model");
+                anyhow::ensure!(
+                    crystal_voxel_view::has_authored_battle_species(&name),
+                    "--species requires an authored battle model"
+                );
                 starter = Some(name);
             }
             "--poke-ball-failure" => poke_ball_failure = true,
@@ -149,14 +162,21 @@ fn main() -> Result<()> {
         starter.is_none() || enemy_gust || wild_species,
         "--starter/--species requires --enemy-gust"
     );
-    anyhow::ensure!(!shiny || enemy_gust || wild_species, "--shiny requires --enemy-gust or --wild-species");
+    anyhow::ensure!(
+        !shiny || enemy_gust || wild_species,
+        "--shiny requires --enemy-gust or --wild-species"
+    );
     anyhow::ensure!(
         [screenshot.is_some(), record.is_some(), measure.is_some()]
             .into_iter()
             .filter(|active| *active)
             .count()
-            <= 1 || (screenshot.is_some() && record.is_some() && measure.is_none()
-                && std::env::var("CRYSTAL_RENDER_TEST_CAPTURE_TARGET").is_ok_and(|value| value == "image")),
+            <= 1
+            || (screenshot.is_some()
+                && record.is_some()
+                && measure.is_none()
+                && std::env::var("CRYSTAL_RENDER_TEST_CAPTURE_TARGET")
+                    .is_ok_and(|value| value == "image")),
         "choose screenshot, recording or measurement; image recording may also supply its capture target"
     );
     anyhow::ensure!(
@@ -271,7 +291,15 @@ fn main() -> Result<()> {
             } else {
                 "Geothite | 3D battle | Arrows / Z confirm / X cancel / F3 view / F4 flashes".into()
             }),
-            render_test_battle: !(route36_encounter || fishing_encounter || walking_encounter || surf_encounter || cave_encounter || gym_encounter || falkner_encounter || rival_encounter || ice_encounter),
+            render_test_battle: !(route36_encounter
+                || fishing_encounter
+                || walking_encounter
+                || surf_encounter
+                || cave_encounter
+                || gym_encounter
+                || falkner_encounter
+                || rival_encounter
+                || ice_encounter),
             render_test_route36_encounter: route36_encounter,
             render_test_fishing_encounter: fishing_encounter,
             render_test_walking_encounter: walking_encounter,

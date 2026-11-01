@@ -5068,6 +5068,7 @@ fn continue_visible_script_after_prompt(runtime_shell: &mut BevyRuntimeShell) ->
             || runtime_shell.options_menu_open
             || runtime_shell.save_menu_open
             || runtime_shell.special_boundary.is_some()
+            || runtime_shell.visible_script_movement.is_some()
             || runtime_shell.visible_wait_sfx_boundary
             || runtime_shell.visible_heal_machine.is_some()
             || runtime_shell.visible_magnet_train.is_some()

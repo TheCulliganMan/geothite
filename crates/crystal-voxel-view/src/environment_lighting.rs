@@ -67,11 +67,10 @@ fn sync(
         cache.key = Some(key);
     }
     let interior = crate::interior_cutaway::is_cave(&frame)
-        || frame
-            .tiles
-            .first()
-            .is_some_and(|t| crate::interior::has_back_wall(&t.source.tileset_id)
-                && !crate::interior::open_air_roof(&frame.map_id,&t.source.tileset_id));
+        || frame.tiles.first().is_some_and(|t| {
+            crate::interior::has_back_wall(&t.source.tileset_id)
+                && !crate::interior::open_air_roof(&frame.map_id, &t.source.tileset_id)
+        });
     let intensity = if interior || matches!(lighting.as_deref(), Some(VisualWorldLighting::Dark)) {
         0.0
     } else {
@@ -204,24 +203,46 @@ mod tests {
                 .intensity,
             0.0
         );
-        *app.world_mut().resource_mut::<VisualWorldLighting>()=VisualWorldLighting::Day;
+        *app.world_mut().resource_mut::<VisualWorldLighting>() = VisualWorldLighting::Day;
         {
-            let mut frame=app.world_mut().resource_mut::<VisualWorldFrame>();
-            frame.map_id="CeladonMansionRoof".into();
-            frame.tiles=vec![crystal_render_api::VisualTile {
-                column:0,row:0,texture:Handle::default(),priority:false,animation_frames:None,
-                source:crystal_render_api::VisualTileSource {tileset_id:"mansion".into(),
-                    metatile_id:0,subtile_column:0,subtile_row:0,tile_index:0},
+            let mut frame = app.world_mut().resource_mut::<VisualWorldFrame>();
+            frame.map_id = "CeladonMansionRoof".into();
+            frame.tiles = vec![crystal_render_api::VisualTile {
+                column: 0,
+                row: 0,
+                texture: Handle::default(),
+                priority: false,
+                animation_frames: None,
+                source: crystal_render_api::VisualTileSource {
+                    tileset_id: "mansion".into(),
+                    metatile_id: 0,
+                    subtile_column: 0,
+                    subtile_row: 0,
+                    tile_index: 0,
+                },
             }];
         }
         app.update();
-        assert_eq!(app.world().get::<EnvironmentMapLight>(camera).unwrap().intensity,SKY_RADIANCE_CD_M2,
-            "an open rooftop receives the same clock-driven sky reflections");
-        app.world_mut().resource_mut::<VisualWorldFrame>().map_id="CeladonMansionRoofHouse".into();
+        assert_eq!(
+            app.world()
+                .get::<EnvironmentMapLight>(camera)
+                .unwrap()
+                .intensity,
+            SKY_RADIANCE_CD_M2,
+            "an open rooftop receives the same clock-driven sky reflections"
+        );
+        app.world_mut().resource_mut::<VisualWorldFrame>().map_id =
+            "CeladonMansionRoofHouse".into();
         app.update();
-        assert_eq!(app.world().get::<EnvironmentMapLight>(camera).unwrap().intensity,0.0,
-            "the enclosed rooftop house must not inherit the outdoor environment");
-        assert_eq!(app.world().resource::<Assets<Image>>().len(),2);
+        assert_eq!(
+            app.world()
+                .get::<EnvironmentMapLight>(camera)
+                .unwrap()
+                .intensity,
+            0.0,
+            "the enclosed rooftop house must not inherit the outdoor environment"
+        );
+        assert_eq!(app.world().resource::<Assets<Image>>().len(), 2);
     }
     #[test]
     fn reflection_maps_have_all_faces_mips_and_follow_visible_daylight() {
@@ -255,17 +276,21 @@ mod tests {
             let image = cubemap(crate::sky::environment_colors(second), 8, 1, true);
             let pixels = image.data.as_ref().unwrap();
             let offset = (5 * 8 * 8 + 4 * 8 + 4) * 4;
-            let rgb = Color::srgba_u8(pixels[offset],pixels[offset+1],pixels[offset+2],255)
+            let rgb = Color::srgba_u8(pixels[offset], pixels[offset + 1], pixels[offset + 2], 255)
                 .to_linear();
-            Vec3::new(rgb.red,rgb.green,rgb.blue).dot(Vec3::new(0.2126,0.7152,0.0722))
+            Vec3::new(rgb.red, rgb.green, rgb.blue).dot(Vec3::new(0.2126, 0.7152, 0.0722))
                 * SKY_RADIANCE_CD_M2
         };
         let noon = rear_fill(12 * 3600);
         let direct = 3000.0 / std::f32::consts::PI;
-        assert!((0.18..0.45).contains(&(noon / direct)),
-            "sky fill must reveal a sun-facing-away surface while retaining directional volume: {noon}");
-        assert!(rear_fill(22 * 3600) < noon * 0.08,
-            "the real night sky must remain much darker than daylight");
+        assert!(
+            (0.18..0.45).contains(&(noon / direct)),
+            "sky fill must reveal a sun-facing-away surface while retaining directional volume: {noon}"
+        );
+        assert!(
+            rear_fill(22 * 3600) < noon * 0.08,
+            "the real night sky must remain much darker than daylight"
+        );
         assert!(rear_fill(6 * 3600) > rear_fill(4 * 3600));
     }
     #[test]

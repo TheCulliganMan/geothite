@@ -215,15 +215,22 @@ impl Cpu {
     pub(super) fn fixture_write(&mut self, address: u16, value: u8) {
         self.b.write(address, value);
     }
-    pub(super) fn fixture_registers(&mut self, values:&[(&str,u16)])->Result<(),String> {
-        for &(name,value) in values {
+    pub(super) fn fixture_registers(&mut self, values: &[(&str, u16)]) -> Result<(), String> {
+        for &(name, value) in values {
             match name {
-                "BC"=>self.setpair(0,value),"DE"=>self.setpair(1,value),"HL"=>self.setpair(2,value),
-                "A" if value<=255=>self.r[7]=value as u8,
-                "F" if value<=255&&value&15==0=>self.f=value as u8,
-                _=>return Err(format!("unsupported timing fixture register {name}={value}")),
+                "BC" => self.setpair(0, value),
+                "DE" => self.setpair(1, value),
+                "HL" => self.setpair(2, value),
+                "A" if value <= 255 => self.r[7] = value as u8,
+                "F" if value <= 255 && value & 15 == 0 => self.f = value as u8,
+                _ => {
+                    return Err(format!(
+                        "unsupported timing fixture register {name}={value}"
+                    ));
+                }
             }
-        } Ok(())
+        }
+        Ok(())
     }
     pub(super) fn prepare_call(&mut self, bank: usize, address: u16, writes: &[(u16, u8)]) {
         self.b.bank = bank.max(1);

@@ -14,56 +14,108 @@ use serde::Deserialize;
 /// Native prop sprites already contain their current map/time palette.
 /// Ignore transparent background and black outlines, retaining a readable
 /// body tone from the live palette rather than guessing from the map name.
-pub(crate) fn native_stone_color(image: &bevy::prelude::Image) -> Option<[u8;3]> {
+pub(crate) fn native_stone_color(image: &bevy::prelude::Image) -> Option<[u8; 3]> {
     use bevy::render::render_resource::TextureFormat;
-    if !matches!(image.texture_descriptor.format,
-        TextureFormat::Rgba8Unorm | TextureFormat::Rgba8UnormSrgb) {return None;}
-    let data=image.data.as_ref()?;
-    if data.len()!=image.width() as usize*image.height() as usize*4 {return None;}
-    let mut counts=std::collections::BTreeMap::<[u8;3],usize>::new();
-    for p in data.chunks_exact(4) {
-        if p[3]!=255 || u32::from(p[0])+u32::from(p[1])+u32::from(p[2])<96 {continue;}
-        *counts.entry([p[0],p[1],p[2]]).or_default()+=1;
+    if !matches!(
+        image.texture_descriptor.format,
+        TextureFormat::Rgba8Unorm | TextureFormat::Rgba8UnormSrgb
+    ) {
+        return None;
     }
-    let colored=counts.iter().any(|(rgb,count)|*count>=4
-        && rgb.iter().max().unwrap()-rgb.iter().min().unwrap()>=16);
-    let tones=counts.into_iter().filter(|(rgb,count)|*count>=4
-        && if colored {rgb.iter().max().unwrap()-rgb.iter().min().unwrap()>=16}
-            else {*rgb.iter().max().unwrap()>=96}).collect::<Vec<_>>();
-    let &(dominant,_)=tones.iter().max_by_key(|(_,count)|*count)?;
+    let data = image.data.as_ref()?;
+    if data.len() != image.width() as usize * image.height() as usize * 4 {
+        return None;
+    }
+    let mut counts = std::collections::BTreeMap::<[u8; 3], usize>::new();
+    for p in data.chunks_exact(4) {
+        if p[3] != 255 || u32::from(p[0]) + u32::from(p[1]) + u32::from(p[2]) < 96 {
+            continue;
+        }
+        *counts.entry([p[0], p[1], p[2]]).or_default() += 1;
+    }
+    let colored = counts.iter().any(|(rgb, count)| {
+        *count >= 4 && rgb.iter().max().unwrap() - rgb.iter().min().unwrap() >= 16
+    });
+    let tones = counts
+        .into_iter()
+        .filter(|(rgb, count)| {
+            *count >= 4
+                && if colored {
+                    rgb.iter().max().unwrap() - rgb.iter().min().unwrap() >= 16
+                } else {
+                    *rgb.iter().max().unwrap() >= 96
+                }
+        })
+        .collect::<Vec<_>>();
+    let &(dominant, _) = tones.iter().max_by_key(|(_, count)| *count)?;
     // Dark live palettes can have a nearly black body and a readable mineral
     // highlight. Baking face shade over only that dark body erases the volume.
     // Use an actual significant highlight, never invent a night exposure/hue.
-    if *dominant.iter().max().unwrap()<96 {
-        tones.into_iter().max_by_key(|(rgb,count)|
-            (u32::from(rgb[0])*2126+u32::from(rgb[1])*7152+u32::from(rgb[2])*722,*count))
-            .map(|(rgb,_)|rgb)
-    } else {Some(dominant)}
+    if *dominant.iter().max().unwrap() < 96 {
+        tones
+            .into_iter()
+            .max_by_key(|(rgb, count)| {
+                (
+                    u32::from(rgb[0]) * 2126 + u32::from(rgb[1]) * 7152 + u32::from(rgb[2]) * 722,
+                    *count,
+                )
+            })
+            .map(|(rgb, _)| rgb)
+    } else {
+        Some(dominant)
+    }
 }
 
-pub(crate) fn native_stone_mesh(kind: PropKind, rgb: [u8;3]) -> SurfaceMeshData {
-    let mut data=mesh(kind);
-    let mut low=Vec3::splat(f32::INFINITY);let mut high=Vec3::splat(f32::NEG_INFINITY);
-    for p in &data.positions {let p=Vec3::from_array(*p);low=low.min(p);high=high.max(p);}
-    let paint=rgb.map(|v| {let v=f32::from(v)/255.;
-        if v<=0.04045 {v/12.92}else{((v+0.055)/1.055).powf(2.4)}});
+pub(crate) fn native_stone_mesh(kind: PropKind, rgb: [u8; 3]) -> SurfaceMeshData {
+    let mut data = mesh(kind);
+    let mut low = Vec3::splat(f32::INFINITY);
+    let mut high = Vec3::splat(f32::NEG_INFINITY);
+    for p in &data.positions {
+        let p = Vec3::from_array(*p);
+        low = low.min(p);
+        high = high.max(p);
+    }
+    let paint = rgb.map(|v| {
+        let v = f32::from(v) / 255.;
+        if v <= 0.04045 {
+            v / 12.92
+        } else {
+            ((v + 0.055) / 1.055).powf(2.4)
+        }
+    });
     // Loose smashable stone keeps the live hue, with a little neutral mineral
     // in its coating so ochre source sprites read as rock rather than gold.
-    let paint=if kind==PropKind::Rock {
-        let value=paint[0]*0.2126+paint[1]*0.7152+paint[2]*0.0722;
-        paint.map(|c|c*0.72+value*0.28)
-    } else {paint};
+    let paint = if kind == PropKind::Rock {
+        let value = paint[0] * 0.2126 + paint[1] * 0.7152 + paint[2] * 0.0722;
+        paint.map(|c| c * 0.72 + value * 0.28)
+    } else {
+        paint
+    };
     for i in 0..data.colors.len() {
-        let old=data.colors[i];
-        let pigment=((old[0]*0.2126+old[1]*0.7152+old[2]*0.0722)/0.30).clamp(0.35,1.10);
-        let facing=0.66+0.34*Vec3::from_array(data.normals[i])
-            .dot(Vec3::new(-0.35,0.85,0.40).normalize()).max(0.);
-        data.colors[i]=[paint[0]*pigment*facing,paint[1]*pigment*facing,paint[2]*pigment*facing,old[3]];
-        let p=(Vec3::from_array(data.positions[i])-low)/(high-low).max(Vec3::splat(0.0001));
-        let n=Vec3::from_array(data.normals[i]).abs();
-        let uv=if n.y>=n.x && n.y>=n.z {[p.x,p.z]}
-            else if n.x>=n.z {[p.z,p.y]} else {[p.x,p.y]};
-        data.uvs[i]=crate::scenery_finish::source_atlas_uv(uv);
+        let old = data.colors[i];
+        let pigment =
+            ((old[0] * 0.2126 + old[1] * 0.7152 + old[2] * 0.0722) / 0.30).clamp(0.35, 1.10);
+        let facing = 0.66
+            + 0.34
+                * Vec3::from_array(data.normals[i])
+                    .dot(Vec3::new(-0.35, 0.85, 0.40).normalize())
+                    .max(0.);
+        data.colors[i] = [
+            paint[0] * pigment * facing,
+            paint[1] * pigment * facing,
+            paint[2] * pigment * facing,
+            old[3],
+        ];
+        let p = (Vec3::from_array(data.positions[i]) - low) / (high - low).max(Vec3::splat(0.0001));
+        let n = Vec3::from_array(data.normals[i]).abs();
+        let uv = if n.y >= n.x && n.y >= n.z {
+            [p.x, p.z]
+        } else if n.x >= n.z {
+            [p.z, p.y]
+        } else {
+            [p.x, p.y]
+        };
+        data.uvs[i] = crate::scenery_finish::source_atlas_uv(uv);
     }
     data
 }
@@ -112,10 +164,16 @@ fn parse_model_palette<'a>(
             // Verified Cianwood/Blackthorn sprite shades; PBR vertex colors are linear.
             let linear = |v: u8| {
                 let v = f32::from(v) / 255.;
-                if v <= 0.04045 { v / 12.92 } else { ((v + 0.055) / 1.055).powf(2.4) }
+                if v <= 0.04045 {
+                    v / 12.92
+                } else {
+                    ((v + 0.055) / 1.055).powf(2.4)
+                }
             };
             [linear(rgb[0]), linear(rgb[1]), linear(rgb[2]), 1.]
-        } else { p.base_color };
+        } else {
+            p.base_color
+        };
         let n = p.positions.len() / 3;
         if n < 3
             || p.positions.len() % 3 != 0
@@ -172,36 +230,63 @@ fn parse_model_palette<'a>(
 
 pub(crate) fn gold_gym_boulder_mesh() -> SurfaceMeshData {
     static MODEL: OnceLock<SurfaceMeshData> = OnceLock::new();
-    MODEL.get_or_init(|| parse_model_palette(
-        crate::model_storage::include_model!("models/actor_props/boulder.mesh.json"), true,
-    ).expect("named Cianwood boulder palette")).clone()
+    MODEL
+        .get_or_init(|| {
+            parse_model_palette(
+                crate::model_storage::include_model!("models/actor_props/boulder.mesh.json"),
+                true,
+            )
+            .expect("named Cianwood boulder palette")
+        })
+        .clone()
 }
 
 // Canonical geometry can depict either a living creature or an inert display.
 // This metadata is presentation-only; source identity still comes from the publisher.
 macro_rules! prop_model {
-    () => { None };
-    ([$role:ident $species:expr $(, $height:literal)?]) => { Some(species_rig::rig($species)) };
+    () => {
+        None
+    };
+    ([$role:ident $species:expr $(, $height:literal)?]) => {
+        Some(species_rig::rig($species))
+    };
 }
 macro_rules! prop_display_height {
-    () => { None };
-    ([rig $species:expr]) => { None };
-    ([display $species:expr, $height:literal]) => { Some($height) };
+    () => {
+        None
+    };
+    ([rig $species:expr]) => {
+        None
+    };
+    ([display $species:expr, $height:literal]) => {
+        Some($height)
+    };
 }
 macro_rules! prop_mesh {
     ($label:tt, [$role:ident $species:expr $(, $height:literal)?]) => {
         species_rig::rig($species).neutral.clone()
     };
-    ("chris_bike") => { crate::bicycle::mesh(false) };
-    ("kris_bike") => { crate::bicycle::mesh(true) };
-    ("biker") => { crate::bicycle::mesh(false) };
+    ("chris_bike") => {
+        crate::bicycle::mesh(false)
+    };
+    ("kris_bike") => {
+        crate::bicycle::mesh(true)
+    };
+    ("biker") => {
+        crate::bicycle::mesh(false)
+    };
     ($label:literal) => {{
         static MODEL: OnceLock<SurfaceMeshData> = OnceLock::new();
-        MODEL.get_or_init(|| {
-            parse_model(crate::model_storage::include_model!(concat!(
-                "models/actor_props/", $label, ".mesh.json"
-            ))).expect(concat!("valid original actor asset: ", $label))
-        }).clone()
+        MODEL
+            .get_or_init(|| {
+                parse_model(crate::model_storage::include_model!(concat!(
+                    "models/actor_props/",
+                    $label,
+                    ".mesh.json"
+                )))
+                .expect(concat!("valid original actor asset: ", $label))
+            })
+            .clone()
     }};
 }
 
@@ -335,8 +420,10 @@ impl PropKind {
 pub(crate) fn prop_kind_for_source(source: &str) -> Option<PropKind> {
     // The publisher supplies only the currently resolved visible species and
     // actual bitmap source. Never recover a species from a shared icon family.
-    let identity=source.strip_prefix("species:").map(|id|(id,false))
-        .or_else(||source.strip_prefix("display:").map(|id|(id,true)));
+    let identity = source
+        .strip_prefix("species:")
+        .map(|id| (id, false))
+        .or_else(|| source.strip_prefix("display:").map(|id| (id, true)));
     if let Some((identity, display)) = identity {
         let (species, art) = identity.split_once(':')?;
         // Only the explicitly published bedroom ornament receives a board.
@@ -349,9 +436,17 @@ pub(crate) fn prop_kind_for_source(source: &str) -> Option<PropKind> {
         }
         // The production publisher verifies these named NPCs against their
         // authored dialogue/cry; Crystal gives them shared species-named art.
-        let shared_npc_art = matches!((species, art),
-            ("DODRIO" | "PIDGEY" | "FEAROW" | "FARFETCH_D" | "MURKROW" | "SPEAROW", "moltres")
-                | ("PSYDUCK" | "KANGASKHAN", "rhydon") | ("NIDORINO" | "NIDORAN_M" | "NIDORAN_F" | "PERSIAN" | "MEOWTH" | "RATTATA", "growlithe"));
+        let shared_npc_art = matches!(
+            (species, art),
+            (
+                "DODRIO" | "PIDGEY" | "FEAROW" | "FARFETCH_D" | "MURKROW" | "SPEAROW",
+                "moltres"
+            ) | ("PSYDUCK" | "KANGASKHAN", "rhydon")
+                | (
+                    "NIDORINO" | "NIDORAN_M" | "NIDORAN_F" | "PERSIAN" | "MEOWTH" | "RATTATA",
+                    "growlithe"
+                )
+        );
         let known_art = art == species.to_ascii_lowercase()
             || prop_kind_for_source(art).is_some()
             || shared_npc_art;
@@ -363,10 +458,12 @@ pub(crate) fn prop_kind_for_source(source: &str) -> Option<PropKind> {
         if display {
             // Named big dolls keep their authored size. A shared small icon
             // still depicts the explicitly published species, never its family.
-            if let Some(kind)=prop_kind_for_source(art) {
+            if let Some(kind) = prop_kind_for_source(art) {
                 if kind.display_height().is_some()
-                    && kind.pokemon_model().is_some_and(|rig|
-                        Some(rig.species)==species_rig::for_species(exact).map(|r|r.species)) {
+                    && kind.pokemon_model().is_some_and(|rig| {
+                        Some(rig.species) == species_rig::for_species(exact).map(|r| r.species)
+                    })
+                {
                     return Some(kind);
                 }
             }
@@ -409,40 +506,54 @@ const SURFBOARD_DECK_Y: f32 = 0.045;
 /// separate closed, bevelled board. No duplicate Pokémon asset or rider rig.
 fn surfing_pikachu_display() -> SurfaceMeshData {
     static MODEL: OnceLock<SurfaceMeshData> = OnceLock::new();
-    MODEL.get_or_init(|| {
-        let mut mesh = species_rig::rig(Species::Pikachu).neutral.clone();
-        for point in &mut mesh.positions { point[1] += SURFBOARD_DECK_Y; }
-        let deck = [0.045, 0.25, 0.38, 1.];
-        let rail = [0.85, 0.88, 0.78, 1.];
-        let segments = 40;
-        let point = |i: usize, y: f32, radius: f32| {
-            let angle = i as f32 / segments as f32 * std::f32::consts::TAU;
-            Vec3::new(0.52 * radius * angle.cos(), y, 0.24 * radius * angle.sin())
-        };
-        let mut triangle = |points: [Vec3; 3], color: [f32; 4]| {
-            let normal = (points[1]-points[0]).cross(points[2]-points[0]).normalize();
-            let start = mesh.positions.len() as u32;
-            for point in points {
-                mesh.positions.push(point.to_array());
-                mesh.normals.push(normal.to_array());
-                mesh.colors.push(color);
-                mesh.uvs.push([0.,0.]);
+    MODEL
+        .get_or_init(|| {
+            let mut mesh = species_rig::rig(Species::Pikachu).neutral.clone();
+            for point in &mut mesh.positions {
+                point[1] += SURFBOARD_DECK_Y;
             }
-            mesh.indices.extend([start, start+1, start+2]);
-        };
-        for i in 0..segments {
-            let j = (i+1)%segments;
-            triangle([Vec3::Y*SURFBOARD_DECK_Y,
-                point(j,SURFBOARD_DECK_Y,0.95),point(i,SURFBOARD_DECK_Y,0.95)],deck);
-            triangle([Vec3::ZERO,point(i,0.,0.95),point(j,0.,0.95)],rail);
-            for (lo,hi,a,b) in [(0.,SURFBOARD_DECK_Y*0.5,0.95,1.),
-                (SURFBOARD_DECK_Y*0.5,SURFBOARD_DECK_Y,1.,0.95)] {
-                triangle([point(i,lo,a),point(i,hi,b),point(j,hi,b)],rail);
-                triangle([point(i,lo,a),point(j,hi,b),point(j,lo,a)],rail);
+            let deck = [0.045, 0.25, 0.38, 1.];
+            let rail = [0.85, 0.88, 0.78, 1.];
+            let segments = 40;
+            let point = |i: usize, y: f32, radius: f32| {
+                let angle = i as f32 / segments as f32 * std::f32::consts::TAU;
+                Vec3::new(0.52 * radius * angle.cos(), y, 0.24 * radius * angle.sin())
+            };
+            let mut triangle = |points: [Vec3; 3], color: [f32; 4]| {
+                let normal = (points[1] - points[0])
+                    .cross(points[2] - points[0])
+                    .normalize();
+                let start = mesh.positions.len() as u32;
+                for point in points {
+                    mesh.positions.push(point.to_array());
+                    mesh.normals.push(normal.to_array());
+                    mesh.colors.push(color);
+                    mesh.uvs.push([0., 0.]);
+                }
+                mesh.indices.extend([start, start + 1, start + 2]);
+            };
+            for i in 0..segments {
+                let j = (i + 1) % segments;
+                triangle(
+                    [
+                        Vec3::Y * SURFBOARD_DECK_Y,
+                        point(j, SURFBOARD_DECK_Y, 0.95),
+                        point(i, SURFBOARD_DECK_Y, 0.95),
+                    ],
+                    deck,
+                );
+                triangle([Vec3::ZERO, point(i, 0., 0.95), point(j, 0., 0.95)], rail);
+                for (lo, hi, a, b) in [
+                    (0., SURFBOARD_DECK_Y * 0.5, 0.95, 1.),
+                    (SURFBOARD_DECK_Y * 0.5, SURFBOARD_DECK_Y, 1., 0.95),
+                ] {
+                    triangle([point(i, lo, a), point(i, hi, b), point(j, hi, b)], rail);
+                    triangle([point(i, lo, a), point(j, hi, b), point(j, lo, a)], rail);
+                }
             }
-        }
-        mesh
-    }).clone()
+            mesh
+        })
+        .clone()
 }
 
 #[cfg(test)]
@@ -452,105 +563,199 @@ mod tests {
 
     #[test]
     fn surfing_pikachu_doll_keeps_canonical_body_and_closed_grounded_board() {
-        let kind=prop_kind_for_source("display:PIKACHU:surfing_pikachu").unwrap();
-        assert_eq!(kind,PropKind::SurfingPikachuDisplay);
+        let kind = prop_kind_for_source("display:PIKACHU:surfing_pikachu").unwrap();
+        assert_eq!(kind, PropKind::SurfingPikachuDisplay);
         assert!(kind.pokemon_rig().is_none());
-        let body=&species_rig::rig(Species::Pikachu).neutral;
-        let display=mesh(kind);let n=body.positions.len();
-        assert_eq!(&display.normals[..n],&body.normals);
-        assert_eq!(&display.colors[..n],&body.colors);
-        assert_eq!(&display.uvs[..n],&body.uvs);
-        assert_eq!(&display.indices[..body.indices.len()],&body.indices);
-        for (actual,original) in display.positions.iter().zip(&body.positions) {
-            assert_eq!(*actual,[original[0],original[1]+SURFBOARD_DECK_Y,original[2]]);
+        let body = &species_rig::rig(Species::Pikachu).neutral;
+        let display = mesh(kind);
+        let n = body.positions.len();
+        assert_eq!(&display.normals[..n], &body.normals);
+        assert_eq!(&display.colors[..n], &body.colors);
+        assert_eq!(&display.uvs[..n], &body.uvs);
+        assert_eq!(&display.indices[..body.indices.len()], &body.indices);
+        for (actual, original) in display.positions.iter().zip(&body.positions) {
+            assert_eq!(
+                *actual,
+                [original[0], original[1] + SURFBOARD_DECK_Y, original[2]]
+            );
         }
-        let board=&display.positions[n..];
-        assert_eq!(board.iter().map(|p|p[1]).fold(f32::INFINITY,f32::min),0.);
-        assert_eq!(board.iter().map(|p|p[1]).fold(0.,f32::max),SURFBOARD_DECK_Y);
-        let mut edges=std::collections::BTreeMap::new();let mut volume=0.;
+        let board = &display.positions[n..];
+        assert_eq!(board.iter().map(|p| p[1]).fold(f32::INFINITY, f32::min), 0.);
+        assert_eq!(
+            board.iter().map(|p| p[1]).fold(0., f32::max),
+            SURFBOARD_DECK_Y
+        );
+        let mut edges = std::collections::BTreeMap::new();
+        let mut volume = 0.;
         for tri in display.indices[body.indices.len()..].chunks_exact(3) {
-            let points=[tri[0],tri[1],tri[2]].map(|i|Vec3::from_array(display.positions[i as usize]));
-            let normal=(points[1]-points[0]).cross(points[2]-points[0]);
-            assert!(normal.is_finite() && normal.length_squared()>1e-14);
-            assert!(normal.normalize().dot(Vec3::from_array(display.normals[tri[0] as usize]))>0.999);
-            volume+=points[0].dot(points[1].cross(points[2]))/6.;
-            let keys=points.map(|p|p.to_array().map(f32::to_bits));
-            for (a,b) in [(0,1),(1,2),(2,0)] {
-                let edge=if keys[a]<keys[b] {(keys[a],keys[b])}else{(keys[b],keys[a])};
-                *edges.entry(edge).or_insert(0)+=1;
+            let points =
+                [tri[0], tri[1], tri[2]].map(|i| Vec3::from_array(display.positions[i as usize]));
+            let normal = (points[1] - points[0]).cross(points[2] - points[0]);
+            assert!(normal.is_finite() && normal.length_squared() > 1e-14);
+            assert!(
+                normal
+                    .normalize()
+                    .dot(Vec3::from_array(display.normals[tri[0] as usize]))
+                    > 0.999
+            );
+            volume += points[0].dot(points[1].cross(points[2])) / 6.;
+            let keys = points.map(|p| p.to_array().map(f32::to_bits));
+            for (a, b) in [(0, 1), (1, 2), (2, 0)] {
+                let edge = if keys[a] < keys[b] {
+                    (keys[a], keys[b])
+                } else {
+                    (keys[b], keys[a])
+                };
+                *edges.entry(edge).or_insert(0) += 1;
             }
         }
-        assert!(volume>0.01,"board winding encloses solid volume");
-        assert!(edges.values().all(|&count|count==2),"closed board has no open or duplicate edges");
-        let high=display.positions.iter().map(|p|p[1]).fold(0.,f32::max);
-        assert!((high*kind.display_scale()-0.82).abs()<1e-5);
-        for source in ["surfing_pikachu","gfx/sprites/surfing_pikachu.png",
-            "species:PIKACHU:surfing_pikachu","display:RAICHU:surfing_pikachu"] {
-            assert_eq!(prop_kind_for_source(source),None,"{source} must not become a doll");
+        assert!(volume > 0.01, "board winding encloses solid volume");
+        assert!(
+            edges.values().all(|&count| count == 2),
+            "closed board has no open or duplicate edges"
+        );
+        let high = display.positions.iter().map(|p| p[1]).fold(0., f32::max);
+        assert!((high * kind.display_scale() - 0.82).abs() < 1e-5);
+        for source in [
+            "surfing_pikachu",
+            "gfx/sprites/surfing_pikachu.png",
+            "species:PIKACHU:surfing_pikachu",
+            "display:RAICHU:surfing_pikachu",
+        ] {
+            assert_eq!(
+                prop_kind_for_source(source),
+                None,
+                "{source} must not become a doll"
+            );
         }
     }
 
     #[test]
     fn native_stone_paint_ignores_background_and_preserves_the_shared_shape() {
-        use bevy::{prelude::Image,asset::RenderAssetUsages,render::render_resource::{Extent3d,TextureDimension,TextureFormat}};
-        let mut image=Image::new_fill(Extent3d {width:4,height:4,depth_or_array_layers:1},
-            TextureDimension::D2,&[0,0,0,0],TextureFormat::Rgba8UnormSrgb,RenderAssetUsages::default());
-        let data=image.data.as_mut().unwrap();
-        for p in data[..24].chunks_exact_mut(4) {p.copy_from_slice(&[165,123,24,255]);}
-        for p in data[24..].chunks_exact_mut(4) {p.copy_from_slice(&[57,57,57,255]);}
-        assert_eq!(native_stone_color(&image),Some([165,123,24]));
-        for kind in [PropKind::Rock,PropKind::Boulder] {
-            let old=mesh(kind);let painted=native_stone_mesh(kind,[165,123,24]);
-            assert_eq!(painted.positions,old.positions);assert_eq!(painted.normals,old.normals);
-            assert_eq!(painted.indices,old.indices);
-            assert!(painted.colors.iter().all(|c|c[0]>c[1] && c[1]>c[2]));
-            assert!(painted.uvs.iter().all(|uv|crate::scenery_finish::source_atlas_coordinates(*uv).is_some()));
-            assert!(painted.uvs.iter().any(|uv|uv!=&painted.uvs[0]),"stone grain spans the closed faces");
+        use bevy::{
+            asset::RenderAssetUsages,
+            prelude::Image,
+            render::render_resource::{Extent3d, TextureDimension, TextureFormat},
+        };
+        let mut image = Image::new_fill(
+            Extent3d {
+                width: 4,
+                height: 4,
+                depth_or_array_layers: 1,
+            },
+            TextureDimension::D2,
+            &[0, 0, 0, 0],
+            TextureFormat::Rgba8UnormSrgb,
+            RenderAssetUsages::default(),
+        );
+        let data = image.data.as_mut().unwrap();
+        for p in data[..24].chunks_exact_mut(4) {
+            p.copy_from_slice(&[165, 123, 24, 255]);
         }
-        let pixels=image.data.as_mut().unwrap();
-        for p in pixels[..40].chunks_exact_mut(4) {p.copy_from_slice(&[66,33,41,255]);}
-        for p in pixels[40..].chunks_exact_mut(4) {p.copy_from_slice(&[99,74,123,255]);}
-        assert_eq!(native_stone_color(&image),Some([99,74,123]),
-            "the native night highlight must remain visible on the fractured faces");
-        for p in image.data.as_mut().unwrap().chunks_exact_mut(4) {p.copy_from_slice(&[66,33,41,255]);}
-        assert_eq!(native_stone_color(&image),Some([66,33,41]),"do not invent an absent highlight");
+        for p in data[24..].chunks_exact_mut(4) {
+            p.copy_from_slice(&[57, 57, 57, 255]);
+        }
+        assert_eq!(native_stone_color(&image), Some([165, 123, 24]));
+        for kind in [PropKind::Rock, PropKind::Boulder] {
+            let old = mesh(kind);
+            let painted = native_stone_mesh(kind, [165, 123, 24]);
+            assert_eq!(painted.positions, old.positions);
+            assert_eq!(painted.normals, old.normals);
+            assert_eq!(painted.indices, old.indices);
+            assert!(painted.colors.iter().all(|c| c[0] > c[1] && c[1] > c[2]));
+            assert!(
+                painted
+                    .uvs
+                    .iter()
+                    .all(|uv| crate::scenery_finish::source_atlas_coordinates(*uv).is_some())
+            );
+            assert!(
+                painted.uvs.iter().any(|uv| uv != &painted.uvs[0]),
+                "stone grain spans the closed faces"
+            );
+        }
+        let pixels = image.data.as_mut().unwrap();
+        for p in pixels[..40].chunks_exact_mut(4) {
+            p.copy_from_slice(&[66, 33, 41, 255]);
+        }
+        for p in pixels[40..].chunks_exact_mut(4) {
+            p.copy_from_slice(&[99, 74, 123, 255]);
+        }
+        assert_eq!(
+            native_stone_color(&image),
+            Some([99, 74, 123]),
+            "the native night highlight must remain visible on the fractured faces"
+        );
+        for p in image.data.as_mut().unwrap().chunks_exact_mut(4) {
+            p.copy_from_slice(&[66, 33, 41, 255]);
+        }
+        assert_eq!(
+            native_stone_color(&image),
+            Some([66, 33, 41]),
+            "do not invent an absent highlight"
+        );
         image.data.as_mut().unwrap().fill(0);
-        assert_eq!(native_stone_color(&image),None);
+        assert_eq!(native_stone_color(&image), None);
     }
 
     #[test]
     fn smashable_stone_is_one_closed_fractured_volume_inside_its_source_cell() {
-        let rock=mesh(PropKind::Rock);
-        let low=rock.positions.iter().fold(Vec3::splat(f32::INFINITY),|a,p|a.min(Vec3::from_array(*p)));
-        let high=rock.positions.iter().fold(Vec3::splat(f32::NEG_INFINITY),|a,p|a.max(Vec3::from_array(*p)));
-        assert!((low-Vec3::new(-0.32,0.,-0.27)).abs().max_element()<0.000002);
-        assert!((high-Vec3::new(0.32,0.43,0.27)).abs().max_element()<0.000002);
-        let point=|i:u32|rock.positions[i as usize].map(|v|(v*1_000_000.).round() as i32);
-        let mut edges=std::collections::BTreeMap::new();
-        let mut adjacency=std::collections::BTreeMap::<[i32;3],Vec<[i32;3]>>::new();
-        let mut volume=0.;
+        let rock = mesh(PropKind::Rock);
+        let low = rock
+            .positions
+            .iter()
+            .fold(Vec3::splat(f32::INFINITY), |a, p| {
+                a.min(Vec3::from_array(*p))
+            });
+        let high = rock
+            .positions
+            .iter()
+            .fold(Vec3::splat(f32::NEG_INFINITY), |a, p| {
+                a.max(Vec3::from_array(*p))
+            });
+        assert!((low - Vec3::new(-0.32, 0., -0.27)).abs().max_element() < 0.000002);
+        assert!((high - Vec3::new(0.32, 0.43, 0.27)).abs().max_element() < 0.000002);
+        let point = |i: u32| rock.positions[i as usize].map(|v| (v * 1_000_000.).round() as i32);
+        let mut edges = std::collections::BTreeMap::new();
+        let mut adjacency = std::collections::BTreeMap::<[i32; 3], Vec<[i32; 3]>>::new();
+        let mut volume = 0.;
         for tri in rock.indices.chunks_exact(3) {
-            let [a,b,c]=[tri[0],tri[1],tri[2]].map(|i|Vec3::from_array(rock.positions[i as usize]));
-            let normal=(b-a).cross(c-a);
-            assert!(normal.length_squared()>0.000000000001);
-            volume+=a.dot(b.cross(c))/6.;
+            let [a, b, c] =
+                [tri[0], tri[1], tri[2]].map(|i| Vec3::from_array(rock.positions[i as usize]));
+            let normal = (b - a).cross(c - a);
+            assert!(normal.length_squared() > 0.000000000001);
+            volume += a.dot(b.cross(c)) / 6.;
             for i in 0..3 {
-                let (a,b)=(point(tri[i]),point(tri[(i+1)%3]));
-                let edge=if a<b {(a,b)}else{(b,a)};
-                *edges.entry(edge).or_insert(0usize)+=1;
+                let (a, b) = (point(tri[i]), point(tri[(i + 1) % 3]));
+                let edge = if a < b { (a, b) } else { (b, a) };
+                *edges.entry(edge).or_insert(0usize) += 1;
                 adjacency.entry(a).or_default().push(b);
             }
         }
-        assert!(edges.values().all(|count|*count==2),"no cracks or overlapping shells");
-        assert!(volume>0.01,"outward winding encloses a real stone");
-        let mut queue=vec![*adjacency.keys().next().unwrap()];let mut seen=HashSet::new();
-        while let Some(p)=queue.pop() {if seen.insert(p) {queue.extend_from_slice(&adjacency[&p]);}}
-        assert_eq!(seen.len(),adjacency.len(),"one stone, no detached lumps");
-        assert_eq!(rock.indices.len()/3,98);
-        for rgb in [[165,123,24],[120,80,160]] {
-            let finish=native_stone_mesh(PropKind::Rock,rgb);
-            assert_eq!(finish.positions,rock.positions);assert_eq!(finish.indices,rock.indices);
-            assert!(finish.colors.iter().all(|c|c.iter().all(|v|v.is_finite()) && c[3]==1.));
+        assert!(
+            edges.values().all(|count| *count == 2),
+            "no cracks or overlapping shells"
+        );
+        assert!(volume > 0.01, "outward winding encloses a real stone");
+        let mut queue = vec![*adjacency.keys().next().unwrap()];
+        let mut seen = HashSet::new();
+        while let Some(p) = queue.pop() {
+            if seen.insert(p) {
+                queue.extend_from_slice(&adjacency[&p]);
+            }
+        }
+        assert_eq!(seen.len(), adjacency.len(), "one stone, no detached lumps");
+        assert_eq!(rock.indices.len() / 3, 98);
+        for rgb in [[165, 123, 24], [120, 80, 160]] {
+            let finish = native_stone_mesh(PropKind::Rock, rgb);
+            assert_eq!(finish.positions, rock.positions);
+            assert_eq!(finish.indices, rock.indices);
+            assert!(
+                finish
+                    .colors
+                    .iter()
+                    .all(|c| c.iter().all(|v| v.is_finite()) && c[3] == 1.)
+            );
         }
     }
 
@@ -565,28 +770,39 @@ mod tests {
         assert_ne!(ordinary.colors, gym.colors);
         assert_eq!(mesh(PropKind::Boulder), ordinary);
         let json = include_str!("../models/actor_props/boulder.mesh.json");
-        assert!(parse_model_palette(json.replace("stone_light", "unknown").as_str(), true).is_err());
-        assert!(parse_model_palette(json.replace("\"boulder\"", "\"rock\"").as_str(), true).is_err());
+        assert!(
+            parse_model_palette(json.replace("stone_light", "unknown").as_str(), true).is_err()
+        );
+        assert!(
+            parse_model_palette(json.replace("\"boulder\"", "\"rock\"").as_str(), true).is_err()
+        );
         // These are the reviewed sprite palette's ochre body, gold highlight
         // and charcoal outline. Comparing decoded display colors catches a
         // generic gray substitution as well as double sRGB conversion.
         let display_rgb = |color: &[f32; 4]| -> [u8; 3] {
             std::array::from_fn(|i| {
                 let v = color[i];
-                let srgb = if v <= 0.0031308 { v * 12.92 }
-                    else { 1.055 * v.powf(1. / 2.4) - 0.055 };
+                let srgb = if v <= 0.0031308 {
+                    v * 12.92
+                } else {
+                    1.055 * v.powf(1. / 2.4) - 0.055
+                };
                 (srgb * 255.).round() as u8
             })
         };
         let expected = [[165, 123, 24], [198, 148, 57], [57, 57, 57]];
         for rgb in expected {
-            assert!(gym.colors.iter().any(|color| display_rgb(color) == rgb),
-                "movable Gym boulders must retain every source palette shade");
+            assert!(
+                gym.colors.iter().any(|color| display_rgb(color) == rgb),
+                "movable Gym boulders must retain every source palette shade"
+            );
         }
         for color in &gym.colors {
             assert!(color[3] == 1. && color.iter().all(|v| v.is_finite()));
-            assert!(expected.contains(&display_rgb(color)),
-                "movable Gym boulders must not inherit a generic stone palette");
+            assert!(
+                expected.contains(&display_rgb(color)),
+                "movable Gym boulders must not inherit a generic stone palette"
+            );
         }
     }
 
@@ -632,56 +848,104 @@ mod tests {
 
     #[test]
     fn exact_species_props_share_canonical_bodies_without_icon_substitution() {
-        for species in ["CHIKORITA", "CYNDAQUIL", "TOTODILE", "PIDGEY", "CLEFAIRY", "JIGGLYPUFF", "RATTATA"] {
-            assert_eq!(mesh(PropKind::ExactSpecies(species)),
-                crate::battle_species_models::mesh(species).unwrap());
+        for species in [
+            "CHIKORITA",
+            "CYNDAQUIL",
+            "TOTODILE",
+            "PIDGEY",
+            "CLEFAIRY",
+            "JIGGLYPUFF",
+            "RATTATA",
+        ] {
+            assert_eq!(
+                mesh(PropKind::ExactSpecies(species)),
+                crate::battle_species_models::mesh(species).unwrap()
+            );
             assert!(crate::has_authored_battle_species(species));
         }
         for source in ["monster", "icon_fish", "species:UNKNOWN:icon_fish"] {
             assert!(!crate::has_authored_battle_species(source));
         }
-        assert_eq!(prop_kind_for_source("species:UNKNOWN:icon_fish"),None);
-        for (species, icon, kind) in [("STARYU", "icon_staryu", PropKind::IconStaryu), ("VOLTORB", "icon_voltorb", PropKind::IconVoltorb), ("ONIX", "big_onix", PropKind::BigOnix), ("DIGLETT", "icon_diglett", PropKind::IconDiglett), ("SLOWPOKE", "slowpoke", PropKind::Slowpoke), ("SLOWPOKE", "icon_slowpoke", PropKind::IconSlowpoke), ("UNOWN", "icon_unown", PropKind::IconUnown), ("ENTEI", "entei", PropKind::Entei), ("RAIKOU", "raikou", PropKind::Raikou), ("SUICUNE", "suicune", PropKind::Suicune)] {
+        assert_eq!(prop_kind_for_source("species:UNKNOWN:icon_fish"), None);
+        for (species, icon, kind) in [
+            ("STARYU", "icon_staryu", PropKind::IconStaryu),
+            ("VOLTORB", "icon_voltorb", PropKind::IconVoltorb),
+            ("ONIX", "big_onix", PropKind::BigOnix),
+            ("DIGLETT", "icon_diglett", PropKind::IconDiglett),
+            ("SLOWPOKE", "slowpoke", PropKind::Slowpoke),
+            ("SLOWPOKE", "icon_slowpoke", PropKind::IconSlowpoke),
+            ("UNOWN", "icon_unown", PropKind::IconUnown),
+            ("ENTEI", "entei", PropKind::Entei),
+            ("RAIKOU", "raikou", PropKind::Raikou),
+            ("SUICUNE", "suicune", PropKind::Suicune),
+        ] {
             assert!(crate::has_authored_battle_species(species));
-            assert_eq!(prop_kind_for_source(&format!("species:{species}:{icon}")), Some(PropKind::ExactSpecies(species)));
+            assert_eq!(
+                prop_kind_for_source(&format!("species:{species}:{icon}")),
+                Some(PropKind::ExactSpecies(species))
+            );
             assert_eq!(mesh(kind), mesh(PropKind::ExactSpecies(species)));
         }
     }
 
     #[test]
     fn named_pokemon_templates_share_canonical_geometry_and_keep_display_sizes() {
-        let mut count=0;
+        let mut count = 0;
         for &kind in ALL_KINDS {
-            if let Some(rig)=kind.pokemon_model() {
-                count+=1;
-                assert_eq!(mesh(kind),rig.neutral,"{}",kind.label());
-                if let Some(height)=kind.display_height() {
-                    assert!(kind.pokemon_rig().is_none(),"inert display: {}",kind.label());
-                    let span=rig.neutral_bounds.1.y-rig.neutral_bounds.0.y;
-                    assert!((span*kind.display_scale()-height).abs()<0.000001);
+            if let Some(rig) = kind.pokemon_model() {
+                count += 1;
+                assert_eq!(mesh(kind), rig.neutral, "{}", kind.label());
+                if let Some(height) = kind.display_height() {
+                    assert!(
+                        kind.pokemon_rig().is_none(),
+                        "inert display: {}",
+                        kind.label()
+                    );
+                    let span = rig.neutral_bounds.1.y - rig.neutral_bounds.0.y;
+                    assert!((span * kind.display_scale() - height).abs() < 0.000001);
                 } else {
-                    assert!(std::ptr::eq(kind.pokemon_rig().unwrap(),rig));
+                    assert!(std::ptr::eq(kind.pokemon_rig().unwrap(), rig));
                 }
             }
         }
-        assert_eq!(count,31);
-        for (kind,height) in [(PropKind::BigLapras,1.52),(PropKind::BigSnorlax,1.48),
-            (PropKind::IconLapras,0.82),(PropKind::IconSnorlax,0.82),(PropKind::BigOnix,1.72)] {
-            assert_eq!(kind.display_height(),Some(height));
-            assert_eq!(prop_kind_for_source(kind.label()),Some(kind));
+        assert_eq!(count, 31);
+        for (kind, height) in [
+            (PropKind::BigLapras, 1.52),
+            (PropKind::BigSnorlax, 1.48),
+            (PropKind::IconLapras, 0.82),
+            (PropKind::IconSnorlax, 0.82),
+            (PropKind::BigOnix, 1.72),
+        ] {
+            assert_eq!(kind.display_height(), Some(height));
+            assert_eq!(prop_kind_for_source(kind.label()), Some(kind));
         }
-        for kind in [PropKind::IconBird,PropKind::IconFish,PropKind::Monster,
-            PropKind::PokeBall,PropKind::Boulder] {
-            assert!(kind.pokemon_model().is_none(),"do not guess a species from {}",kind.label());
+        for kind in [
+            PropKind::IconBird,
+            PropKind::IconFish,
+            PropKind::Monster,
+            PropKind::PokeBall,
+            PropKind::Boulder,
+        ] {
+            assert!(
+                kind.pokemon_model().is_none(),
+                "do not guess a species from {}",
+                kind.label()
+            );
         }
-        let display=prop_kind_for_source("display:BLASTOISE:icon_squirtle").unwrap();
-        assert_eq!(display,PropKind::ExactDisplay("BLASTOISE"));
-        assert_eq!(display.pokemon_model().unwrap().species,Species::Blastoise);
+        let display = prop_kind_for_source("display:BLASTOISE:icon_squirtle").unwrap();
+        assert_eq!(display, PropKind::ExactDisplay("BLASTOISE"));
+        assert_eq!(display.pokemon_model().unwrap().species, Species::Blastoise);
         assert!(display.pokemon_rig().is_none());
-        assert_eq!(mesh(display),mesh(PropKind::ExactSpecies("BLASTOISE")));
-        assert_eq!(prop_kind_for_source("display:LAPRAS:big_lapras"),Some(PropKind::BigLapras));
-        assert_eq!(prop_kind_for_source("display:ONIX:big_onix"),Some(PropKind::BigOnix));
-        assert_eq!(prop_kind_for_source("display:UNKNOWN:icon_fish"),None);
+        assert_eq!(mesh(display), mesh(PropKind::ExactSpecies("BLASTOISE")));
+        assert_eq!(
+            prop_kind_for_source("display:LAPRAS:big_lapras"),
+            Some(PropKind::BigLapras)
+        );
+        assert_eq!(
+            prop_kind_for_source("display:ONIX:big_onix"),
+            Some(PropKind::BigOnix)
+        );
+        assert_eq!(prop_kind_for_source("display:UNKNOWN:icon_fish"), None);
     }
 
     #[test]
@@ -700,10 +964,12 @@ mod tests {
                 .map(|p| p[1])
                 .fold(f32::INFINITY, f32::min);
             assert!(min_y.abs() < 0.0001, "{}: {min_y}", kind.label());
-            assert!(model
-                .indices
-                .iter()
-                .all(|&i| (i as usize) < model.positions.len()));
+            assert!(
+                model
+                    .indices
+                    .iter()
+                    .all(|&i| (i as usize) < model.positions.len())
+            );
             for n in model.normals {
                 assert!((Vec3::from_array(n).length() - 1.0).abs() < 0.0001);
             }
@@ -753,7 +1019,10 @@ mod exact_visible_species_tests {
                 .count(),
             1
         );
-        assert_eq!(prop_kind_for_source("icon_lugia"), Some(PropKind::IconLugia));
+        assert_eq!(
+            prop_kind_for_source("icon_lugia"),
+            Some(PropKind::IconLugia)
+        );
         assert_eq!(
             prop_kind_for_source("species:LUGIA:icon_lugia"),
             Some(PropKind::ExactSpecies("LUGIA"))
@@ -848,8 +1117,14 @@ mod exact_visible_species_tests {
     }
     #[test]
     fn gyarados_uses_the_dedicated_serpent_and_keeps_generic_icon_routing() {
-        assert_eq!(prop_kind_for_source("species:GYARADOS:icon_gyarados"), Some(PropKind::ExactSpecies("GYARADOS")));
-        assert_eq!(prop_kind_for_source("icon_gyarados"), Some(PropKind::IconGyarados));
+        assert_eq!(
+            prop_kind_for_source("species:GYARADOS:icon_gyarados"),
+            Some(PropKind::ExactSpecies("GYARADOS"))
+        );
+        assert_eq!(
+            prop_kind_for_source("icon_gyarados"),
+            Some(PropKind::IconGyarados)
+        );
         let exact = mesh(PropKind::ExactSpecies("GYARADOS"));
         let battle = crate::battle_species_models::mesh("GYARADOS").unwrap();
         assert_eq!(exact.positions, battle.positions);
@@ -858,7 +1133,10 @@ mod exact_visible_species_tests {
 
     #[test]
     fn sudowoodo_exact_source_shares_battle_body_and_preserves_legacy_source() {
-        assert_eq!(prop_kind_for_source("species:SUDOWOODO:sudowoodo"), Some(PropKind::ExactSpecies("SUDOWOODO")));
+        assert_eq!(
+            prop_kind_for_source("species:SUDOWOODO:sudowoodo"),
+            Some(PropKind::ExactSpecies("SUDOWOODO"))
+        );
         assert_eq!(prop_kind_for_source("sudowoodo"), Some(PropKind::Sudowoodo));
         let visible = mesh(PropKind::ExactSpecies("SUDOWOODO"));
         let battle = crate::battle_species_models::mesh("SUDOWOODO").unwrap();
@@ -868,8 +1146,7 @@ mod exact_visible_species_tests {
 
     #[test]
     fn every_canonical_species_has_a_bounded_reusable_visible_model() {
-        let mut species: Vec<_> = crate::battle_species_models::supported_species()
-            .collect();
+        let mut species: Vec<_> = crate::battle_species_models::supported_species().collect();
         species.sort_unstable();
         species.dedup();
         assert_eq!(species.len(), 251);

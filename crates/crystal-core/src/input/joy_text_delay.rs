@@ -12,7 +12,8 @@ pub struct JoyTextDelay {
 
 impl JoyTextDelay {
     pub fn advance_vblanks(&mut self, frames: u32) {
-        self.text_delay_frames = self.text_delay_frames
+        self.text_delay_frames = self
+            .text_delay_frames
             .saturating_sub(frames.min(u32::from(u8::MAX)) as u8);
     }
 
@@ -70,7 +71,10 @@ mod tests {
         joy.advance_vblanks(30);
         assert_eq!(joy.down, B_PAD_A);
         joy.sample(B_PAD_B, true);
-        assert_eq!((joy.pressed, joy.released, joy.last), (B_PAD_B, B_PAD_A, B_PAD_B));
+        assert_eq!(
+            (joy.pressed, joy.released, joy.last),
+            (B_PAD_B, B_PAD_A, B_PAD_B)
+        );
     }
 
     #[test]
@@ -84,7 +88,10 @@ mod tests {
         assert_eq!((joy.last, joy.text_delay_frames), before);
         joy.advance_vblanks(10);
         joy.sample(B_PAD_B, true);
-        assert_eq!(joy.pressed, 0, "FinishPhoneCall must not see a new B after the conversation's GetJoypad");
+        assert_eq!(
+            joy.pressed, 0,
+            "FinishPhoneCall must not see a new B after the conversation's GetJoypad"
+        );
     }
 
     #[test]

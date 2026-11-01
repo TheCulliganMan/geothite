@@ -22,7 +22,9 @@ pub(crate) const PARK_PLAZA_GROUND_TILE: u16 = 0x00;
 /// spray and decorative tile reuse do not inherit the paving material.
 pub(crate) fn masonry_ground(source: &VisualTileSource) -> bool {
     if source.tileset_id.as_ref() != PARK_TILESET
-        || source.subtile_column >= 4 || source.subtile_row >= 4 {
+        || source.subtile_column >= 4
+        || source.subtile_row >= 4
+    {
         return false;
     }
     let masks = match source.metatile_id {
@@ -48,8 +50,10 @@ pub(crate) fn masonry_ground(source: &VisualTileSource) -> bool {
         _ => return false,
     };
     let mask = match source.tile_index {
-        0x00 => masks[0], 0x06 => masks[1],
-        0x16 => masks[2], 0x15 => masks[3],
+        0x00 => masks[0],
+        0x06 => masks[1],
+        0x16 => masks[2],
+        0x15 => masks[3],
         _ => return false,
     };
     mask & (1 << (source.subtile_row * 4 + source.subtile_column)) != 0
@@ -186,17 +190,29 @@ mod tests {
     #[test]
     fn plaza_and_pool_masonry_exclude_props_and_water() {
         for (block, drawing) in [
-            (0x01, [0,0x16,0,0x16, 6,0,6,0, 0,0x16,0,0x16, 6,0,6,0]),
-            (0x08, [0,0x15,0x15,0x15, 0x15,0x15,0x14,0x14,
-                0x15,0x14,0x14,0x14, 0x15,0x14,0x14,0x14]),
-            (0x0f, [0x5a,0x5b,0,0x16, 0x13,0x82,6,0,
-                0,0x16,0,0x16, 6,0,6,0]),
+            (
+                0x01,
+                [0, 0x16, 0, 0x16, 6, 0, 6, 0, 0, 0x16, 0, 0x16, 6, 0, 6, 0],
+            ),
+            (
+                0x08,
+                [
+                    0, 0x15, 0x15, 0x15, 0x15, 0x15, 0x14, 0x14, 0x15, 0x14, 0x14, 0x14, 0x15,
+                    0x14, 0x14, 0x14,
+                ],
+            ),
+            (
+                0x0f,
+                [
+                    0x5a, 0x5b, 0, 0x16, 0x13, 0x82, 6, 0, 0, 0x16, 0, 0x16, 6, 0, 6, 0,
+                ],
+            ),
         ] {
             for (i, tile) in drawing.into_iter().enumerate() {
                 let mut s = source(block, tile);
                 s.subtile_column = (i % 4) as u8;
                 s.subtile_row = (i / 4) as u8;
-                assert_eq!(masonry_ground(&s), matches!(tile, 0|6|0x16|0x15));
+                assert_eq!(masonry_ground(&s), matches!(tile, 0 | 6 | 0x16 | 0x15));
                 s.tile_index = 0x14;
                 assert!(!masonry_ground(&s));
                 s.tileset_id = Arc::from("johto");
@@ -245,7 +261,10 @@ mod tests {
                     subtile_row: (index / 4) as u8,
                     tile_index: PARK_WATER_TILE,
                 },
-                texture: Handle::<Image>::Uuid(bevy::asset::uuid::Uuid::from_u128(index as u128 + 1), std::marker::PhantomData),
+                texture: Handle::<Image>::Uuid(
+                    bevy::asset::uuid::Uuid::from_u128(index as u128 + 1),
+                    std::marker::PhantomData,
+                ),
                 priority: false,
             })
             .collect::<Vec<_>>();

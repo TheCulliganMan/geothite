@@ -5,10 +5,10 @@ use crystal_render_api::{VisualJumpLedge, VisualTerraceDatum};
 use std::collections::{BTreeMap, HashSet, VecDeque};
 use std::sync::{Arc, Mutex, OnceLock};
 
-#[path = "water_barrier_domains.rs"]
-mod water_barrier_domains;
 #[path = "mountain_ponds.rs"]
 pub(super) mod mountain_ponds;
+#[path = "water_barrier_domains.rs"]
+mod water_barrier_domains;
 
 type SourceCell = (IVec2, VisualTileSource, bool);
 
@@ -104,20 +104,31 @@ fn build_source_terrace_datum(
     }
     let (w, h) = (size.x as usize, size.y as usize);
     let n = w * h;
-    let water_barriers=water_barrier_domains::resolve(&native);
-    let walkable_mineral:Arc<[_]>=native.iter().filter_map(|(&(y,x),(source,land))|
-        (*land && outdoor_mountains::permanent(source,shape_for_source(source)))
-            .then_some(IVec2::new(x,y))).collect();
-    let flat=|mineral:bool| {
-        let mut levels=vec![[0.;4];n];
-        let ponds=mineral && mountain_ponds::raise(&native,lo,w,&mut levels);
-        (ponds || !water_barriers.is_empty() || !walkable_mineral.is_empty()).then(||Arc::new(VisualTerraceDatum {
-            origin:lo,size:UVec2::new(w as u32,h as u32),levels:levels.into(),
-            open_water:None,water_barriers:water_barriers.clone(),
-            walkable_mineral:walkable_mineral.clone(),
-        }))
+    let water_barriers = water_barrier_domains::resolve(&native);
+    let walkable_mineral: Arc<[_]> = native
+        .iter()
+        .filter_map(|(&(y, x), (source, land))| {
+            (*land && outdoor_mountains::permanent(source, shape_for_source(source)))
+                .then_some(IVec2::new(x, y))
+        })
+        .collect();
+    let flat = |mineral: bool| {
+        let mut levels = vec![[0.; 4]; n];
+        let ponds = mineral && mountain_ponds::raise(&native, lo, w, &mut levels);
+        (ponds || !water_barriers.is_empty() || !walkable_mineral.is_empty()).then(|| {
+            Arc::new(VisualTerraceDatum {
+                origin: lo,
+                size: UVec2::new(w as u32, h as u32),
+                levels: levels.into(),
+                open_water: None,
+                water_barriers: water_barriers.clone(),
+                walkable_mineral: walkable_mineral.clone(),
+            })
+        })
     };
-    if edges.is_empty() {return flat(true);}
+    if edges.is_empty() {
+        return flat(true);
+    }
     let index = |p: IVec2| {
         let p = p - lo;
         (p.x >= 0 && p.y >= 0 && p.x < size.x && p.y < size.y)
@@ -148,13 +159,16 @@ fn build_source_terrace_datum(
         let i = index(IVec2::new(x, y)).unwrap();
         known[i] = true;
         kanto_water[i] = s.tileset_id.as_ref() == "kanto";
-        let barrier=water_barriers.binary_search_by_key(&(y,x),|p|(p.y,p.x)).is_ok();
+        let barrier = water_barriers
+            .binary_search_by_key(&(y, x), |p| (p.y, p.x))
+            .is_ok();
         wet[i] = barrier || terraces::water_owns_height(s) || elevated_piers::level_surface(map, s);
         // Native water-backed rocks are part of the same coastal contact as
         // their water underlay. Leaving this strip out separates the land
         // domain from the river and extrudes an unrelated inland terrace
         // into a retaining wall behind otherwise sea-level shoreline rocks.
-        sea[i] = barrier || shape_for_source(s) == CellShape::Water
+        sea[i] = barrier
+            || shape_for_source(s) == CellShape::Water
             || crate::kanto_cliff::shoreline_round_barrier_local(s).is_some();
         dry[i] = *land && !wet[i];
         ground[i] = dry[i] && support_height(s, SOURCE_TILE_HEIGHT).abs() < 0.001;
@@ -164,10 +178,19 @@ fn build_source_terrace_datum(
     // Ordinary Kanto ponds retain their independent producer; sealed mineral
     // pockets are calibrated against their plateau after the land field.
     let mut lakes = Vec::new();
-    let mut rivers=Vec::new();
-    let mut river_openness=Vec::new();
-    let inland=!crate::environment_fx::coastal_map(map)
-        && !matches!(map,"CinnabarIsland"|"PalletTown"|"VermilionCity"|"VermilionPort"|"OlivinePort"|"Route12"|"Route13");
+    let mut rivers = Vec::new();
+    let mut river_openness = Vec::new();
+    let inland = !crate::environment_fx::coastal_map(map)
+        && !matches!(
+            map,
+            "CinnabarIsland"
+                | "PalletTown"
+                | "VermilionCity"
+                | "VermilionPort"
+                | "OlivinePort"
+                | "Route12"
+                | "Route13"
+        );
     let mut seen = vec![false; n];
     for start in 0..n {
         if !wet[start] || seen[start] {
@@ -192,22 +215,41 @@ fn build_source_terrace_datum(
                 }
             }
         }
-        let johto = body.iter().all(|&i| native.get(&(point(i).y, point(i).x))
-            .is_some_and(|(s, _)| matches!(s.tileset_id.as_ref(), "johto" | "johto_modern")
-                && shape_for_source(s) == CellShape::Water));
-        let waterfall = body.iter().any(|&i| neighbors(i).into_iter().flatten().any(|j|
-            native.get(&(point(j).y, point(j).x)).is_some_and(|(s, _)|
-                shape_for_source(s) == CellShape::Waterfall)));
-        if inland && !waterfall && body.iter().all(|&i|kanto_water[i])
-            && body.iter().any(|&i|native.get(&(point(i).y,point(i).x)).is_some_and(|(s,_)|
-                crate::kanto_cliff::shoreline_round_barrier_local(s).is_some())) {
-            for &i in &body {sea[i]=false;}
+        let johto = body.iter().all(|&i| {
+            native.get(&(point(i).y, point(i).x)).is_some_and(|(s, _)| {
+                matches!(s.tileset_id.as_ref(), "johto" | "johto_modern")
+                    && shape_for_source(s) == CellShape::Water
+            })
+        });
+        let waterfall = body.iter().any(|&i| {
+            neighbors(i).into_iter().flatten().any(|j| {
+                native
+                    .get(&(point(j).y, point(j).x))
+                    .is_some_and(|(s, _)| shape_for_source(s) == CellShape::Waterfall)
+            })
+        });
+        if inland
+            && !waterfall
+            && body.iter().all(|&i| kanto_water[i])
+            && body.iter().any(|&i| {
+                native.get(&(point(i).y, point(i).x)).is_some_and(|(s, _)| {
+                    crate::kanto_cliff::shoreline_round_barrier_local(s).is_some()
+                })
+            })
+        {
+            for &i in &body {
+                sea[i] = false;
+            }
             river_openness.push(open);
             rivers.push(body.clone());
         }
         if !open && (body.iter().all(|&i| kanto_water[i]) || (johto && !waterfall)) {
-            for &i in &body { sea[i] = false; }
-            if johto && !waterfall { lakes.push(body); }
+            for &i in &body {
+                sea[i] = false;
+            }
+            if johto && !waterfall {
+                lakes.push(body);
+            }
         }
     }
     // A pool attached to a waterfall owns its authored level separately.
@@ -331,27 +373,29 @@ fn build_source_terrace_datum(
         // presence cannot switch a Kanto bank from flat directed courses to
         // the generic slope solve. Resolve the family from this domain's real
         // takeoff/landing contacts, before translating its attached ledges.
-        let kanto_courses=if local {
-            let mut contacts=0;
-            let all_kanto=attached.iter().all(|edge| {
-                let length=(edge.end-edge.start).abs().element_sum();
-                (0..length).step_by(2).filter_map(|step|ends(edge,step))
-                    .filter(|&(a,b)|dry[a] && dry[b] && domain[a]==id && domain[b]==id)
-                    .all(|(a,b)| {
-                        contacts+=1;
-                        [a,b].into_iter().all(|i| {
-                            let p=point(i);
-                            native.get(&(p.y,p.x)).is_some_and(|(s,_)|s.tileset_id.as_ref()=="kanto")
+        let kanto_courses = if local {
+            let mut contacts = 0;
+            let all_kanto = attached.iter().all(|edge| {
+                let length = (edge.end - edge.start).abs().element_sum();
+                (0..length)
+                    .step_by(2)
+                    .filter_map(|step| ends(edge, step))
+                    .filter(|&(a, b)| dry[a] && dry[b] && domain[a] == id && domain[b] == id)
+                    .all(|(a, b)| {
+                        contacts += 1;
+                        [a, b].into_iter().all(|i| {
+                            let p = point(i);
+                            native
+                                .get(&(p.y, p.x))
+                                .is_some_and(|(s, _)| s.tileset_id.as_ref() == "kanto")
                         })
                     })
             });
-            all_kanto && contacts>0
-        } else {kanto};
-        let origin = if local {
-            point(cells[0])
+            all_kanto && contacts > 0
         } else {
-            IVec2::ZERO
+            kanto
         };
+        let origin = if local { point(cells[0]) } else { IVec2::ZERO };
         let attached = attached
             .into_iter()
             .map(|mut edge| {
@@ -386,43 +430,68 @@ fn build_source_terrace_datum(
     // An inland river reaching the source-map border is still a river,
     // not an ocean. Calibrate its complete open body against real walkable
     // shores before zero-sea contact flattens their shared corners.
-    let mut river_levels=Vec::new();
+    let mut river_levels = Vec::new();
     for body in &rivers {
-        let mut rim=f32::INFINITY;
+        let mut rim = f32::INFINITY;
         for &i in body {
-            for j in neighbors(i).into_iter().flatten().filter(|&j|ground[j]) {
-                let id=domain[j];
-                let p=(point(i).as_vec2()+point(j).as_vec2())*0.5+Vec2::splat(0.5);
-                rim=rim.min((fields[id].0.height(p-fields[id].1.as_vec2())-baselines[id]).max(0.));
+            for j in neighbors(i).into_iter().flatten().filter(|&j| ground[j]) {
+                let id = domain[j];
+                let p = (point(i).as_vec2() + point(j).as_vec2()) * 0.5 + Vec2::splat(0.5);
+                rim = rim
+                    .min((fields[id].0.height(p - fields[id].1.as_vec2()) - baselines[id]).max(0.));
             }
         }
         river_levels.push(rim);
     }
-    let river_rim=river_levels.iter().zip(&river_openness).filter_map(|(&level,&open)|open.then_some(level))
-        .fold(f32::INFINITY,f32::min);
-    let open_water=river_rim.is_finite().then(|| {
-        let mut river_cells=rivers.iter().zip(&river_openness).filter(|(_,open)|**open)
-            .flat_map(|(body,_)|body.iter()).map(|&i|point(i)).collect::<Vec<_>>();
-        river_cells.extend((0..n).filter(|&i|!known[i]).map(point));
-        river_cells.sort_unstable_by_key(|p|(p.y,p.x));river_cells.dedup();
-        crystal_render_api::VisualOpenWaterDatum {level:river_rim,cells:river_cells.into()}
+    let river_rim = river_levels
+        .iter()
+        .zip(&river_openness)
+        .filter_map(|(&level, &open)| open.then_some(level))
+        .fold(f32::INFINITY, f32::min);
+    let open_water = river_rim.is_finite().then(|| {
+        let mut river_cells = rivers
+            .iter()
+            .zip(&river_openness)
+            .filter(|(_, open)| **open)
+            .flat_map(|(body, _)| body.iter())
+            .map(|&i| point(i))
+            .collect::<Vec<_>>();
+        river_cells.extend((0..n).filter(|&i| !known[i]).map(point));
+        river_cells.sort_unstable_by_key(|p| (p.y, p.x));
+        river_cells.dedup();
+        crystal_render_api::VisualOpenWaterDatum {
+            level: river_rim,
+            cells: river_cells.into(),
+        }
     });
     let mut lake_level = vec![None; n];
-    for ((body,&level),&open) in rivers.iter().zip(&river_levels).zip(&river_openness) {
-        let level=if open {river_rim}else{level};
-        if level.is_finite() {for &i in body {lake_level[i]=Some(level);}}
+    for ((body, &level), &open) in rivers.iter().zip(&river_levels).zip(&river_openness) {
+        let level = if open { river_rim } else { level };
+        if level.is_finite() {
+            for &i in body {
+                lake_level[i] = Some(level);
+            }
+        }
     }
     for body in lakes {
         let mut rim = f32::INFINITY;
         for &i in &body {
-            for j in neighbors(i).into_iter().flatten().filter(|&j| !wet[j] && known[j]) {
+            for j in neighbors(i)
+                .into_iter()
+                .flatten()
+                .filter(|&j| !wet[j] && known[j])
+            {
                 let id = domain[j];
                 let p = (point(i).as_vec2() + point(j).as_vec2()) * 0.5 + Vec2::splat(0.5);
-                rim = rim.min((fields[id].0.height(p - fields[id].1.as_vec2())
-                    - baselines[id]).max(0.));
+                rim = rim
+                    .min((fields[id].0.height(p - fields[id].1.as_vec2()) - baselines[id]).max(0.));
             }
         }
-        if rim.is_finite() { for i in body { lake_level[i] = Some(rim); } }
+        if rim.is_finite() {
+            for i in body {
+                lake_level[i] = Some(rim);
+            }
+        }
     }
     let mut cuts = HashSet::new();
     for edge in edges {
@@ -443,15 +512,24 @@ fn build_source_terrace_datum(
             // The bounding rectangle also contains gaps between connected
             // native maps. Borrowed camera-halo water in those gaps has no
             // authored land domain and must retain the sea-level baseline.
-            if !known[i] { return [0.;4]; }
+            if !known[i] {
+                return [0.; 4];
+            }
             [IVec2::ZERO, IVec2::Y, IVec2::ONE, IVec2::X].map(|d| {
-                if wet[i] { return lake_level[i].unwrap_or(0.); }
+                if wet[i] {
+                    return lake_level[i].unwrap_or(0.);
+                }
                 let vertex = point(i) + d;
                 let owners = terrace_levels::corner_domain(vertex, i, &index, &cuts);
                 // Each complete enclosed body has one level, shared by its
                 // entire water plane and shore contacts, even in partial views.
-                if let Some(level) = owners.iter().filter_map(|&j| lake_level[j])
-                    .reduce(f32::min) { return level; }
+                if let Some(level) = owners
+                    .iter()
+                    .filter_map(|&j| lake_level[j])
+                    .reduce(f32::min)
+                {
+                    return level;
+                }
                 // Grade the land-side shelf into its fixed sea contact.
                 if owners.iter().any(|&j| sea[j]) {
                     return 0.;
@@ -473,11 +551,11 @@ fn build_source_terrace_datum(
             })
         })
         .collect::<Vec<_>>();
-    mountain_ponds::raise(&native,lo,w,&mut levels);
-    let mut shore_known=known.clone();
-    for (&(y,x),(source,_)) in &native {
-        if shape_for_source(source)==CellShape::Waterfall {
-            shore_known[index(IVec2::new(x,y)).unwrap()]=false;
+    mountain_ponds::raise(&native, lo, w, &mut levels);
+    let mut shore_known = known.clone();
+    for (&(y, x), (source, _)) in &native {
+        if shape_for_source(source) == CellShape::Waterfall {
+            shore_known[index(IVec2::new(x, y)).unwrap()] = false;
         }
     }
     fit_shore_corners(w, h, &shore_known, &wet, &mut levels);
@@ -495,23 +573,32 @@ fn build_source_terrace_datum(
 /// Fit only the dry endpoints of real water contacts to the unchanged water
 /// plane. Interior ground and the water body's own level remain untouched.
 pub(super) fn fit_shore_corners(
-    w: usize, h: usize, known: &[bool], wet: &[bool], levels: &mut [[f32; 4]],
+    w: usize,
+    h: usize,
+    known: &[bool],
+    wet: &[bool],
+    levels: &mut [[f32; 4]],
 ) {
     let original = levels.to_vec();
-    for i in 0..w*h {
-        if !known[i] || wet[i] { continue; }
-        let (x,y)=(i%w,i/w);
-        for (corner,(dx,dy)) in [(0,0),(0,1),(1,1),(1,0)].into_iter().enumerate() {
-            let (vx,vy)=((x+dx) as isize,(y+dy) as isize);
-            let contacts=[(vx-1,vy-1),(vx-1,vy),(vx,vy-1),(vx,vy)].into_iter()
-                .filter(|&(x,y)|x>=0 && y>=0 && x<w as isize && y<h as isize)
-                .map(|(x,y)|y as usize*w+x as usize)
-                .filter(|&j|known[j] && wet[j]).map(|j|original[j][0]).collect::<Vec<_>>();
-            if let Some(&level)=contacts.first() {
+    for i in 0..w * h {
+        if !known[i] || wet[i] {
+            continue;
+        }
+        let (x, y) = (i % w, i / w);
+        for (corner, (dx, dy)) in [(0, 0), (0, 1), (1, 1), (1, 0)].into_iter().enumerate() {
+            let (vx, vy) = ((x + dx) as isize, (y + dy) as isize);
+            let contacts = [(vx - 1, vy - 1), (vx - 1, vy), (vx, vy - 1), (vx, vy)]
+                .into_iter()
+                .filter(|&(x, y)| x >= 0 && y >= 0 && x < w as isize && y < h as isize)
+                .map(|(x, y)| y as usize * w + x as usize)
+                .filter(|&j| known[j] && wet[j])
+                .map(|j| original[j][0])
+                .collect::<Vec<_>>();
+            if let Some(&level) = contacts.first() {
                 // Distinct authored waterfall tiers can meet at one corner.
                 // Preserve that discontinuity rather than joining their pools.
-                if contacts.iter().all(|other|(other-level).abs()<0.0001) {
-                    levels[i][corner]=level;
+                if contacts.iter().all(|other| (other - level).abs() < 0.0001) {
+                    levels[i][corner] = level;
                 }
             }
         }
@@ -544,29 +631,44 @@ mod tests {
 
     #[test]
     fn shoreline_contact_overrides_a_dry_ledge_cut_without_moving_water_or_inland_ground() {
-        let mut levels=vec![[9.;4];25];
-        levels[12]=[2.;4];
-        let mut wet=vec![false;25];wet[12]=true;
-        fit_shore_corners(5,5,&[true;25],&wet,&mut levels);
-        assert_eq!(levels[12],[2.;4],"the whole water plane stays flat and unchanged");
-        assert_eq!(levels[7],[9.,2.,2.,9.]);
-        assert_eq!(levels[11],[9.,9.,2.,2.]);
-        assert_eq!(levels[13],[2.,2.,9.,9.]);
-        assert_eq!(levels[17],[2.,9.,9.,2.]);
-        assert_eq!(levels[6],[9.,9.,2.,9.],"diagonal land shares the same sealed vertex");
-        for i in [0,1,2,3,4,5,9,10,14,15,19,20,21,22,23,24] {
-            assert_eq!(levels[i],[9.;4],"inland ground must stay exact");
+        let mut levels = vec![[9.; 4]; 25];
+        levels[12] = [2.; 4];
+        let mut wet = vec![false; 25];
+        wet[12] = true;
+        fit_shore_corners(5, 5, &[true; 25], &wet, &mut levels);
+        assert_eq!(
+            levels[12], [2.; 4],
+            "the whole water plane stays flat and unchanged"
+        );
+        assert_eq!(levels[7], [9., 2., 2., 9.]);
+        assert_eq!(levels[11], [9., 9., 2., 2.]);
+        assert_eq!(levels[13], [2., 2., 9., 9.]);
+        assert_eq!(levels[17], [2., 9., 9., 2.]);
+        assert_eq!(
+            levels[6],
+            [9., 9., 2., 9.],
+            "diagonal land shares the same sealed vertex"
+        );
+        for i in [0, 1, 2, 3, 4, 5, 9, 10, 14, 15, 19, 20, 21, 22, 23, 24] {
+            assert_eq!(levels[i], [9.; 4], "inland ground must stay exact");
         }
     }
 
     #[test]
     fn separate_water_tiers_keep_their_authored_corner_discontinuity() {
-        let mut levels=vec![[9.;4];9];
-        levels[1]=[2.;4];levels[3]=[5.;4];
-        let mut wet=vec![false;9];wet[1]=true;wet[3]=true;
-        fit_shore_corners(3,3,&[true;9],&wet,&mut levels);
-        assert_eq!(levels[1],[2.;4]);assert_eq!(levels[3],[5.;4]);
-        assert_eq!(levels[4][0],9.,"a junction of separate pool tiers is not a level shore");
+        let mut levels = vec![[9.; 4]; 9];
+        levels[1] = [2.; 4];
+        levels[3] = [5.; 4];
+        let mut wet = vec![false; 9];
+        wet[1] = true;
+        wet[3] = true;
+        fit_shore_corners(3, 3, &[true; 9], &wet, &mut levels);
+        assert_eq!(levels[1], [2.; 4]);
+        assert_eq!(levels[3], [5.; 4]);
+        assert_eq!(
+            levels[4][0], 9.,
+            "a junction of separate pool tiers is not a level shore"
+        );
     }
     fn fixture(atlas: &str) -> (Vec<(IVec2, VisualTileSource, bool)>, Vec<VisualJumpLedge>) {
         let mut cells = (0..256)
@@ -604,165 +706,335 @@ mod tests {
     }
     #[test]
     fn native_shore_rock_belt_keeps_open_water_and_land_on_the_same_coastal_datum() {
-        let (mut sources, edges)=fixture("kanto");
-        for (p,source,land) in &mut sources {
-            let island=(8..12).contains(&p.x) && p.y<12;
-            let belt=(6..14).contains(&p.x) && p.y<14 && !island;
-            *land=island;
-            source.metatile_id=if belt {0x14}else if island {1}else{0x35};
-            source.tile_index=if belt {
-                [[0x2a,0x2b],[0x3a,0x3b]][p.y as usize%2][p.x as usize%2]
-            }else if island {6}else{0x14};
+        let (mut sources, edges) = fixture("kanto");
+        for (p, source, land) in &mut sources {
+            let island = (8..12).contains(&p.x) && p.y < 12;
+            let belt = (6..14).contains(&p.x) && p.y < 14 && !island;
+            *land = island;
+            source.metatile_id = if belt {
+                0x14
+            } else if island {
+                1
+            } else {
+                0x35
+            };
+            source.tile_index = if belt {
+                [[0x2a, 0x2b], [0x3a, 0x3b]][p.y as usize % 2][p.x as usize % 2]
+            } else if island {
+                6
+            } else {
+                0x14
+            };
         }
-        let datum=source_terrace_datum("CoastalTown",&edges,&sources).unwrap();
+        let datum = source_terrace_datum("CoastalTown", &edges, &sources).unwrap();
         for y in 0..12 {
-            let west=&datum.levels[y*16+8];
-            let east=&datum.levels[y*16+11];
-            assert_eq!([west[0],west[1],east[2],east[3]],[0.;4],
-                "the water-backed rock belt must anchor the dry shore at row {y}");
+            let west = &datum.levels[y * 16 + 8];
+            let east = &datum.levels[y * 16 + 11];
+            assert_eq!(
+                [west[0], west[1], east[2], east[3]],
+                [0.; 4],
+                "the water-backed rock belt must anchor the dry shore at row {y}"
+            );
         }
-        for (p,source,_) in &sources {
+        for (p, source, _) in &sources {
             if terraces::water_owns_height(source) {
-                assert_eq!(datum.levels[p.y as usize*16+p.x as usize],[0.;4],
-                    "open water and its source-authenticated rocks stay at sea level");
+                assert_eq!(
+                    datum.levels[p.y as usize * 16 + p.x as usize],
+                    [0.; 4],
+                    "open water and its source-authenticated rocks stay at sea level"
+                );
             }
         }
-        assert!(datum.levels.iter().any(|v|v.iter().any(|&h|h>0.)),
-            "coastal calibration must preserve the actual inland terrace");
+        assert!(
+            datum.levels.iter().any(|v| v.iter().any(|&h| h > 0.)),
+            "coastal calibration must preserve the actual inland terrace"
+        );
     }
 
     #[test]
     fn inland_river_border_and_source_gaps_share_the_real_shore_level_but_seas_stay_zero() {
-        let (mut sources,_)=fixture("kanto");
-        let edges=vec![VisualJumpLedge {start:IVec2::new(0,6),end:IVec2::new(16,6),descent:IVec2::Y}];
-        for (p,s,land) in &mut sources {
-            let pool=p.x<4 && p.y<2;
-            let rocks=p.x<6 && p.y<4 && !pool;
-            *land=!pool && !rocks;
-            s.metatile_id=if rocks {0x14}else if pool {0x35}else{1};
-            s.tile_index=if rocks {[[0x2a,0x2b],[0x3a,0x3b]][p.y as usize%2][p.x as usize%2]}
-                else if pool {0x14}else{6};
+        let (mut sources, _) = fixture("kanto");
+        let edges = vec![VisualJumpLedge {
+            start: IVec2::new(0, 6),
+            end: IVec2::new(16, 6),
+            descent: IVec2::Y,
+        }];
+        for (p, s, land) in &mut sources {
+            let pool = p.x < 4 && p.y < 2;
+            let rocks = p.x < 6 && p.y < 4 && !pool;
+            *land = !pool && !rocks;
+            s.metatile_id = if rocks {
+                0x14
+            } else if pool {
+                0x35
+            } else {
+                1
+            };
+            s.tile_index = if rocks {
+                [[0x2a, 0x2b], [0x3a, 0x3b]][p.y as usize % 2][p.x as usize % 2]
+            } else if pool {
+                0x14
+            } else {
+                6
+            };
         }
-        sources.retain(|(p,_,_)|*p!=IVec2::new(1,1));
-        let river=source_terrace_datum("RiverTown",&edges,&sources).unwrap();
-        let level=river.open_water.as_ref().expect("an inland source edge is not an ocean").level;
-        assert!((level-1.).abs()<0.001,"river follows its upstream shore: {level}");
-        for p in [IVec2::new(0,0),IVec2::new(4,1),IVec2::new(1,1),IVec2::new(-10,1)] {
-            assert_eq!(river.open_water_at(p),Some(level),"native water, rocks, gaps and continuation share one plane");
+        sources.retain(|(p, _, _)| *p != IVec2::new(1, 1));
+        let river = source_terrace_datum("RiverTown", &edges, &sources).unwrap();
+        let level = river
+            .open_water
+            .as_ref()
+            .expect("an inland source edge is not an ocean")
+            .level;
+        assert!(
+            (level - 1.).abs() < 0.001,
+            "river follows its upstream shore: {level}"
+        );
+        for p in [
+            IVec2::new(0, 0),
+            IVec2::new(4, 1),
+            IVec2::new(1, 1),
+            IVec2::new(-10, 1),
+        ] {
+            assert_eq!(
+                river.open_water_at(p),
+                Some(level),
+                "native water, rocks, gaps and continuation share one plane"
+            );
         }
-        assert_eq!(river.open_water_at(IVec2::new(8,8)),None,"dry source never acquires river ownership");
-        for map in ["CinnabarIsland","Route26","PalletTown","VermilionCity"] {
-            let sea=source_terrace_datum(map,&edges,&sources).unwrap();
-            assert!(sea.open_water.is_none(),"{map} ocean stays at sea level");
-            assert_eq!(sea.levels[0],[0.;4]);
+        assert_eq!(
+            river.open_water_at(IVec2::new(8, 8)),
+            None,
+            "dry source never acquires river ownership"
+        );
+        for map in ["CinnabarIsland", "Route26", "PalletTown", "VermilionCity"] {
+            let sea = source_terrace_datum(map, &edges, &sources).unwrap();
+            assert!(sea.open_water.is_none(), "{map} ocean stays at sea level");
+            assert_eq!(sea.levels[0], [0.; 4]);
         }
-        let (_,fall,land)=sources.iter_mut().find(|(p,_,_)|*p==IVec2::new(6,1)).unwrap();
-        fall.tileset_id="cave".into();fall.metatile_id=0x2c;fall.tile_index=0x40;*land=false;
-        assert!(source_terrace_datum("RiverTown",&edges,&sources).is_none_or(|d|d.open_water.is_none()),
-            "a waterfall's separately authored pools cannot inherit an inland continuation");
+        let (_, fall, land) = sources
+            .iter_mut()
+            .find(|(p, _, _)| *p == IVec2::new(6, 1))
+            .unwrap();
+        fall.tileset_id = "cave".into();
+        fall.metatile_id = 0x2c;
+        fall.tile_index = 0x40;
+        *land = false;
+        assert!(
+            source_terrace_datum("RiverTown", &edges, &sources)
+                .is_none_or(|d| d.open_water.is_none()),
+            "a waterfall's separately authored pools cannot inherit an inland continuation"
+        );
     }
 
     #[test]
     fn a_ledge_across_an_inland_river_cannot_raise_the_unrelated_bank() {
-        let (mut sources,_)=fixture("kanto");
-        for (p,s,land) in &mut sources {
-            let water=(4..8).contains(&p.x);
-            let rocks=water && matches!(p.x,4|7);
-            *land=!water;
-            s.metatile_id=if rocks {0x14}else if water {0x35}else{1};
-            s.tile_index=if rocks {[[0x2a,0x2b],[0x3a,0x3b]][p.y as usize%2][p.x as usize%2]}
-                else if water {0x14}else{6};
+        let (mut sources, _) = fixture("kanto");
+        for (p, s, land) in &mut sources {
+            let water = (4..8).contains(&p.x);
+            let rocks = water && matches!(p.x, 4 | 7);
+            *land = !water;
+            s.metatile_id = if rocks {
+                0x14
+            } else if water {
+                0x35
+            } else {
+                1
+            };
+            s.tile_index = if rocks {
+                [[0x2a, 0x2b], [0x3a, 0x3b]][p.y as usize % 2][p.x as usize % 2]
+            } else if water {
+                0x14
+            } else {
+                6
+            };
         }
-        let edges=[VisualJumpLedge {start:IVec2::new(8,8),end:IVec2::new(16,8),descent:IVec2::Y}];
-        let datum=source_terrace_datum("RiverTown",&edges,&sources).unwrap();
-        for y in 0..16 {for x in 0..4 {
-            assert_eq!(datum.levels[y*16+x],[0.;4],
-                "an unrelated ledge across the river cannot create a retaining wall at ({x},{y})");
-        }}
-        assert_eq!(datum.open_water.as_ref().unwrap().level,0.,"one level for the connected water body");
-        assert!(sample(Some(&datum),Vec2::new(12.5,6.5)).unwrap()
-            >sample(Some(&datum),Vec2::new(12.5,9.5)).unwrap()+0.9,
-            "the actual ledge on its own bank keeps its directed drop");
-        let delta=IVec2::new(-32,24);
-        let shifted=sources.iter().map(|(p,s,land)|(*p+delta,s.clone(),*land)).collect::<Vec<_>>();
-        let shifted_edges=edges.map(|edge|VisualJumpLedge {
-            start:edge.start+delta,end:edge.end+delta,..edge
+        let edges = [VisualJumpLedge {
+            start: IVec2::new(8, 8),
+            end: IVec2::new(16, 8),
+            descent: IVec2::Y,
+        }];
+        let datum = source_terrace_datum("RiverTown", &edges, &sources).unwrap();
+        for y in 0..16 {
+            for x in 0..4 {
+                assert_eq!(
+                    datum.levels[y * 16 + x],
+                    [0.; 4],
+                    "an unrelated ledge across the river cannot create a retaining wall at ({x},{y})"
+                );
+            }
+        }
+        assert_eq!(
+            datum.open_water.as_ref().unwrap().level,
+            0.,
+            "one level for the connected water body"
+        );
+        assert!(
+            sample(Some(&datum), Vec2::new(12.5, 6.5)).unwrap()
+                > sample(Some(&datum), Vec2::new(12.5, 9.5)).unwrap() + 0.9,
+            "the actual ledge on its own bank keeps its directed drop"
+        );
+        let delta = IVec2::new(-32, 24);
+        let shifted = sources
+            .iter()
+            .map(|(p, s, land)| (*p + delta, s.clone(), *land))
+            .collect::<Vec<_>>();
+        let shifted_edges = edges.map(|edge| VisualJumpLedge {
+            start: edge.start + delta,
+            end: edge.end + delta,
+            ..edge
         });
-        let other=source_terrace_datum("RiverTown",&shifted_edges,&shifted).unwrap();
-        assert_eq!(other.origin,datum.origin+delta);
-        assert_eq!(other.levels,datum.levels,"changing the active map cannot move either bank's height");
-        assert_eq!(other.open_water.as_ref().unwrap().level,datum.open_water.as_ref().unwrap().level);
+        let other = source_terrace_datum("RiverTown", &shifted_edges, &shifted).unwrap();
+        assert_eq!(other.origin, datum.origin + delta);
+        assert_eq!(
+            other.levels, datum.levels,
+            "changing the active map cannot move either bank's height"
+        );
+        assert_eq!(
+            other.open_water.as_ref().unwrap().level,
+            datum.open_water.as_ref().unwrap().level
+        );
     }
 
     #[test]
     fn inland_kanto_courses_stay_flat_with_a_foreign_atlas_in_the_source_halo() {
-        let (mut sources,_)=fixture("kanto");
-        for (p,s,land) in &mut sources {
-            let water=(4..8).contains(&p.x);
-            let rocks=water && matches!(p.x,4|7);
-            *land=!water;
-            s.metatile_id=if rocks {0x14}else if water {0x35}else{1};
-            s.tile_index=if rocks {[[0x2a,0x2b],[0x3a,0x3b]][p.y as usize%2][p.x as usize%2]}
-                else if water {0x14}else{6};
+        let (mut sources, _) = fixture("kanto");
+        for (p, s, land) in &mut sources {
+            let water = (4..8).contains(&p.x);
+            let rocks = water && matches!(p.x, 4 | 7);
+            *land = !water;
+            s.metatile_id = if rocks {
+                0x14
+            } else if water {
+                0x35
+            } else {
+                1
+            };
+            s.tile_index = if rocks {
+                [[0x2a, 0x2b], [0x3a, 0x3b]][p.y as usize % 2][p.x as usize % 2]
+            } else if water {
+                0x14
+            } else {
+                6
+            };
         }
-        let edges=[VisualJumpLedge {start:IVec2::new(8,6),end:IVec2::new(12,6),descent:IVec2::Y},
-            VisualJumpLedge {start:IVec2::new(12,12),end:IVec2::new(16,12),descent:IVec2::Y}];
-        let native=source_terrace_datum("Route24",&edges,&sources).unwrap();
-        let mut foreign=sources[0].1.clone();foreign.tileset_id="forest".into();
-        sources.push((IVec2::new(-16,-16),foreign,false));
-        let mixed=source_terrace_datum("Route24",&edges,&sources).unwrap();
-        for y in [2.5,8.5,14.5] {
-            let mut heights=Vec::new();
-            for x in [9.5,10.5,11.5,12.5,13.5,14.5] {
-                let a=sample(Some(&native),Vec2::new(x,y)).unwrap();
-                let b=sample(Some(&mixed),Vec2::new(x,y)).unwrap();
-                assert!((a-b).abs()<0.0001,"a foreign halo cannot change the bank at ({x},{y}): {a} vs {b}");
+        let edges = [
+            VisualJumpLedge {
+                start: IVec2::new(8, 6),
+                end: IVec2::new(12, 6),
+                descent: IVec2::Y,
+            },
+            VisualJumpLedge {
+                start: IVec2::new(12, 12),
+                end: IVec2::new(16, 12),
+                descent: IVec2::Y,
+            },
+        ];
+        let native = source_terrace_datum("Route24", &edges, &sources).unwrap();
+        let mut foreign = sources[0].1.clone();
+        foreign.tileset_id = "forest".into();
+        sources.push((IVec2::new(-16, -16), foreign, false));
+        let mixed = source_terrace_datum("Route24", &edges, &sources).unwrap();
+        for y in [2.5, 8.5, 14.5] {
+            let mut heights = Vec::new();
+            for x in [9.5, 10.5, 11.5, 12.5, 13.5, 14.5] {
+                let a = sample(Some(&native), Vec2::new(x, y)).unwrap();
+                let b = sample(Some(&mixed), Vec2::new(x, y)).unwrap();
+                assert!(
+                    (a - b).abs() < 0.0001,
+                    "a foreign halo cannot change the bank at ({x},{y}): {a} vs {b}"
+                );
                 heights.push(b);
             }
-            let expected=if y<6. {2.}else if y<12. {1.}else{0.};
-            assert!(heights.iter().all(|h|(h-expected).abs()<0.0001),
-                "ground between authored drops is a flat course, not a sideways slope: {heights:?}");
+            let expected = if y < 6. {
+                2.
+            } else if y < 12. {
+                1.
+            } else {
+                0.
+            };
+            assert!(
+                heights.iter().all(|h| (h - expected).abs() < 0.0001),
+                "ground between authored drops is a flat course, not a sideways slope: {heights:?}"
+            );
         }
-        assert_eq!(mixed.open_water.as_ref().unwrap().level,0.);
+        assert_eq!(mixed.open_water.as_ref().unwrap().level, 0.);
     }
 
     #[test]
     fn connected_maps_closing_a_rock_lined_river_do_not_drop_it_to_the_legacy_sea_plane() {
-        let (mut sources,_)=fixture("kanto");
-        let edges=vec![VisualJumpLedge {start:IVec2::new(0,10),end:IVec2::new(16,10),descent:IVec2::Y}];
-        for (p,s,land) in &mut sources {
-            let water=(4..8).contains(&p.x) && (3..5).contains(&p.y);
-            let rocks=(2..10).contains(&p.x) && (2..6).contains(&p.y) && !water;
-            *land=!water && !rocks;
-            s.metatile_id=if rocks {0x14}else if water {0x35}else{1};
-            s.tile_index=if rocks {[[0x2a,0x2b],[0x3a,0x3b]][p.y as usize%2][p.x as usize%2]}
-                else if water {0x14}else{6};
+        let (mut sources, _) = fixture("kanto");
+        let edges = vec![VisualJumpLedge {
+            start: IVec2::new(0, 10),
+            end: IVec2::new(16, 10),
+            descent: IVec2::Y,
+        }];
+        for (p, s, land) in &mut sources {
+            let water = (4..8).contains(&p.x) && (3..5).contains(&p.y);
+            let rocks = (2..10).contains(&p.x) && (2..6).contains(&p.y) && !water;
+            *land = !water && !rocks;
+            s.metatile_id = if rocks {
+                0x14
+            } else if water {
+                0x35
+            } else {
+                1
+            };
+            s.tile_index = if rocks {
+                [[0x2a, 0x2b], [0x3a, 0x3b]][p.y as usize % 2][p.x as usize % 2]
+            } else if water {
+                0x14
+            } else {
+                6
+            };
         }
-        let datum=source_terrace_datum("RiverTown",&edges,&sources)
+        let datum = source_terrace_datum("RiverTown", &edges, &sources)
             .expect("the source-complete river needs a datum, not a global route-height fallback");
-        assert!(datum.open_water.is_none(),"a genuinely closed river does not lift unrelated border water");
-        for (p,s,_) in &sources {if terraces::water_owns_height(s) {
-            assert_eq!(datum.levels[p.y as usize*16+p.x as usize],[1.;4],
-                "water and native shore rocks must meet their real upstream rim at {p:?}");
-        }}
+        assert!(
+            datum.open_water.is_none(),
+            "a genuinely closed river does not lift unrelated border water"
+        );
+        for (p, s, _) in &sources {
+            if terraces::water_owns_height(s) {
+                assert_eq!(
+                    datum.levels[p.y as usize * 16 + p.x as usize],
+                    [1.; 4],
+                    "water and native shore rocks must meet their real upstream rim at {p:?}"
+                );
+            }
+        }
     }
 
     #[test]
     fn gaps_between_complete_maps_cannot_extrapolate_a_raised_terrace() {
         for atlas in ["johto", "johto_modern"] {
             let (mut sources, edges) = fixture(atlas);
-            let gaps = [IVec2::new(12,1), IVec2::new(13,1),
-                IVec2::new(12,2), IVec2::new(13,2)];
-            sources.retain(|(point,_,_)| !gaps.contains(point));
+            let gaps = [
+                IVec2::new(12, 1),
+                IVec2::new(13, 1),
+                IVec2::new(12, 2),
+                IVec2::new(13, 2),
+            ];
+            sources.retain(|(point, _, _)| !gaps.contains(point));
             let datum = source_terrace_datum("Route42", &edges, &sources).unwrap();
             for point in gaps {
-                let cell=point-datum.origin;
-                let i=cell.y as usize*datum.size.x as usize+cell.x as usize;
-                assert_eq!(datum.levels[i],[0.;4],"{atlas}: absent native cell {point:?}");
-                assert_eq!(sample(Some(&datum),point.as_vec2()+Vec2::splat(0.5)),Some(0.));
+                let cell = point - datum.origin;
+                let i = cell.y as usize * datum.size.x as usize + cell.x as usize;
+                assert_eq!(
+                    datum.levels[i], [0.; 4],
+                    "{atlas}: absent native cell {point:?}"
+                );
+                assert_eq!(
+                    sample(Some(&datum), point.as_vec2() + Vec2::splat(0.5)),
+                    Some(0.)
+                );
             }
-            assert!(datum.levels.iter().any(|corners|corners.iter().any(|&v|v>0.)),
-                "the actual island must retain its authored elevation");
+            assert!(
+                datum
+                    .levels
+                    .iter()
+                    .any(|corners| corners.iter().any(|&v| v > 0.)),
+                "the actual island must retain its authored elevation"
+            );
         }
     }
     #[test]
@@ -776,36 +1048,84 @@ mod tests {
                 *land = !lake;
             }
             let datum = source_terrace_datum("LakeTown", &edges, &sources).unwrap();
-            let g = GridGeometry {width:16,height:16,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
-            let mut frame = super::super::tests::frame(16,16,
-                sources.iter().map(|(_,s,_)|s.clone()).collect());
-            frame.map_id="LakeTown".into();
-            let mut mesh = TerrainMeshData {authored_cells:vec![None;256],footing_heights:vec![0.;256],..Default::default()};
-            for y in 1..4 { for x in 9..11 {
-                assert!((sample(Some(&datum),Vec2::new(x as f32+0.4,y as f32+0.6)).unwrap()-1.).abs()<0.002);
-                let (w,e,n,s)=g.bounds(x,y);
-                append_top(&mut mesh.animated_textured,[w,e,n,s],crate::profile::WATER_HEIGHT,(0.,1.,0.,1.));
-            } }
-            let old=mesh.animated_textured.clone();
-            terraces::finish_with_datum(&mut mesh,"LakeTown",&frame.tiles.iter().collect::<Vec<_>>(),&g,[0,0],&edges,Some(&datum));
-            for (before,after) in old.positions.iter().zip(&mesh.animated_textured.positions) {
-                assert!((after[1]-before[1]-crate::profile::JUMP_LEDGE_HEIGHT).abs()<0.002);
-                assert_eq!([before[0],before[2]],[after[0],after[2]]);
+            let g = GridGeometry {
+                width: 16,
+                height: 16,
+                tile_width: 8.,
+                tile_height: 8.,
+                origin_x: 0.,
+                origin_z: 0.,
+            };
+            let mut frame = super::super::tests::frame(
+                16,
+                16,
+                sources.iter().map(|(_, s, _)| s.clone()).collect(),
+            );
+            frame.map_id = "LakeTown".into();
+            let mut mesh = TerrainMeshData {
+                authored_cells: vec![None; 256],
+                footing_heights: vec![0.; 256],
+                ..Default::default()
+            };
+            for y in 1..4 {
+                for x in 9..11 {
+                    assert!(
+                        (sample(Some(&datum), Vec2::new(x as f32 + 0.4, y as f32 + 0.6)).unwrap()
+                            - 1.)
+                            .abs()
+                            < 0.002
+                    );
+                    let (w, e, n, s) = g.bounds(x, y);
+                    append_top(
+                        &mut mesh.animated_textured,
+                        [w, e, n, s],
+                        crate::profile::WATER_HEIGHT,
+                        (0., 1., 0., 1.),
+                    );
+                }
             }
-            assert_eq!(old.indices,mesh.animated_textured.indices);
-            assert_eq!(old.normals,mesh.animated_textured.normals);
-            assert_eq!(old.uvs,mesh.animated_textured.uvs);
-            for y in 1..4 { for x in 9..11 {
-                assert!((mesh.footing_heights[y*16+x]-crate::profile::JUMP_LEDGE_HEIGHT).abs()<0.002);
-            } }
+            let old = mesh.animated_textured.clone();
+            terraces::finish_with_datum(
+                &mut mesh,
+                "LakeTown",
+                &frame.tiles.iter().collect::<Vec<_>>(),
+                &g,
+                [0, 0],
+                &edges,
+                Some(&datum),
+            );
+            for (before, after) in old.positions.iter().zip(&mesh.animated_textured.positions) {
+                assert!((after[1] - before[1] - crate::profile::JUMP_LEDGE_HEIGHT).abs() < 0.002);
+                assert_eq!([before[0], before[2]], [after[0], after[2]]);
+            }
+            assert_eq!(old.indices, mesh.animated_textured.indices);
+            assert_eq!(old.normals, mesh.animated_textured.normals);
+            assert_eq!(old.uvs, mesh.animated_textured.uvs);
+            for y in 1..4 {
+                for x in 9..11 {
+                    assert!(
+                        (mesh.footing_heights[y * 16 + x] - crate::profile::JUMP_LEDGE_HEIGHT)
+                            .abs()
+                            < 0.002
+                    );
+                }
+            }
             // A view containing just part of the lake samples the complete
             // source body's same level, rather than inventing a local rim.
-            let cropped=terraces::Field::new(&edges,&g,[9,1]).with_datum(Some(&datum));
-            assert!((cropped.height(Vec2::new(4.,4.))-crate::profile::JUMP_LEDGE_HEIGHT).abs()<0.002);
-            let (_, waterfall, land)=&mut sources[2*16+8];
-            waterfall.tileset_id="cave".into();waterfall.metatile_id=0x2c;waterfall.tile_index=0x40;*land=false;
-            assert!(source_terrace_datum("LakeTown",&edges,&sources).is_none(),
-                "authored waterfall pools retain their separate level");
+            let cropped = terraces::Field::new(&edges, &g, [9, 1]).with_datum(Some(&datum));
+            assert!(
+                (cropped.height(Vec2::new(4., 4.)) - crate::profile::JUMP_LEDGE_HEIGHT).abs()
+                    < 0.002
+            );
+            let (_, waterfall, land) = &mut sources[2 * 16 + 8];
+            waterfall.tileset_id = "cave".into();
+            waterfall.metatile_id = 0x2c;
+            waterfall.tile_index = 0x40;
+            *land = false;
+            assert!(
+                source_terrace_datum("LakeTown", &edges, &sources).is_none(),
+                "authored waterfall pools retain their separate level"
+            );
         }
     }
 
@@ -964,12 +1284,15 @@ mod tests {
     }
     #[test]
     fn forest_water_shares_the_shore_datum_without_removing_its_inland_ledge() {
-        let (sources,edges)=fixture("forest");
-        let datum=source_terrace_datum("IlexForest",&edges,&sources).unwrap();
-        assert_eq!(sample(Some(&datum),Vec2::new(12.,2.)),Some(0.));
-        let high=sample(Some(&datum),Vec2::new(10.,2.)).unwrap();
-        let low=sample(Some(&datum),Vec2::new(10.,9.)).unwrap();
-        assert!(high>low+0.5,"the inland hop keeps its authored height: {high}/{low}");
+        let (sources, edges) = fixture("forest");
+        let datum = source_terrace_datum("IlexForest", &edges, &sources).unwrap();
+        assert_eq!(sample(Some(&datum), Vec2::new(12., 2.)), Some(0.));
+        let high = sample(Some(&datum), Vec2::new(10., 2.)).unwrap();
+        let low = sample(Some(&datum), Vec2::new(10., 9.)).unwrap();
+        assert!(
+            high > low + 0.5,
+            "the inland hop keeps its authored height: {high}/{low}"
+        );
     }
 
     #[test]

@@ -176,8 +176,11 @@ fn authored_exterior_buildings_reveal_only_their_new_geometry() {
         }
         if tileset == "johto_modern" {
             modeled_exteriors::folded_roofs::append(
-                &mut expected, 3, exterior_models::model(exterior_models::Kind::ModernGym),
-                g.tile_height * 2.0, [p.column as i32, p.row as i32],
+                &mut expected,
+                3,
+                exterior_models::model(exterior_models::Kind::ModernGym),
+                g.tile_height * 2.0,
+                [p.column as i32, p.row as i32],
             );
         }
         let refs: Vec<_> = cells.iter().collect();

@@ -25,7 +25,10 @@ const DEFAULT_BROWSER_PACK_FILENAME: &str = "realtime-clock.browser.crystalpack"
 #[cfg(not(target_arch = "wasm32"))]
 fn main() -> Result<()> {
     let result = run_native();
-    #[cfg(all(any(target_os = "windows", target_os = "macos"), feature = "desktop-app"))]
+    #[cfg(all(
+        any(target_os = "windows", target_os = "macos"),
+        feature = "desktop-app"
+    ))]
     if let Err(error) = &result {
         if !env::args().any(|argument| argument == "--check-installation") {
             let message = format!("Geothite could not start.\n\n{error:#}");
@@ -96,10 +99,16 @@ fn run_native() -> Result<()> {
         None => default_save_path(&pack_directory, &runtime)?,
     };
     if args.check_installation {
-        anyhow::ensure!(cfg!(feature = "desktop-app"),
-            "installation checks require a client built with desktop-app");
-        desktop_paths::check_save_writes(&default_save_path)
-            .with_context(|| format!("verify writable save location {}", default_save_path.display()))?;
+        anyhow::ensure!(
+            cfg!(feature = "desktop-app"),
+            "installation checks require a client built with desktop-app"
+        );
+        desktop_paths::check_save_writes(&default_save_path).with_context(|| {
+            format!(
+                "verify writable save location {}",
+                default_save_path.display()
+            )
+        })?;
         let resources = desktop_resource_directory(&env::current_exe()?)?;
         #[cfg(feature = "voxel-view")]
         if crystal_bevy::bevy_shell::runtime_supports_voxel_view(&runtime) {
@@ -171,43 +180,97 @@ async fn run_browser() -> Result<()> {
     #[cfg(all(feature = "voxel-view", feature = "location-tester"))]
     {
         let params = web_sys::UrlSearchParams::new_with_str(
-            &web_sys::window().context("browser window is unavailable")?.location().search().unwrap_or_default(),
-        ).ok();
+            &web_sys::window()
+                .context("browser window is unavailable")?
+                .location()
+                .search()
+                .unwrap_or_default(),
+        )
+        .ok();
         // Dense is a same-build QA control; authored models stay full-detail.
-        let dense = params.as_ref().and_then(|params| params.get("understory")).as_deref() == Some("dense");
+        let dense = params
+            .as_ref()
+            .and_then(|params| params.get("understory"))
+            .as_deref()
+            == Some("dense");
         crystal_voxel_view::configure_understory_density(dense).map_err(anyhow::Error::msg)?;
-        crystal_voxel_view::configure_route_shadow_filter(params.as_ref()
-            .and_then(|params| params.get("route-shadows")).as_deref() == Some("gaussian"));
-        let tree_depth = params.as_ref().and_then(|params| params.get("tree-depth-prepass")).as_deref() == Some("on");
+        crystal_voxel_view::configure_route_shadow_filter(
+            params
+                .as_ref()
+                .and_then(|params| params.get("route-shadows"))
+                .as_deref()
+                == Some("gaussian"),
+        );
+        let tree_depth = params
+            .as_ref()
+            .and_then(|params| params.get("tree-depth-prepass"))
+            .as_deref()
+            == Some("on");
         crystal_voxel_view::configure_tree_depth_prepass_diagnostics(tree_depth)
             .map_err(anyhow::Error::msg)?;
-        let legacy_discard = params.as_ref().and_then(|params| params.get("surface-discard")).as_deref() == Some("legacy");
+        let legacy_discard = params
+            .as_ref()
+            .and_then(|params| params.get("surface-discard"))
+            .as_deref()
+            == Some("legacy");
         crystal_voxel_view::configure_surface_discard_diagnostics(legacy_discard)
             .map_err(anyhow::Error::msg)?;
-        let shadow_receivers = params.as_ref().and_then(|params| params.get("shadow-receivers")).as_deref() == Some("on");
+        let shadow_receivers = params
+            .as_ref()
+            .and_then(|params| params.get("shadow-receivers"))
+            .as_deref()
+            == Some("on");
         crystal_voxel_view::configure_shadow_receiver_diagnostics(shadow_receivers)
             .map_err(anyhow::Error::msg)?;
         #[cfg(feature = "tree-entity-qa")]
         {
-            let eager_entities = params.as_ref().and_then(|params| params.get("tree-entities")).as_deref() == Some("eager");
+            let eager_entities = params
+                .as_ref()
+                .and_then(|params| params.get("tree-entities"))
+                .as_deref()
+                == Some("eager");
             crystal_voxel_view::configure_lazy_tree_entities_diagnostics(eager_entities);
-            let legacy_vertices = params.as_ref().and_then(|params| params.get("tree-vertices")).as_deref() == Some("legacy");
+            let legacy_vertices = params
+                .as_ref()
+                .and_then(|params| params.get("tree-vertices"))
+                .as_deref()
+                == Some("legacy");
             crystal_voxel_view::configure_tree_vertex_weld_diagnostics(legacy_vertices);
         }
-        let eager = params.and_then(|params| params.get("loading-collision")).as_deref() == Some("eager");
+        let eager = params
+            .and_then(|params| params.get("loading-collision"))
+            .as_deref()
+            == Some("eager");
         crystal_voxel_view::configure_grove_collision_diagnostics(eager)
             .map_err(anyhow::Error::msg)?;
     }
     #[cfg(feature = "allocation-tester")]
     if web_sys::UrlSearchParams::new_with_str(
-        &web_sys::window().context("browser window is unavailable")?.location().search().unwrap_or_default(),
-    ).ok().and_then(|params| params.get("allocation-stacks")).as_deref() == Some("on") {
+        &web_sys::window()
+            .context("browser window is unavailable")?
+            .location()
+            .search()
+            .unwrap_or_default(),
+    )
+    .ok()
+    .and_then(|params| params.get("allocation-stacks"))
+    .as_deref()
+        == Some("on")
+    {
         crystal_bevy::enable_loading_allocation_stacks();
     }
     #[cfg(feature = "voxel-view")]
     let trace_loading = web_sys::UrlSearchParams::new_with_str(
-        &web_sys::window().context("browser window is unavailable")?.location().search().unwrap_or_default(),
-    ).ok().and_then(|params| params.get("loading-trace")).as_deref() == Some("on");
+        &web_sys::window()
+            .context("browser window is unavailable")?
+            .location()
+            .search()
+            .unwrap_or_default(),
+    )
+    .ok()
+    .and_then(|params| params.get("loading-trace"))
+    .as_deref()
+        == Some("on");
     #[cfg(feature = "voxel-view")]
     if trace_loading {
         crystal_voxel_view::loading_trace::start();
@@ -221,16 +284,26 @@ async fn run_browser() -> Result<()> {
     wait_for_browser_meshtastic().await?;
     let pack_bytes = {
         #[cfg(feature = "voxel-view")]
-        let _trace = crystal_voxel_view::loading_trace::span("pack.fetch", || serde_json::json!({}));
+        let _trace =
+            crystal_voxel_view::loading_trace::span("pack.fetch", || serde_json::json!({}));
         fetch_browser_pack().await?
     };
     let loaded = {
         #[cfg(feature = "voxel-view")]
-        let _trace = crystal_voxel_view::loading_trace::span("pack.verify", || serde_json::json!({}));
-        let load = || crystal_assets::load_verified_compiled_game_pack_bytes(DEFAULT_BROWSER_PACK_FILENAME, pack_bytes);
+        let _trace =
+            crystal_voxel_view::loading_trace::span("pack.verify", || serde_json::json!({}));
+        let load = || {
+            crystal_assets::load_verified_compiled_game_pack_bytes(
+                DEFAULT_BROWSER_PACK_FILENAME,
+                pack_bytes,
+            )
+        };
         #[cfg(feature = "voxel-view")]
         let result = if trace_loading {
-            crystal_assets::with_compiled_pack_load_observer(crystal_bevy::loading_pack_trace::observe_stage, load)
+            crystal_assets::with_compiled_pack_load_observer(
+                crystal_bevy::loading_pack_trace::observe_stage,
+                load,
+            )
         } else {
             load()
         };
@@ -241,7 +314,8 @@ async fn run_browser() -> Result<()> {
     let asset_root = AssetRoot::new(".");
     let runtime = {
         #[cfg(feature = "voxel-view")]
-        let _trace = crystal_voxel_view::loading_trace::span("pack.load_runtime", || serde_json::json!({}));
+        let _trace =
+            crystal_voxel_view::loading_trace::span("pack.load_runtime", || serde_json::json!({}));
         CrystalRuntime::from_loaded_compiled_pack(&asset_root, loaded)?
     };
     // Complete pack decoding before installing scenery. The pack decoder's
@@ -251,7 +325,9 @@ async fn run_browser() -> Result<()> {
     if crystal_bevy::bevy_shell::runtime_supports_voxel_view(&runtime) {
         let scenery = fetch_browser_open_models("open-models.json", false).await;
         #[cfg(feature = "terrain-worker-qa")]
-        if scenery.is_err() { crystal_voxel_view::terrain_worker::browser_scenery_sources(None); }
+        if scenery.is_err() {
+            crystal_voxel_view::terrain_worker::browser_scenery_sources(None);
+        }
         let _ = scenery;
         fetch_browser_open_models("open-people.json", true).await?;
     }
@@ -261,9 +337,13 @@ async fn run_browser() -> Result<()> {
     #[cfg(feature = "location-tester")]
     {
         let params = web_sys::UrlSearchParams::new_with_str(
-            &web_sys::window().context("browser window is unavailable")?
-                .location().search().unwrap_or_default(),
-        ).map_err(|error| anyhow::anyhow!("read preview parameters: {error:?}"))?;
+            &web_sys::window()
+                .context("browser window is unavailable")?
+                .location()
+                .search()
+                .unwrap_or_default(),
+        )
+        .map_err(|error| anyhow::anyhow!("read preview parameters: {error:?}"))?;
         let preview = match params.get("preview").as_deref() {
             Some("new-bark") => Some(("NewBarkTown", 13, 6)),
             Some("bedroom") => Some(("PlayersHouse2F", 3, 4)),
@@ -288,26 +368,44 @@ async fn run_browser() -> Result<()> {
             Some("union-cave") => Some(("UnionCave1F", 4, 17)),
             Some("ice-path") => Some(("IcePath1F", 15, 19)),
             Some(name @ ("whirl-islands" | "mount-silver")) => {
-                let map = if name == "whirl-islands" { "WhirlIslandB2F" } else { "SilverCaveRoom2" };
-                let (width, height) = runtime.data().saved_map_tile_bounds(map)
+                let map = if name == "whirl-islands" {
+                    "WhirlIslandB2F"
+                } else {
+                    "SilverCaveRoom2"
+                };
+                let (width, height) = runtime
+                    .data()
+                    .saved_map_tile_bounds(map)
                     .with_context(|| format!("missing preview map {map}"))?;
                 let center = (i32::from(width / 2), i32::from(height / 2));
                 let mut candidates: Vec<_> = (0..height)
                     .flat_map(|y| (0..width).map(move |x| (x as i16, y as i16)))
                     .collect();
-                candidates.sort_by_key(|&(x, y)|
-                    (i32::from(x) - center.0).pow(2) + (i32::from(y) - center.1).pow(2));
-                let (x, y) = candidates.into_iter().find(|&(x, y)|
-                    runtime.data().overworld_session(map,
-                        crystal_runtime::core::world::map::TilePosition::new(x, y), 0).is_ok())
+                candidates.sort_by_key(|&(x, y)| {
+                    (i32::from(x) - center.0).pow(2) + (i32::from(y) - center.1).pow(2)
+                });
+                let (x, y) = candidates
+                    .into_iter()
+                    .find(|&(x, y)| {
+                        runtime
+                            .data()
+                            .overworld_session(
+                                map,
+                                crystal_runtime::core::world::map::TilePosition::new(x, y),
+                                0,
+                            )
+                            .is_ok()
+                    })
                     .with_context(|| format!("no walkable preview tile on {map}"))?;
                 Some((map, x, y))
             }
             _ => None,
         };
         if let Some((map_name, tile_x, tile_y)) = preview {
-            anyhow::ensure!(params.get("multiplayer").as_deref() == Some("off"),
-                "Location preview requires multiplayer=off");
+            anyhow::ensure!(
+                params.get("multiplayer").as_deref() == Some("off"),
+                "Location preview requires multiplayer=off"
+            );
             return crystal_bevy::run_bevy_shell(
                 asset_root,
                 runtime,
@@ -326,8 +424,11 @@ async fn run_browser() -> Result<()> {
                         Some("ice-path" | "mount-silver") => (1, 0),
                         Some("whirl-islands") => (0, 0),
                         Some("saffron" | "world-stream" | "cherrygrove-border") => (0, 1),
-                        Some("ilex" | "ilex-forest" | "route26" | "route26-border" | "route26-canyon" | "route29" | "route29-border" | "route29-battle"
-                            | "national-park" | "national-park-pool") => (0, 1),
+                        Some(
+                            "ilex" | "ilex-forest" | "route26" | "route26-border"
+                            | "route26-canyon" | "route29" | "route29-border" | "route29-battle"
+                            | "national-park" | "national-park-pool",
+                        ) => (0, 1),
                         _ => (0, -1),
                     }),
                     render_test_hour: Some(match params.get("preview").as_deref() {
@@ -335,8 +436,10 @@ async fn run_browser() -> Result<()> {
                         Some("saffron") => 0,
                         _ => 16,
                     }),
-                    render_test_walking_encounter: params.get("preview").as_deref() == Some("route29-battle"),
-                    render_test_falkner_encounter: params.get("preview").as_deref() == Some("falkner-battle"),
+                    render_test_walking_encounter: params.get("preview").as_deref()
+                        == Some("route29-battle"),
+                    render_test_falkner_encounter: params.get("preview").as_deref()
+                        == Some("falkner-battle"),
                     // No persistence: an art preview must not overwrite a save.
                     quick_save_path: None,
                     ..Default::default()
@@ -484,7 +587,10 @@ async fn wait_for_browser_meshtastic() -> Result<()> {
 async fn fetch_browser_open_models(url: &str, people: bool) -> Result<()> {
     use wasm_bindgen::JsCast as _;
     use wasm_bindgen_futures::JsFuture;
-    let _trace = crystal_voxel_view::loading_trace::span("asset.fetch_install_bundle", || serde_json::json!({"url":url}));
+    let _trace = crystal_voxel_view::loading_trace::span(
+        "asset.fetch_install_bundle",
+        || serde_json::json!({"url":url}),
+    );
     let window = web_sys::window().context("browser window is unavailable")?;
     let mut callback = None;
     let mut timer = None;
@@ -516,11 +622,7 @@ async fn fetch_browser_open_models(url: &str, people: bool) -> Result<()> {
             crystal_voxel_view::terrain_worker::browser_scenery_sources(None);
             return Ok(());
         }
-        anyhow::ensure!(
-            response.ok(),
-            "artwork: HTTP {}",
-            response.status()
-        );
+        anyhow::ensure!(response.ok(), "artwork: HTTP {}", response.status());
         let text_value = JsFuture::from(
             response
                 .text()
@@ -528,7 +630,9 @@ async fn fetch_browser_open_models(url: &str, people: bool) -> Result<()> {
         )
         .await
         .map_err(|e| anyhow::anyhow!("read artwork: {e:?}"))?;
-        let text = text_value.as_string().context("artwork response is not text")?;
+        let text = text_value
+            .as_string()
+            .context("artwork response is not text")?;
         if people {
             crystal_voxel_view::install_open_people_bundle(&text)
         } else {
@@ -540,7 +644,10 @@ async fn fetch_browser_open_models(url: &str, people: bool) -> Result<()> {
             crystal_voxel_view::actor_worker::browser_people_sources_value(text_value, text.len());
         } else {
             #[cfg(feature = "terrain-worker-qa")]
-            crystal_voxel_view::terrain_worker::browser_scenery_sources_value(text_value, text.len());
+            crystal_voxel_view::terrain_worker::browser_scenery_sources_value(
+                text_value,
+                text.len(),
+            );
         }
         Ok(())
     };
@@ -934,18 +1041,34 @@ fn default_save_path(pack_directory: &Path, runtime: &CrystalRuntime) -> Result<
     let directory = desktop_paths::save_root().context("user data directory is unavailable")?;
     #[cfg(not(feature = "desktop-app"))]
     let directory = pack_directory.join("saves");
-    let preferred = directory.join(format!("{}.{}", desktop_paths::save_stem(
-        runtime.modpack().id(), runtime.modpack().hash(), &runtime.pack_identity().content_hash), SAVE_EXTENSION));
+    let preferred = directory.join(format!(
+        "{}.{}",
+        desktop_paths::save_stem(
+            runtime.modpack().id(),
+            runtime.modpack().hash(),
+            &runtime.pack_identity().content_hash
+        ),
+        SAVE_EXTENSION
+    ));
     if preferred.exists() || crystal_core::save::save_backup_path(&preferred).exists() {
         return Ok(preferred);
     }
     if legacy.exists() || crystal_core::save::save_backup_path(&legacy).exists() {
         // Keep usable portable paths; move overly long names to a bounded
         // name without deleting or overwriting either recovery generation.
-        if filename.len() <= 200 { return Ok(legacy); }
-        for (source, destination) in [(legacy.clone(), preferred.clone()),
-            (crystal_core::save::save_backup_path(&legacy), crystal_core::save::save_backup_path(&preferred))] {
-            if source.exists() { desktop_paths::copy_save_if_missing(&source, &destination)?; }
+        if filename.len() <= 200 {
+            return Ok(legacy);
+        }
+        for (source, destination) in [
+            (legacy.clone(), preferred.clone()),
+            (
+                crystal_core::save::save_backup_path(&legacy),
+                crystal_core::save::save_backup_path(&preferred),
+            ),
+        ] {
+            if source.exists() {
+                desktop_paths::copy_save_if_missing(&source, &destination)?;
+            }
         }
     }
     Ok(preferred)
@@ -1102,7 +1225,11 @@ mod tests {
             PathBuf::from("/opt/crystal/core-modular.crystalpack")
         );
         assert_eq!(
-            resolve_pack_path_from(None, Path::new("/Applications/Geothite.app/Contents/MacOS/Geothite")).unwrap(),
+            resolve_pack_path_from(
+                None,
+                Path::new("/Applications/Geothite.app/Contents/MacOS/Geothite")
+            )
+            .unwrap(),
             PathBuf::from("/Applications/Geothite.app/Contents/Resources/core-modular.crystalpack")
         );
     }

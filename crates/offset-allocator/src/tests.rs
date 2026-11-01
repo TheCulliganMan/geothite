@@ -8,13 +8,20 @@ use crate::{ext, small_float, Allocator};
 fn sparse_slabs_do_not_materialize_the_whole_metadata_pool() {
     let mut allocator: Allocator = Allocator::new(16 * 1024 * 1024);
     let mut allocations = Vec::new();
-    for _ in 0..1000 { allocations.push(allocator.allocate(64).unwrap()); }
+    for _ in 0..1000 {
+        allocations.push(allocator.allocate(64).unwrap());
+    }
     // Actual slab usage should determine record storage, while the upstream
     // logical pool still supports 128K indices and subsequent growth.
     assert_eq!(allocator.max_allocs, 128 * 1024);
     assert!(allocator.nodes.capacity() < allocator.max_allocs as usize / 16);
-    for allocation in allocations { allocator.free(allocation); }
-    assert_eq!(allocator.storage_report().total_free_space, 16 * 1024 * 1024);
+    for allocation in allocations {
+        allocator.free(allocation);
+    }
+    assert_eq!(
+        allocator.storage_report().total_free_space,
+        16 * 1024 * 1024
+    );
     allocator.reset();
     assert_eq!(allocator.allocate(16 * 1024 * 1024).unwrap().offset, 0);
 }

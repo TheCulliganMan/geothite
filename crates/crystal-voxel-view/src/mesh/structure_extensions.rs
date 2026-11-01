@@ -220,16 +220,30 @@ pub(super) fn append_building(
             for by in 0..2 {
                 for bx in 0..p.width / 4 {
                     let id = cells[(p.row + by * 4) * g.width + p.column + bx * 4]
-                        .source.metatile_id;
-                    blocks.push((id, [b[0] + (bx * 4 + 2) as f32 * g.tile_width,
-                        b[2] + (by * 4 + 2) as f32 * u]));
+                        .source
+                        .metatile_id;
+                    blocks.push((
+                        id,
+                        [
+                            b[0] + (bx * 4 + 2) as f32 * g.tile_width,
+                            b[2] + (by * 4 + 2) as f32 * u,
+                        ],
+                    ));
                 }
             }
             let contour = ice_shelf::contour(&blocks, g);
             for (id, center) in blocks {
                 let model_kind = ice_kind(id).expect("validated shelf art");
-                ice_shelf::append(&mut mesh.solid, model_kind, id, center, base, g,
-                    map_origin, &contour);
+                ice_shelf::append(
+                    &mut mesh.solid,
+                    model_kind,
+                    id,
+                    center,
+                    base,
+                    g,
+                    map_origin,
+                    &contour,
+                );
             }
             "world-exterior/connected_ice_shelf"
         }
@@ -429,9 +443,13 @@ mod tests {
         let cells = tiles.iter().collect::<Vec<_>>();
         assert!(native_mesa(&cells, &g, p));
         assert!(!super::building_placements("BlackthornCity", &cells, &g).contains(&p));
-        assert!(super::preferred_cells("BlackthornCity", &cells, &g)
-            .iter().enumerate().all(|(i, reserved)| !reserved ||
-                shape_for_source(&cells[i].source).solid_kind() == SolidKind::Tree));
+        assert!(
+            super::preferred_cells("BlackthornCity", &cells, &g)
+                .iter()
+                .enumerate()
+                .all(|(i, reserved)| !reserved
+                    || shape_for_source(&cells[i].source).solid_kind() == SolidKind::Tree)
+        );
     }
 
     #[test]
@@ -492,14 +510,18 @@ mod tests {
             m.authored_cells = vec![None; tiles.len()];
             let mut claimed = vec![false; tiles.len()];
             let shapes = vec![CellShape::Flat; tiles.len()];
-            assert!(append_building(&mut m, &refs, &shapes, &g, p, &mut claimed, [0, 0]));
+            assert!(append_building(
+                &mut m,
+                &refs,
+                &shapes,
+                &g,
+                p,
+                &mut claimed,
+                [0, 0]
+            ));
             for y in 0..g.height {
                 for x in 0..g.width {
-                    let expected = if y < p.roof_rows {
-                        16.
-                    } else {
-                        0.
-                    };
+                    let expected = if y < p.roof_rows { 16. } else { 0. };
                     assert_eq!(m.footing_heights[y * g.width + x], expected);
                     assert_eq!(claimed[y * g.width + x], y < p.height);
                 }

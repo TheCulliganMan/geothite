@@ -106,10 +106,10 @@ pub(crate) struct Model {
     gym_orb_pixels: Option<Vec<[usize; 2]>>,
     mansion_hut_materials: Option<Vec<u8>>,
     shrine_materials: Option<Vec<u8>>,
-    hall_terminal_pixels: Option<Vec<[usize;2]>>,
-    broad_tree_pixels: Option<Vec<[usize;2]>>,
-    league_wall_pixels: Option<Vec<[usize;2]>>,
-    harbor_pixels: Option<Vec<[usize;2]>>,
+    hall_terminal_pixels: Option<Vec<[usize; 2]>>,
+    broad_tree_pixels: Option<Vec<[usize; 2]>>,
+    league_wall_pixels: Option<Vec<[usize; 2]>>,
+    harbor_pixels: Option<Vec<[usize; 2]>>,
     theater_stage_materials: Option<Vec<u8>>,
     link_materials: Option<Vec<u8>>,
     min: [f32; 3],
@@ -126,21 +126,43 @@ impl Model {
         let mut timber_pixels = Vec::new();
         let mut named_timber = matches!(export.name.as_str(), "timber_wall" | "timber_column");
         let mut orb_pixels = Vec::new();
-        let mut hut_materials=Vec::new();let mut hut_valid=export.name=="roof_access_hut";
-        let mut hut_seen=0u8;
-        let mut shrine_roles=Vec::new();let mut shrine_seen=0u8;
-        let mut shrine_valid=matches!(export.name.as_str(),"shrine_dragon_rail"|"shrine_dragon_mask");
+        let mut hut_materials = Vec::new();
+        let mut hut_valid = export.name == "roof_access_hut";
+        let mut hut_seen = 0u8;
+        let mut shrine_roles = Vec::new();
+        let mut shrine_seen = 0u8;
+        let mut shrine_valid = matches!(
+            export.name.as_str(),
+            "shrine_dragon_rail" | "shrine_dragon_mask"
+        );
         let mut named_orb = export.name == "league_podium";
-        let mut hall_pixels=Vec::new();let mut hall_valid=export.name=="hall_of_fame_terminal";
-        let mut tree_pixels=Vec::new();let mut tree_valid=export.name=="azalea_broad_tree";
-        let mut tree_seen=0u8;
-        let mut league_pixels=Vec::new();let mut league_valid=export.name=="league_wall";let mut league_seen=0u8;
-        let mut harbor_pixels=Vec::new();let mut harbor_valid=export.name=="harbor_bollard";
-        let mut harbor_seen=0u8;
-        let mut stage_roles=Vec::new();let mut stage_valid=matches!(export.name.as_str(),"theater_platform"|"theater_backdrop");
-        let mut link_roles=Vec::new();let mut link_seen=0u8;
-        let mut link_valid=matches!(export.name.as_str(),"link_battle_console"|"link_trade_console"|"link_room_receiver");
-        let link_expected=if export.name=="link_trade_console" {0x7d}else{0x3f};
+        let mut hall_pixels = Vec::new();
+        let mut hall_valid = export.name == "hall_of_fame_terminal";
+        let mut tree_pixels = Vec::new();
+        let mut tree_valid = export.name == "azalea_broad_tree";
+        let mut tree_seen = 0u8;
+        let mut league_pixels = Vec::new();
+        let mut league_valid = export.name == "league_wall";
+        let mut league_seen = 0u8;
+        let mut harbor_pixels = Vec::new();
+        let mut harbor_valid = export.name == "harbor_bollard";
+        let mut harbor_seen = 0u8;
+        let mut stage_roles = Vec::new();
+        let mut stage_valid = matches!(
+            export.name.as_str(),
+            "theater_platform" | "theater_backdrop"
+        );
+        let mut link_roles = Vec::new();
+        let mut link_seen = 0u8;
+        let mut link_valid = matches!(
+            export.name.as_str(),
+            "link_battle_console" | "link_trade_console" | "link_room_receiver"
+        );
+        let link_expected = if export.name == "link_trade_console" {
+            0x7d
+        } else {
+            0x3f
+        };
         let mut min = [f32::INFINITY; 3];
         let mut max = [f32::NEG_INFINITY; 3];
         for p in export.primitives {
@@ -244,84 +266,176 @@ impl Model {
                 "wood_dark" => [0, 1],
                 "steel" => [4, 0],
                 "stone" if export.name == "timber_column" => [4, 0],
-                _ => { named_timber = false; [0, 0] }
+                _ => {
+                    named_timber = false;
+                    [0, 0]
+                }
             };
             // Refinement belongs to the current named primitive; include its
             // added vertices rather than guessing ownership by original count.
             timber_pixels.extend(std::iter::repeat_n(
-                timber_pixel, surface.positions.len() - base as usize));
-            if export.name=="hall_of_fame_terminal" {
-                let pixel=match p.name.as_str() {
-                    "blue"|"cloth_light"=>Some([4,4]),
-                    "glass"|"ink"|"red"=>Some([4,12]),
-                    "ice_light"|"metal_light"=>Some([2,2]),
-                    "steel"=>Some([4,20]),_=>None,
+                timber_pixel,
+                surface.positions.len() - base as usize,
+            ));
+            if export.name == "hall_of_fame_terminal" {
+                let pixel = match p.name.as_str() {
+                    "blue" | "cloth_light" => Some([4, 4]),
+                    "glass" | "ink" | "red" => Some([4, 12]),
+                    "ice_light" | "metal_light" => Some([2, 2]),
+                    "steel" => Some([4, 20]),
+                    _ => None,
                 };
-                if let Some(pixel)=pixel {hall_pixels.extend(std::iter::repeat_n(pixel,surface.positions.len()-base as usize));}
-                else {hall_valid=false;}
+                if let Some(pixel) = pixel {
+                    hall_pixels.extend(std::iter::repeat_n(
+                        pixel,
+                        surface.positions.len() - base as usize,
+                    ));
+                } else {
+                    hall_valid = false;
+                }
             }
-            if export.name=="harbor_bollard" {
-                let role=match p.name.as_str() {
-                    "stone"=>Some(([8,9],1)),"stone_light"=>Some(([4,4],2)),
-                    "steel"=>Some(([5,0],4)),_=>None,
+            if export.name == "harbor_bollard" {
+                let role = match p.name.as_str() {
+                    "stone" => Some(([8, 9], 1)),
+                    "stone_light" => Some(([4, 4], 2)),
+                    "steel" => Some(([5, 0], 4)),
+                    _ => None,
                 };
-                if let Some((pixel,bit))=role {
-                    harbor_seen|=bit;
-                    harbor_pixels.extend(std::iter::repeat_n(pixel,surface.positions.len()-base as usize));
-                } else {harbor_valid=false;}
+                if let Some((pixel, bit)) = role {
+                    harbor_seen |= bit;
+                    harbor_pixels.extend(std::iter::repeat_n(
+                        pixel,
+                        surface.positions.len() - base as usize,
+                    ));
+                } else {
+                    harbor_valid = false;
+                }
             }
-            if matches!(export.name.as_str(),"theater_platform"|"theater_backdrop") {
-                let role=if export.name=="theater_backdrop" {match p.material.as_str() {
-                    "paper"|"paper_light"=>Some(1),"oak"|"oak_cut"|"edge"=>Some(0),
-                    "ink"|"plum"=>Some(2),_=>None,
-                }}else{match p.material.as_str() {
-                    "reed"|"reed_light"|"oak"=>Some(0),"oak_cut"=>Some(1),
-                    "walnut"|"edge"=>Some(2),_=>None,
-                }};
-                if let Some(role)=role {stage_roles.extend(std::iter::repeat_n(role,surface.positions.len()-base as usize));}
-                else {stage_valid=false;}
+            if matches!(
+                export.name.as_str(),
+                "theater_platform" | "theater_backdrop"
+            ) {
+                let role = if export.name == "theater_backdrop" {
+                    match p.material.as_str() {
+                        "paper" | "paper_light" => Some(1),
+                        "oak" | "oak_cut" | "edge" => Some(0),
+                        "ink" | "plum" => Some(2),
+                        _ => None,
+                    }
+                } else {
+                    match p.material.as_str() {
+                        "reed" | "reed_light" | "oak" => Some(0),
+                        "oak_cut" => Some(1),
+                        "walnut" | "edge" => Some(2),
+                        _ => None,
+                    }
+                };
+                if let Some(role) = role {
+                    stage_roles.extend(std::iter::repeat_n(
+                        role,
+                        surface.positions.len() - base as usize,
+                    ));
+                } else {
+                    stage_valid = false;
+                }
             }
             if link_valid {
-                let role=match p.name.as_str() {"cloth"=>Some(0),"cloth_light"=>Some(1),
-                    "glass"=>Some(2),"ink"=>Some(3),"metal_light"=>Some(4),
-                    "steel"=>Some(5),"red"=>Some(6),_=>None};
-                if let Some(role)=role {link_seen|=1<<role;
-                    link_roles.extend(std::iter::repeat_n(role,surface.positions.len()-base as usize));
-                }else {link_valid=false;}
+                let role = match p.name.as_str() {
+                    "cloth" => Some(0),
+                    "cloth_light" => Some(1),
+                    "glass" => Some(2),
+                    "ink" => Some(3),
+                    "metal_light" => Some(4),
+                    "steel" => Some(5),
+                    "red" => Some(6),
+                    _ => None,
+                };
+                if let Some(role) = role {
+                    link_seen |= 1 << role;
+                    link_roles.extend(std::iter::repeat_n(
+                        role,
+                        surface.positions.len() - base as usize,
+                    ));
+                } else {
+                    link_valid = false;
+                }
             }
             if league_valid {
-                let role=match p.name.as_str() {
-                    "brass"=>Some((0,[1,3])),"dark_rock"=>Some((1,[2,4])),
-                    "stone"=>Some((2,[2,2])),"stone_light"=>Some((3,[1,3])),_=>None,
+                let role = match p.name.as_str() {
+                    "brass" => Some((0, [1, 3])),
+                    "dark_rock" => Some((1, [2, 4])),
+                    "stone" => Some((2, [2, 2])),
+                    "stone_light" => Some((3, [1, 3])),
+                    _ => None,
                 };
-                if let Some((role,pixel))=role {league_seen|=1<<role;
-                    league_pixels.extend(std::iter::repeat_n(pixel,surface.positions.len()-base as usize));
-                }else{league_valid=false;}
+                if let Some((role, pixel)) = role {
+                    league_seen |= 1 << role;
+                    league_pixels.extend(std::iter::repeat_n(
+                        pixel,
+                        surface.positions.len() - base as usize,
+                    ));
+                } else {
+                    league_valid = false;
+                }
             }
             if tree_valid {
-                let role=match p.name.rsplit(':').next().unwrap_or("") {
-                    "leaf_dark"=>Some((0,[8,3])), "leaf"=>Some((1,[7,3])),
-                    "leaf_light"=>Some((2,[6,3])), "leaf_gold"=>Some((3,[7,3])),
-                    "bark"=>Some((4,[9,18])), "bark_light"=>Some((5,[8,19])), _=>None,
+                let role = match p.name.rsplit(':').next().unwrap_or("") {
+                    "leaf_dark" => Some((0, [8, 3])),
+                    "leaf" => Some((1, [7, 3])),
+                    "leaf_light" => Some((2, [6, 3])),
+                    "leaf_gold" => Some((3, [7, 3])),
+                    "bark" => Some((4, [9, 18])),
+                    "bark_light" => Some((5, [8, 19])),
+                    _ => None,
                 };
-                if let Some((role,pixel))=role {tree_seen|=1<<role;
-                    tree_pixels.extend(std::iter::repeat_n(pixel,surface.positions.len()-base as usize));
-                }else{tree_valid=false;}
+                if let Some((role, pixel)) = role {
+                    tree_seen |= 1 << role;
+                    tree_pixels.extend(std::iter::repeat_n(
+                        pixel,
+                        surface.positions.len() - base as usize,
+                    ));
+                } else {
+                    tree_valid = false;
+                }
             }
-            if export.name=="roof_access_hut" {
-                let role=match p.name.as_str() {"metal_light"=>Some(0),"cloth"=>Some(1),
-                    "cloth_light"=>Some(2),"wood"=>Some(3),"wood_dark"=>Some(4),
-                    "wood_light"=>Some(5),"brass"=>Some(6),_=>None};
-                if let Some(role)=role {hut_seen|=1<<role;
-                    hut_materials.extend(std::iter::repeat_n(role,surface.positions.len()-base as usize));
-                }else {hut_valid=false;}
+            if export.name == "roof_access_hut" {
+                let role = match p.name.as_str() {
+                    "metal_light" => Some(0),
+                    "cloth" => Some(1),
+                    "cloth_light" => Some(2),
+                    "wood" => Some(3),
+                    "wood_dark" => Some(4),
+                    "wood_light" => Some(5),
+                    "brass" => Some(6),
+                    _ => None,
+                };
+                if let Some(role) = role {
+                    hut_seen |= 1 << role;
+                    hut_materials.extend(std::iter::repeat_n(
+                        role,
+                        surface.positions.len() - base as usize,
+                    ));
+                } else {
+                    hut_valid = false;
+                }
             }
             if shrine_valid {
-                let role=match p.name.as_str() {"wood_dark"|"ink"=>Some(0),"wood"=>Some(1),
-                    "wood_light"|"brass"=>Some(2),"cloth_light"=>Some(3),_=>None};
-                if let Some(role)=role {shrine_seen|=1<<role;
-                    shrine_roles.extend(std::iter::repeat_n(role,surface.positions.len()-base as usize));
-                }else{shrine_valid=false;}
+                let role = match p.name.as_str() {
+                    "wood_dark" | "ink" => Some(0),
+                    "wood" => Some(1),
+                    "wood_light" | "brass" => Some(2),
+                    "cloth_light" => Some(3),
+                    _ => None,
+                };
+                if let Some(role) = role {
+                    shrine_seen |= 1 << role;
+                    shrine_roles.extend(std::iter::repeat_n(
+                        role,
+                        surface.positions.len() - base as usize,
+                    ));
+                } else {
+                    shrine_valid = false;
+                }
             }
         }
         crate::scenery_finish::contain(&mut surface, min, max);
@@ -331,75 +445,167 @@ impl Model {
         // Refined geometry cannot inherit semantic ownership by vertex index.
         let gym_stone_pixels = (named_gym_stone
             && gym_stone_pixels.len() == surface.positions.len())
-            .then_some(gym_stone_pixels);
+        .then_some(gym_stone_pixels);
         let pewter_guardian_pixels = (named_guardian
-            && guardian_pixels.len() == surface.positions.len()).then_some(guardian_pixels);
-        let tower_timber_pixels = (named_timber
-            && timber_pixels.len() == surface.positions.len()).then_some(timber_pixels);
-        let gym_orb_pixels = (named_orb
-            && orb_pixels.len() == surface.positions.len()).then_some(orb_pixels);
-        let mansion_hut_materials=(hut_valid && hut_seen==127 && hut_materials.len()==surface.positions.len()).then_some(hut_materials);
-        let shrine_materials=(shrine_valid&&shrine_seen==15&&shrine_roles.len()==surface.positions.len()).then_some(shrine_roles);
-        Ok(Self { link_materials:(link_valid&&link_seen==link_expected&&link_roles.len()==surface.positions.len()).then_some(link_roles), harbor_pixels:(harbor_valid&&harbor_seen==7&&harbor_pixels.len()==surface.positions.len()).then_some(harbor_pixels), league_wall_pixels:(league_valid&&league_seen==15&&league_pixels.len()==surface.positions.len()).then_some(league_pixels), broad_tree_pixels:(tree_valid&&tree_seen==63&&tree_pixels.len()==surface.positions.len()).then_some(tree_pixels), theater_stage_materials:(stage_valid&&stage_roles.len()==surface.positions.len()).then_some(stage_roles), hall_terminal_pixels:(hall_valid&&hall_pixels.len()==surface.positions.len()).then_some(hall_pixels), mansion_hut_materials, shrine_materials, surface: surface.into(), gym_stone_pixels, pewter_guardian_pixels, tower_timber_pixels, gym_orb_pixels, min, max })
+            && guardian_pixels.len() == surface.positions.len())
+        .then_some(guardian_pixels);
+        let tower_timber_pixels = (named_timber && timber_pixels.len() == surface.positions.len())
+            .then_some(timber_pixels);
+        let gym_orb_pixels =
+            (named_orb && orb_pixels.len() == surface.positions.len()).then_some(orb_pixels);
+        let mansion_hut_materials =
+            (hut_valid && hut_seen == 127 && hut_materials.len() == surface.positions.len())
+                .then_some(hut_materials);
+        let shrine_materials =
+            (shrine_valid && shrine_seen == 15 && shrine_roles.len() == surface.positions.len())
+                .then_some(shrine_roles);
+        Ok(Self {
+            link_materials: (link_valid
+                && link_seen == link_expected
+                && link_roles.len() == surface.positions.len())
+            .then_some(link_roles),
+            harbor_pixels: (harbor_valid
+                && harbor_seen == 7
+                && harbor_pixels.len() == surface.positions.len())
+            .then_some(harbor_pixels),
+            league_wall_pixels: (league_valid
+                && league_seen == 15
+                && league_pixels.len() == surface.positions.len())
+            .then_some(league_pixels),
+            broad_tree_pixels: (tree_valid
+                && tree_seen == 63
+                && tree_pixels.len() == surface.positions.len())
+            .then_some(tree_pixels),
+            theater_stage_materials: (stage_valid && stage_roles.len() == surface.positions.len())
+                .then_some(stage_roles),
+            hall_terminal_pixels: (hall_valid && hall_pixels.len() == surface.positions.len())
+                .then_some(hall_pixels),
+            mansion_hut_materials,
+            shrine_materials,
+            surface: surface.into(),
+            gym_stone_pixels,
+            pewter_guardian_pixels,
+            tower_timber_pixels,
+            gym_orb_pixels,
+            min,
+            max,
+        })
     }
-    pub(crate) fn append_native_theater_stage(&self,target:&mut SurfaceMeshData,bounds:[f32;4],
-        height:f32,swatches:[[f32;2];3])->bool {
-        let Some(roles)=&self.theater_stage_materials else{return false;};
-        let first=target.positions.len();self.append(target,bounds,0.,height);
-        for (i,&role) in roles.iter().enumerate() {
-            let j=first+i;let timber=target.normals[j][1]>0.5;
-            target.uvs[j]=swatches[if timber {0}else{usize::from(role)}];
-            target.colors[j]=crate::interior_models::authored_face_color([1.;4],
-                Vec3::from_array(target.normals[j]));
+    pub(crate) fn append_native_theater_stage(
+        &self,
+        target: &mut SurfaceMeshData,
+        bounds: [f32; 4],
+        height: f32,
+        swatches: [[f32; 2]; 3],
+    ) -> bool {
+        let Some(roles) = &self.theater_stage_materials else {
+            return false;
+        };
+        let first = target.positions.len();
+        self.append(target, bounds, 0., height);
+        for (i, &role) in roles.iter().enumerate() {
+            let j = first + i;
+            let timber = target.normals[j][1] > 0.5;
+            target.uvs[j] = swatches[if timber { 0 } else { usize::from(role) }];
+            target.colors[j] = crate::interior_models::authored_face_color(
+                [1.; 4],
+                Vec3::from_array(target.normals[j]),
+            );
             if timber {
-                let p=self.surface.positions[i];
-                let grain=0.97+0.025*(p[0]*39.+p[2]*251.).sin();
-                for channel in &mut target.colors[j][..3] {*channel*=grain;}
+                let p = self.surface.positions[i];
+                let grain = 0.97 + 0.025 * (p[0] * 39. + p[2] * 251.).sin();
+                for channel in &mut target.colors[j][..3] {
+                    *channel *= grain;
+                }
             }
         }
         true
     }
-    pub(crate) fn append_native_theater_backdrop(&self,target:&mut SurfaceMeshData,bounds:[f32;4],
-        base:f32,height:f32,swatches:[[f32;2];3])->bool {
-        let Some(roles)=&self.theater_stage_materials else{return false;};
-        let first=target.positions.len();self.append(target,bounds,base,height);
-        for (i,&role) in roles.iter().enumerate() {
-            let j=first+i;target.uvs[j]=swatches[usize::from(role)];
-            target.colors[j]=crate::interior_models::authored_face_color([1.;4],
-                Vec3::from_array(target.normals[j]));
+    pub(crate) fn append_native_theater_backdrop(
+        &self,
+        target: &mut SurfaceMeshData,
+        bounds: [f32; 4],
+        base: f32,
+        height: f32,
+        swatches: [[f32; 2]; 3],
+    ) -> bool {
+        let Some(roles) = &self.theater_stage_materials else {
+            return false;
+        };
+        let first = target.positions.len();
+        self.append(target, bounds, base, height);
+        for (i, &role) in roles.iter().enumerate() {
+            let j = first + i;
+            target.uvs[j] = swatches[usize::from(role)];
+            target.colors[j] = crate::interior_models::authored_face_color(
+                [1.; 4],
+                Vec3::from_array(target.normals[j]),
+            );
         }
         true
     }
-    pub(crate) fn has_native_mansion_hut_materials(&self)->bool {self.mansion_hut_materials.is_some()}
-    pub(crate) fn has_native_shrine_materials(&self)->bool {self.shrine_materials.is_some()}
-    pub(crate) fn append_native_shrine(&self,target:&mut SurfaceMeshData,bounds:[f32;4],height:f32,
-        swatches:[[f32;2];4],turn:bool)->bool {
-        let Some(roles)=&self.shrine_materials else{return false;};
-        let first=target.positions.len();self.append(target,bounds,0.,height);
-        for (i,&role) in roles.iter().enumerate() {
-            let j=first+i;
+    pub(crate) fn has_native_mansion_hut_materials(&self) -> bool {
+        self.mansion_hut_materials.is_some()
+    }
+    pub(crate) fn has_native_shrine_materials(&self) -> bool {
+        self.shrine_materials.is_some()
+    }
+    pub(crate) fn append_native_shrine(
+        &self,
+        target: &mut SurfaceMeshData,
+        bounds: [f32; 4],
+        height: f32,
+        swatches: [[f32; 2]; 4],
+        turn: bool,
+    ) -> bool {
+        let Some(roles) = &self.shrine_materials else {
+            return false;
+        };
+        let first = target.positions.len();
+        self.append(target, bounds, 0., height);
+        for (i, &role) in roles.iter().enumerate() {
+            let j = first + i;
             if turn {
-                target.positions[j][0]=bounds[0]+bounds[1]-target.positions[j][0];
-                target.positions[j][2]=bounds[2]+bounds[3]-target.positions[j][2];
-                target.normals[j][0]*=-1.;target.normals[j][2]*=-1.;
+                target.positions[j][0] = bounds[0] + bounds[1] - target.positions[j][0];
+                target.positions[j][2] = bounds[2] + bounds[3] - target.positions[j][2];
+                target.normals[j][0] *= -1.;
+                target.normals[j][2] *= -1.;
             }
-            target.uvs[j]=swatches[usize::from(role)];
-            target.colors[j]=crate::interior_models::authored_face_color([1.;4],Vec3::from_array(target.normals[j]));
+            target.uvs[j] = swatches[usize::from(role)];
+            target.colors[j] = crate::interior_models::authored_face_color(
+                [1.; 4],
+                Vec3::from_array(target.normals[j]),
+            );
         }
         true
     }
-    pub(crate) fn append_native_mansion_hut(&self,target:&mut SurfaceMeshData,bounds:[f32;4],height:f32,
-        source_uv:impl Fn(u8)->[f32;2])->bool {
-        let Some(roles)=&self.mansion_hut_materials else{return false;};
-        let first=target.positions.len();self.append(target,bounds,0.,height);
-        for (i,&role) in roles.iter().enumerate() {
-            target.uvs[first+i]=source_uv(role);
-            target.colors[first+i]=crate::interior_models::authored_face_color([1.;4],Vec3::from_array(target.normals[first+i]));
+    pub(crate) fn append_native_mansion_hut(
+        &self,
+        target: &mut SurfaceMeshData,
+        bounds: [f32; 4],
+        height: f32,
+        source_uv: impl Fn(u8) -> [f32; 2],
+    ) -> bool {
+        let Some(roles) = &self.mansion_hut_materials else {
+            return false;
+        };
+        let first = target.positions.len();
+        self.append(target, bounds, 0., height);
+        for (i, &role) in roles.iter().enumerate() {
+            target.uvs[first + i] = source_uv(role);
+            target.colors[first + i] = crate::interior_models::authored_face_color(
+                [1.; 4],
+                Vec3::from_array(target.normals[first + i]),
+            );
         }
         true
     }
     #[cfg(test)]
-    pub(crate) fn shared_geometry(&self)->&std::sync::Arc<crate::shared_model_geometry::Geometry> {&self.surface.geometry}
+    pub(crate) fn shared_geometry(
+        &self,
+    ) -> &std::sync::Arc<crate::shared_model_geometry::Geometry> {
+        &self.surface.geometry
+    }
     /// Only the canonical named stone parts use live gym palette anchors.
     /// Geometry, fitted normals and the cached cave palette remain untouched.
     pub(crate) fn append_gym_stone(
@@ -409,94 +615,172 @@ impl Model {
         height: f32,
         source_uv: impl Fn([usize; 2]) -> [f32; 2],
     ) {
-        let pixels = self.gym_stone_pixels.as_ref().expect("named canonical gym stone");
+        let pixels = self
+            .gym_stone_pixels
+            .as_ref()
+            .expect("named canonical gym stone");
         self.append_source_colors(target, bounds, height, pixels, source_uv);
     }
     pub(crate) fn append_pewter_guardian(
-        &self, target: &mut SurfaceMeshData, bounds: [f32; 4], height: f32,
+        &self,
+        target: &mut SurfaceMeshData,
+        bounds: [f32; 4],
+        height: f32,
         source_uv: impl Fn([usize; 2]) -> [f32; 2],
     ) {
-        let pixels = self.pewter_guardian_pixels.as_ref().expect("named guardian assemblies");
+        let pixels = self
+            .pewter_guardian_pixels
+            .as_ref()
+            .expect("named guardian assemblies");
         self.append_source_colors(target, bounds, height, pixels, source_uv);
     }
     pub(crate) fn append_sprout_guardian(
-        &self, target: &mut SurfaceMeshData, bounds: [f32;4], height: f32,
-        source_uv: impl Fn([usize;2]) -> [f32;2],
+        &self,
+        target: &mut SurfaceMeshData,
+        bounds: [f32; 4],
+        height: f32,
+        source_uv: impl Fn([usize; 2]) -> [f32; 2],
     ) {
-        let regions = self.pewter_guardian_pixels.as_ref().expect("named guardian assemblies");
+        let regions = self
+            .pewter_guardian_pixels
+            .as_ref()
+            .expect("named guardian assemblies");
         // Semantic head/pedestal ranges stay on the cached original geometry.
         // Both verified Sprout head variants share these live color anchors.
-        self.append_source_colors(target,bounds,height,regions,|region| {
+        self.append_source_colors(target, bounds, height, regions, |region| {
             source_uv(match region {
-                [2,2] => [8,6],
-                [8,1] => [8,1],
-                [8,10] => [6,0],
-                [8,24] => [8,24],
-                [2,18] => [2,26],
-                [4,18] => [0,24],
+                [2, 2] => [8, 6],
+                [8, 1] => [8, 1],
+                [8, 10] => [6, 0],
+                [8, 24] => [8, 24],
+                [2, 18] => [2, 26],
+                [4, 18] => [0, 24],
                 _ => unreachable!("validated guardian material ownership"),
             })
         });
     }
     pub(crate) fn append_tower_timber(
-        &self, target: &mut SurfaceMeshData, bounds: [f32; 4], height: f32,
+        &self,
+        target: &mut SurfaceMeshData,
+        bounds: [f32; 4],
+        height: f32,
         source_uv: impl Fn([usize; 2]) -> [f32; 2],
     ) {
-        let pixels = self.tower_timber_pixels.as_ref().expect("named tower timber materials");
+        let pixels = self
+            .tower_timber_pixels
+            .as_ref()
+            .expect("named tower timber materials");
         let first = target.positions.len();
         self.append_source_colors(target, bounds, height, pixels, source_uv);
         for i in 0..target.positions.len() - first {
             // Keep model-local timber grain when replacing the original paint
             // with a live palette swatch. Iron pegs retain their plain finish.
             if pixels[i] != [4, 0] {
-                let grain = 1. + 0.10 * crate::scenery_finish::timber_grain(self.surface.positions[i]);
-                for channel in &mut target.colors[first + i][..3] { *channel *= grain; }
+                let grain =
+                    1. + 0.10 * crate::scenery_finish::timber_grain(self.surface.positions[i]);
+                for channel in &mut target.colors[first + i][..3] {
+                    *channel *= grain;
+                }
             }
         }
     }
     pub(crate) fn append_gym_orb(
-        &self, target: &mut SurfaceMeshData, bounds: [f32; 4], height: f32,
+        &self,
+        target: &mut SurfaceMeshData,
+        bounds: [f32; 4],
+        height: f32,
         source_uv: impl Fn([usize; 2]) -> [f32; 2],
     ) {
-        let pixels = self.gym_orb_pixels.as_ref().expect("named gym orb and pedestal assemblies");
+        let pixels = self
+            .gym_orb_pixels
+            .as_ref()
+            .expect("named gym orb and pedestal assemblies");
         self.append_source_colors(target, bounds, height, pixels, source_uv);
     }
-    pub(crate) fn append_native_hall_terminal(&self,target:&mut SurfaceMeshData,bounds:[f32;4],height:f32,
-        source_uv:impl Fn([usize;2])->[f32;2])->bool {
-        let Some(pixels)=&self.hall_terminal_pixels else {return false;};
-        self.append_source_colors(target,bounds,height,pixels,source_uv);true
+    pub(crate) fn append_native_hall_terminal(
+        &self,
+        target: &mut SurfaceMeshData,
+        bounds: [f32; 4],
+        height: f32,
+        source_uv: impl Fn([usize; 2]) -> [f32; 2],
+    ) -> bool {
+        let Some(pixels) = &self.hall_terminal_pixels else {
+            return false;
+        };
+        self.append_source_colors(target, bounds, height, pixels, source_uv);
+        true
     }
-    pub(crate) fn append_native_broad_tree(&self,target:&mut SurfaceMeshData,bounds:[f32;4],height:f32,
-        source_uv:impl Fn([usize;2])->[f32;2])->bool {
-        let Some(pixels)=&self.broad_tree_pixels else {return false;};
-        self.append_source_colors(target,bounds,height,pixels,source_uv);true
+    pub(crate) fn append_native_broad_tree(
+        &self,
+        target: &mut SurfaceMeshData,
+        bounds: [f32; 4],
+        height: f32,
+        source_uv: impl Fn([usize; 2]) -> [f32; 2],
+    ) -> bool {
+        let Some(pixels) = &self.broad_tree_pixels else {
+            return false;
+        };
+        self.append_source_colors(target, bounds, height, pixels, source_uv);
+        true
     }
-    pub(crate) fn append_native_league_wall(&self,target:&mut SurfaceMeshData,bounds:[f32;4],height:f32,
-        source_uv:impl Fn([usize;2])->[f32;2])->bool {
-        let Some(pixels)=&self.league_wall_pixels else {return false;};
-        self.append_source_colors(target,bounds,height,pixels,source_uv);true
+    pub(crate) fn append_native_league_wall(
+        &self,
+        target: &mut SurfaceMeshData,
+        bounds: [f32; 4],
+        height: f32,
+        source_uv: impl Fn([usize; 2]) -> [f32; 2],
+    ) -> bool {
+        let Some(pixels) = &self.league_wall_pixels else {
+            return false;
+        };
+        self.append_source_colors(target, bounds, height, pixels, source_uv);
+        true
     }
-    pub(crate) fn append_native_harbor_bollard(&self,target:&mut SurfaceMeshData,bounds:[f32;4],
-        base:f32,height:f32,source_uv:impl Fn([usize;2])->[f32;2])->bool {
-        let Some(pixels)=&self.harbor_pixels else{return false;};
-        let first=target.positions.len();self.append(target,bounds,base,height);
-        for (i,pixel) in pixels.iter().enumerate().take(target.positions.len()-first) {
-            target.uvs[first+i]=crate::scenery_finish::source_mineral_uv(source_uv(*pixel));
-            target.colors[first+i]=crate::interior_models::authored_face_color(
-                [1.;4],Vec3::from_array(target.normals[first+i]));
+    pub(crate) fn append_native_harbor_bollard(
+        &self,
+        target: &mut SurfaceMeshData,
+        bounds: [f32; 4],
+        base: f32,
+        height: f32,
+        source_uv: impl Fn([usize; 2]) -> [f32; 2],
+    ) -> bool {
+        let Some(pixels) = &self.harbor_pixels else {
+            return false;
+        };
+        let first = target.positions.len();
+        self.append(target, bounds, base, height);
+        for (i, pixel) in pixels
+            .iter()
+            .enumerate()
+            .take(target.positions.len() - first)
+        {
+            target.uvs[first + i] = crate::scenery_finish::source_mineral_uv(source_uv(*pixel));
+            target.colors[first + i] = crate::interior_models::authored_face_color(
+                [1.; 4],
+                Vec3::from_array(target.normals[first + i]),
+            );
         }
         true
     }
     fn append_source_colors(
-        &self, target: &mut SurfaceMeshData, bounds: [f32; 4], height: f32,
-        pixels: &[[usize; 2]], source_uv: impl Fn([usize; 2]) -> [f32; 2],
+        &self,
+        target: &mut SurfaceMeshData,
+        bounds: [f32; 4],
+        height: f32,
+        pixels: &[[usize; 2]],
+        source_uv: impl Fn([usize; 2]) -> [f32; 2],
     ) {
         let first = target.positions.len();
         self.append(target, bounds, 0., height);
-        for (i, pixel) in pixels.iter().enumerate().take(target.positions.len() - first) {
+        for (i, pixel) in pixels
+            .iter()
+            .enumerate()
+            .take(target.positions.len() - first)
+        {
             target.uvs[first + i] = source_uv(*pixel);
             target.colors[first + i] = crate::interior_models::authored_face_color(
-                [1.; 4], Vec3::from_array(target.normals[first + i]),
+                [1.; 4],
+                Vec3::from_array(target.normals[first + i]),
             );
         }
     }
@@ -546,13 +830,21 @@ impl Model {
     /// authored north gangway's top at the quay. The underwater hull stays
     /// below the sea; fitting its keel to water squashed the cabin and left
     /// the full hull sitting above the surface like a shallow barge.
-    pub(crate) fn append_docked_ferry(&self, target: &mut SurfaceMeshData,
-        bounds: [f32; 4], quay_height: f32) {
+    pub(crate) fn append_docked_ferry(
+        &self,
+        target: &mut SurfaceMeshData,
+        bounds: [f32; 4],
+        quay_height: f32,
+    ) {
         let scale = (bounds[1] - bounds[0]) / (self.max[0] - self.min[0]);
         // Named Gangway threshold: center1.065 + half-thickness0.0425.
         let gangway_top = 1.1075;
-        self.append(target, bounds, quay_height - (gangway_top - self.min[1]) * scale,
-            (self.max[1] - self.min[1]) * scale);
+        self.append(
+            target,
+            bounds,
+            quay_height - (gangway_top - self.min[1]) * scale,
+            (self.max[1] - self.min[1]) * scale,
+        );
     }
 
     /// Taller ship wall fit with an unchanged central window band. The
@@ -659,215 +951,444 @@ mod tests {
             let mut contact = 0;
             for (i, &point) in model.surface.positions.iter().enumerate() {
                 let fitted = target.positions[i];
-                assert!((fitted[1] - quay - (point[1] - 1.1075) * horizontal_scale).abs() < 0.00001);
-                assert!((fitted[0] - bounds[0] - (point[0] - model.min[0]) * horizontal_scale).abs() < 0.00002);
+                assert!(
+                    (fitted[1] - quay - (point[1] - 1.1075) * horizontal_scale).abs() < 0.00001
+                );
+                assert!(
+                    (fitted[0] - bounds[0] - (point[0] - model.min[0]) * horizontal_scale).abs()
+                        < 0.00002
+                );
                 if (point[1] - 1.1075).abs() < 0.000001 && point[2] < -1. {
-                    assert!((fitted[1] - quay).abs() < 0.00001); contact += 1;
+                    assert!((fitted[1] - quay).abs() < 0.00001);
+                    contact += 1;
                 }
-                if point[2] == model.min[2] { assert!((fitted[2] - bounds[2]).abs() < 0.00001); }
+                if point[2] == model.min[2] {
+                    assert!((fitted[2] - bounds[2]).abs() < 0.00001);
+                }
             }
-            assert!(contact > 0, "the actual authored gangway top must meet the quay");
-            assert!(target.positions.iter().any(|p| p[1] < crate::profile::WATER_HEIGHT * scale),
-                "the full keel cannot sit on top of water");
-            assert!(target.normals.iter().all(|n| (Vec3::from_array(*n).length() - 1.).abs() < 0.00001));
+            assert!(
+                contact > 0,
+                "the actual authored gangway top must meet the quay"
+            );
+            assert!(
+                target
+                    .positions
+                    .iter()
+                    .any(|p| p[1] < crate::profile::WATER_HEIGHT * scale),
+                "the full keel cannot sit on top of water"
+            );
+            assert!(
+                target
+                    .normals
+                    .iter()
+                    .all(|n| (Vec3::from_array(*n).length() - 1.).abs() < 0.00001)
+            );
             assert_eq!(target.indices, model.surface.indices);
         }
     }
 
     #[test]
     fn shared_ferry_has_recessed_glazing_clear_pockets_and_unchanged_bounds() {
-        let source=crate::model_storage::include_model!("models/dungeon_extensions/harbor_ferry.mesh.json");
-        let export:Export=crate::model_storage::parse(source).unwrap();
-        let model=Model::parse(source).unwrap();
-        assert_eq!(model.min,[-3.6,0.,-1.07]);assert_eq!(model.max,[3.36,2.36,0.9]);
-        assert!(export.primitives.iter().map(|p|p.indices.len()/3).sum::<usize>()<6000);
-        let point=|p:&Primitive,i:u32|Vec3::from_slice(&p.positions[i as usize*3..i as usize*3+3]);
-        let mut glazing=Vec::new();let mut walls=Vec::new();
-        for p in &export.primitives {for tri in p.indices.chunks_exact(3) {
-            let normal=Vec3::from_slice(&p.normals[tri[0] as usize*3..tri[0] as usize*3+3]);
-            if normal.z.abs()<0.99 {continue;}
-            let points=[point(p,tri[0]),point(p,tri[1]),point(p,tri[2])];
-            let center=(points[0]+points[1]+points[2])/3.;
-            if p.name=="glass" && normal.z*center.z>0. {
-                let skin=if center.y>1.7 {0.565}else{0.62};
-                assert!(center.z.abs()<skin-0.03,"glazing sits behind the original cabin skin");
-                glazing.push(center);
+        let source = crate::model_storage::include_model!(
+            "models/dungeon_extensions/harbor_ferry.mesh.json"
+        );
+        let export: Export = crate::model_storage::parse(source).unwrap();
+        let model = Model::parse(source).unwrap();
+        assert_eq!(model.min, [-3.6, 0., -1.07]);
+        assert_eq!(model.max, [3.36, 2.36, 0.9]);
+        assert!(
+            export
+                .primitives
+                .iter()
+                .map(|p| p.indices.len() / 3)
+                .sum::<usize>()
+                < 6000
+        );
+        let point = |p: &Primitive, i: u32| {
+            Vec3::from_slice(&p.positions[i as usize * 3..i as usize * 3 + 3])
+        };
+        let mut glazing = Vec::new();
+        let mut walls = Vec::new();
+        for p in &export.primitives {
+            for tri in p.indices.chunks_exact(3) {
+                let normal =
+                    Vec3::from_slice(&p.normals[tri[0] as usize * 3..tri[0] as usize * 3 + 3]);
+                if normal.z.abs() < 0.99 {
+                    continue;
+                }
+                let points = [point(p, tri[0]), point(p, tri[1]), point(p, tri[2])];
+                let center = (points[0] + points[1] + points[2]) / 3.;
+                if p.name == "glass" && normal.z * center.z > 0. {
+                    let skin = if center.y > 1.7 { 0.565 } else { 0.62 };
+                    assert!(
+                        center.z.abs() < skin - 0.03,
+                        "glazing sits behind the original cabin skin"
+                    );
+                    glazing.push(center);
+                }
+                if matches!(p.name.as_str(), "cloth" | "cloth_light") {
+                    walls.push((points, normal));
+                }
             }
-            if matches!(p.name.as_str(),"cloth"|"cloth_light") {walls.push((points,normal));}
-        }}
-        assert!(glazing.len()>=30,"passenger and bridge panes on both sides");
-        for pane in glazing {for (p,normal) in &walls {
-            let side=pane.z.signum();if normal.z*side<0.99 || p[0].z*side<=pane.z*side+0.02 {continue;}
-            let [a,b,c]=p.map(|v|bevy::prelude::Vec2::new(v.x,v.y));let q=bevy::prelude::Vec2::new(pane.x,pane.y);
-            let signs=[(b-a).perp_dot(q-a),(c-b).perp_dot(q-b),(a-c).perp_dot(q-c)];
-            let inside=signs.iter().all(|s|*s>0.000001)||signs.iter().all(|s|*s< -0.000001);
-            assert!(!inside,"the cabin wall cannot cover its recessed glazing");
-        }}
-        let mut a=SurfaceMeshData::default();let mut b=SurfaceMeshData::default();
-        model.append(&mut a,[0.,128.,0.,40.],-2.,28.);model.append(&mut b,[0.,128.,0.,40.],-2.,28.);
-        assert_eq!(a,b,"shared ferry geometry remains immutable across ports");
+        }
+        assert!(
+            glazing.len() >= 30,
+            "passenger and bridge panes on both sides"
+        );
+        for pane in glazing {
+            for (p, normal) in &walls {
+                let side = pane.z.signum();
+                if normal.z * side < 0.99 || p[0].z * side <= pane.z * side + 0.02 {
+                    continue;
+                }
+                let [a, b, c] = p.map(|v| bevy::prelude::Vec2::new(v.x, v.y));
+                let q = bevy::prelude::Vec2::new(pane.x, pane.y);
+                let signs = [
+                    (b - a).perp_dot(q - a),
+                    (c - b).perp_dot(q - b),
+                    (a - c).perp_dot(q - c),
+                ];
+                let inside =
+                    signs.iter().all(|s| *s > 0.000001) || signs.iter().all(|s| *s < -0.000001);
+                assert!(!inside, "the cabin wall cannot cover its recessed glazing");
+            }
+        }
+        let mut a = SurfaceMeshData::default();
+        let mut b = SurfaceMeshData::default();
+        model.append(&mut a, [0., 128., 0., 40.], -2., 28.);
+        model.append(&mut b, [0., 128., 0., 40.], -2., 28.);
+        assert_eq!(a, b, "shared ferry geometry remains immutable across ports");
     }
     #[test]
     fn native_harbor_paint_preserves_geometry_and_rejects_unknown_materials() {
-        let source=crate::model_storage::include_model!("models/dungeon_extensions/harbor_bollard.mesh.json");
-        let model=Model::parse(source).unwrap();let bounds=[8.,24.,16.,26.];
-        let mut plain=SurfaceMeshData::default();model.append(&mut plain,bounds,-2.,12.);
-        let mut native=SurfaceMeshData::default();
-        let sample=|p:[usize;2]|[p[0] as f32/16.,p[1] as f32/16.];
-        assert!(model.append_native_harbor_bollard(&mut native,bounds,-2.,12.,sample));
-        assert_eq!(plain.positions,native.positions);assert_eq!(plain.normals,native.normals);
-        assert_eq!(plain.indices,native.indices);
-        let coordinates=native.uvs.iter().map(|&uv|
-            crate::scenery_finish::source_mineral_coordinates(uv).unwrap()).collect::<Vec<_>>();
-        for pixel in [[8,9],[4,4],[5,0]] {assert!(coordinates.contains(&sample(pixel)));}
-        assert!(coordinates.iter().all(|uv|[[8,9],[4,4],[5,0]].map(sample).contains(uv)));
-        assert!(native.uvs.iter().all(|&uv|
-            crate::scenery_finish::source_atlas_coordinates(uv).is_none()));
-        assert!(crate::scenery_finish::source_mineral_coordinates(
-            crate::scenery_finish::source_atlas_uv([0.5,0.5])).is_none(),
-            "ordinary live atlas paint must not acquire the mineral finish");
-        let mut repeated=SurfaceMeshData::default();model.append(&mut repeated,bounds,-2.,12.);
-        assert_eq!(repeated,plain,"live paint cannot mutate the cached model");
-        let mut changed:serde_json::Value=crate::model_storage::parse(source).unwrap();
-        changed["primitives"][0]["name"]="unknown_harbor_material".into();
-        let unknown=Model::parse(changed.to_string().as_str()).unwrap();
-        let before=native.clone();
-        assert!(!unknown.append_native_harbor_bollard(&mut native,bounds,-2.,12.,sample));
-        assert_eq!(native,before,"unknown material cannot partially repaint a model");
+        let source = crate::model_storage::include_model!(
+            "models/dungeon_extensions/harbor_bollard.mesh.json"
+        );
+        let model = Model::parse(source).unwrap();
+        let bounds = [8., 24., 16., 26.];
+        let mut plain = SurfaceMeshData::default();
+        model.append(&mut plain, bounds, -2., 12.);
+        let mut native = SurfaceMeshData::default();
+        let sample = |p: [usize; 2]| [p[0] as f32 / 16., p[1] as f32 / 16.];
+        assert!(model.append_native_harbor_bollard(&mut native, bounds, -2., 12., sample));
+        assert_eq!(plain.positions, native.positions);
+        assert_eq!(plain.normals, native.normals);
+        assert_eq!(plain.indices, native.indices);
+        let coordinates = native
+            .uvs
+            .iter()
+            .map(|&uv| crate::scenery_finish::source_mineral_coordinates(uv).unwrap())
+            .collect::<Vec<_>>();
+        for pixel in [[8, 9], [4, 4], [5, 0]] {
+            assert!(coordinates.contains(&sample(pixel)));
+        }
+        assert!(
+            coordinates
+                .iter()
+                .all(|uv| [[8, 9], [4, 4], [5, 0]].map(sample).contains(uv))
+        );
+        assert!(
+            native
+                .uvs
+                .iter()
+                .all(|&uv| crate::scenery_finish::source_atlas_coordinates(uv).is_none())
+        );
+        assert!(
+            crate::scenery_finish::source_mineral_coordinates(
+                crate::scenery_finish::source_atlas_uv([0.5, 0.5])
+            )
+            .is_none(),
+            "ordinary live atlas paint must not acquire the mineral finish"
+        );
+        let mut repeated = SurfaceMeshData::default();
+        model.append(&mut repeated, bounds, -2., 12.);
+        assert_eq!(repeated, plain, "live paint cannot mutate the cached model");
+        let mut changed: serde_json::Value = crate::model_storage::parse(source).unwrap();
+        changed["primitives"][0]["name"] = "unknown_harbor_material".into();
+        let unknown = Model::parse(changed.to_string().as_str()).unwrap();
+        let before = native.clone();
+        assert!(!unknown.append_native_harbor_bollard(&mut native, bounds, -2., 12., sample));
+        assert_eq!(
+            native, before,
+            "unknown material cannot partially repaint a model"
+        );
     }
     #[test]
     fn native_league_wall_binds_all_named_materials_without_changing_cached_geometry() {
-        let source=include_str!("../models/dungeon_extensions/league_wall.mesh.json");
-        let model=Model::parse(source).unwrap();let before=model.surface.clone();
-        let mut original=SurfaceMeshData::default();let mut native=SurfaceMeshData::default();
-        model.append(&mut original,[0.,32.,0.,5.],0.,16.);
-        assert!(model.append_native_league_wall(&mut native,[0.,32.,0.,5.],16.,|p|[p[0]as f32,p[1]as f32]));
-        assert_eq!(native.positions,original.positions);assert_eq!(native.normals,original.normals);
-        assert_eq!(native.indices,original.indices);assert_eq!(model.surface.colors,before.colors);
-        assert_eq!(model.surface.uvs,before.uvs);
-        assert!(native.uvs.iter().all(|p|[[1.,3.],[2.,4.],[2.,2.]].contains(p)));
-        let document:serde_json::Value=serde_json::from_str(source).unwrap();
-        for role in ["brass","dark_rock","stone","stone_light"] {
-            let mut changed=document.clone();let mut found=false;
+        let source = include_str!("../models/dungeon_extensions/league_wall.mesh.json");
+        let model = Model::parse(source).unwrap();
+        let before = model.surface.clone();
+        let mut original = SurfaceMeshData::default();
+        let mut native = SurfaceMeshData::default();
+        model.append(&mut original, [0., 32., 0., 5.], 0., 16.);
+        assert!(
+            model.append_native_league_wall(&mut native, [0., 32., 0., 5.], 16., |p| [
+                p[0] as f32,
+                p[1] as f32
+            ])
+        );
+        assert_eq!(native.positions, original.positions);
+        assert_eq!(native.normals, original.normals);
+        assert_eq!(native.indices, original.indices);
+        assert_eq!(model.surface.colors, before.colors);
+        assert_eq!(model.surface.uvs, before.uvs);
+        assert!(
+            native
+                .uvs
+                .iter()
+                .all(|p| [[1., 3.], [2., 4.], [2., 2.]].contains(p))
+        );
+        let document: serde_json::Value = serde_json::from_str(source).unwrap();
+        for role in ["brass", "dark_rock", "stone", "stone_light"] {
+            let mut changed = document.clone();
+            let mut found = false;
             for primitive in changed["primitives"].as_array_mut().unwrap() {
-                if primitive["name"].as_str()==Some(role) {primitive["name"]="unknown".into();found=true;}
+                if primitive["name"].as_str() == Some(role) {
+                    primitive["name"] = "unknown".into();
+                    found = true;
+                }
             }
-            assert!(found);let changed=serde_json::to_string(&changed).unwrap();
-            let unknown=Model::parse(&changed).unwrap();let mut out=native.clone();let before=out.clone();
-            assert!(!unknown.append_native_league_wall(&mut out,[0.,32.,0.,5.],16.,|_|[0.,0.]));
-            assert_eq!(out,before,"unknown materials cannot partially repaint the target");
+            assert!(found);
+            let changed = serde_json::to_string(&changed).unwrap();
+            let unknown = Model::parse(&changed).unwrap();
+            let mut out = native.clone();
+            let before = out.clone();
+            assert!(
+                !unknown.append_native_league_wall(&mut out, [0., 32., 0., 5.], 16., |_| [0., 0.])
+            );
+            assert_eq!(
+                out, before,
+                "unknown materials cannot partially repaint the target"
+            );
         }
     }
     #[test]
     fn native_broad_tree_requires_all_material_roles_and_preserves_cached_geometry() {
-        let source=include_str!("../models/gym_scenery/azalea_broad_tree.mesh.json");
-        let model=Model::parse(source).unwrap();let before=model.surface.clone();
-        let bounds=[0.,24.,0.,24.];
-        let mut original=SurfaceMeshData::default();let mut painted=SurfaceMeshData::default();
-        model.append(&mut original,bounds,0.,28.);
-        assert!(model.append_native_broad_tree(&mut painted,bounds,28.,|p|[p[0]as f32,p[1]as f32]));
-        assert_eq!(original.positions,painted.positions);
-        assert_eq!(original.normals,painted.normals);assert_eq!(original.indices,painted.indices);
-        assert_eq!(model.surface.colors,before.colors);
-        assert_eq!(model.surface.uvs,before.uvs);
-        let document:serde_json::Value=serde_json::from_str(source).unwrap();
-        for role in ["leaf_dark","leaf","leaf_light","leaf_gold","bark","bark_light"] {
-            let mut changed=document.clone();let mut found=false;
+        let source = include_str!("../models/gym_scenery/azalea_broad_tree.mesh.json");
+        let model = Model::parse(source).unwrap();
+        let before = model.surface.clone();
+        let bounds = [0., 24., 0., 24.];
+        let mut original = SurfaceMeshData::default();
+        let mut painted = SurfaceMeshData::default();
+        model.append(&mut original, bounds, 0., 28.);
+        assert!(
+            model.append_native_broad_tree(&mut painted, bounds, 28., |p| [
+                p[0] as f32,
+                p[1] as f32
+            ])
+        );
+        assert_eq!(original.positions, painted.positions);
+        assert_eq!(original.normals, painted.normals);
+        assert_eq!(original.indices, painted.indices);
+        assert_eq!(model.surface.colors, before.colors);
+        assert_eq!(model.surface.uvs, before.uvs);
+        let document: serde_json::Value = serde_json::from_str(source).unwrap();
+        for role in [
+            "leaf_dark",
+            "leaf",
+            "leaf_light",
+            "leaf_gold",
+            "bark",
+            "bark_light",
+        ] {
+            let mut changed = document.clone();
+            let mut found = false;
             for primitive in changed["primitives"].as_array_mut().unwrap() {
-                let name=primitive["name"].as_str().unwrap();
-                if name.rsplit(':').next()==Some(role) {
-                    primitive["name"]=format!("{}:unknown",name.rsplit_once(':').unwrap().0).into();
-                    found=true;
+                let name = primitive["name"].as_str().unwrap();
+                if name.rsplit(':').next() == Some(role) {
+                    primitive["name"] =
+                        format!("{}:unknown", name.rsplit_once(':').unwrap().0).into();
+                    found = true;
                 }
             }
-            assert!(found,"the canonical tree must contain {role}");
-            let changed=serde_json::to_string(&changed).unwrap();
-            let unknown=Model::parse(&changed).unwrap();
-            let mut target=painted.clone();let before=target.clone();
-            assert!(!unknown.append_native_broad_tree(&mut target,bounds,28.,|_|[0.,0.]));
-            assert_eq!(target,before,"unknown material roles cannot partially repaint a tree");
+            assert!(found, "the canonical tree must contain {role}");
+            let changed = serde_json::to_string(&changed).unwrap();
+            let unknown = Model::parse(&changed).unwrap();
+            let mut target = painted.clone();
+            let before = target.clone();
+            assert!(!unknown.append_native_broad_tree(&mut target, bounds, 28., |_| [0., 0.]));
+            assert_eq!(
+                target, before,
+                "unknown material roles cannot partially repaint a tree"
+            );
         }
     }
     #[test]
     fn native_theater_backdrop_keeps_geometry_and_binds_every_material() {
-        let source=include_str!("../models/traditional_room/theater_backdrop.mesh.json");
-        let model=Model::parse(source).unwrap();let before=model.surface.clone();
-        let mut original=SurfaceMeshData::default();let mut painted=SurfaceMeshData::default();
-        let bounds=[0.,192.,0.,4.];let swatches=[[0.1,0.2],[0.3,0.4],[0.5,0.6]];
-        model.append(&mut original,bounds,8.,16.);
-        assert!(model.append_native_theater_backdrop(&mut painted,bounds,8.,16.,swatches));
-        assert_eq!(original.positions,painted.positions);assert_eq!(original.normals,painted.normals);
-        assert_eq!(original.indices,painted.indices);assert_eq!(model.surface.colors,before.colors);
-        assert!(painted.uvs.iter().all(|uv|swatches.contains(uv)));
-        for name in ["paper","paper_light","oak","oak_cut","edge","ink","plum"] {
-            let changed=source.replace(&format!("\"material\":\"{name}\""),"\"material\":\"unknown\"");
-            let unknown=Model::parse(&changed).unwrap();let mut out=SurfaceMeshData::default();
-            assert!(!unknown.append_native_theater_backdrop(&mut out,bounds,8.,16.,swatches));
+        let source = include_str!("../models/traditional_room/theater_backdrop.mesh.json");
+        let model = Model::parse(source).unwrap();
+        let before = model.surface.clone();
+        let mut original = SurfaceMeshData::default();
+        let mut painted = SurfaceMeshData::default();
+        let bounds = [0., 192., 0., 4.];
+        let swatches = [[0.1, 0.2], [0.3, 0.4], [0.5, 0.6]];
+        model.append(&mut original, bounds, 8., 16.);
+        assert!(model.append_native_theater_backdrop(&mut painted, bounds, 8., 16., swatches));
+        assert_eq!(original.positions, painted.positions);
+        assert_eq!(original.normals, painted.normals);
+        assert_eq!(original.indices, painted.indices);
+        assert_eq!(model.surface.colors, before.colors);
+        assert!(painted.uvs.iter().all(|uv| swatches.contains(uv)));
+        for name in [
+            "paper",
+            "paper_light",
+            "oak",
+            "oak_cut",
+            "edge",
+            "ink",
+            "plum",
+        ] {
+            let changed = source.replace(
+                &format!("\"material\":\"{name}\""),
+                "\"material\":\"unknown\"",
+            );
+            let unknown = Model::parse(&changed).unwrap();
+            let mut out = SurfaceMeshData::default();
+            assert!(!unknown.append_native_theater_backdrop(&mut out, bounds, 8., 16., swatches));
             assert!(out.positions.is_empty());
         }
     }
     #[test]
     fn native_theater_stage_preserves_geometry_and_rejects_unknown_materials() {
-        let source=include_str!("../models/traditional_room/theater_platform.mesh.json");
-        let model=Model::parse(source).unwrap();let before=model.surface.clone();
-        let mut original=SurfaceMeshData::default();let mut painted=SurfaceMeshData::default();
-        model.append(&mut original,[0.,192.,0.,80.],0.,8.);
-        let swatches=[[0.1,0.2],[0.3,0.4],[0.5,0.6]];
-        assert!(model.append_native_theater_stage(&mut painted,[0.,192.,0.,80.],8.,swatches));
-        assert_eq!(painted.positions,original.positions);assert_eq!(painted.normals,original.normals);
-        assert_eq!(painted.indices,original.indices);assert_eq!(model.surface.colors,before.colors);
-        assert!(painted.uvs.iter().all(|uv|swatches.contains(uv)));
-        for (normal,uv) in painted.normals.iter().zip(&painted.uvs) {
-            if normal[1]>0.5 {assert_eq!(*uv,swatches[0]);}
+        let source = include_str!("../models/traditional_room/theater_platform.mesh.json");
+        let model = Model::parse(source).unwrap();
+        let before = model.surface.clone();
+        let mut original = SurfaceMeshData::default();
+        let mut painted = SurfaceMeshData::default();
+        model.append(&mut original, [0., 192., 0., 80.], 0., 8.);
+        let swatches = [[0.1, 0.2], [0.3, 0.4], [0.5, 0.6]];
+        assert!(model.append_native_theater_stage(&mut painted, [0., 192., 0., 80.], 8., swatches));
+        assert_eq!(painted.positions, original.positions);
+        assert_eq!(painted.normals, original.normals);
+        assert_eq!(painted.indices, original.indices);
+        assert_eq!(model.surface.colors, before.colors);
+        assert!(painted.uvs.iter().all(|uv| swatches.contains(uv)));
+        for (normal, uv) in painted.normals.iter().zip(&painted.uvs) {
+            if normal[1] > 0.5 {
+                assert_eq!(*uv, swatches[0]);
+            }
         }
-        for name in ["reed","reed_light","oak","oak_cut","walnut","edge"] {
-            let changed=source.replace(&format!("\"material\":\"{name}\""),"\"material\":\"unknown\"");
-            let unknown=Model::parse(&changed).unwrap();let mut untouched=SurfaceMeshData::default();
-            assert!(!unknown.append_native_theater_stage(&mut untouched,[0.,192.,0.,80.],8.,swatches));
+        for name in ["reed", "reed_light", "oak", "oak_cut", "walnut", "edge"] {
+            let changed = source.replace(
+                &format!("\"material\":\"{name}\""),
+                "\"material\":\"unknown\"",
+            );
+            let unknown = Model::parse(&changed).unwrap();
+            let mut untouched = SurfaceMeshData::default();
+            assert!(!unknown.append_native_theater_stage(
+                &mut untouched,
+                [0., 192., 0., 80.],
+                8.,
+                swatches
+            ));
             assert!(untouched.positions.is_empty());
         }
     }
     #[test]
     fn kanto_native_mansion_hut_requires_every_named_role_and_keeps_geometry() {
-        let source=include_str!("../models/special_rooms/roof_access_hut.mesh.json");
-        let model=Model::parse(source).unwrap();let before=model.surface.clone();
-        let mut original=SurfaceMeshData::default();let mut painted=SurfaceMeshData::default();
-        model.append(&mut original,[0.,48.,0.,32.],0.,24.);
-        assert!(model.append_native_mansion_hut(&mut painted,[0.,48.,0.,32.],24.,|role|[role as f32/8.,0.5]));
-        assert_eq!(original.positions,painted.positions);assert_eq!(original.normals,painted.normals);
-        assert_eq!(original.indices,painted.indices);assert_eq!(model.surface.colors,before.colors);
-        for name in ["metal_light","cloth","cloth_light","wood","wood_dark","wood_light","brass"] {
-            let changed=source.replace(&format!("\"name\":\"{name}\""),"\"name\":\"unknown\"");
-            let unknown=Model::parse(&changed).unwrap();assert!(!unknown.has_native_mansion_hut_materials());
-            assert!(!unknown.append_native_mansion_hut(&mut SurfaceMeshData::default(),[0.,48.,0.,32.],24.,|_|[0.,0.]));
+        let source = include_str!("../models/special_rooms/roof_access_hut.mesh.json");
+        let model = Model::parse(source).unwrap();
+        let before = model.surface.clone();
+        let mut original = SurfaceMeshData::default();
+        let mut painted = SurfaceMeshData::default();
+        model.append(&mut original, [0., 48., 0., 32.], 0., 24.);
+        assert!(
+            model.append_native_mansion_hut(&mut painted, [0., 48., 0., 32.], 24., |role| [
+                role as f32 / 8.,
+                0.5
+            ])
+        );
+        assert_eq!(original.positions, painted.positions);
+        assert_eq!(original.normals, painted.normals);
+        assert_eq!(original.indices, painted.indices);
+        assert_eq!(model.surface.colors, before.colors);
+        for name in [
+            "metal_light",
+            "cloth",
+            "cloth_light",
+            "wood",
+            "wood_dark",
+            "wood_light",
+            "brass",
+        ] {
+            let changed = source.replace(&format!("\"name\":\"{name}\""), "\"name\":\"unknown\"");
+            let unknown = Model::parse(&changed).unwrap();
+            assert!(!unknown.has_native_mansion_hut_materials());
+            assert!(!unknown.append_native_mansion_hut(
+                &mut SurfaceMeshData::default(),
+                [0., 48., 0., 32.],
+                24.,
+                |_| [0., 0.]
+            ));
         }
     }
     #[test]
     fn shrine_dragon_materials_require_named_roles_keep_cache_and_turn_inward() {
-        for source in [include_str!("../models/special_rooms/shrine_dragon_rail.mesh.json"),
-            include_str!("../models/special_rooms/shrine_dragon_mask.mesh.json")] {
-            let model=Model::parse(source).unwrap();let before=model.surface.clone();
-            let mut original=SurfaceMeshData::default();model.append(&mut original,[2.,26.,3.,147.],0.,20.);
-            let swatches=[[0.1,0.2],[0.3,0.4],[0.5,0.6],[0.7,0.8]];
-            let mut painted=SurfaceMeshData::default();
-            assert!(model.append_native_shrine(&mut painted,[2.,26.,3.,147.],20.,swatches,false));
-            assert_eq!(original.positions,painted.positions);assert_eq!(original.normals,painted.normals);
-            assert_eq!(original.indices,painted.indices);assert_eq!(model.surface.colors,before.colors);
-            assert_eq!(model.surface.positions,before.positions);
-            assert!(swatches.iter().all(|uv|painted.uvs.contains(uv)));
-            let mut turned=SurfaceMeshData::default();
-            assert!(model.append_native_shrine(&mut turned,[2.,26.,3.,147.],20.,swatches,true));
-            assert_eq!(turned.indices,painted.indices);
-            for ((a,b),(na,nb)) in painted.positions.iter().zip(&turned.positions)
-                .zip(painted.normals.iter().zip(&turned.normals)) {
-                assert!((a[0]+b[0]-28.).abs()<0.0001&&(a[2]+b[2]-150.).abs()<0.0001&&a[1]==b[1]);
-                assert_eq!(*nb,[-na[0],na[1],-na[2]]);
+        for source in [
+            include_str!("../models/special_rooms/shrine_dragon_rail.mesh.json"),
+            include_str!("../models/special_rooms/shrine_dragon_mask.mesh.json"),
+        ] {
+            let model = Model::parse(source).unwrap();
+            let before = model.surface.clone();
+            let mut original = SurfaceMeshData::default();
+            model.append(&mut original, [2., 26., 3., 147.], 0., 20.);
+            let swatches = [[0.1, 0.2], [0.3, 0.4], [0.5, 0.6], [0.7, 0.8]];
+            let mut painted = SurfaceMeshData::default();
+            assert!(model.append_native_shrine(
+                &mut painted,
+                [2., 26., 3., 147.],
+                20.,
+                swatches,
+                false
+            ));
+            assert_eq!(original.positions, painted.positions);
+            assert_eq!(original.normals, painted.normals);
+            assert_eq!(original.indices, painted.indices);
+            assert_eq!(model.surface.colors, before.colors);
+            assert_eq!(model.surface.positions, before.positions);
+            assert!(swatches.iter().all(|uv| painted.uvs.contains(uv)));
+            let mut turned = SurfaceMeshData::default();
+            assert!(model.append_native_shrine(
+                &mut turned,
+                [2., 26., 3., 147.],
+                20.,
+                swatches,
+                true
+            ));
+            assert_eq!(turned.indices, painted.indices);
+            for ((a, b), (na, nb)) in painted
+                .positions
+                .iter()
+                .zip(&turned.positions)
+                .zip(painted.normals.iter().zip(&turned.normals))
+            {
+                assert!(
+                    (a[0] + b[0] - 28.).abs() < 0.0001
+                        && (a[2] + b[2] - 150.).abs() < 0.0001
+                        && a[1] == b[1]
+                );
+                assert_eq!(*nb, [-na[0], na[1], -na[2]]);
             }
-            for name in ["wood_dark","ink","wood","wood_light","brass","cloth_light"] {
-                let changed=source.replace(&format!("\"name\":\"{name}\""),"\"name\":\"unknown\"");
-                let unknown=Model::parse(&changed).unwrap();assert!(!unknown.has_native_shrine_materials());
-                let mut untouched=SurfaceMeshData::default();
-                assert!(!unknown.append_native_shrine(&mut untouched,[2.,26.,3.,147.],20.,swatches,false));
+            for name in [
+                "wood_dark",
+                "ink",
+                "wood",
+                "wood_light",
+                "brass",
+                "cloth_light",
+            ] {
+                let changed =
+                    source.replace(&format!("\"name\":\"{name}\""), "\"name\":\"unknown\"");
+                let unknown = Model::parse(&changed).unwrap();
+                assert!(!unknown.has_native_shrine_materials());
+                let mut untouched = SurfaceMeshData::default();
+                assert!(!unknown.append_native_shrine(
+                    &mut untouched,
+                    [2., 26., 3., 147.],
+                    20.,
+                    swatches,
+                    false
+                ));
                 assert!(untouched.positions.is_empty());
             }
         }
@@ -876,15 +1397,22 @@ mod tests {
     use super::*;
     #[test]
     fn shared_assets_cave_and_ice_boulders_reuse_geometry_with_distinct_material_ownership() {
-        let cave=model(Kind::CaveBoulder);let ice=model(Kind::IceBoulder);
-        assert!(std::sync::Arc::ptr_eq(&cave.surface.geometry,&ice.surface.geometry));
-        assert_ne!(cave.surface.colors,ice.surface.colors);
-        assert!(cave.gym_stone_pixels.is_some());assert!(ice.gym_stone_pixels.is_none());
-        let mut first=SurfaceMeshData::default();let mut second=SurfaceMeshData::default();
-        cave.append(&mut first,[0.,16.,0.,16.],0.,10.);
-        ice.append(&mut second,[0.,16.,0.,16.],0.,10.);
-        assert_eq!(first.positions,second.positions);assert_eq!(first.indices,second.indices);
-        assert_ne!(first.colors,second.colors);
+        let cave = model(Kind::CaveBoulder);
+        let ice = model(Kind::IceBoulder);
+        assert!(std::sync::Arc::ptr_eq(
+            &cave.surface.geometry,
+            &ice.surface.geometry
+        ));
+        assert_ne!(cave.surface.colors, ice.surface.colors);
+        assert!(cave.gym_stone_pixels.is_some());
+        assert!(ice.gym_stone_pixels.is_none());
+        let mut first = SurfaceMeshData::default();
+        let mut second = SurfaceMeshData::default();
+        cave.append(&mut first, [0., 16., 0., 16.], 0., 10.);
+        ice.append(&mut second, [0., 16., 0., 16.], 0., 10.);
+        assert_eq!(first.positions, second.positions);
+        assert_eq!(first.indices, second.indices);
+        assert_ne!(first.colors, second.colors);
     }
 
     #[test]
@@ -900,22 +1428,40 @@ mod tests {
         assert_eq!(ordinary.positions, live.positions);
         assert_eq!(ordinary.normals, live.normals);
         assert_eq!(ordinary.indices, live.indices);
-        for p in [[4,4],[7,3],[8,18],[8,16],[4,20]] {
+        for p in [[4, 4], [7, 3], [8, 18], [8, 16], [4, 20]] {
             assert!(live.uvs.contains(&[p[0] as f32 / 16., p[1] as f32 / 32.]));
         }
         assert_eq!(source.surface, cached);
         for kind in Kind::ALL {
-            assert_eq!(model(kind).gym_orb_pixels.is_some(), kind == Kind::LeaguePodium);
+            assert_eq!(
+                model(kind).gym_orb_pixels.is_some(),
+                kind == Kind::LeaguePodium
+            );
         }
         let json = include_str!("../models/dungeons/league_podium.mesh.json");
-        for changed in [json.replace("league_podium", "other"), json.replace("\"orb\"", "\"unknown\""),
-                        json.replace("\"pedestal\"", "\"unknown\"")] {
-            assert!(Model::parse(changed.as_str()).unwrap().gym_orb_pixels.is_none());
+        for changed in [
+            json.replace("league_podium", "other"),
+            json.replace("\"orb\"", "\"unknown\""),
+            json.replace("\"pedestal\"", "\"unknown\""),
+        ] {
+            assert!(
+                Model::parse(changed.as_str())
+                    .unwrap()
+                    .gym_orb_pixels
+                    .is_none()
+            );
         }
         let mut incomplete: serde_json::Value = serde_json::from_str(json).unwrap();
-        incomplete["primitives"][1]["palette_regions"].as_array_mut().unwrap().pop();
-        assert!(Model::parse(serde_json::to_string(&incomplete).unwrap().as_str())
-            .unwrap().gym_orb_pixels.is_none());
+        incomplete["primitives"][1]["palette_regions"]
+            .as_array_mut()
+            .unwrap()
+            .pop();
+        assert!(
+            Model::parse(serde_json::to_string(&incomplete).unwrap().as_str())
+                .unwrap()
+                .gym_orb_pixels
+                .is_none()
+        );
     }
     #[test]
     fn tower_timber_named_palette_keeps_closed_geometry_and_cached_paint() {
@@ -933,23 +1479,44 @@ mod tests {
         for p in [[0, 0], [0, 2], [0, 1], [4, 0]] {
             assert!(live.uvs.contains(&[p[0] as f32 / 8., p[1] as f32 / 8.]));
         }
-        let grain: Vec<_> = live.uvs.iter().enumerate()
+        let grain: Vec<_> = live
+            .uvs
+            .iter()
+            .enumerate()
             .filter(|(_, uv)| **uv == [0., 0.])
-            .map(|(i, _)| live.colors[i][0] /
-                crate::interior_models::authored_face_color([1.; 4], Vec3::from_array(live.normals[i]))[0])
+            .map(|(i, _)| {
+                live.colors[i][0]
+                    / crate::interior_models::authored_face_color(
+                        [1.; 4],
+                        Vec3::from_array(live.normals[i]),
+                    )[0]
+            })
             .collect();
         assert!(grain.iter().all(|v| (0.899..=1.101).contains(v)));
-        assert!(grain.iter().copied().fold(f32::NEG_INFINITY, f32::max)
-            - grain.iter().copied().fold(f32::INFINITY, f32::min) > 0.01,
-            "live wood color must retain visible model-local grain");
+        assert!(
+            grain.iter().copied().fold(f32::NEG_INFINITY, f32::max)
+                - grain.iter().copied().fold(f32::INFINITY, f32::min)
+                > 0.01,
+            "live wood color must retain visible model-local grain"
+        );
         assert_eq!(source.surface, cached);
         for kind in Kind::ALL {
-            assert_eq!(model(kind).tower_timber_pixels.is_some(),
-                matches!(kind, Kind::TimberWall | Kind::TimberColumn));
+            assert_eq!(
+                model(kind).tower_timber_pixels.is_some(),
+                matches!(kind, Kind::TimberWall | Kind::TimberColumn)
+            );
         }
         let json = include_str!("../models/dungeons/timber_wall.mesh.json");
-        for changed in [json.replace("timber_wall", "other"), json.replace("wood_dark", "unknown")] {
-            assert!(Model::parse(changed.as_str()).unwrap().tower_timber_pixels.is_none());
+        for changed in [
+            json.replace("timber_wall", "other"),
+            json.replace("wood_dark", "unknown"),
+        ] {
+            assert!(
+                Model::parse(changed.as_str())
+                    .unwrap()
+                    .tower_timber_pixels
+                    .is_none()
+            );
         }
     }
     #[test]
@@ -988,25 +1555,46 @@ mod tests {
         }
         assert_eq!(source.surface, cached);
         for kind in Kind::ALL {
-            assert_eq!(model(kind).pewter_guardian_pixels.is_some(), kind == Kind::TowerGuardian);
+            assert_eq!(
+                model(kind).pewter_guardian_pixels.is_some(),
+                kind == Kind::TowerGuardian
+            );
         }
         let json = include_str!("../models/dungeons/tower_guardian.mesh.json");
-        for changed in [json.replace("\"head\"", "\"unknown\""),
-                        json.replace("tower_guardian", "other"),
-                        json.replace("\"pedestal\"", "\"unknown\"")] {
-            assert!(Model::parse(changed.as_str()).unwrap().pewter_guardian_pixels.is_none());
+        for changed in [
+            json.replace("\"head\"", "\"unknown\""),
+            json.replace("tower_guardian", "other"),
+            json.replace("\"pedestal\"", "\"unknown\""),
+        ] {
+            assert!(
+                Model::parse(changed.as_str())
+                    .unwrap()
+                    .pewter_guardian_pixels
+                    .is_none()
+            );
         }
         let original: serde_json::Value = serde_json::from_str(json).unwrap();
         for field in [0, 1] {
             let mut changed = original.clone();
             changed["primitives"][0]["palette_regions"][0][field] = serde_json::json!(1);
-            assert!(Model::parse(serde_json::to_string(&changed).unwrap().as_str())
-                .unwrap().pewter_guardian_pixels.is_none());
+            assert!(
+                Model::parse(serde_json::to_string(&changed).unwrap().as_str())
+                    .unwrap()
+                    .pewter_guardian_pixels
+                    .is_none()
+            );
         }
         let mut incomplete = original.clone();
-        incomplete["primitives"][0]["palette_regions"].as_array_mut().unwrap().pop();
-        assert!(Model::parse(serde_json::to_string(&incomplete).unwrap().as_str())
-            .unwrap().pewter_guardian_pixels.is_none());
+        incomplete["primitives"][0]["palette_regions"]
+            .as_array_mut()
+            .unwrap()
+            .pop();
+        assert!(
+            Model::parse(serde_json::to_string(&incomplete).unwrap().as_str())
+                .unwrap()
+                .pewter_guardian_pixels
+                .is_none()
+        );
     }
     #[test]
     fn gym_stone_uses_named_live_palette_without_mutating_cave_geometry_or_colors() {
@@ -1024,18 +1612,29 @@ mod tests {
         assert!(gym.uvs.contains(&[0.5, 0.375]));
         assert!(gym.uvs.contains(&[0.25, 0.25]));
         for (&normal, &color) in gym.normals.iter().zip(&gym.colors) {
-            assert_eq!(color, crate::interior_models::authored_face_color(
-                [1.; 4], Vec3::from_array(normal),
-            ));
+            assert_eq!(
+                color,
+                crate::interior_models::authored_face_color([1.; 4], Vec3::from_array(normal),)
+            );
         }
         assert_eq!(source.surface, cached);
         for kind in Kind::ALL {
-            assert_eq!(model(kind).gym_stone_pixels.is_some(), kind == Kind::CaveBoulder);
+            assert_eq!(
+                model(kind).gym_stone_pixels.is_some(),
+                kind == Kind::CaveBoulder
+            );
         }
         let json = include_str!("../models/dungeons/cave_boulder.mesh.json");
-        for changed in [json.replace("cave_boulder", "other"),
-                        json.replace("stone_light", "unknown")] {
-            assert!(Model::parse(changed.as_str()).unwrap().gym_stone_pixels.is_none());
+        for changed in [
+            json.replace("cave_boulder", "other"),
+            json.replace("stone_light", "unknown"),
+        ] {
+            assert!(
+                Model::parse(changed.as_str())
+                    .unwrap()
+                    .gym_stone_pixels
+                    .is_none()
+            );
         }
     }
     #[test]
@@ -1123,7 +1722,7 @@ pub(crate) use special_rooms::{RoomAsset, room_model};
 
 #[path = "gym_scenery_models.rs"]
 mod gym_scenery;
-pub(crate) use gym_scenery::{gym_model, gym_wall_join_triangles, gym_flower_planter_base};
+pub(crate) use gym_scenery::{gym_flower_planter_base, gym_model, gym_wall_join_triangles};
 
 #[path = "traditional_room_models.rs"]
 mod traditional_room;

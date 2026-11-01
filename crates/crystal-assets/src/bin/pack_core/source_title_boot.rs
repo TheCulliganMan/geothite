@@ -203,9 +203,39 @@ pub(super) fn blocks(
         );
     }
     let password_source = Source::read(vendor, "engine/rtc/reset_password.asm")?;
-    let calculation = password_source.operation("ClockResetPassword", &["ld hl, sPlayerData + (wPlayerID - wPlayerData)","ld c, 2","call .ComponentFromNumber","ld hl, sPlayerData + (wPlayerName - wPlayerData)","ld c, NAME_LENGTH_JAPANESE - 1","call .ComponentFromString","ld hl, sPlayerData + (wMoney - wPlayerData)","ld c, 3","call .ComponentFromNumber"], "source_password_recipe", json!({}))?;
-    let digits = password_source.operation("ClockResetPassword", &["ld hl, wStringBuffer2","ld bc, 5","xor a","call ByteFill","ld a, 4","ld [wStringBuffer2 + 5], a"], "source_password_digits", json!({}))?;
-    let name_bytes = constants.get("NAME_LENGTH_JAPANESE").context("password source name length")? - 1;
+    let calculation = password_source.operation(
+        "ClockResetPassword",
+        &[
+            "ld hl, sPlayerData + (wPlayerID - wPlayerData)",
+            "ld c, 2",
+            "call .ComponentFromNumber",
+            "ld hl, sPlayerData + (wPlayerName - wPlayerData)",
+            "ld c, NAME_LENGTH_JAPANESE - 1",
+            "call .ComponentFromString",
+            "ld hl, sPlayerData + (wMoney - wPlayerData)",
+            "ld c, 3",
+            "call .ComponentFromNumber",
+        ],
+        "source_password_recipe",
+        json!({}),
+    )?;
+    let digits = password_source.operation(
+        "ClockResetPassword",
+        &[
+            "ld hl, wStringBuffer2",
+            "ld bc, 5",
+            "xor a",
+            "call ByteFill",
+            "ld a, 4",
+            "ld [wStringBuffer2 + 5], a",
+        ],
+        "source_password_digits",
+        json!({}),
+    )?;
+    let name_bytes = constants
+        .get("NAME_LENGTH_JAPANESE")
+        .context("password source name length")?
+        - 1;
     ensure!(name_bytes == 5, "authored password name byte count changed");
     blocks.get_mut("_ResetClock").context("reset clock block")?["operations"][0]["password"] = json!({"player_id_bytes":2,"player_name_bytes":name_bytes,"money_bytes":3,"digit_count":5,"initial_digits":[0,0,0,0,0],"initial_cursor":4,"rtc_reset_flag":constants.get("RTC_RESET").context("RTC_RESET")?,"recipe_source_span":calculation["source_span"],"digits_source_span":digits["source_span"]});
     Ok(blocks)

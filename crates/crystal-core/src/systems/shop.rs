@@ -1647,8 +1647,14 @@ mod tests {
         let item = item("ODD_PRICE", 301, item_pocket("ITEM"));
         state.bag.add_item(&item, 2).unwrap();
         let items = BTreeMap::from([(item.script_name.clone(), item)]);
-        let result = sell_item(&mut state, &items, &currency_constants(999_999), "ODD_PRICE", 2).unwrap();
+        let result = sell_item(
+            &mut state,
+            &items,
+            &currency_constants(999_999),
+            "ODD_PRICE",
+            2,
+        )
+        .unwrap();
         assert_eq!(result.credited, 301);
     }
-
 }

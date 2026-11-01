@@ -127,19 +127,27 @@ pub fn synthesize_crystal_midi(
 }
 #[cfg(all(feature = "browser-synth", target_arch = "wasm32"))]
 #[wasm_bindgen::prelude::wasm_bindgen]
-pub fn synthesize_modified_cry(midi: &str, request: &str)
-    -> std::result::Result<js_sys::Object, wasm_bindgen::JsValue> {
+pub fn synthesize_modified_cry(
+    midi: &str,
+    request: &str,
+) -> std::result::Result<js_sys::Object, wasm_bindgen::JsValue> {
     use wasm_bindgen::JsValue;
     let run = || -> Result<js_sys::Object> {
         let request = serde_json::from_str::<crate::pcm::ModifiedCryRequest>(request)?;
         let pcm = crate::pcm::decode_modified_cry(midi, &request)?;
         let out = js_sys::Object::new();
-        js_sys::Reflect::set(&out, &JsValue::from_str("samples"),
-            &js_sys::Int16Array::from(pcm.samples.as_ref()))
-            .map_err(|_| anyhow::anyhow!("set cry PCM samples"))?;
-        js_sys::Reflect::set(&out, &JsValue::from_str("sampleRate"),
-            &JsValue::from_f64(f64::from(pcm.format.sample_rate_hz)))
-            .map_err(|_| anyhow::anyhow!("set cry sample rate"))?;
+        js_sys::Reflect::set(
+            &out,
+            &JsValue::from_str("samples"),
+            &js_sys::Int16Array::from(pcm.samples.as_ref()),
+        )
+        .map_err(|_| anyhow::anyhow!("set cry PCM samples"))?;
+        js_sys::Reflect::set(
+            &out,
+            &JsValue::from_str("sampleRate"),
+            &JsValue::from_f64(f64::from(pcm.format.sample_rate_hz)),
+        )
+        .map_err(|_| anyhow::anyhow!("set cry sample rate"))?;
         Ok(out)
     };
     run().map_err(|error| JsValue::from_str(&format!("{error:#}")))

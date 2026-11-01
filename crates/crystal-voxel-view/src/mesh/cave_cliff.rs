@@ -45,8 +45,7 @@ pub(super) fn rock_point(p: Vec3, g: &GridGeometry, origin: [i32; 2]) -> Vec3 {
     let lip = shoulder * slope * 0.32 - 0.16;
     // Beds terminate inside larger broken formations. A positive minimum
     // made every course run across the room as a repeating horizontal stripe.
-    let continuity = (0.10 + noise(x * 0.48 + y * 0.085, z * 0.48 + 31.) * 1.8)
-        .clamp(0., 1.);
+    let continuity = (0.10 + noise(x * 0.48 + y * 0.085, z * 0.48 + 31.) * 1.8).clamp(0., 1.);
     let layer = lip * continuity;
     // Fractures span several source cells, creating broad broken rock faces
     // through the full height of the bank. Smaller, densely repeated facets
@@ -70,10 +69,13 @@ pub(super) fn rock_point(p: Vec3, g: &GridGeometry, origin: [i32; 2]) -> Vec3 {
     // when the foreground cutaway exposed their lower faces.
     let lateral = 0.60;
     p + Vec3::new(
-        (noise(x * 0.25 + y * 0.035, z * 0.25) * 1.05 + layer + fracture - cleft_x) * g.tile_width * lateral,
+        (noise(x * 0.25 + y * 0.035, z * 0.25) * 1.05 + layer + fracture - cleft_x)
+            * g.tile_width
+            * lateral,
         (noise(x * 0.32, z * 0.32) * 0.85 + slab(x * 0.7, z * 0.7) * 0.95 + crest) * g.tile_height,
         (noise(z * 0.25 - y * 0.035 + 31.0, x * 0.25) * 1.05 - layer - fracture - cleft_z)
-            * g.tile_height * lateral,
+            * g.tile_height
+            * lateral,
     ) * strength
 }
 
@@ -220,7 +222,9 @@ pub(super) fn scarps(
                 let z = (v.z - g.origin_z) / g.tile_height + origin[1] as f32;
                 let chip = 0.70 + slab(x * 1.4, z * 1.4) * 0.55;
                 let width = 0.29 + slab(x * 0.65 + 31., z * 0.65 - 17.) * 0.08;
-                v + Vec3::from_array(n) * end * g.tile_width
+                v + Vec3::from_array(n)
+                    * end
+                    * g.tile_width
                     * (shoulder * width - bed * chip * 0.12)
             },
             false,
@@ -234,13 +238,21 @@ pub(super) fn scarps(
         // Sharp changes between the broken shoulder and recessed bed need
         // the actual facet normal, rather than a tangent sampled at its lip.
         for start in (first..out.positions.len()).step_by(3) {
-            let points: [Vec3; 3] = std::array::from_fn(|i| Vec3::from_array(out.positions[start+i]));
-            let normal = (points[1]-points[0]).cross(points[2]-points[0]).normalize();
-            let shade = 0.60 + 0.40 * normal.dot(Vec3::new(-0.4,0.8,0.45).normalize()).max(0.);
+            let points: [Vec3; 3] =
+                std::array::from_fn(|i| Vec3::from_array(out.positions[start + i]));
+            let normal = (points[1] - points[0])
+                .cross(points[2] - points[0])
+                .normalize();
+            let shade = 0.60 + 0.40 * normal.dot(Vec3::new(-0.4, 0.8, 0.45).normalize()).max(0.);
             for i in 0..3 {
-                out.normals[start+i] = normal.to_array();
+                out.normals[start + i] = normal.to_array();
                 let pigment = pigment(color, points[i], g, origin, false);
-                out.colors[start+i] = [pigment[0]*shade, pigment[1]*shade, pigment[2]*shade, pigment[3]];
+                out.colors[start + i] = [
+                    pigment[0] * shade,
+                    pigment[1] * shade,
+                    pigment[2] * shade,
+                    pigment[3],
+                ];
             }
         }
     }
@@ -294,7 +306,16 @@ pub(super) fn quad_with_point<F: Fn(Vec3, &GridGeometry, [i32; 2]) -> Vec3>(
     point: F,
     frozen: bool,
 ) {
-    quad_with_point_step(out, points, color, g, origin, point, frozen, g.tile_height * 0.25);
+    quad_with_point_step(
+        out,
+        points,
+        color,
+        g,
+        origin,
+        point,
+        frozen,
+        g.tile_height * 0.25,
+    );
 }
 
 fn quad_with_point_step<F: Fn(Vec3, &GridGeometry, [i32; 2]) -> Vec3>(
@@ -314,31 +335,34 @@ fn quad_with_point_step<F: Fn(Vec3, &GridGeometry, [i32; 2]) -> Vec3>(
     // Low vertical closures are rock, including the triangular ends of a
     // stair ramp. Floor paint belongs only to the walking plane. Choose the
     // original face orientation so fractured normals cannot change material.
-    let vertical = (p[1] - p[0]).cross(p[3] - p[0])
+    let vertical = (p[1] - p[0])
+        .cross(p[3] - p[0])
         .try_normalize()
         .or_else(|| (p[1] - p[0]).cross(p[2] - p[0]).try_normalize())
         .is_some_and(|n| n.y.abs() < 0.001);
     // Refine the curved cross-section while retaining the cap's existing
     // quarter-tile edge samples, regardless of the face's vertex order.
-    let edge_step = |delta: Vec3| if delta.y.abs() > 0.001 {
-        step
-    } else {
-        g.tile_height * 0.25
+    let edge_step = |delta: Vec3| {
+        if delta.y.abs() > 0.001 {
+            step
+        } else {
+            g.tile_height * 0.25
+        }
     };
     let nu = ((p[3] - p[0])
         .abs()
         .max_element()
         .max((p[2] - p[1]).abs().max_element())
         / edge_step(p[3] - p[0]))
-        .ceil()
-        .max(1.0) as usize;
+    .ceil()
+    .max(1.0) as usize;
     let nv = ((p[1] - p[0])
         .abs()
         .max_element()
         .max((p[2] - p[3]).abs().max_element())
         / edge_step(p[1] - p[0]))
-        .ceil()
-        .max(1.0) as usize;
+    .ceil()
+    .max(1.0) as usize;
     // Neighboring walls can start on different walking shelves. Sample their
     // common vertical edge at the same absolute heights, rather than splitting
     // each wall into an unrelated number of equal bands (which opens cracks).
@@ -360,26 +384,14 @@ fn quad_with_point_step<F: Fn(Vec3, &GridGeometry, [i32; 2]) -> Vec3>(
     };
     let vertical_u = p[0].y == p[1].y && p[3].y == p[2].y && p[0].y != p[3].y;
     let vertical_v = p[0].y == p[3].y && p[1].y == p[2].y && p[0].y != p[1].y;
-    let us = parameters(
-        nu,
-        p[0].y,
-        p[3].y,
-        vertical_u,
-    );
-    let vs = parameters(
-        nv,
-        p[0].y,
-        p[1].y,
-        vertical_v,
-    );
+    let us = parameters(nu, p[0].y, p[3].y, vertical_u);
+    let vs = parameters(nv, p[0].y, p[1].y, vertical_v);
     let original_at = |u: usize, v: usize| {
         let mut original = p[0].lerp(p[3], us[u]).lerp(p[1].lerp(p[2], us[u]), vs[v]);
         // Fractions reconstructed by lerp can differ by a few ulps when
         // adjoining walls start on different shelves. Use the absolute
         // course height for interior knots; authored endpoints stay exact.
-        if (vertical_u && u > 0 && u + 1 < us.len())
-            || (vertical_v && v > 0 && v + 1 < vs.len())
-        {
+        if (vertical_u && u > 0 && u + 1 < us.len()) || (vertical_v && v > 0 && v + 1 < vs.len()) {
             original.y = (original.y / step).round() * step;
         }
         original
@@ -463,8 +475,13 @@ pub(super) fn cap_triangle(
     cap_triangle_with_point(out, points, color, g, origin, rock_point);
 }
 
-pub(super) fn cap_triangle_with_point<F: Fn(Vec3, &GridGeometry, [i32;2]) -> Vec3>(
-    out: &mut SurfaceMeshData, points: [[f32;3];3], color: [f32;4], g: &GridGeometry, origin: [i32;2], point: F,
+pub(super) fn cap_triangle_with_point<F: Fn(Vec3, &GridGeometry, [i32; 2]) -> Vec3>(
+    out: &mut SurfaceMeshData,
+    points: [[f32; 3]; 3],
+    color: [f32; 4],
+    g: &GridGeometry,
+    origin: [i32; 2],
+    point: F,
 ) {
     let p = points.map(Vec3::from_array);
     let n = ((p[1] - p[0])
@@ -508,60 +525,102 @@ mod tests {
     use super::*;
     #[test]
     fn cave_relief_caps_keep_upward_winding_across_large_map_coordinates() {
-        let g = GridGeometry { width: 80, height: 144, tile_width: 8., tile_height: 8.,
-            origin_x: -320., origin_z: -576. };
-        for z in 0..g.height * 4 { for x in 0..g.width * 4 { for y in [16., 40., 48.] {
-            let p = Vec3::new(g.origin_x + x as f32 * 2., y,
-                g.origin_z + z as f32 * 2.);
-            let a = rock_point(p, &g, [0,0]);
-            let b = rock_point(p + Vec3::Z * 2., &g, [0,0]);
-            let c = rock_point(p + (Vec3::X + Vec3::Z) * 2., &g, [0,0]);
-            let d = rock_point(p + Vec3::X * 2., &g, [0,0]);
-            for normal in [(b-a).cross(c-a), (c-a).cross(d-a)] {
-                assert!(normal.y > 0.,
-                    "rock cap folds at quarter-cell knot {x},{z}, height {y}: {normal:?}");
+        let g = GridGeometry {
+            width: 80,
+            height: 144,
+            tile_width: 8.,
+            tile_height: 8.,
+            origin_x: -320.,
+            origin_z: -576.,
+        };
+        for z in 0..g.height * 4 {
+            for x in 0..g.width * 4 {
+                for y in [16., 40., 48.] {
+                    let p = Vec3::new(g.origin_x + x as f32 * 2., y, g.origin_z + z as f32 * 2.);
+                    let a = rock_point(p, &g, [0, 0]);
+                    let b = rock_point(p + Vec3::Z * 2., &g, [0, 0]);
+                    let c = rock_point(p + (Vec3::X + Vec3::Z) * 2., &g, [0, 0]);
+                    let d = rock_point(p + Vec3::X * 2., &g, [0, 0]);
+                    for normal in [(b - a).cross(c - a), (c - a).cross(d - a)] {
+                        assert!(
+                            normal.y > 0.,
+                            "rock cap folds at quarter-cell knot {x},{z}, height {y}: {normal:?}"
+                        );
+                    }
+                }
             }
-        }}}
+        }
     }
     #[test]
     fn cave_relief_does_not_fold_vertical_faces_across_large_map_coordinates() {
         // Covers the combined authored source extent of all 32 stone caves
         // in the local pack, including Mount Mortar and Victory Road.
-        let g = GridGeometry { width: 80, height: 144, tile_width: 8., tile_height: 8.,
-            origin_x: -320., origin_z: -576. };
-        for z in 0..g.height * 4 { for x in 0..g.width * 4 { for y in (6..48).step_by(2) {
-            let p = Vec3::new(g.origin_x + x as f32 * 2., y as f32,
-                g.origin_z + z as f32 * 2.);
-            for (along, outward) in [(Vec3::X, Vec3::Z), (Vec3::Z, Vec3::NEG_X)] {
-                let a = rock_point(p, &g, [0,0]);
-                let b = rock_point(p + along * 2., &g, [0,0]);
-                let c = rock_point(p + along * 2. + Vec3::Y * 2., &g, [0,0]);
-                let d = rock_point(p + Vec3::Y * 2., &g, [0,0]);
-                for normal in [(b-a).cross(c-a), (c-a).cross(d-a)] {
-                    assert!(normal.dot(outward) > 0.,
-                        "rock face folds at quarter-cell knot {x},{z}, height {y}: {normal:?}");
+        let g = GridGeometry {
+            width: 80,
+            height: 144,
+            tile_width: 8.,
+            tile_height: 8.,
+            origin_x: -320.,
+            origin_z: -576.,
+        };
+        for z in 0..g.height * 4 {
+            for x in 0..g.width * 4 {
+                for y in (6..48).step_by(2) {
+                    let p = Vec3::new(
+                        g.origin_x + x as f32 * 2.,
+                        y as f32,
+                        g.origin_z + z as f32 * 2.,
+                    );
+                    for (along, outward) in [(Vec3::X, Vec3::Z), (Vec3::Z, Vec3::NEG_X)] {
+                        let a = rock_point(p, &g, [0, 0]);
+                        let b = rock_point(p + along * 2., &g, [0, 0]);
+                        let c = rock_point(p + along * 2. + Vec3::Y * 2., &g, [0, 0]);
+                        let d = rock_point(p + Vec3::Y * 2., &g, [0, 0]);
+                        for normal in [(b - a).cross(c - a), (c - a).cross(d - a)] {
+                            assert!(
+                                normal.dot(outward) > 0.,
+                                "rock face folds at quarter-cell knot {x},{z}, height {y}: {normal:?}"
+                            );
+                        }
+                    }
                 }
             }
-        }}}
+        }
     }
     #[test]
     fn cave_relief_diagonal_faces_keep_outward_winding_across_large_maps() {
-        let g = GridGeometry { width: 80, height: 144, tile_width: 8., tile_height: 8.,
-            origin_x: -320., origin_z: -576. };
-        for z in 0..g.height*4 { for x in 0..g.width*4 { for y in (6..48).step_by(2) {
-            let p=Vec3::new(g.origin_x+x as f32*2.,y as f32,g.origin_z+z as f32*2.);
-            for along in [Vec3::X+Vec3::Z,Vec3::X-Vec3::Z] {
-                let outward=along.cross(Vec3::Y);
-                let a=rock_point(p,&g,[0,0]);
-                let b=rock_point(p+along*2.,&g,[0,0]);
-                let c=rock_point(p+along*2.+Vec3::Y*2.,&g,[0,0]);
-                let d=rock_point(p+Vec3::Y*2.,&g,[0,0]);
-                for normal in [(b-a).cross(c-a),(c-a).cross(d-a)] {
-                    assert!(normal.dot(outward)>0.,
-                        "diagonal rock folds at {x},{z}, height {y}, direction {along:?}: {normal:?}");
+        let g = GridGeometry {
+            width: 80,
+            height: 144,
+            tile_width: 8.,
+            tile_height: 8.,
+            origin_x: -320.,
+            origin_z: -576.,
+        };
+        for z in 0..g.height * 4 {
+            for x in 0..g.width * 4 {
+                for y in (6..48).step_by(2) {
+                    let p = Vec3::new(
+                        g.origin_x + x as f32 * 2.,
+                        y as f32,
+                        g.origin_z + z as f32 * 2.,
+                    );
+                    for along in [Vec3::X + Vec3::Z, Vec3::X - Vec3::Z] {
+                        let outward = along.cross(Vec3::Y);
+                        let a = rock_point(p, &g, [0, 0]);
+                        let b = rock_point(p + along * 2., &g, [0, 0]);
+                        let c = rock_point(p + along * 2. + Vec3::Y * 2., &g, [0, 0]);
+                        let d = rock_point(p + Vec3::Y * 2., &g, [0, 0]);
+                        for normal in [(b - a).cross(c - a), (c - a).cross(d - a)] {
+                            assert!(
+                                normal.dot(outward) > 0.,
+                                "diagonal rock folds at {x},{z}, height {y}, direction {along:?}: {normal:?}"
+                            );
+                        }
+                    }
                 }
             }
-        }}}
+        }
     }
     fn grid() -> GridGeometry {
         GridGeometry {
@@ -599,13 +658,25 @@ mod tests {
         assert_eq!(joined.normals, whole.normals);
         assert_eq!(joined.uvs, whole.uvs);
         assert!(joined.uvs.iter().all(|uv| (uv[1] / 100000.).round() == 6.));
-        assert!(joined
-            .positions
-            .iter()
-            .any(|p| p[0] == 8. && p[1] == 2. && p[2] < 7.5));
-        assert!(joined.positions.iter().any(|p| p[0] == 8. && p[1] == 4. && p[2] > 9.));
-        assert!(joined.positions.iter().any(|p| p[0] == 8. && p[1] == 5. && p[2] > 9.),
-            "the upper circular shoulder must have its own sample before the exact cap");
+        assert!(
+            joined
+                .positions
+                .iter()
+                .any(|p| p[0] == 8. && p[1] == 2. && p[2] < 7.5)
+        );
+        assert!(
+            joined
+                .positions
+                .iter()
+                .any(|p| p[0] == 8. && p[1] == 4. && p[2] > 9.)
+        );
+        assert!(
+            joined
+                .positions
+                .iter()
+                .any(|p| p[0] == 8. && p[1] == 5. && p[2] > 9.),
+            "the upper circular shoulder must have its own sample before the exact cap"
+        );
         // The shoulder stays short of the lower cell's walking center.
         assert!(joined.positions.iter().all(|p| p[2] < 12.));
         for p in &joined.positions {
@@ -621,38 +692,73 @@ mod tests {
                 .collect::<Vec<_>>();
             assert!((p[1] - p[0]).cross(p[2] - p[0]).z > 0.);
         }
-        assert!(joined
-            .normals
-            .iter()
-            .all(|n| Vec3::from_array(*n).is_finite() && n[2] > 0.));
+        assert!(
+            joined
+                .normals
+                .iter()
+                .all(|n| Vec3::from_array(*n).is_finite() && n[2] > 0.)
+        );
     }
     #[test]
     fn short_cave_ledge_has_the_full_rounded_shoulder_and_exact_end_joins() {
-        for scale in [1.,2.] {
-            let g=GridGeometry {tile_width:8.*scale,tile_height:8.*scale,
-                origin_x:-32.*scale,origin_z:48.*scale,..grid()};
-            let face=|w:f32,e:f32| [[w*scale,0.,8.*scale],[e*scale,0.,8.*scale],
-                [e*scale,6.*scale,8.*scale],[w*scale,6.*scale,8.*scale]];
-            let build=|w,e| {let mut out=SurfaceMeshData::default();
-                scarps(&mut out,vec![(face(w,e),[0.,0.,1.],[0.34,0.345,0.31,1.])],&g,[17,33]);out};
-            let short=build(0.,8.);
-            let long=build(-4.,12.);
-            let section=|mesh:&SurfaceMeshData| {
-                let mut points:Vec<_>=mesh.positions.iter().copied().filter(|p|p[0]==4.*scale).collect();
-                points.sort_by(|a,b|a[1].total_cmp(&b[1]).then(a[2].total_cmp(&b[2])));
-                points.dedup();points
+        for scale in [1., 2.] {
+            let g = GridGeometry {
+                tile_width: 8. * scale,
+                tile_height: 8. * scale,
+                origin_x: -32. * scale,
+                origin_z: 48. * scale,
+                ..grid()
             };
-            assert_eq!(section(&short),section(&long),
-                "short shelf sections must retain the long shelf's complete shoulder");
+            let face = |w: f32, e: f32| {
+                [
+                    [w * scale, 0., 8. * scale],
+                    [e * scale, 0., 8. * scale],
+                    [e * scale, 6. * scale, 8. * scale],
+                    [w * scale, 6. * scale, 8. * scale],
+                ]
+            };
+            let build = |w, e| {
+                let mut out = SurfaceMeshData::default();
+                scarps(
+                    &mut out,
+                    vec![(face(w, e), [0., 0., 1.], [0.34, 0.345, 0.31, 1.])],
+                    &g,
+                    [17, 33],
+                );
+                out
+            };
+            let short = build(0., 8.);
+            let long = build(-4., 12.);
+            let section = |mesh: &SurfaceMeshData| {
+                let mut points: Vec<_> = mesh
+                    .positions
+                    .iter()
+                    .copied()
+                    .filter(|p| p[0] == 4. * scale)
+                    .collect();
+                points.sort_by(|a, b| a[1].total_cmp(&b[1]).then(a[2].total_cmp(&b[2])));
+                points.dedup();
+                points
+            };
+            assert_eq!(
+                section(&short),
+                section(&long),
+                "short shelf sections must retain the long shelf's complete shoulder"
+            );
             for p in &short.positions {
-                assert!(p[2]<12.*scale,"the lower walking center stays clear");
-                if p[1]==0. || p[1]==6.*scale || p[0]==0. || p[0]==8.*scale {
-                    assert_eq!(p[2],8.*scale,"every authored landing and end seam stays exact");
+                assert!(p[2] < 12. * scale, "the lower walking center stays clear");
+                if p[1] == 0. || p[1] == 6. * scale || p[0] == 0. || p[0] == 8. * scale {
+                    assert_eq!(
+                        p[2],
+                        8. * scale,
+                        "every authored landing and end seam stays exact"
+                    );
                 }
             }
             for ids in short.indices.chunks_exact(3) {
-                let [a,b,c]=[ids[0],ids[1],ids[2]].map(|i|Vec3::from_array(short.positions[i as usize]));
-                assert!((b-a).cross(c-a).z>0.);
+                let [a, b, c] =
+                    [ids[0], ids[1], ids[2]].map(|i| Vec3::from_array(short.positions[i as usize]));
+                assert!((b - a).cross(c - a).z > 0.);
             }
         }
     }
@@ -678,23 +784,26 @@ mod tests {
             false,
         );
         assert!(!mesh.indices.is_empty());
-        assert!(mesh
-            .positions
-            .iter()
-            .all(|p| Vec3::from_array(*p).is_finite()));
-        assert!(mesh
-            .normals
-            .iter()
-            .all(|n| Vec3::from_array(*n).is_finite() && n[2] < -0.999));
+        assert!(
+            mesh.positions
+                .iter()
+                .all(|p| Vec3::from_array(*p).is_finite())
+        );
+        assert!(
+            mesh.normals
+                .iter()
+                .all(|n| Vec3::from_array(*n).is_finite() && n[2] < -0.999)
+        );
         for tri in mesh.indices.chunks_exact(3) {
             let p = [tri[0], tri[1], tri[2]].map(|i| Vec3::from_array(mesh.positions[i as usize]));
             assert!((p[1] - p[0]).cross(p[2] - p[0]).z < 0.);
         }
         assert!(mesh.positions.iter().any(|p| *p == [8., 6., 8.]));
-        assert!(mesh
-            .uvs
-            .iter()
-            .all(|uv| uv[0] > 90000. && (uv[1] / 100000.).round() == 6.));
+        assert!(
+            mesh.uvs
+                .iter()
+                .all(|uv| uv[0] > 90000. && (uv[1] / 100000.).round() == 6.)
+        );
     }
 
     #[test]
@@ -725,8 +834,11 @@ mod tests {
                     let a = rock_point(p, &g, [0, 0]);
                     let b = rock_point(p + Vec3::Z * step, &g, [0, 0]);
                     let c = rock_point(p + Vec3::X * step, &g, [0, 0]);
-                    assert!((b-a).cross(c-a).y > 0., "folded crest at {p:?}");
-                    assert!(a.y > 20., "enclosing crown dropped near the walking floor at {p:?}");
+                    assert!((b - a).cross(c - a).y > 0., "folded crest at {p:?}");
+                    assert!(
+                        a.y > 20.,
+                        "enclosing crown dropped near the walking floor at {p:?}"
+                    );
                 }
             }
         }
@@ -773,13 +885,31 @@ mod tests {
         let g = grid();
         for frozen in [false, true] {
             for (points, category) in [
-                ([[0., 0., 8.], [8., 0., 8.], [8., 6., 8.], [0., 6., 8.]], if frozen { 7. } else { 6. }),
-                ([[0., 6., 0.], [0., 6., 8.], [8., 6., 8.], [8., 6., 0.]], if frozen { 5. } else { 4. }),
+                (
+                    [[0., 0., 8.], [8., 0., 8.], [8., 6., 8.], [0., 6., 8.]],
+                    if frozen { 7. } else { 6. },
+                ),
+                (
+                    [[0., 6., 0.], [0., 6., 8.], [8., 6., 8.], [8., 6., 0.]],
+                    if frozen { 5. } else { 4. },
+                ),
             ] {
                 let mut mesh = SurfaceMeshData::default();
-                quad_with_point(&mut mesh, points, [0.34, 0.345, 0.31, 1.], &g, [0, 0], |p, _, _| p, frozen);
+                quad_with_point(
+                    &mut mesh,
+                    points,
+                    [0.34, 0.345, 0.31, 1.],
+                    &g,
+                    [0, 0],
+                    |p, _, _| p,
+                    frozen,
+                );
                 assert!(!mesh.indices.is_empty());
-                assert!(mesh.uvs.iter().all(|uv| (uv[1] / 100000.).round() == category));
+                assert!(
+                    mesh.uvs
+                        .iter()
+                        .all(|uv| (uv[1] / 100000.).round() == category)
+                );
                 for point in points {
                     assert!(mesh.positions.contains(&point));
                 }
@@ -825,10 +955,11 @@ mod tests {
         assert!(out.positions.iter().any(|p| p[2].abs() > 0.5));
         assert!(out.uvs.iter().all(|uv| uv[0] > 90000. && uv[1] < 250000.));
         assert!(out.positions.iter().any(|p| p[1] > 40.5));
-        assert!(out
-            .normals
-            .iter()
-            .all(|n| (Vec3::from_array(*n).length() - 1.0).abs() < 1e-4));
+        assert!(
+            out.normals
+                .iter()
+                .all(|n| (Vec3::from_array(*n).length() - 1.0).abs() < 1e-4)
+        );
     }
     #[test]
     fn joined_caps_and_walls_share_their_transformed_edge() {

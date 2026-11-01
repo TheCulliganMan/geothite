@@ -44,7 +44,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         let png = crystal_voxel_view::normalize_npc_texture(&bytes)?;
         textures.insert(name, base64::engine::general_purpose::STANDARD.encode(png));
     }
-    let json = serde_json::to_string(&serde_json::json!({"version":1,"people":people,"textures":textures}))?;
+    let json = serde_json::to_string(
+        &serde_json::json!({"version":1,"people":people,"textures":textures}),
+    )?;
     crystal_voxel_view::install_open_people_bundle(&json)?;
     if let Some(parent) = output.parent() {
         std::fs::create_dir_all(parent)?;

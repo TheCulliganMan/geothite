@@ -146,7 +146,9 @@ pub(crate) fn plants(plot: Plot, base: f32, coordinates: [i32; 2]) -> Vec<Plant>
 /// Selection never moves or rescales a plant and is independent of chunk splits.
 pub(crate) fn adaptive_plants(plot: Plot, base: f32, coordinates: [i32; 2]) -> Vec<Plant> {
     let mut result = plants(plot, base, coordinates);
-    if result.is_empty() { return result; }
+    if result.is_empty() {
+        return result;
+    }
     let [w, d] = plot.cell();
     let mut occupied = 0u16;
     result.retain(|plant| {
@@ -155,9 +157,13 @@ pub(crate) fn adaptive_plants(plot: Plot, base: f32, coordinates: [i32; 2]) -> V
         let x = coordinates[0] + ix;
         let z = coordinates[1] + iz;
         let selected = ((seed(x.div_euclid(2), z.div_euclid(2), 137) * 4.) as i32).min(3);
-        if x.rem_euclid(2) + z.rem_euclid(2) * 2 != selected { return false; }
+        if x.rem_euclid(2) + z.rem_euclid(2) * 2 != selected {
+            return false;
+        }
         let bit = 1u16 << (ix + iz * 4);
-        if occupied & bit != 0 { return false; }
+        if occupied & bit != 0 {
+            return false;
+        }
         occupied |= bit;
         true
     });
@@ -213,7 +219,12 @@ pub(crate) fn prototype(variant: usize) -> SurfaceMeshData {
             // their painted veins/gradients while fitting evergreen woodland.
             let luminance = (c[0] * 0.25 + c[1] * 0.60 + c[2] * 0.15).max(0.045);
             let palette = [[0.35, 0.72, 0.36], [0.48, 0.94, 0.34], [0.52, 0.94, 0.52]][tone];
-            *c = [luminance * palette[0], luminance * palette[1], luminance * palette[2], 1.];
+            *c = [
+                luminance * palette[0],
+                luminance * palette[1],
+                luminance * palette[2],
+                1.,
+            ];
         }
     }
     mesh
@@ -291,7 +302,11 @@ mod tests {
                 );
             }
             if split.len() > 4 {
-                assert!(split.iter().any(|p| (p.transform.translation.x - 16.).abs() < p.transform.scale.x));
+                assert!(
+                    split
+                        .iter()
+                        .any(|p| (p.transform.translation.x - 16.).abs() < p.transform.scale.x)
+                );
             }
         }
     }
@@ -304,8 +319,14 @@ mod tests {
                 let plot = Plot::isolated([0., 32., 0., 32.]);
                 let dense = plants(plot, 3., [x * 2, z * 2]);
                 let sparse = adaptive_plants(plot, 3., [x * 2, z * 2]);
-                assert!(sparse.len() <= 1, "one decorative draw per aligned 2x2 source patch");
-                assert!(sparse.iter().all(|plant| dense.contains(plant)), "retain exact source transforms and geometry");
+                assert!(
+                    sparse.len() <= 1,
+                    "one decorative draw per aligned 2x2 source patch"
+                );
+                assert!(
+                    sparse.iter().all(|plant| dense.contains(plant)),
+                    "retain exact source transforms and geometry"
+                );
                 assert_eq!(sparse, adaptive_plants(plot, 3., [x * 2, z * 2]));
                 dense_count += dense.len();
                 adaptive_count += sparse.len();

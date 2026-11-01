@@ -1194,20 +1194,34 @@ mod tests {
         let encoded = serde_json::to_string(&state.script_runtime).unwrap();
         let decoded: crate::state::ScriptRuntimeMemory = serde_json::from_str(&encoded).unwrap();
         assert_eq!(decoded, state.script_runtime);
-        assert_eq!(decoded.pending_map_refresh.as_ref().unwrap().map_setup.as_deref(), Some("$86"));
+        assert_eq!(
+            decoded
+                .pending_map_refresh
+                .as_ref()
+                .unwrap()
+                .map_setup
+                .as_deref(),
+            Some("$86")
+        );
         for invalid in ["$", "$100", "$8G", " $86", "$86 "] {
             let mut changed = decoded.clone();
             changed.map_events[0].map_setup = Some(invalid.into());
             assert!(changed.validate().is_err(), "invalid byte {invalid:?}");
             let mut changed = decoded.clone();
             changed.pending_map_refresh.as_mut().unwrap().map_setup = Some(invalid.into());
-            assert!(changed.validate().is_err(), "invalid pending byte {invalid:?}");
+            assert!(
+                changed.validate().is_err(),
+                "invalid pending byte {invalid:?}"
+            );
         }
         let mut other = command("newloadmap");
         other.map_setup = Some("$86".into());
         let mut state = GameState::default();
         apply_script_map_command(&mut state, other, &maps()).unwrap();
-        assert!(state.script_runtime.validate().is_err(), "literal bytes are specific to reanchormap");
+        assert!(
+            state.script_runtime.validate().is_err(),
+            "literal bytes are specific to reanchormap"
+        );
     }
     #[test]
     fn resolves_raw_warp_and_warpfacing_commands() {

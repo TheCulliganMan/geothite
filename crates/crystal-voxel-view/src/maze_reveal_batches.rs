@@ -299,8 +299,14 @@ mod tests {
             .world_mut()
             .resource_mut::<Assets<VoxelMaterial>>()
             .add(material);
-        let root = app.world_mut().spawn((Transform::default(), Visibility::default())).id();
-        let main = app.world_mut().spawn((Transform::default(), Visibility::default())).id();
+        let root = app
+            .world_mut()
+            .spawn((Transform::default(), Visibility::default()))
+            .id();
+        let main = app
+            .world_mut()
+            .spawn((Transform::default(), Visibility::default()))
+            .id();
         {
             let mut cache = app.world_mut().resource_mut::<TerrainRevisionCache>();
             cache.solid_entity = Some(main);
@@ -309,18 +315,21 @@ mod tests {
         let camera = app
             .world_mut()
             .spawn((
-                (Camera3d::default(), Msaa::Off,
-Camera {
+                (
+                    Camera3d::default(),
+                    Msaa::Off,
+                    Camera {
                         viewport: Some(bevy::camera::Viewport {
                             physical_size: UVec2::new(1180, 812),
                             ..default()
                         }),
                         ..default()
                     },
-Projection::Perspective(PerspectiveProjection {
+                    Projection::Perspective(PerspectiveProjection {
                         aspect_ratio: 1180.0 / 812.0,
                         ..default()
-                    }),),
+                    }),
+                ),
                 VoxelWorldCamera,
             ))
             .id();

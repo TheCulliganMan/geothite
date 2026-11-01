@@ -657,16 +657,8 @@ fn railway(maps: &mut Changes, base: &CompiledGamePack) -> Result<()> {
         )?;
     }
     let (map, changed, _) = entry(maps, base, "MnStPaulUnionDepot")?;
-    text(
-        map,
-        changed,
-        "MN_ST_PAUL_DEPOT_CLERKText",
-        &[
-            &["CLERK: Welcome to", "UNION DEPOT."],
-            &["The conductor can", "take you back to"],
-            &["stations you have", "visited on foot."],
-        ],
-    )?;
+    crate::authored_dialogue::install_canonical(map, "MN_ST_PAUL_DEPOT_CLERKText")?;
+    changed.insert("MN_ST_PAUL_DEPOT_CLERKText".into());
     let (map, changed, _) = entry(maps, base, "MnDuluth")?;
     text(
         map,

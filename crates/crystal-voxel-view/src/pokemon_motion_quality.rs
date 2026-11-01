@@ -20,7 +20,10 @@ fn seams(rig: &SpeciesRig) -> Vec<(usize, usize)> {
     let mut cells: HashMap<([i32; 3], u16), Vec<usize>> = HashMap::new();
     let mut result = Vec::new();
     for (i, p) in rig.neutral.positions.iter().enumerate() {
-        let cell = (p.map(|v| (v / epsilon).round() as i32), ladybird_flight::weld_domain(rig, i));
+        let cell = (
+            p.map(|v| (v / epsilon).round() as i32),
+            ladybird_flight::weld_domain(rig, i),
+        );
         if let Some(previous) = cells.get(&cell) {
             if let Some(&other) = previous.iter().find(|&&j| {
                 (rig.joint_indices[i] != rig.joint_indices[j]
@@ -58,13 +61,17 @@ fn pokemon_motion_roster_preserves_supports_and_connected_surfaces() {
             if locomotion(&name) == Locomotion::Walk {
                 gait::assert_supports(rig, &pose);
                 let style = travel::style(rig.species.name());
-                let flight = if style == travel::Style::ClusterHop { 0. } else {
+                let flight = if style == travel::Style::ClusterHop {
+                    0.
+                } else {
                     style.hop_height(rig.species.name()) * travel::airborne(tick as f32 * TAU / 16.)
                 };
                 let roll_pivot = if style == travel::Style::Roll {
                     let pivot = (rig.neutral_bounds.0 + rig.neutral_bounds.1) * 0.5;
                     (pivot - Quat::from_rotation_x(tick as f32 * TAU / 16.) * pivot).y
-                } else { 0. };
+                } else {
+                    0.
+                };
                 assert!(
                     pose[0].translation.y - roll_pivot < height * (0.06 + flight),
                     "{name} phase {tick}/16 needs excessive floor correction: {}",
@@ -352,9 +359,19 @@ fn pokemon_motion_gpu_review() {
             base_color: Color::srgb(0.64, 0.66, 0.60),
             ..default()
         });
-    app.world_mut()
-        .spawn((Mesh3d(floor), MeshMaterial3d(floor_material),
-            Transform::from_xyz(0., if std::env::var_os("CRYSTAL_POKEMON_REVIEW_SWIMMING").is_some() { -0.35 } else { 0. }, 0.)));
+    app.world_mut().spawn((
+        Mesh3d(floor),
+        MeshMaterial3d(floor_material),
+        Transform::from_xyz(
+            0.,
+            if std::env::var_os("CRYSTAL_POKEMON_REVIEW_SWIMMING").is_some() {
+                -0.35
+            } else {
+                0.
+            },
+            0.,
+        ),
+    ));
     let material = app
         .world_mut()
         .resource_mut::<Assets<StandardMaterial>>()
@@ -382,17 +399,24 @@ fn pokemon_motion_gpu_review() {
                         *p = j.bind;
                     }
                 }
-                1 | 2 if std::env::var_os("CRYSTAL_POKEMON_REVIEW_SWIMMING").is_some() => rig.sample_swimming(
-                    if frame == 1 { 0.20 } else { 0.80 },
-                    if frame == 1 { TAU * 0.125 } else { TAU * 0.625 },
-                    1., &mut pose,
-                ),
-                1 | 2 if std::env::var_os("CRYSTAL_POKEMON_REVIEW_WING_EXTREMES").is_some()
-                    && locomotion(rig.species.name()) == Locomotion::Fly => rig.sample_locomotion(
-                    (if frame == 1 { 0.25 } else { 0.75 }) / flight_beat(rig.species.name()).0,
-                    if frame == 1 { TAU * 0.20 } else { TAU * 0.80 },
-                    1., &mut pose,
-                ),
+                1 | 2 if std::env::var_os("CRYSTAL_POKEMON_REVIEW_SWIMMING").is_some() => rig
+                    .sample_swimming(
+                        if frame == 1 { 0.20 } else { 0.80 },
+                        if frame == 1 { TAU * 0.125 } else { TAU * 0.625 },
+                        1.,
+                        &mut pose,
+                    ),
+                1 | 2
+                    if std::env::var_os("CRYSTAL_POKEMON_REVIEW_WING_EXTREMES").is_some()
+                        && locomotion(rig.species.name()) == Locomotion::Fly =>
+                {
+                    rig.sample_locomotion(
+                        (if frame == 1 { 0.25 } else { 0.75 }) / flight_beat(rig.species.name()).0,
+                        if frame == 1 { TAU * 0.20 } else { TAU * 0.80 },
+                        1.,
+                        &mut pose,
+                    )
+                }
                 1 | 2 => rig.sample_locomotion(
                     if frame == 1 { 0.20 } else { 0.80 },
                     if frame == 1 { TAU * 0.20 } else { TAU * 0.80 },
@@ -436,8 +460,12 @@ fn pokemon_motion_gpu_review() {
                     Mesh3d(mesh),
                     MeshMaterial3d(material.clone()),
                     Transform::from_xyz((frame as f32 - 1.5) * 1.55, 0.002, 0.)
-                        .with_rotation(Quat::from_rotation_y(std::env::var("CRYSTAL_POKEMON_REVIEW_YAW")
-                            .ok().and_then(|s| s.parse::<f32>().ok()).unwrap_or(0.45)))
+                        .with_rotation(Quat::from_rotation_y(
+                            std::env::var("CRYSTAL_POKEMON_REVIEW_YAW")
+                                .ok()
+                                .and_then(|s| s.parse::<f32>().ok())
+                                .unwrap_or(0.45),
+                        ))
                         .with_scale(Vec3::splat(fit)),
                 ))
                 .id();

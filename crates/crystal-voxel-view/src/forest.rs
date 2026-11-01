@@ -2,7 +2,7 @@
 
 use crystal_render_api::VisualTileSource;
 
-use crate::profile::{CellShape, LedgeFace, SolidKind, JUMP_LEDGE_HEIGHT};
+use crate::profile::{CellShape, JUMP_LEDGE_HEIGHT, LedgeFace, SolidKind};
 
 const FOREST_TILESET: &str = "forest";
 const FOREST_GROUND_TILE: u16 = 0x05;

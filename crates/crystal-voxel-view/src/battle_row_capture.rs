@@ -105,8 +105,23 @@ pub(super) fn effective_ambient(
     camera: Option<&AmbientLight>,
     global: Option<&GlobalAmbientLight>,
 ) -> Option<(Color, f32, bool)> {
-    camera.map(|light| (light.color, light.brightness, light.affects_lightmapped_meshes))
-        .or_else(|| global.map(|light| (light.color, light.brightness, light.affects_lightmapped_meshes)))
+    camera
+        .map(|light| {
+            (
+                light.color,
+                light.brightness,
+                light.affects_lightmapped_meshes,
+            )
+        })
+        .or_else(|| {
+            global.map(|light| {
+                (
+                    light.color,
+                    light.brightness,
+                    light.affects_lightmapped_meshes,
+                )
+            })
+        })
 }
 
 #[derive(Resource)]
@@ -175,9 +190,11 @@ impl ActorCaptures {
             && (!self.capture_only || index == 1)
             && frame.active
             && !frame.use_source_scene
-            && frame.battlers[index]
-                .as_ref()
-                .is_some_and(|actor| actor.visible && actor.allow_species_model && (!actor.shiny || actor.model_palette.is_some()))
+            && frame.battlers[index].as_ref().is_some_and(|actor| {
+                actor.visible
+                    && actor.allow_species_model
+                    && (!actor.shiny || actor.model_palette.is_some())
+            })
     }
 }
 
@@ -265,7 +282,12 @@ fn sync_actor_captures(
             &RenderLayers,
             Option<&Fxaa>,
             Option<&DistanceFog>,
-            (&RenderTarget, &Msaa, Has<bevy::camera::Hdr>, Option<&AmbientLight>),
+            (
+                &RenderTarget,
+                &Msaa,
+                Has<bevy::camera::Hdr>,
+                Option<&AmbientLight>,
+            ),
         ),
         With<BattleRowCamera>,
     >,
@@ -678,21 +700,33 @@ mod tests {
         // Every supported Pokemon now has a live rig. Exercise the optional
         // static-cache path with explicit neutral-only model fixtures instead
         // of silently depending on a species that later gains articulation.
-        let ids=["STATIC_CACHE_FIXTURE_PLAYER","STATIC_CACHE_FIXTURE_ENEMY"];
-        for (battler,id) in frame.battlers.iter_mut().flatten().zip(ids) {battler.species_id=Arc::from(id);}
-        let neutral=Arc::new(crate::battle_species_models::mesh("SEEL").unwrap());
-        let bounds=BattleModelBounds::from_surface(&neutral);
-        let mut scene=app.world_mut().resource_mut::<BattleScene>();
-        for id in ids {scene.species_meshes.insert(Arc::from(id),Some(neutral.clone()));scene.species_bounds.insert(Arc::from(id),bounds);}
+        let ids = ["STATIC_CACHE_FIXTURE_PLAYER", "STATIC_CACHE_FIXTURE_ENEMY"];
+        for (battler, id) in frame.battlers.iter_mut().flatten().zip(ids) {
+            battler.species_id = Arc::from(id);
+        }
+        let neutral = Arc::new(crate::battle_species_models::mesh("SEEL").unwrap());
+        let bounds = BattleModelBounds::from_surface(&neutral);
+        let mut scene = app.world_mut().resource_mut::<BattleScene>();
+        for id in ids {
+            scene
+                .species_meshes
+                .insert(Arc::from(id), Some(neutral.clone()));
+            scene.species_bounds.insert(Arc::from(id), bounds);
+        }
         drop(scene);
         app.update();
         // AssetPlugin can publish initial internal shader events after the
         // first update. Drain those before tests simulate a settled receipt,
         // so later invalidation assertions isolate the input they change.
         app.update();
-        assert!(app.world().resource::<BattleScene>().actors.iter().all(|actor|
-            actor.as_ref().is_some_and(|actor| !actor.is_articulated())),
-            "static-cache fixtures must remain actual static models");
+        assert!(
+            app.world()
+                .resource::<BattleScene>()
+                .actors
+                .iter()
+                .all(|actor| actor.as_ref().is_some_and(|actor| !actor.is_articulated())),
+            "static-cache fixtures must remain actual static models"
+        );
         app
     }
 
@@ -750,7 +784,10 @@ mod tests {
             let actor = app.world().resource::<BattleScene>().actors[0]
                 .as_ref()
                 .unwrap();
-            assert!(actor.skinned.is_some(), "Pidgeotto rows must use the standard GPU skin");
+            assert!(
+                actor.skinned.is_some(),
+                "Pidgeotto rows must use the standard GPU skin"
+            );
             ([actor.entity], [actor.mesh.as_ref().unwrap().id()])
         };
         let mut reader = bevy::ecs::message::MessageCursor::<AssetEvent<Mesh>>::default();
@@ -975,7 +1012,10 @@ mod tests {
             player.pokedex_size_m = Some(1.2954);
         }
         app.update();
-        assert_ne!(app.world().resource::<BattleSceneLayout>().camera, before_layout.camera);
+        assert_ne!(
+            app.world().resource::<BattleSceneLayout>().camera,
+            before_layout.camera
+        );
         assert_eq!(
             active(&mut app),
             [true; 2],
@@ -1007,32 +1047,53 @@ mod tests {
             ..default()
         });
         app.update();
-        assert_eq!(active(&mut app), [false; 2],
-            "camera fill overrides changes to global ambient light");
+        assert_eq!(
+            active(&mut app),
+            [false; 2],
+            "camera fill overrides changes to global ambient light"
+        );
         {
             let world = app.world_mut();
-            for (row, mut fill) in world.query::<(&BattleRowCamera, &mut AmbientLight)>().iter_mut(world) {
-                if row.0 == 0 { fill.brightness += 1.0; }
+            for (row, mut fill) in world
+                .query::<(&BattleRowCamera, &mut AmbientLight)>()
+                .iter_mut(world)
+            {
+                if row.0 == 0 {
+                    fill.brightness += 1.0;
+                }
             }
         }
         app.update();
-        assert_eq!(active(&mut app), [true, false],
-            "changing one camera's fill invalidates only its captured image");
+        assert_eq!(
+            active(&mut app),
+            [true, false],
+            "changing one camera's fill invalidates only its captured image"
+        );
         submit(&mut app);
         app.update();
         {
             let world = app.world_mut();
-            let entities: Vec<_> = world.query_filtered::<Entity, With<BattleRowCamera>>().iter(world).collect();
-            for entity in entities { world.entity_mut(entity).remove::<AmbientLight>(); }
+            let entities: Vec<_> = world
+                .query_filtered::<Entity, With<BattleRowCamera>>()
+                .iter(world)
+                .collect();
+            for entity in entities {
+                world.entity_mut(entity).remove::<AmbientLight>();
+            }
         }
         app.update();
         assert_eq!(active(&mut app), [true; 2]);
         submit(&mut app);
         app.update();
-        app.world_mut().resource_mut::<GlobalAmbientLight>().brightness = 80.0;
+        app.world_mut()
+            .resource_mut::<GlobalAmbientLight>()
+            .brightness = 80.0;
         app.update();
-        assert_eq!(active(&mut app), [true; 2],
-            "without camera overrides, global light changes invalidate both images");
+        assert_eq!(
+            active(&mut app),
+            [true; 2],
+            "without camera overrides, global light changes invalidate both images"
+        );
         submit(&mut app);
         app.update();
         {

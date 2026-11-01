@@ -86,7 +86,9 @@ pub(super) struct Match {
     origin: [i32; 2],
 }
 impl Match {
-    pub(super) fn map(&self)->&'static str {self.rule.map}
+    pub(super) fn map(&self) -> &'static str {
+        self.rule.map
+    }
     pub(super) fn kind(&self) -> Kind {
         self.rule.kind
     }

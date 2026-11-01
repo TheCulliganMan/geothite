@@ -28,10 +28,14 @@ impl CutawayUniform {
 
 /// The ice atlas is also used by an unrelated ceremonial room.
 pub(super) fn is_cave(frame: &crystal_render_api::VisualWorldFrame) -> bool {
-    frame.map_id.as_ref() != "HallOfFame" && frame.tiles.first().is_some_and(|tile| {
-        matches!(tile.source.tileset_id.as_ref(), "cave" | "dark_cave" | "ice_path")
-            || frame.map_id.as_ref() == "DragonsDenB1F" && tile.source.tileset_id.as_ref() == "johto"
-    })
+    frame.map_id.as_ref() != "HallOfFame"
+        && frame.tiles.first().is_some_and(|tile| {
+            matches!(
+                tile.source.tileset_id.as_ref(),
+                "cave" | "dark_cave" | "ice_path"
+            ) || frame.map_id.as_ref() == "DragonsDenB1F"
+                && tile.source.tileset_id.as_ref() == "johto"
+        })
 }
 
 #[cfg(test)]
@@ -56,7 +60,6 @@ mod tests {
         assert_eq!(u.bottom_radius.w, 10.4);
         assert_eq!(u.top_feather.w, 1.6);
     }
-
 }
 
 /// Native opt-in A/B instrumentation; never changes the default or web reveal.
@@ -73,14 +76,16 @@ pub(super) fn diagnostic_mode() -> DiagnosticMode {
     #[cfg(not(target_arch = "wasm32"))]
     {
         static MODE: std::sync::OnceLock<DiagnosticMode> = std::sync::OnceLock::new();
-        *MODE.get_or_init(|| {
-            match std::env::var("CRYSTAL_CUTAWAY_DIAGNOSTIC").as_deref() {
+        *MODE.get_or_init(
+            || match std::env::var("CRYSTAL_CUTAWAY_DIAGNOSTIC").as_deref() {
                 Ok("zero-radius") => DiagnosticMode::ZeroRadius,
                 Ok("omit-uv1") => DiagnosticMode::OmitUv1,
                 _ => DiagnosticMode::Normal,
-            }
-        })
+            },
+        )
     }
     #[cfg(target_arch = "wasm32")]
-    { DiagnosticMode::Normal }
+    {
+        DiagnosticMode::Normal
+    }
 }

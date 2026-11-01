@@ -17,7 +17,10 @@ fn authored_replacement_groups_keep_tilesets_blocks_and_animation_variants() {
 #[test]
 fn badge_check_must_belong_to_the_requested_field_function() {
     let source = "CutFunction:\n.CheckAble:\n ld de, ENGINE_HIVEBADGE\nFlashFunction:\n ld de, ENGINE_ZEPHYRBADGE\n";
-    assert_eq!(source_field_moves::badge(source, "CutFunction").unwrap()["index"], 1);
+    assert_eq!(
+        source_field_moves::badge(source, "CutFunction").unwrap()["index"],
+        1
+    );
     let missing = "CutFunction:\n ret\nFlashFunction:\n ld de, ENGINE_ZEPHYRBADGE\n";
     assert!(source_field_moves::badge(missing, "CutFunction").is_err());
 }

@@ -54,10 +54,14 @@ impl Restore {
             pillars: Some(response.pillars),
             streamed: response.streamed,
             built: BuiltTerrain {
-                city_emitters: response.city_emitters.into_iter().map(|e|crate::city_lights::Emitter {
-                    position:Vec4::from_array(e[0].map(f32::from_bits)),
-                    direction:Vec4::from_array(e[1].map(f32::from_bits)),
-                }).collect(),
+                city_emitters: response
+                    .city_emitters
+                    .into_iter()
+                    .map(|e| crate::city_lights::Emitter {
+                        position: Vec4::from_array(e[0].map(f32::from_bits)),
+                        direction: Vec4::from_array(e[1].map(f32::from_bits)),
+                    })
+                    .collect(),
                 streamed_groves: None,
                 scenery_fades: Vec::new(),
                 scenery: Vec::new(),

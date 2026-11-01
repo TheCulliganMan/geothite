@@ -169,7 +169,9 @@ impl Batch {
             v.map(BoundsList::restore).transpose()
         }
         let mesh = self.mesh.into_mesh()?;
-        let rooted_grass = self.rooted_grass.unwrap_or_else(|| crate::terrain_batches::has_rooted_grass(&mesh));
+        let rooted_grass = self
+            .rooted_grass
+            .unwrap_or_else(|| crate::terrain_batches::has_rooted_grass(&mesh));
         Ok(PreparedBatch {
             mesh,
             rooted_grass,
@@ -185,7 +187,7 @@ impl Batch {
 #[derive(Serialize, Deserialize)]
 pub(super) struct Response {
     #[serde(default)]
-    city_emitters: Vec<[[u32;4];2]>,
+    city_emitters: Vec<[[u32; 4]; 2]>,
     pub(super) job: u64,
     streamed: Option<crate::mesh::worker_wire::StreamWire>,
     groups: crate::occluder_fade::worker_wire::GroupTable,
@@ -292,8 +294,16 @@ impl Response {
                     ))
                 })
                 .collect::<Result<_, String>>()?,
-            city_emitters: built.city_emitters.iter().map(|e|[
-                e.position.to_array().map(f32::to_bits),e.direction.to_array().map(f32::to_bits)]).collect(),
+            city_emitters: built
+                .city_emitters
+                .iter()
+                .map(|e| {
+                    [
+                        e.position.to_array().map(f32::to_bits),
+                        e.direction.to_array().map(f32::to_bits),
+                    ]
+                })
+                .collect(),
             footing: built
                 .footing_heights
                 .iter()
@@ -407,8 +417,16 @@ impl Response {
                     ))
                 })
                 .collect::<Result<_, String>>()?,
-            city_emitters: built.city_emitters.iter().map(|e|[
-                e.position.to_array().map(f32::to_bits),e.direction.to_array().map(f32::to_bits)]).collect(),
+            city_emitters: built
+                .city_emitters
+                .iter()
+                .map(|e| {
+                    [
+                        e.position.to_array().map(f32::to_bits),
+                        e.direction.to_array().map(f32::to_bits),
+                    ]
+                })
+                .collect(),
             footing: built
                 .footing_heights
                 .iter()
@@ -467,10 +485,14 @@ impl Response {
                 .ok_or_else(|| "invalid scenery texture slot".to_string())
         };
         Ok(BuiltTerrain {
-            city_emitters: self.city_emitters.into_iter().map(|e|crate::city_lights::Emitter {
-                position:Vec4::from_array(e[0].map(f32::from_bits)),
-                direction:Vec4::from_array(e[1].map(f32::from_bits)),
-            }).collect(),
+            city_emitters: self
+                .city_emitters
+                .into_iter()
+                .map(|e| crate::city_lights::Emitter {
+                    position: Vec4::from_array(e[0].map(f32::from_bits)),
+                    direction: Vec4::from_array(e[1].map(f32::from_bits)),
+                })
+                .collect(),
             streamed_groves: self.streamed.map(|s| s.restore(bindings)).transpose()?,
             scenery: self
                 .scenery

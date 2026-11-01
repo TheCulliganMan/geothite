@@ -24,7 +24,9 @@ static RIGS: OnceLock<BTreeMap<String, Arc<PersonRig>>> = OnceLock::new();
 /// Install before the first actor lookup. GLBs and textures remain external.
 /// JSON: {"version":1,"people":{"skater-male":"BASE64_GLB",…}}.
 /// Unsupported/malformed rigs reject the whole bundle before caches freeze.
-pub fn npc_texture_names() -> Vec<&'static str> { crate::new_bark_actors::npc_texture_names() }
+pub fn npc_texture_names() -> Vec<&'static str> {
+    crate::new_bark_actors::npc_texture_names()
+}
 pub fn install_open_people_bundle(json: &str) -> Result<(), String> {
     #[derive(serde::Deserialize)]
     #[serde(deny_unknown_fields)]
@@ -66,40 +68,52 @@ pub fn install_open_people_bundle(json: &str) -> Result<(), String> {
         if !names.contains(&name.as_str()) || encoded.len() > MAX_BYTES * 4 / 3 + 4 {
             return Err("unsupported NPC texture name or size".into());
         }
-        let bytes = base64::engine::general_purpose::STANDARD.decode(encoded.as_bytes()).map_err(|e| e.to_string())?;
+        let bytes = base64::engine::general_purpose::STANDARD
+            .decode(encoded.as_bytes())
+            .map_err(|e| e.to_string())?;
         textures.insert(name, crate::npc_textures::CachedTexture::validate(bytes)?);
     }
     crate::npc_textures::require_complete(&textures)?;
     // Both payloads have been validated before either cache is published.
-    RIGS.set(rigs).map_err(|_| "people sources frozen; restart to refresh".to_string())?;
+    RIGS.set(rigs)
+        .map_err(|_| "people sources frozen; restart to refresh".to_string())?;
     crate::npc_textures::install(textures)
 }
 
-fn encoded_source(value: &serde_json::value::RawValue) -> Result<std::borrow::Cow<'_, str>, String> {
+fn encoded_source(
+    value: &serde_json::value::RawValue,
+) -> Result<std::borrow::Cow<'_, str>, String> {
     #[derive(serde::Deserialize)]
     struct Encoded<'a>(#[serde(borrow)] std::borrow::Cow<'a, str>);
     serde_json::from_str::<Encoded<'_>>(value.get())
-        .map(|encoded| encoded.0).map_err(|error| error.to_string())
+        .map(|encoded| encoded.0)
+        .map_err(|error| error.to_string())
 }
 
 /// Native applications and review tools share the same default artwork root.
 #[cfg(not(target_arch = "wasm32"))]
 pub(crate) fn model_root() -> std::path::PathBuf {
-    std::env::var_os("CRYSTAL_OPEN_MODEL_ROOT").map(std::path::PathBuf::from)
+    std::env::var_os("CRYSTAL_OPEN_MODEL_ROOT")
+        .map(std::path::PathBuf::from)
         .unwrap_or_else(|| {
-            if let Some(root) = std::env::current_exe().ok().and_then(|exe| {
-                let directory = exe.parent()?;
-                let resources = if directory.file_name()? == "MacOS"
-                    && directory.parent()?.file_name()? == "Contents" {
-                    directory.parent()?.join("Resources")
-                } else { directory.to_path_buf() };
-                Some(resources.join("assets/open-models"))
-            }).filter(|root| root.is_dir())
+            if let Some(root) = std::env::current_exe()
+                .ok()
+                .and_then(|exe| {
+                    let directory = exe.parent()?;
+                    let resources = if directory.file_name()? == "MacOS"
+                        && directory.parent()?.file_name()? == "Contents"
+                    {
+                        directory.parent()?.join("Resources")
+                    } else {
+                        directory.to_path_buf()
+                    };
+                    Some(resources.join("assets/open-models"))
+                })
+                .filter(|root| root.is_dir())
             {
                 return root;
             }
-            std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
-                .join("../../assets/open-models")
+            std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../assets/open-models")
         })
 }
 
@@ -180,21 +194,36 @@ struct Track {
 
 impl PersonRig {
     pub(crate) fn locomotion_bounds(&self) -> (Vec3, Vec3) {
-        *self.locomotion_bounds.get_or_init(|| crate::human_locomotion::HumanLocomotion::bounds(self))
+        *self
+            .locomotion_bounds
+            .get_or_init(|| crate::human_locomotion::HumanLocomotion::bounds(self))
     }
     pub(crate) fn refined_body(&self) -> RefinedBody {
-        self.refined_body.get_or_init(|| {
-            let _trace = crate::loading_trace::span("actor.refine_shared_body", || serde_json::json!({}));
-            let mut body = RefinedBody { mesh:self.mesh.clone(), ids:self.ids.clone(), weights:self.weights.clone() };
-            crate::limb_surface::refine(self, &mut body.mesh, &mut body.ids, &mut body.weights);
-            crate::hand_surface::smooth(self, &mut body.mesh, &mut body.ids, &mut body.weights);
-            crate::hand_digits::sculpt(self, &mut body.mesh, &mut body.ids, &mut body.weights);
-            crate::head_surface::smooth(self, &mut body.mesh, &mut body.ids, &mut body.weights);
-            body
-        }).clone()
+        self.refined_body
+            .get_or_init(|| {
+                let _trace =
+                    crate::loading_trace::span(
+                        "actor.refine_shared_body",
+                        || serde_json::json!({}),
+                    );
+                let mut body = RefinedBody {
+                    mesh: self.mesh.clone(),
+                    ids: self.ids.clone(),
+                    weights: self.weights.clone(),
+                };
+                crate::limb_surface::refine(self, &mut body.mesh, &mut body.ids, &mut body.weights);
+                crate::hand_surface::smooth(self, &mut body.mesh, &mut body.ids, &mut body.weights);
+                crate::hand_digits::sculpt(self, &mut body.mesh, &mut body.ids, &mut body.weights);
+                crate::head_surface::smooth(self, &mut body.mesh, &mut body.ids, &mut body.weights);
+                body
+            })
+            .clone()
     }
     pub fn parse(bytes: &[u8]) -> Result<Self, String> {
-        let _trace = crate::loading_trace::span("actor.load_person", || serde_json::json!({"bytes":bytes.len()}));
+        let _trace = crate::loading_trace::span(
+            "actor.load_person",
+            || serde_json::json!({"bytes":bytes.len()}),
+        );
         if bytes.len() > MAX_BYTES || !bytes.starts_with(b"glTF") {
             return Err("person needs bounded GLB".into());
         }
@@ -303,18 +332,33 @@ impl PersonRig {
         {
             return Err("invalid person skin joints".into());
         }
-        let head_node = g.nodes().find(|n| n.name() == Some("Head"))
-            .ok_or("missing named Head attachment joint")?.index();
-        let head_joint = skin_nodes.iter().position(|&i| i == head_node)
+        let head_node = g
+            .nodes()
+            .find(|n| n.name() == Some("Head"))
+            .ok_or("missing named Head attachment joint")?
+            .index();
+        let head_joint = skin_nodes
+            .iter()
+            .position(|&i| i == head_node)
             .ok_or("Head attachment is not in the skin")?;
-        let hips_node = g.nodes().find(|n| n.name() == Some("Hips"))
-            .ok_or("missing named Hips attachment joint")?.index();
-        let hips_joint = skin_nodes.iter().position(|&i| i == hips_node)
+        let hips_node = g
+            .nodes()
+            .find(|n| n.name() == Some("Hips"))
+            .ok_or("missing named Hips attachment joint")?
+            .index();
+        let hips_joint = skin_nodes
+            .iter()
+            .position(|&i| i == hips_node)
             .ok_or("Hips attachment is not in the skin")?;
         let skin_joint = |name| {
-            let node = g.nodes().find(|n| n.name() == Some(name))
-                .ok_or_else(|| format!("missing named {name} garment joint"))?.index();
-            skin_nodes.iter().position(|&i| i == node)
+            let node = g
+                .nodes()
+                .find(|n| n.name() == Some(name))
+                .ok_or_else(|| format!("missing named {name} garment joint"))?
+                .index();
+            skin_nodes
+                .iter()
+                .position(|&i| i == node)
                 .ok_or_else(|| format!("{name} garment joint is not in the skin"))
         };
         let leg_joints = [
@@ -323,22 +367,42 @@ impl PersonRig {
         ];
         let chest_joint = skin_joint("Chest")?;
         let hand_joints = ["LeftHand", "RightHand"].map(|name| {
-            let Some(root) = g.nodes().find(|n|n.name()==Some(name)).map(|n|n.index()) else {return Vec::new();};
-            skin_nodes.iter().enumerate().filter_map(|(joint,&node)| {
-                let mut current=Some(node);
-                while let Some(i)=current {
-                    if i==root {return Some(joint);}
-                    current=parents[i];
-                }
-                None
-            }).collect()
+            let Some(root) = g
+                .nodes()
+                .find(|n| n.name() == Some(name))
+                .map(|n| n.index())
+            else {
+                return Vec::new();
+            };
+            skin_nodes
+                .iter()
+                .enumerate()
+                .filter_map(|(joint, &node)| {
+                    let mut current = Some(node);
+                    while let Some(i) = current {
+                        if i == root {
+                            return Some(joint);
+                        }
+                        current = parents[i];
+                    }
+                    None
+                })
+                .collect()
         });
-        let finger_nodes = g.nodes().filter(|n| {
-            let name = n.name().unwrap_or("");
-            (name.contains("HandIndex") || name.contains("HandThumb")) && !name.ends_with("_end")
-        }).map(|n| n.index()).collect();
-        let thumb_nodes = ["LeftHandThumb1", "RightHandThumb1"].map(|name|
-            g.nodes().find(|node| node.name() == Some(name)).map(|node| node.index()));
+        let finger_nodes = g
+            .nodes()
+            .filter(|n| {
+                let name = n.name().unwrap_or("");
+                (name.contains("HandIndex") || name.contains("HandThumb"))
+                    && !name.ends_with("_end")
+            })
+            .map(|n| n.index())
+            .collect();
+        let thumb_nodes = ["LeftHandThumb1", "RightHandThumb1"].map(|name| {
+            g.nodes()
+                .find(|node| node.name() == Some(name))
+                .map(|node| node.index())
+        });
         let inverse_binds: Vec<_> = skin
             .reader(|_| Some(bin))
             .read_inverse_bind_matrices()
@@ -555,11 +619,19 @@ impl PersonRig {
         // so the longer reach cannot be culled at camera edges.
         let mut pose = rig.nodes.clone();
         let mut world = vec![Mat4::IDENTITY; pose.len()];
-        for (clip, relaxed) in [("Idle",false),("Run",false),("Jump",false),("Idle",true),("Run",true)] {
+        for (clip, relaxed) in [
+            ("Idle", false),
+            ("Run", false),
+            ("Jump", false),
+            ("Idle", true),
+            ("Run", true),
+        ] {
             let duration = rig.duration(clip);
             for i in 0..=60 {
                 rig.sample(clip, duration * i as f32 / 60.0, &mut pose);
-                if relaxed {crate::hand_pose::relax(&rig, &mut pose);}
+                if relaxed {
+                    crate::hand_pose::relax(&rig, &mut pose);
+                }
                 for &n in &rig.order {
                     world[n] = rig.parents[n].map(|p| world[p]).unwrap_or(Mat4::IDENTITY)
                         * pose[n].to_matrix();
@@ -568,15 +640,17 @@ impl PersonRig {
                 // Every vertex using a joint shares this exact matrix. Keep
                 // multiplication order unchanged, but calculate it once per
                 // sampled pose rather than four times per render vertex.
-                let skin_matrices = rig.skin_nodes.iter().zip(&rig.inverse_binds)
+                let skin_matrices = rig
+                    .skin_nodes
+                    .iter()
+                    .zip(&rig.inverse_binds)
                     .map(|(&node, inverse)| mesh_inv * world[node] * *inverse)
                     .collect::<Vec<_>>();
                 for ((p, ids), weights) in rig.mesh.positions.iter().zip(&rig.ids).zip(&rig.weights)
                 {
                     let mut v = Vec3::ZERO;
                     for j in 0..4 {
-                        v += skin_matrices[ids[j] as usize]
-                            .transform_point3(Vec3::from_array(*p))
+                        v += skin_matrices[ids[j] as usize].transform_point3(Vec3::from_array(*p))
                             * weights[j];
                     }
                     if !v.is_finite() {
@@ -630,7 +704,8 @@ mod tests {
         let encoded = super::encoded_source(plain).unwrap();
         assert!(matches!(encoded, std::borrow::Cow::Borrowed(_)));
         assert_eq!(encoded, "Z2xURg==");
-        let escaped: &serde_json::value::RawValue = serde_json::from_str(r#""Z2x\u0055Rg==""#).unwrap();
+        let escaped: &serde_json::value::RawValue =
+            serde_json::from_str(r#""Z2x\u0055Rg==""#).unwrap();
         assert_eq!(super::encoded_source(escaped).unwrap(), encoded);
         for malformed in ["null", "42", "{}", "[]"] {
             let value = serde_json::from_str(malformed).unwrap();
@@ -643,15 +718,50 @@ mod tests {
     fn shared_body_refinement_preserves_source_bits_and_independent_costumes() {
         let root = std::path::PathBuf::from(std::env::var_os("CRYSTAL_OPEN_MODEL_ROOT").unwrap());
         for name in ["human-male", "human-female"] {
-            let rig = PersonRig::parse(&std::fs::read(root.join(format!("people/kenney/{name}.glb"))).unwrap()).unwrap();
-            let mut expected = RefinedBody { mesh:rig.mesh.clone(), ids:rig.ids.clone(), weights:rig.weights.clone() };
-            crate::hand_surface::smooth(&rig, &mut expected.mesh, &mut expected.ids, &mut expected.weights);
-            crate::hand_digits::sculpt(&rig, &mut expected.mesh, &mut expected.ids, &mut expected.weights);
-            crate::head_surface::smooth(&rig, &mut expected.mesh, &mut expected.ids, &mut expected.weights);
+            let rig = PersonRig::parse(
+                &std::fs::read(root.join(format!("people/kenney/{name}.glb"))).unwrap(),
+            )
+            .unwrap();
+            let mut expected = RefinedBody {
+                mesh: rig.mesh.clone(),
+                ids: rig.ids.clone(),
+                weights: rig.weights.clone(),
+            };
+            crate::hand_surface::smooth(
+                &rig,
+                &mut expected.mesh,
+                &mut expected.ids,
+                &mut expected.weights,
+            );
+            crate::hand_digits::sculpt(
+                &rig,
+                &mut expected.mesh,
+                &mut expected.ids,
+                &mut expected.weights,
+            );
+            crate::head_surface::smooth(
+                &rig,
+                &mut expected.mesh,
+                &mut expected.ids,
+                &mut expected.weights,
+            );
             let actual = rig.refined_body();
             macro_rules! exact {
-                ($left:expr, $right:expr) => { assert_eq!($left.iter().flatten().map(|v| v.to_bits()).collect::<Vec<_>>(),
-                    $right.iter().flatten().map(|v| v.to_bits()).collect::<Vec<_>>(), "{name}"); };
+                ($left:expr, $right:expr) => {
+                    assert_eq!(
+                        $left
+                            .iter()
+                            .flatten()
+                            .map(|v| v.to_bits())
+                            .collect::<Vec<_>>(),
+                        $right
+                            .iter()
+                            .flatten()
+                            .map(|v| v.to_bits())
+                            .collect::<Vec<_>>(),
+                        "{name}"
+                    );
+                };
             }
             exact!(expected.mesh.positions, actual.mesh.positions);
             exact!(expected.mesh.normals, actual.mesh.normals);
@@ -674,30 +784,56 @@ mod tests {
     fn person_envelope_matrix_cache_matches_legacy_vertex_bits() {
         let root = std::path::PathBuf::from(std::env::var_os("CRYSTAL_OPEN_MODEL_ROOT").unwrap());
         for name in ["human-male", "human-female"] {
-            let rig = PersonRig::parse(&std::fs::read(root.join(format!("people/kenney/{name}.glb"))).unwrap()).unwrap();
+            let rig = PersonRig::parse(
+                &std::fs::read(root.join(format!("people/kenney/{name}.glb"))).unwrap(),
+            )
+            .unwrap();
             let mut bounds = (Vec3::splat(f32::INFINITY), Vec3::splat(f32::NEG_INFINITY));
             let mut pose = rig.nodes.clone();
             let mut world = vec![Mat4::IDENTITY; pose.len()];
-            for (clip, relaxed) in [("Idle",false),("Run",false),("Jump",false),("Idle",true),("Run",true)] {
+            for (clip, relaxed) in [
+                ("Idle", false),
+                ("Run", false),
+                ("Jump", false),
+                ("Idle", true),
+                ("Run", true),
+            ] {
                 for i in 0..=60 {
                     rig.sample(clip, rig.duration(clip) * i as f32 / 60., &mut pose);
-                    if relaxed { crate::hand_pose::relax(&rig, &mut pose); }
+                    if relaxed {
+                        crate::hand_pose::relax(&rig, &mut pose);
+                    }
                     for &n in &rig.order {
-                        world[n] = rig.parents[n].map(|p| world[p]).unwrap_or(Mat4::IDENTITY) * pose[n].to_matrix();
+                        world[n] = rig.parents[n].map(|p| world[p]).unwrap_or(Mat4::IDENTITY)
+                            * pose[n].to_matrix();
                     }
                     let mesh_inv = world[rig.mesh_node].inverse();
-                    for ((p, ids), weights) in rig.mesh.positions.iter().zip(&rig.ids).zip(&rig.weights) {
+                    for ((p, ids), weights) in
+                        rig.mesh.positions.iter().zip(&rig.ids).zip(&rig.weights)
+                    {
                         let mut v = Vec3::ZERO;
                         for j in 0..4 {
-                            v += (mesh_inv * world[rig.skin_nodes[ids[j] as usize]] * rig.inverse_binds[ids[j] as usize])
-                                .transform_point3(Vec3::from_array(*p)) * weights[j];
+                            v += (mesh_inv
+                                * world[rig.skin_nodes[ids[j] as usize]]
+                                * rig.inverse_binds[ids[j] as usize])
+                                .transform_point3(Vec3::from_array(*p))
+                                * weights[j];
                         }
-                        bounds.0 = bounds.0.min(v); bounds.1 = bounds.1.max(v);
+                        bounds.0 = bounds.0.min(v);
+                        bounds.1 = bounds.1.max(v);
                     }
                 }
             }
-            assert_eq!(bounds.0.to_array().map(f32::to_bits), rig.bounds.0.to_array().map(f32::to_bits), "{name}");
-            assert_eq!(bounds.1.to_array().map(f32::to_bits), rig.bounds.1.to_array().map(f32::to_bits), "{name}");
+            assert_eq!(
+                bounds.0.to_array().map(f32::to_bits),
+                rig.bounds.0.to_array().map(f32::to_bits),
+                "{name}"
+            );
+            assert_eq!(
+                bounds.1.to_array().map(f32::to_bits),
+                rig.bounds.1.to_array().map(f32::to_bits),
+                "{name}"
+            );
         }
     }
     #[test]
@@ -787,7 +923,14 @@ mod tests {
 /// Bounded immutable catalog diagnostics for the isolated actor CPU worker.
 #[cfg(feature = "actor-worker")]
 pub(crate) fn worker_cache_keys() -> Vec<(&'static str, bool)> {
-    let Some(rigs) = RIGS.get() else { return Vec::new(); };
-    PEOPLE.into_iter().filter_map(|name| rigs.get(name)
-        .map(|rig| (name, rig.refined_body.get().is_some()))).collect()
+    let Some(rigs) = RIGS.get() else {
+        return Vec::new();
+    };
+    PEOPLE
+        .into_iter()
+        .filter_map(|name| {
+            rigs.get(name)
+                .map(|rig| (name, rig.refined_body.get().is_some()))
+        })
+        .collect()
 }

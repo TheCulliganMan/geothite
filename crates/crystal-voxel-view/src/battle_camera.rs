@@ -9,7 +9,11 @@ pub(super) fn shot(
 ) -> BattleSceneLayout {
     // A faint is a short, source-timed picture-bank drop. Keep its established
     // camera steady rather than adding a rapid orbit around the disappearance.
-    if frame.cues.iter().any(|cue| cue.kind == VisualBattleCueKind::Faint) {
+    if frame
+        .cues
+        .iter()
+        .any(|cue| cue.kind == VisualBattleCueKind::Faint)
+    {
         return base.clone();
     }
     // Captured source rows keep their registration. Retained-map cards have
@@ -83,12 +87,8 @@ pub(super) fn shot(
     // Keep the orbit, but consume only the available downward headroom.
     let minimum_elevation = elevation.min(6.0_f32.to_radians());
     let shot_elevation = (elevation - lowering.to_radians() * envelope).max(minimum_elevation);
-    base.battle_shot(
-        bodies,
-        yaw + sweep.to_radians(),
-        shot_elevation,
-    )
-    .unwrap_or_else(|| base.clone())
+    base.battle_shot(bodies, yaw + sweep.to_radians(), shot_elevation)
+        .unwrap_or_else(|| base.clone())
 }
 
 /// Stay as close as possible to the requested shot along its angular path.
@@ -102,13 +102,20 @@ pub(super) fn constrain_shot(
     mut accept: impl FnMut(&mut BattleSceneLayout) -> bool,
 ) -> Option<BattleSceneLayout> {
     let mut desired = requested.clone();
-    if accept(&mut desired) { return Some(desired); }
+    if accept(&mut desired) {
+        return Some(desired);
+    }
     let mut selected = base.clone();
-    if !accept(&mut selected) { return None; }
+    if !accept(&mut selected) {
+        return None;
+    }
     let axis = ((base.origins[1] - base.origins[0]) * Vec3::new(1.0, 0.0, 1.0)).try_normalize()?;
     let angles = |layout: &BattleSceneLayout| {
         let back = layout.camera.rotation * Vec3::Z;
-        Vec2::new(back.dot(axis.cross(Vec3::Y)).atan2(back.dot(-axis)), back.y.clamp(-1.0, 1.0).asin())
+        Vec2::new(
+            back.dot(axis.cross(Vec3::Y)).atan2(back.dot(-axis)),
+            back.y.clamp(-1.0, 1.0).asin(),
+        )
     };
     let start = angles(base);
     let end = angles(requested);
@@ -125,7 +132,9 @@ pub(super) fn constrain_shot(
         if accept(&mut candidate) {
             low = fraction;
             selected = candidate;
-        } else { high = fraction; }
+        } else {
+            high = fraction;
+        }
     }
     // Candidate checks may mutate opacity/fog. Publish the final proven state,
     // rather than leaving the renderer configured for the last rejected probe.
@@ -182,9 +191,15 @@ mod tests {
     fn already_low_establishing_views_never_dip_through_the_ground() {
         let (initial, bodies, mut frame) = fixture();
         for degrees in [6.0_f32, 12.0, 24.0, 48.0] {
-            let base = initial.battle_shot(bodies, 90.0_f32.to_radians(), degrees.to_radians()).unwrap();
-            for kind in [VisualBattleCueKind::Move, VisualBattleCueKind::Impact,
-                VisualBattleCueKind::SendOut, VisualBattleCueKind::Faint] {
+            let base = initial
+                .battle_shot(bodies, 90.0_f32.to_radians(), degrees.to_radians())
+                .unwrap();
+            for kind in [
+                VisualBattleCueKind::Move,
+                VisualBattleCueKind::Impact,
+                VisualBattleCueKind::SendOut,
+                VisualBattleCueKind::Faint,
+            ] {
                 frame.cues[0].kind = kind;
                 for side in [VisualBattleSide::Player, VisualBattleSide::Enemy] {
                     frame.cues[0].side = side;
@@ -192,8 +207,10 @@ mod tests {
                         frame.cues[0].progress = tick as f32 / 100.0;
                         let next = shot(&base, bodies, &frame);
                         let elevation = (next.camera.rotation * Vec3::Z).y.asin();
-                        assert!(elevation >= 6.0_f32.to_radians() - 0.00001,
-                            "{kind:?} at {degrees} degrees dipped below the proven low view");
+                        assert!(
+                            elevation >= 6.0_f32.to_radians() - 0.00001,
+                            "{kind:?} at {degrees} degrees dipped below the proven low view"
+                        );
                         assert!(elevation <= degrees.to_radians() + 0.00001);
                         assert_eq!(next.origins, base.origins);
                         assert_eq!(next.body_poses, base.body_poses);
@@ -221,11 +238,15 @@ mod tests {
             assert_eq!(next.origins, base.origins);
             assert_eq!(next.body_poses, base.body_poses);
             assert_eq!(next.hit_anchors, base.hit_anchors);
-            assert!(previous.angle_between(next.camera.rotation) < 0.6_f32.to_radians(),
-                "a terrain limit must not reset a low shot in one frame");
+            assert!(
+                previous.angle_between(next.camera.rotation) < 0.6_f32.to_radians(),
+                "a terrain limit must not reset a low shot in one frame"
+            );
             previous = next.camera.rotation;
-            let held = constrain_shot(&base, &requested, bodies, |candidate|
-                (candidate.camera.rotation * Vec3::Z).y.asin() >= 22.0_f32.to_radians()).unwrap();
+            let held = constrain_shot(&base, &requested, bodies, |candidate| {
+                (candidate.camera.rotation * Vec3::Z).y.asin() >= 22.0_f32.to_radians()
+            })
+            .unwrap();
             assert_eq!(next, held);
         }
         assert!(constrain_shot(&base, &base, bodies, |_| false).is_none());
@@ -270,16 +291,23 @@ mod tests {
     #[test]
     fn reverse_shots_keep_screen_order_and_original_source_registration() {
         let (initial, bodies, mut frame) = fixture();
-        let base = initial.battle_shot(bodies, -70.0_f32.to_radians(), 24.0_f32.to_radians()).unwrap();
-        let on_right = |layout: &BattleSceneLayout|
-            (layout.origins[0] - layout.origins[1]).dot(*layout.camera.right()) > 0.0;
+        let base = initial
+            .battle_shot(bodies, -70.0_f32.to_radians(), 24.0_f32.to_radians())
+            .unwrap();
+        let on_right = |layout: &BattleSceneLayout| {
+            (layout.origins[0] - layout.origins[1]).dot(*layout.camera.right()) > 0.0
+        };
         assert!(on_right(&base));
         for side in [VisualBattleSide::Player, VisualBattleSide::Enemy] {
             frame.cues[0].side = side;
             for progress in 0..=100 {
                 frame.cues[0].progress = progress as f32 / 100.0;
                 let next = shot(&base, bodies, &frame);
-                assert_eq!(on_right(&next), on_right(&base), "a sweep must not cross the action axis");
+                assert_eq!(
+                    on_right(&next),
+                    on_right(&base),
+                    "a sweep must not cross the action axis"
+                );
                 assert_eq!(next.body_poses, base.body_poses);
                 assert_eq!(next.origins, base.origins);
                 for (body, pose) in bodies.into_iter().zip(next.body_poses) {

@@ -179,7 +179,11 @@ fn complete(cells: &[&VisualTile], g: &GridGeometry, p: &Placement) -> bool {
 }
 // Protect even a cropped custom object whose own ground is currently absent.
 // A same-art custom profile may own a different height, palette or silhouette.
-pub(super) fn profile_owns(map: &str, source: &VisualTileSource, profiles: Option<&Document>) -> bool {
+pub(super) fn profile_owns(
+    map: &str,
+    source: &VisualTileSource,
+    profiles: Option<&Document>,
+) -> bool {
     profiles.is_some_and(|d| {
         d.objects.iter().any(|o| {
             o.map.as_deref().is_none_or(|m| m == map)
@@ -318,8 +322,14 @@ pub(super) fn append(
                     [(-1isize, 0isize), (1, 0), (0, -1), (0, 1)].map(|(dx, dz)| {
                         let x = (i % g.width) as isize + dx;
                         let z = (i / g.width) as isize + dz;
-                        x >= 0 && z >= 0 && x < g.width as isize && z < g.height as isize
-                            && crate::grass::grass_shape(&cells[z as usize * g.width + x as usize].source).is_some()
+                        x >= 0
+                            && z >= 0
+                            && x < g.width as isize
+                            && z < g.height as isize
+                            && crate::grass::grass_shape(
+                                &cells[z as usize * g.width + x as usize].source,
+                            )
+                            .is_some()
                     }),
                 );
                 debug_assert!(appended, "verified Johto grass source must append");

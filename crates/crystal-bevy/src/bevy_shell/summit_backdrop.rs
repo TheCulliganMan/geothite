@@ -11,21 +11,38 @@ pub(super) fn publish(
     settings: Option<Res<crystal_voxel_view::VoxelViewSettings>>,
     status: Option<Res<crystal_voxel_view::VoxelViewStatus>>,
 ) {
-    if !frame.active { return; }
+    if !frame.active {
+        return;
+    }
     if frame.map_id.as_ref() != "TinTowerRoof"
-        && !crystal_voxel_view::summit_preload_interior(&frame.map_id) {
+        && !crystal_voxel_view::summit_preload_interior(&frame.map_id)
+    {
         if backdrop.revision.is_some() {
             *backdrop = SummitBackdrop::default();
         }
         return;
     }
-    if !settings.as_ref().is_some_and(|settings| settings.enabled) { return; }
+    if !settings.as_ref().is_some_and(|settings| settings.enabled) {
+        return;
+    }
     if frame.map_id.as_ref() != "TinTowerRoof"
-        && !status.as_ref().is_some_and(|s|crystal_voxel_view::summit_preload_foreground_ready(s)) { return; }
+        && !status
+            .as_ref()
+            .is_some_and(|s| crystal_voxel_view::summit_preload_foreground_ready(s))
+    {
+        return;
+    }
     let Some((_, snapshot)) = runtime.cached_snapshot.as_ref() else {
         return;
     };
-    match source_maps_budgeted(snapshot, &runtime, &mut art_cache, &mut images, &backdrop, 1) {
+    match source_maps_budgeted(
+        snapshot,
+        &runtime,
+        &mut art_cache,
+        &mut images,
+        &backdrop,
+        1,
+    ) {
         Ok(Some(next)) => *backdrop = next,
         Ok(None) => {}
         Err(error) => bevy::log::warn!("summit source panorama unavailable: {error:#}"),
@@ -49,7 +66,8 @@ pub(super) fn source_maps_budgeted(
     previous: &SummitBackdrop,
     budget: usize,
 ) -> Result<Option<SummitBackdrop>> {
-    let placements = connected_render_map_placements_to_depth("EcruteakCity", &snapshot.maps, None)?;
+    let placements =
+        connected_render_map_placements_to_depth("EcruteakCity", &snapshot.maps, None)?;
     let city = placements[0].0;
     let tower = city
         .events
@@ -89,10 +107,20 @@ pub(super) fn source_maps_budgeted(
         return Ok(None);
     }
     let continuing = previous.revision == Some(revision);
-    let animation_frame = if continuing { previous.animation_frame } else { runtime.lcd_animation_frame };
+    let animation_frame = if continuing {
+        previous.animation_frame
+    } else {
+        runtime.lcd_animation_frame
+    };
     if !continuing && std::env::var_os("CRYSTAL_SUMMIT_TRACE").is_some() {
-        eprintln!("summit source maps ({}): {:?}", placements.len(),
-            placements.iter().map(|(map, _, _)| map.map_name.as_str()).collect::<Vec<_>>());
+        eprintln!(
+            "summit source maps ({}): {:?}",
+            placements.len(),
+            placements
+                .iter()
+                .map(|(map, _, _)| map.map_name.as_str())
+                .collect::<Vec<_>>()
+        );
     }
     let mut sources = Vec::new();
     for (map, x, y) in placements {
@@ -116,7 +144,11 @@ pub(super) fn source_maps_budgeted(
             height: i32::from(map.attributes.height) * 4,
         });
     }
-    let mut maps = if continuing { previous.maps.clone() } else { Vec::new() };
+    let mut maps = if continuing {
+        previous.maps.clone()
+    } else {
+        Vec::new()
+    };
     let first = maps.len();
     for source in sources.iter().skip(first).take(budget.max(1)) {
         let key = source.art_key.clone();
@@ -169,19 +201,24 @@ pub(super) fn source_maps_budgeted(
         // The panorama's larger reach must not rerun a whole-region terrace
         // solve for every individual route or change its local floor datum.
         let neighborhood = connected_render_map_placements(&source.map.map_name, &snapshot.maps)?;
-        let relative = neighborhood.iter().map(|(map, x, y)| {
-            let resolved = sources.iter().find(|s| s.map.map_name == map.map_name)
-                .expect("complete connected panorama contains every local neighbor");
-            ResolvedRenderSource {
-                map: resolved.map,
-                tileset: resolved.tileset,
-                art_key: resolved.art_key.clone(),
-                origin_x: *x,
-                origin_y: *y,
-                width: resolved.width,
-                height: resolved.height,
-            }
-        }).collect::<Vec<_>>();
+        let relative = neighborhood
+            .iter()
+            .map(|(map, x, y)| {
+                let resolved = sources
+                    .iter()
+                    .find(|s| s.map.map_name == map.map_name)
+                    .expect("complete connected panorama contains every local neighbor");
+                ResolvedRenderSource {
+                    map: resolved.map,
+                    tileset: resolved.tileset,
+                    art_key: resolved.art_key.clone(),
+                    origin_x: *x,
+                    origin_y: *y,
+                    width: resolved.width,
+                    height: resolved.height,
+                }
+            })
+            .collect::<Vec<_>>();
         let ledges = terrain_ledges::collect(&relative, runtime.shell.runtime().data())?;
         let datum = terrain_ledges::datum(&relative, runtime.shell.runtime(), &ledges)?;
         let texture = compose_visual_world_tiles(&handles, w, h, None, images);
@@ -206,8 +243,12 @@ pub(super) fn source_maps_budgeted(
     }
     if maps.len() < sources.len() {
         return Ok(Some(SummitBackdrop {
-            revision: Some(revision), source_pending: true, animation_frame,
-            tower_core: IVec2::new(tower.x.into(), tower.y.into()), maps, border: None,
+            revision: Some(revision),
+            source_pending: true,
+            animation_frame,
+            tower_core: IVec2::new(tower.x.into(), tower.y.into()),
+            maps,
+            border: None,
         }));
     }
     // Match the ordinary exterior renderer's source-authored border, without

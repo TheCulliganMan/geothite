@@ -27,12 +27,14 @@ pub(crate) fn ancestry(rig: &PersonRig, side: usize) -> [usize; 5] {
 }
 
 pub(crate) fn carriers(rig: &PersonRig, side: usize) -> Vec<usize> {
-    let arm=ancestry(rig,side);
-    let mut result=arm.to_vec();
-    let mut node=rig.parents[rig.skin_nodes[arm[4]]];
-    while let Some(current)=node {
-        if let Some(joint)=rig.skin_nodes.iter().position(|&n|n==current) {result.push(joint);}
-        node=rig.parents[current];
+    let arm = ancestry(rig, side);
+    let mut result = arm.to_vec();
+    let mut node = rig.parents[rig.skin_nodes[arm[4]]];
+    while let Some(current) = node {
+        if let Some(joint) = rig.skin_nodes.iter().position(|&n| n == current) {
+            result.push(joint);
+        }
+        node = rig.parents[current];
     }
     result
 }
@@ -46,36 +48,53 @@ pub(crate) fn refine(
     ids: &mut Vec<[u16; 4]>,
     weights: &mut Vec<[f32; 4]>,
 ) {
-    refine_with_reference(rig,mesh,ids,weights,None);
+    refine_with_reference(rig, mesh, ids, weights, None);
 }
 
 pub(crate) fn refine_reference(
-    rig: &PersonRig, mesh: &mut SurfaceMeshData, ids: &mut Vec<[u16;4]>, weights: &mut Vec<[f32;4]>,
-    reference: &mut Vec<[f32;3]>,
+    rig: &PersonRig,
+    mesh: &mut SurfaceMeshData,
+    ids: &mut Vec<[u16; 4]>,
+    weights: &mut Vec<[f32; 4]>,
+    reference: &mut Vec<[f32; 3]>,
 ) {
-    refine_with_reference(rig,mesh,ids,weights,Some(reference));
+    refine_with_reference(rig, mesh, ids, weights, Some(reference));
 }
 
 fn refine_with_reference(
-    rig: &PersonRig, mesh: &mut SurfaceMeshData, ids: &mut Vec<[u16;4]>, weights: &mut Vec<[f32;4]>,
-    mut reference: Option<&mut Vec<[f32;3]>>,
+    rig: &PersonRig,
+    mesh: &mut SurfaceMeshData,
+    ids: &mut Vec<[u16; 4]>,
+    weights: &mut Vec<[f32; 4]>,
+    mut reference: Option<&mut Vec<[f32; 3]>>,
 ) {
     #[cfg(all(feature = "people-review", not(target_arch = "wasm32")))]
     if std::env::var_os("CRYSTAL_PEOPLE_REVIEW_ARM_SKIN_BASELINE").is_some() {
         return;
     }
     let arms = [ancestry(rig, 0), ancestry(rig, 1)];
-    let torso: Vec<_>=[carriers(rig,0),carriers(rig,1)].into_iter().flatten().collect();
+    let torso: Vec<_> = [carriers(rig, 0), carriers(rig, 1)]
+        .into_iter()
+        .flatten()
+        .collect();
     let length = (rig.inverse_binds[arms[0][0]].inverse().w_axis.truncate()
         - rig.inverse_binds[arms[0][1]].inverse().w_axis.truncate())
     .length();
     let limit = (0.02 * length / 0.47).powi(2);
-    let minimum_x=0_f32;
-    #[cfg(all(feature="people-review",not(target_arch="wasm32")))]
-    let minimum_x=if std::env::var_os("CRYSTAL_PEOPLE_REVIEW_SPINE_REFINEMENT_BASELINE").is_some() {0.08} else {minimum_x};
+    let minimum_x = 0_f32;
+    #[cfg(all(feature = "people-review", not(target_arch = "wasm32")))]
+    let minimum_x = if std::env::var_os("CRYSTAL_PEOPLE_REVIEW_SPINE_REFINEMENT_BASELINE").is_some()
+    {
+        0.08
+    } else {
+        minimum_x
+    };
     for _ in 0..4 {
         let mut selected = vec![false; mesh.positions.len()];
-        let positions=reference.as_ref().map(|p|p.as_slice()).unwrap_or(mesh.positions.as_slice());
+        let positions = reference
+            .as_ref()
+            .map(|p| p.as_slice())
+            .unwrap_or(mesh.positions.as_slice());
         for face in mesh.indices.chunks_exact(3) {
             let indices = [face[0] as usize, face[1] as usize, face[2] as usize];
             if !indices.iter().all(|&i| {
@@ -95,8 +114,16 @@ fn refine_with_reference(
             }) {
                 continue;
             }
-            if !indices.iter().any(|&i| (0..4).any(|s|weights[i][s]>0.001
-                && arms.iter().any(|arm|arm[..3].contains(&(ids[i][s] as usize))))) {continue;}
+            if !indices.iter().any(|&i| {
+                (0..4).any(|s| {
+                    weights[i][s] > 0.001
+                        && arms
+                            .iter()
+                            .any(|arm| arm[..3].contains(&(ids[i][s] as usize)))
+                })
+            }) {
+                continue;
+            }
             let p = indices.map(|i| Vec3::from_array(positions[i]));
             if (p[0] - p[1])
                 .length_squared()
@@ -112,8 +139,10 @@ fn refine_with_reference(
         if !selected.iter().any(|&s| s) {
             break;
         }
-        if let Some(reference)=reference.as_deref_mut() {
-            crate::hand_surface::linear_selection_joined_reference(mesh,ids,weights,&selected,reference);
+        if let Some(reference) = reference.as_deref_mut() {
+            crate::hand_surface::linear_selection_joined_reference(
+                mesh, ids, weights, &selected, reference,
+            );
         } else {
             crate::hand_surface::linear_selection_joined(mesh, ids, weights, &selected);
         }
@@ -137,7 +166,7 @@ pub(crate) fn fit(
     }
     for side in 0..2 {
         let [forearm, arm, shoulder, upper_chest, chest] = ancestry(rig, side);
-        let torso=carriers(rig,side);
+        let torso = carriers(rig, side);
         let origin = |joint: usize| {
             rig.inverse_binds[joint]
                 .inverse()
@@ -175,9 +204,11 @@ pub(crate) fn fit(
             let c = 0.35 + 0.65 * smooth((p[1] - (upper.y - 0.19 * units)) / (0.25 * units));
             // Fade into the untouched torso where subdivision interpolated a
             // small shoulder influence. Keep the original chest field there.
-            let mix = smooth(carried / 0.30)
-                * smooth((p[1] - (upper.y - 0.50 * units)) / (0.20 * units));
-            if mix==0. {continue;}
+            let mix =
+                smooth(carried / 0.30) * smooth((p[1] - (upper.y - 0.50 * units)) / (0.20 * units));
+            if mix == 0. {
+                continue;
+            }
             let mut blend = std::collections::BTreeMap::<u16, f32>::new();
             for (&joint, &value) in joints.iter().zip(values.iter()) {
                 *blend.entry(joint).or_default() += value * (1. - mix);
@@ -206,31 +237,60 @@ mod tests {
     #[test]
     #[ignore = "requires supplied human rigs"]
     fn supplied_underarm_spine_blends_are_refined_and_enter_the_arm_field() {
-        for name in ["human-male","human-female"] {
-            let rig=crate::open_people::get(name).unwrap();
+        for name in ["human-male", "human-female"] {
+            let rig = crate::open_people::get(name).unwrap();
             for side in 0..2 {
-                let [_,arm,shoulder,upper,chest]=ancestry(rig,side);
-                let spine=rig.skin_nodes.iter().position(|&n|
-                    Some(n)==rig.parents[rig.skin_nodes[chest]]).unwrap();
-                let sign=if side==0 {1.}else{-1.};
+                let [_, arm, shoulder, upper, chest] = ancestry(rig, side);
+                let spine = rig
+                    .skin_nodes
+                    .iter()
+                    .position(|&n| Some(n) == rig.parents[rig.skin_nodes[chest]])
+                    .unwrap();
+                let sign = if side == 0 { 1. } else { -1. };
                 // The native bare-torso recess contains this mixed Spine /
                 // Chest / UpperChest / Shoulder face. A five-joint-only
                 // selection left its lower corner coarse and unfitted.
-                let points: Vec<[f32;3]>=vec![[-0.32797,2.16904,0.04463],[-0.32968,2.16991,0.03388],[-0.31928,2.12663,0.08123]]
-                    .into_iter().map(|mut p: [f32;3]|{p[0]=p[0].abs()*sign;p}).collect::<Vec<_>>();
-                let mut mesh=SurfaceMeshData{positions:points.clone(),normals:vec![[0.,0.,1.];3],
-                    uvs:vec![[0.3,0.7];3],colors:vec![[1.;4];3],indices:vec![0,1,2],..Default::default()};
-                let mut ids=vec![[chest as u16,upper as u16,shoulder as u16,spine as u16];3];
-                let mut weights=vec![[0.3125,0.3125,0.3125,0.0625];3];
-                refine(rig,&mut mesh,&mut ids,&mut weights);
-                assert!(mesh.indices.len()>3,"Spine-weighted underarm face was not refined");
-                assert_eq!(&mesh.positions[..3],points.as_slice());
-                fit(rig,&mesh,&mut ids,&mut weights);
+                let points: Vec<[f32; 3]> = vec![
+                    [-0.32797, 2.16904, 0.04463],
+                    [-0.32968, 2.16991, 0.03388],
+                    [-0.31928, 2.12663, 0.08123],
+                ]
+                .into_iter()
+                .map(|mut p: [f32; 3]| {
+                    p[0] = p[0].abs() * sign;
+                    p
+                })
+                .collect::<Vec<_>>();
+                let mut mesh = SurfaceMeshData {
+                    positions: points.clone(),
+                    normals: vec![[0., 0., 1.]; 3],
+                    uvs: vec![[0.3, 0.7]; 3],
+                    colors: vec![[1.; 4]; 3],
+                    indices: vec![0, 1, 2],
+                    ..Default::default()
+                };
+                let mut ids = vec![[chest as u16, upper as u16, shoulder as u16, spine as u16]; 3];
+                let mut weights = vec![[0.3125, 0.3125, 0.3125, 0.0625]; 3];
+                refine(rig, &mut mesh, &mut ids, &mut weights);
+                assert!(
+                    mesh.indices.len() > 3,
+                    "Spine-weighted underarm face was not refined"
+                );
+                assert_eq!(&mesh.positions[..3], points.as_slice());
+                fit(rig, &mesh, &mut ids, &mut weights);
                 for i in 0..3 {
-                    let carried: f32=(0..4).filter(|&s|ids[i][s]as usize==arm).map(|s|weights[i][s]).sum();
-                    assert!(carried>0.15,"mixed torso corner stayed outside the shoulder field");
+                    let carried: f32 = (0..4)
+                        .filter(|&s| ids[i][s] as usize == arm)
+                        .map(|s| weights[i][s])
+                        .sum();
+                    assert!(
+                        carried > 0.15,
+                        "mixed torso corner stayed outside the shoulder field"
+                    );
                 }
-                for w in weights {assert!((w.iter().sum::<f32>()-1.).abs()<1e-5);}
+                for w in weights {
+                    assert!((w.iter().sum::<f32>() - 1.).abs() < 1e-5);
+                }
             }
         }
     }
@@ -291,9 +351,9 @@ pub(crate) mod validation {
         let mut lowest_dot = 1_f32;
         let mut smallest_area = f32::INFINITY;
         let mut checked = 0;
-        let mut face_samples=0_u64;
-        let mut largest_palette=0;
-        let mut lowest_resolution=12;
+        let mut face_samples = 0_u64;
+        let mut largest_palette = 0;
+        let mut lowest_resolution = 12;
         let mut rejected = Vec::new();
         for (kind, bicycle) in SOURCE_KINDS
             .iter()
@@ -308,10 +368,13 @@ pub(crate) mod validation {
             let rig = crate::open_people::get(look.base).unwrap().clone();
             let prepared = prepare_appearance(&rig, kind);
             let mesh = prepared.review_body();
-            if let Some(recipe)=prepared.review_arm_deformation() {
-                recipe.validate_mesh(mesh).expect("production arm blend palette");
-                largest_palette=largest_palette.max(recipe.original_count()+recipe.helper_count());
-                lowest_resolution=lowest_resolution.min(recipe.resolution());
+            if let Some(recipe) = prepared.review_arm_deformation() {
+                recipe
+                    .validate_mesh(mesh)
+                    .expect("production arm blend palette");
+                largest_palette =
+                    largest_palette.max(recipe.original_count() + recipe.helper_count());
+                lowest_resolution = lowest_resolution.min(recipe.resolution());
             }
             let Some(VertexAttributeValues::Float32x3(p)) =
                 mesh.attribute(Mesh::ATTRIBUTE_POSITION)
@@ -450,7 +513,7 @@ pub(crate) mod validation {
                         smallest_area = smallest_area.min(area);
                     }
                     checked += 1;
-                    face_samples+=faces.len() as u64;
+                    face_samples += faces.len() as u64;
                 }
             }
             if failures > 0 {

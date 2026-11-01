@@ -211,13 +211,17 @@ mod tests {
     #[test]
     #[ignore = "requires a completed external pack and independent radio oracle fixtures"]
     fn radio_broadcast_replays_rocket_rom_tiles_and_rolls_back_failed_random() {
-        let fixtures = std::path::PathBuf::from(std::env::var_os("CRYSTAL_ORACLE_FIXTURE_ROOT")
-            .expect("set CRYSTAL_ORACLE_FIXTURE_ROOT to the external oracle fixtures"));
+        let fixtures = std::path::PathBuf::from(
+            std::env::var_os("CRYSTAL_ORACLE_FIXTURE_ROOT")
+                .expect("set CRYSTAL_ORACLE_FIXTURE_ROOT to the external oracle fixtures"),
+        );
         let pack_path = std::env::var_os("CRYSTAL_RENDER_TEST_PACK")
             .expect("set CRYSTAL_RENDER_TEST_PACK to a completed external source pack");
         let pack = crate::read_verified_compiled_game_pack(pack_path).unwrap();
         let data = pack.data();
-        let fixture: serde_json::Value = serde_json::from_slice(&std::fs::read(fixtures.join("radio-program-rocket.json")).unwrap())
+        let fixture: serde_json::Value = serde_json::from_slice(
+            &std::fs::read(fixtures.join("radio-program-rocket.json")).unwrap(),
+        )
         .unwrap();
         let mut game = GameState::default();
         game.flags

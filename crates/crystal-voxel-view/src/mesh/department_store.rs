@@ -25,12 +25,14 @@ enum Asset {
     CounterNorth,
     CounterWest,
 }
-pub(super) fn append_lift_cabin_glazing(out: &mut SurfaceMeshData, bounds: [f32;4], height: f32) {
-    let [w,e,n,s] = bounds;
+pub(super) fn append_lift_cabin_glazing(out: &mut SurfaceMeshData, bounds: [f32; 4], height: f32) {
+    let [w, e, n, s] = bounds;
     for pane in 0..3 {
-        let left = w+(e-w)*pane as f32/3.;
-        let right = w+(e-w)*(pane+1) as f32/3.;
-        Asset::Window1.model().append_fitted(out, [left,right,n,s], 0., height);
+        let left = w + (e - w) * pane as f32 / 3.;
+        let right = w + (e - w) * (pane + 1) as f32 / 3.;
+        Asset::Window1
+            .model()
+            .append_fitted(out, [left, right, n, s], 0., height);
     }
 }
 impl Asset {
@@ -88,49 +90,83 @@ struct Part {
     depth: usize,
     asset: Asset,
 }
-fn counter_part(asset:Asset)->bool {
-    matches!(asset,Asset::CounterPlain|Asset::CounterRegister|Asset::CounterNorth|Asset::CounterWest)
+fn counter_part(asset: Asset) -> bool {
+    matches!(
+        asset,
+        Asset::CounterPlain | Asset::CounterRegister | Asset::CounterNorth | Asset::CounterWest
+    )
 }
-fn counter_joins(part:&Part,parts:&[Part])->[bool;4] {
-    let mut joined=[false;4];
-    for other in parts.iter().filter(|other|counter_part(other.asset)) {
-        let spans_z=other.y<=part.y&&other.y+other.depth>=part.y+part.depth;
-        let spans_x=other.x<=part.x&&other.x+other.width>=part.x+part.width;
-        joined[0]|=spans_z&&other.x+other.width==part.x;
-        joined[1]|=spans_z&&other.x==part.x+part.width;
-        joined[2]|=spans_x&&other.y+other.depth==part.y;
-        joined[3]|=spans_x&&other.y==part.y+part.depth;
+fn counter_joins(part: &Part, parts: &[Part]) -> [bool; 4] {
+    let mut joined = [false; 4];
+    for other in parts.iter().filter(|other| counter_part(other.asset)) {
+        let spans_z = other.y <= part.y && other.y + other.depth >= part.y + part.depth;
+        let spans_x = other.x <= part.x && other.x + other.width >= part.x + part.width;
+        joined[0] |= spans_z && other.x + other.width == part.x;
+        joined[1] |= spans_z && other.x == part.x + part.width;
+        joined[2] |= spans_x && other.y + other.depth == part.y;
+        joined[3] |= spans_x && other.y == part.y + part.depth;
     }
     joined
 }
-fn omit_counter_join_faces(out:&mut SurfaceMeshData,vertex_first:usize,index_first:usize,b:[f32;4],joined:[bool;4]) {
+fn omit_counter_join_faces(
+    out: &mut SurfaceMeshData,
+    vertex_first: usize,
+    index_first: usize,
+    b: [f32; 4],
+    joined: [bool; 4],
+) {
     // The cabinet body is inset beneath its overhanging cap. Extend that
     // hidden body edge to the shared plane before omitting its end wall, so
     // adjacent bays form one shell rather than leaving a slit under the top.
-    for ((axis,plane,normal),joined) in [(0,b[0],-1.),(0,b[1],1.),(2,b[2],-1.),(2,b[3],1.)]
-        .into_iter().zip(joined) {
-        if !joined {continue;}
-        let body=out.indices[index_first..].chunks_exact(3).filter(|tri|tri.iter().all(|&i|
-            out.normals[i as usize][axis]*normal>0.999)).map(|tri| {
-                let [a,b,c]=[tri[0],tri[1],tri[2]].map(|i|Vec3::from_array(out.positions[i as usize]));
-                ((b-a).cross(c-a).length_squared(),a[axis])
-            }).max_by(|a,b|a.0.total_cmp(&b.0)).map(|(_,body)|body);
-        if let Some(body)=body {
+    for ((axis, plane, normal), joined) in
+        [(0, b[0], -1.), (0, b[1], 1.), (2, b[2], -1.), (2, b[3], 1.)]
+            .into_iter()
+            .zip(joined)
+    {
+        if !joined {
+            continue;
+        }
+        let body = out.indices[index_first..]
+            .chunks_exact(3)
+            .filter(|tri| {
+                tri.iter()
+                    .all(|&i| out.normals[i as usize][axis] * normal > 0.999)
+            })
+            .map(|tri| {
+                let [a, b, c] =
+                    [tri[0], tri[1], tri[2]].map(|i| Vec3::from_array(out.positions[i as usize]));
+                ((b - a).cross(c - a).length_squared(), a[axis])
+            })
+            .max_by(|a, b| a.0.total_cmp(&b.0))
+            .map(|(_, body)| body);
+        if let Some(body) = body {
             for v in &mut out.positions[vertex_first..] {
-                if (v[axis]-body)*normal>=-0.0001&&(plane-v[axis])*normal>=-0.0001 {
-                    v[axis]=plane;
+                if (v[axis] - body) * normal >= -0.0001 && (plane - v[axis]) * normal >= -0.0001 {
+                    v[axis] = plane;
                 }
             }
         }
     }
-    let faces=out.indices.split_off(index_first);
-    out.indices.extend(faces.chunks_exact(3).filter(|tri| {
-        ![(0,b[0],-1.),(0,b[1],1.),(2,b[2],-1.),(2,b[3],1.)]
-            .into_iter().zip(joined).any(|((axis,plane,normal),joined)|joined&&tri.iter().all(|&i| {
-                let i=i as usize;
-                (out.positions[i][axis]-plane).abs()<0.0001&&out.normals[i][axis]*normal>0.999
-            }))
-    }).flatten().copied());
+    let faces = out.indices.split_off(index_first);
+    out.indices.extend(
+        faces
+            .chunks_exact(3)
+            .filter(|tri| {
+                ![(0, b[0], -1.), (0, b[1], 1.), (2, b[2], -1.), (2, b[3], 1.)]
+                    .into_iter()
+                    .zip(joined)
+                    .any(|((axis, plane, normal), joined)| {
+                        joined
+                            && tri.iter().all(|&i| {
+                                let i = i as usize;
+                                (out.positions[i][axis] - plane).abs() < 0.0001
+                                    && out.normals[i][axis] * normal > 0.999
+                            })
+                    })
+            })
+            .flatten()
+            .copied(),
+    );
 }
 struct Network {
     map: Option<&'static str>,
@@ -242,17 +278,39 @@ pub(super) fn resolve(
     };
     resolve_networks(NETWORKS, floor, map, cells, g, origin, profiles, reserved)
 }
-pub(super) fn perimeter_template(mesh:&mut TerrainMeshData,map:&str,cells:&[&VisualTile],
-    g:&GridGeometry,origin:[i32;2],profiles:Option<&Document>)->Option<usize> {
-    let placements=resolve(map,cells,g,origin,profiles,&vec![false;cells.len()]);
-    let (p,part)=placements.iter().flat_map(|p|p.network.parts.iter().map(move|part|(p,part)))
-        .filter(|(_,part)|matches!(part.asset,Asset::Window1|Asset::Window2|Asset::Window4
-            |Asset::Window8|Asset::Window10))
-        .min_by_key(|(p,part)|(p.row+part.y,p.column+part.x))?;
-    let row=p.row+part.y;let (w,_,n,_)=g.bounds(p.column+part.x,row);
-    let s=n+part.depth as f32*g.tile_height;
-    part.asset.model().append_fitted(&mut mesh.solid,
-        [w,w+part.width as f32*g.tile_width,s-3.*g.tile_height/8.,s],0.,WALL_HEIGHT*g.tile_height/8.);
+pub(super) fn perimeter_template(
+    mesh: &mut TerrainMeshData,
+    map: &str,
+    cells: &[&VisualTile],
+    g: &GridGeometry,
+    origin: [i32; 2],
+    profiles: Option<&Document>,
+) -> Option<usize> {
+    let placements = resolve(map, cells, g, origin, profiles, &vec![false; cells.len()]);
+    let (p, part) = placements
+        .iter()
+        .flat_map(|p| p.network.parts.iter().map(move |part| (p, part)))
+        .filter(|(_, part)| {
+            matches!(
+                part.asset,
+                Asset::Window1 | Asset::Window2 | Asset::Window4 | Asset::Window8 | Asset::Window10
+            )
+        })
+        .min_by_key(|(p, part)| (p.row + part.y, p.column + part.x))?;
+    let row = p.row + part.y;
+    let (w, _, n, _) = g.bounds(p.column + part.x, row);
+    let s = n + part.depth as f32 * g.tile_height;
+    part.asset.model().append_fitted(
+        &mut mesh.solid,
+        [
+            w,
+            w + part.width as f32 * g.tile_width,
+            s - 3. * g.tile_height / 8.,
+            s,
+        ],
+        0.,
+        WALL_HEIGHT * g.tile_height / 8.,
+    );
     Some(row)
 }
 fn resolve_networks(
@@ -280,7 +338,10 @@ fn resolve_networks(
         }
     }
     let mut out = Vec::new();
-    for n in networks.iter().filter(|n| n.floor == floor && n.map.is_none_or(|name|name == map)) {
+    for n in networks
+        .iter()
+        .filter(|n| n.floor == floor && n.map.is_none_or(|name| name == map))
+    {
         let x = i64::from(n.anchor[0]) - i64::from(origin[0]);
         let y = i64::from(n.anchor[1]) - i64::from(origin[1]);
         if x < 0 || y < 0 {
@@ -296,7 +357,8 @@ fn resolve_networks(
             row,
             ground,
             grid_origin: origin,
-            native_store: map.starts_with("CeladonDeptStore") || map.starts_with("GoldenrodDeptStore"),
+            native_store: map.starts_with("CeladonDeptStore")
+                || map.starts_with("GoldenrodDeptStore"),
         };
         if p.indices(g.width).any(|i| blocked[i]) {
             continue;
@@ -355,18 +417,41 @@ pub(super) fn append(
     {
         return false;
     }
-    let counter_swatches=if p.native_store {
-        p.indices(g.width).find_map(|i|super::modeled_interiors::mart_counter_swatches(g,i,cells[i].source.tile_index))
-    }else {None};
-    if p.native_store && p.network.parts.iter().any(|part|matches!(part.asset,
-        Asset::CounterPlain|Asset::CounterRegister|Asset::CounterNorth|Asset::CounterWest))
-        && (counter_swatches.is_none() || !Asset::CounterPlain.model().has_native_store_counter_materials()) {
+    let counter_swatches = if p.native_store {
+        p.indices(g.width).find_map(|i| {
+            super::modeled_interiors::mart_counter_swatches(g, i, cells[i].source.tile_index)
+        })
+    } else {
+        None
+    };
+    if p.native_store
+        && p.network.parts.iter().any(|part| {
+            matches!(
+                part.asset,
+                Asset::CounterPlain
+                    | Asset::CounterRegister
+                    | Asset::CounterNorth
+                    | Asset::CounterWest
+            )
+        })
+        && (counter_swatches.is_none()
+            || !Asset::CounterPlain
+                .model()
+                .has_native_store_counter_materials())
+    {
         // Material failure must not re-enter a legacy 3D counter extrusion.
         // Preserve the complete sparse drawing at its original 2D datum.
         for i in p.indices(g.width) {
-            append_top(&mut mesh.textured,g.bounds(i%g.width,i/g.width).into(),0.,g.uv(i%g.width,i/g.width));
-            claimed[i]=true;
-            if mesh.authored_cells.len()==cells.len() {mesh.authored_cells[i]=None;}
+            append_top(
+                &mut mesh.textured,
+                g.bounds(i % g.width, i / g.width).into(),
+                0.,
+                g.uv(i % g.width, i / g.width),
+            );
+            claimed[i] = true;
+            if mesh.authored_cells.len() == cells.len() {
+                mesh.authored_cells[i] = None;
+            }
         }
         return true;
     }
@@ -403,25 +488,45 @@ pub(super) fn append(
             part.asset,
             Asset::CounterPlain | Asset::CounterRegister | Asset::CounterNorth | Asset::CounterWest
         ) {
-            let solid_start=mesh.solid.positions.len();
-            let painted_start=mesh.textured.positions.len();
-            let solid_indices=mesh.solid.indices.len();
-            let painted_indices=mesh.textured.indices.len();
-            if let Some(swatches)=counter_swatches {
-                append_native_service_counter(&mut mesh.textured,part.asset,[w,e,n,s],sy,swatches,
-                    super::modeled_interiors::mart_counter_fascia_uv(cells,g));
-            }else {append_service_counter(&mut mesh.solid, part.asset, [w, e, n, s], sy);}
-            let joined=counter_joins(part,p.network.parts);
-            omit_counter_join_faces(&mut mesh.solid,solid_start,solid_indices,[w,e,n,s],joined);
-            omit_counter_join_faces(&mut mesh.textured,painted_start,painted_indices,[w,e,n,s],joined);
+            let solid_start = mesh.solid.positions.len();
+            let painted_start = mesh.textured.positions.len();
+            let solid_indices = mesh.solid.indices.len();
+            let painted_indices = mesh.textured.indices.len();
+            if let Some(swatches) = counter_swatches {
+                append_native_service_counter(
+                    &mut mesh.textured,
+                    part.asset,
+                    [w, e, n, s],
+                    sy,
+                    swatches,
+                    super::modeled_interiors::mart_counter_fascia_uv(cells, g),
+                );
+            } else {
+                append_service_counter(&mut mesh.solid, part.asset, [w, e, n, s], sy);
+            }
+            let joined = counter_joins(part, p.network.parts);
+            omit_counter_join_faces(
+                &mut mesh.solid,
+                solid_start,
+                solid_indices,
+                [w, e, n, s],
+                joined,
+            );
+            omit_counter_join_faces(
+                &mut mesh.textured,
+                painted_start,
+                painted_indices,
+                [w, e, n, s],
+                joined,
+            );
             if part.asset == Asset::CounterRegister {
                 append_cash_register(&mut mesh.solid, [w, e, n, s], sy);
             }
             // Reveal only the bay blocking the trainer. The floor backing was
             // emitted before these ranges; other bays and the clerk's return
             // remain independently opaque as the trainer walks along the desk.
-            let solid=solid_start..mesh.solid.positions.len();
-            let painted=painted_start..mesh.textured.positions.len();
+            let solid = solid_start..mesh.solid.positions.len();
+            let painted = painted_start..mesh.textured.positions.len();
             if !solid.is_empty() {
                 mesh.solid.cutaway_ranges.push(solid.clone());
                 mesh.depth_coverage_solid_ranges.push(solid.clone());
@@ -430,8 +535,8 @@ pub(super) fn append(
                 mesh.textured.cutaway_ranges.push(painted.clone());
                 mesh.depth_coverage_textured_ranges.push(painted.clone());
             }
-            if !solid.is_empty()&&!painted.is_empty() {
-                mesh.cutaway_links.push((solid.start,painted.start));
+            if !solid.is_empty() && !painted.is_empty() {
+                mesh.cutaway_links.push((solid.start, painted.start));
             }
             continue;
         }
@@ -476,39 +581,48 @@ pub(super) fn append(
             continue;
         }
         if is_display {
-            let display_start=mesh.textured.positions.len();
+            let display_start = mesh.textured.positions.len();
             // All ten named materials sample this complete authenticated
             // drawing, including its distinct gray case and blue glass palettes.
-            assert!(part.asset.model().append_store_display(
-                &mut mesh.textured, [w, e, n, s], 8. * sy, |material| {
-                    let pixel = match material {
-                        0 | 3 => [1, 1], // Gray case and drawer faces, tile 2a.
-                        1 => [9, 2], // Pale enamel, tile 3b.
-                        2 | 7 | 8 => [0, 0], // Dark folded trim, pulls and plinth.
-                        4 => [3, 54], // Blue glazing, tile 0e.
-                        5 | 6 => [3, 49], // Pale reflection and glint, tile 0e.
-                        9 => [0, 48], // Dark recessed glazing rim.
-                        _ => unreachable!("validated named store display material"),
-                    };
-                    let uv = g.uv(p.column + pixel[0] / 8, p.row + pixel[1] / 8);
-                    [uv.0 + (uv.1 - uv.0) * ((pixel[0] % 8) as f32 + 0.5) / 8.,
-                     uv.2 + (uv.3 - uv.2) * ((pixel[1] % 8) as f32 + 0.5) / 8.]
-                },
-            ), "canonical store display requires all named materials");
-            let glass=part.asset.model().take_store_display_glass(&mut mesh.textured,display_start)
+            assert!(
+                part.asset.model().append_store_display(
+                    &mut mesh.textured,
+                    [w, e, n, s],
+                    8. * sy,
+                    |material| {
+                        let pixel = match material {
+                            0 | 3 => [1, 1],     // Gray case and drawer faces, tile 2a.
+                            1 => [9, 2],         // Pale enamel, tile 3b.
+                            2 | 7 | 8 => [0, 0], // Dark folded trim, pulls and plinth.
+                            4 => [3, 54],        // Blue glazing, tile 0e.
+                            5 | 6 => [3, 49],    // Pale reflection and glint, tile 0e.
+                            9 => [0, 48],        // Dark recessed glazing rim.
+                            _ => unreachable!("validated named store display material"),
+                        };
+                        let uv = g.uv(p.column + pixel[0] / 8, p.row + pixel[1] / 8);
+                        [
+                            uv.0 + (uv.1 - uv.0) * ((pixel[0] % 8) as f32 + 0.5) / 8.,
+                            uv.2 + (uv.3 - uv.2) * ((pixel[1] % 8) as f32 + 0.5) / 8.,
+                        ]
+                    },
+                ),
+                "canonical store display requires all named materials"
+            );
+            let glass = part
+                .asset
+                .model()
+                .take_store_display_glass(&mut mesh.textured, display_start)
                 .expect("validated store glazing roles");
             mesh.scenery.push(crate::scenery_surfaces::ScenerySurface {
-                mesh:glass,texture:crate::scenery_surfaces::SceneryTexture::glass_panel(),
+                mesh: glass,
+                texture: crate::scenery_surfaces::SceneryTexture::glass_panel(),
             });
             continue;
         }
         let north = s - 3. * sy;
-        part.asset.model().append_fitted(
-            &mut mesh.solid,
-            [w, e, north, s],
-            0.,
-            WALL_HEIGHT * sy,
-        );
+        part.asset
+            .model()
+            .append_fitted(&mut mesh.solid, [w, e, north, s], 0., WALL_HEIGHT * sy);
         // Window glass, reflections, frames and shadows carry explicit authored
         // material paint. Never infer their role from RGB channel comparisons.
         if part.asset == Asset::Directory {
@@ -531,7 +645,7 @@ pub(super) fn append(
             );
         }
     }
-    append_rear_equipment_backing(&mut mesh.solid,cells,g,p);
+    append_rear_equipment_backing(&mut mesh.solid, cells, g, p);
     // Counters own individual bay ranges above; the closed display owns only
     // its front. Architecture keeps its existing whole-object reveal.
     let reveal = !matches!(
@@ -564,22 +678,51 @@ pub(super) fn append(
 // and its equipment bank. Equipment occludes the wall in 2D; it does not remove
 // it. Continue the same two-pane course behind each whole source block, at
 // the existing rear plane, without claiming equipment/floor cells a second time.
-fn append_rear_equipment_backing(out:&mut SurfaceMeshData,cells:&[&VisualTile],g:&GridGeometry,p:&Placement) {
-    if !matches!(p.network.floor,2|4|6) || p.network.label!="mart/department_store_wall"
-        ||p.network.anchor[1]!=0 ||!complete(cells,g,p.grid_origin,p.column,p.row,p.network) {return;}
-    let block=match p.network.floor {2=>0x13,4=>0x14,6=>0x21,_=>unreachable!()};
+fn append_rear_equipment_backing(
+    out: &mut SurfaceMeshData,
+    cells: &[&VisualTile],
+    g: &GridGeometry,
+    p: &Placement,
+) {
+    if !matches!(p.network.floor, 2 | 4 | 6)
+        || p.network.label != "mart/department_store_wall"
+        || p.network.anchor[1] != 0
+        || !complete(cells, g, p.grid_origin, p.column, p.row, p.network)
+    {
+        return;
+    }
+    let block = match p.network.floor {
+        2 => 0x13,
+        4 => 0x14,
+        6 => 0x21,
+        _ => unreachable!(),
+    };
     for dx in (0..p.network.width.saturating_sub(3)).step_by(4) {
-        let column=p.column+dx;
-        if !(0..4).all(|y|(0..4).all(|x| {
-            let source=&cells[(p.row+y)*g.width+column+x].source;
-            source.tileset_id.as_ref()=="mart" && source.metatile_id==block
-                && source.subtile_column==x as u8 &&source.subtile_row==y as u8
-        })) {continue;}
-        let (west,_,north,_)=g.bounds(column,p.row);
-        let south=north+2.*g.tile_height;
-        Asset::Window2.model().append_fitted(out,
-            [west,west+4.*g.tile_width,south-3.*g.tile_height/8.,south],
-            0.,WALL_HEIGHT*g.tile_height/8.);
+        let column = p.column + dx;
+        if !(0..4).all(|y| {
+            (0..4).all(|x| {
+                let source = &cells[(p.row + y) * g.width + column + x].source;
+                source.tileset_id.as_ref() == "mart"
+                    && source.metatile_id == block
+                    && source.subtile_column == x as u8
+                    && source.subtile_row == y as u8
+            })
+        }) {
+            continue;
+        }
+        let (west, _, north, _) = g.bounds(column, p.row);
+        let south = north + 2. * g.tile_height;
+        Asset::Window2.model().append_fitted(
+            out,
+            [
+                west,
+                west + 4. * g.tile_width,
+                south - 3. * g.tile_height / 8.,
+                south,
+            ],
+            0.,
+            WALL_HEIGHT * g.tile_height / 8.,
+        );
     }
 }
 fn append_service_counter(out: &mut SurfaceMeshData, asset: Asset, b: [f32; 4], sy: f32) {
@@ -592,8 +735,12 @@ fn append_service_counter(out: &mut SurfaceMeshData, asset: Asset, b: [f32; 4], 
         _ => b,
     };
     let first = out.positions.len();
-    assert!(asset.model().append_store_counter_body(out,bounds,7.*sy),
-        "canonical store counter requires all five named material roles");
+    assert!(
+        asset
+            .model()
+            .append_store_counter_body(out, bounds, 7. * sy),
+        "canonical store counter requires all five named material roles"
+    );
     let rotate = |[x, y, z]: [f32; 3]| match asset {
         Asset::CounterNorth => [-x, y, -z],
         Asset::CounterWest => [-z, y, x],
@@ -618,23 +765,52 @@ fn append_service_counter(out: &mut SurfaceMeshData, asset: Asset, b: [f32; 4], 
     // Every bay shares this exact worktop height and perimeter. No separate
     // privacy lip turns across an adjoining top, and no rounded end leaves
     // a trench between two touching cabinet plots.
-    super::modeled_interiors::architecture_box(out,[w,e,7.*sy,8.*sy,n,s],
-        [0.76,0.75,0.65]);
+    super::modeled_interiors::architecture_box(
+        out,
+        [w, e, 7. * sy, 8. * sy, n, s],
+        [0.76, 0.75, 0.65],
+    );
 }
-fn append_native_service_counter(out:&mut SurfaceMeshData,asset:Asset,b:[f32;4],sy:f32,swatches:[[f32;2];5],fascia:Option<[f32;3]>) {
-    let [w,e,n,s]=b;let bounds=match asset {Asset::CounterNorth=>[-e,-w,-s,-n],
-        Asset::CounterWest=>[n,s,-e,-w],_=>b};
-    let first=out.positions.len();
-    assert!(asset.model().append_native_store_counter(out,bounds,7.*sy,swatches,true));
-    let rotate=|[x,y,z]:[f32;3]|match asset {Asset::CounterNorth=>[-x,y,-z],Asset::CounterWest=>[-z,y,x],_=>[x,y,z]};
-    for v in &mut out.positions[first..] {*v=rotate(*v);}
-    for v in &mut out.normals[first..] {*v=rotate(*v);}
-    for (normal,color) in out.normals[first..].iter().zip(&mut out.colors[first..]) {
-        *color=crate::interior_models::authored_face_color([1.;4],Vec3::from_array(*normal));
+fn append_native_service_counter(
+    out: &mut SurfaceMeshData,
+    asset: Asset,
+    b: [f32; 4],
+    sy: f32,
+    swatches: [[f32; 2]; 5],
+    fascia: Option<[f32; 3]>,
+) {
+    let [w, e, n, s] = b;
+    let bounds = match asset {
+        Asset::CounterNorth => [-e, -w, -s, -n],
+        Asset::CounterWest => [n, s, -e, -w],
+        _ => b,
+    };
+    let first = out.positions.len();
+    assert!(
+        asset
+            .model()
+            .append_native_store_counter(out, bounds, 7. * sy, swatches, true)
+    );
+    let rotate = |[x, y, z]: [f32; 3]| match asset {
+        Asset::CounterNorth => [-x, y, -z],
+        Asset::CounterWest => [-z, y, x],
+        _ => [x, y, z],
+    };
+    for v in &mut out.positions[first..] {
+        *v = rotate(*v);
     }
-    super::modeled_interiors::paint_mart_counter_fascia(out,first,fascia,7.*sy);
-    let first=out.positions.len();super::modeled_interiors::architecture_box(out,[w,e,7.*sy,8.*sy,n,s],[1.;3]);
-    for i in first..out.positions.len() {out.uvs[i]=swatches[if out.normals[i][1]>0.5 {3}else{4}];}
+    for v in &mut out.normals[first..] {
+        *v = rotate(*v);
+    }
+    for (normal, color) in out.normals[first..].iter().zip(&mut out.colors[first..]) {
+        *color = crate::interior_models::authored_face_color([1.; 4], Vec3::from_array(*normal));
+    }
+    super::modeled_interiors::paint_mart_counter_fascia(out, first, fascia, 7. * sy);
+    let first = out.positions.len();
+    super::modeled_interiors::architecture_box(out, [w, e, 7. * sy, 8. * sy, n, s], [1.; 3]);
+    for i in first..out.positions.len() {
+        out.uvs[i] = swatches[if out.normals[i][1] > 0.5 { 3 } else { 4 }];
+    }
 }
 fn append_lift_threshold(out: &mut SurfaceMeshData, b: [f32; 4], sx: f32, sy: f32) {
     let [w, e, n, s] = b;
@@ -692,11 +868,13 @@ pub(super) fn append_cash_register(out: &mut SurfaceMeshData, b: [f32; 4], sy: f
     let [w, e, n, s] = b;
     // A register occupies part of a counter bay, rather than nearly its full
     // width/depth. Keep the drawer seated on the same countertop datum.
-    let point = |x: f32, y: f32, z: f32| [
-        w + (e - w) * (8. + (x - 8.) * 0.65) / 16.,
-        (8. + (y - 10.) * 0.70) * sy,
-        n + (s - n) * (8. + (z - 8.) * 0.65) / 16.,
-    ];
+    let point = |x: f32, y: f32, z: f32| {
+        [
+            w + (e - w) * (8. + (x - 8.) * 0.65) / 16.,
+            (8. + (y - 10.) * 0.70) * sy,
+            n + (s - n) * (8. + (z - 8.) * 0.65) / 16.,
+        ]
+    };
     let mut prism =
         |x0: f32, x1: f32, z0: f32, z1: f32, base: f32, lo: f32, hi: f32, color: [f32; 4]| {
             let v = [
@@ -796,13 +974,23 @@ mod native_counter_tests {
     use super::*;
     #[test]
     fn kanto_native_service_counter_rotations_keep_identical_geometry() {
-        let swatches=std::array::from_fn(|i|[i as f32/8.,0.5]);
-        for asset in [Asset::CounterPlain,Asset::CounterNorth,Asset::CounterWest] {
-            let mut old=SurfaceMeshData::default();let mut painted=SurfaceMeshData::default();
-            append_service_counter(&mut old,asset,[4.,20.,8.,24.],1.);
-            append_native_service_counter(&mut painted,asset,[4.,20.,8.,24.],1.,swatches,None);
-            assert_eq!(old.positions,painted.positions);assert_eq!(old.normals,painted.normals);
-            assert_eq!(old.indices,painted.indices);assert!(painted.uvs.iter().all(|uv|swatches.contains(uv)));
+        let swatches = std::array::from_fn(|i| [i as f32 / 8., 0.5]);
+        for asset in [Asset::CounterPlain, Asset::CounterNorth, Asset::CounterWest] {
+            let mut old = SurfaceMeshData::default();
+            let mut painted = SurfaceMeshData::default();
+            append_service_counter(&mut old, asset, [4., 20., 8., 24.], 1.);
+            append_native_service_counter(
+                &mut painted,
+                asset,
+                [4., 20., 8., 24.],
+                1.,
+                swatches,
+                None,
+            );
+            assert_eq!(old.positions, painted.positions);
+            assert_eq!(old.normals, painted.normals);
+            assert_eq!(old.indices, painted.indices);
+            assert!(painted.uvs.iter().all(|uv| swatches.contains(uv)));
         }
     }
 }

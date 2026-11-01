@@ -55,9 +55,17 @@ impl Asset {
             return None;
         }
         if matches!(self, Self::StoolEast | Self::StoolWest) {
-            let (block, offset) = if self == Self::StoolEast { (0x07, 2) } else { (0x08, 0) };
-            return Some((block, (x + offset) as u8, (y + 2) as u8,
-                [[0x07, 0x08], [0x17, 0x18]][y][x]));
+            let (block, offset) = if self == Self::StoolEast {
+                (0x07, 2)
+            } else {
+                (0x08, 0)
+            };
+            return Some((
+                block,
+                (x + offset) as u8,
+                (y + 2) as u8,
+                [[0x07, 0x08], [0x17, 0x18]][y][x],
+            ));
         }
         if matches!(self, Self::FullBunk | Self::JoinedBunk) {
             // The wall-side berth starts below $38's wall and finishes in
@@ -67,8 +75,12 @@ impl Asset {
             } else {
                 (0x36, y)
             };
-            return Some((block, (x + 2) as u8, row as u8,
-                [[0x46, 0x47], [0x56, 0x57], [0x83, 0x84], [0x85, 0x86]][y][x]));
+            return Some((
+                block,
+                (x + 2) as u8,
+                row as u8,
+                [[0x46, 0x47], [0x56, 0x57], [0x83, 0x84], [0x85, 0x86]][y][x],
+            ));
         }
         if self == Self::WallTea {
             return Some((

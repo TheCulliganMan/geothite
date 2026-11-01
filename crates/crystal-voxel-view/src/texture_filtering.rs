@@ -20,16 +20,26 @@ fn anisotropy(quality: crate::render_quality::Quality, override_value: Option<&s
 
 fn requested_anisotropy() -> u16 {
     static VALUE: OnceLock<u16> = OnceLock::new();
-    *VALUE.get_or_init(|| anisotropy(crate::render_quality::requested(),
-        std::env::var("CRYSTAL_TEXTURE_ANISOTROPY").ok().as_deref()))
+    *VALUE.get_or_init(|| {
+        anisotropy(
+            crate::render_quality::requested(),
+            std::env::var("CRYSTAL_TEXTURE_ANISOTROPY").ok().as_deref(),
+        )
+    })
 }
 
 /// Character paintings are 3D artwork, independent of the nearest-sampled source
 /// atlases. Retain the exact painting at mip zero and filter it when minified.
 pub(super) fn painted_image(size: (u32, u32), rgba: Vec<u8>) -> Image {
     let mut image = Image::new(
-        Extent3d { width: size.0, height: size.1, depth_or_array_layers: 1 },
-        TextureDimension::D2, rgba, TextureFormat::Rgba8UnormSrgb,
+        Extent3d {
+            width: size.0,
+            height: size.1,
+            depth_or_array_layers: 1,
+        },
+        TextureDimension::D2,
+        rgba,
+        TextureFormat::Rgba8UnormSrgb,
         RenderAssetUsages::RENDER_WORLD,
     );
     static MIPMAPS: OnceLock<bool> = OnceLock::new();
@@ -218,10 +228,14 @@ mod tests {
 
     #[test]
     fn character_painting_minifies_to_stable_linear_average_without_repainting() {
-        let pixels: Vec<u8> = (0..16).flat_map(|y| (0..16).flat_map(move |x| {
-            let value = if (x + y) % 2 == 0 { 0 } else { 255 };
-            [value, value, value, 255]
-        })).collect();
+        let pixels: Vec<u8> = (0..16)
+            .flat_map(|y| {
+                (0..16).flat_map(move |x| {
+                    let value = if (x + y) % 2 == 0 { 0 } else { 255 };
+                    [value, value, value, 255]
+                })
+            })
+            .collect();
         let image = painted_image((16, 16), pixels.clone());
         let bytes = image.data.as_ref().unwrap();
         assert_eq!(&bytes[..pixels.len()], pixels);

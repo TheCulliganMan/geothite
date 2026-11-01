@@ -1,10 +1,10 @@
 //! Opt-in, bounded loading/render waterfall in Chrome trace format.
+use bevy::render::renderer::{RenderGraph, RenderGraphSystems};
 use bevy::{
     platform::time::Instant,
     prelude::*,
     render::{Render, RenderApp, RenderSystems},
 };
-use bevy::render::renderer::{RenderGraph, RenderGraphSystems};
 use serde_json::{Value, json};
 use std::collections::VecDeque;
 use std::sync::{
@@ -64,7 +64,9 @@ pub fn start() {
 /// End collection without discarding the final snapshot. A dedicated worker
 /// owns its capture and must not keep tracing later unrequested jobs.
 #[cfg(feature = "terrain-worker")]
-pub(crate) fn enabled() -> bool { ENABLED.load(Ordering::Relaxed) }
+pub(crate) fn enabled() -> bool {
+    ENABLED.load(Ordering::Relaxed)
+}
 
 #[cfg(feature = "terrain-worker")]
 pub(crate) fn stop() {
@@ -73,18 +75,30 @@ pub(crate) fn stop() {
 
 #[cfg(any(feature = "terrain-worker-browser", feature = "actor-worker-browser"))]
 pub(crate) fn external_elapsed(name: &'static str, milliseconds: f64, args: Value) {
-    if !ENABLED.load(Ordering::Relaxed) || !milliseconds.is_finite() || milliseconds < 0. { return; }
+    if !ENABLED.load(Ordering::Relaxed) || !milliseconds.is_finite() || milliseconds < 0. {
+        return;
+    }
     let mut capture = capture().lock().unwrap();
-    let Some(capture) = capture.as_mut() else { return; };
+    let Some(capture) = capture.as_mut() else {
+        return;
+    };
     if capture.events.len() + capture.active.len() >= CAPACITY {
         capture.dropped += 1;
-        if capture.events.pop_front().is_none() { return; }
+        if capture.events.pop_front().is_none() {
+            return;
+        }
     }
     let end = capture.origin.elapsed().as_secs_f64() * 1_000_000.;
     capture.events.push_back(Arc::new(TraceEvent {
-        name, cat: "geothite", ph: "X", pid: 1, tid: 1,
-        ts: (end - milliseconds * 1000.).max(0.), dur: milliseconds * 1000.,
-        args, in_progress: false,
+        name,
+        cat: "geothite",
+        ph: "X",
+        pid: 1,
+        tid: 1,
+        ts: (end - milliseconds * 1000.).max(0.),
+        dur: milliseconds * 1000.,
+        args,
+        in_progress: false,
     }));
 }
 
@@ -246,24 +260,36 @@ fn register_graph_boundaries(app: &mut bevy::app::SubApp) {
             (|mut trace: ResMut<GraphCapture>| {
                 trace.frame = span("render.graph", || json!({"timing":"cpu_schedule_envelope"}));
                 trace.stage = span("render.graph_begin", || json!({}));
-            }).before(RenderGraphSystems::Begin),
+            })
+            .before(RenderGraphSystems::Begin),
             (|mut trace: ResMut<GraphCapture>| {
                 trace.stage.take();
                 trace.stage = span("render.graph_encode", || json!({}));
-            }).after(RenderGraphSystems::Begin).before(RenderGraphSystems::Render),
+            })
+            .after(RenderGraphSystems::Begin)
+            .before(RenderGraphSystems::Render),
             (|mut trace: ResMut<GraphCapture>| {
                 trace.stage.take();
-                trace.stage = span("render.graph_submit", || json!({"timing":"cpu_schedule_envelope"}));
-            }).after(RenderGraphSystems::Render).before(RenderGraphSystems::Submit),
+                trace.stage = span(
+                    "render.graph_submit",
+                    || json!({"timing":"cpu_schedule_envelope"}),
+                );
+            })
+            .after(RenderGraphSystems::Render)
+            .before(RenderGraphSystems::Submit),
             (|mut trace: ResMut<GraphCapture>| {
                 trace.stage.take();
                 trace.stage = span("render.graph_finish", || json!({}));
-            }).after(RenderGraphSystems::Submit).before(RenderGraphSystems::Finish),
+            })
+            .after(RenderGraphSystems::Submit)
+            .before(RenderGraphSystems::Finish),
             (|mut trace: ResMut<GraphCapture>| {
                 trace.stage.take();
                 trace.frame.take();
-            }).after(RenderGraphSystems::Finish),
-        ).run_if(trace_enabled),
+            })
+            .after(RenderGraphSystems::Finish),
+        )
+            .run_if(trace_enabled),
     );
 }
 #[derive(Resource, Default)]
@@ -487,22 +513,27 @@ mod tests {
         app.add_schedule(RenderGraph::base_schedule());
         register_graph_boundaries(&mut app);
         app.init_resource::<Witness>();
-        app.add_systems(RenderGraph, (
-            (|mut witness: ResMut<Witness>| witness.0.push("begin"))
-                .in_set(RenderGraphSystems::Begin),
-            (|mut witness: ResMut<Witness>| witness.0.push("encode"))
-                .in_set(RenderGraphSystems::Render),
-            (|mut witness: ResMut<Witness>| witness.0.push("submit"))
-                .in_set(RenderGraphSystems::Submit),
-            (|mut witness: ResMut<Witness>| witness.0.push("finish"))
-                .in_set(RenderGraphSystems::Finish),
-        ));
+        app.add_systems(
+            RenderGraph,
+            (
+                (|mut witness: ResMut<Witness>| witness.0.push("begin"))
+                    .in_set(RenderGraphSystems::Begin),
+                (|mut witness: ResMut<Witness>| witness.0.push("encode"))
+                    .in_set(RenderGraphSystems::Render),
+                (|mut witness: ResMut<Witness>| witness.0.push("submit"))
+                    .in_set(RenderGraphSystems::Submit),
+                (|mut witness: ResMut<Witness>| witness.0.push("finish"))
+                    .in_set(RenderGraphSystems::Finish),
+            ),
+        );
         // Repeated schedules also catch unclosed spans crossing frame boundaries.
         for _ in 0..2 {
             app.world_mut().resource_mut::<Witness>().0.clear();
             app.world_mut().run_schedule(RenderGraph);
-            assert_eq!(app.world().resource::<Witness>().0,
-                ["begin", "encode", "submit", "finish"]);
+            assert_eq!(
+                app.world().resource::<Witness>().0,
+                ["begin", "encode", "submit", "finish"]
+            );
             let capture = app.world().resource::<GraphCapture>();
             assert!(capture.frame.is_none() && capture.stage.is_none());
         }

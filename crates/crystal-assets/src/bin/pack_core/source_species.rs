@@ -149,7 +149,9 @@ pub(super) fn export(repository: &Path) -> Result<()> {
         let effect = fields[1]
             .strip_prefix("EFFECT_")
             .context("source move effect")?;
-        let effect = effect.replace("SP_ATK_", "SPECIAL_ATTACK_").replace("SP_DEF_", "SPECIAL_DEFENSE_");
+        let effect = effect
+            .replace("SP_ATK_", "SPECIAL_ATTACK_")
+            .replace("SP_DEF_", "SPECIAL_DEFENSE_");
         let value = json!({"source_index":index + 1,"name":fields[0],"effect":effect,"power":number(&fields[2])?,
             "type":fields[3],"accuracy":number(&fields[4])?,"pp":number(&fields[5])?,"effect_chance":number(&fields[6])?,"stat":null,"amount":null});
         let _: crystal_core::models::Move = serde_json::from_value(value.clone())

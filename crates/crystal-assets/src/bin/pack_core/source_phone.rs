@@ -35,7 +35,9 @@ pub(super) fn slots(source: &str, prefix: &str, end: &str) -> Result<BTreeMap<us
 
 pub(super) fn export(root: &Path) -> Result<()> {
     let vendor = root.join("vendor/pokecrystal");
-    let read = |path: &str| std::fs::read_to_string(vendor.join(path)).with_context(|| format!("phone source {path}"));
+    let read = |path: &str| {
+        std::fs::read_to_string(vendor.join(path)).with_context(|| format!("phone source {path}"))
+    };
     let data = root.join("apps/web/assets/data");
     let constants: Value = serde_json::from_slice(&std::fs::read(
         data.join("story_event_script_constants.json"),
@@ -75,7 +77,9 @@ pub(super) fn export(root: &Path) -> Result<()> {
     let mut names = BTreeMap::new();
     for line in name_source.lines().map(code_part) {
         if let Some((label, raw)) = line.split_once(':') {
-            if !label.starts_with('.') { continue; }
+            if !label.starts_with('.') {
+                continue;
+            }
             let text = raw
                 .trim()
                 .strip_prefix("db ")

@@ -1235,6 +1235,7 @@ fn activate_visible_script_boundary_after_outcome(
             crate::core::systems::script_text::ScriptTextAction::WaitButton { .. }
             | crate::core::systems::script_text::ScriptTextAction::YesNo { .. },
         ) => Ok(true),
+        RuntimeMutationResult::ScriptMovementApplied(_) => Ok(true),
         RuntimeMutationResult::ScriptedWildBattleStarted(_)
         | RuntimeMutationResult::ScriptedTrainerBattleStarted(_) => {
             prepare_visible_battle_entry(runtime_shell)?;

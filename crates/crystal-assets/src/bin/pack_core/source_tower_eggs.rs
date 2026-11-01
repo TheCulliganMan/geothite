@@ -166,7 +166,12 @@ pub(super) fn export(root: &Path) -> Result<()> {
         .map(code_part)
         .filter_map(|s| s.strip_prefix("db "))
         .collect();
-    ensure!(sprites_source.contains("assert_table_length NUM_TRAINER_CLASSES - 1") && genders_source.contains("assert_table_length NUM_TRAINER_CLASSES - 1") && classes.last() == Some(&"MYSTICALMAN"), "source tower presentation exclusion");
+    ensure!(
+        sprites_source.contains("assert_table_length NUM_TRAINER_CLASSES - 1")
+            && genders_source.contains("assert_table_length NUM_TRAINER_CLASSES - 1")
+            && classes.last() == Some(&"MYSTICALMAN"),
+        "source tower presentation exclusion"
+    );
     classes.pop();
     ensure!(
         classes.len() == sprites.len() && classes.len() == genders.len(),

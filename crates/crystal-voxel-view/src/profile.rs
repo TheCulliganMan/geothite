@@ -290,7 +290,10 @@ pub fn shape_for_source(source: &VisualTileSource) -> CellShape {
         return shape;
     }
     if crate::battle_tower::cliff_source(source) {
-        return CellShape::RaisedTop {height:MOUNTAIN_CLIFF_HEIGHT,solid:SolidKind::Bank};
+        return CellShape::RaisedTop {
+            height: MOUNTAIN_CLIFF_HEIGHT,
+            solid: SolidKind::Bank,
+        };
     }
     if let Some(shape) = kanto_cliff_shape(source) {
         return shape;
@@ -870,9 +873,11 @@ pub(crate) fn shape_for_source_on_map(map_id: &str, source: &VisualTileSource) -
     if let Some(shape) = crate::pokecenter::shape(map_id, source) {
         return shape;
     }
-    if let Some((column,_,_)) = crate::house::wise_trios_stair_local(map_id,source) {
-        return CellShape::RampEast{west_height:-16.+column as f32*8.,
-            east_height:-8.+column as f32*8.};
+    if let Some((column, _, _)) = crate::house::wise_trios_stair_local(map_id, source) {
+        return CellShape::RampEast {
+            west_height: -16. + column as f32 * 8.,
+            east_height: -8. + column as f32 * 8.,
+        };
     }
     if let Some(shape) = crate::interior::facility_stair_shape(map_id, source) {
         return shape;
@@ -961,7 +966,9 @@ pub(crate) fn shape_for_source_on_map(map_id: &str, source: &VisualTileSource) -
     if let Some(shape) = crate::underground_path::shape(map_id, source) {
         return shape;
     }
-    if crate::casino::safari_office_floor(map_id,source) {return CellShape::Flat;}
+    if crate::casino::safari_office_floor(map_id, source) {
+        return CellShape::Flat;
+    }
     if crate::casino::is_game_corner_map(map_id)
         && let Some(shape) = casino_shape_on_map(map_id, source)
     {

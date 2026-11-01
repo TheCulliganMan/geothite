@@ -3,89 +3,151 @@
 use super::*;
 use crystal_render_api::VisualJumpLedge;
 
-#[cfg(feature="voxel-view")]
-pub(super) fn datum(sources:&[ResolvedRenderSource<'_>],runtime:&CrystalRuntime,
-    edges:&[VisualJumpLedge])->anyhow::Result<Option<std::sync::Arc<crystal_render_api::VisualTerraceDatum>>> {
-    let Some(primary)=sources.first() else{return Ok(None);};
-    let mut regions=Vec::new();
+#[cfg(feature = "voxel-view")]
+pub(super) fn datum(
+    sources: &[ResolvedRenderSource<'_>],
+    runtime: &CrystalRuntime,
+    edges: &[VisualJumpLedge],
+) -> anyhow::Result<Option<std::sync::Arc<crystal_render_api::VisualTerraceDatum>>> {
+    let Some(primary) = sources.first() else {
+        return Ok(None);
+    };
+    let mut regions = Vec::new();
     // The active map wins; connected rectangles use the renderer's reverse
     // lookup order (nearest connections precede second-ring continuations).
     for source in sources.iter().take(1).chain(sources.iter().skip(1).rev()) {
-        let mut cells=Vec::new();
-        let atlas=&source.tileset.tileset_id;
-        let collision=runtime.data().tileset_collision(atlas)?;
-        let layout=runtime.runtime_file(&format!("data/tilesets/{atlas}_metatiles.bin"))
-            .ok_or_else(||anyhow::anyhow!("missing terrace source layout {atlas}"))?;
-        for y in 0..source.height {for x in 0..source.width {
-            let block=source.map.blocks[(y as usize/4)*source.map.attributes.width as usize+x as usize/4];
-            let tile=*layout.get(block as usize*16+(y as usize%4)*4+x as usize%4)
-                .ok_or_else(||anyhow::anyhow!("missing terrace source metatile {block}"))?;
-            let permission=collision.metatiles[block as usize].collision[(y as usize%4/2)*2+x as usize%4/2];
-            let land=crystal_core::world::collision::describe_collision(permission).terrain
-                ==crystal_core::world::collision::Terrain::Land
-                || [Direction::Up,Direction::Down,Direction::Left,Direction::Right].into_iter()
-                    .any(|d|crystal_core::world::collision::allows_ledge_direction(permission,d));
-            cells.push((IVec2::new(source.origin_x+x,source.origin_y+y),crystal_render_api::VisualTileSource {
-                tileset_id:atlas.as_str().into(),metatile_id:block,subtile_column:(x%4)as u8,
-                subtile_row:(y%4)as u8,tile_index:u16::from(tile),
-            },land));
-        }}
+        let mut cells = Vec::new();
+        let atlas = &source.tileset.tileset_id;
+        let collision = runtime.data().tileset_collision(atlas)?;
+        let layout = runtime
+            .runtime_file(&format!("data/tilesets/{atlas}_metatiles.bin"))
+            .ok_or_else(|| anyhow::anyhow!("missing terrace source layout {atlas}"))?;
+        for y in 0..source.height {
+            for x in 0..source.width {
+                let block = source.map.blocks
+                    [(y as usize / 4) * source.map.attributes.width as usize + x as usize / 4];
+                let tile = *layout
+                    .get(block as usize * 16 + (y as usize % 4) * 4 + x as usize % 4)
+                    .ok_or_else(|| anyhow::anyhow!("missing terrace source metatile {block}"))?;
+                let permission = collision.metatiles[block as usize].collision
+                    [(y as usize % 4 / 2) * 2 + x as usize % 4 / 2];
+                let land = crystal_core::world::collision::describe_collision(permission).terrain
+                    == crystal_core::world::collision::Terrain::Land
+                    || [
+                        Direction::Up,
+                        Direction::Down,
+                        Direction::Left,
+                        Direction::Right,
+                    ]
+                    .into_iter()
+                    .any(|d| crystal_core::world::collision::allows_ledge_direction(permission, d));
+                cells.push((
+                    IVec2::new(source.origin_x + x, source.origin_y + y),
+                    crystal_render_api::VisualTileSource {
+                        tileset_id: atlas.as_str().into(),
+                        metatile_id: block,
+                        subtile_column: (x % 4) as u8,
+                        subtile_row: (y % 4) as u8,
+                        tile_index: u16::from(tile),
+                    },
+                    land,
+                ));
+            }
+        }
         regions.push(crystal_voxel_view::TerraceSourceRegion {
-            map:source.map.map_name.to_string(),cells,
-            edges:from_map(source.map.attributes.width,&source.map.blocks,&collision,
-                IVec2::new(source.origin_x,source.origin_y))?.to_vec(),
+            map: source.map.map_name.to_string(),
+            cells,
+            edges: from_map(
+                source.map.attributes.width,
+                &source.map.blocks,
+                &collision,
+                IVec2::new(source.origin_x, source.origin_y),
+            )?
+            .to_vec(),
         });
     }
     if crystal_voxel_view::outdoor_water_map(&primary.map.map_name) {
         // Include adjacent source border water at the complete perimeter so
         // a clipped camera cannot leave that water beneath a raised dry terrace.
         // Native maps always retain ownership, including connected-map overlaps.
-        let mut perimeter=std::collections::BTreeSet::new();
+        let mut perimeter = std::collections::BTreeSet::new();
         for source in sources {
-            for y in source.origin_y-1..=source.origin_y+source.height {
-                for x in source.origin_x-1..=source.origin_x+source.width {
-                    if x!=source.origin_x-1 && x!=source.origin_x+source.width
-                        && y!=source.origin_y-1 && y!=source.origin_y+source.height {continue;}
-                    if sources.iter().any(|s|(s.origin_x..s.origin_x+s.width).contains(&x)
-                        && (s.origin_y..s.origin_y+s.height).contains(&y)) {continue;}
-                    perimeter.insert((y,x));
+            for y in source.origin_y - 1..=source.origin_y + source.height {
+                for x in source.origin_x - 1..=source.origin_x + source.width {
+                    if x != source.origin_x - 1
+                        && x != source.origin_x + source.width
+                        && y != source.origin_y - 1
+                        && y != source.origin_y + source.height
+                    {
+                        continue;
+                    }
+                    if sources.iter().any(|s| {
+                        (s.origin_x..s.origin_x + s.width).contains(&x)
+                            && (s.origin_y..s.origin_y + s.height).contains(&y)
+                    }) {
+                        continue;
+                    }
+                    perimeter.insert((y, x));
                 }
             }
         }
-        let mut border_water=Vec::new();
-        for (y,x) in perimeter {
+        let mut border_water = Vec::new();
+        for (y, x) in perimeter {
             // A synthetic perimeter must use its adjacent native map's border,
             // otherwise crossing into a watery route lowers the neighbor's
             // existing cliff corners during shoreline fitting.
-            let source = sources.iter().min_by_key(|s| {
-                let dx=(s.origin_x-x).max(0)+(x-(s.origin_x+s.width-1)).max(0);
-                let dy=(s.origin_y-y).max(0)+(y-(s.origin_y+s.height-1)).max(0);
-                (dx+dy,s.map.map_name.as_str())
-            }).expect("primary source exists");
-            let atlas=&source.tileset.tileset_id;
-            let layout=runtime.runtime_file(&format!("data/tilesets/{atlas}_metatiles.bin"))
-                .ok_or_else(||anyhow::anyhow!("missing border terrace source layout {atlas}"))?;
-            let (local_x,local_y)=(x-source.origin_x,y-source.origin_y);
-            let block=exterior_border_block(&source.map.map_name,&source.map.attributes.tileset_name,
-                source.map.attributes.border_block,source.width,local_x,local_y);
-            let (column,row)=(local_x.rem_euclid(4) as usize,local_y.rem_euclid(4) as usize);
-            let tile=*layout.get(block as usize*16+row*4+column)
-                .ok_or_else(||anyhow::anyhow!("missing border terrace source metatile {block}"))?;
-            let cell=crystal_render_api::VisualTileSource {
-                tileset_id:atlas.as_str().into(),metatile_id:block,subtile_column:column as u8,
-                subtile_row:row as u8,tile_index:u16::from(tile),
+            let source = sources
+                .iter()
+                .min_by_key(|s| {
+                    let dx = (s.origin_x - x).max(0) + (x - (s.origin_x + s.width - 1)).max(0);
+                    let dy = (s.origin_y - y).max(0) + (y - (s.origin_y + s.height - 1)).max(0);
+                    (dx + dy, s.map.map_name.as_str())
+                })
+                .expect("primary source exists");
+            let atlas = &source.tileset.tileset_id;
+            let layout = runtime
+                .runtime_file(&format!("data/tilesets/{atlas}_metatiles.bin"))
+                .ok_or_else(|| anyhow::anyhow!("missing border terrace source layout {atlas}"))?;
+            let (local_x, local_y) = (x - source.origin_x, y - source.origin_y);
+            let block = exterior_border_block(
+                &source.map.map_name,
+                &source.map.attributes.tileset_name,
+                source.map.attributes.border_block,
+                source.width,
+                local_x,
+                local_y,
+            );
+            let (column, row) = (
+                local_x.rem_euclid(4) as usize,
+                local_y.rem_euclid(4) as usize,
+            );
+            let tile = *layout
+                .get(block as usize * 16 + row * 4 + column)
+                .ok_or_else(|| anyhow::anyhow!("missing border terrace source metatile {block}"))?;
+            let cell = crystal_render_api::VisualTileSource {
+                tileset_id: atlas.as_str().into(),
+                metatile_id: block,
+                subtile_column: column as u8,
+                subtile_row: row as u8,
+                tile_index: u16::from(tile),
             };
-            if crystal_voxel_view::shape_for_source(&cell)==crystal_voxel_view::CellShape::Water {
-                border_water.push((IVec2::new(x,y),cell,false));
+            if crystal_voxel_view::shape_for_source(&cell) == crystal_voxel_view::CellShape::Water {
+                border_water.push((IVec2::new(x, y), cell, false));
             }
         }
         if !border_water.is_empty() {
             regions.push(crystal_voxel_view::TerraceSourceRegion {
-                map:primary.map.map_name.to_string(),cells:border_water,edges:Vec::new(),
+                map: primary.map.map_name.to_string(),
+                cells: border_water,
+                edges: Vec::new(),
             });
         }
     }
-    Ok(crystal_voxel_view::connected_source_terrace_datum(&primary.map.map_name,&regions,edges))
+    Ok(crystal_voxel_view::connected_source_terrace_datum(
+        &primary.map.map_name,
+        &regions,
+        edges,
+    ))
 }
 
 pub(super) fn collect(

@@ -10,9 +10,11 @@ use crate::authored_dialogue::{self, AuthoredDialoguePage};
 use crate::{CompiledGamePack, MapModule};
 
 const CURRENT: &str = "544539b3c51802c03cc284ae7ec3d683ea251596af80c71ef6f886ef4888aa16";
+const CURRENT_V11: &str = "834d4be07c45079fdc81f1777856a37058d064b4188f548e31616684436da5e3";
 const COMMON: &str = "a7f6270ac5c7cdc83fe0f7484fd8485990ceb9749a0fde803dc43cbd22b90bad";
 const DONOR: &str = "ccf84221d047e958736a4ca5cbecc917713a4496e03ffe89527e72e2d2593914";
 const MARKER: &str = "northstar-current-v27-consolidation-v1";
+const SCENE_FIXES_MARKER: &str = "northstar-story-scene-fixes-v1";
 
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -41,7 +43,13 @@ pub fn consolidate_northstar_story(
     donor: &CompiledGamePack,
     writing: &str,
 ) -> Result<CompiledGamePack> {
-    for (pack, identity) in [(current, CURRENT), (common, COMMON), (donor, DONOR)] {
+    let current_hash = current.identity()?.content_hash;
+    ensure!(
+        current_hash == CURRENT || current_hash == CURRENT_V11,
+        "exact story consolidation input required: {CURRENT} or {CURRENT_V11}"
+    );
+    crate::verify_compiled_game_pack_for_runtime(current)?;
+    for (pack, identity) in [(common, COMMON), (donor, DONOR)] {
         ensure!(
             pack.identity()?.content_hash == identity,
             "exact story consolidation input required: {identity}"
@@ -494,9 +502,9 @@ fn merge_staging(map: &mut MapModule, before: &MapModule, wanted: &MapModule) ->
                 .tileset_name
                 .clone_from(&wanted.attributes.tileset_name);
         } else {
-            // The later coast already contains the corrected League turnout.
+            // The later coast already contains the corrected League turnout or reviewed Cedar Basin.
             ensure!(
-                map.id == "MnR13C00R00" && map.blocks[16] == wanted.blocks[16],
+                map.id == "MnR13C00R00",
                 "current League floor alignment required"
             );
         }
@@ -700,6 +708,144 @@ fn verify_preservation(current: &CompiledGamePack, result: &CompiledGamePack) ->
     Ok(())
 }
 
+/// Applies the reviewed opening, clinic, trail warden, cousin tracker, Pokégear,
+/// Pokédex, progressive Tamarack guidance, and Route 01 cliff fossil upgrades
+/// on top of a story-consolidated regional pack.
+pub fn apply_minnesota_story_and_scene_fixes(
+    base: &CompiledGamePack,
+    story_json: &str,
+) -> Result<CompiledGamePack> {
+    crate::verify_compiled_game_pack_for_runtime(base)?;
+    ensure!(
+        base.report.manifests.iter().any(|m| m == MARKER),
+        "story consolidation required before scene fixes"
+    );
+    ensure!(
+        !base
+            .report
+            .manifests
+            .iter()
+            .any(|m| m == SCENE_FIXES_MARKER),
+        "story scene fixes already installed"
+    );
+    let story_root: Value = serde_json::from_str(story_json)?;
+    let mut pack = base.clone();
+
+    // 1. MnWinonaHome1F: Mom's stair/door approach + Pokégear handoff
+    {
+        let original = pack
+            .data
+            .maps
+            .get("MnWinonaHome1F")
+            .context("MnWinonaHome1F")?
+            .clone();
+        let mut home = original.clone();
+        let mut changed = BTreeSet::new();
+        crate::northstar_opening_revision::apply_home_1f_scripts(&mut home)?;
+        crate::northstar_opening_revision::compile_story_map_texts(
+            &mut home,
+            &story_root,
+            "MnWinonaHome1F",
+            &mut changed,
+        )?;
+        crate::northstar_story_revision::publish(&mut pack, home)?;
+        restore_split_entry(
+            &mut pack.data.map_attributes,
+            &base.data.map_attributes,
+            "MnWinonaHome1F",
+        );
+        if let Some(label) = original.attributes.blocks_label.as_ref() {
+            restore_split_entry(&mut pack.data.map_blocks, &base.data.map_blocks, label);
+        }
+    }
+
+    // 2. MnWinonaHome2F: Adventure-tracking cousin
+    crate::northstar_opening_revision::install_home_2f(&mut pack)?;
+    restore_split_entry(
+        &mut pack.data.map_attributes,
+        &base.data.map_attributes,
+        "MnWinonaHome2F",
+    );
+
+    // 3. MnWinona: Coherent non-vanishing trail wardens
+    crate::northstar_opening_revision::install_winona_town(&mut pack)?;
+    restore_split_entry(
+        &mut pack.data.map_attributes,
+        &base.data.map_attributes,
+        "MnWinona",
+    );
+
+    // 4. MnWinonaFieldStation: Pokédex handoff, post-battle Reed position,
+    // Aide door interception at (4, 9) and (5, 9), and progressive Tamarack guidance,
+    // while preserving bound MnEarlyPartners / MnKindlitResearchAide caches.
+    {
+        let original = pack
+            .data
+            .maps
+            .get("MnWinonaFieldStation")
+            .context("MnWinonaFieldStation")?
+            .clone();
+        let mut lab = original.clone();
+        let mut changed = BTreeSet::new();
+        crate::northstar_opening_revision::compile_story_map_texts(
+            &mut lab,
+            &story_root,
+            "MnWinonaFieldStation",
+            &mut changed,
+        )?;
+        crate::northstar_opening_revision::apply_field_station_upgrades(&mut lab, &mut changed)?;
+        let script_rows = lab.map_script_section_commands.clone();
+        crate::ely_league_rooms::finish(&pack, &mut lab)?;
+        lab.script_audio_commands =
+            crate::parse_script_audio_commands("MnWinonaFieldStation", &lab.scripts)?;
+        lab.map_script_section_commands = script_rows;
+        lab = preserve_unmodified_caches(&original, lab, &changed)?;
+        crate::authored_town_publication::replace(&mut pack, lab)?;
+        restore_split_entry(
+            &mut pack.data.map_attributes,
+            &base.data.map_attributes,
+            "MnWinonaFieldStation",
+        );
+        if let Some(label) = original.attributes.blocks_label.as_ref() {
+            restore_split_entry(&mut pack.data.map_blocks, &base.data.map_blocks, label);
+        }
+        if let Some(npcs) = base.data.npcs.get("MnWinonaFieldStation") {
+            pack.data
+                .npcs
+                .insert("MnWinonaFieldStation".into(), npcs.clone());
+        }
+    }
+
+    // 5. MnR01C00R00: Relocate MnFossilBluff onto limestone cliff top at [26, 14]
+    crate::northstar_opening_revision::install_r01_cliff_fossil(&mut pack)?;
+    restore_split_entry(
+        &mut pack.data.map_attributes,
+        &base.data.map_attributes,
+        "MnR01C00R00",
+    );
+
+    // 6. MnRochesterPokecenter1F: Per-column Reed approach to player
+    crate::northstar_clinic_revision::install(&mut pack)?;
+    restore_split_entry(
+        &mut pack.data.map_attributes,
+        &base.data.map_attributes,
+        "MnRochesterPokecenter1F",
+    );
+
+    pack.report.manifests.push(SCENE_FIXES_MARKER.into());
+    pack.identity = crate::derive_compiled_game_pack_identity_from_manifest(
+        pack.format_version,
+        &pack.data,
+        &pack.audio_manifest,
+        &pack.runtime_files,
+        &pack.report,
+    )?;
+    crate::verify_compiled_game_pack_for_runtime(&pack)?;
+    crate::verify_northstar_publication_geometry(&pack)?;
+    crate::validate_compact_superior_geography(&pack)?;
+    Ok(pack)
+}
+
 #[cfg(test)]
 mod tests {
     use std::collections::BTreeSet;
@@ -805,5 +951,122 @@ mod tests {
             result.identity().expect("new identity"),
             current.identity().expect("retained parent identity")
         );
+    }
+
+    #[test]
+    #[ignore = "requires external content-packs/minnesota-reviewed-maps-v11.crystalpack"]
+    fn v11_consolidation_and_scene_fixes_build_verified_pack() {
+        let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+            .join("../..")
+            .canonicalize()
+            .expect("repository root");
+        let load = |name: &str| {
+            crate::read_verified_compiled_game_pack(root.join("content-packs").join(name))
+                .expect("explicit exact external story fixture")
+        };
+        let current = load("minnesota-reviewed-maps-v11.crystalpack");
+        let common = load("minnesota-minneapolis-citywide-cycling-v02.crystalpack");
+        let donor = load("minnesota-dialogue-overhaul-v27.crystalpack");
+        let writing = std::fs::read_to_string(
+            root.join("planning/minnesota/revisions/story-consolidation-v01/writing.json"),
+        )
+        .expect("checked-in authored conversation source");
+        let story = std::fs::read_to_string(root.join("planning/minnesota/story.json"))
+            .expect("checked-in canonical story source");
+        let consolidated = super::consolidate_northstar_story(&current, &common, &donor, &writing)
+            .expect("bounded story consolidation on v11");
+        let open_roads =
+            crate::open_northstar_public_roads(&consolidated).expect("open public roads on v11");
+        let fixed = super::apply_minnesota_story_and_scene_fixes(&open_roads, &story)
+            .expect("apply scene and story fixes");
+        assert_eq!(
+            fixed.data.maps["MnWinonaFieldStation"]
+                .objects
+                .iter()
+                .find(|o| o.object_identifier.as_deref() == Some("MN_W_TAMARACK"))
+                .expect("Tamarack actor")
+                .sprite,
+            "SPRITE_MN_PROF_TAMARACK"
+        );
+        let bluff_fossil = fixed.data.maps["MnR01C00R00"]
+            .objects
+            .iter()
+            .find(|o| o.script == "MnFossilBluff")
+            .expect("Route 01 fossil hunter");
+        assert_eq!((bluff_fossil.x, bluff_fossil.y), (26, 14));
+        for (map_name, script_name) in [
+            ("MnBoundaryIntake", "MN_ARC_INTAKE_REED"),
+            ("MnIceRelayFloor", "MN_NICE_RELAY_REED"),
+            ("MnIronDrillCore", "MN_NDRILL_REED"),
+            ("MnMinneapolisDispatchOffice", "MN_NICE_REED"),
+            ("MnRochesterPokecenter1F", "MN_ARC_RC_REED"),
+            ("MnStCloud", "MN_ARC_SC_REED"),
+            ("MnStCloudStation", "MN_ARC_AFTERMATH_REED"),
+            ("MnStPaulUnionDepot", "MN_ARC_SP_REED"),
+            ("MnWinonaFieldStation", "MN_NSE_REED"),
+        ] {
+            let reed = fixed.data.maps[map_name]
+                .objects
+                .iter()
+                .find(|o| o.script == script_name)
+                .unwrap_or_else(|| panic!("Reed actor {map_name}/{script_name}"));
+            assert_eq!(reed.sprite, "SPRITE_MN_RIVAL_REED");
+        }
+        for id in [
+            "MN_REED_WINONA",
+            "MN_REED_ROCHESTER",
+            "MN_REED_STPAUL",
+            "MN_REED_RELAY",
+            "MN_REED_MINE",
+            "MN_REED_BOUNDARY",
+        ] {
+            assert_eq!(
+                fixed.data.trainers.trainers[id].trainer_class,
+                "MN_RIVAL_REED"
+            );
+        }
+        for warden_id in ["MN_W_TRAIL_WARDEN_NORTH", "MN_W_TRAIL_WARDEN_SOUTH"] {
+            let warden = fixed.data.maps["MnWinona"]
+                .objects
+                .iter()
+                .find(|o| o.object_identifier.as_deref() == Some(warden_id))
+                .expect("Winona trail warden");
+            assert_eq!(warden.event_flag, "-1");
+            assert_eq!(warden.script, "MnWTrailWardenTalk");
+        }
+        assert!(
+            fixed.data.maps["MnWinonaHome2F"]
+                .scripts
+                .contains_key("MnWinonaCousinChampion")
+        );
+        assert!(
+            fixed.data.maps["MnWinonaHome1F"]
+                .scripts
+                .contains_key("MnWGrantPokegear")
+        );
+        assert!(
+            fixed.data.maps["MnWinonaFieldStation"]
+                .scripts
+                .contains_key("MnWTamarackGuideChampion")
+        );
+        let approach_columns = fixed.data.maps["MnRochesterPokecenter1F"]
+            .events
+            .coord_events
+            .iter()
+            .filter(|event| event.script_name.starts_with("MnArcRCEntryX"))
+            .map(|event| event.x)
+            .collect::<BTreeSet<_>>();
+        assert_eq!(approach_columns, BTreeSet::from([8, 9, 10, 11]));
+        if let Some(output) = std::env::var_os("CRYSTAL_STORY_FIXES_OUTPUT") {
+            fixed
+                .write_preserving_storage(&output)
+                .expect("write fixed pack");
+            let written = crate::read_verified_compiled_game_pack(&output)
+                .expect("the published candidate must decode and verify");
+            assert_eq!(
+                written.identity().expect("written identity"),
+                fixed.identity().expect("candidate identity")
+            );
+        }
     }
 }

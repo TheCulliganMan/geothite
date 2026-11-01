@@ -12,10 +12,13 @@ pub(super) fn source(s: &VisualTileSource) -> bool {
         && s.subtile_row < 4
         && (((0x30..=0x39).contains(&s.metatile_id)
             && matches!(shape_for_source(s),CellShape::PlaneAt {height} if height == crate::profile::WATER_HEIGHT))
-            || (s.tileset_id.as_ref()=="johto" && s.metatile_id==0x07
-                && s.subtile_column>=2 && matches!(shape_for_source(s),CellShape::Flat))
-            || (s.metatile_id==0x3a && (s.subtile_column>=2 || s.subtile_row>=2)
-                && matches!(shape_for_source(s),CellShape::Flat)))
+            || (s.tileset_id.as_ref() == "johto"
+                && s.metatile_id == 0x07
+                && s.subtile_column >= 2
+                && matches!(shape_for_source(s), CellShape::Flat))
+            || (s.metatile_id == 0x3a
+                && (s.subtile_column >= 2 || s.subtile_row >= 2)
+                && matches!(shape_for_source(s), CellShape::Flat)))
 }
 
 // The dominant color is the water background. Keep only the largest connected
@@ -97,11 +100,17 @@ pub(super) fn append(
     images: &TerrainImageSamples,
     reserved: &[bool],
 ) {
-    append_from_frame(mesh,cells,g,images,reserved,None);
+    append_from_frame(mesh, cells, g, images, reserved, None);
 }
 
-pub(super) fn append_from_frame(mesh: &mut TerrainMeshData, cells: &[&VisualTile],
-    g: &GridGeometry, images: &TerrainImageSamples, reserved: &[bool], frame: Option<&VisualWorldFrame>) {
+pub(super) fn append_from_frame(
+    mesh: &mut TerrainMeshData,
+    cells: &[&VisualTile],
+    g: &GridGeometry,
+    images: &TerrainImageSamples,
+    reserved: &[bool],
+    frame: Option<&VisualWorldFrame>,
+) {
     let water = CellShape::Water.surface_height(g.tile_height);
     // Only a native, complete, unclaimed horizontal tile is replaceable.
     // Borrowed samples, cropped planes and custom live profiles retain their art.
@@ -123,9 +132,13 @@ pub(super) fn append_from_frame(mesh: &mut TerrainMeshData, cells: &[&VisualTile
             continue;
         }
         let (w, e, n, s) = g.bounds(i % g.width, i / g.width);
-        let original_height=shape_for_source(&cells[i].source).surface_height(g.tile_height);
-        let expected = [[w, original_height, s], [e, original_height, s],
-            [e, original_height, n], [w, original_height, n]];
+        let original_height = shape_for_source(&cells[i].source).surface_height(g.tile_height);
+        let expected = [
+            [w, original_height, s],
+            [e, original_height, s],
+            [e, original_height, n],
+            [w, original_height, n],
+        ];
         if !p.iter().all(|v| expected.contains(v)) || expected.iter().any(|v| !p.contains(v)) {
             continue;
         }
@@ -171,159 +184,300 @@ pub(super) fn append_from_frame(mesh: &mut TerrainMeshData, cells: &[&VisualTile
         let radius =
             ((b[1] - b[0]) as f32 * g.tile_width).min((b[3] - b[2]) as f32 * g.tile_height) / 16.
                 * 0.90;
-        let (map,origin)=frame.map_or(("",bevy::prelude::IVec2::ZERO),|frame|
-            (frame.scenery_map_at(i as u32%g.width as u32,i as u32/g.width as u32),
-                frame.scenery_grid_origin_at(i as u32%g.width as u32,i as u32/g.width as u32)));
-        let at=origin+bevy::prelude::IVec2::new((i%g.width) as i32,(i/g.width) as i32);
-        float_posed(&mut mesh.textured, center, radius, g.tile_height, swatches,FloatPose::at(map,at.to_array()));
+        let (map, origin) = frame.map_or(("", bevy::prelude::IVec2::ZERO), |frame| {
+            (
+                frame.scenery_map_at(i as u32 % g.width as u32, i as u32 / g.width as u32),
+                frame.scenery_grid_origin_at(i as u32 % g.width as u32, i as u32 / g.width as u32),
+            )
+        });
+        let at = origin + bevy::prelude::IVec2::new((i % g.width) as i32, (i / g.width) as i32);
+        float_posed(
+            &mut mesh.textured,
+            center,
+            radius,
+            g.tile_height,
+            swatches,
+            FloatPose::at(map, at.to_array()),
+        );
         let (a, b, c, d) = g.uv(donor % g.width, donor / g.width);
         mesh.textured.uvs[q * 4..q * 4 + 4].copy_from_slice(&[[a, d], [b, d], [b, c], [a, c]]);
-        for p in &mut mesh.textured.positions[q*4..q*4+4] {p[1]=water;}
+        for p in &mut mesh.textured.positions[q * 4..q * 4 + 4] {
+            p[1] = water;
+        }
         mesh.authored_cells[i] = Some(LABEL);
         consumed.insert(i);
     }
-    let raised=consumed.iter().copied().filter(|&i|
-        shape_for_source(&cells[i].source).surface_height(g.tile_height)>water+0.001)
+    let raised = consumed
+        .iter()
+        .copied()
+        .filter(|&i| {
+            shape_for_source(&cells[i].source).surface_height(g.tile_height) > water + 0.001
+        })
         .collect::<std::collections::HashSet<_>>();
-    retire_raised_banks(&mut mesh.textured,&raised,cells,g,water);
+    retire_raised_banks(&mut mesh.textured, &raised, cells, g, water);
     if !raised.is_empty() {
-        let old=std::mem::take(&mut mesh.solid.indices);
+        let old = std::mem::take(&mut mesh.solid.indices);
         for tri in old.chunks_exact(3) {
-            let p=[mesh.solid.positions[tri[0] as usize],mesh.solid.positions[tri[1] as usize],
-                mesh.solid.positions[tri[2] as usize]];
-            if !raised_bank_face(&p,mesh.solid.normals[tri[0] as usize],&raised,cells,g,water) {
+            let p = [
+                mesh.solid.positions[tri[0] as usize],
+                mesh.solid.positions[tri[1] as usize],
+                mesh.solid.positions[tri[2] as usize],
+            ];
+            if !raised_bank_face(
+                &p,
+                mesh.solid.normals[tri[0] as usize],
+                &raised,
+                cells,
+                g,
+                water,
+            ) {
                 mesh.solid.indices.extend_from_slice(tri);
             }
         }
     }
 }
 
-fn raised_bank_face(p: &[[f32;3]], normal: [f32;3], raised: &std::collections::HashSet<usize>,
-    cells: &[&VisualTile], g: &GridGeometry, water: f32) -> bool {
-    if normal[1].abs()>0.0001 {return false;}
-    let center=p.iter().map(|p|Vec3::from_array(*p)).sum::<Vec3>()/p.len() as f32
-        -Vec3::from_array(normal)*0.001;
-    let col=((center.x-g.origin_x)/g.tile_width).floor() as i32;
-    let row=((center.z-g.origin_z)/g.tile_height).floor() as i32;
-    if col<0 || row<0 || col>=g.width as i32 || row>=g.height as i32 {return false;}
-    let i=row as usize*g.width+col as usize;
-    if !raised.contains(&i) {return false;}
-    let (w,e,n,s)=g.bounds(col as usize,row as usize);
-    let top=shape_for_source(&cells[i].source).surface_height(g.tile_height);
-    p.iter().all(|p|p[0]>=w-0.001 && p[0]<=e+0.001 && p[2]>=n-0.001 && p[2]<=s+0.001
-        && p[1]>=water-0.001 && p[1]<=top+0.001)
-        && p.iter().any(|p|p[1]>water+0.001)
+fn raised_bank_face(
+    p: &[[f32; 3]],
+    normal: [f32; 3],
+    raised: &std::collections::HashSet<usize>,
+    cells: &[&VisualTile],
+    g: &GridGeometry,
+    water: f32,
+) -> bool {
+    if normal[1].abs() > 0.0001 {
+        return false;
+    }
+    let center = p.iter().map(|p| Vec3::from_array(*p)).sum::<Vec3>() / p.len() as f32
+        - Vec3::from_array(normal) * 0.001;
+    let col = ((center.x - g.origin_x) / g.tile_width).floor() as i32;
+    let row = ((center.z - g.origin_z) / g.tile_height).floor() as i32;
+    if col < 0 || row < 0 || col >= g.width as i32 || row >= g.height as i32 {
+        return false;
+    }
+    let i = row as usize * g.width + col as usize;
+    if !raised.contains(&i) {
+        return false;
+    }
+    let (w, e, n, s) = g.bounds(col as usize, row as usize);
+    let top = shape_for_source(&cells[i].source).surface_height(g.tile_height);
+    p.iter().all(|p| {
+        p[0] >= w - 0.001
+            && p[0] <= e + 0.001
+            && p[2] >= n - 0.001
+            && p[2] <= s + 0.001
+            && p[1] >= water - 0.001
+            && p[1] <= top + 0.001
+    }) && p.iter().any(|p| p[1] > water + 0.001)
 }
 
-fn retire_raised_banks(surface: &mut SurfaceMeshData, raised: &std::collections::HashSet<usize>,
-    cells: &[&VisualTile], g: &GridGeometry, water: f32) {
-    if raised.is_empty() {return;}
-    let mut remove=std::collections::HashSet::new();
-    for (q,p) in surface.positions.chunks_exact(4).enumerate() {
-        if raised_bank_face(p,surface.normals[q*4],raised,cells,g,water) {remove.insert(q);}
+fn retire_raised_banks(
+    surface: &mut SurfaceMeshData,
+    raised: &std::collections::HashSet<usize>,
+    cells: &[&VisualTile],
+    g: &GridGeometry,
+    water: f32,
+) {
+    if raised.is_empty() {
+        return;
     }
-    if remove.is_empty() {return;}
-    let old=std::mem::take(surface);
-    let mut remap=vec![u32::MAX;old.positions.len()];
-    for (i,index) in remap.iter_mut().enumerate() {
-        if remove.contains(&(i/4)) {continue;}
-        *index=surface.positions.len() as u32;
-        surface.positions.push(old.positions[i]);surface.normals.push(old.normals[i]);
-        surface.uvs.push(old.uvs[i]);surface.colors.push(old.colors[i]);
+    let mut remove = std::collections::HashSet::new();
+    for (q, p) in surface.positions.chunks_exact(4).enumerate() {
+        if raised_bank_face(p, surface.normals[q * 4], raised, cells, g, water) {
+            remove.insert(q);
+        }
+    }
+    if remove.is_empty() {
+        return;
+    }
+    let old = std::mem::take(surface);
+    let mut remap = vec![u32::MAX; old.positions.len()];
+    for (i, index) in remap.iter_mut().enumerate() {
+        if remove.contains(&(i / 4)) {
+            continue;
+        }
+        *index = surface.positions.len() as u32;
+        surface.positions.push(old.positions[i]);
+        surface.normals.push(old.normals[i]);
+        surface.uvs.push(old.uvs[i]);
+        surface.colors.push(old.colors[i]);
     }
     for tri in old.indices.chunks_exact(3) {
-        let ids=[remap[tri[0] as usize],remap[tri[1] as usize],remap[tri[2] as usize]];
-        if ids.iter().all(|&i|i!=u32::MAX) {surface.indices.extend(ids);}
+        let ids = [
+            remap[tri[0] as usize],
+            remap[tri[1] as usize],
+            remap[tri[2] as usize],
+        ];
+        if ids.iter().all(|&i| i != u32::MAX) {
+            surface.indices.extend(ids);
+        }
     }
     for range in old.cutaway_ranges {
-        let mut kept=remap[range].iter().copied().filter(|&i|i!=u32::MAX);
-        if let Some(start)=kept.next() {
-            let end=kept.last().unwrap_or(start)+1;
+        let mut kept = remap[range].iter().copied().filter(|&i| i != u32::MAX);
+        if let Some(start) = kept.next() {
+            let end = kept.last().unwrap_or(start) + 1;
             surface.cutaway_ranges.push(start as usize..end as usize);
         }
     }
 }
 
-#[derive(Clone,Copy,Debug,PartialEq)]
-struct FloatPose { linear: bevy::math::Mat3 }
+#[derive(Clone, Copy, Debug, PartialEq)]
+struct FloatPose {
+    linear: bevy::math::Mat3,
+}
 impl FloatPose {
     #[cfg(test)]
-    const NEUTRAL: Self = Self {linear:bevy::math::Mat3::IDENTITY};
-    fn at(map: &str, [x,z]: [i32;2]) -> Self {
-        let seed=map.bytes().fold(0x6b8b_4567u32,|h,b|h.wrapping_mul(16777619)^u32::from(b))
-            ^(x as u32).wrapping_mul(0x9e37_79b9)^(z as u32).wrapping_mul(0x85eb_ca6b);
-        let unit=|salt:u32| {
-            let mut h=seed^salt.wrapping_mul(0x7feb_352d);
-            h=(h^(h>>16)).wrapping_mul(0x846c_a68b);h^=h>>16;
-            (h&65535) as f32/65535.
+    const NEUTRAL: Self = Self {
+        linear: bevy::math::Mat3::IDENTITY,
+    };
+    fn at(map: &str, [x, z]: [i32; 2]) -> Self {
+        let seed = map.bytes().fold(0x6b8b_4567u32, |h, b| {
+            h.wrapping_mul(16777619) ^ u32::from(b)
+        }) ^ (x as u32).wrapping_mul(0x9e37_79b9)
+            ^ (z as u32).wrapping_mul(0x85eb_ca6b);
+        let unit = |salt: u32| {
+            let mut h = seed ^ salt.wrapping_mul(0x7feb_352d);
+            h = (h ^ (h >> 16)).wrapping_mul(0x846c_a68b);
+            h ^= h >> 16;
+            (h & 65535) as f32 / 65535.
         };
-        let rotation=bevy::prelude::Quat::from_rotation_y(unit(1)*std::f32::consts::TAU)
-            *bevy::prelude::Quat::from_rotation_x((unit(2)-0.5)*0.16)
-            *bevy::prelude::Quat::from_rotation_z((unit(3)-0.5)*0.16);
-        Self {linear:bevy::math::Mat3::from_quat(rotation)
-            *bevy::math::Mat3::from_diagonal(Vec3::new(0.90+unit(4)*0.10,
-                0.88+unit(5)*0.14,0.86+unit(6)*0.14))}
+        let rotation = bevy::prelude::Quat::from_rotation_y(unit(1) * std::f32::consts::TAU)
+            * bevy::prelude::Quat::from_rotation_x((unit(2) - 0.5) * 0.16)
+            * bevy::prelude::Quat::from_rotation_z((unit(3) - 0.5) * 0.16);
+        Self {
+            linear: bevy::math::Mat3::from_quat(rotation)
+                * bevy::math::Mat3::from_diagonal(Vec3::new(
+                    0.90 + unit(4) * 0.10,
+                    0.88 + unit(5) * 0.14,
+                    0.86 + unit(6) * 0.14,
+                )),
+        }
     }
 }
 
 #[cfg(test)]
-fn float(out: &mut SurfaceMeshData, center: Vec3, radius: f32, tile: f32, paint: [[f32;2];2]) {
-    float_posed(out,center,radius,tile,paint,FloatPose::NEUTRAL);
+fn float(out: &mut SurfaceMeshData, center: Vec3, radius: f32, tile: f32, paint: [[f32; 2]; 2]) {
+    float_posed(out, center, radius, tile, paint, FloatPose::NEUTRAL);
 }
 
-fn float_posed(out: &mut SurfaceMeshData, center: Vec3, radius: f32, tile: f32,
-    paint: [[f32;2];2], pose: FloatPose) {
+fn float_posed(
+    out: &mut SurfaceMeshData,
+    center: Vec3,
+    radius: f32,
+    tile: f32,
+    paint: [[f32; 2]; 2],
+    pose: FloatPose,
+) {
     // A rounded shoulder, tapered crown and closed recessed cap give the
     // native white/blue float a molded body. No hole through to the sea.
     // Six rings plus two closed quad fans retain the old 96-quad budget.
-    const SIDES: usize=16;
-    const PROFILE: [(f32,f32);6]=[
-        (-0.18,0.38),(-0.045,0.84),(0.035,0.94),
-        (0.085,1.),(0.225,0.64),(0.30,0.20),
+    const SIDES: usize = 16;
+    const PROFILE: [(f32, f32); 6] = [
+        (-0.18, 0.38),
+        (-0.045, 0.84),
+        (0.035, 0.94),
+        (0.085, 1.),
+        (0.225, 0.64),
+        (0.30, 0.20),
     ];
-    let circle: [Vec2;SIDES]=std::array::from_fn(|i| {
-        let angle=i as f32*std::f32::consts::TAU/SIDES as f32;
-        Vec2::new(angle.cos(),angle.sin())
+    let circle: [Vec2; SIDES] = std::array::from_fn(|i| {
+        let angle = i as f32 * std::f32::consts::TAU / SIDES as f32;
+        Vec2::new(angle.cos(), angle.sin())
     });
-    let local: [[Vec3;SIDES];6]=PROFILE.map(|(y,r)|circle.map(|c|
-        Vec3::new(c.x*radius*r,y*tile,c.y*radius*r)));
-    let extent=local.iter().flatten().map(|p|pose.linear**p).fold(Vec3::ZERO,|e,p|
-        Vec3::new(e.x.max(Vec2::new(p.x,p.z).length()),e.y.max(p.y),e.z.max(-p.y)));
+    let local: [[Vec3; SIDES]; 6] = PROFILE
+        .map(|(y, r)| circle.map(|c| Vec3::new(c.x * radius * r, y * tile, c.y * radius * r)));
+    let extent = local
+        .iter()
+        .flatten()
+        .map(|p| pose.linear * *p)
+        .fold(Vec3::ZERO, |e, p| {
+            Vec3::new(
+                e.x.max(Vec2::new(p.x, p.z).length()),
+                e.y.max(p.y),
+                e.z.max(-p.y),
+            )
+        });
     // Tilt and yaw never enter another source plot or increase the previous
     // above/below-water envelope. This is independent of viewport dimensions.
-    let fit=(radius/extent.x).min(0.30*tile/extent.y).min(0.18*tile/extent.z).min(1.);
-    let linear=pose.linear*fit;
-    let normal_matrix=linear.inverse().transpose();
-    let point=|p:Vec3|(center+linear*p).to_array();
-    let normal=|n:Vec3|(normal_matrix*n).normalize().to_array();
-    let normals: [[Vec3;SIDES];6]=std::array::from_fn(|ring| {
-        let (before,after)=(PROFILE[ring.saturating_sub(1)],PROFILE[(ring+1).min(5)]);
-        let (dy,dr)=((after.0-before.0)*tile,(after.1-before.1)*radius);
-        circle.map(|c|Vec3::new(c.x*dy,-dr,c.y*dy).normalize())
+    let fit = (radius / extent.x)
+        .min(0.30 * tile / extent.y)
+        .min(0.18 * tile / extent.z)
+        .min(1.);
+    let linear = pose.linear * fit;
+    let normal_matrix = linear.inverse().transpose();
+    let point = |p: Vec3| (center + linear * p).to_array();
+    let normal = |n: Vec3| (normal_matrix * n).normalize().to_array();
+    let normals: [[Vec3; SIDES]; 6] = std::array::from_fn(|ring| {
+        let (before, after) = (PROFILE[ring.saturating_sub(1)], PROFILE[(ring + 1).min(5)]);
+        let (dy, dr) = ((after.0 - before.0) * tile, (after.1 - before.1) * radius);
+        circle.map(|c| Vec3::new(c.x * dy, -dr, c.y * dy).normalize())
     });
-    let mut quad=|p:[Vec3;4],n:[Vec3;4],blue:bool| {
-        let first=out.positions.len();
-        let swatch=crate::scenery_finish::source_buoy_uv(paint[usize::from(blue)]);
-        let value=if blue {0.68}else{0.85};
-        append_quad_colors(out,p.map(point),normal(n[0]),[swatch;4],[[value,value,value,1.];4]);
+    let mut quad = |p: [Vec3; 4], n: [Vec3; 4], blue: bool| {
+        let first = out.positions.len();
+        let swatch = crate::scenery_finish::source_buoy_uv(paint[usize::from(blue)]);
+        let value = if blue { 0.68 } else { 0.85 };
+        append_quad_colors(
+            out,
+            p.map(point),
+            normal(n[0]),
+            [swatch; 4],
+            [[value, value, value, 1.]; 4],
+        );
         out.normals[first..].copy_from_slice(&n.map(normal));
     };
-    for ring in 0..5 {for i in 0..SIDES {
-        let j=(i+1)%SIDES;
-        quad([local[ring][i],local[ring+1][i],local[ring+1][j],local[ring][j]],
-            [normals[ring][i],normals[ring+1][i],normals[ring+1][j],normals[ring][j]],ring<2);
-    }}
-    for top in [false,true] {
-        let ring=if top {5}else{0};
-        let middle=Vec3::Y*tile*if top {0.275}else{-0.18};
-        let cap_normal=|i:usize|if top {
-            Vec3::new(-circle[i].x*0.025*tile,0.20*radius,-circle[i].y*0.025*tile).normalize()
-        } else {Vec3::NEG_Y};
+    for ring in 0..5 {
+        for i in 0..SIDES {
+            let j = (i + 1) % SIDES;
+            quad(
+                [
+                    local[ring][i],
+                    local[ring + 1][i],
+                    local[ring + 1][j],
+                    local[ring][j],
+                ],
+                [
+                    normals[ring][i],
+                    normals[ring + 1][i],
+                    normals[ring + 1][j],
+                    normals[ring][j],
+                ],
+                ring < 2,
+            );
+        }
+    }
+    for top in [false, true] {
+        let ring = if top { 5 } else { 0 };
+        let middle = Vec3::Y * tile * if top { 0.275 } else { -0.18 };
+        let cap_normal = |i: usize| {
+            if top {
+                Vec3::new(
+                    -circle[i].x * 0.025 * tile,
+                    0.20 * radius,
+                    -circle[i].y * 0.025 * tile,
+                )
+                .normalize()
+            } else {
+                Vec3::NEG_Y
+            }
+        };
         for i in (0..SIDES).step_by(2) {
-            let (j,k)=((i+1)%SIDES,(i+2)%SIDES);
-            let order=if top {[k,j,i]}else{[i,j,k]};
-            quad([middle,local[ring][order[0]],local[ring][order[1]],local[ring][order[2]]],
-                [if top {Vec3::Y}else{Vec3::NEG_Y},cap_normal(order[0]),cap_normal(order[1]),cap_normal(order[2])],true);
+            let (j, k) = ((i + 1) % SIDES, (i + 2) % SIDES);
+            let order = if top { [k, j, i] } else { [i, j, k] };
+            quad(
+                [
+                    middle,
+                    local[ring][order[0]],
+                    local[ring][order[1]],
+                    local[ring][order[2]],
+                ],
+                [
+                    if top { Vec3::Y } else { Vec3::NEG_Y },
+                    cap_normal(order[0]),
+                    cap_normal(order[1]),
+                    cap_normal(order[2]),
+                ],
+                true,
+            );
         }
     }
 }
@@ -383,66 +537,146 @@ mod tests {
             footing_heights: vec![0., crate::profile::WATER_HEIGHT],
             ..Default::default()
         };
-        append_top(&mut mesh.textured, [0., 8., 0., 8.], crate::profile::WATER_HEIGHT, g.uv(0, 0));
-        append_top(&mut mesh.textured, [8., 16., 0., 8.], crate::profile::WATER_HEIGHT, g.uv(1, 0));
+        append_top(
+            &mut mesh.textured,
+            [0., 8., 0., 8.],
+            crate::profile::WATER_HEIGHT,
+            g.uv(0, 0),
+        );
+        append_top(
+            &mut mesh.textured,
+            [8., 16., 0., 8.],
+            crate::profile::WATER_HEIGHT,
+            g.uv(1, 0),
+        );
         (f.tiles, g, samples, mesh)
     }
     #[test]
     fn final_buoy_corner_block_uses_both_verified_johto_atlases() {
-        for atlas in ["johto","johto_modern"] {
-            let (mut tiles,g,samples,mut mesh)=fixture();
-            tiles[0].source.tileset_id=atlas.into();
-            tiles[1].source.tileset_id=atlas.into();
-            tiles[0].source.metatile_id=0x3a;
-            tiles[0].source.subtile_row=2;
+        for atlas in ["johto", "johto_modern"] {
+            let (mut tiles, g, samples, mut mesh) = fixture();
+            tiles[0].source.tileset_id = atlas.into();
+            tiles[1].source.tileset_id = atlas.into();
+            tiles[0].source.metatile_id = 0x3a;
+            tiles[0].source.subtile_row = 2;
             assert!(source(&tiles[0].source));
-            for p in &mut mesh.textured.positions[..4] {p[1]=0.;}
-            let footing=mesh.footing_heights.clone();
-            append(&mut mesh,&tiles.iter().collect::<Vec<_>>(),&g,&samples,&[false;2]);
-            assert_eq!(mesh.authored_cells[0],Some(LABEL));
-            assert_eq!(mesh.footing_heights,footing);
-            assert!(mesh.textured.positions[..4].iter().all(|p|p[1]==crate::profile::WATER_HEIGHT));
-            tiles[0].source.subtile_row=0;
-            assert!(!source(&tiles[0].source),"the water quadrant is not a float");
+            for p in &mut mesh.textured.positions[..4] {
+                p[1] = 0.;
+            }
+            let footing = mesh.footing_heights.clone();
+            append(
+                &mut mesh,
+                &tiles.iter().collect::<Vec<_>>(),
+                &g,
+                &samples,
+                &[false; 2],
+            );
+            assert_eq!(mesh.authored_cells[0], Some(LABEL));
+            assert_eq!(mesh.footing_heights, footing);
+            assert!(
+                mesh.textured.positions[..4]
+                    .iter()
+                    .all(|p| p[1] == crate::profile::WATER_HEIGHT)
+            );
+            tiles[0].source.subtile_row = 0;
+            assert!(
+                !source(&tiles[0].source),
+                "the water quadrant is not a float"
+            );
         }
     }
 
     #[test]
     fn whirlpool_block_buoys_replace_their_flat_art_without_moving_footing() {
-        let (mut tiles,g,samples,mut mesh)=fixture();
-        tiles[0].source.metatile_id=0x07;
-        tiles[0].source.subtile_column=2;
+        let (mut tiles, g, samples, mut mesh) = fixture();
+        tiles[0].source.metatile_id = 0x07;
+        tiles[0].source.subtile_column = 2;
         assert!(source(&tiles[0].source));
-        for p in &mut mesh.textured.positions[..4] {p[1]=0.;}
-        append_textured_shoreline(&mut mesh.textured,&g,0,0,Direction::East,
-            [0.,8.,0.,8.],crate::profile::WATER_HEIGHT,0.);
-        append_top(&mut mesh.textured,[24.,32.,0.,8.],3.,g.uv(1,0));
+        for p in &mut mesh.textured.positions[..4] {
+            p[1] = 0.;
+        }
+        append_textured_shoreline(
+            &mut mesh.textured,
+            &g,
+            0,
+            0,
+            Direction::East,
+            [0., 8., 0., 8.],
+            crate::profile::WATER_HEIGHT,
+            0.,
+        );
+        append_top(&mut mesh.textured, [24., 32., 0., 8.], 3., g.uv(1, 0));
         mesh.textured.cutaway_ranges.push(12..16);
-        append_quad_colors(&mut mesh.solid,[[0.,crate::profile::WATER_HEIGHT,8.],[0.,0.,8.],[0.,0.,0.],[0.,crate::profile::WATER_HEIGHT,0.]],
-            [-1.,0.,0.],[[0.;2];4],[[0.3,0.2,0.1,1.];4]);
-        append_quad_colors(&mut mesh.solid,[[24.,3.,8.],[32.,3.,8.],[32.,3.,0.],[24.,3.,0.]],
-            [0.,1.,0.],[[0.;2];4],[[0.4,0.4,0.4,1.];4]);
+        append_quad_colors(
+            &mut mesh.solid,
+            [
+                [0., crate::profile::WATER_HEIGHT, 8.],
+                [0., 0., 8.],
+                [0., 0., 0.],
+                [0., crate::profile::WATER_HEIGHT, 0.],
+            ],
+            [-1., 0., 0.],
+            [[0.; 2]; 4],
+            [[0.3, 0.2, 0.1, 1.]; 4],
+        );
+        append_quad_colors(
+            &mut mesh.solid,
+            [[24., 3., 8.], [32., 3., 8.], [32., 3., 0.], [24., 3., 0.]],
+            [0., 1., 0.],
+            [[0.; 2]; 4],
+            [[0.4, 0.4, 0.4, 1.]; 4],
+        );
         mesh.solid.cutaway_ranges.push(4..8);
-        let solid_kept=mesh.solid.indices[6..].to_vec();
-        let footing=mesh.footing_heights.clone();
-        append(&mut mesh,&tiles.iter().collect::<Vec<_>>(),&g,&samples,&[false;2]);
-        assert_eq!(mesh.authored_cells[0],Some(LABEL));
-        assert_eq!(mesh.footing_heights,footing);
-        assert!(mesh.textured.positions[..4].iter().all(|p|p[1]==crate::profile::WATER_HEIGHT));
-        assert!(mesh.textured.positions.len()>8,"a native float replaces the source glyph");
-        assert_eq!(mesh.textured.cutaway_ranges,vec![8..12],"unrelated cutaways survive compaction");
-        assert_eq!(mesh.solid.indices,solid_kept,"only the false solid bank is retired");
-        assert_eq!(mesh.solid.cutaway_ranges,vec![4..8]);
-        assert!(mesh.textured.positions.contains(&[24.,3.,8.]));
-        assert!(!mesh.textured.positions.chunks_exact(4).enumerate().any(|(q,p)|
-            mesh.textured.normals[q*4][1].abs()<0.0001
-                && p.iter().all(|p|p[0]==8.) && p.iter().any(|p|p[1]>crate::profile::WATER_HEIGHT)),
-            "the old buoy tile cannot leave a vertical raster bank");
-        tiles[0].source.subtile_column=0;
-        assert!(!source(&tiles[0].source),"the whirlpool quadrant is not a buoy");
-        tiles[0].source.subtile_column=2;
-        tiles[0].source.tileset_id="johto_modern".into();
-        assert!(!source(&tiles[0].source),"do not infer Modern block07 art");
+        let solid_kept = mesh.solid.indices[6..].to_vec();
+        let footing = mesh.footing_heights.clone();
+        append(
+            &mut mesh,
+            &tiles.iter().collect::<Vec<_>>(),
+            &g,
+            &samples,
+            &[false; 2],
+        );
+        assert_eq!(mesh.authored_cells[0], Some(LABEL));
+        assert_eq!(mesh.footing_heights, footing);
+        assert!(
+            mesh.textured.positions[..4]
+                .iter()
+                .all(|p| p[1] == crate::profile::WATER_HEIGHT)
+        );
+        assert!(
+            mesh.textured.positions.len() > 8,
+            "a native float replaces the source glyph"
+        );
+        assert_eq!(
+            mesh.textured.cutaway_ranges,
+            vec![8..12],
+            "unrelated cutaways survive compaction"
+        );
+        assert_eq!(
+            mesh.solid.indices, solid_kept,
+            "only the false solid bank is retired"
+        );
+        assert_eq!(mesh.solid.cutaway_ranges, vec![4..8]);
+        assert!(mesh.textured.positions.contains(&[24., 3., 8.]));
+        assert!(
+            !mesh
+                .textured
+                .positions
+                .chunks_exact(4)
+                .enumerate()
+                .any(|(q, p)| mesh.textured.normals[q * 4][1].abs() < 0.0001
+                    && p.iter().all(|p| p[0] == 8.)
+                    && p.iter().any(|p| p[1] > crate::profile::WATER_HEIGHT)),
+            "the old buoy tile cannot leave a vertical raster bank"
+        );
+        tiles[0].source.subtile_column = 0;
+        assert!(
+            !source(&tiles[0].source),
+            "the whirlpool quadrant is not a buoy"
+        );
+        tiles[0].source.subtile_column = 2;
+        tiles[0].source.tileset_id = "johto_modern".into();
+        assert!(!source(&tiles[0].source), "do not infer Modern block07 art");
     }
 
     #[test]
@@ -461,13 +695,14 @@ mod tests {
                 .all(|p| p[0] > 0. && p[0] < 8. && p[2] > 0. && p[2] < 8.)
         );
         assert!(float.iter().any(|p| p[1] < crate::profile::WATER_HEIGHT));
-        assert!(float.iter().any(|p| p[1] > -1.5),"the float emerges above its water bed");
         assert!(
-            mesh.textured.uvs[8..]
-                .iter()
-                .all(|uv| crate::scenery_finish::source_atlas_coordinates(*uv)
-                    .is_some_and(|uv|new_bark::sampled_cell(&[uv], &g) == Some(0)))
+            float.iter().any(|p| p[1] > -1.5),
+            "the float emerges above its water bed"
         );
+        assert!(mesh.textured.uvs[8..].iter().all(|uv| {
+            crate::scenery_finish::source_atlas_coordinates(*uv)
+                .is_some_and(|uv| new_bark::sampled_cell(&[uv], &g) == Some(0))
+        }));
         assert_eq!(mesh.textured.positions.len() % 4, 0);
         let before = mesh.textured.positions.len();
         append(&mut mesh, &refs, &g, &samples, &[false; 2]);
@@ -477,7 +712,11 @@ mod tests {
             "the same cell cannot be claimed twice"
         );
         new_bark::polish_world_surfaces(&mut mesh, "CherrygroveCity", &refs, &g, [0, 0]);
-        assert!(mesh.solid.positions.contains(&[0., crate::profile::WATER_HEIGHT, 8.]));
+        assert!(
+            mesh.solid
+                .positions
+                .contains(&[0., crate::profile::WATER_HEIGHT, 8.])
+        );
         assert!(
             !mesh
                 .textured
@@ -491,10 +730,15 @@ mod tests {
             mesh.textured.positions.iter().any(|p| p[1] > -1.5),
             "the float survives ground finishing"
         );
-        assert!(mesh.textured.positions.iter().zip(&mesh.textured.uvs)
-            .filter(|(p,_)|p[1]>-1.5)
-            .all(|(_,uv)|crate::scenery_finish::source_atlas_coordinates(*uv).is_some()),
-            "exposed float paint retains its live palette through ground finishing");
+        assert!(
+            mesh.textured
+                .positions
+                .iter()
+                .zip(&mesh.textured.uvs)
+                .filter(|(p, _)| p[1] > -1.5)
+                .all(|(_, uv)| crate::scenery_finish::source_atlas_coordinates(*uv).is_some()),
+            "exposed float paint retains its live palette through ground finishing"
+        );
     }
     #[test]
     fn cropped_reserved_unknown_and_missing_art_retain_the_original_plane() {
@@ -539,8 +783,7 @@ mod tests {
             .map(|p| p[1])
             .fold(f32::NEG_INFINITY, f32::max);
         assert!(
-            (low - (center.y - 1.44)).abs() < 0.0001
-                && (high - (center.y + 2.4)).abs() < 0.0001,
+            (low - (center.y - 1.44)).abs() < 0.0001 && (high - (center.y + 2.4)).abs() < 0.0001,
             "the rounded body stays seated across the native waterline"
         );
         assert!(
@@ -550,8 +793,10 @@ mod tests {
             "the native silhouette still owns the whole footprint"
         );
         assert!(
-            mesh.positions.iter().any(|p| p[1] > center.y
-                && Vec2::new(p[0] - center.x, p[2] - center.z).length() < 0.001),
+            mesh.positions
+                .iter()
+                .any(|p| p[1] > center.y
+                    && Vec2::new(p[0] - center.x, p[2] - center.z).length() < 0.001),
             "the visible crown must form one complete object"
         );
         for swatch in paint {
@@ -602,67 +847,106 @@ mod tests {
 
     #[test]
     fn tilted_float_bodies_keep_closed_volume_normals_native_bounds_and_paint() {
-        let center=Vec3::new(4.,crate::profile::WATER_HEIGHT,4.);
-        let paint=[[0.1,0.2],[0.3,0.4]];
-        let mut crowns=std::collections::BTreeSet::new();
-        for map in ["Route40","CianwoodCity","OlivineCity","CherrygroveCity"] {
+        let center = Vec3::new(4., crate::profile::WATER_HEIGHT, 4.);
+        let paint = [[0.1, 0.2], [0.3, 0.4]];
+        let mut crowns = std::collections::BTreeSet::new();
+        for map in ["Route40", "CianwoodCity", "OlivineCity", "CherrygroveCity"] {
             for x in -8..8 {
-                let pose=FloatPose::at(map,[x,30]);
-                assert_eq!(pose,FloatPose::at(map,[x,30]));
-                let mut mesh=SurfaceMeshData::default();
-                float_posed(&mut mesh,center,2.,8.,paint,pose);
-                assert_eq!(mesh.quad_count(),96,"no extra terrain cost for the molded body");
-                let mut volume=0.;
-                let mut edges=std::collections::BTreeMap::new();
-                let key=|p:[f32;3]|p.map(|v|(v*10000.).round() as i32);
+                let pose = FloatPose::at(map, [x, 30]);
+                assert_eq!(pose, FloatPose::at(map, [x, 30]));
+                let mut mesh = SurfaceMeshData::default();
+                float_posed(&mut mesh, center, 2., 8., paint, pose);
+                assert_eq!(
+                    mesh.quad_count(),
+                    96,
+                    "no extra terrain cost for the molded body"
+                );
+                let mut volume = 0.;
+                let mut edges = std::collections::BTreeMap::new();
+                let key = |p: [f32; 3]| p.map(|v| (v * 10000.).round() as i32);
                 for tri in mesh.indices.chunks_exact(3) {
-                    let p=[tri[0],tri[1],tri[2]].map(|i|Vec3::from_array(mesh.positions[i as usize]));
-                    let face=(p[1]-p[0]).cross(p[2]-p[0]);
-                    assert!(face.length_squared()>1e-10);
-                    volume+=p[0].dot(p[1].cross(p[2]))/6.;
+                    let p = [tri[0], tri[1], tri[2]]
+                        .map(|i| Vec3::from_array(mesh.positions[i as usize]));
+                    let face = (p[1] - p[0]).cross(p[2] - p[0]);
+                    assert!(face.length_squared() > 1e-10);
+                    volume += p[0].dot(p[1].cross(p[2])) / 6.;
                     for j in 0..3 {
-                        let n=Vec3::from_array(mesh.normals[tri[j] as usize]);
-                        assert!((n.length()-1.).abs()<0.0001 && face.dot(n)>0.);
-                        let a=key(p[j].to_array());let b=key(p[(j+1)%3].to_array());
-                        let (edge,direction)=if a<b {((a,b),1)}else{((b,a),-1)};
-                        let e=edges.entry(edge).or_insert((0,0));e.0+=1;e.1+=direction;
+                        let n = Vec3::from_array(mesh.normals[tri[j] as usize]);
+                        assert!((n.length() - 1.).abs() < 0.0001 && face.dot(n) > 0.);
+                        let a = key(p[j].to_array());
+                        let b = key(p[(j + 1) % 3].to_array());
+                        let (edge, direction) = if a < b { ((a, b), 1) } else { ((b, a), -1) };
+                        let e = edges.entry(edge).or_insert((0, 0));
+                        e.0 += 1;
+                        e.1 += direction;
                     }
                 }
-                assert!(volume>0. && edges.values().all(|e|*e==(2,0)));
-                let mut high=f32::NEG_INFINITY;
-                for (&p,&uv) in mesh.positions.iter().zip(&mesh.uvs) {
-                    let local=Vec3::from_array(p)-center;
-                    assert!(Vec2::new(local.x,local.z).length()<=2.00001);
-                    assert!(local.y>=-1.44001 && local.y<=2.40001);
-                    high=high.max(local.y);
-                    assert!(crate::scenery_finish::source_buoy_coordinates(uv).is_some_and(|uv|
-                        paint.iter().any(|p|p.iter().zip(uv).all(|(a,b)|(a-b).abs()<0.00001))));
+                assert!(volume > 0. && edges.values().all(|e| *e == (2, 0)));
+                let mut high = f32::NEG_INFINITY;
+                for (&p, &uv) in mesh.positions.iter().zip(&mesh.uvs) {
+                    let local = Vec3::from_array(p) - center;
+                    assert!(Vec2::new(local.x, local.z).length() <= 2.00001);
+                    assert!(local.y >= -1.44001 && local.y <= 2.40001);
+                    high = high.max(local.y);
+                    assert!(
+                        crate::scenery_finish::source_buoy_coordinates(uv).is_some_and(|uv| paint
+                            .iter()
+                            .any(|p| p.iter().zip(uv).all(|(a, b)| (a - b).abs() < 0.00001)))
+                    );
                 }
-                crowns.insert((high*10000.).round() as i32);
+                crowns.insert((high * 10000.).round() as i32);
             }
         }
-        assert!(crowns.len()>20,"different floats cannot collapse to one repeated crown");
+        assert!(
+            crowns.len() > 20,
+            "different floats cannot collapse to one repeated crown"
+        );
     }
 
     #[test]
     fn connected_map_handoffs_keep_the_same_owned_float_pose() {
-        use bevy::prelude::{IVec2,UVec2};
+        use bevy::prelude::{IVec2, UVec2};
         use crystal_render_api::VisualSourceRegion;
-        let (tiles,g,samples,original)=fixture();
-        let cells=tiles.iter().collect::<Vec<_>>();
-        let frame=VisualWorldFrame {map_id:"Route40".into(),grid_origin:IVec2::new(40,20),
-            source_regions:vec![
-                VisualSourceRegion {map_id:"Route40".into(),origin:IVec2::ZERO,size:UVec2::splat(8)},
-                VisualSourceRegion {map_id:"CianwoodCity".into(),origin:IVec2::new(30,-10),size:UVec2::splat(100)},
-            ].into(),..Default::default()};
-        let local=VisualWorldFrame {map_id:"CianwoodCity".into(),grid_origin:IVec2::new(10,30),
-            source_regions:vec![VisualSourceRegion {map_id:"CianwoodCity".into(),
-                origin:IVec2::ZERO,size:UVec2::splat(100)}].into(),..Default::default()};
-        let mut a=original.clone();let mut b=original.clone();
-        append_from_frame(&mut a,&cells,&g,&samples,&[false;2],Some(&frame));
-        append_from_frame(&mut b,&cells,&g,&samples,&[false;2],Some(&local));
-        assert_eq!(a.textured,b.textured,"owner-local coordinates survive map handoff");
-        assert_eq!(a.footing_heights,original.footing_heights);
-        assert_eq!(a.authored_cells,vec![Some(LABEL),None]);
+        let (tiles, g, samples, original) = fixture();
+        let cells = tiles.iter().collect::<Vec<_>>();
+        let frame = VisualWorldFrame {
+            map_id: "Route40".into(),
+            grid_origin: IVec2::new(40, 20),
+            source_regions: vec![
+                VisualSourceRegion {
+                    map_id: "Route40".into(),
+                    origin: IVec2::ZERO,
+                    size: UVec2::splat(8),
+                },
+                VisualSourceRegion {
+                    map_id: "CianwoodCity".into(),
+                    origin: IVec2::new(30, -10),
+                    size: UVec2::splat(100),
+                },
+            ]
+            .into(),
+            ..Default::default()
+        };
+        let local = VisualWorldFrame {
+            map_id: "CianwoodCity".into(),
+            grid_origin: IVec2::new(10, 30),
+            source_regions: vec![VisualSourceRegion {
+                map_id: "CianwoodCity".into(),
+                origin: IVec2::ZERO,
+                size: UVec2::splat(100),
+            }]
+            .into(),
+            ..Default::default()
+        };
+        let mut a = original.clone();
+        let mut b = original.clone();
+        append_from_frame(&mut a, &cells, &g, &samples, &[false; 2], Some(&frame));
+        append_from_frame(&mut b, &cells, &g, &samples, &[false; 2], Some(&local));
+        assert_eq!(
+            a.textured, b.textured,
+            "owner-local coordinates survive map handoff"
+        );
+        assert_eq!(a.footing_heights, original.footing_heights);
+        assert_eq!(a.authored_cells, vec![Some(LABEL), None]);
     }
 }

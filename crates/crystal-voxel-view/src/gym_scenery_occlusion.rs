@@ -144,63 +144,81 @@ pub(super) fn parse_planter<'a>(
     let gym_stone_pixels = original.gym_stone_pixels.map(|pixels| {
         let mut filtered = vec![[0; 2]; surface.positions.len()];
         for (old, &new) in remap.iter().enumerate() {
-            if new != u32::MAX { filtered[new as usize] = pixels[old]; }
+            if new != u32::MAX {
+                filtered[new as usize] = pixels[old];
+            }
         }
         filtered
     });
     let pewter_guardian_pixels = original.pewter_guardian_pixels.map(|pixels| {
         let mut filtered = vec![[0; 2]; surface.positions.len()];
         for (old, &new) in remap.iter().enumerate() {
-            if new != u32::MAX { filtered[new as usize] = pixels[old]; }
+            if new != u32::MAX {
+                filtered[new as usize] = pixels[old];
+            }
         }
         filtered
     });
     let tower_timber_pixels = original.tower_timber_pixels.map(|pixels| {
         let mut filtered = vec![[0; 2]; surface.positions.len()];
         for (old, &new) in remap.iter().enumerate() {
-            if new != u32::MAX { filtered[new as usize] = pixels[old]; }
+            if new != u32::MAX {
+                filtered[new as usize] = pixels[old];
+            }
         }
         filtered
     });
     let gym_orb_pixels = original.gym_orb_pixels.map(|pixels| {
         let mut filtered = vec![[0; 2]; surface.positions.len()];
         for (old, &new) in remap.iter().enumerate() {
-            if new != u32::MAX { filtered[new as usize] = pixels[old]; }
+            if new != u32::MAX {
+                filtered[new as usize] = pixels[old];
+            }
         }
         filtered
     });
     let hall_terminal_pixels = original.hall_terminal_pixels.map(|pixels| {
         let mut filtered = vec![[0; 2]; surface.positions.len()];
         for (old, &new) in remap.iter().enumerate() {
-            if new != u32::MAX { filtered[new as usize] = pixels[old]; }
+            if new != u32::MAX {
+                filtered[new as usize] = pixels[old];
+            }
         }
         filtered
     });
     let mansion_hut_materials = original.mansion_hut_materials.map(|roles| {
         let mut filtered = vec![0; surface.positions.len()];
         for (old, &new) in remap.iter().enumerate() {
-            if new != u32::MAX { filtered[new as usize] = roles[old]; }
+            if new != u32::MAX {
+                filtered[new as usize] = roles[old];
+            }
         }
         filtered
     });
     let theater_stage_materials = original.theater_stage_materials.map(|roles| {
         let mut filtered = vec![0; surface.positions.len()];
         for (old, &new) in remap.iter().enumerate() {
-            if new != u32::MAX { filtered[new as usize] = roles[old]; }
+            if new != u32::MAX {
+                filtered[new as usize] = roles[old];
+            }
         }
         filtered
     });
     let shrine_materials = original.shrine_materials.map(|roles| {
         let mut filtered = vec![0; surface.positions.len()];
         for (old, &new) in remap.iter().enumerate() {
-            if new != u32::MAX { filtered[new as usize] = roles[old]; }
+            if new != u32::MAX {
+                filtered[new as usize] = roles[old];
+            }
         }
         filtered
     });
     let link_materials = original.link_materials.map(|roles| {
         let mut filtered = vec![0; surface.positions.len()];
         for (old, &new) in remap.iter().enumerate() {
-            if new != u32::MAX { filtered[new as usize] = roles[old]; }
+            if new != u32::MAX {
+                filtered[new as usize] = roles[old];
+            }
         }
         filtered
     });
@@ -237,10 +255,12 @@ mod tests {
         for (source, triangles, vertices) in [(SOURCES[0], 724, 1768), (SOURCES[1], 765, 1947)] {
             let original = Model::parse(source).unwrap();
             let export: Export = crate::model_storage::parse(source).unwrap();
-            assert!(export
-                .primitives
-                .iter()
-                .all(|part| ConvexPart::verified(part).is_some()));
+            assert!(
+                export
+                    .primitives
+                    .iter()
+                    .all(|part| ConvexPart::verified(part).is_some())
+            );
             let retained = retained_triangles(&export);
             let optimized = parse_planter(source).unwrap();
             assert_eq!(optimized.surface.indices.len() / 3, triangles);

@@ -95,6 +95,10 @@ pub(super) fn verify(
     }
     assert!(actual_pages.finished() && oracle_pages.finished());
     assert_eq!(restored_pages, pages, "{map}: retain every restored page");
-    eprintln!("terrain_worker_paged map={map} tiles={} request_bytes={} header_bytes={} raw_bytes={raw_bytes} pages={pages} turns={turns} worker_ms={worker_ms:.3} max_append_ms={max_append_ms:.3} max_restore_ms={max_restore_ms:.3}",
-        frame.tiles.len(), submitted.bytes.len(), expected_header.len());
+    eprintln!(
+        "terrain_worker_paged map={map} tiles={} request_bytes={} header_bytes={} raw_bytes={raw_bytes} pages={pages} turns={turns} worker_ms={worker_ms:.3} max_append_ms={max_append_ms:.3} max_restore_ms={max_restore_ms:.3}",
+        frame.tiles.len(),
+        submitted.bytes.len(),
+        expected_header.len()
+    );
 }

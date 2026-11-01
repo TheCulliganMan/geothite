@@ -21,8 +21,14 @@ struct WorldOverlayHdr;
 
 pub(super) fn register(app: &mut App) {
     tilt_shift::register(app);
-    app.add_systems(Update, sync_route_shadow_filter.after(crate::sync_voxel_view));
-    app.add_systems(Update, sync_cave_palette_tonemapping.after(crate::sync_voxel_view));
+    app.add_systems(
+        Update,
+        sync_route_shadow_filter.after(crate::sync_voxel_view),
+    );
+    app.add_systems(
+        Update,
+        sync_cave_palette_tonemapping.after(crate::sync_voxel_view),
+    );
     app.add_systems(
         PostUpdate,
         (
@@ -39,22 +45,29 @@ pub fn configure_route_shadow_filter(gaussian: bool) {
 }
 
 fn route_shadow_filter(route: bool, gaussian: bool) -> ShadowFilteringMethod {
-    if route && !gaussian { ShadowFilteringMethod::Hardware2x2 }
-    else { ShadowFilteringMethod::Gaussian }
+    if route && !gaussian {
+        ShadowFilteringMethod::Hardware2x2
+    } else {
+        ShadowFilteringMethod::Gaussian
+    }
 }
 
 fn sync_route_shadow_filter(
     frame: Option<Res<crystal_render_api::VisualWorldFrame>>,
     mut cameras: Query<&mut ShadowFilteringMethod, With<crate::VoxelWorldCamera>>,
 ) {
-    let gaussian = *ROUTE_GAUSSIAN_SHADOWS.get_or_init(||
-        std::env::var("CRYSTAL_ROUTE_SHADOW_FILTER").as_deref() == Ok("gaussian"));
+    let gaussian = *ROUTE_GAUSSIAN_SHADOWS
+        .get_or_init(|| std::env::var("CRYSTAL_ROUTE_SHADOW_FILTER").as_deref() == Ok("gaussian"));
     // Connected towns and routes must share the same filter/pipeline: changing
     // it on the boundary would introduce another cold shader compilation.
-    let route = frame.as_ref().is_some_and(|frame| crate::cave_water::outdoor(&frame.map_id));
+    let route = frame
+        .as_ref()
+        .is_some_and(|frame| crate::cave_water::outdoor(&frame.map_id));
     let next = route_shadow_filter(route, gaussian);
     for mut filter in &mut cameras {
-        if *filter != next { *filter = next; }
+        if *filter != next {
+            *filter = next;
+        }
     }
 }
 
@@ -68,8 +81,13 @@ fn sync_cave_palette_tonemapping(
     mut cameras: Query<(Entity, &mut Tonemapping), With<crate::VoxelWorldCamera>>,
     mut previous: Local<std::collections::HashMap<Entity, Tonemapping>>,
 ) {
-    let source_palette = frame.as_deref().zip(settings.as_deref()).is_some_and(|(frame, settings)|
-        frame.active && settings.enabled && crate::cave_water::native_cave_source(frame));
+    let source_palette =
+        frame
+            .as_deref()
+            .zip(settings.as_deref())
+            .is_some_and(|(frame, settings)| {
+                frame.active && settings.enabled && crate::cave_water::native_cave_source(frame)
+            });
     for (entity, mut tone) in &mut cameras {
         if source_palette {
             if *tone != Tonemapping::Linear {
@@ -77,7 +95,9 @@ fn sync_cave_palette_tonemapping(
                 *tone = Tonemapping::Linear;
             }
         } else if let Some(original) = previous.remove(&entity) {
-            if *tone != original { *tone = original; }
+            if *tone != original {
+                *tone = original;
+            }
         }
     }
     previous.retain(|entity, _| cameras.contains(*entity));
@@ -93,8 +113,13 @@ fn tilt_shift_requested() -> bool {
 }
 
 fn exploration_focus(frame: &crystal_render_api::VisualWorldFrame) -> bool {
-    crate::cave_water::outdoor(&frame.map_id) && frame.tiles.first().is_some_and(|tile|
-        matches!(tile.source.tileset_id.as_ref(), "johto" | "johto_modern" | "kanto"))
+    crate::cave_water::outdoor(&frame.map_id)
+        && frame.tiles.first().is_some_and(|tile| {
+            matches!(
+                tile.source.tileset_id.as_ref(),
+                "johto" | "johto_modern" | "kanto"
+            )
+        })
 }
 
 fn sync_tilt_shift(
@@ -148,10 +173,19 @@ fn sync_tilt_shift(
         let height = camera
             .physical_viewport_size()
             .map_or(frame.viewport_size.y, |s| s.y as f32);
-        let entry = entry.as_deref().filter(|e| e.active && camera.is_active && frame.active && settings.enabled);
+        let entry = entry
+            .as_deref()
+            .filter(|e| e.active && camera.is_active && frame.active && settings.enabled);
         let band = focus.filter(|_| active).and_then(|focus| {
-            TiltShift::for_trainer(projection, transform, focus, frame.tile_size.y, height)
-                .map(|band|if exploration_focus(&frame) {band.readable_exterior()} else {band})
+            TiltShift::for_trainer(projection, transform, focus, frame.tile_size.y, height).map(
+                |band| {
+                    if exploration_focus(&frame) {
+                        band.readable_exterior()
+                    } else {
+                        band
+                    }
+                },
+            )
         });
         let band = match (band, entry) {
             (Some(band), Some(entry)) => Some(band.with_entry(entry)),
@@ -258,8 +292,10 @@ pub(super) fn configure_camera(
     commands
         .entity(camera)
         .insert(ShadowFilteringMethod::Gaussian);
-    if let Some(preset) = smaa_preset(quality,
-        std::env::var("CRYSTAL_ANTI_ALIASING").ok().as_deref()) {
+    if let Some(preset) = smaa_preset(
+        quality,
+        std::env::var("CRYSTAL_ANTI_ALIASING").ok().as_deref(),
+    ) {
         commands.entity(camera).insert(Smaa { preset });
     }
     if quality == Quality::High {
@@ -348,49 +384,101 @@ mod tests {
 
     #[test]
     fn cave_palette_preserves_hdr_and_restores_the_exact_camera_curve() {
-        use crystal_render_api::{VisualWorldFrame,VisualTile,VisualTileSource};
-        let mut app=App::new();
-        app.init_resource::<VisualWorldFrame>().init_resource::<crate::VoxelViewSettings>()
-            .add_systems(Update,sync_cave_palette_tonemapping);
-        app.world_mut().resource_mut::<crate::VoxelViewSettings>().enabled=true;
-        let source=VisualWorldFrame {active:true,map_id:"DarkCaveVioletEntrance".into(),
-            tiles:vec![VisualTile {column:0,row:0,texture:Default::default(),priority:false,
-                animation_frames:None,source:VisualTileSource {tileset_id:"dark_cave".into(),
-                    metatile_id:2,tile_index:0x16,subtile_column:0,subtile_row:0}}],..default()};
-        let camera=app.world_mut().spawn((crate::VoxelWorldCamera,Hdr,Bloom::default(),DebandDither::Enabled,
-            Tonemapping::KhronosPbrNeutral)).id();
-        let other=app.world_mut().spawn(Tonemapping::KhronosPbrNeutral).id();
-        for original in [Tonemapping::None,Tonemapping::Linear,Tonemapping::KhronosPbrNeutral,Tonemapping::Reinhard] {
-            *app.world_mut().get_mut::<Tonemapping>(camera).unwrap()=original;
-            *app.world_mut().resource_mut::<VisualWorldFrame>()=source.clone();
+        use crystal_render_api::{VisualTile, VisualTileSource, VisualWorldFrame};
+        let mut app = App::new();
+        app.init_resource::<VisualWorldFrame>()
+            .init_resource::<crate::VoxelViewSettings>()
+            .add_systems(Update, sync_cave_palette_tonemapping);
+        app.world_mut()
+            .resource_mut::<crate::VoxelViewSettings>()
+            .enabled = true;
+        let source = VisualWorldFrame {
+            active: true,
+            map_id: "DarkCaveVioletEntrance".into(),
+            tiles: vec![VisualTile {
+                column: 0,
+                row: 0,
+                texture: Default::default(),
+                priority: false,
+                animation_frames: None,
+                source: VisualTileSource {
+                    tileset_id: "dark_cave".into(),
+                    metatile_id: 2,
+                    tile_index: 0x16,
+                    subtile_column: 0,
+                    subtile_row: 0,
+                },
+            }],
+            ..default()
+        };
+        let camera = app
+            .world_mut()
+            .spawn((
+                crate::VoxelWorldCamera,
+                Hdr,
+                Bloom::default(),
+                DebandDither::Enabled,
+                Tonemapping::KhronosPbrNeutral,
+            ))
+            .id();
+        let other = app.world_mut().spawn(Tonemapping::KhronosPbrNeutral).id();
+        for original in [
+            Tonemapping::None,
+            Tonemapping::Linear,
+            Tonemapping::KhronosPbrNeutral,
+            Tonemapping::Reinhard,
+        ] {
+            *app.world_mut().get_mut::<Tonemapping>(camera).unwrap() = original;
+            *app.world_mut().resource_mut::<VisualWorldFrame>() = source.clone();
             app.update();
-            assert_eq!(app.world().get::<Tonemapping>(camera),Some(&Tonemapping::Linear));
+            assert_eq!(
+                app.world().get::<Tonemapping>(camera),
+                Some(&Tonemapping::Linear)
+            );
             assert!(app.world().get::<Hdr>(camera).is_some());
             assert!(app.world().get::<Bloom>(camera).is_some());
-            assert_eq!(app.world().get::<DebandDither>(camera),Some(&DebandDither::Enabled));
-            assert_eq!(*app.world().resource::<VisualWorldFrame>(),source);
-            assert_eq!(app.world().get::<Tonemapping>(other),Some(&Tonemapping::KhronosPbrNeutral));
-            app.world_mut().resource_mut::<VisualWorldFrame>().active=false;
+            assert_eq!(
+                app.world().get::<DebandDither>(camera),
+                Some(&DebandDither::Enabled)
+            );
+            assert_eq!(*app.world().resource::<VisualWorldFrame>(), source);
+            assert_eq!(
+                app.world().get::<Tonemapping>(other),
+                Some(&Tonemapping::KhronosPbrNeutral)
+            );
+            app.world_mut().resource_mut::<VisualWorldFrame>().active = false;
             app.update();
-            assert_eq!(app.world().get::<Tonemapping>(camera),Some(&original));
-            app.world_mut().resource_mut::<VisualWorldFrame>().active=true;
+            assert_eq!(app.world().get::<Tonemapping>(camera), Some(&original));
+            app.world_mut().resource_mut::<VisualWorldFrame>().active = true;
             app.update();
-            app.world_mut().resource_mut::<crate::VoxelViewSettings>().enabled=false;
+            app.world_mut()
+                .resource_mut::<crate::VoxelViewSettings>()
+                .enabled = false;
             app.update();
-            assert_eq!(app.world().get::<Tonemapping>(camera),Some(&original));
-            app.world_mut().resource_mut::<crate::VoxelViewSettings>().enabled=true;
+            assert_eq!(app.world().get::<Tonemapping>(camera), Some(&original));
+            app.world_mut()
+                .resource_mut::<crate::VoxelViewSettings>()
+                .enabled = true;
             app.update();
-            app.world_mut().resource_mut::<VisualWorldFrame>().map_id="PlayersHouse1F".into();
-            app.world_mut().resource_mut::<VisualWorldFrame>().tiles[0].source.tileset_id="house".into();
+            app.world_mut().resource_mut::<VisualWorldFrame>().map_id = "PlayersHouse1F".into();
+            app.world_mut().resource_mut::<VisualWorldFrame>().tiles[0]
+                .source
+                .tileset_id = "house".into();
             app.update();
-            assert_eq!(app.world().get::<Tonemapping>(camera),Some(&original));
+            assert_eq!(app.world().get::<Tonemapping>(camera), Some(&original));
         }
-        *app.world_mut().resource_mut::<VisualWorldFrame>()=source;
+        *app.world_mut().resource_mut::<VisualWorldFrame>() = source;
         app.update();
-        assert_eq!(app.world().get::<Tonemapping>(camera),Some(&Tonemapping::Linear));
+        assert_eq!(
+            app.world().get::<Tonemapping>(camera),
+            Some(&Tonemapping::Linear)
+        );
         app.world_mut().remove_resource::<VisualWorldFrame>();
         app.update();
-        assert_eq!(app.world().get::<Tonemapping>(camera),Some(&Tonemapping::Reinhard));
+        assert_eq!(
+            app.world().get::<Tonemapping>(camera),
+            Some(&Tonemapping::Reinhard)
+        );
     }
 
     #[test]
@@ -413,55 +501,96 @@ mod tests {
         settings.enabled = true;
         settings.camera.first_person = true; // deliberately disables the focus blur
         app.insert_resource(settings)
-            .insert_resource(crystal_render_api::VisualWorldFrame { active: true, ..default() })
-            .insert_resource(crystal_render_api::VisualWorldEntryEffect { active: true, light: 1., ..default() })
+            .insert_resource(crystal_render_api::VisualWorldFrame {
+                active: true,
+                ..default()
+            })
+            .insert_resource(crystal_render_api::VisualWorldEntryEffect {
+                active: true,
+                light: 1.,
+                ..default()
+            })
             .add_systems(Update, sync_tilt_shift);
-        let camera = app.world_mut().spawn((crate::VoxelWorldCamera, Camera::default(),
-            Projection::Perspective(PerspectiveProjection::default()), Transform::default())).id();
+        let camera = app
+            .world_mut()
+            .spawn((
+                crate::VoxelWorldCamera,
+                Camera::default(),
+                Projection::Perspective(PerspectiveProjection::default()),
+                Transform::default(),
+            ))
+            .id();
         app.update();
         let effect = app.world().get::<TiltShift>(camera).unwrap();
         assert_eq!(effect.band.w, 0.);
         assert_eq!(effect.entry, Vec4::new(0., 1., 1., 0.));
-        app.world_mut().resource_mut::<crystal_render_api::VisualWorldEntryEffect>().active = false;
+        app.world_mut()
+            .resource_mut::<crystal_render_api::VisualWorldEntryEffect>()
+            .active = false;
         app.update();
         assert!(app.world().get::<TiltShift>(camera).is_none());
     }
 
     #[test]
     fn exploration_focus_preserves_nearby_scenery_and_excludes_rooms_and_forests() {
-        use crystal_render_api::{VisualWorldFrame,VisualTile,VisualTileSource};
-        let pose=crate::camera_pose(Vec2::new(640.,576.));
-        let projection=Projection::Perspective(PerspectiveProjection {
-            fov:pose.vertical_fov_radians,..default()
+        use crystal_render_api::{VisualTile, VisualTileSource, VisualWorldFrame};
+        let pose = crate::camera_pose(Vec2::new(640., 576.));
+        let projection = Projection::Perspective(PerspectiveProjection {
+            fov: pose.vertical_fov_radians,
+            ..default()
         });
-        let original=TiltShift::for_trainer(&projection,&pose.transform(),
-            Vec3::Y*32.,32.,720.).unwrap();
-        let readable=original.readable_exterior();
-        assert_eq!(readable.band.x,original.band.x);
-        assert_eq!(readable.band.z,original.band.z);
-        assert!(readable.band.y>=0.20);
-        for offset in [-0.20,-0.14,0.,0.14,0.20] {
-            assert!(readable.blur_diameter(readable.band.x+offset)<0.00001);
+        let original =
+            TiltShift::for_trainer(&projection, &pose.transform(), Vec3::Y * 32., 32., 720.)
+                .unwrap();
+        let readable = original.readable_exterior();
+        assert_eq!(readable.band.x, original.band.x);
+        assert_eq!(readable.band.z, original.band.z);
+        assert!(readable.band.y >= 0.20);
+        for offset in [-0.20, -0.14, 0., 0.14, 0.20] {
+            assert!(readable.blur_diameter(readable.band.x + offset) < 0.00001);
         }
-        for y in [0.,0.1,0.25,0.75,0.9,1.] {
-            assert!(readable.blur_diameter(y)<=original.blur_diameter(y)+0.00001);
+        for y in [0., 0.1, 0.25, 0.75, 0.9, 1.] {
+            assert!(readable.blur_diameter(y) <= original.blur_diameter(y) + 0.00001);
         }
-        assert!(readable.band.w>6. && readable.band.w<8.,"gentle edge softness remains");
-        for (map,tileset,expected) in [
-            ("MahoganyTown","johto",true),("GoldenrodCity","johto_modern",true),
-            ("Route26","kanto",true),("CinnabarIsland","kanto",true),
-            ("IlexForest","forest",false),("DragonsDenB1F","johto",false),
-            ("Route35NationalParkGate","gate",false),("PlayersHouse1F","house",false),
-            ("MahoganyTown","unknown",false),
+        assert!(
+            readable.band.w > 6. && readable.band.w < 8.,
+            "gentle edge softness remains"
+        );
+        for (map, tileset, expected) in [
+            ("MahoganyTown", "johto", true),
+            ("GoldenrodCity", "johto_modern", true),
+            ("Route26", "kanto", true),
+            ("CinnabarIsland", "kanto", true),
+            ("IlexForest", "forest", false),
+            ("DragonsDenB1F", "johto", false),
+            ("Route35NationalParkGate", "gate", false),
+            ("PlayersHouse1F", "house", false),
+            ("MahoganyTown", "unknown", false),
         ] {
-            let frame=VisualWorldFrame {map_id:map.into(),tiles:vec![VisualTile {
-                column:0,row:0,source:VisualTileSource {tileset_id:tileset.into(),
-                    metatile_id:0,subtile_column:0,subtile_row:0,tile_index:0},
-                texture:default(),animation_frames:None,priority:false,
-            }],..default()};
-            assert_eq!(exploration_focus(&frame),expected,"{map}/{tileset}");
+            let frame = VisualWorldFrame {
+                map_id: map.into(),
+                tiles: vec![VisualTile {
+                    column: 0,
+                    row: 0,
+                    source: VisualTileSource {
+                        tileset_id: tileset.into(),
+                        metatile_id: 0,
+                        subtile_column: 0,
+                        subtile_row: 0,
+                        tile_index: 0,
+                    },
+                    texture: default(),
+                    animation_frames: None,
+                    priority: false,
+                }],
+                ..default()
+            };
+            assert_eq!(exploration_focus(&frame), expected, "{map}/{tileset}");
         }
-        assert!(!exploration_focus(&VisualWorldFrame {map_id:"MahoganyTown".into(),..default()}));
+        assert!(!exploration_focus(&VisualWorldFrame {
+            map_id: "MahoganyTown".into(),
+            ..default()
+        }));
     }
 
     #[test]
@@ -697,7 +826,11 @@ mod tests {
         );
         assert_eq!(
             app.world().get::<Smaa>(world_camera).is_some(),
-            smaa_preset(requested(), std::env::var("CRYSTAL_ANTI_ALIASING").ok().as_deref()).is_some()
+            smaa_preset(
+                requested(),
+                std::env::var("CRYSTAL_ANTI_ALIASING").ok().as_deref()
+            )
+            .is_some()
         );
     }
     #[test]

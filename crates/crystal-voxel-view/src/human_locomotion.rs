@@ -1,5 +1,5 @@
 //! Distance-driven human steps. Only the skin moves; the controller owns travel.
-use crate::{open_people::PersonRig, new_bark_actors::character_meshes::CharacterKind};
+use crate::{new_bark_actors::character_meshes::CharacterKind, open_people::PersonRig};
 use bevy::prelude::*;
 use std::f32::consts::{PI, TAU};
 use std::sync::Arc;
@@ -46,9 +46,13 @@ pub(super) fn stance_ankle(rig: &PersonRig, hips: Vec3, foot: usize, sign: f32) 
 
 fn heel_balance_baseline() -> bool {
     #[cfg(all(feature = "people-review", not(target_arch = "wasm32")))]
-    { return std::env::var_os("CRYSTAL_PEOPLE_REVIEW_HEEL_BALANCE_BASELINE").is_some(); }
+    {
+        return std::env::var_os("CRYSTAL_PEOPLE_REVIEW_HEEL_BALANCE_BASELINE").is_some();
+    }
     #[cfg(not(all(feature = "people-review", not(target_arch = "wasm32"))))]
-    { false }
+    {
+        false
+    }
 }
 
 #[derive(Clone)]
@@ -62,33 +66,53 @@ struct Sole {
 }
 
 #[derive(Clone, Copy)]
-struct Roll { from: f32, to: f32, point: Vec2, z: f32 }
+struct Roll {
+    from: f32,
+    to: f32,
+    point: Vec2,
+    z: f32,
+}
 
 /// Derived once from the finished uploaded skin, including adapted footwear.
 /// Worker-restored meshes use this same derivation; no new wire fields.
 pub(crate) struct ShoeSupport([Sole; 2]);
 
 impl ShoeSupport {
-    pub(crate) fn from_surface(rig: &PersonRig, positions: &[[f32; 3]],
-        ids: &[[u16; 4]], weights: &[[f32; 4]]) -> Self {
+    pub(crate) fn from_surface(
+        rig: &PersonRig,
+        positions: &[[f32; 3]],
+        ids: &[[u16; 4]],
+        weights: &[[f32; 4]],
+    ) -> Self {
         let feet = rig.leg_joints.map(|leg| {
             let shin = rig.skin_nodes[leg[1]];
-            *rig.skin_nodes.iter().find(|&&n| rig.parents[n] == Some(shin)).unwrap()
+            *rig.skin_nodes
+                .iter()
+                .find(|&&n| rig.parents[n] == Some(shin))
+                .unwrap()
         });
-        let sides: Vec<_> = rig.skin_nodes.iter().map(|&node| {
-            let mut current = Some(node);
-            while let Some(n) = current {
-                if let Some(side) = feet.iter().position(|&foot| foot == n) { return Some(side); }
-                current = rig.parents[n];
-            }
-            None
-        }).collect();
+        let sides: Vec<_> = rig
+            .skin_nodes
+            .iter()
+            .map(|&node| {
+                let mut current = Some(node);
+                while let Some(n) = current {
+                    if let Some(side) = feet.iter().position(|&foot| foot == n) {
+                        return Some(side);
+                    }
+                    current = rig.parents[n];
+                }
+                None
+            })
+            .collect();
         let mesh_world = world(rig, &rig.nodes, rig.mesh_node);
         let mut points = [Vec::new(), Vec::new()];
         for ((p, js), ws) in positions.iter().zip(ids).zip(weights) {
             let mut attached = [0.; 2];
             for i in 0..4 {
-                if let Some(Some(side)) = sides.get(js[i] as usize) { attached[*side] += ws[i]; }
+                if let Some(Some(side)) = sides.get(js[i] as usize) {
+                    attached[*side] += ws[i];
+                }
             }
             for side in 0..2 {
                 if attached[side] > 0.999 {
@@ -106,10 +130,22 @@ impl ShoeSupport {
 impl Sole {
     fn new(points: &[Vec3], ankle: Vec3) -> Self {
         assert!(points.len() >= 4, "human requires weighted soles");
-        let min = points.iter().copied().fold(Vec3::splat(f32::INFINITY), Vec3::min) - ankle;
-        let max = points.iter().copied().fold(Vec3::splat(f32::NEG_INFINITY), Vec3::max) - ankle;
-        let bottom: Vec<_> = points.iter().copied().map(|p| p - ankle)
-            .filter(|p| p.y <= min.y + 1e-5).collect();
+        let min = points
+            .iter()
+            .copied()
+            .fold(Vec3::splat(f32::INFINITY), Vec3::min)
+            - ankle;
+        let max = points
+            .iter()
+            .copied()
+            .fold(Vec3::splat(f32::NEG_INFINITY), Vec3::max)
+            - ankle;
+        let bottom: Vec<_> = points
+            .iter()
+            .copied()
+            .map(|p| p - ankle)
+            .filter(|p| p.y <= min.y + 1e-5)
+            .collect();
         let heel = *bottom.iter().min_by(|a, b| a.z.total_cmp(&b.z)).unwrap();
         let toe = *bottom.iter().max_by(|a, b| a.z.total_cmp(&b.z)).unwrap();
         let mut sorted: Vec<_> = points.iter().map(|p| (*p - ankle).yz()).collect();
@@ -119,9 +155,11 @@ impl Sole {
             let mut hull = Vec::<Vec2>::new();
             for p in iter {
                 while hull.len() >= 2 {
-                    let a = hull[hull.len()-2].as_dvec2();
-                    let b = hull[hull.len()-1].as_dvec2();
-                    if (b-a).perp_dot(p.as_dvec2()-b) > 1e-12 { break; }
+                    let a = hull[hull.len() - 2].as_dvec2();
+                    let b = hull[hull.len() - 1].as_dvec2();
+                    if (b - a).perp_dot(p.as_dvec2() - b) > 1e-12 {
+                        break;
+                    }
                     hull.pop();
                 }
                 hull.push(p);
@@ -130,49 +168,87 @@ impl Sole {
         };
         let mut lower = chain(Box::new(sorted.clone().into_iter()));
         let mut upper = chain(Box::new(sorted.into_iter().rev()));
-        lower.pop(); upper.pop(); lower.extend(upper); let profile = lower;
+        lower.pop();
+        upper.pop();
+        lower.extend(upper);
+        let profile = lower;
         assert!(profile.len() >= 3);
         let mut cuts = vec![-1.55_f32, 0., 1.55];
-        for (a, b) in profile.iter().zip(profile.iter().cycle().skip(1)).take(profile.len()) {
+        for (a, b) in profile
+            .iter()
+            .zip(profile.iter().cycle().skip(1))
+            .take(profile.len())
+        {
             let edge = *b - *a;
             let mut angle = edge.x.atan2(edge.y);
-            while angle > PI * 0.5 { angle -= PI; }
-            while angle < -PI * 0.5 { angle += PI; }
-            if angle.abs() > 1e-6 && angle.abs() < 1.55 { cuts.push(angle); }
+            while angle > PI * 0.5 {
+                angle -= PI;
+            }
+            while angle < -PI * 0.5 {
+                angle += PI;
+            }
+            if angle.abs() > 1e-6 && angle.abs() < 1.55 {
+                cuts.push(angle);
+            }
         }
-        cuts.sort_by(f32::total_cmp); cuts.dedup_by(|a,b| (*a-*b).abs() < 1e-6);
-        let mut rolls: Vec<_> = cuts.windows(2).map(|p| {
-            let angle = (p[0]+p[1])*0.5;
-            let (s,c) = angle.sin_cos();
-            let point = *profile.iter().min_by(|a,b|
-                (c*a.x-s*a.y).total_cmp(&(c*b.x-s*b.y))).unwrap();
-            Roll { from:p[0], to:p[1], point, z:0. }
-        }).collect();
+        cuts.sort_by(f32::total_cmp);
+        cuts.dedup_by(|a, b| (*a - *b).abs() < 1e-6);
+        let mut rolls: Vec<_> = cuts
+            .windows(2)
+            .map(|p| {
+                let angle = (p[0] + p[1]) * 0.5;
+                let (s, c) = angle.sin_cos();
+                let point = *profile
+                    .iter()
+                    .min_by(|a, b| (c * a.x - s * a.y).total_cmp(&(c * b.x - s * b.y)))
+                    .unwrap();
+                Roll {
+                    from: p[0],
+                    to: p[1],
+                    point,
+                    z: 0.,
+                }
+            })
+            .collect();
         let value = |point: Vec2, angle: f32| {
-            let (s,c) = angle.sin_cos(); point.y - (s*point.x+c*point.y)
+            let (s, c) = angle.sin_cos();
+            point.y - (s * point.x + c * point.y)
         };
         // Integrate rotations across bevels. Changing the supporting vertex
         // must not jump the ankle or slide the active contact along the floor.
         let mut previous = 0.;
         for roll in rolls.iter_mut().filter(|r| r.from >= 0.) {
-            roll.z = previous - value(roll.point,roll.from);
-            previous = value(roll.point,roll.to) + roll.z;
+            roll.z = previous - value(roll.point, roll.from);
+            previous = value(roll.point, roll.to) + roll.z;
         }
         previous = 0.;
         for roll in rolls.iter_mut().rev().filter(|r| r.to <= 0.) {
-            roll.z = previous - value(roll.point,roll.to);
-            previous = value(roll.point,roll.from) + roll.z;
+            roll.z = previous - value(roll.point, roll.to);
+            previous = value(roll.point, roll.from) + roll.z;
         }
-        Self { min,max,heel,toe,profile,rolls }
+        Self {
+            min,
+            max,
+            heel,
+            toe,
+            profile,
+            rolls,
+        }
     }
     /// Rotate about the contacting heel or toe, rather than about an ankle
     /// suspended above the floor. The contact keeps its ground position.
     fn ankle_offset(&self, pitch: f32) -> Vec2 {
         let (s, c) = pitch.sin_cos();
-        let roll = self.rolls.iter().find(|r| pitch >= r.from && pitch <= r.to)
+        let roll = self
+            .rolls
+            .iter()
+            .find(|r| pitch >= r.from && pitch <= r.to)
             .expect("human foot pitch exceeds support profile");
         let p = roll.point;
-        Vec2::new(self.min.y - (c*p.x-s*p.y), p.y - (s*p.x+c*p.y) + roll.z)
+        Vec2::new(
+            self.min.y - (c * p.x - s * p.y),
+            p.y - (s * p.x + c * p.y) + roll.z,
+        )
     }
 
     fn minimum_height(&self, rotation: Quat) -> f32 {
@@ -180,8 +256,11 @@ impl Sole {
         let half = (self.max - self.min) * 0.5;
         let vertical = rotation.inverse() * Vec3::Y;
         if vertical.x.abs() < 1e-5 {
-            return self.profile.iter().map(|p| vertical.y*p.x+vertical.z*p.y)
-                .fold(f32::INFINITY,f32::min);
+            return self
+                .profile
+                .iter()
+                .map(|p| vertical.y * p.x + vertical.z * p.y)
+                .fold(f32::INFINITY, f32::min);
         }
         (rotation * center).y - vertical.abs().dot(half)
     }
@@ -225,33 +304,37 @@ impl Style {
     fn for_character(kind: CharacterKind) -> Self {
         use CharacterKind::*;
         let (swing, elbow, twist, lean) = match kind {
-            Youngster | StandingYoungster | BugCatcher | GameboyKid | Twin | Bugsy =>
-                (1.12, 0.90, 1.10, 0.00),
-            Elder | Gramps | Granny | Pryce | Kurt | KurtOutside | Sage | Blaine
-                | Gentleman | Pharmacist | FishingGuru => (0.72, 0.80, 0.65, 0.025),
+            Youngster | StandingYoungster | BugCatcher | GameboyKid | Twin | Bugsy => {
+                (1.12, 0.90, 1.10, 0.00)
+            }
+            Elder | Gramps | Granny | Pryce | Kurt | KurtOutside | Sage | Blaine | Gentleman
+            | Pharmacist | FishingGuru => (0.72, 0.80, 0.65, 0.025),
             Mom | RedsMom | Daisy | Teacher | PokefanF | Nurse | Receptionist
-                | LinkReceptionist | OldLinkReceptionist | Clerk | Officer
-                | Beauty | Lass | KimonoGirl | Erika | Jasmine | Sabrina =>
-                (0.76, 0.85, 0.72, -0.008),
-            Biker | BlackBelt | Bruno | Chuck | Brock | Surge | Sailor | Captain
-                | PokefanM | Outdoorsman | SwimmerGuy | SwimmerGirl =>
-                (1.05, 1.10, 1.05, 0.008),
-            Rival | Blue | Cal | CooltrainerM | CooltrainerF | Karen | Clair | Rocker
-                | Janine | Koga | Lance | Rocket | RocketGirl =>
-                (1.08, 1.05, 1.15, 0.012),
-            Trainer | TrainerFemale | Red | Fisher | Elm | Oak | Scientist | Bill
-                | SuperNerd | Morty | Falkner | Misty | GymGuide | UnusedGuy | Whitney
-                | Will => (1., 1., 1., 0.),
+            | LinkReceptionist | OldLinkReceptionist | Clerk | Officer | Beauty | Lass
+            | KimonoGirl | Erika | Jasmine | Sabrina => (0.76, 0.85, 0.72, -0.008),
+            Biker | BlackBelt | Bruno | Chuck | Brock | Surge | Sailor | Captain | PokefanM
+            | Outdoorsman | SwimmerGuy | SwimmerGirl => (1.05, 1.10, 1.05, 0.008),
+            Rival | Blue | Cal | CooltrainerM | CooltrainerF | Karen | Clair | Rocker | Janine
+            | Koga | Lance | Rocket | RocketGirl => (1.08, 1.05, 1.15, 0.012),
+            Trainer | TrainerFemale | Red | Fisher | Elm | Oak | Scientist | Bill | SuperNerd
+            | Morty | Falkner | Misty | GymGuide | UnusedGuy | Whitney | Will => (1., 1., 1., 0.),
         };
         let (stride, lift) = match kind {
-            Elder | Gramps | Granny | Pryce | Kurt | KurtOutside | Sage | Blaine
-                | Gentleman | Pharmacist | FishingGuru => (0.82, 0.80),
+            Elder | Gramps | Granny | Pryce | Kurt | KurtOutside | Sage | Blaine | Gentleman
+            | Pharmacist | FishingGuru => (0.82, 0.80),
             Mom | RedsMom | Daisy | Teacher | PokefanF | Nurse | Receptionist
-                | LinkReceptionist | OldLinkReceptionist | Clerk | Officer
-                | Beauty | Lass | KimonoGirl | Erika | Jasmine | Sabrina => (0.90, 0.88),
+            | LinkReceptionist | OldLinkReceptionist | Clerk | Officer | Beauty | Lass
+            | KimonoGirl | Erika | Jasmine | Sabrina => (0.90, 0.88),
             _ => (1., 1.),
         };
-        let mut style = Self { swing, elbow, twist, lean, stride, lift };
+        let mut style = Self {
+            swing,
+            elbow,
+            twist,
+            lean,
+            stride,
+            lift,
+        };
         #[cfg(all(feature = "people-review", not(target_arch = "wasm32")))]
         if std::env::var_os("CRYSTAL_PEOPLE_REVIEW_GARMENT_GAIT_BASELINE").is_some() {
             return style;
@@ -281,8 +364,15 @@ impl Style {
         let (z, lift, pitch) = step(phase, run);
         // Toe-off has to articulate the shoe even beneath a long garment.
         // Garment lift scales the return height, rather than pinning the heel.
-        (z * self.stride, lift * self.lift,
-            if heel_balance_baseline() { pitch * self.lift } else { pitch })
+        (
+            z * self.stride,
+            lift * self.lift,
+            if heel_balance_baseline() {
+                pitch * self.lift
+            } else {
+                pitch
+            },
+        )
     }
 }
 
@@ -294,14 +384,18 @@ fn step(phase: f32, run: f32) -> (f32, f32, f32) {
     let cycle = cycle_distance(run);
     let span = cycle * stance;
     let p = (phase / TAU).rem_euclid(1.0);
-    let smoothstep = |t: f32| { let t = t.clamp(0., 1.); t * t * (3. - 2. * t) };
+    let smoothstep = |t: f32| {
+        let t = t.clamp(0., 1.);
+        t * t * (3. - 2. * t)
+    };
     let heel = -0.12;
     let toe = 0.42 + 0.12 * run;
     if p < stance {
         let contact = p / stance;
-        let pitch = if heel_balance_baseline() { 0. } else {
-            heel * (1. - smoothstep(contact / 0.18))
-                + toe * smoothstep((contact - 0.45) / 0.55)
+        let pitch = if heel_balance_baseline() {
+            0.
+        } else {
+            heel * (1. - smoothstep(contact / 0.18)) + toe * smoothstep((contact - 0.45) / 0.55)
         };
         (span * 0.5 - cycle * p, 0., pitch)
     } else {
@@ -316,8 +410,7 @@ fn step(phase: f32, run: f32) -> (f32, f32, f32) {
         } else {
             // Bring the shoe level in mid-flight, then prepare the heel for
             // contact. Both pivot changes have zero angular velocity.
-            toe * (1. - smoothstep(t / 0.55))
-                + heel * smoothstep((t - 0.65) / 0.35)
+            toe * (1. - smoothstep(t / 0.55)) + heel * smoothstep((t - 0.65) / 0.35)
         };
         (z, lift, pitch)
     }
@@ -347,8 +440,11 @@ impl HumanLocomotion {
         let mut include = |pose: &[Transform]| {
             let inverse = world(rig, pose, rig.mesh_node).inverse();
             for (joint, &(min, max)) in boxes.iter().enumerate() {
-                if !min.is_finite() { continue; }
-                let matrix = inverse * world(rig, pose, rig.skin_nodes[joint]) * rig.inverse_binds[joint];
+                if !min.is_finite() {
+                    continue;
+                }
+                let matrix =
+                    inverse * world(rig, pose, rig.skin_nodes[joint]) * rig.inverse_binds[joint];
                 for x in [min.x, max.x] {
                     for y in [min.y, max.y] {
                         for z in [min.z, max.z] {
@@ -361,7 +457,18 @@ impl HumanLocomotion {
             }
         };
         use CharacterKind::*;
-        for kind in [Trainer, TrainerFemale, Youngster, Mom, Officer, Granny, Brock, KimonoGirl, Blue, Elm] {
+        for kind in [
+            Trainer,
+            TrainerFemale,
+            Youngster,
+            Mom,
+            Officer,
+            Granny,
+            Brock,
+            KimonoGirl,
+            Blue,
+            Elm,
+        ] {
             let gait = Self::for_character(rig, kind);
             for run in [0., 0.25, 0.5, 0.75, 1.] {
                 for frame in 0..64 {
@@ -372,7 +479,18 @@ impl HumanLocomotion {
         }
         // Cover each manner and its widest motion without rebuilding the same
         // quiet envelope for every identity during first appearance loading.
-        for kind in [Trainer, TrainerFemale, Mom, Youngster, Officer, Elm, Granny, Brock, KimonoGirl, Blue] {
+        for kind in [
+            Trainer,
+            TrainerFemale,
+            Mom,
+            Youngster,
+            Officer,
+            Elm,
+            Granny,
+            Brock,
+            KimonoGirl,
+            Blue,
+        ] {
             let idle = crate::human_idle::HumanIdle::new(rig, kind);
             for frame in 0..24 {
                 idle.sample(rig, &gait, frame as f32 * 1.83, &mut pose);
@@ -388,13 +506,20 @@ impl HumanLocomotion {
     }
 
     pub(crate) fn for_character(rig: &PersonRig, kind: CharacterKind) -> Self {
-        let support = Arc::new(ShoeSupport::from_surface(rig,
-            &rig.mesh.positions, &rig.ids, &rig.weights));
+        let support = Arc::new(ShoeSupport::from_surface(
+            rig,
+            &rig.mesh.positions,
+            &rig.ids,
+            &rig.weights,
+        ));
         Self::with_support(rig, kind, support)
     }
 
-    pub(crate) fn with_support(rig: &PersonRig, kind: CharacterKind,
-        support: Arc<ShoeSupport>) -> Self {
+    pub(crate) fn with_support(
+        rig: &PersonRig,
+        kind: CharacterKind,
+        support: Arc<ShoeSupport>,
+    ) -> Self {
         // The supplied Idle is a combat crouch. Build locomotion from the
         // upright bind anatomy and relax the arms with our standing pose.
         let neutral = rig.nodes.clone();
@@ -449,9 +574,7 @@ impl HumanLocomotion {
             style: Style::for_character(kind),
             hands: crate::hand_pose::Hands::new(rig),
         };
-        let idle = crate::human_idle::HumanIdle::new(
-            rig, kind,
-        );
+        let idle = crate::human_idle::HumanIdle::new(rig, kind);
         let mut relaxed = gait.neutral.clone();
         idle.sample(rig, &gait, 0., &mut relaxed);
         gait.neutral = relaxed;
@@ -460,7 +583,8 @@ impl HumanLocomotion {
         // three world-space joint positions for every elbow every frame.
         gait.elbow_hinges = gait.arms.map(|[upper, lower, wrist]| {
             let inverse = world(rig, &gait.neutral, upper).inverse();
-            let elbow = inverse.transform_point3(world(rig, &gait.neutral, lower).w_axis.truncate());
+            let elbow =
+                inverse.transform_point3(world(rig, &gait.neutral, lower).w_axis.truncate());
             let hand = inverse.transform_point3(world(rig, &gait.neutral, wrist).w_axis.truncate());
             elbow.cross(hand - elbow).normalize()
         });
@@ -473,19 +597,25 @@ impl HumanLocomotion {
         let run = run.clamp(0., 1.);
         let units = rig.height / REFERENCE_HEIGHT;
         let hips = rig.skin_nodes[rig.hips_joint];
-        let targets = std::array::from_fn::<_, 2, _>(|side|
-            self.foot_target(self.legs[side], side, phase + side as f32 * PI, run, units));
+        let targets = std::array::from_fn::<_, 2, _>(|side| {
+            self.foot_target(self.legs[side], side, phase + side as f32 * PI, run, units)
+        });
         // Keep the pelvis upright with a nearly extended supporting leg.
         // The small two-beat rise accompanies weight transfer, rather than
         // importing the source run's large root bounce into an ordinary walk.
-        let bounce = (1. - (2. * phase).cos()) * (0.006 + 0.018 * run)
-            * self.style.lift * units;
+        let bounce = (1. - (2. * phase).cos()) * (0.006 + 0.018 * run) * self.style.lift * units;
         // Let heel contact extend the supporting leg instead of retaining a
         // permanently lowered pelvis. The reach cap still prevents stretching.
-        let rise = if heel_balance_baseline() { 0. } else { 0.02 * units };
+        let rise = if heel_balance_baseline() {
+            0.
+        } else {
+            0.02 * units
+        };
         let desired = self.fit_hips_to_feet(
             self.hips + Vec3::new(0.008 * units * phase.sin(), rise + bounce, 0.),
-            targets.map(|(point, _)| point), 0.012 * units);
+            targets.map(|(point, _)| point),
+            0.012 * units,
+        );
         let parent = rig.parents[hips]
             .map(|p| world(rig, pose, p))
             .unwrap_or(Mat4::IDENTITY);
@@ -493,7 +623,12 @@ impl HumanLocomotion {
         let style = self.style;
         let twist = 0.045 * style.twist * phase.sin();
         let roll = (0.016 + 0.010 * run) * style.twist * phase.sin();
-        rotate_world(rig, pose, hips, Quat::from_euler(EulerRot::YXZ, twist, 0., roll));
+        rotate_world(
+            rig,
+            pose,
+            hips,
+            Quat::from_euler(EulerRot::YXZ, twist, 0., roll),
+        );
         let chest = rig.skin_nodes[rig.chest_joint];
         let lean = 0.04 + 0.13 * run + style.lean;
         rotate_world(
@@ -506,11 +641,16 @@ impl HumanLocomotion {
             rig,
             pose,
             rig.skin_nodes[rig.head_joint],
-            Quat::from_euler(EulerRot::YXZ, twist * 0.6,
-                -lean + 0.006 * (2. * phase).sin(), roll * 0.6),
+            Quat::from_euler(
+                EulerRot::YXZ,
+                twist * 0.6,
+                -lean + 0.006 * (2. * phase).sin(),
+                roll * 0.6,
+            ),
         );
         #[cfg(all(feature = "people-review", not(target_arch = "wasm32")))]
-        let world_axis_elbows = std::env::var_os("CRYSTAL_PEOPLE_REVIEW_ELBOW_WORLD_AXIS").is_some();
+        let world_axis_elbows =
+            std::env::var_os("CRYSTAL_PEOPLE_REVIEW_ELBOW_WORLD_AXIS").is_some();
         #[cfg(not(all(feature = "people-review", not(target_arch = "wasm32"))))]
         let world_axis_elbows = false;
         for side in 0..2 {
@@ -533,26 +673,40 @@ impl HumanLocomotion {
             // The elbow folds into the forward swing and opens on return.
             // A small phase lag at the wrist carries the hand through reversal
             // instead of moving the entire arm as one rigid pendulum.
-            let fold = (0.08 + 0.60 * run
-                + (0.10 + 0.18 * run) * (0.5 - 0.5 * swing)) * style.elbow;
+            let fold =
+                (0.08 + 0.60 * run + (0.10 + 0.18 * run) * (0.5 - 0.5 * swing)) * style.elbow;
             // Each standing manner supplies its own elbow plane. Flex around
             // that plane's hinge, rather than turning every forearm around
             // world X: a relaxed upper-arm swivel must not become elbow twist
             // when the actor starts moving.
             if world_axis_elbows {
-                rotate_world(rig, pose, lower, Quat::from_euler(EulerRot::YXZ,
-                    sign * 0.025 * arm_phase.sin(), -fold, 0.));
+                rotate_world(
+                    rig,
+                    pose,
+                    lower,
+                    Quat::from_euler(EulerRot::YXZ, sign * 0.025 * arm_phase.sin(), -fold, 0.),
+                );
             } else {
                 let hinge = world(rig, pose, upper)
-                    .transform_vector3(self.elbow_hinges[side]).normalize();
+                    .transform_vector3(self.elbow_hinges[side])
+                    .normalize();
                 rotate_world(rig, pose, lower, Quat::from_axis_angle(hinge, fold));
                 let forearm = world(rig, pose, lower)
-                    .transform_vector3(pose[wrist].translation).normalize();
-                rotate_world(rig, pose, lower, Quat::from_axis_angle(forearm,
-                    -sign * 0.025 * arm_phase.sin()));
+                    .transform_vector3(pose[wrist].translation)
+                    .normalize();
+                rotate_world(
+                    rig,
+                    pose,
+                    lower,
+                    Quat::from_axis_angle(forearm, -sign * 0.025 * arm_phase.sin()),
+                );
             }
-            rotate_world(rig, pose, wrist, Quat::from_rotation_x(
-                (0.16 + 0.10 * run) * (delayed - swing)));
+            rotate_world(
+                rig,
+                pose,
+                wrist,
+                Quat::from_rotation_x((0.16 + 0.10 * run) * (delayed - swing)),
+            );
             let leg = self.legs[side];
             let (target, pitch) = targets[side];
             self.solve_leg(rig, pose, leg, target);
@@ -571,8 +725,13 @@ impl HumanLocomotion {
         let (z, lift, pitch) = self.style.step(phase, run);
         let offset = if heel_balance_baseline() {
             Vec2::new(pitch.sin().abs() * 0.12 * units, 0.)
-        } else { self.support.0[side].ankle_offset(pitch) };
-        (leg.ankle + Vec3::new(0., lift * units + offset.x, z * units + offset.y), pitch)
+        } else {
+            self.support.0[side].ankle_offset(pitch)
+        };
+        (
+            leg.ankle + Vec3::new(0., lift * units + offset.x, z * units + offset.y),
+            pitch,
+        )
     }
 
     fn fit_hips_to_feet(&self, mut desired: Vec3, targets: [Vec3; 2], softness: f32) -> Vec3 {
@@ -588,16 +747,23 @@ impl HumanLocomotion {
     }
 
     pub(super) fn idle_hips(&self, desired: Vec3, feet: &[(Vec3, Quat); 2], units: f32) -> Vec3 {
-        if heel_balance_baseline() { return desired; }
+        if heel_balance_baseline() {
+            return desired;
+        }
         self.fit_hips_to_feet(desired, feet.map(|(point, _)| point), 0.003 * units)
     }
 
     #[cfg(any(test, feature = "people-review"))]
-    pub(super) fn sole_contacts(&self, rig: &PersonRig, pose: &[Transform], side: usize) -> [Vec3; 2] {
+    pub(super) fn sole_contacts(
+        &self,
+        rig: &PersonRig,
+        pose: &[Transform],
+        side: usize,
+    ) -> [Vec3; 2] {
         let leg = self.legs[side];
         let foot = world(rig, pose, leg.foot);
-        [self.support.0[side].heel, self.support.0[side].toe].map(|p|
-            foot.transform_point3(leg.rotation.inverse() * p))
+        [self.support.0[side].heel, self.support.0[side].toe]
+            .map(|p| foot.transform_point3(leg.rotation.inverse() * p))
     }
 
     /// Rotation blending alone shortens the leg's world-space reach and can
@@ -626,18 +792,18 @@ impl HumanLocomotion {
             }
             self.solve_leg(rig, pose, leg, target);
             let current = world(rig, pose, leg.foot).to_scale_rotation_translation().1;
-            rotate_world(
-                rig,
-                pose,
-                leg.foot,
-                rotation * current.inverse(),
-            );
+            rotate_world(rig, pose, leg.foot, rotation * current.inverse());
         }
     }
 
     /// Idle weight shifts keep both soles fixed, using the same anatomy and
     /// contact solver as the transition into a walk.
-    pub(crate) fn plant_idle(&self, rig: &PersonRig, feet: &[(Vec3, Quat); 2], pose: &mut [Transform]) {
+    pub(crate) fn plant_idle(
+        &self,
+        rig: &PersonRig,
+        feet: &[(Vec3, Quat); 2],
+        pose: &mut [Transform],
+    ) {
         for (leg, &(target, rotation)) in self.legs.iter().zip(feet) {
             self.solve_leg(rig, pose, *leg, target);
             let current = world(rig, pose, leg.foot).to_scale_rotation_translation().1;
@@ -697,56 +863,90 @@ pub(crate) mod validation {
 
     #[cfg_attr(test, test)]
     fn beveled_soles_roll_without_gaps_or_contact_sliding() {
-        let points: Vec<_> = [-0.04, 0.04].into_iter().flat_map(|x|
-            [(-0.07,-0.04),(-0.07,0.12),(-0.06,0.16),(0.02,0.16),(0.02,-0.04)]
-                .into_iter().map(move |(y,z)| Vec3::new(x,y,z))).collect();
-        let sole = Sole::new(&points,Vec3::ZERO);
+        let points: Vec<_> = [-0.04, 0.04]
+            .into_iter()
+            .flat_map(|x| {
+                [
+                    (-0.07, -0.04),
+                    (-0.07, 0.12),
+                    (-0.06, 0.16),
+                    (0.02, 0.16),
+                    (0.02, -0.04),
+                ]
+                .into_iter()
+                .map(move |(y, z)| Vec3::new(x, y, z))
+            })
+            .collect();
+        let sole = Sole::new(&points, Vec3::ZERO);
         let mut changed_contact = false;
         for frame in 0..128 {
             let pitch = -0.12 + 0.66 * frame as f32 / 127.;
             let offset = sole.ankle_offset(pitch);
             let rotation = Quat::from_rotation_x(pitch);
-            let floor = points.iter().map(|p| (rotation * *p).y + offset.x)
-                .fold(f32::INFINITY,f32::min);
-            assert!((floor-sole.min.y).abs() < 2e-6,"beveled shoe lost ground contact");
-            let roll = sole.rolls.iter().find(|r| pitch>=r.from && pitch<=r.to).unwrap();
+            let floor = points
+                .iter()
+                .map(|p| (rotation * *p).y + offset.x)
+                .fold(f32::INFINITY, f32::min);
+            assert!(
+                (floor - sole.min.y).abs() < 2e-6,
+                "beveled shoe lost ground contact"
+            );
+            let roll = sole
+                .rolls
+                .iter()
+                .find(|r| pitch >= r.from && pitch <= r.to)
+                .unwrap();
             changed_contact |= roll.point.x > sole.min.y + 0.005;
             let h = 1e-5;
-            if pitch-h>roll.from && pitch+h<roll.to {
+            if pitch - h > roll.from && pitch + h < roll.to {
                 let contact = |a: f32| {
-                    let (s,c)=a.sin_cos();
-                    sole.ankle_offset(a).y + s*roll.point.x + c*roll.point.y
+                    let (s, c) = a.sin_cos();
+                    sole.ankle_offset(a).y + s * roll.point.x + c * roll.point.y
                 };
-                assert!((contact(pitch+h)-contact(pitch-h)).abs()<2e-6,
-                    "active shoe contact slides during roll");
+                assert!(
+                    (contact(pitch + h) - contact(pitch - h)).abs() < 2e-6,
+                    "active shoe contact slides during roll"
+                );
             }
         }
-        assert!(changed_contact,"fixture must exercise a raised toe bevel");
+        assert!(changed_contact, "fixture must exercise a raised toe bevel");
         for roll in &sole.rolls {
-            if !(-0.12..0.54).contains(&roll.to) {continue;}
-            assert!(sole.ankle_offset(roll.to-1e-6)
-                .distance(sole.ankle_offset(roll.to+1e-6))<3e-6,
-                "shoe support change jumps the ankle");
+            if !(-0.12..0.54).contains(&roll.to) {
+                continue;
+            }
+            assert!(
+                sole.ankle_offset(roll.to - 1e-6)
+                    .distance(sole.ankle_offset(roll.to + 1e-6))
+                    < 3e-6,
+                "shoe support change jumps the ankle"
+            );
         }
-        let pitch=0.5;
-        let (s,c)=f32::sin_cos(pitch);
-        let box_floor=c*sole.min.y-s*sole.max.z;
-        let exact_floor=sole.minimum_height(Quat::from_rotation_x(pitch));
-        assert!(exact_floor-box_floor>0.005,"fixture must reject the old floating box support");
+        let pitch = 0.5;
+        let (s, c) = f32::sin_cos(pitch);
+        let box_floor = c * sole.min.y - s * sole.max.z;
+        let exact_floor = sole.minimum_height(Quat::from_rotation_x(pitch));
+        assert!(
+            exact_floor - box_floor > 0.005,
+            "fixture must reject the old floating box support"
+        );
     }
 
     #[cfg_attr(test, test)]
     fn sole_roll_preserves_ground_contacts_and_smooth_pivot_changes() {
-        let points: Vec<_> = [-0.04, 0.04].into_iter().flat_map(|x|
-            [-0.07, 0.02].into_iter().flat_map(move |y|
-                [-0.04, 0.16].into_iter().map(move |z| Vec3::new(x,y,z)))).collect();
+        let points: Vec<_> = [-0.04, 0.04]
+            .into_iter()
+            .flat_map(|x| {
+                [-0.07, 0.02]
+                    .into_iter()
+                    .flat_map(move |y| [-0.04, 0.16].into_iter().map(move |z| Vec3::new(x, y, z)))
+            })
+            .collect();
         let sole = Sole::new(&points, Vec3::ZERO);
         for pitch in [-0.12, -0.06, 0., 0.2, 0.42, 0.54] {
             let offset = sole.ankle_offset(pitch);
             let rotation = Quat::from_rotation_x(pitch);
             for z in [sole.min.z, sole.max.z] {
-                let p = rotation * Vec3::new(0., sole.min.y, z)
-                    + Vec3::new(0., offset.x, offset.y);
+                let p = rotation * Vec3::new(0., sole.min.y, z) + Vec3::new(0., offset.x, offset.y);
                 assert!(p.y >= sole.min.y - 1e-6, "rolled sole penetrates ground");
                 if z == if pitch >= 0. { sole.max.z } else { sole.min.z } {
                     assert!((p.y - sole.min.y).abs() < 1e-6);
@@ -756,17 +956,27 @@ pub(crate) mod validation {
         }
         for run in [0., 0.25, 0.5, 0.75, 1.] {
             let stance = 0.54 + (0.22 - 0.54) * run;
-            for p in [0., stance * 0.18, stance * 0.45, stance,
-                stance + (1. - stance) * 0.55, stance + (1. - stance) * 0.65] {
+            for p in [
+                0.,
+                stance * 0.18,
+                stance * 0.45,
+                stance,
+                stance + (1. - stance) * 0.55,
+                stance + (1. - stance) * 0.65,
+            ] {
                 let sample = |p: f32| {
                     let (z, lift, pitch) = step(p * TAU, run);
                     let offset = sole.ankle_offset(pitch);
                     Vec3::new(z + offset.y, lift + offset.x, pitch)
                 };
                 let h = 1e-4;
-                let a = sample(p - h); let b = sample(p); let c = sample(p + h);
-                assert!(((b - a) - (c - b)).length() < 2e-5,
-                    "foot pivot velocity pop, run={run} p={p}");
+                let a = sample(p - h);
+                let b = sample(p);
+                let c = sample(p + h);
+                assert!(
+                    ((b - a) - (c - b)).length() < 2e-5,
+                    "foot pivot velocity pop, run={run} p={p}"
+                );
             }
         }
     }
@@ -777,7 +987,11 @@ pub(crate) mod validation {
         use crate::new_bark_actors::character_meshes::SOURCE_KINDS;
         let mut poses = 0;
         let mut maximum_plane_error = 0_f32;
-        for kind in SOURCE_KINDS.iter().map(|&(_, kind)| kind).chain([CharacterKind::Outdoorsman]) {
+        for kind in SOURCE_KINDS
+            .iter()
+            .map(|&(_, kind)| kind)
+            .chain([CharacterKind::Outdoorsman])
+        {
             let rig = crate::open_people::get(crate::npc_appearance::look(kind).base).unwrap();
             let gait = HumanLocomotion::for_character(rig, kind);
             let mut pose = rig.nodes.clone();
@@ -798,10 +1012,14 @@ pub(crate) mod validation {
                         let (a, b) = local_bones(&pose, arm);
                         let hinge = a.cross(b).normalize();
                         let error = 1. - hinge.dot(rest[side].0);
-                        assert!(hinge.is_finite() && error < 2e-5,
-                            "{kind:?}: elbow left its hinge plane, side={side} run={run} frame={frame} error={error}");
-                        assert!(a.dot(b).clamp(-1., 1.).acos() > rest[side].1 + 0.04,
-                            "{kind:?}: walking elbow failed to flex, side={side} run={run} frame={frame}");
+                        assert!(
+                            hinge.is_finite() && error < 2e-5,
+                            "{kind:?}: elbow left its hinge plane, side={side} run={run} frame={frame} error={error}"
+                        );
+                        assert!(
+                            a.dot(b).clamp(-1., 1.).acos() > rest[side].1 + 0.04,
+                            "{kind:?}: walking elbow failed to flex, side={side} run={run} frame={frame}"
+                        );
                         maximum_plane_error = maximum_plane_error.max(error);
                     }
                     poses += 1;
@@ -809,7 +1027,9 @@ pub(crate) mod validation {
             }
         }
         assert_eq!(poses, 12000);
-        eprintln!("Elbow hinge checks: {poses} poses across all 75 people; maximum plane error={maximum_plane_error}");
+        eprintln!(
+            "Elbow hinge checks: {poses} poses across all 75 people; maximum plane error={maximum_plane_error}"
+        );
     }
 
     #[cfg_attr(test, test)]
@@ -817,8 +1037,14 @@ pub(crate) mod validation {
     fn human_gaits_keep_character_and_smooth_arm_followthrough() {
         let rig = crate::open_people::get("human-male").unwrap();
         let mut signatures = Vec::new();
-        for kind in [CharacterKind::Trainer, CharacterKind::Youngster, CharacterKind::Officer,
-            CharacterKind::Granny, CharacterKind::Brock, CharacterKind::Blue] {
+        for kind in [
+            CharacterKind::Trainer,
+            CharacterKind::Youngster,
+            CharacterKind::Officer,
+            CharacterKind::Granny,
+            CharacterKind::Brock,
+            CharacterKind::Blue,
+        ] {
             let gait = HumanLocomotion::for_character(rig, kind);
             let mut pose = rig.nodes.clone();
             let mut before = pose.clone();
@@ -831,39 +1057,51 @@ pub(crate) mod validation {
                     gait.sample(rig, phase, run, &mut pose);
                     gait.sample(rig, phase + 0.0001, run, &mut after);
                     for n in 0..pose.len() {
-                        assert!(before[n].rotation.angle_between(after[n].rotation) < 0.002,
-                            "{kind:?} run={run} phase={phase} rotation pop at {n}");
+                        assert!(
+                            before[n].rotation.angle_between(after[n].rotation) < 0.002,
+                            "{kind:?} run={run} phase={phase} rotation pop at {n}"
+                        );
                         let a = (pose[n].translation - before[n].translation) / 0.0001;
                         let b = (after[n].translation - pose[n].translation) / 0.0001;
-                        assert!(a.distance(b) < 0.04,
-                            "{kind:?} run={run} phase={phase} velocity pop at {n}: {a} / {b}");
+                        assert!(
+                            a.distance(b) < 0.04,
+                            "{kind:?} run={run} phase={phase} velocity pop at {n}: {a} / {b}"
+                        );
                     }
                 }
                 gait.sample(rig, 0., run, &mut before);
                 gait.sample(rig, PI, run, &mut after);
                 let [upper, lower, wrist] = gait.arms[0];
-                wrist_travel = wrist_travel.max(before[wrist].rotation.angle_between(after[wrist].rotation));
-                elbow_travel = elbow_travel.max(before[lower].rotation.angle_between(after[lower].rotation));
+                wrist_travel =
+                    wrist_travel.max(before[wrist].rotation.angle_between(after[wrist].rotation));
+                elbow_travel =
+                    elbow_travel.max(before[lower].rotation.angle_between(after[lower].rotation));
                 for frame in 0..64 {
                     gait.sample(rig, frame as f32 / 64. * TAU, run, &mut pose);
                     for (a, b) in [(upper, lower), (lower, wrist)] {
-                        let length = world(rig, &pose, a).transform_point3(Vec3::ZERO)
+                        let length = world(rig, &pose, a)
+                            .transform_point3(Vec3::ZERO)
                             .distance(world(rig, &pose, b).transform_point3(Vec3::ZERO));
-                        let bind = world(rig, &rig.nodes, a).transform_point3(Vec3::ZERO)
+                        let bind = world(rig, &rig.nodes, a)
+                            .transform_point3(Vec3::ZERO)
                             .distance(world(rig, &rig.nodes, b).transform_point3(Vec3::ZERO));
                         assert!((length - bind).abs() < 1e-4, "{kind:?} stretched arm");
                     }
                 }
             }
-            assert!(wrist_travel > 0.04 && elbow_travel > 0.10,
-                "{kind:?} rigid arm: wrist={wrist_travel}, elbow={elbow_travel}");
+            assert!(
+                wrist_travel > 0.04 && elbow_travel > 0.10,
+                "{kind:?} rigid arm: wrist={wrist_travel}, elbow={elbow_travel}"
+            );
             gait.sample(rig, 0.7, 0., &mut pose);
             signatures.push(pose[gait.arms[0][0]].rotation);
         }
         for a in 0..signatures.len() {
             for b in a + 1..signatures.len() {
-                assert!(signatures[a].angle_between(signatures[b]) > 0.008,
-                    "character walks {a}/{b} lost their distinct shoulder poses");
+                assert!(
+                    signatures[a].angle_between(signatures[b]) > 0.008,
+                    "character walks {a}/{b} lost their distinct shoulder poses"
+                );
             }
         }
     }
@@ -906,8 +1144,10 @@ pub(crate) mod validation {
             let gait = HumanLocomotion::for_character(rig, kind);
             for leg in gait.legs {
                 let bind_ankle = world(rig, &rig.nodes, leg.foot).w_axis.truncate();
-                assert!((leg.ankle.z - bind_ankle.z).abs() < 1e-6,
-                    "{kind:?}: shoe advanced from its anatomical standing offset");
+                assert!(
+                    (leg.ankle.z - bind_ankle.z).abs() < 1e-6,
+                    "{kind:?}: shoe advanced from its anatomical standing offset"
+                );
             }
             let mut pose = rig.nodes.clone();
             for run in [0., 0.5, 1.] {
@@ -933,30 +1173,41 @@ pub(crate) mod validation {
                             // rather than preserving the combat Idle squat.
                             let extension = p(leg.upper).distance(p(leg.foot))
                                 / (leg.lengths.x + leg.lengths.y);
-                            assert!(extension > 0.98,
-                                "{kind:?}: crouched walk contact ({extension})");
+                            assert!(
+                                extension > 0.98,
+                                "{kind:?}: crouched walk contact ({extension})"
+                            );
                         }
                         assert!((p(leg.upper).distance(p(leg.lower)) - leg.lengths.x).abs() < 1e-4);
                         assert!((p(leg.lower).distance(p(leg.foot)) - leg.lengths.y).abs() < 1e-4);
-                        let (target, _) = gait.foot_target(*leg, side, phase + side as f32 * PI,
-                            run, rig.height / REFERENCE_HEIGHT);
+                        let (target, _) = gait.foot_target(
+                            *leg,
+                            side,
+                            phase + side as f32 * PI,
+                            run,
+                            rig.height / REFERENCE_HEIGHT,
+                        );
                         assert!(
                             p(leg.foot).distance(target) < 0.002,
                             "{kind:?} run={run} frame={frame} foot={side}: {:?} vs {target:?}",
                             p(leg.foot)
                         );
                     }
-                    let feet = gait.legs.map(|leg|
-                        world(rig, &pose, leg.foot).transform_point3(Vec3::ZERO).z);
-                    let hands = gait.arms.map(|arm|
-                        world(rig, &pose, arm[2]).transform_point3(Vec3::ZERO).z);
+                    let feet = gait
+                        .legs
+                        .map(|leg| world(rig, &pose, leg.foot).transform_point3(Vec3::ZERO).z);
+                    let hands = gait
+                        .arms
+                        .map(|arm| world(rig, &pose, arm[2]).transform_point3(Vec3::ZERO).z);
                     let units = rig.height / REFERENCE_HEIGHT;
                     // A scholar's asymmetric resting elbows can lead through
                     // the small crossing zone. At a clearly split stride the
                     // visible hands must oppose the legs, including in Run.
                     if (feet[0] - feet[1]).abs() > 0.22 * units {
-                        assert!((feet[0] - feet[1]) * (hands[0] - hands[1]) < -0.002 * units * units,
-                            "{kind:?} run={run} frame={frame} arms lost leg counterbalance: feet={feet:?}, hands={hands:?}");
+                        assert!(
+                            (feet[0] - feet[1]) * (hands[0] - hands[1]) < -0.002 * units * units,
+                            "{kind:?} run={run} frame={frame} arms lost leg counterbalance: feet={feet:?}, hands={hands:?}"
+                        );
                     }
                 }
             }

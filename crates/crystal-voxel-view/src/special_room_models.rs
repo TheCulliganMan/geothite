@@ -87,9 +87,7 @@ pub(crate) fn room_model(kind: RoomAsset) -> &'static Model {
         [
             crate::model_storage::include_model!("models/special_rooms/bicycle_side.mesh.json"),
             crate::model_storage::include_model!("models/special_rooms/bicycle_front.mesh.json"),
-            crate::model_storage::include_model!(
-                "models/special_rooms/bicycle_diagonal.mesh.json"
-            ),
+            crate::model_storage::include_model!("models/special_rooms/bicycle_diagonal.mesh.json"),
             crate::model_storage::include_model!(
                 "models/special_rooms/bike_service_rack.mesh.json"
             ),
@@ -124,9 +122,7 @@ pub(crate) fn room_model(kind: RoomAsset) -> &'static Model {
                 "models/special_rooms/elevator_controls.mesh.json"
             ),
             crate::model_storage::include_model!("models/special_rooms/prize_counter.mesh.json"),
-            crate::model_storage::include_model!(
-                "models/special_rooms/roof_access_hut.mesh.json"
-            ),
+            crate::model_storage::include_model!("models/special_rooms/roof_access_hut.mesh.json"),
             crate::model_storage::include_model!("models/special_rooms/roof_planter.mesh.json"),
             crate::model_storage::include_model!(
                 "models/special_rooms/gym_stone_partition.mesh.json"
@@ -140,12 +136,8 @@ pub(crate) fn room_model(kind: RoomAsset) -> &'static Model {
             crate::model_storage::include_model!(
                 "models/special_rooms/facility_instrument_pair.mesh.json"
             ),
-            crate::model_storage::include_model!(
-                "models/special_rooms/roof_binoculars.mesh.json"
-            ),
-            crate::model_storage::include_model!(
-                "models/special_rooms/link_round_stool.mesh.json"
-            ),
+            crate::model_storage::include_model!("models/special_rooms/roof_binoculars.mesh.json"),
+            crate::model_storage::include_model!("models/special_rooms/link_round_stool.mesh.json"),
         ]
         .into_iter()
         .map(|s| Model::parse(s).expect("validated original special-room mesh"))
@@ -153,15 +145,33 @@ pub(crate) fn room_model(kind: RoomAsset) -> &'static Model {
     })[kind as usize]
 }
 impl Model {
-    pub(crate) fn has_native_link_materials(&self)->bool {self.link_materials.is_some()}
-    pub(crate) fn append_native_link(&self,target:&mut crate::mesh::SurfaceMeshData,
-        bounds:[f32;4],base:f32,height:f32,swatches:[[f32;2];7])->bool {
-        let Some(roles)=&self.link_materials else {return false;};
-        let first=target.positions.len();self.append(target,bounds,base,height);
-        for (i,&role) in roles.iter().enumerate().take(target.positions.len()-first) {
-            let index=first+i;target.uvs[index]=swatches[role as usize];
-            target.colors[index]=crate::interior_models::authored_face_color([1.;4],
-                bevy::prelude::Vec3::from_array(target.normals[index]));
+    pub(crate) fn has_native_link_materials(&self) -> bool {
+        self.link_materials.is_some()
+    }
+    pub(crate) fn append_native_link(
+        &self,
+        target: &mut crate::mesh::SurfaceMeshData,
+        bounds: [f32; 4],
+        base: f32,
+        height: f32,
+        swatches: [[f32; 2]; 7],
+    ) -> bool {
+        let Some(roles) = &self.link_materials else {
+            return false;
+        };
+        let first = target.positions.len();
+        self.append(target, bounds, base, height);
+        for (i, &role) in roles
+            .iter()
+            .enumerate()
+            .take(target.positions.len() - first)
+        {
+            let index = first + i;
+            target.uvs[index] = swatches[role as usize];
+            target.colors[index] = crate::interior_models::authored_face_color(
+                [1.; 4],
+                bevy::prelude::Vec3::from_array(target.normals[index]),
+            );
         }
         true
     }
@@ -191,25 +201,46 @@ mod tests {
     use super::*;
     #[test]
     fn native_link_models_require_complete_named_roles_and_preserve_volume() {
-        for kind in [RoomAsset::LinkBattleConsole,RoomAsset::LinkTradeConsole,RoomAsset::LinkRoomReceiver] {
-            let model=room_model(kind);assert!(model.has_native_link_materials());
-            let mut plain=crate::mesh::SurfaceMeshData::default();let mut painted=plain.clone();
-            model.append(&mut plain,[3.,35.,7.,23.],0.02,20.);
-            let swatches=std::array::from_fn(|i|[i as f32/8.,0.5]);
-            assert!(model.append_native_link(&mut painted,[3.,35.,7.,23.],0.02,20.,swatches));
-            assert_eq!(plain.positions,painted.positions);assert_eq!(plain.normals,painted.normals);
-            assert_eq!(plain.indices,painted.indices);assert!(painted.uvs.iter().all(|uv|swatches.contains(uv)));
+        for kind in [
+            RoomAsset::LinkBattleConsole,
+            RoomAsset::LinkTradeConsole,
+            RoomAsset::LinkRoomReceiver,
+        ] {
+            let model = room_model(kind);
+            assert!(model.has_native_link_materials());
+            let mut plain = crate::mesh::SurfaceMeshData::default();
+            let mut painted = plain.clone();
+            model.append(&mut plain, [3., 35., 7., 23.], 0.02, 20.);
+            let swatches = std::array::from_fn(|i| [i as f32 / 8., 0.5]);
+            assert!(model.append_native_link(
+                &mut painted,
+                [3., 35., 7., 23.],
+                0.02,
+                20.,
+                swatches
+            ));
+            assert_eq!(plain.positions, painted.positions);
+            assert_eq!(plain.normals, painted.normals);
+            assert_eq!(plain.indices, painted.indices);
+            assert!(painted.uvs.iter().all(|uv| swatches.contains(uv)));
         }
-        let source=include_str!("../models/special_rooms/link_battle_console.mesh.json");
+        let source = include_str!("../models/special_rooms/link_battle_console.mesh.json");
         for change in 0..3 {
-            let mut value:serde_json::Value=serde_json::from_str(source).unwrap();
-            match change {0=>value["name"]="custom_link_console".into(),
-                1=>value["primitives"][0]["name"]="unknown_paint".into(),
-                _=>{value["primitives"].as_array_mut().unwrap().remove(0);}}
-            let model=Model::parse(value.to_string().as_str()).unwrap();
-            let mut out=crate::mesh::SurfaceMeshData::default();
-            assert!(!model.append_native_link(&mut out,[0.,32.,0.,16.],0.,20.,[[0.;2];7]));
-            assert!(out.positions.is_empty(),"unqualified model retains its existing finish");
+            let mut value: serde_json::Value = serde_json::from_str(source).unwrap();
+            match change {
+                0 => value["name"] = "custom_link_console".into(),
+                1 => value["primitives"][0]["name"] = "unknown_paint".into(),
+                _ => {
+                    value["primitives"].as_array_mut().unwrap().remove(0);
+                }
+            }
+            let model = Model::parse(value.to_string().as_str()).unwrap();
+            let mut out = crate::mesh::SurfaceMeshData::default();
+            assert!(!model.append_native_link(&mut out, [0., 32., 0., 16.], 0., 20., [[0.; 2]; 7]));
+            assert!(
+                out.positions.is_empty(),
+                "unqualified model retains its existing finish"
+            );
         }
     }
     #[test]
@@ -222,11 +253,13 @@ mod tests {
             (RoomAsset::GymStonePartition, 16.),
         ] {
             let model = room_model(kind);
-            assert!(model
-                .surface
-                .uvs
-                .iter()
-                .all(|uv| uv[0] >= 0. && uv[0] < 16. && uv[1] >= 0. && uv[1] < height));
+            assert!(
+                model
+                    .surface
+                    .uvs
+                    .iter()
+                    .all(|uv| uv[0] >= 0. && uv[0] < 16. && uv[1] >= 0. && uv[1] < height)
+            );
             assert!(model.surface.uvs.iter().any(|uv| *uv != [0., 0.]));
             assert!(model.surface.indices.len() / 3 < 1000, "{kind:?}");
             let mut solid = crate::mesh::SurfaceMeshData::default();
@@ -239,17 +272,21 @@ mod tests {
             assert_eq!(solid.normals, sampled.normals);
             assert_eq!(solid.indices, sampled.indices);
             assert!(sampled.colors.iter().all(|color| *color == [1.; 4]));
-            assert!(sampled
-                .uvs
-                .iter()
-                .all(|uv| uv.iter().all(|v| (0. ..1.).contains(v))));
+            assert!(
+                sampled
+                    .uvs
+                    .iter()
+                    .all(|uv| uv.iter().all(|v| (0. ..1.).contains(v)))
+            );
             let previous_uvs = sampled.uvs.clone();
             model
                 .append_source_sampled(&mut sampled, [40., 56., 50., 66.], 2., 12., |_| [0.9, 0.8]);
             assert_eq!(sampled.uvs[..previous_uvs.len()], previous_uvs);
-            assert!(sampled.uvs[previous_uvs.len()..]
-                .iter()
-                .all(|uv| *uv == [0.9, 0.8]));
+            assert!(
+                sampled.uvs[previous_uvs.len()..]
+                    .iter()
+                    .all(|uv| *uv == [0.9, 0.8])
+            );
         }
     }
     #[test]
@@ -259,11 +296,12 @@ mod tests {
             assert!(m.surface.indices.len() > 60);
             assert!((0..3).all(|i| m.max[i] > m.min[i]));
             assert!(m.surface.positions.iter().flatten().all(|v| v.is_finite()));
-            assert!(m
-                .surface
-                .normals
-                .iter()
-                .all(|n| (bevy::prelude::Vec3::from_array(*n).length() - 1.).abs() < 0.001));
+            assert!(
+                m.surface
+                    .normals
+                    .iter()
+                    .all(|n| (bevy::prelude::Vec3::from_array(*n).length() - 1.).abs() < 0.001)
+            );
         }
     }
 }

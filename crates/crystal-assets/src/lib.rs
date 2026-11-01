@@ -769,18 +769,18 @@ pub use minnesota_fly_destinations::build_minnesota_fly_destinations;
 mod minnesota_habitat_fishing;
 mod minnesota_habitats;
 pub use minnesota_habitats::build_minnesota_habitats;
+mod minnesota_biome_ecology;
+mod minnesota_clinic_companion;
+mod minnesota_ecology_coverage;
+mod minnesota_ecology_fishing;
+mod minnesota_encounter_progression;
+mod minnesota_habitat_review;
 mod minnesota_sweet_scent_source;
 mod minnesota_water_cave_access;
 mod minnesota_water_cave_habitats;
-mod minnesota_biome_ecology;
-mod minnesota_ecology_fishing;
-mod minnesota_ecology_coverage;
-mod minnesota_habitat_review;
-mod minnesota_clinic_companion;
-mod minnesota_encounter_progression;
+pub use minnesota_biome_ecology::build_minnesota_biome_ecology;
 pub use minnesota_encounter_progression::build_minnesota_encounter_progression;
 pub use minnesota_water_cave_habitats::build_minnesota_water_cave_habitats;
-pub use minnesota_biome_ecology::build_minnesota_biome_ecology;
 mod minnesota_hm_progression;
 pub use minnesota_hm_progression::build_minnesota_hm_progression;
 mod minnesota_tmhm;
@@ -1118,8 +1118,8 @@ mod iron_rock_clearance;
 pub use iron_rock_clearance::revise_iron_rock_clearance;
 mod tamarack_snowline;
 pub use tamarack_snowline::build_tamarack_snowline;
-mod tamarack_snowline_art;
 mod headwaters_rock_clearance;
+mod tamarack_snowline_art;
 pub use headwaters_rock_clearance::revise_headwaters_rock_clearance;
 
 mod inner_basin_bedrock;
@@ -1554,7 +1554,9 @@ mod encounter_refinement_composition;
 pub use encounter_refinement_composition::compose_minnesota_encounter_refinements;
 
 mod northstar_story_consolidation;
-pub use northstar_story_consolidation::consolidate_northstar_story;
+pub use northstar_story_consolidation::{
+    apply_minnesota_story_and_scene_fixes, consolidate_northstar_story,
+};
 
 mod northstar_public_roads;
 pub use northstar_public_roads::open_northstar_public_roads;

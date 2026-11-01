@@ -1,14 +1,11 @@
 //! GPU skin instances and render-only body poses. Source effects and combat
 //! retain their own clocks; this module only samples authored joint channels.
 use super::*;
-use bevy::camera::primitives::Aabb;
 use crate::species_rig::{Clip, Playback, SpeciesRig};
-use bevy::render::{
-    mesh::{
-        skinning::{SkinnedMesh, SkinnedMeshInverseBindposes},
-        VertexAttributeValues,
-    },
-
+use bevy::camera::primitives::Aabb;
+use bevy::render::mesh::{
+    VertexAttributeValues,
+    skinning::{SkinnedMesh, SkinnedMeshInverseBindposes},
 };
 
 const BLEND_SECONDS: f32 = 0.10;
@@ -26,12 +23,15 @@ pub(super) struct SkinnedActor {
 
 impl SkinnedActor {
     pub(super) fn effect_matrices(&self, matrices: &mut [Mat4]) {
-        self.rig.skin_matrices_into(&self.pose.current, matrices)
+        self.rig
+            .skin_matrices_into(&self.pose.current, matrices)
             .expect("effect anchors share the validated body pose");
     }
 
     pub(super) fn visible_bounds(&mut self) -> Option<(Vec3, Vec3)> {
-        self.rig.skin_matrices_into(&self.pose.current, &mut self.visibility_matrices).ok()?;
+        self.rig
+            .skin_matrices_into(&self.pose.current, &mut self.visibility_matrices)
+            .ok()?;
         posed_visibility_bounds(&self.visibility_parts, &self.visibility_matrices)
     }
 }
@@ -43,26 +43,38 @@ fn influence_bounds(rig: &SpeciesRig) -> Vec<Option<(Vec3, Vec3)>> {
     let mut parts = vec![None; rig.joints.len()];
     for (index, point) in rig.neutral.positions.iter().enumerate() {
         let point = Vec3::from_array(*point);
-        for (&joint, weight) in rig.joint_indices[index].iter().zip(rig.joint_weights[index]) {
-            if weight <= 0.0 { continue; }
+        for (&joint, weight) in rig.joint_indices[index]
+            .iter()
+            .zip(rig.joint_weights[index])
+        {
+            if weight <= 0.0 {
+                continue;
+            }
             let bounds = &mut parts[joint as usize];
-            *bounds = Some(bounds.map_or((point, point), |(min, max): (Vec3, Vec3)|
-                (min.min(point), max.max(point))));
+            *bounds = Some(bounds.map_or((point, point), |(min, max): (Vec3, Vec3)| {
+                (min.min(point), max.max(point))
+            }));
         }
     }
     parts
 }
 
-fn posed_visibility_bounds(parts: &[Option<(Vec3, Vec3)>], matrices: &[Mat4]) -> Option<(Vec3, Vec3)> {
+fn posed_visibility_bounds(
+    parts: &[Option<(Vec3, Vec3)>],
+    matrices: &[Mat4],
+) -> Option<(Vec3, Vec3)> {
     let mut min = Vec3::splat(f32::INFINITY);
     let mut max = Vec3::splat(f32::NEG_INFINITY);
     for (bounds, matrix) in parts.iter().zip(matrices) {
-        let Some((lo, hi)) = bounds else { continue; };
+        let Some((lo, hi)) = bounds else {
+            continue;
+        };
         for index in 0..8 {
             let point = matrix.transform_point3(Vec3::new(
                 if index & 1 == 0 { lo.x } else { hi.x },
                 if index & 2 == 0 { lo.y } else { hi.y },
-                if index & 4 == 0 { lo.z } else { hi.z }));
+                if index & 4 == 0 { lo.z } else { hi.z },
+            ));
             min = min.min(point);
             max = max.max(point);
         }
@@ -237,11 +249,7 @@ pub(super) fn spawn(
     let mut joints = Vec::with_capacity(rig.joints.len());
     for joint in &rig.joints {
         let child = commands
-            .spawn((
-                (Visibility::default(),
-joint.bind,),
-                BattleSkinJoint,
-            ))
+            .spawn(((Visibility::default(), joint.bind), BattleSkinJoint))
             .id();
         commands
             .entity(joint.parent.map_or(entity, |parent| joints[parent]))

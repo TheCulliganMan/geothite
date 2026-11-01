@@ -9,8 +9,8 @@ use crystal_bevy::VisibleShellController as RuntimeGameShell;
 use crystal_core::input::GameButton;
 use crystal_runtime::{CrystalRuntime, RuntimeCompiledScriptCursor};
 use geothite::{
-    PaintedRenderer, RuntimeTextRenderer, TerminalAction, TerminalCanvas, TerminalUi,
-    TextSnapshot, TuiTheme, map_key_event, render_snapshot_text,
+    PaintedRenderer, RuntimeTextRenderer, TerminalAction, TerminalCanvas, TerminalUi, TextSnapshot,
+    TuiTheme, map_key_event, render_snapshot_text,
 };
 use ratatui::{Terminal, backend::CrosstermBackend};
 use serde_json::{Value, json};
@@ -45,7 +45,9 @@ fn main() -> Result<()> {
     // MCP/terminal clients must never play divergent copies of the same slot.
     let _save_lock = if options.command != Command::Dump {
         options.save.as_deref().map(lock_save_slot).transpose()?
-    } else { None };
+    } else {
+        None
+    };
     let pack = options
         .pack
         .canonicalize()
@@ -59,7 +61,12 @@ fn main() -> Result<()> {
         PaintedRenderer::default()
     };
     let runtime = CrystalRuntime::from_loaded_compiled_pack(&asset_root, loaded)?;
-    let resume = options.load.as_ref().or_else(|| options.save.as_ref().filter(|path| path.is_file() || crystal_core::save::save_backup_path(path).is_file()));
+    let resume = options.load.as_ref().or_else(|| {
+        options
+            .save
+            .as_ref()
+            .filter(|path| path.is_file() || crystal_core::save::save_backup_path(path).is_file())
+    });
     let mut game = match resume {
         Some(load) => {
             RuntimeGameShell::load_save(asset_root, runtime, load.clone(), options.save.clone())?
@@ -371,7 +378,9 @@ fn call_mcp_tool(
                 object.keys().all(|k| k == "code"),
                 "Unexpected execute argument"
             );
-            let code = arguments["code"].as_str().context("execute requires code")?;
+            let code = arguments["code"]
+                .as_str()
+                .context("execute requires code")?;
             let result = geothite::execute_code(code, |name, args| {
                 let result = geothite::call_code_mode_tool(game, renderer, name, args, |game| {
                     game.save(
@@ -689,12 +698,20 @@ fn save_after_mcp_action(game: &mut RuntimeGameShell, save_path: Option<&PathBuf
 }
 
 fn lock_save_slot(path: &std::path::Path) -> Result<std::fs::File> {
-    let parent = path.parent().filter(|p| !p.as_os_str().is_empty()).unwrap_or(std::path::Path::new("."));
+    let parent = path
+        .parent()
+        .filter(|p| !p.as_os_str().is_empty())
+        .unwrap_or(std::path::Path::new("."));
     std::fs::create_dir_all(parent)?;
     let name = path.file_name().context("Save path needs a filename")?;
     let canonical = parent.canonicalize()?.join(name);
     let lock_path = PathBuf::from(format!("{}.lock", canonical.display()));
-    let file = std::fs::OpenOptions::new().create(true).truncate(false).read(true).write(true).open(lock_path)?;
+    let file = std::fs::OpenOptions::new()
+        .create(true)
+        .truncate(false)
+        .read(true)
+        .write(true)
+        .open(lock_path)?;
     file.try_lock().context("This save session is already open. Disconnect its other terminal/MCP client before resuming it.")?;
     Ok(file)
 }
@@ -982,7 +999,7 @@ fn run_tui(
             TerminalAction::Quit => {
                 save_after_mcp_action(&mut game, save_path.as_ref())?;
                 break;
-            },
+            }
             TerminalAction::BeginCommand => {
                 command_buffer = Some(String::new());
                 ui.notice = Some("COMMAND> :".to_string());
@@ -1021,7 +1038,10 @@ fn run_tui(
             }
             TerminalAction::None => {}
         }
-        if matches!(action, TerminalAction::GameButton(_) | TerminalAction::MoveSelection(_) | TerminalAction::Wait) {
+        if matches!(
+            action,
+            TerminalAction::GameButton(_) | TerminalAction::MoveSelection(_) | TerminalAction::Wait
+        ) {
             save_after_mcp_action(&mut game, save_path.as_ref())?;
         }
         let replays = game.take_battle_replays();
@@ -1070,15 +1090,24 @@ mod tests {
 
     #[test]
     fn save_slot_lock_rejects_second_writer_and_releases_on_disconnect() {
-        let path = std::env::temp_dir().join(format!("geothite-writer-lock-{}.crystalsave", std::process::id()));
+        let path = std::env::temp_dir().join(format!(
+            "geothite-writer-lock-{}.crystalsave",
+            std::process::id()
+        ));
         let owner = lock_save_slot(&path).unwrap();
         assert!(lock_save_slot(&path).is_err());
-        let other = path.with_file_name(format!("geothite-other-lock-{}.crystalsave", std::process::id()));
+        let other = path.with_file_name(format!(
+            "geothite-other-lock-{}.crystalsave",
+            std::process::id()
+        ));
         let independent = lock_save_slot(&other).unwrap();
         drop(owner);
         let resumed = lock_save_slot(&path).unwrap();
-        drop(resumed); drop(independent);
-        for slot in [path, other] { std::fs::remove_file(format!("{}.lock", slot.display())).unwrap(); }
+        drop(resumed);
+        drop(independent);
+        for slot in [path, other] {
+            std::fs::remove_file(format!("{}.lock", slot.display())).unwrap();
+        }
     }
 
     #[test]
@@ -1175,10 +1204,16 @@ mod tests {
             Some(path.clone()),
         )
         .unwrap();
-        assert!(game.autosave(&path).unwrap(), "New game has a resumable checkpoint");
+        assert!(
+            game.autosave(&path).unwrap(),
+            "New game has a resumable checkpoint"
+        );
         let checkpoint = std::fs::read(&path).unwrap();
         game.press(GameButton::Start).unwrap();
-        assert!(!game.autosave(&path).unwrap(), "Production menu cursors are not an autosave boundary");
+        assert!(
+            !game.autosave(&path).unwrap(),
+            "Production menu cursors are not an autosave boundary"
+        );
         assert_eq!(std::fs::read(&path).unwrap(), checkpoint);
         game.press(GameButton::B).unwrap();
         game.save(&path).unwrap();
@@ -1384,7 +1419,11 @@ mod tests {
             .as_ref()
             .map(PathBuf::from)
             .unwrap_or_else(|| repo_root.join("content-packs/text-tui.crystalpack"));
-        assert!(explicit_pack.is_none() || pack_path.is_file(), "CRYSTAL_RENDER_TEST_PACK must identify an existing pack: {}", pack_path.display());
+        assert!(
+            explicit_pack.is_none() || pack_path.is_file(),
+            "CRYSTAL_RENDER_TEST_PACK must identify an existing pack: {}",
+            pack_path.display()
+        );
         if !pack_path.exists() {
             eprintln!(
                 "skipping external-pack MCP regression; build {} first",

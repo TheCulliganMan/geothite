@@ -10,21 +10,31 @@ pub(crate) const FLOOR_TILE: u16 = 0x10;
 
 /// Both ordinary boards and intentionally concealed barriers retain their
 /// native gray surface. Collision does not select the presentation finish.
-pub(crate) fn floor_source(s:&VisualTileSource)->bool {
-    if s.tileset_id.as_ref()!="lab" || s.subtile_column>=4 || s.subtile_row>=4 {return false;}
-    let mask:u16=match (s.tile_index,s.metatile_id) {
-        (0x10,0x01)=>0xffff,(0x10,0x02|0x1f)=>0x00ff,
-        (0x10,0x0d|0x1c)=>0xff00,(0x10,0x1a|0x1e)=>0x3333,
-        (0x10,0x1b|0x1d)=>0xcccc,
-        (0x37,0x1c)=>0x00ff,(0x37,0x1d)=>0x3333,
-        (0x37,0x1e)=>0xcccc,(0x37,0x1f)=>0xff00,_=>return false,
+pub(crate) fn floor_source(s: &VisualTileSource) -> bool {
+    if s.tileset_id.as_ref() != "lab" || s.subtile_column >= 4 || s.subtile_row >= 4 {
+        return false;
+    }
+    let mask: u16 = match (s.tile_index, s.metatile_id) {
+        (0x10, 0x01) => 0xffff,
+        (0x10, 0x02 | 0x1f) => 0x00ff,
+        (0x10, 0x0d | 0x1c) => 0xff00,
+        (0x10, 0x1a | 0x1e) => 0x3333,
+        (0x10, 0x1b | 0x1d) => 0xcccc,
+        (0x37, 0x1c) => 0x00ff,
+        (0x37, 0x1d) => 0x3333,
+        (0x37, 0x1e) => 0xcccc,
+        (0x37, 0x1f) => 0xff00,
+        _ => return false,
     };
-    mask & (1<<(s.subtile_row*4+s.subtile_column))!=0
+    mask & (1 << (s.subtile_row * 4 + s.subtile_column)) != 0
 }
 
 pub(crate) fn statue_local(map_id: &str, source: &VisualTileSource) -> Option<(u8, u8)> {
-    if map_id != "FuchsiaGym" || source.tileset_id.as_ref() != "lab"
-        || source.subtile_column >= 4 || source.subtile_row >= 4 {
+    if map_id != "FuchsiaGym"
+        || source.tileset_id.as_ref() != "lab"
+        || source.subtile_column >= 4
+        || source.subtile_row >= 4
+    {
         return None;
     }
 
@@ -39,9 +49,20 @@ pub(crate) fn statue_local(map_id: &str, source: &VisualTileSource) -> Option<(u
     (source.tile_index == expected).then_some((local_column, source.subtile_row))
 }
 
-pub(crate) fn north_wall_local(s:&VisualTileSource)->Option<(u8,u8,usize,usize)> {
-    if s.tileset_id.as_ref()!="lab" || s.metatile_id!=0x0d || s.subtile_column>=4 || s.subtile_row>=2 {return None;}
-    (s.tile_index==[0x01,0x11][s.subtile_row as usize]).then_some((s.subtile_column,s.subtile_row,4,2))
+pub(crate) fn north_wall_local(s: &VisualTileSource) -> Option<(u8, u8, usize, usize)> {
+    if s.tileset_id.as_ref() != "lab"
+        || s.metatile_id != 0x0d
+        || s.subtile_column >= 4
+        || s.subtile_row >= 2
+    {
+        return None;
+    }
+    (s.tile_index == [0x01, 0x11][s.subtile_row as usize]).then_some((
+        s.subtile_column,
+        s.subtile_row,
+        4,
+        2,
+    ))
 }
 
 #[cfg(test)]

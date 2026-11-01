@@ -130,49 +130,79 @@ pub(super) fn sync(
         *applied = None;
         return;
     }
-    let train_open=cache.built_train_doors.then(||mesh::station_train_door_openness(&frame));
-    let train_changed=train_open.map(f32::to_bits)!=cache.built_train_open;
-    let Some(atlas) = cache.built_frame.as_ref().map(|built| built.map_texture.id()) else { return; };
+    let train_open = cache
+        .built_train_doors
+        .then(|| mesh::station_train_door_openness(&frame));
+    let train_changed = train_open.map(f32::to_bits) != cache.built_train_open;
+    let Some(atlas) = cache
+        .built_frame
+        .as_ref()
+        .map(|built| built.map_texture.id())
+    else {
+        return;
+    };
     let next = (cache.key.clone(), atlas);
     let refresh_needed = applied.as_ref() != Some(&next)
         || phases.as_ref().is_some_and(|phases| phases.is_changed());
-    if !refresh_needed && !train_changed { return; }
+    if !refresh_needed && !train_changed {
+        return;
+    }
     let selected = cache.built_animated_pillars.clone();
-    let Some(built) = cache.built_frame.as_mut() else {return;};
-    if built.map_id!=frame.map_id { *applied = None; return; }
-    let change=if let Some(phases)=phases.as_deref().filter(|p|
-        refresh_needed&&p.map_id==frame.map_id&&!p.tiles.is_empty()) {
+    let Some(built) = cache.built_frame.as_mut() else {
+        return;
+    };
+    if built.map_id != frame.map_id {
+        *applied = None;
+        return;
+    }
+    let change = if let Some(phases) = phases
+        .as_deref()
+        .filter(|p| refresh_needed && p.map_id == frame.map_id && !p.tiles.is_empty())
+    {
         match refresh(built, phases, &selected, &mut images) {
-            Ok(change)=>change,
-            Err(())=>{
-                status.active=false;
-                status.inactive_reason=Some("terrain animation: SourceTextureUnavailable".into());
+            Ok(change) => change,
+            Err(()) => {
+                status.active = false;
+                status.inactive_reason = Some("terrain animation: SourceTextureUnavailable".into());
                 return;
             }
         }
-    }else{Change::None};
-    if change==Change::None&&!train_changed { *applied = Some(next); return; }
-    if change==Change::Geometry||train_changed {
-        let (textured,solid)=match mesh::build_animated_scene(built,&images,&selected,train_open) {
-            Ok(meshes)=>meshes,
-            Err(error)=>{
-                status.active=false;
-                status.inactive_reason=Some(format!("terrain animation: {error:?}"));
-                return;
-            }
-        };
-        cache.built_animated_bounds=[textured.get_aabb(),solid.get_aabb()];
-        update_domain(&mut meshes,&mut cache.animated_textured_mesh,textured);
-        update_domain(&mut meshes,&mut cache.animated_solid_mesh,solid);
-        cache.built_train_open=train_open.map(f32::to_bits);
+    } else {
+        Change::None
+    };
+    if change == Change::None && !train_changed {
+        *applied = Some(next);
+        return;
+    }
+    if change == Change::Geometry || train_changed {
+        let (textured, solid) =
+            match mesh::build_animated_scene(built, &images, &selected, train_open) {
+                Ok(meshes) => meshes,
+                Err(error) => {
+                    status.active = false;
+                    status.inactive_reason = Some(format!("terrain animation: {error:?}"));
+                    return;
+                }
+            };
+        cache.built_animated_bounds = [textured.get_aabb(), solid.get_aabb()];
+        update_domain(&mut meshes, &mut cache.animated_textured_mesh, textured);
+        update_domain(&mut meshes, &mut cache.animated_solid_mesh, solid);
+        cache.built_train_open = train_open.map(f32::to_bits);
     }
     *applied = Some(next);
-    if change==Change::None {return;}
+    if change == Change::None {
+        return;
+    }
     // Standard atlas uploads replace their GPU texture. Streamed atlases keep
     // the existing view/bindings, so touching all cloned materials is wasted
     // extraction and bind-group preparation on every animation phase.
     let atlas = cache.built_frame.as_ref().unwrap().map_texture.clone();
-    if images.get(&atlas).is_some_and(crystal_render_api::is_streamed_image) { return; }
+    if images
+        .get(&atlas)
+        .is_some_and(crystal_render_api::is_streamed_image)
+    {
+        return;
+    }
     let users: Vec<_> = materials
         .iter()
         .filter_map(|(id, m)| (m.base.base_color_texture.as_ref() == Some(&atlas)).then_some(id))
@@ -298,8 +328,16 @@ mod tests {
             tile.source.tile_index = 3;
         }
         let live = phases(&frame);
-        assert_eq!(refresh(&mut frame, &live, &[], &mut images), Ok(Change::Atlas));
-        assert!(frame.tiles.iter().all(|tile| crate::flower::flower_shape(&tile.source).is_some()));
+        assert_eq!(
+            refresh(&mut frame, &live, &[], &mut images),
+            Ok(Change::Atlas)
+        );
+        assert!(
+            frame
+                .tiles
+                .iter()
+                .all(|tile| crate::flower::flower_shape(&tile.source).is_some())
+        );
     }
 
     #[test]
@@ -585,35 +623,79 @@ mod tests {
         let (frame, images) = fixture();
         let phase = phases(&frame);
         let mut app = App::new();
-        app.insert_resource(frame.clone()).insert_resource(images)
-            .init_resource::<Assets<VoxelMaterial>>().init_resource::<Assets<Mesh>>()
+        app.insert_resource(frame.clone())
+            .insert_resource(images)
+            .init_resource::<Assets<VoxelMaterial>>()
+            .init_resource::<Assets<Mesh>>()
             .insert_resource(phase)
-            .insert_resource(VoxelViewStatus { active: true, ..default() })
-            .insert_resource(TerrainRevisionCache { built_frame: Some(frame.clone()), ..default() })
+            .insert_resource(VoxelViewStatus {
+                active: true,
+                ..default()
+            })
+            .insert_resource(TerrainRevisionCache {
+                built_frame: Some(frame.clone()),
+                ..default()
+            })
             .add_systems(Update, sync);
         app.update();
         app.update(); // A retained phase needs no repeated atlas scan.
-        let changed = app.world().get_resource_ref::<VisualTileAnimationFrame>().unwrap().last_changed();
-        let next = app.world_mut().resource_mut::<Assets<Image>>()
-            .add(image(32, 48, [50, 80, 100, 255]));
+        let changed = app
+            .world()
+            .get_resource_ref::<VisualTileAnimationFrame>()
+            .unwrap()
+            .last_changed();
+        let next =
+            app.world_mut()
+                .resource_mut::<Assets<Image>>()
+                .add(image(32, 48, [50, 80, 100, 255]));
         let mut rebuilt = frame;
         rebuilt.map_texture = next.clone();
-        app.world_mut().resource_mut::<TerrainRevisionCache>().built_frame = Some(rebuilt);
+        app.world_mut()
+            .resource_mut::<TerrainRevisionCache>()
+            .built_frame = Some(rebuilt);
         app.update();
-        assert_eq!(app.world().get_resource_ref::<VisualTileAnimationFrame>().unwrap().last_changed(), changed);
-        assert_eq!(&app.world().resource::<Assets<Image>>().get(&next).unwrap().data.as_ref().unwrap()[..4],
-            &[120, 80, 100, 255], "new terrain must receive the retained authenticated phase");
+        assert_eq!(
+            app.world()
+                .get_resource_ref::<VisualTileAnimationFrame>()
+                .unwrap()
+                .last_changed(),
+            changed
+        );
+        assert_eq!(
+            &app.world()
+                .resource::<Assets<Image>>()
+                .get(&next)
+                .unwrap()
+                .data
+                .as_ref()
+                .unwrap()[..4],
+            &[120, 80, 100, 255],
+            "new terrain must receive the retained authenticated phase"
+        );
         // Source clocks keep running while 3D is inactive. Re-entry must
         // consume a phase published during that interval, even on an idle tick.
         app.world_mut().resource_mut::<VoxelViewStatus>().active = false;
-        for tile in &mut app.world_mut().resource_mut::<VisualTileAnimationFrame>().tiles {
+        for tile in &mut app
+            .world_mut()
+            .resource_mut::<VisualTileAnimationFrame>()
+            .tiles
+        {
             tile.texture = tile.animation_frames.as_ref().unwrap()[1].clone();
         }
         app.update();
         app.world_mut().resource_mut::<VoxelViewStatus>().active = true;
         app.update();
-        assert_eq!(&app.world().resource::<Assets<Image>>().get(&next).unwrap().data.as_ref().unwrap()[..4],
-            &[30, 80, 100, 255], "re-entering 3D must catch up with the source clock");
+        assert_eq!(
+            &app.world()
+                .resource::<Assets<Image>>()
+                .get(&next)
+                .unwrap()
+                .data
+                .as_ref()
+                .unwrap()[..4],
+            &[30, 80, 100, 255],
+            "re-entering 3D must catch up with the source clock"
+        );
     }
 
     #[test]
@@ -625,30 +707,63 @@ mod tests {
                 tile.source.tileset_id = "port".into();
                 tile.source.tile_index = 0x14;
             }
-            if streamed { crystal_render_api::stream_composed_image(&mut images.get_mut(&frame.map_texture).unwrap()); }
+            if streamed {
+                crystal_render_api::stream_composed_image(
+                    &mut images.get_mut(&frame.map_texture).unwrap(),
+                );
+            }
             let phase = phases(&frame);
             let atlas = frame.map_texture.clone();
             let mut materials = Assets::<VoxelMaterial>::default();
             let handle = materials.add(textured_terrain_material(atlas.clone()));
             let mut app = App::new();
-            app.insert_resource(frame.clone()).insert_resource(images).insert_resource(materials)
+            app.insert_resource(frame.clone())
+                .insert_resource(images)
+                .insert_resource(materials)
                 .init_resource::<Assets<Mesh>>()
                 .init_resource::<VisualTileAnimationFrame>()
-                .insert_resource(VoxelViewStatus { active: true, ..default() })
-                .insert_resource(TerrainRevisionCache { built_frame: Some(frame), ..default() })
+                .insert_resource(VoxelViewStatus {
+                    active: true,
+                    ..default()
+                })
+                .insert_resource(TerrainRevisionCache {
+                    built_frame: Some(frame),
+                    ..default()
+                })
                 .add_systems(Update, sync);
             app.update();
-            let before = app.world().get_resource_ref::<Assets<VoxelMaterial>>().unwrap().last_changed();
+            let before = app
+                .world()
+                .get_resource_ref::<Assets<VoxelMaterial>>()
+                .unwrap()
+                .last_changed();
             app.insert_resource(phase);
             app.update();
-            let after = app.world().get_resource_ref::<Assets<VoxelMaterial>>().unwrap().last_changed();
-            assert_eq!(before == after, streamed,
-                "retained GPU views must not trigger material extraction; standard replacements still must");
+            let after = app
+                .world()
+                .get_resource_ref::<Assets<VoxelMaterial>>()
+                .unwrap()
+                .last_changed();
+            assert_eq!(
+                before == after,
+                streamed,
+                "retained GPU views must not trigger material extraction; standard replacements still must"
+            );
             let images = app.world().resource::<Assets<Image>>();
-            assert_eq!(&images.get(&atlas).unwrap().data.as_ref().unwrap()[..4], &[120,80,100,255]);
-            assert_eq!(app.world().resource::<Assets<VoxelMaterial>>().get(&handle).unwrap()
-                .base.base_color_texture.as_ref(), Some(&atlas));
+            assert_eq!(
+                &images.get(&atlas).unwrap().data.as_ref().unwrap()[..4],
+                &[120, 80, 100, 255]
+            );
+            assert_eq!(
+                app.world()
+                    .resource::<Assets<VoxelMaterial>>()
+                    .get(&handle)
+                    .unwrap()
+                    .base
+                    .base_color_texture
+                    .as_ref(),
+                Some(&atlas)
+            );
         }
     }
-
 }

@@ -151,11 +151,14 @@ pub(super) fn append(
             // Quantized source coordinates retain identical paint when the
             // same stone is rebuilt at a different viewport translation.
             let x = (((p[0] - g.origin_x) / g.tile_width + origin[0] as f32) * 256.).round() / 256.;
-            let z = (((p[2] - g.origin_z) / g.tile_height + origin[1] as f32) * 256.).round() / 256.;
+            let z =
+                (((p[2] - g.origin_z) / g.tile_height + origin[1] as f32) * 256.).round() / 256.;
             let broad = super::meadow_noise(x * 0.31 + 17., z * 0.31 - 29.);
             let grain = super::meadow_noise(x * 4.1 - 7., z * 4.1 + 11.);
             let tone = 1. + broad * 0.065 + grain * 0.018;
-            for channel in &mut mesh.colors[i][..3] { *channel *= tone; }
+            for channel in &mut mesh.colors[i][..3] {
+                *channel *= tone;
+            }
         }
     }
 }

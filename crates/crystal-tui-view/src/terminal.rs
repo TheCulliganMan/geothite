@@ -373,7 +373,7 @@ fn centered_rect(width: u16, height: u16, area: Rect) -> Rect {
 mod tests {
     use super::*;
     #[cfg(not(target_arch = "wasm32"))]
-use crossterm::event::KeyEventKind;
+    use crossterm::event::KeyEventKind;
     use ratatui::{Terminal, backend::TestBackend};
 
     #[test]

@@ -160,7 +160,9 @@ pub(super) fn append(
             while start < to - 0.001 {
                 let end = (start + step).min(to);
                 let visible = match edge {
-                    Edge::North => unreachable!("clinic returns enumerate west, east and south only"),
+                    Edge::North => {
+                        unreachable!("clinic returns enumerate west, east and south only")
+                    }
                     Edge::West | Edge::East => {
                         at >= g.origin_x - 3. * g.tile_width / 8.
                             && at

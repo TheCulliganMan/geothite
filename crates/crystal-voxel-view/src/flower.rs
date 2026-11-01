@@ -43,9 +43,14 @@ pub(super) fn animated_material(
     source: &bevy::prelude::Handle<crate::VoxelMaterial>,
     materials: &mut bevy::prelude::Assets<crate::VoxelMaterial>,
 ) -> bevy::prelude::Handle<crate::VoxelMaterial> {
-    let material = materials.get(source).expect("published solid terrain material").clone();
+    let material = materials
+        .get(source)
+        .expect("published solid terrain material")
+        .clone();
     if let Some(handle) = cached {
-        *materials.get_mut(&*handle).expect("retained animated solid material") = material;
+        *materials
+            .get_mut(&*handle)
+            .expect("retained animated solid material") = material;
         return handle.clone();
     }
     let handle = materials.add(material);
@@ -62,8 +67,14 @@ pub(super) fn animate(
     cache: bevy::prelude::Res<crate::TerrainRevisionCache>,
     mut materials: bevy::prelude::ResMut<bevy::prelude::Assets<crate::VoxelMaterial>>,
 ) {
-    if !status.active || cache.built_animated_bounds[1].is_none() { return; }
-    if let Some(mut material) = cache.animated_solid_material.as_ref().and_then(|h| materials.get_mut(h)) {
+    if !status.active || cache.built_animated_bounds[1].is_none() {
+        return;
+    }
+    if let Some(mut material) = cache
+        .animated_solid_material
+        .as_ref()
+        .and_then(|h| materials.get_mut(h))
+    {
         material.extension.grass_rustle.height_scale.y = time.elapsed_secs();
         material.extension.grass_rustle.height_scale.z = -frame.view_center.x;
         material.extension.grass_rustle.height_scale.w = frame.view_center.y;
@@ -89,57 +100,101 @@ mod tests {
             material.base.base_color = Color::srgb(0.2, 0.4, 0.7);
             material.extension.cave_reveal = Vec4::new(1., 0., 0., 0.);
             material.extension.grass_rustle.height_scale = Vec4::new(0.75, 12., 24., 36.);
-            material.extension.cutaway = crate::interior_cutaway::CutawayUniform::for_player(
-                Vec3::new(8., 16., 24.), 32.).unwrap();
+            material.extension.cutaway =
+                crate::interior_cutaway::CutawayUniform::for_player(Vec3::new(8., 16., 24.), 32.)
+                    .unwrap();
         }
-        assert_eq!(animated_material(&mut cached, &source, &mut materials), animated);
-        assert_eq!(materials.len(), 2, "geometry revisions must reuse the animated material");
+        assert_eq!(
+            animated_material(&mut cached, &source, &mut materials),
+            animated
+        );
+        assert_eq!(
+            materials.len(),
+            2,
+            "geometry revisions must reuse the animated material"
+        );
         let source = materials.get(&source).unwrap();
         let animated = materials.get(&animated).unwrap();
         assert_eq!(animated.base.base_color, source.base.base_color);
         assert_eq!(animated.extension.cave_reveal, source.extension.cave_reveal);
-        assert_eq!(animated.extension.grass_rustle, source.extension.grass_rustle);
+        assert_eq!(
+            animated.extension.grass_rustle,
+            source.extension.grass_rustle
+        );
         assert_eq!(animated.extension.cutaway, source.extension.cutaway);
     }
 
     #[test]
     fn blossom_clock_never_marks_the_shared_static_material_modified() {
-        use bevy::{asset::{AssetEvent, AssetPlugin}, prelude::*};
+        use bevy::{
+            asset::{AssetEvent, AssetPlugin},
+            prelude::*,
+        };
         let mut app = App::new();
-        app.add_plugins((MinimalPlugins, AssetPlugin::default())).init_asset::<crate::VoxelMaterial>();
+        app.add_plugins((MinimalPlugins, AssetPlugin::default()))
+            .init_asset::<crate::VoxelMaterial>();
         app.insert_resource(bevy::time::TimeUpdateStrategy::ManualDuration(
-            std::time::Duration::from_secs_f64(1. / 60.)));
+            std::time::Duration::from_secs_f64(1. / 60.),
+        ));
         let (source, animated) = {
-            let mut materials = app.world_mut().resource_mut::<Assets<crate::VoxelMaterial>>();
+            let mut materials = app
+                .world_mut()
+                .resource_mut::<Assets<crate::VoxelMaterial>>();
             let source = materials.add(crate::solid_terrain_material());
             let animated = animated_material(&mut None, &source, &mut materials);
             (source, animated)
         };
         let frame = crystal_render_api::VisualWorldFrame {
-            active: true, view_center: Vec2::new(80., -72.), ..default()
+            active: true,
+            view_center: Vec2::new(80., -72.),
+            ..default()
         };
         app.insert_resource(frame)
-            .insert_resource(crate::VoxelViewStatus { active: true, ..default() })
+            .insert_resource(crate::VoxelViewStatus {
+                active: true,
+                ..default()
+            })
             .insert_resource(crate::TerrainRevisionCache {
-                solid_material: Some(source.clone()), animated_solid_material: Some(animated.clone()),
+                solid_material: Some(source.clone()),
+                animated_solid_material: Some(animated.clone()),
                 built_animated_bounds: [None, Some(bevy::camera::primitives::Aabb::default())],
                 ..default()
             })
             .add_systems(Update, animate);
         app.update();
-        app.world_mut().resource_mut::<Messages<AssetEvent<crate::VoxelMaterial>>>().clear();
+        app.world_mut()
+            .resource_mut::<Messages<AssetEvent<crate::VoxelMaterial>>>()
+            .clear();
         for _ in 0..64 {
             app.update();
-            let events = app.world_mut().resource_mut::<Messages<AssetEvent<crate::VoxelMaterial>>>()
-                .drain().collect::<Vec<_>>();
+            let events = app
+                .world_mut()
+                .resource_mut::<Messages<AssetEvent<crate::VoxelMaterial>>>()
+                .drain()
+                .collect::<Vec<_>>();
             assert!(events.iter().any(|event| event.is_modified(&animated)));
-            assert!(!events.iter().any(|event| event.is_modified(&source)),
-                "the animation clock must not dirty every static mesh using the shared finish");
+            assert!(
+                !events.iter().any(|event| event.is_modified(&source)),
+                "the animation clock must not dirty every static mesh using the shared finish"
+            );
             let materials = app.world().resource::<Assets<crate::VoxelMaterial>>();
-            let phase = materials.get(&animated).unwrap().extension.grass_rustle.height_scale;
+            let phase = materials
+                .get(&animated)
+                .unwrap()
+                .extension
+                .grass_rustle
+                .height_scale;
             assert_eq!(phase.y, app.world().resource::<Time>().elapsed_secs());
             assert_eq!((phase.z, phase.w), (-80., -72.));
-            assert_eq!(materials.get(&source).unwrap().extension.grass_rustle.height_scale, Vec4::ZERO);
+            assert_eq!(
+                materials
+                    .get(&source)
+                    .unwrap()
+                    .extension
+                    .grass_rustle
+                    .height_scale,
+                Vec4::ZERO
+            );
         }
     }
 

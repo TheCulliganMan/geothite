@@ -99,12 +99,7 @@ impl Warmup {
     pub(crate) fn prepared_uploads_enabled(&self) -> bool {
         !self.failed && js_ready(false).unwrap_or(0) == 2
     }
-    pub(crate) fn pending(
-        &mut self,
-        keys: Vec<Key>,
-        enabled: bool,
-        gpu: &mut PeopleGpu,
-    ) -> bool {
+    pub(crate) fn pending(&mut self, keys: Vec<Key>, enabled: bool, gpu: &mut PeopleGpu) -> bool {
         if !enabled {
             self.pending = None;
             self.interest.clear();

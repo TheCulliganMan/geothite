@@ -26,8 +26,8 @@ pub(crate) fn reference_span(species: &str, min: Vec3, max: Vec3) -> f32 {
         "DRATINI" | "DRAGONAIR" => 2.241_65 / 1.18,
         "STEELIX" => 2.867_623_2 / 1.45,
         // Longitudinal nose-to-tail extent, not fin/lure height.
-        "MAGIKARP" | "GOLDEEN" | "SEAKING" | "REMORAID" | "CHINCHOU" | "LANTURN" | "MANTINE" | "DUNSPARCE"
-        | "CATERPIE" | "WEEDLE" | "YANMA" => {
+        "MAGIKARP" | "GOLDEEN" | "SEAKING" | "REMORAID" | "CHINCHOU" | "LANTURN" | "MANTINE"
+        | "DUNSPARCE" | "CATERPIE" | "WEEDLE" | "YANMA" => {
             return extent.z;
         }
         _ => 1.0,
@@ -38,8 +38,10 @@ pub(crate) fn reference_span(species: &str, min: Vec3, max: Vec3) -> f32 {
 /// A world repose changes the measured axis, not the pack's physical size.
 pub(crate) fn world_reference_span(species: &str, rig: &crate::species_rig::SpeciesRig) -> f32 {
     if rig.species == crate::species_rig::Species::Furret {
-        rig.neutral_bounds.1.z-rig.neutral_bounds.0.z
-    } else { reference_span(species,rig.neutral_bounds.0,rig.neutral_bounds.1) }
+        rig.neutral_bounds.1.z - rig.neutral_bounds.0.z
+    } else {
+        reference_span(species, rig.neutral_bounds.0, rig.neutral_bounds.1)
+    }
 }
 
 pub(crate) fn model_scale(
@@ -93,8 +95,16 @@ mod tests {
     #[test]
     fn gyarados_measures_the_current_authored_centerline() {
         let mesh = crate::battle_species_models::mesh("GYARADOS").unwrap();
-        let min = mesh.positions.iter().map(|p| Vec3::from_array(*p)).fold(Vec3::splat(f32::INFINITY), Vec3::min);
-        let max = mesh.positions.iter().map(|p| Vec3::from_array(*p)).fold(Vec3::splat(f32::NEG_INFINITY), Vec3::max);
+        let min = mesh
+            .positions
+            .iter()
+            .map(|p| Vec3::from_array(*p))
+            .fold(Vec3::splat(f32::INFINITY), Vec3::min);
+        let max = mesh
+            .positions
+            .iter()
+            .map(|p| Vec3::from_array(*p))
+            .fold(Vec3::splat(f32::NEG_INFINITY), Vec3::max);
         let span = reference_span("GYARADOS", min, max);
         assert!((span - 2.7092259).abs() < 0.00001);
         assert!(span > (max - min).y * 1.8);
@@ -178,19 +188,30 @@ impl BattleBody {
     pub(crate) fn with_source_card_envelope(mut self, aspect: f32) -> Self {
         let card = Self::source_card(aspect);
         let radius = card.max.x * card.scale.x;
-        let min = Vec3::new(-radius / self.scale.x, self.support_y, -radius / self.scale.z);
-        let max = Vec3::new(radius / self.scale.x,
+        let min = Vec3::new(
+            -radius / self.scale.x,
+            self.support_y,
+            -radius / self.scale.z,
+        );
+        let max = Vec3::new(
+            radius / self.scale.x,
             self.support_y + (card.max.y - card.min.y) / self.scale.y,
-            radius / self.scale.z);
+            radius / self.scale.z,
+        );
         let (previous_min, previous_max) = self.visual_bounds.unwrap_or((self.min, self.max));
         self.visual_bounds = Some((previous_min.min(min), previous_max.max(max)));
-        self.source_bank_bounds = Some(self.source_bank_bounds.map_or((min, max),
-            |(previous_min, previous_max)| (previous_min.min(min), previous_max.max(max))));
+        self.source_bank_bounds = Some(
+            self.source_bank_bounds
+                .map_or((min, max), |(previous_min, previous_max)| {
+                    (previous_min.min(min), previous_max.max(max))
+                }),
+        );
         self
     }
     pub(crate) fn sight_corners(mut self, pose: Transform) -> [Vec3; 8] {
-        self.visual_bounds = self.source_bank_bounds.map(|(min, max)|
-            (min.min(self.min), max.max(self.max)));
+        self.visual_bounds = self
+            .source_bank_bounds
+            .map(|(min, max)| (min.min(self.min), max.max(self.max)));
         self.corners(pose)
     }
     pub(crate) fn corners(self, pose: Transform) -> [Vec3; 8] {
@@ -212,27 +233,60 @@ mod source_bank_envelope_tests {
     #[test]
     fn send_out_envelope_contains_rig_and_full_bank_at_every_yaw_and_contact() {
         for support in [0.2, 0.6] {
-            let mut authored = BattleBody::modeled("TEST", Vec3::new(-0.3, 0.2, -0.2), Vec3::new(0.3, 1.0, 0.2), 1.7);
+            let mut authored = BattleBody::modeled(
+                "TEST",
+                Vec3::new(-0.3, 0.2, -0.2),
+                Vec3::new(0.3, 1.0, 0.2),
+                1.7,
+            );
             authored.support_y = support;
             authored.visual_bounds = Some((Vec3::new(-0.5, 0.1, -0.4), Vec3::new(0.4, 1.3, 0.4)));
             let expanded = authored.with_source_card_envelope(1.2);
-            assert_eq!((expanded.min, expanded.max, expanded.scale, expanded.support_y, expanded.reference_height),
-                (authored.min, authored.max, authored.scale, authored.support_y, authored.reference_height));
+            assert_eq!(
+                (
+                    expanded.min,
+                    expanded.max,
+                    expanded.scale,
+                    expanded.support_y,
+                    expanded.reference_height
+                ),
+                (
+                    authored.min,
+                    authored.max,
+                    authored.scale,
+                    authored.support_y,
+                    authored.reference_height
+                )
+            );
             assert_eq!(expanded, expanded.with_source_card_envelope(1.2));
             let (min, max) = expanded.visual_bounds.unwrap();
             let (rig_min, rig_max) = authored.visual_bounds.unwrap();
             assert!(min.cmple(rig_min).all() && max.cmpge(rig_max).all());
             let anchor = Vec3::new(3.0, 0.4, -2.0);
             let rotation = Quat::from_rotation_y(0.71);
-            let model_pose = Transform { translation: anchor - Vec3::Y * support * authored.scale.y, rotation, scale: authored.scale };
+            let model_pose = Transform {
+                translation: anchor - Vec3::Y * support * authored.scale.y,
+                rotation,
+                scale: authored.scale,
+            };
             for degree in 0..360 {
-                let card_pose = Transform { translation: anchor + Vec3::Y * 0.95,
-                    rotation: Quat::from_rotation_y((degree as f32).to_radians()), scale: Vec3::new(1.2, 1.0, 1.0) };
-                for x in [-0.95, 0.95] { for y in [-0.95, 0.95] {
-                    let point = model_pose.to_matrix().inverse().transform_point3(card_pose.transform_point(Vec3::new(x, y, 0.0)));
-                    assert!(point.cmpge(min - Vec3::splat(0.00001)).all()
-                        && point.cmple(max + Vec3::splat(0.00001)).all());
-                }}
+                let card_pose = Transform {
+                    translation: anchor + Vec3::Y * 0.95,
+                    rotation: Quat::from_rotation_y((degree as f32).to_radians()),
+                    scale: Vec3::new(1.2, 1.0, 1.0),
+                };
+                for x in [-0.95, 0.95] {
+                    for y in [-0.95, 0.95] {
+                        let point = model_pose
+                            .to_matrix()
+                            .inverse()
+                            .transform_point3(card_pose.transform_point(Vec3::new(x, y, 0.0)));
+                        assert!(
+                            point.cmpge(min - Vec3::splat(0.00001)).all()
+                                && point.cmple(max + Vec3::splat(0.00001)).all()
+                        );
+                    }
+                }
             }
         }
     }
@@ -247,28 +301,48 @@ pub struct BattleUiBounds {
 }
 impl Default for BattleUiBounds {
     fn default() -> Self {
-        Self { viewport: Vec2::ZERO, safe_y: Vec2::new(0.23, 0.75) }
+        Self {
+            viewport: Vec2::ZERO,
+            safe_y: Vec2::new(0.23, 0.75),
+        }
     }
 }
 impl BattleUiBounds {
     pub fn reserve(&mut self, viewport: Vec2, top: f32, bottom: f32) {
-        if !viewport.is_finite() || viewport.min_element() <= 0.0
-            || !top.is_finite() || !bottom.is_finite()
-            || top < 0.0 || bottom > 1.0 || bottom - top < 0.04 {
+        if !viewport.is_finite()
+            || viewport.min_element() <= 0.0
+            || !top.is_finite()
+            || !bottom.is_finite()
+            || top < 0.0
+            || bottom > 1.0
+            || bottom - top < 0.04
+        {
             return;
         }
         let baseline = Vec2::new(top.max(0.23), bottom.min(0.75));
-        let next = if baseline.y - baseline.x >= 0.04 { baseline } else { Vec2::new(top, bottom) };
+        let next = if baseline.y - baseline.x >= 0.04 {
+            baseline
+        } else {
+            Vec2::new(top, bottom)
+        };
         if self.viewport == viewport {
             let stable = Vec2::new(self.safe_y.x.max(next.x), self.safe_y.y.min(next.y));
-            self.safe_y = if stable.y - stable.x >= 0.04 { stable } else { next };
+            self.safe_y = if stable.y - stable.x >= 0.04 {
+                stable
+            } else {
+                next
+            };
         } else {
             self.viewport = viewport;
             self.safe_y = next;
         }
     }
     pub(crate) fn for_viewport(&self, viewport: Vec2) -> Vec2 {
-        if self.viewport == viewport { self.safe_y } else { Self::default().safe_y }
+        if self.viewport == viewport {
+            self.safe_y
+        } else {
+            Self::default().safe_y
+        }
     }
 }
 
@@ -372,10 +446,15 @@ impl BattleSceneLayout {
 
     pub(crate) fn reserve_ui(mut self, bodies: [Option<BattleBody>; 2], safe_y: Vec2) -> Self {
         self.safe_y = safe_y;
-        let points: Vec<_> = bodies.into_iter().zip(self.body_poses)
+        let points: Vec<_> = bodies
+            .into_iter()
+            .zip(self.body_poses)
             .filter_map(|(body, pose)| Some(body?.corners(pose?)))
-            .flatten().collect();
-        if !points.is_empty() { self.fit_camera(&points); }
+            .flatten()
+            .collect();
+        if !points.is_empty() {
+            self.fit_camera(&points);
+        }
         self
     }
 
@@ -394,13 +473,18 @@ impl BattleSceneLayout {
     /// Sprite art may stand on checked land without claiming a physical model.
     /// Its axis-aligned envelope encloses every upright billboard rotation.
     pub(crate) fn for_map_bodies(
-        bodies: [Option<BattleBody>; 2], anchors: [Vec3; 2], viewport: Vec2,
+        bodies: [Option<BattleBody>; 2],
+        anchors: [Vec3; 2],
+        viewport: Vec2,
     ) -> Option<Self> {
         Self::for_retained_bodies(bodies, anchors, viewport, true)
     }
 
     fn for_retained_bodies(
-        bodies: [Option<BattleBody>; 2], anchors: [Vec3; 2], viewport: Vec2, allow_cards: bool,
+        bodies: [Option<BattleBody>; 2],
+        anchors: [Vec3; 2],
+        viewport: Vec2,
+        allow_cards: bool,
     ) -> Option<Self> {
         if !viewport.is_finite()
             || viewport.min_element() <= 0.0
@@ -449,7 +533,11 @@ impl BattleSceneLayout {
         let axis = corridor / separation;
         let poses: [Transform; 2] = std::array::from_fn(|i| {
             let facing = axis * if i == 0 { 1.0 } else { -1.0 };
-            let rotation = if bodies[i].modeled { Quat::from_rotation_y(facing.x.atan2(facing.z)) } else { Quat::IDENTITY };
+            let rotation = if bodies[i].modeled {
+                Quat::from_rotation_y(facing.x.atan2(facing.z))
+            } else {
+                Quat::IDENTITY
+            };
             Transform {
                 translation: anchors[i]
                     - rotation * (Vec3::Y * bodies[i].support_y * bodies[i].scale.y),
@@ -537,13 +625,25 @@ impl BattleSceneLayout {
 
     /// Refit a battle shot without moving, turning or resizing either body.
     /// The terrain owner still validates this shot against the literal map.
-    pub(crate) fn battle_shot(&self, bodies: [Option<BattleBody>; 2], yaw: f32, elevation: f32) -> Option<Self> {
-        if !yaw.is_finite() || !elevation.is_finite() { return None; }
+    pub(crate) fn battle_shot(
+        &self,
+        bodies: [Option<BattleBody>; 2],
+        yaw: f32,
+        elevation: f32,
+    ) -> Option<Self> {
+        if !yaw.is_finite() || !elevation.is_finite() {
+            return None;
+        }
         let delta = self.origins[1] - self.origins[0];
         let axis = Vec3::new(delta.x, 0.0, delta.z).try_normalize()?;
-        let points: Vec<Vec3> = bodies.into_iter().zip(self.body_poses)
+        let points: Vec<Vec3> = bodies
+            .into_iter()
+            .zip(self.body_poses)
             .map(|(body, pose)| Some(body?.corners(pose?)))
-            .collect::<Option<Vec<_>>>()?.into_iter().flatten().collect();
+            .collect::<Option<Vec<_>>>()?
+            .into_iter()
+            .flatten()
+            .collect();
         let horizontal = -axis * yaw.cos() + axis.cross(Vec3::Y) * yaw.sin();
         let back = horizontal * elevation.cos() + Vec3::Y * elevation.sin();
         let mut candidate = self.clone();
@@ -556,55 +656,81 @@ impl BattleSceneLayout {
     /// keeping the opponent as their primary facing direction. This changes
     /// no feet, physical size or source art, and is fixed for the whole shot.
     pub(crate) fn readable_facing(&self, bodies: [Option<BattleBody>; 2]) -> Option<Self> {
-        let axis = ((self.origins[1] - self.origins[0]) * Vec3::new(1.0, 0.0, 1.0)).try_normalize()?;
+        let axis =
+            ((self.origins[1] - self.origins[0]) * Vec3::new(1.0, 0.0, 1.0)).try_normalize()?;
         let mut candidate = self.clone();
         let mut corners = [[Vec3::ZERO; 8]; 2];
         for index in 0..2 {
             let body = bodies[index]?;
             let mut pose = self.body_poses[index]?;
             if body.modeled {
-                let viewer = ((self.camera.translation - self.origins[index]) * Vec3::new(1.0, 0.0, 1.0)).try_normalize()?;
+                let viewer = ((self.camera.translation - self.origins[index])
+                    * Vec3::new(1.0, 0.0, 1.0))
+                .try_normalize()?;
                 let opponent = axis * if index == 0 { 1.0 } else { -1.0 };
                 // Keep the opponent as the main facing direction while
                 // exposing enough of the face for a low three-quarter shot.
                 // A near-profile view hides eyes on round-headed models.
                 let facing = opponent.lerp(viewer, 0.35).normalize();
                 pose.rotation = Quat::from_rotation_y(facing.x.atan2(facing.z));
-                pose.translation = self.origins[index] - pose.rotation * (Vec3::Y * body.support_y * body.scale.y);
+                pose.translation =
+                    self.origins[index] - pose.rotation * (Vec3::Y * body.support_y * body.scale.y);
                 candidate.body_poses[index] = Some(pose);
                 let center = (body.min + body.max) * 0.5;
-                candidate.hit_anchors[index] = pose.transform_point(Vec3::new(center.x,
-                    body.min.y + body.reference_height * 0.5, center.z));
+                candidate.hit_anchors[index] = pose.transform_point(Vec3::new(
+                    center.x,
+                    body.min.y + body.reference_height * 0.5,
+                    center.z,
+                ));
             }
             corners[index] = body.corners(pose);
         }
-        let intervals = corners.map(|points| points.into_iter().fold((f32::INFINITY, f32::NEG_INFINITY),
-            |(min, max), point| { let value = point.dot(axis); (min.min(value), max.max(value)) }));
-        if intervals[0].1 >= intervals[1].0 { return None; }
-        candidate.fit_anchored_camera(&corners.into_iter().flatten().collect::<Vec<_>>()).then_some(candidate)
+        let intervals = corners.map(|points| {
+            points
+                .into_iter()
+                .fold((f32::INFINITY, f32::NEG_INFINITY), |(min, max), point| {
+                    let value = point.dot(axis);
+                    (min.min(value), max.max(value))
+                })
+        });
+        if intervals[0].1 >= intervals[1].0 {
+            return None;
+        }
+        candidate
+            .fit_anchored_camera(&corners.into_iter().flatten().collect::<Vec<_>>())
+            .then_some(candidate)
     }
 
     /// Set a readable letter-plane pose once for the establishing shot.
     /// Choose the nearer front/back side while retaining the opponent-facing
     /// hemisphere. Other participants keep their original poses.
     pub(crate) fn readable_glyphs(&self, bodies: [Option<BattleBody>; 2]) -> Option<Self> {
-        if !bodies.iter().flatten().any(|body| body.glyph_plane) { return Some(self.clone()); }
-        let axis = ((self.origins[1]-self.origins[0])*Vec3::new(1.,0.,1.)).try_normalize()?;
+        if !bodies.iter().flatten().any(|body| body.glyph_plane) {
+            return Some(self.clone());
+        }
+        let axis = ((self.origins[1] - self.origins[0]) * Vec3::new(1., 0., 1.)).try_normalize()?;
         let mut candidate = self.clone();
         let mut corners = Vec::new();
         for index in 0..2 {
-            let body=bodies[index]?;
-            let mut pose=self.body_poses[index]?;
+            let body = bodies[index]?;
+            let mut pose = self.body_poses[index]?;
             if body.modeled && body.glyph_plane {
-                let viewer=((self.camera.translation-self.origins[index])*Vec3::new(1.,0.,1.)).try_normalize()?;
-                let opponent=axis*if index==0 {1.} else {-1.};
-                let nearest=viewer*if viewer.dot(opponent)<0. {-1.} else {1.};
-                let facing=opponent.lerp(nearest,0.45).normalize();
-                pose.rotation=Quat::from_rotation_y(facing.x.atan2(facing.z));
-                pose.translation=self.origins[index]-pose.rotation*(Vec3::Y*body.support_y*body.scale.y);
-                candidate.body_poses[index]=Some(pose);
-                let center=(body.min+body.max)*0.5;
-                candidate.hit_anchors[index]=pose.transform_point(Vec3::new(center.x,body.min.y+body.reference_height*0.5,center.z));
+                let viewer = ((self.camera.translation - self.origins[index])
+                    * Vec3::new(1., 0., 1.))
+                .try_normalize()?;
+                let opponent = axis * if index == 0 { 1. } else { -1. };
+                let nearest = viewer * if viewer.dot(opponent) < 0. { -1. } else { 1. };
+                let facing = opponent.lerp(nearest, 0.45).normalize();
+                pose.rotation = Quat::from_rotation_y(facing.x.atan2(facing.z));
+                pose.translation =
+                    self.origins[index] - pose.rotation * (Vec3::Y * body.support_y * body.scale.y);
+                candidate.body_poses[index] = Some(pose);
+                let center = (body.min + body.max) * 0.5;
+                candidate.hit_anchors[index] = pose.transform_point(Vec3::new(
+                    center.x,
+                    body.min.y + body.reference_height * 0.5,
+                    center.z,
+                ));
             }
             corners.extend(body.corners(pose));
         }
@@ -654,7 +780,11 @@ impl BattleSceneLayout {
             || self.hit_anchors.iter().any(|point| !point.is_finite())
             || points.iter().any(|point| {
                 let uv = self.project_point(*point, self.viewport);
-                !uv.is_finite() || uv.x < 0.0899 || uv.x > 0.9101 || uv.y < self.safe_y.x - 0.0001 || uv.y > self.safe_y.y + 0.0001
+                !uv.is_finite()
+                    || uv.x < 0.0899
+                    || uv.x > 0.9101
+                    || uv.y < self.safe_y.x - 0.0001
+                    || uv.y > self.safe_y.y + 0.0001
             })
         {
             return false;
@@ -692,7 +822,8 @@ impl BattleSceneLayout {
             distance.max(
                 (p.z + p.x.abs() / horizontal)
                     .max((p.y + up * p.z) / vertical)
-                    .max((-p.y + down * p.z) / vertical) + 0.15,
+                    .max((-p.y + down * p.z) / vertical)
+                    + 0.15,
             )
         });
         self.camera = Transform {
@@ -706,7 +837,9 @@ impl BattleSceneLayout {
     pub(crate) fn origin(&self, index: usize) -> Vec3 {
         self.origins[index]
     }
-    pub(crate) fn visible_y_range(&self) -> Vec2 { self.safe_y }
+    pub(crate) fn visible_y_range(&self) -> Vec2 {
+        self.safe_y
+    }
     pub(crate) fn source_position(&self, center: Vec2) -> Vec3 {
         // The bridge publishes displayed LCD coordinates after OAM (8,16).
         let across = (center.x - 40.0) / 84.0;
@@ -750,11 +883,7 @@ impl BattleSceneLayout {
         )
     }
     pub(crate) fn project_point(&self, point: Vec3, viewport: Vec2) -> Vec2 {
-        let p = self
-            .camera
-            .to_matrix()
-            .inverse()
-            .transform_point3(point);
+        let p = self.camera.to_matrix().inverse().transform_point3(point);
         let tangent = (CAMERA_FOV * 0.5).tan();
         let aspect = viewport.x / viewport.y;
         Vec2::new(
@@ -819,10 +948,18 @@ mod framing_tests {
     }
     #[test]
     fn actual_hud_strips_fit_whole_bodies_without_changing_scale_or_feet() {
-        for viewport in [Vec2::new(1280.0, 960.0), Vec2::new(640.0, 1136.0), Vec2::new(1136.0, 640.0)] {
+        for viewport in [
+            Vec2::new(1280.0, 960.0),
+            Vec2::new(640.0, 1136.0),
+            Vec2::new(1136.0, 640.0),
+        ] {
             let bodies = pair();
             let original = BattleSceneLayout::for_bodies(bodies, viewport);
-            for safe in [Vec2::new(0.36, 0.64), Vec2::new(0.55, 0.88), Vec2::new(0.12, 0.43)] {
+            for safe in [
+                Vec2::new(0.36, 0.64),
+                Vec2::new(0.55, 0.88),
+                Vec2::new(0.12, 0.43),
+            ] {
                 let fitted = original.clone().reserve_ui(bodies, safe);
                 assert_eq!(fitted.body_poses, original.body_poses);
                 assert_eq!(fitted.origins, original.origins);
@@ -830,8 +967,13 @@ mod framing_tests {
                 for i in 0..2 {
                     for point in bodies[i].unwrap().corners(fitted.body_poses[i].unwrap()) {
                         let uv = fitted.project_point(point, viewport);
-                        assert!(uv.x >= 0.0899 && uv.x <= 0.9101 && uv.y >= safe.x - 0.0001 && uv.y <= safe.y + 0.0001,
-                            "{viewport:?} {safe:?} {uv:?}");
+                        assert!(
+                            uv.x >= 0.0899
+                                && uv.x <= 0.9101
+                                && uv.y >= safe.x - 0.0001
+                                && uv.y <= safe.y + 0.0001,
+                            "{viewport:?} {safe:?} {uv:?}"
+                        );
                     }
                 }
                 // Resolved alternate terrain cameras must retain the same strip.
@@ -1018,25 +1160,43 @@ mod anchored_layout_tests {
     #[test]
     fn unown_letter_plane_opens_without_changing_opponent_pose_size_or_support() {
         for side in 0..2 {
-            let mut bodies=route36_pair();
-            bodies[side]=Some(BattleBody::modeled("UNOWN",Vec3::new(-0.4,0.,-0.06),Vec3::new(0.4,1.,0.06),1.));
-            for axis in [Vec3::X,Vec3::NEG_X,Vec3::Z,Vec3::NEG_Z] {
-                let viewport=Vec2::new(800.,600.);
-                let base=BattleSceneLayout::for_anchored_bodies(bodies,[-axis*4.,axis*4.],viewport).unwrap()
-                    .battle_shot(bodies,90.0_f32.to_radians(),24.0_f32.to_radians()).unwrap();
-                let readable=base.readable_glyphs(bodies).unwrap();
-                assert_eq!(readable.origins,base.origins);
-                assert_eq!(readable.body_poses[1-side],base.body_poses[1-side]);
-                let pose=readable.body_poses[side].unwrap();
-                let opponent=axis*if side==0 {1.} else {-1.};
-                let viewer=((base.camera.translation-base.origins[side])*Vec3::new(1.,0.,1.)).normalize();
-                assert!((pose.rotation*Vec3::Z).dot(opponent)>0.70);
-                assert!((pose.rotation*Vec3::Z).dot(viewer).abs()>0.60);
-                assert_eq!(pose.scale,base.body_poses[side].unwrap().scale);
-                assert!((pose.transform_point(Vec3::Y*bodies[side].unwrap().support_y)-base.origins[side]).length()<0.00001);
+            let mut bodies = route36_pair();
+            bodies[side] = Some(BattleBody::modeled(
+                "UNOWN",
+                Vec3::new(-0.4, 0., -0.06),
+                Vec3::new(0.4, 1., 0.06),
+                1.,
+            ));
+            for axis in [Vec3::X, Vec3::NEG_X, Vec3::Z, Vec3::NEG_Z] {
+                let viewport = Vec2::new(800., 600.);
+                let base = BattleSceneLayout::for_anchored_bodies(
+                    bodies,
+                    [-axis * 4., axis * 4.],
+                    viewport,
+                )
+                .unwrap()
+                .battle_shot(bodies, 90.0_f32.to_radians(), 24.0_f32.to_radians())
+                .unwrap();
+                let readable = base.readable_glyphs(bodies).unwrap();
+                assert_eq!(readable.origins, base.origins);
+                assert_eq!(readable.body_poses[1 - side], base.body_poses[1 - side]);
+                let pose = readable.body_poses[side].unwrap();
+                let opponent = axis * if side == 0 { 1. } else { -1. };
+                let viewer = ((base.camera.translation - base.origins[side])
+                    * Vec3::new(1., 0., 1.))
+                .normalize();
+                assert!((pose.rotation * Vec3::Z).dot(opponent) > 0.70);
+                assert!((pose.rotation * Vec3::Z).dot(viewer).abs() > 0.60);
+                assert_eq!(pose.scale, base.body_poses[side].unwrap().scale);
+                assert!(
+                    (pose.transform_point(Vec3::Y * bodies[side].unwrap().support_y)
+                        - base.origins[side])
+                        .length()
+                        < 0.00001
+                );
                 for point in bodies[side].unwrap().corners(pose) {
-                    let uv=readable.project_point(point,viewport);
-                    assert!(uv.x>=0.0899 && uv.x<=0.9101 && uv.y>=0.2299 && uv.y<=0.7501);
+                    let uv = readable.project_point(point, viewport);
+                    assert!(uv.x >= 0.0899 && uv.x <= 0.9101 && uv.y >= 0.2299 && uv.y <= 0.7501);
                 }
             }
         }
@@ -1047,8 +1207,11 @@ mod anchored_layout_tests {
         let bodies = route36_pair();
         let viewport = Vec2::new(800.0, 600.0);
         for axis in [Vec3::X, Vec3::NEG_X, Vec3::Z, Vec3::NEG_Z] {
-            let base = BattleSceneLayout::for_anchored_bodies(bodies, [-axis * 4.0, axis * 4.0], viewport).unwrap()
-                .battle_shot(bodies, 90.0_f32.to_radians(), 24.0_f32.to_radians()).unwrap();
+            let base =
+                BattleSceneLayout::for_anchored_bodies(bodies, [-axis * 4.0, axis * 4.0], viewport)
+                    .unwrap()
+                    .battle_shot(bodies, 90.0_f32.to_radians(), 24.0_f32.to_radians())
+                    .unwrap();
             let readable = base.readable_facing(bodies).unwrap();
             assert_eq!(readable.origins, base.origins);
             for index in 0..2 {
@@ -1057,21 +1220,34 @@ mod anchored_layout_tests {
                 let opponent = axis * if index == 0 { 1.0 } else { -1.0 };
                 assert!((pose.rotation * Vec3::Z).dot(opponent) > 0.83);
                 let viewer = ((base.camera.translation - base.origins[index])
-                    * Vec3::new(1.0, 0.0, 1.0)).normalize();
-                assert!((pose.rotation * Vec3::Z).dot(viewer)
-                    > (base.body_poses[index].unwrap().rotation * Vec3::Z).dot(viewer),
-                    "the face must become more visible while retaining the opponent-facing hemisphere");
+                    * Vec3::new(1.0, 0.0, 1.0))
+                .normalize();
+                assert!(
+                    (pose.rotation * Vec3::Z).dot(viewer)
+                        > (base.body_poses[index].unwrap().rotation * Vec3::Z).dot(viewer),
+                    "the face must become more visible while retaining the opponent-facing hemisphere"
+                );
                 assert_eq!(pose.scale, base.body_poses[index].unwrap().scale);
-                assert!((pose.transform_point(Vec3::Y * body.support_y) - base.origins[index]).length() < 0.00001);
+                assert!(
+                    (pose.transform_point(Vec3::Y * body.support_y) - base.origins[index]).length()
+                        < 0.00001
+                );
                 for point in body.corners(pose) {
                     let uv = readable.project_point(point, viewport);
                     assert!(uv.x >= 0.0899 && uv.x <= 0.9101 && uv.y >= 0.2299 && uv.y <= 0.7501);
                 }
             }
             let projection = readable.source_projection(viewport);
-            for (index, source) in [Vec2::new(40., 72.), Vec2::new(124., 32.)].into_iter().enumerate() {
+            for (index, source) in [Vec2::new(40., 72.), Vec2::new(124., 32.)]
+                .into_iter()
+                .enumerate()
+            {
                 let projected = (projection * source.extend(1.0)).truncate();
-                assert!((projected - readable.project_point(readable.hit_anchors[index], viewport)).length() < 0.00001);
+                assert!(
+                    (projected - readable.project_point(readable.hit_anchors[index], viewport))
+                        .length()
+                        < 0.00001
+                );
             }
         }
     }
@@ -1508,8 +1684,16 @@ mod diglett_capsule_reference_tests {
     #[test]
     fn diglett_scale_and_projection_measure_the_stored_capsule_without_soil() {
         let rig = crate::species_rig::rig(crate::species_rig::Species::Diglett);
-        let capsule = rig.anatomy.iter().find(|part| part.name.starts_with("Body /")).unwrap();
-        let ys: Vec<_> = capsule.vertices.clone().map(|i| rig.neutral.positions[i][1]).collect();
+        let capsule = rig
+            .anatomy
+            .iter()
+            .find(|part| part.name.starts_with("Body /"))
+            .unwrap();
+        let ys: Vec<_> = capsule
+            .vertices
+            .clone()
+            .map(|i| rig.neutral.positions[i][1])
+            .collect();
         let span = ys.iter().copied().fold(f32::NEG_INFINITY, f32::max)
             - ys.iter().copied().fold(f32::INFINITY, f32::min);
         let (min, max) = rig.neutral_bounds;
@@ -1527,17 +1711,17 @@ mod mantine_reference_tests {
     use super::*;
     #[test]
     fn mantine_pack_dimension_measures_its_longitudinal_ray_body() {
-        let rig=crate::species_rig::rig(crate::species_rig::Species::Mantine);
-        let (min,max)=rig.neutral_bounds;
-        let span=reference_span("MANTINE",min,max);
-        assert_eq!(span,(max-min).z);
-        assert!(span>(max-min).y*2.0);
-        let pack_dimension=2.1082;
-        let scale=model_scale("MANTINE",Some(pack_dimension),min,max).unwrap();
-        assert!((span*scale/WORLD_UNITS_PER_METER-pack_dimension).abs()<0.000001);
-        let body=BattleBody::modeled("MANTINE",min,max,scale);
-        assert_eq!(body.scale,Vec3::splat(scale));
-        assert_eq!(body.reference_height,(max-min).y);
-        assert_eq!(body.support_y,min.y);
+        let rig = crate::species_rig::rig(crate::species_rig::Species::Mantine);
+        let (min, max) = rig.neutral_bounds;
+        let span = reference_span("MANTINE", min, max);
+        assert_eq!(span, (max - min).z);
+        assert!(span > (max - min).y * 2.0);
+        let pack_dimension = 2.1082;
+        let scale = model_scale("MANTINE", Some(pack_dimension), min, max).unwrap();
+        assert!((span * scale / WORLD_UNITS_PER_METER - pack_dimension).abs() < 0.000001);
+        let body = BattleBody::modeled("MANTINE", min, max, scale);
+        assert_eq!(body.scale, Vec3::splat(scale));
+        assert_eq!(body.reference_height, (max - min).y);
+        assert_eq!(body.support_y, min.y);
     }
 }

@@ -38,8 +38,12 @@ struct SkyMaterial {
 impl Material for SkyMaterial {
     // The dome paints the background without writing depth. It cannot supply
     // scene geometry to SSAO, a depth prepass or a shadow map.
-    fn enable_prepass() -> bool { false }
-    fn enable_shadows() -> bool { false }
+    fn enable_prepass() -> bool {
+        false
+    }
+    fn enable_shadows() -> bool {
+        false
+    }
 
     fn fragment_shader() -> ShaderRef {
         SHADER.into()
@@ -131,16 +135,24 @@ pub(super) fn woodland_strength(frame: &VisualWorldFrame) -> f32 {
         // Camera fog affects the whole scene. Keep every water-bearing frame
         // on its existing atmosphere; directional sky haze can still fill
         // the wooded shore without touching the sea or a pond.
-        if shape == crate::profile::CellShape::Water { return 0.0; }
+        if shape == crate::profile::CellShape::Water {
+            return 0.0;
+        }
         trees += usize::from(is_tree(shape));
     }
     coverage_strength(trees as f32 / frame.tiles.len() as f32)
 }
 
 fn is_tree(shape: crate::profile::CellShape) -> bool {
-    matches!(shape,
-        crate::profile::CellShape::FacadeBand { solid: crate::profile::SolidKind::Tree, .. }
-            | crate::profile::CellShape::RaisedTop { solid: crate::profile::SolidKind::Tree, .. }
+    matches!(
+        shape,
+        crate::profile::CellShape::FacadeBand {
+            solid: crate::profile::SolidKind::Tree,
+            ..
+        } | crate::profile::CellShape::RaisedTop {
+            solid: crate::profile::SolidKind::Tree,
+            ..
+        }
     )
 }
 
@@ -204,11 +216,10 @@ fn setup(
 }
 pub(super) fn outdoors(frame: &VisualWorldFrame) -> bool {
     !crate::interior_cutaway::is_cave(frame)
-        && frame
-            .tiles
-            .first()
-            .is_some_and(|tile| !crate::interior::has_back_wall(&tile.source.tileset_id)
-                || crate::interior::open_air_roof(&frame.map_id,&tile.source.tileset_id))
+        && frame.tiles.first().is_some_and(|tile| {
+            !crate::interior::has_back_wall(&tile.source.tileset_id)
+                || crate::interior::open_air_roof(&frame.map_id, &tile.source.tileset_id)
+        })
 }
 fn sync(
     frame: Res<VisualWorldFrame>,
@@ -256,13 +267,21 @@ fn sync(
         if transform.translation != camera.translation {
             transform.translation = camera.translation;
         }
-        let scale=if crate::summit_vista::enabled(&frame) {
-            Vec3::splat(5000.*crate::summit_vista::world_units(&frame)/3000.)
-        } else {Vec3::ONE};
-        if transform.scale!=scale {transform.scale=scale;}
+        let scale = if crate::summit_vista::enabled(&frame) {
+            Vec3::splat(5000. * crate::summit_vista::world_units(&frame) / 3000.)
+        } else {
+            Vec3::ONE
+        };
+        if transform.scale != scale {
+            transform.scale = scale;
+        }
         if let Some(mut sky) = materials.get_mut(&handle.0) {
             *sky = material(second, camera.translation, time.elapsed_secs_wrapped());
-            sky.parameters.w = if crate::summit_vista::enabled(&frame) { 1.0 } else { 0.0 };
+            sky.parameters.w = if crate::summit_vista::enabled(&frame) {
+                1.0
+            } else {
+                0.0
+            };
         }
     }
 }
@@ -272,62 +291,98 @@ mod tests {
     use super::*;
     fn grove_frame() -> VisualWorldFrame {
         let tile = crystal_render_api::VisualTile {
-            column: 0, row: 0, priority: false, texture: Handle::default(),
+            column: 0,
+            row: 0,
+            priority: false,
+            texture: Handle::default(),
             animation_frames: None,
             source: crystal_render_api::VisualTileSource {
-                tileset_id: "johto_modern".into(), metatile_id: 5,
-                subtile_column: 0, subtile_row: 0, tile_index: 0x1e,
+                tileset_id: "johto_modern".into(),
+                metatile_id: 5,
+                subtile_column: 0,
+                subtile_row: 0,
+                tile_index: 0x1e,
             },
         };
         VisualWorldFrame {
-            active: true, map_id: "AzaleaTown".into(),
-            viewport_size: Vec2::new(160., 144.), tile_size: Vec2::splat(8.),
+            active: true,
+            map_id: "AzaleaTown".into(),
+            viewport_size: Vec2::new(160., 144.),
+            tile_size: Vec2::splat(8.),
             grid_size: UVec2::splat(40),
-            tiles: (0..1600).map(|i| {
-                let mut tile = tile.clone();
-                tile.column = i % 40;
-                tile.row = i / 40;
-                tile
-            }).collect(), ..Default::default()
+            tiles: (0..1600)
+                .map(|i| {
+                    let mut tile = tile.clone();
+                    tile.column = i % 40;
+                    tile.row = i / 40;
+                    tile
+                })
+                .collect(),
+            ..Default::default()
         }
     }
 
     #[test]
     fn sky_palette_does_not_depend_on_forest_coverage_water_or_viewport_origin() {
-        let mut app=App::new();
+        let mut app = App::new();
         app.insert_resource(grove_frame())
-            .insert_resource(VoxelViewSettings {enabled:true,..Default::default()})
-            .insert_resource(VisualWorldClock {minute_of_day:Some(720),second_of_minute:0})
+            .insert_resource(VoxelViewSettings {
+                enabled: true,
+                ..Default::default()
+            })
+            .insert_resource(VisualWorldClock {
+                minute_of_day: Some(720),
+                second_of_minute: 0,
+            })
             .init_resource::<Time>()
             .init_resource::<Assets<SkyMaterial>>()
-            .add_systems(Update,sync);
-        let eye=Vec3::new(20.,30.,40.);
-        app.world_mut().spawn((VoxelWorldCamera,Transform::from_translation(eye)));
-        let handle=app.world_mut().resource_mut::<Assets<SkyMaterial>>()
-            .add(material(0,Vec3::ZERO,0.));
-        let dome=app.world_mut().spawn((SkyDome,Transform::default(),Visibility::Hidden,
-            MeshMaterial3d(handle.clone()))).id();
-        let reference=material(12*3600,eye,0.);
+            .add_systems(Update, sync);
+        let eye = Vec3::new(20., 30., 40.);
+        app.world_mut()
+            .spawn((VoxelWorldCamera, Transform::from_translation(eye)));
+        let handle = app
+            .world_mut()
+            .resource_mut::<Assets<SkyMaterial>>()
+            .add(material(0, Vec3::ZERO, 0.));
+        let dome = app
+            .world_mut()
+            .spawn((
+                SkyDome,
+                Transform::default(),
+                Visibility::Hidden,
+                MeshMaterial3d(handle.clone()),
+            ))
+            .id();
+        let reference = material(12 * 3600, eye, 0.);
         for scene in 0..4 {
             {
-                let mut frame=app.world_mut().resource_mut::<VisualWorldFrame>();
-                frame.grid_origin+=IVec2::new(4,-4);
-                frame.terrain_revision+=1;
+                let mut frame = app.world_mut().resource_mut::<VisualWorldFrame>();
+                frame.grid_origin += IVec2::new(4, -4);
+                frame.terrain_revision += 1;
                 for tile in &mut frame.tiles {
-                    if (scene==1 && tile.column>=30) || scene==2 {
-                        tile.source.metatile_id=0;
-                        tile.source.tile_index=0x14;
-                    } else if scene==3 {
-                        tile.source.metatile_id=0;
-                        tile.source.tile_index=0x01;
+                    if (scene == 1 && tile.column >= 30) || scene == 2 {
+                        tile.source.metatile_id = 0;
+                        tile.source.tile_index = 0x14;
+                    } else if scene == 3 {
+                        tile.source.metatile_id = 0;
+                        tile.source.tile_index = 0x01;
                     }
                 }
             }
             app.update();
-            assert_eq!(*app.world().get::<Visibility>(dome).unwrap(),Visibility::Visible);
-            let actual=app.world().resource::<Assets<SkyMaterial>>().get(&handle).unwrap();
-            assert_eq!(actual,&reference,
-                "trees must form the forest silhouette; the sky cannot synthesize dark backdrop sectors");
+            assert_eq!(
+                *app.world().get::<Visibility>(dome).unwrap(),
+                Visibility::Visible
+            );
+            let actual = app
+                .world()
+                .resource::<Assets<SkyMaterial>>()
+                .get(&handle)
+                .unwrap();
+            assert_eq!(
+                actual, &reference,
+                "trees must form the forest silhouette; the sky cannot synthesize dark backdrop sectors"
+            );
         }
     }
 
@@ -339,7 +394,11 @@ mod tests {
             tile.source.metatile_id = 0;
             tile.source.tile_index = 5;
         }
-        assert_eq!(woodland_strength(&frame), 0.0, "a few garden trees are not forest");
+        assert_eq!(
+            woodland_strength(&frame),
+            0.0,
+            "a few garden trees are not forest"
+        );
         for tile in &mut frame.tiles {
             tile.source.tileset_id = "house".into();
         }
@@ -351,28 +410,60 @@ mod tests {
 
     #[test]
     fn forest_distance_fog_tracks_night_and_clears_on_room_entry() {
-        use bevy::{anti_alias::fxaa::Fxaa, pbr::{DistanceFog, FogFalloff}};
+        use bevy::{
+            anti_alias::fxaa::Fxaa,
+            pbr::{DistanceFog, FogFalloff},
+        };
         let mut app = App::new();
         app.insert_resource(grove_frame())
-            .insert_resource(VoxelViewSettings { enabled: true, ..Default::default() })
-            .insert_resource(VisualWorldClock { minute_of_day: Some(720), second_of_minute: 0 })
+            .insert_resource(VoxelViewSettings {
+                enabled: true,
+                ..Default::default()
+            })
+            .insert_resource(VisualWorldClock {
+                minute_of_day: Some(720),
+                second_of_minute: 0,
+            })
             .init_resource::<crate::live_profiles::LiveProfiles>()
             .add_systems(Update, crate::sync_voxel_atmosphere);
-        let entity = app.world_mut().spawn((VoxelWorldCamera, Camera::default(),
-            DistanceFog::default(), Fxaa::default())).id();
+        let entity = app
+            .world_mut()
+            .spawn((
+                VoxelWorldCamera,
+                Camera::default(),
+                DistanceFog::default(),
+                Fxaa::default(),
+            ))
+            .id();
         app.update();
         let day = app.world().get::<DistanceFog>(entity).unwrap().color;
-        assert!(day.to_linear().to_vec4().distance(
-            woodland_color(DayCycle::at_seconds(12 * 3600).horizon).to_linear().to_vec4()) < 0.000001);
-        let pose = app.world().resource::<VoxelViewSettings>().camera.pose(Vec2::new(160.,144.));
+        assert!(
+            day.to_linear().to_vec4().distance(
+                woodland_color(DayCycle::at_seconds(12 * 3600).horizon)
+                    .to_linear()
+                    .to_vec4()
+            ) < 0.000001
+        );
+        let pose = app
+            .world()
+            .resource::<VoxelViewSettings>()
+            .camera
+            .pose(Vec2::new(160., 144.));
         let target_distance = pose.eye.distance(pose.target);
-        assert!(matches!(app.world().get::<DistanceFog>(entity).unwrap().falloff,
+        assert!(
+            matches!(app.world().get::<DistanceFog>(entity).unwrap().falloff,
             FogFalloff::Linear { start, end }
-            if start == target_distance + 192. && end == target_distance + 448.));
-        app.world_mut().resource_mut::<VisualWorldClock>().minute_of_day = Some(0);
+            if start == target_distance + 192. && end == target_distance + 448.)
+        );
+        app.world_mut()
+            .resource_mut::<VisualWorldClock>()
+            .minute_of_day = Some(0);
         app.update();
         let night = app.world().get::<DistanceFog>(entity).unwrap().color;
-        assert!(night.to_linear().to_vec4().truncate().length() < day.to_linear().to_vec4().truncate().length());
+        assert!(
+            night.to_linear().to_vec4().truncate().length()
+                < day.to_linear().to_vec4().truncate().length()
+        );
         {
             let mut frame = app.world_mut().resource_mut::<VisualWorldFrame>();
             frame.tiles[0].source.metatile_id = 0;
@@ -380,34 +471,57 @@ mod tests {
             frame.terrain_revision += 1;
         }
         app.update();
-        assert_eq!(app.world().get::<DistanceFog>(entity).unwrap().color, Color::NONE);
-        assert!(matches!(app.world().get::<Camera>(entity).unwrap().clear_color,
-            bevy::camera::ClearColorConfig::Custom(color) if color == DayCycle::at(0).horizon));
+        assert_eq!(
+            app.world().get::<DistanceFog>(entity).unwrap().color,
+            Color::NONE
+        );
+        assert!(
+            matches!(app.world().get::<Camera>(entity).unwrap().clear_color,
+            bevy::camera::ClearColorConfig::Custom(color) if color == DayCycle::at(0).horizon)
+        );
         {
             let mut frame = app.world_mut().resource_mut::<VisualWorldFrame>();
-            for tile in &mut frame.tiles { tile.source.tileset_id = "house".into(); }
+            for tile in &mut frame.tiles {
+                tile.source.tileset_id = "house".into();
+            }
             frame.terrain_revision += 1;
         }
         app.update();
-        assert_eq!(app.world().get::<DistanceFog>(entity).unwrap().color, Color::NONE);
+        assert_eq!(
+            app.world().get::<DistanceFog>(entity).unwrap().color,
+            Color::NONE
+        );
     }
 
     #[test]
     fn route_haze_is_faint_and_starts_beyond_nearby_landmarks() {
-        use bevy::{anti_alias::fxaa::Fxaa, pbr::{DistanceFog, FogFalloff}};
+        use bevy::{
+            anti_alias::fxaa::Fxaa,
+            pbr::{DistanceFog, FogFalloff},
+        };
         for map in ["Route26", "Route29"] {
             let mut frame = grove_frame();
             frame.map_id = map.into();
             let mut app = App::new();
             app.insert_resource(frame)
-                .insert_resource(VoxelViewSettings { enabled: true, ..Default::default() })
+                .insert_resource(VoxelViewSettings {
+                    enabled: true,
+                    ..Default::default()
+                })
                 .init_resource::<crate::live_profiles::LiveProfiles>()
                 .add_systems(Update, crate::sync_voxel_atmosphere);
-            let camera = app.world_mut().spawn((DistanceFog::default(), Fxaa::default(), VoxelWorldCamera)).id();
+            let camera = app
+                .world_mut()
+                .spawn((DistanceFog::default(), Fxaa::default(), VoxelWorldCamera))
+                .id();
             app.update();
             let fog = app.world().get::<DistanceFog>(camera).unwrap();
             assert!(fog.color.alpha() <= 0.12);
-            let pose = app.world().resource::<VoxelViewSettings>().camera.pose(Vec2::new(160.,144.));
+            let pose = app
+                .world()
+                .resource::<VoxelViewSettings>()
+                .camera
+                .pose(Vec2::new(160., 144.));
             let distance = pose.eye.distance(pose.target);
             assert!(matches!(fog.falloff, FogFalloff::Linear { start, end }
                 if start == distance + 256. && end == distance + 512.));
@@ -499,20 +613,32 @@ mod tests {
             *app.world().get::<Visibility>(dome).unwrap(),
             Visibility::Hidden
         );
-        for (map,atlas) in [("CeladonMansionRoof","mansion"),
-            ("GoldenrodDeptStoreRoof","mart"),("TinTowerRoof","tower")] {
+        for (map, atlas) in [
+            ("CeladonMansionRoof", "mansion"),
+            ("GoldenrodDeptStoreRoof", "mart"),
+            ("TinTowerRoof", "tower"),
+        ] {
             {
-                let mut frame=app.world_mut().resource_mut::<VisualWorldFrame>();
-                frame.map_id=map.into();frame.tiles[0].source.tileset_id=atlas.into();
+                let mut frame = app.world_mut().resource_mut::<VisualWorldFrame>();
+                frame.map_id = map.into();
+                frame.tiles[0].source.tileset_id = atlas.into();
             }
             app.update();
-            assert_eq!(*app.world().get::<Visibility>(dome).unwrap(),Visibility::Visible,"{map}");
+            assert_eq!(
+                *app.world().get::<Visibility>(dome).unwrap(),
+                Visibility::Visible,
+                "{map}"
+            );
         }
         {
-            let mut frame=app.world_mut().resource_mut::<VisualWorldFrame>();
-            frame.map_id="CeladonMansionRoofHouse".into();frame.tiles[0].source.tileset_id="mansion".into();
+            let mut frame = app.world_mut().resource_mut::<VisualWorldFrame>();
+            frame.map_id = "CeladonMansionRoofHouse".into();
+            frame.tiles[0].source.tileset_id = "mansion".into();
         }
         app.update();
-        assert_eq!(*app.world().get::<Visibility>(dome).unwrap(),Visibility::Hidden);
+        assert_eq!(
+            *app.world().get::<Visibility>(dome).unwrap(),
+            Visibility::Hidden
+        );
     }
 }

@@ -68,7 +68,11 @@ pub(crate) fn encode(features: &[String], size: usize) -> Vec<f32> {
     let mut drive = Vec::with_capacity(size);
     while drive.len() < size {
         let bank = drive.len() / 256;
-        drive.extend(encode_bank(features, (size - drive.len()).min(256), bank as u64));
+        drive.extend(encode_bank(
+            features,
+            (size - drive.len()).min(256),
+            bank as u64,
+        ));
     }
     drive
 }
@@ -99,7 +103,9 @@ fn encode_bank(features: &[String], size: usize, bank: u64) -> Vec<f32> {
             1.0
         };
         for k in 0..2u64 {
-            let mut h = hash(feature).wrapping_add(k.wrapping_mul(0x9e3779b97f4a7c15)).wrapping_add(bank.wrapping_mul(0x517cc1b727220a95));
+            let mut h = hash(feature)
+                .wrapping_add(k.wrapping_mul(0x9e3779b97f4a7c15))
+                .wrapping_add(bank.wrapping_mul(0x517cc1b727220a95));
             h = (h ^ (h >> 30)).wrapping_mul(0xbf58476d1ce4e5b9);
             h ^= h >> 27;
             let pairs = (slots / 2).max(1);
@@ -139,10 +145,18 @@ fn state_key(v: &Value) -> String {
     // Visible state only. No reward ledger, story flags or target action.
     // Scrolling species/search rows is still the same browsing task. Keep full
     // labels in sensory encoding; only loop detection groups these utility pages.
-    if v.pointer("/status/screen").and_then(Value::as_str)==Some("overworld")
-        && v.pointer("/observe/menus").and_then(Value::as_array).and_then(|m|m.last()).is_some_and(|m|m["kind"]=="pokedex")
-        && !v.pointer("/observe/visible_dialogue").and_then(Value::as_str).is_some_and(|s|!s.trim().is_empty()) {
-        return serde_json::json!(["overworld",v.pointer("/map_info/name"),"pokedex-browsing"]).to_string();
+    if v.pointer("/status/screen").and_then(Value::as_str) == Some("overworld")
+        && v.pointer("/observe/menus")
+            .and_then(Value::as_array)
+            .and_then(|m| m.last())
+            .is_some_and(|m| m["kind"] == "pokedex")
+        && !v
+            .pointer("/observe/visible_dialogue")
+            .and_then(Value::as_str)
+            .is_some_and(|s| !s.trim().is_empty())
+    {
+        return serde_json::json!(["overworld", v.pointer("/map_info/name"), "pokedex-browsing"])
+            .to_string();
     }
     serde_json::json!([
         v.pointer("/status/screen"),
@@ -222,20 +236,29 @@ mod tests {
     use super::*;
     use serde_json::json;
     #[test]
-    fn pokedex_scrolling_is_a_loop_without_hiding_cursor_inputs(){
-        let mut history=History::default();let mut menu_history=History::default();
-        let mut pressure=0.0;
+    fn pokedex_scrolling_is_a_loop_without_hiding_cursor_inputs() {
+        let mut history = History::default();
+        let mut menu_history = History::default();
+        let mut pressure = 0.0;
         for row in 0..32 {
-            let v=json!({"status":{"screen":"overworld"},"map_info":{"name":"VioletPokecenter1F"},"observe":{"menus":[{"kind":"pokedex","entries":[format!(">SPECIES{row}")]}],"text":format!("SPECIES{row}")}});
-            pressure=history.cues(&v).1;
-            let features=crate::interface::sensory_features_with_menus(&v,true);
-            assert!(features.iter().any(|f|f.contains(&format!("SPECIES{row}"))));
-            let mut purposeful=v.clone();purposeful["observe"]["menus"][0]["kind"]=json!("pack");
-            assert_eq!(menu_history.cues(&purposeful).1,0.0);
+            let v = json!({"status":{"screen":"overworld"},"map_info":{"name":"VioletPokecenter1F"},"observe":{"menus":[{"kind":"pokedex","entries":[format!(">SPECIES{row}")]}],"text":format!("SPECIES{row}")}});
+            pressure = history.cues(&v).1;
+            let features = crate::interface::sensory_features_with_menus(&v, true);
+            assert!(
+                features
+                    .iter()
+                    .any(|f| f.contains(&format!("SPECIES{row}")))
+            );
+            let mut purposeful = v.clone();
+            purposeful["observe"]["menus"][0]["kind"] = json!("pack");
+            assert_eq!(menu_history.cues(&purposeful).1, 0.0);
         }
-        assert_eq!(pressure,1.0);assert!(history.valid());
-        let restored:History=serde_json::from_str(&serde_json::to_string(&history).unwrap()).unwrap();
-        assert!(restored.valid());assert_eq!(restored.repeated,history.repeated);
+        assert_eq!(pressure, 1.0);
+        assert!(history.valid());
+        let restored: History =
+            serde_json::from_str(&serde_json::to_string(&history).unwrap()).unwrap();
+        assert!(restored.valid());
+        assert_eq!(restored.repeated, history.repeated);
     }
     #[test]
     fn story_cue_cannot_suppress_observation_channels() {
@@ -268,7 +291,11 @@ mod tests {
         assert_eq!(&expanded[..256], encode(&features, 256));
         for bank in expanded.chunks(256) {
             assert!(bank.iter().any(|&x| x > 0.0));
-            assert!(bank.iter().enumerate().all(|(i, &x)| x == 0.0 || [5, 8].contains(&(i % CHANNELS))));
+            assert!(
+                bank.iter()
+                    .enumerate()
+                    .all(|(i, &x)| x == 0.0 || [5, 8].contains(&(i % CHANNELS)))
+            );
             assert!(bank.iter().all(|&x| (0.0..=1.0).contains(&x)));
         }
         assert!(encode(&[], 14080).iter().all(|&x| x == 0.0));

@@ -50,7 +50,7 @@ fn render_text_battle_replay(
                     + visible_rollout_object_y_offset(&animation, slot)) as i16,
                 width: image.texture_descriptor.size.width as u16,
                 height: image.texture_descriptor.size.height as u16,
-                rgba: image.data.clone(),
+                rgba: image.data.clone().unwrap_or_default(),
             });
         }
         frames.push(frame);

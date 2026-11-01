@@ -1,29 +1,28 @@
 //! A render-only arena. Presentation cues come from the production shell's
 //! retained visible scene; this module has no runtime or battle-engine imports.
 use crate::battle_layout::{BattleBody, BattleSceneLayout, BattleUiBounds};
-use crate::{BattleSourceBodyRegistration, BattleSourceBodyRegistrations};
 use crate::encounter_terrain::{self, EncounterTerrain};
+use crate::{BattleSourceBodyRegistration, BattleSourceBodyRegistrations};
 use crate::{VoxelViewSettings, mesh::SurfaceMeshData};
 use bevy::{
-    asset::load_internal_asset,
     anti_alias::fxaa::Fxaa,
-    camera::{CameraUpdateSystems, ClearColorConfig, RenderTarget, visibility::RenderLayers},
-    light::CascadeShadowConfigBuilder,
     asset::RenderAssetUsages,
-    mesh::skinning::SkinnedMeshInverseBindposes,
+    asset::load_internal_asset,
+    camera::{CameraUpdateSystems, ClearColorConfig, RenderTarget, visibility::RenderLayers},
     image::ImageSampler,
-    shader::ShaderRef,
-    pbr::{FogFalloff, DistanceFog},
+    light::CascadeShadowConfigBuilder,
+    mesh::skinning::SkinnedMeshInverseBindposes,
+    pbr::{DistanceFog, FogFalloff},
     prelude::*,
     reflect::TypePath,
     render::{
         render_resource::{
-            AsBindGroup, Extent3d, ShaderType, TextureDimension, TextureFormat,
-            TextureUsages,
+            AsBindGroup, Extent3d, ShaderType, TextureDimension, TextureFormat, TextureUsages,
         },
         renderer::RenderAdapterInfo,
         view::Tonemapping,
     },
+    shader::ShaderRef,
     sprite_render::{Material2d, Material2dPlugin},
 };
 use crystal_render_api::{
@@ -70,6 +69,10 @@ pub struct BattleCompositeImageCamera;
 #[path = "battle_trainers.rs"]
 pub(crate) mod trainers;
 
+#[path = "battle_aura.rs"]
+mod aura;
+#[path = "battle_camera.rs"]
+mod battle_camera;
 #[path = "battle_capture_bridge.rs"]
 mod capture_bridge;
 #[cfg(test)]
@@ -79,10 +82,6 @@ mod capture_tiles;
 mod row_capture;
 #[path = "battle_skinning.rs"]
 mod skinning;
-#[path = "battle_camera.rs"]
-mod battle_camera;
-#[path = "battle_aura.rs"]
-mod aura;
 
 #[derive(Default)]
 pub struct BattleViewPlugin;
@@ -151,9 +150,17 @@ impl Plugin for BattleViewPlugin {
                     // SetMeshViewBindGroup panics on the missing view query.
                     .before(bevy::light::SimulationLightSystems::AssignLightsToClusters),
             )
-            .add_systems(PostUpdate, (sync_grass_mask, encounter_terrain::sync_grass_mask_materials)
-                .chain().after(sync_battle_target).before(CameraUpdateSystems)
-                .before(bevy::light::SimulationLightSystems::AssignLightsToClusters))
+            .add_systems(
+                PostUpdate,
+                (
+                    sync_grass_mask,
+                    encounter_terrain::sync_grass_mask_materials,
+                )
+                    .chain()
+                    .after(sync_battle_target)
+                    .before(CameraUpdateSystems)
+                    .before(bevy::light::SimulationLightSystems::AssignLightsToClusters),
+            )
             .add_systems(
                 PostUpdate,
                 sync_battle_composite
@@ -228,8 +235,10 @@ struct BattleRowCompositeSprite;
 #[derive(Component)]
 struct BattleRowCamera(usize);
 
-const BATTLE_COMPOSITE_SHADER: Handle<Shader> =
-    Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(0x519a630f_8cf7_4303_bb48_30dbdbefb74d), std::marker::PhantomData);
+const BATTLE_COMPOSITE_SHADER: Handle<Shader> = Handle::Uuid(
+    bevy::asset::uuid::Uuid::from_u128(0x519a630f_8cf7_4303_bb48_30dbdbefb74d),
+    std::marker::PhantomData,
+);
 
 #[derive(Clone, Debug, PartialEq, ShaderType)]
 struct BattleCompositeUniform {
@@ -490,11 +499,8 @@ impl ActorInstance {
         if let Some(mesh) = self.mesh {
             meshes.remove(mesh.id());
         }
-
     }
 }
-
-
 
 fn actor_mesh(
     data: &SurfaceMeshData,
@@ -563,7 +569,10 @@ impl BattleModelBounds {
 /// Register the floor-connected geometry close enough to cast contact shading.
 /// Suspended plumes stay excluded, while rounded pads retain a visible soft edge.
 /// This immutable registration is cached once when creating an actor.
-fn grounded_contact_bounds(model: &SurfaceMeshData, bounds: BattleModelBounds) -> Option<BattleModelBounds> {
+fn grounded_contact_bounds(
+    model: &SurfaceMeshData,
+    bounds: BattleModelBounds,
+) -> Option<BattleModelBounds> {
     let height = bounds.max.y - bounds.min.y;
     if !bounds.min.is_finite() || !bounds.max.is_finite() || !height.is_finite() || height <= 0.0 {
         return None;
@@ -583,7 +592,7 @@ fn grounded_contact_bounds(model: &SurfaceMeshData, bounds: BattleModelBounds) -
     for triangle in model.indices.chunks_exact(3) {
         for edge in 0..3 {
             let a = triangle[edge] as usize;
-            let b = triangle[(edge+1)%3] as usize;
+            let b = triangle[(edge + 1) % 3] as usize;
             if model.positions[a][1] <= ceiling && model.positions[b][1] <= ceiling {
                 let a = root(&mut parents, a);
                 let b = root(&mut parents, b);
@@ -593,14 +602,17 @@ fn grounded_contact_bounds(model: &SurfaceMeshData, bounds: BattleModelBounds) -
     }
     let mut supports = vec![false; model.positions.len()];
     for (index, point) in model.positions.iter().enumerate() {
-        if point[1] <= floor { supports[root(&mut parents, index)] = true; }
+        if point[1] <= floor {
+            supports[root(&mut parents, index)] = true;
+        }
     }
     let mut min = Vec3::splat(f32::INFINITY);
     let mut max = Vec3::splat(f32::NEG_INFINITY);
     for (index, point) in model.positions.iter().enumerate() {
         let point = Vec3::from_array(*point);
         if point.is_finite() && point.y <= ceiling && supports[root(&mut parents, index)] {
-            min = min.min(point); max = max.max(point);
+            min = min.min(point);
+            max = max.max(point);
         }
     }
     // Include exact ceiling intersections too; coarse triangles need the same
@@ -608,18 +620,28 @@ fn grounded_contact_bounds(model: &SurfaceMeshData, bounds: BattleModelBounds) -
     for triangle in model.indices.chunks_exact(3) {
         for edge in 0..3 {
             let a = triangle[edge] as usize;
-            let b = triangle[(edge+1)%3] as usize;
+            let b = triangle[(edge + 1) % 3] as usize;
             let low = Vec3::from_array(model.positions[a]);
             let high = Vec3::from_array(model.positions[b]);
-            if low.is_finite() && high.is_finite() && low.y <= ceiling && high.y > ceiling
-                && supports[root(&mut parents, a)] {
-                let point = low.lerp(high, (ceiling-low.y)/(high.y-low.y));
-                min = min.min(point); max = max.max(point);
+            if low.is_finite()
+                && high.is_finite()
+                && low.y <= ceiling
+                && high.y > ceiling
+                && supports[root(&mut parents, a)]
+            {
+                let point = low.lerp(high, (ceiling - low.y) / (high.y - low.y));
+                min = min.min(point);
+                max = max.max(point);
             }
-            if high.is_finite() && low.is_finite() && high.y <= ceiling && low.y > ceiling
-                && supports[root(&mut parents, b)] {
-                let point = high.lerp(low, (ceiling-high.y)/(low.y-high.y));
-                min = min.min(point); max = max.max(point);
+            if high.is_finite()
+                && low.is_finite()
+                && high.y <= ceiling
+                && low.y > ceiling
+                && supports[root(&mut parents, b)]
+            {
+                let point = high.lerp(low, (ceiling - high.y) / (low.y - high.y));
+                min = min.min(point);
+                max = max.max(point);
             }
         }
     }
@@ -630,7 +652,10 @@ fn grounded_contact_bounds(model: &SurfaceMeshData, bounds: BattleModelBounds) -
 /// actual support. Clip the lower body rather than using wings, crowns or a
 /// tessellation-dependent vertex count. The tight contact registration remains
 /// separate and continues to own physical support and grass registration.
-fn low_body_shadow_bounds(model: &SurfaceMeshData, bounds: BattleModelBounds) -> Option<BattleModelBounds> {
+fn low_body_shadow_bounds(
+    model: &SurfaceMeshData,
+    bounds: BattleModelBounds,
+) -> Option<BattleModelBounds> {
     let height = bounds.max.y - bounds.min.y;
     if !bounds.min.is_finite() || !bounds.max.is_finite() || !height.is_finite() || height <= 0.0 {
         return None;
@@ -641,16 +666,18 @@ fn low_body_shadow_bounds(model: &SurfaceMeshData, bounds: BattleModelBounds) ->
     for &point in &model.positions {
         let point = Vec3::from_array(point);
         if point.is_finite() && point.y <= ceiling {
-            min = min.min(point); max = max.max(point);
+            min = min.min(point);
+            max = max.max(point);
         }
     }
     for triangle in model.indices.chunks_exact(3) {
         for edge in 0..3 {
             let a = Vec3::from_array(model.positions[triangle[edge] as usize]);
-            let b = Vec3::from_array(model.positions[triangle[(edge+1)%3] as usize]);
+            let b = Vec3::from_array(model.positions[triangle[(edge + 1) % 3] as usize]);
             if a.is_finite() && b.is_finite() && (a.y <= ceiling) != (b.y <= ceiling) {
-                let point = a.lerp(b, (ceiling-a.y)/(b.y-a.y));
-                min = min.min(point); max = max.max(point);
+                let point = a.lerp(b, (ceiling - a.y) / (b.y - a.y));
+                min = min.min(point);
+                max = max.max(point);
             }
         }
     }
@@ -753,12 +780,17 @@ fn normal_send_out_envelope(frame: &VisualBattleFrame, battler: &VisualBattleBat
 }
 
 fn has_picture_clipping(frame: &VisualBattleFrame, battler: &VisualBattleBattler) -> bool {
-    frame.cues.iter().any(|cue| cue.side == battler.side
-        && cue.kind == VisualBattleCueKind::SourcePicture)
+    frame
+        .cues
+        .iter()
+        .any(|cue| cue.side == battler.side && cue.kind == VisualBattleCueKind::SourcePicture)
 }
 
 fn fainting(frame: &VisualBattleFrame, side: VisualBattleSide) -> bool {
-    frame.cues.iter().any(|cue| cue.side == side && cue.kind == VisualBattleCueKind::Faint)
+    frame
+        .cues
+        .iter()
+        .any(|cue| cue.side == side && cue.kind == VisualBattleCueKind::Faint)
 }
 
 fn uses_source_picture(frame: &VisualBattleFrame, battler: &VisualBattleBattler) -> bool {
@@ -767,12 +799,20 @@ fn uses_source_picture(frame: &VisualBattleFrame, battler: &VisualBattleBattler)
     has_picture_clipping(frame, battler) && !fainting(frame, battler.side)
 }
 
-fn battler_displacement(frame: &VisualBattleFrame, battler: &VisualBattleBattler,
-    layout: &BattleSceneLayout, bounds: Option<BattleModelBounds>, pose: Transform) -> Vec3 {
-    let offset = frame.source.as_ref().map_or(Vec2::ZERO,
-        |source| source.battler_offsets[battler.side.index()]);
+fn battler_displacement(
+    frame: &VisualBattleFrame,
+    battler: &VisualBattleBattler,
+    layout: &BattleSceneLayout,
+    bounds: Option<BattleModelBounds>,
+    pose: Transform,
+) -> Vec3 {
+    let offset = frame.source.as_ref().map_or(Vec2::ZERO, |source| {
+        source.battler_offsets[battler.side.index()]
+    });
     let mut delta = layout.source_displacement(offset);
-    if fainting(frame, battler.side) && let Some(bounds) = bounds {
+    if fainting(frame, battler.side)
+        && let Some(bounds) = bounds
+    {
         // Map the source's exact eight-pixel shifts to the neutral silhouette.
         // Transparent padding below its feet is consumed before sinking; the
         // retained real floor clips the model, with no sprite/model swap.
@@ -832,11 +872,15 @@ fn layout_uses_species_model(frame: &VisualBattleFrame, battler: &VisualBattleBa
     battler.allow_species_model || normal_send_out_envelope(frame, battler)
 }
 
-fn modeled_layout_body(scene: &mut BattleScene, battler: &VisualBattleBattler) -> Option<BattleBody> {
-    battler.pokedex_size_m.filter(|v| v.is_finite() && *v > 0.0)?;
+fn modeled_layout_body(
+    scene: &mut BattleScene,
+    battler: &VisualBattleBattler,
+) -> Option<BattleBody> {
+    battler
+        .pokedex_size_m
+        .filter(|v| v.is_finite() && *v > 0.0)?;
     if !scene.species_meshes.contains_key(battler.model_id()) {
-        let mesh = crate::battle_species_models::mesh(battler.model_id())
-            .map(Arc::new);
+        let mesh = crate::battle_species_models::mesh(battler.model_id()).map(Arc::new);
         if let Some(data) = &mesh {
             scene.species_bounds.insert(
                 Arc::from(battler.model_id()),
@@ -854,26 +898,35 @@ fn modeled_layout_body(scene: &mut BattleScene, battler: &VisualBattleBattler) -
             bounds.min,
             bounds.max,
         ) {
-            let mut body =
-                BattleBody::modeled(&battler.species_id, bounds.min, bounds.max, scale);
+            let mut body = BattleBody::modeled(&battler.species_id, bounds.min, bounds.max, scale);
 
             if let Some(rig) = crate::species_rig::for_species(battler.model_id()) {
                 body.visual_bounds = Some(crate::species_rig::motion::battle_bounds(rig));
             }
-            return Some(body.with_source_card_envelope(
-                battler.texture_size.x / battler.texture_size.y));
+            return Some(
+                body.with_source_card_envelope(battler.texture_size.x / battler.texture_size.y),
+            );
         }
     }
     None
 }
 
-type BattleLayoutKey = ([Option<BattleBody>; 2], Option<[Option<BattleBody>; 2]>, Vec2, Vec2, (Option<u64>, bool));
+type BattleLayoutKey = (
+    [Option<BattleBody>; 2],
+    Option<[Option<BattleBody>; 2]>,
+    Vec2,
+    Vec2,
+    (Option<u64>, bool),
+);
 #[derive(Default)]
 struct PendingBattleCameraFit {
     #[cfg(target_arch = "wasm32")]
     search: Option<(BattleLayoutKey, encounter_terrain::CameraFitSearch)>,
     #[cfg(not(target_arch = "wasm32"))]
-    task: Option<(BattleLayoutKey, bevy::tasks::Task<Result<(BattleSceneLayout, [Vec3; 2]), &'static str>>)>,
+    task: Option<(
+        BattleLayoutKey,
+        bevy::tasks::Task<Result<(BattleSceneLayout, [Vec3; 2]), &'static str>>,
+    )>,
 }
 
 fn sync_battle_layout(
@@ -890,9 +943,13 @@ fn sync_battle_layout(
 ) {
     if !frame.active || frame.use_source_scene || frame.validate().is_err() {
         #[cfg(not(target_arch = "wasm32"))]
-        { pending.task = None; }
+        {
+            pending.task = None;
+        }
         #[cfg(target_arch = "wasm32")]
-        { pending.search = None; }
+        {
+            pending.search = None;
+        }
         return;
     }
     let viewport = windows
@@ -981,13 +1038,21 @@ fn sync_battle_layout(
         #[cfg(not(target_arch = "wasm32"))]
         if std::env::var_os("CRYSTAL_ENCOUNTER_TRACE").is_some() {
             let old = previous.as_ref();
-            eprintln!("battle layout refit: bodies={} support={} viewport={:?}->{viewport:?} safe_y={:?}->{safe_y:?} map={:?}->{:?} source_frame={:?}",
-                old.is_none_or(|old| old.0 != key.0), old.is_none_or(|old| old.1 != key.1),
-                old.map(|old| old.2), old.map(|old| old.3), old.map(|old| old.4), key.4,
-                frame.source.as_ref().map(|source| source.frame));
+            eprintln!(
+                "battle layout refit: bodies={} support={} viewport={:?}->{viewport:?} safe_y={:?}->{safe_y:?} map={:?}->{:?} source_frame={:?}",
+                old.is_none_or(|old| old.0 != key.0),
+                old.is_none_or(|old| old.1 != key.1),
+                old.map(|old| old.2),
+                old.map(|old| old.3),
+                old.map(|old| old.4),
+                key.4,
+                frame.source.as_ref().map(|source| source.frame)
+            );
         }
         #[cfg(test)]
-        { scene.layout_fits += 1; }
+        {
+            scene.layout_fits += 1;
+        }
         let anchored = scenery.anchors().and_then(|anchors| {
             let Some(supported) = supported else {
                 scenery.reject_layout("battler lacks an authored neutral water stance");
@@ -1004,11 +1069,24 @@ fn sync_battle_layout(
             let asynchronous = frame.preparing || pending.search.is_some();
             #[cfg(target_arch = "wasm32")]
             if asynchronous {
-                if pending.search.as_ref().is_some_and(|(requested, _)| requested != &key) {
+                if pending
+                    .search
+                    .as_ref()
+                    .is_some_and(|(requested, _)| requested != &key)
+                {
                     pending.search = None;
                 }
-                let (_, search) = pending.search.get_or_insert_with(|| (key,
-                    encounter_terrain::CameraFitSearch::new(scenery.clone(), anchored.clone(), supported, viewport)));
+                let (_, search) = pending.search.get_or_insert_with(|| {
+                    (
+                        key,
+                        encounter_terrain::CameraFitSearch::new(
+                            scenery.clone(),
+                            anchored.clone(),
+                            supported,
+                            viewport,
+                        ),
+                    )
+                });
                 // Spend the entry animation on incremental preparation. Once
                 // the controller presents battle, finish any remaining search
                 // before publishing: yielding here would expose the classic
@@ -1017,7 +1095,9 @@ fn sync_battle_layout(
                     search.advance_frame()
                 } else {
                     loop {
-                        if let Some(result) = search.advance() { break Some(result); }
+                        if let Some(result) = search.advance() {
+                            break Some(result);
+                        }
                     }
                 };
                 let Some(accepted) = result else {
@@ -1033,28 +1113,42 @@ fn sync_battle_layout(
                     }
                     anchored = candidate;
                 } else {
-                    scenery.reject_layout(search.scenery.reason().unwrap_or("no checked battle camera"));
+                    scenery.reject_layout(
+                        search
+                            .scenery
+                            .reason()
+                            .unwrap_or("no checked battle camera"),
+                    );
                 }
                 pending.search = None;
             }
             #[cfg(not(target_arch = "wasm32"))]
             if asynchronous {
                 use bevy::tasks::{AsyncComputeTaskPool, futures_lite::future};
-                if pending.task.as_ref().is_some_and(|(requested, _)| requested != &key) {
+                if pending
+                    .task
+                    .as_ref()
+                    .is_some_and(|(requested, _)| requested != &key)
+                {
                     pending.task = None;
                 }
                 if pending.task.is_none() {
                     let mut snapshot = scenery.clone();
                     let mut candidate = anchored.clone();
-                    pending.task = Some((key, AsyncComputeTaskPool::get().spawn(async move {
-                        if snapshot.establish_camera(&mut candidate, supported, viewport) {
-                            Ok((candidate, snapshot.fit_anchors().unwrap()))
-                        } else {
-                            Err(snapshot.reason().unwrap_or("no checked battle camera"))
-                        }
-                    })));
+                    pending.task = Some((
+                        key,
+                        AsyncComputeTaskPool::get().spawn(async move {
+                            if snapshot.establish_camera(&mut candidate, supported, viewport) {
+                                Ok((candidate, snapshot.fit_anchors().unwrap()))
+                            } else {
+                                Err(snapshot.reason().unwrap_or("no checked battle camera"))
+                            }
+                        }),
+                    ));
                 }
-                let completed = pending.task.as_mut()
+                let completed = pending
+                    .task
+                    .as_mut()
                     .and_then(|(_, task)| future::block_on(future::poll_once(task)));
                 let Some(completed) = completed else {
                     scenery.reject_layout("battle camera is preparing offscreen");
@@ -1063,14 +1157,19 @@ fn sync_battle_layout(
                 pending.task = None;
                 match completed {
                     Ok((mut candidate, anchors)) => {
-                        if !scenery.apply_fit(&mut candidate, anchors, supported, viewport) { return; }
+                        if !scenery.apply_fit(&mut candidate, anchors, supported, viewport) {
+                            return;
+                        }
                         anchored = candidate;
                     }
-                    Err(reason) => { scenery.reject_layout(reason); }
+                    Err(reason) => {
+                        scenery.reject_layout(reason);
+                    }
                 }
             }
             if (asynchronous && scenery.accepted())
-                || (!asynchronous && scenery.establish_camera(&mut anchored, supported, viewport)) {
+                || (!asynchronous && scenery.establish_camera(&mut anchored, supported, viewport))
+            {
                 anchored
             } else {
                 BattleSceneLayout::for_bodies(bodies, viewport).reserve_ui(bodies, safe_y)
@@ -1088,29 +1187,45 @@ fn sync_battle_layout(
                 scenery.anchors()
             );
         }
-        let shot_bodies = if scenery.accepted() { supported.unwrap_or(bodies) } else { bodies };
+        let shot_bodies = if scenery.accepted() {
+            supported.unwrap_or(bodies)
+        } else {
+            bodies
+        };
         let next = if shot_bodies.iter().flatten().any(|body| body.glyph_plane)
             && let Some(mut readable) = next.readable_glyphs(shot_bodies)
         {
-            if !scenery.accepted() || scenery.constrain_layout(&mut readable, shot_bodies, viewport) {
+            if !scenery.accepted() || scenery.constrain_layout(&mut readable, shot_bodies, viewport)
+            {
                 readable
             } else {
                 let mut restored = next;
                 scenery.constrain_camera(&mut restored, shot_bodies, viewport);
                 restored
             }
-        } else { next };
+        } else {
+            next
+        };
         *establishing = Some(next.clone());
         layout.set_if_neq(next);
         *previous = Some(key);
     }
     if let Some(base) = establishing.as_ref() {
-        let shot_bodies = if scenery.accepted() { supported.unwrap_or(bodies) } else { bodies };
+        let shot_bodies = if scenery.accepted() {
+            supported.unwrap_or(bodies)
+        } else {
+            bodies
+        };
         let next = battle_camera::shot(base, shot_bodies, &frame);
-        if next.camera == layout.camera { return; }
+        if next.camera == layout.camera {
+            return;
+        }
         if scenery.accepted() {
-            if let Some(candidate) = battle_camera::constrain_shot(base, &next, shot_bodies,
-                |candidate| scenery.constrain_camera(candidate, shot_bodies, viewport)) {
+            if let Some(candidate) =
+                battle_camera::constrain_shot(base, &next, shot_bodies, |candidate| {
+                    scenery.constrain_camera(candidate, shot_bodies, viewport)
+                })
+            {
                 layout.set_if_neq(candidate);
             } else {
                 // Restore the complete previously proven map view, including
@@ -1188,42 +1303,73 @@ fn setup_battle_scene(
     let mask_image = images.add(battle_row_target_image(UVec2::ONE));
     grass_mask.image = Some(mask_image.clone());
     grass_mask.size = UVec2::ONE;
-    commands.spawn((Camera3d::default(), AmbientLight { color: Color::WHITE, brightness: 5000.0, ..default() },
-        Msaa::Off, Camera { order: -3, is_active: false,
+    commands.spawn((
+        Camera3d::default(),
+        AmbientLight {
+            color: Color::WHITE,
+            brightness: 5000.0,
+            ..default()
+        },
+        Msaa::Off,
+        Camera {
+            order: -3,
+            is_active: false,
             clear_color: ClearColorConfig::Custom(Color::NONE),
             output_mode: bevy::camera::CameraOutputMode::Write {
                 blend_state: Some(bevy::render::render_resource::BlendState::REPLACE),
                 clear_color: ClearColorConfig::Custom(Color::NONE),
-            }, ..default() },
+            },
+            ..default()
+        },
         RenderTarget::Image(mask_image.into()),
-        Projection::Perspective(PerspectiveProjection { fov: BATTLE_CAMERA_FOV, near: 0.1, far: 100.0, ..default() }),
-        camera_pose(), Tonemapping::AcesFitted, bevy::camera::Exposure { ev100: 12.0 },
-        RenderLayers::layer(BATTLE_GRASS_MASK_LAYER), BattleGrassMaskCamera));
+        Projection::Perspective(PerspectiveProjection {
+            fov: BATTLE_CAMERA_FOV,
+            near: 0.1,
+            far: 100.0,
+            ..default()
+        }),
+        camera_pose(),
+        Tonemapping::AcesFitted,
+        bevy::camera::Exposure { ev100: 12.0 },
+        RenderLayers::layer(BATTLE_GRASS_MASK_LAYER),
+        BattleGrassMaskCamera,
+    ));
     scene.row_targets = std::array::from_fn(|_| images.add(battle_row_target_image(UVec2::ONE)));
     scene.row_sizes = [UVec2::ONE; 2];
     for index in 0..2 {
         commands.spawn((
-            (Camera3d::default(), AmbientLight { color: Color::WHITE, brightness: 5000.0, ..default() }, Msaa::Off,
-(Camera {
-                    order: -2,
-
-                    is_active: false,
-                    clear_color: ClearColorConfig::Custom(Color::NONE),
-                    output_mode: bevy::camera::CameraOutputMode::Write {
-                        blend_state: Some(bevy::render::render_resource::BlendState::REPLACE),
-                        clear_color: ClearColorConfig::Custom(Color::NONE),
-                    },
+            (
+                Camera3d::default(),
+                AmbientLight {
+                    color: Color::WHITE,
+                    brightness: 5000.0,
                     ..default()
-                }, RenderTarget::Image(scene.row_targets[index].clone().into())),
-bevy::camera::Exposure { ev100: 12.0 },
-Projection::Perspective(PerspectiveProjection {
+                },
+                Msaa::Off,
+                (
+                    Camera {
+                        order: -2,
+
+                        is_active: false,
+                        clear_color: ClearColorConfig::Custom(Color::NONE),
+                        output_mode: bevy::camera::CameraOutputMode::Write {
+                            blend_state: Some(bevy::render::render_resource::BlendState::REPLACE),
+                            clear_color: ClearColorConfig::Custom(Color::NONE),
+                        },
+                        ..default()
+                    },
+                    RenderTarget::Image(scene.row_targets[index].clone().into()),
+                ),
+                bevy::camera::Exposure { ev100: 12.0 },
+                Projection::Perspective(PerspectiveProjection {
                     fov: BATTLE_CAMERA_FOV,
                     near: 0.1,
                     far: 100.0,
                     ..default()
                 }),
-camera_pose(),
-Tonemapping::AcesFitted,),
+                camera_pose(),
+                Tonemapping::AcesFitted,
+            ),
             RenderLayers::layer(BATTLE_ROW_LAYERS[index]),
             BattleRowCamera(index),
         ));
@@ -1239,47 +1385,62 @@ Tonemapping::AcesFitted,),
             enemy_rows: scene.row_targets[1].clone(),
         });
         commands.spawn((
-            (Mesh2d(meshes.add(battle_composite_mesh(false)).into()),
-MeshMaterial2d(material.clone()),
-Visibility::Hidden,),
+            (
+                Mesh2d(meshes.add(battle_composite_mesh(false)).into()),
+                MeshMaterial2d(material.clone()),
+                Visibility::Hidden,
+            ),
             RenderLayers::layer(BATTLE_COMPOSITE_LAYER),
             BattleCompositeSprite,
         ));
         commands.spawn((
-            (Mesh2d(meshes.add(battle_composite_mesh(true)).into()),
-MeshMaterial2d(material),
-Visibility::Hidden,),
+            (
+                Mesh2d(meshes.add(battle_composite_mesh(true)).into()),
+                MeshMaterial2d(material),
+                Visibility::Hidden,
+            ),
             RenderLayers::layer(BATTLE_COMPOSITE_LAYER),
             BattleRowCompositeSprite,
         ));
     }
 
     commands.spawn((
-        (Camera3d::default(), AmbientLight { color: Color::WHITE, brightness: 5000.0, ..default() }, Msaa::Off,
-(Camera {
-                order: -1,
-
-                is_active: false,
-                clear_color: ClearColorConfig::Custom(rgb(palette(
-                    VisualBattleEnvironment::Meadow,
-                )
-                .sky)),
+        (
+            Camera3d::default(),
+            AmbientLight {
+                color: Color::WHITE,
+                brightness: 5000.0,
                 ..default()
-            }, scene
+            },
+            Msaa::Off,
+            (
+                Camera {
+                    order: -1,
+
+                    is_active: false,
+                    clear_color: ClearColorConfig::Custom(rgb(palette(
+                        VisualBattleEnvironment::Meadow,
+                    )
+                    .sky)),
+                    ..default()
+                },
+                scene
                     .render_target
                     .as_ref()
                     .map_or_else(RenderTarget::default, |image| {
                         RenderTarget::Image(image.clone().into())
-                    })),
-bevy::camera::Exposure { ev100: 12.0 },
-Projection::Perspective(PerspectiveProjection {
+                    }),
+            ),
+            bevy::camera::Exposure { ev100: 12.0 },
+            Projection::Perspective(PerspectiveProjection {
                 fov: BATTLE_CAMERA_FOV,
                 near: 0.1,
                 far: 100.0,
                 ..default()
             }),
-camera_pose(),
-Tonemapping::AcesFitted,),
+            camera_pose(),
+            Tonemapping::AcesFitted,
+        ),
         RenderLayers::layer(BATTLE_LAYER),
         BattleCamera,
         DistanceFog {
@@ -1300,7 +1461,8 @@ Tonemapping::AcesFitted,),
     #[cfg(target_arch = "wasm32")]
     let hardware_shadows = false;
     commands.spawn((
-        (DirectionalLight {
+        (
+            DirectionalLight {
                 illuminance: 10_000.0,
                 shadow_maps_enabled: hardware_shadows,
                 color: Color::srgb(1.0, 0.94, 0.82),
@@ -1308,15 +1470,16 @@ Tonemapping::AcesFitted,),
                 shadow_normal_bias: 0.6,
                 ..default()
             },
-Transform::from_xyz(6.0, 12.0, 8.0).looking_at(Vec3::ZERO, Vec3::Y),
-CascadeShadowConfigBuilder {
+            Transform::from_xyz(6.0, 12.0, 8.0).looking_at(Vec3::ZERO, Vec3::Y),
+            CascadeShadowConfigBuilder {
                 num_cascades: 1,
                 maximum_distance: 40.0,
                 first_cascade_far_bound: 40.0,
                 ..default()
             }
             .build(),
-Visibility::Hidden,),
+            Visibility::Hidden,
+        ),
         RenderLayers::from_layers(&[BATTLE_LAYER, BATTLE_ROW_LAYERS[0], BATTLE_ROW_LAYERS[1]]),
         BattleLight,
     ));
@@ -1347,9 +1510,11 @@ Visibility::Hidden,),
     for _ in 0..PARTICLES {
         let entity = commands
             .spawn((
-                (Mesh3d(scene.particle_mesh.clone()),
-MeshMaterial3d(scene.particle_materials[0].clone()),
-Visibility::Hidden,),
+                (
+                    Mesh3d(scene.particle_mesh.clone()),
+                    MeshMaterial3d(scene.particle_materials[0].clone()),
+                    Visibility::Hidden,
+                ),
                 RenderLayers::layer(BATTLE_LAYER),
                 BattleParticle,
             ))
@@ -1368,9 +1533,11 @@ Visibility::Hidden,),
     scene.ball_mesh = meshes.add(ball_mesh);
     let ball = commands
         .spawn((
-            (Mesh3d(scene.ball_mesh.clone()),
-MeshMaterial3d(scene.surface_material.clone()),
-Visibility::Hidden,),
+            (
+                Mesh3d(scene.ball_mesh.clone()),
+                MeshMaterial3d(scene.surface_material.clone()),
+                Visibility::Hidden,
+            ),
             RenderLayers::layer(BATTLE_LAYER),
             BattleBall,
         ))
@@ -1379,14 +1546,16 @@ Visibility::Hidden,),
     let object_mesh = meshes.add(Rectangle::new(1.0, 1.0));
     for slot in 0..10 {
         commands.spawn((
-            (Mesh3d(object_mesh.clone()),
-MeshMaterial3d(materials.add(StandardMaterial {
+            (
+                Mesh3d(object_mesh.clone()),
+                MeshMaterial3d(materials.add(StandardMaterial {
                     alpha_mode: AlphaMode::Mask(0.1),
                     unlit: true,
                     cull_mode: None,
                     ..default()
                 })),
-Visibility::Hidden,),
+                Visibility::Hidden,
+            ),
             RenderLayers::layer(BATTLE_LAYER),
             BattleSourceObject(slot),
             bevy::light::NotShadowCaster,
@@ -1403,14 +1572,16 @@ Visibility::Hidden,),
     ];
     for slot in 0..10 {
         commands.spawn((
-            (Mesh3d(scene.source_effect_meshes[0].clone()),
-MeshMaterial3d(materials.add(StandardMaterial {
+            (
+                Mesh3d(scene.source_effect_meshes[0].clone()),
+                MeshMaterial3d(materials.add(StandardMaterial {
                     alpha_mode: AlphaMode::Blend,
                     unlit: true,
                     cull_mode: None,
                     ..default()
                 })),
-Visibility::Hidden,),
+                Visibility::Hidden,
+            ),
             RenderLayers::layer(BATTLE_LAYER),
             BattleModeledSourceEffect(slot),
             bevy::light::NotShadowCaster,
@@ -1431,12 +1602,20 @@ Visibility::Hidden,),
         cull_mode: None,
         ..default()
     });
-    for (side, shade) in [VisualBattleSide::Player, VisualBattleSide::Enemy].into_iter()
-        .flat_map(|side| [GroundShade::LowBody, GroundShade::Contact].map(|shade| (side, shade))) {
+    for (side, shade) in [VisualBattleSide::Player, VisualBattleSide::Enemy]
+        .into_iter()
+        .flat_map(|side| [GroundShade::LowBody, GroundShade::Contact].map(|shade| (side, shade)))
+    {
         commands.spawn((
-            (Mesh3d(contact_mesh.clone()),
-MeshMaterial3d(if shade == GroundShade::Contact { contact_material.clone() } else { low_body_material.clone() }),
-Visibility::Hidden,),
+            (
+                Mesh3d(contact_mesh.clone()),
+                MeshMaterial3d(if shade == GroundShade::Contact {
+                    contact_material.clone()
+                } else {
+                    low_body_material.clone()
+                }),
+                Visibility::Hidden,
+            ),
             RenderLayers::layer(BATTLE_LAYER),
             BattleContactShadow(side, shade),
             bevy::light::NotShadowCaster,
@@ -1476,7 +1655,9 @@ fn battle_composite_mesh(row_overlay: bool) -> Mesh {
 fn battle_row_target_image(size: UVec2) -> Image {
     let mut image = battle_target_image(size);
     image
-        .data.as_mut().expect("CPU image pixels")
+        .data
+        .as_mut()
+        .expect("CPU image pixels")
         .chunks_exact_mut(4)
         .for_each(|pixel| pixel[3] = 0);
     image
@@ -1554,7 +1735,8 @@ fn sync_battle_target(
         camera.is_active = row_active;
         if row_active && scene.row_sizes[index] != status.render_size {
             let target = scene.row_targets[index].clone();
-            images.insert(target.id(), battle_row_target_image(status.render_size))
+            images
+                .insert(target.id(), battle_row_target_image(status.render_size))
                 .expect("retained battle row target remains live");
             // Stable IDs get fresh GPU views. Invalidate the material binding,
             // even for a held frame or a zero-scroll first extraction tick.
@@ -1582,7 +1764,8 @@ fn sync_battle_target(
     if active && scene.render_size != status.render_size {
         // Replace only this target's image contents; the stable handle keeps
         // the composite sprite bound across resize/fullscreen transitions.
-        images.insert(target.id(), battle_target_image(status.render_size))
+        images
+            .insert(target.id(), battle_target_image(status.render_size))
             .expect("retained battle target remains live");
         // Image replacement preserves its asset ID but creates a new GPU
         // texture view. Invalidate the composite bind group even when source
@@ -1614,7 +1797,9 @@ fn sync_grass_mask(
         mask.revision = mask.revision.wrapping_add(1);
     }
     for mut camera in &mut cameras {
-        if camera.is_active { camera.is_active = false; }
+        if camera.is_active {
+            camera.is_active = false;
+        }
     }
 }
 
@@ -1669,14 +1854,16 @@ fn sync_battle_composite(
         Or<(With<BattleCompositeSprite>, With<BattleRowCompositeSprite>)>,
     >,
 ) {
-    let camera = cameras.iter().find(|(camera, _, target, _, layers, image_composite)| {
-        camera.is_active
-            && (matches!(target, RenderTarget::Window(_))
-                || (*image_composite && matches!(target, RenderTarget::Image(_))))
-            && layers.is_none_or(|layers| {
-                layers.intersects(&RenderLayers::layer(BATTLE_COMPOSITE_LAYER))
-            })
-    });
+    let camera = cameras
+        .iter()
+        .find(|(camera, _, target, _, layers, image_composite)| {
+            camera.is_active
+                && (matches!(target, RenderTarget::Window(_))
+                    || (*image_composite && matches!(target, RenderTarget::Image(_))))
+                && layers.is_none_or(|layers| {
+                    layers.intersects(&RenderLayers::layer(BATTLE_COMPOSITE_LAYER))
+                })
+        });
     let mut source = battle_composite_uniform(&layout, &frame, *mode, status.output_size.as_vec2());
     register_battle_row_actors(
         &layout,
@@ -1691,7 +1878,9 @@ fn sync_battle_composite(
             visibility.set_if_neq(Visibility::Hidden);
             continue;
         };
-        let Projection::Orthographic(projection) = projection else { continue; };
+        let Projection::Orthographic(projection) = projection else {
+            continue;
+        };
         let (_, mut pose) = battle_composite_pose(projection, camera);
         if row_overlay.is_some() {
             if !frame
@@ -1831,17 +2020,23 @@ fn sync_battle_scene(
         ),
     >,
 ) {
-    let (settings, layout, captures, capture_bridge, mut inverse_binds, scenery, trainers) = presentation;
+    let (settings, layout, captures, capture_bridge, mut inverse_binds, scenery, trainers) =
+        presentation;
     #[cfg(feature = "operation-trace")]
     let _span = bevy::log::info_span!("crystal_battle_render_sync").entered();
     let valid = frame.validate();
     // A clipped picture is a source raster operation, not a Pokémon walking
     // below the floor or through the map's collision boundary. Its validated
     // physical support stays at the captured anchor while its pixels move.
-    let mut support_offsets = frame.source.as_ref()
+    let mut support_offsets = frame
+        .source
+        .as_ref()
         .map_or([Vec2::ZERO; 2], |source| source.battler_offsets);
     for (index, battler) in frame.battlers.iter().enumerate() {
-        if battler.as_ref().is_some_and(|b| has_picture_clipping(&frame, b)) {
+        if battler
+            .as_ref()
+            .is_some_and(|b| has_picture_clipping(&frame, b))
+        {
             support_offsets[index] = Vec2::ZERO;
         }
     }
@@ -1859,14 +2054,22 @@ fn sync_battle_scene(
         && capture_bridge.allows_scene()
         && trainers.ready;
     status.modeled_trainers = if active {
-        frame.trainers.iter().flatten().filter(|trainer| trainer.visible)
+        frame
+            .trainers
+            .iter()
+            .flatten()
+            .filter(|trainer| trainer.visible)
             .filter(|trainer| trainers::kind(&trainer.source_id).is_some())
-            .map(|trainer| trainer.source_id.to_string()).collect()
-    } else { Vec::new() };
+            .map(|trainer| trainer.source_id.to_string())
+            .collect()
+    } else {
+        Vec::new()
+    };
     status.prepared = active;
-    status.preparation_pending =
-        settings.enabled && frame.preparing && !active
-            && (scenery.preparation_pending() || !trainers.ready);
+    status.preparation_pending = settings.enabled
+        && frame.preparing
+        && !active
+        && (scenery.preparation_pending() || !trainers.ready);
     status.active = active && !frame.preparing;
     status.active_frames = if status.active {
         status.active_frames.saturating_add(1)
@@ -1874,7 +2077,8 @@ fn sync_battle_scene(
         0
     };
     status.last_error = valid.err().map(str::to_owned);
-    status.player_on_right = active && (layout.origins[0] - layout.origins[1]).dot(*layout.camera.right()) > 0.0;
+    status.player_on_right =
+        active && (layout.origins[0] - layout.origins[1]).dot(*layout.camera.right()) > 0.0;
     status.map_scenery_id = (active && scenery.accepted()).then(|| frame.map_id.to_string());
     status.map_scenery_fallback_reason = (settings.enabled && frame.active && !scenery.accepted())
         .then(|| scenery.reason().unwrap_or("no witnessed map geometry"));
@@ -1905,7 +2109,11 @@ fn sync_battle_scene(
             }
             // Keep route battle backgrounds as clear as their field view.
             // Dedicated forests retain the existing authored atmosphere.
-            let fog_color = if frame.map_id.starts_with("Route") { sky.with_alpha(0.12) } else { sky };
+            let fog_color = if frame.map_id.starts_with("Route") {
+                sky.with_alpha(0.12)
+            } else {
+                sky
+            };
             if fog.color != fog_color {
                 fog.color = fog_color;
             }
@@ -1936,16 +2144,17 @@ fn sync_battle_scene(
         }
         scene.was_active = false;
         status.modeled_species.clear();
-        status.source_art_species = if frame.active && (frame.use_source_scene || !ground_clearance || !map_ready) {
-            frame
-                .battlers
-                .iter()
-                .flatten()
-                .map(|battler| battler.species_id.to_string())
-                .collect()
-        } else {
-            Vec::new()
-        };
+        status.source_art_species =
+            if frame.active && (frame.use_source_scene || !ground_clearance || !map_ready) {
+                frame
+                    .battlers
+                    .iter()
+                    .flatten()
+                    .map(|battler| battler.species_id.to_string())
+                    .collect()
+            } else {
+                Vec::new()
+            };
         return;
     }
     if !scene.was_active {
@@ -1971,8 +2180,10 @@ fn sync_battle_scene(
         // flash to the capture ball explicitly, preserving both its
         // source cadence and reduced intensity. OBJ palettes remain separate.
         if let Some(mut mesh) = meshes.get_mut(&scene.ball_mesh) {
-            mesh.insert_attribute(Mesh::ATTRIBUTE_COLOR,
-                surface_white_colors(&scene.ball_neutral_colors, light));
+            mesh.insert_attribute(
+                Mesh::ATTRIBUTE_COLOR,
+                surface_white_colors(&scene.ball_neutral_colors, light),
+            );
         }
         scene.surface_white_strength = Some(light);
     }
@@ -1994,8 +2205,7 @@ fn sync_battle_scene(
             continue;
         };
         if battler.allow_species_model && !scene.species_meshes.contains_key(battler.model_id()) {
-            let mesh = crate::battle_species_models::mesh(battler.model_id())
-                .map(Arc::new);
+            let mesh = crate::battle_species_models::mesh(battler.model_id()).map(Arc::new);
             if let Some(data) = &mesh {
                 scene.species_bounds.insert(
                     Arc::from(battler.model_id()),
@@ -2022,7 +2232,9 @@ fn sync_battle_scene(
             None
         };
         let modeled = modeled_data.is_some();
-        let skin_rig = modeled.then(|| crate::species_rig::for_species(battler.model_id())).flatten();
+        let skin_rig = modeled
+            .then(|| crate::species_rig::for_species(battler.model_id()))
+            .flatten();
         let root_data = modeled_data.as_deref();
         let modeled_bounds = modeled_data
             .as_ref()
@@ -2073,49 +2285,72 @@ fn sync_battle_scene(
                     ..default()
                 }
             });
-            let base_pose = layout_actor_pose(battler, modeled_bounds, &layout,
-                modeled_support);
+            let base_pose = layout_actor_pose(battler, modeled_bounds, &layout, modeled_support);
             // Deferred entities cannot be reached by the actor query below
             // until the next update. Present this source offset on spawn too.
-            let transform = presented_battler_pose(&frame, battler, &layout, modeled_bounds, base_pose, capture_bridge.image_active());
+            let transform = presented_battler_pose(
+                &frame,
+                battler,
+                &layout,
+                modeled_bounds,
+                base_pose,
+                capture_bridge.image_active(),
+            );
             let contact_bounds = if crate::species_rig::motion::battle_hovers(battler.model_id()) {
                 None
             } else {
-                root_data.zip(modeled_bounds)
+                root_data
+                    .zip(modeled_bounds)
                     .and_then(|(data, bounds)| grounded_contact_bounds(data, bounds))
             };
-            let low_body_bounds = contact_bounds.and_then(|_| root_data.zip(modeled_bounds)
-                .and_then(|(data, bounds)| low_body_shadow_bounds(data, bounds)));
-            let appearance_data = root_data.and_then(|data| battler.model_palette
-                .map(|palette| Arc::new(crate::pokemon_appearance::mesh(data, palette))));
-            let (mesh, neutral_colors) = appearance_data.as_deref().or(root_data).map_or((None, None), |data| {
-                let (mesh, colors) =
-                    actor_mesh(data, transform.rotation, scene.vertex_lighting, &mut meshes);
-                (Some(mesh), colors)
+            let low_body_bounds = contact_bounds.and_then(|_| {
+                root_data
+                    .zip(modeled_bounds)
+                    .and_then(|(data, bounds)| low_body_shadow_bounds(data, bounds))
             });
+            let appearance_data = root_data.and_then(|data| {
+                battler
+                    .model_palette
+                    .map(|palette| Arc::new(crate::pokemon_appearance::mesh(data, palette)))
+            });
+            let (mesh, neutral_colors) =
+                appearance_data
+                    .as_deref()
+                    .or(root_data)
+                    .map_or((None, None), |data| {
+                        let (mesh, colors) = actor_mesh(
+                            data,
+                            transform.rotation,
+                            scene.vertex_lighting,
+                            &mut meshes,
+                        );
+                        (Some(mesh), colors)
+                    });
             let entity = commands
                 .spawn((
-                    (Mesh3d(mesh.clone().unwrap_or_else(|| scene.fallback_mesh.clone())),
-MeshMaterial3d(material.clone()),
-transform,
-if battler.visible {
+                    (
+                        Mesh3d(mesh.clone().unwrap_or_else(|| scene.fallback_mesh.clone())),
+                        MeshMaterial3d(material.clone()),
+                        transform,
+                        if battler.visible {
                             Visibility::Visible
                         } else {
                             Visibility::Hidden
-                        },),
+                        },
+                    ),
                     battle_actor_layers(
                         &frame,
                         index,
-                        captures.prewarm_actor(&frame, index)
-                            && modeled
-                            && skin_rig.is_none(),
+                        captures.prewarm_actor(&frame, index) && modeled && skin_rig.is_none(),
                     ),
                     BattleActor,
                 ))
                 .id();
             let skinned = skin_rig.map(|rig| {
                 aura::remove_solid_effects(
-                    &mut meshes.get_mut(mesh.as_ref().expect("modeled skin mesh")).unwrap(),
+                    &mut meshes
+                        .get_mut(mesh.as_ref().expect("modeled skin mesh"))
+                        .unwrap(),
                     rig,
                 );
                 skinning::spawn(
@@ -2150,8 +2385,7 @@ if battler.visible {
         }
         let vertex_lighting = scene.vertex_lighting;
         if let Some(instance) = &mut scene.actors[index] {
-            let base_pose = layout_actor_pose(battler, modeled_bounds, &layout,
-                modeled_support);
+            let base_pose = layout_actor_pose(battler, modeled_bounds, &layout, modeled_support);
             if instance.base_pose != base_pose {
                 instance.base_pose = base_pose;
                 instance.projected_registration = None;
@@ -2181,7 +2415,10 @@ if battler.visible {
                 || (bgp != 0xe4 && instance.palette_key.1 != *flash_mode)
                 || instance.palette_colors != palette_colors
             {
-                if let (Some(data), Some(handle)) = (instance.appearance_data.as_deref().or(root_data), instance.mesh.as_ref()) {
+                if let (Some(data), Some(handle)) = (
+                    instance.appearance_data.as_deref().or(root_data),
+                    instance.mesh.as_ref(),
+                ) {
                     if let Some(mut mesh) = meshes.get_mut(handle) {
                         apply_actor_palette(
                             &mut mesh,
@@ -2211,8 +2448,8 @@ if battler.visible {
             if instance.source_rect != battler.source_rect
                 || instance.source_opaque_rect != battler.source_opaque_rect
             {
-                instance.base_pose = layout_actor_pose(battler, modeled_bounds, &layout,
-                modeled_support);
+                instance.base_pose =
+                    layout_actor_pose(battler, modeled_bounds, &layout, modeled_support);
                 instance.projected_registration = None;
                 instance.source_rect = battler.source_rect;
                 instance.source_opaque_rect = battler.source_opaque_rect;
@@ -2224,7 +2461,14 @@ if battler.visible {
                     index,
                     captures.prewarm_actor(&frame, index) && modeled && !instance.is_articulated(),
                 ));
-                let pose = presented_battler_pose(&frame, battler, &layout, modeled_bounds, instance.base_pose, capture_bridge.image_active());
+                let pose = presented_battler_pose(
+                    &frame,
+                    battler,
+                    &layout,
+                    modeled_bounds,
+                    instance.base_pose,
+                    capture_bridge.image_active(),
+                );
                 transform.set_if_neq(pose);
                 visibility.set_if_neq(if battler.visible {
                     Visibility::Visible
@@ -2232,7 +2476,6 @@ if battler.visible {
                     Visibility::Hidden
                 });
             }
-
         }
     }
     for (shadow, mut transform, mut visibility) in &mut contact_shadows {
@@ -2263,8 +2506,11 @@ if battler.visible {
             0.086
         };
         transform.translation = Vec3::new(position.x, ground_y, position.z);
-        if shadow.1 == GroundShade::LowBody && scene.actors[shadow.0.index()].as_ref()
-            .is_none_or(|actor| actor.low_body_bounds.is_none()) {
+        if shadow.1 == GroundShade::LowBody
+            && scene.actors[shadow.0.index()]
+                .as_ref()
+                .is_none_or(|actor| actor.low_body_bounds.is_none())
+        {
             visibility.set_if_neq(Visibility::Hidden);
             continue;
         }
@@ -2275,10 +2521,16 @@ if battler.visible {
                 .filter(|_| actor.key.modeled)
             {
                 let footprint = if shadow.1 == GroundShade::LowBody {
-                    actor.low_body_bounds.expect("visible low-body shadow has a registered footprint")
-                } else { actor.contact_bounds.unwrap_or(*bounds) };
+                    actor
+                        .low_body_bounds
+                        .expect("visible low-body shadow has a registered footprint")
+                } else {
+                    actor.contact_bounds.unwrap_or(*bounds)
+                };
                 let extent = (footprint.max - footprint.min) * actor.base_pose.scale;
-                let center = actor.base_pose.transform_point((footprint.min + footprint.max) * 0.5);
+                let center = actor
+                    .base_pose
+                    .transform_point((footprint.min + footprint.max) * 0.5);
                 transform.translation.x += center.x - actor.base_pose.translation.x;
                 transform.translation.z += center.z - actor.base_pose.translation.z;
                 transform.rotation = actor.base_pose.rotation;
@@ -2287,22 +2539,32 @@ if battler.visible {
                     // faint ellipse inside the clipped lower-body footprint.
                     (0.40, 0.0)
                 } else if actor.contact_bounds.is_some() {
-                    (0.60, (bounds.max.y - bounds.min.y) * actor.base_pose.scale.y * 0.02)
+                    (
+                        0.60,
+                        (bounds.max.y - bounds.min.y) * actor.base_pose.scale.y * 0.02,
+                    )
                 } else {
                     (0.48, 0.0)
                 };
-                transform.scale = Vec3::new((extent.x * padding).max(minimum), 1.0,
-                    (extent.z * padding).max(minimum));
+                transform.scale = Vec3::new(
+                    (extent.x * padding).max(minimum),
+                    1.0,
+                    (extent.z * padding).max(minimum),
+                );
             } else {
                 transform.rotation = Quat::IDENTITY;
                 transform.scale = Vec3::new(0.38, 1.0, 0.23) * MODEL_SCALE;
             }
         }
-        if shadow.0 == VisualBattleSide::Enemy && !capture_bridge.image_active()
-            && let Some(capture) = &frame.capture {
+        if shadow.0 == VisualBattleSide::Enemy
+            && !capture_bridge.image_active()
+            && let Some(capture) = &frame.capture
+        {
             let factor = match capture.enemy_picture {
                 crystal_render_api::VisualCapturePicture::Full => 1.,
-                crystal_render_api::VisualCapturePicture::Tiles(tiles) => f32::from(tiles.min(7)) / 7.,
+                crystal_render_api::VisualCapturePicture::Tiles(tiles) => {
+                    f32::from(tiles.min(7)) / 7.
+                }
                 crystal_render_api::VisualCapturePicture::Hidden => 0.,
             };
             transform.scale.x *= factor;
@@ -2331,9 +2593,18 @@ fn sync_grass_visibility(
 ) {
     let mut contacts = [None; 2];
     let bodies = std::array::from_fn(|index| {
-        if !frame.battlers[index].as_ref().is_some_and(|body| body.visible) { return None; }
+        if !frame.battlers[index]
+            .as_ref()
+            .is_some_and(|body| body.visible)
+        {
+            return None;
+        }
         let actor = scene.actors[index].as_ref()?;
-        let bounds = actor.key.modeled.then(|| scene.species_bounds.get(&actor.key.species).copied()).flatten();
+        let bounds = actor
+            .key
+            .modeled
+            .then(|| scene.species_bounds.get(&actor.key.species).copied())
+            .flatten();
         let actor = scene.actors[index].as_mut()?;
         let pose = *transforms.get(actor.entity).ok()?;
         let (min, max) = if let Some(skin) = &mut actor.skinned {
@@ -2344,9 +2615,14 @@ fn sync_grass_visibility(
             let body = BattleBody::source_card(1.0);
             (body.min, body.max)
         };
-        let (contact_min, contact_max) = actor.contact_bounds.or(bounds)
+        let (contact_min, contact_max) = actor
+            .contact_bounds
+            .or(bounds)
             .map_or((min, max), |bounds| (bounds.min, bounds.max));
-        contacts[index] = Some((BattleBody::modeled(&actor.key.species, contact_min, contact_max, 1.0), pose));
+        contacts[index] = Some((
+            BattleBody::modeled(&actor.key.species, contact_min, contact_max, 1.0),
+            pose,
+        ));
         Some((BattleBody::modeled(&actor.key.species, min, max, 1.0), pose))
     });
     terrain.set_visible_apertures(layout.camera, bodies, contacts);
@@ -2390,17 +2666,25 @@ fn sync_battle_source_registration(
     let bodies = std::array::from_fn(|index| {
         let battler = frame.battlers[index].as_ref()?;
         if normal_send_out_reveal(&frame, battler)
-            && scene.actors[index].as_ref().is_some_and(|actor| !actor.key.modeled) {
+            && scene.actors[index]
+                .as_ref()
+                .is_some_and(|actor| !actor.key.modeled)
+        {
             let actor = scene.actors[index].as_ref()?;
             // The card's full allocation, not the model's hit anchor or the
             // changing opaque reveal bounds, owns its smoke/OAM registration.
             let half = FALLBACK_CARD_HEIGHT * 0.5;
             let corners = [
-                [-half, -half, 0.0], [half, -half, 0.0],
-                [-half, half, 0.0], [half, half, 0.0],
+                [-half, -half, 0.0],
+                [half, -half, 0.0],
+                [-half, half, 0.0],
+                [half, half, 0.0],
             ];
             let footprint = projected_actor_footprint(&layout, &corners, actor.base_pose, viewport);
-            let foot = layout.project_point(actor.base_pose.transform_point(Vec3::new(0.0, -half, 0.0)), viewport);
+            let foot = layout.project_point(
+                actor.base_pose.transform_point(Vec3::new(0.0, -half, 0.0)),
+                viewport,
+            );
             // Body charts are upright similarities so source OAM stays round.
             // A perspective card's top and bottom can have different X centers;
             // its floor contact, not their bounding-box average, owns the chart.
@@ -2408,7 +2692,12 @@ fn sync_battle_source_registration(
             return Some(BattleSourceBodyRegistration {
                 source: battler.source_rect,
                 slot: battler.source_rect,
-                view: Rect::new(foot.x - half_width, footprint.min.y, foot.x + half_width, foot.y),
+                view: Rect::new(
+                    foot.x - half_width,
+                    footprint.min.y,
+                    foot.x + half_width,
+                    foot.y,
+                ),
             });
         }
         let data = scene.actors[index]
@@ -2482,7 +2771,9 @@ fn register_battle_row_actors(
                 [-FALLBACK_CARD_HEIGHT * 0.5, FALLBACK_CARD_HEIGHT * 0.5, 0.0],
                 [FALLBACK_CARD_HEIGHT * 0.5, FALLBACK_CARD_HEIGHT * 0.5, 0.0],
             ];
-            let points = data.as_ref().map_or(fallback.as_slice(), |data| data.positions.as_slice());
+            let points = data
+                .as_ref()
+                .map_or(fallback.as_slice(), |data| data.positions.as_slice());
             let bounds = projected_actor_footprint(&layout, points, actor.base_pose, viewport);
             actor.projected_registration = Some((viewport, layout.camera, bounds));
             bounds
@@ -2552,7 +2843,11 @@ fn battle_actor_layers(frame: &VisualBattleFrame, index: usize, prewarm: bool) -
     } else if prewarm {
         // The arena keeps its ordinary actor during prewarm. Its private row
         // camera sees the same entity, so there is no duplicate mesh/entity.
-        RenderLayers::from_layers(&[BATTLE_LAYER, BATTLE_ROW_LAYERS[index], BATTLE_GRASS_MASK_LAYER])
+        RenderLayers::from_layers(&[
+            BATTLE_LAYER,
+            BATTLE_ROW_LAYERS[index],
+            BATTLE_GRASS_MASK_LAYER,
+        ])
     } else {
         RenderLayers::from_layers(&[BATTLE_LAYER, BATTLE_GRASS_MASK_LAYER])
     }
@@ -3042,10 +3337,26 @@ fn arena_mesh(environment: VisualBattleEnvironment) -> SurfaceMeshData {
             // the arena geographic depth without obscuring either battler.
             if center.z < 2.0 || center.x.abs() > 11.0 {
                 let mut trees = crate::mesh::TerrainMeshData::default();
-                crate::foliage::append_grove_tree(&mut trees,
-                    [center.x - 0.6, center.x + 0.6, center.z - 0.6, center.z + 0.6],
-                    0., 0.6, [i, 500], [false; 4]);
-                append_transformed(&mut mesh, &trees.solid, Vec3::ZERO, Vec3::ONE, Quat::IDENTITY);
+                crate::foliage::append_grove_tree(
+                    &mut trees,
+                    [
+                        center.x - 0.6,
+                        center.x + 0.6,
+                        center.z - 0.6,
+                        center.z + 0.6,
+                    ],
+                    0.,
+                    0.6,
+                    [i, 500],
+                    [false; 4],
+                );
+                append_transformed(
+                    &mut mesh,
+                    &trees.solid,
+                    Vec3::ZERO,
+                    Vec3::ONE,
+                    Quat::IDENTITY,
+                );
             }
             for j in 0..3 {
                 let c = center + Vec3::new(j as f32 * 0.27, 0.0, 0.3);
@@ -3285,36 +3596,58 @@ pub(super) mod tests {
         let mut app = headless_battle_app();
         app.update();
         let original = app.world().resource::<BattleSceneLayout>().clone();
-        let actor = app.world().resource::<BattleScene>().actors[0].as_ref().unwrap().entity;
+        let actor = app.world().resource::<BattleScene>().actors[0]
+            .as_ref()
+            .unwrap()
+            .entity;
         for dropped in [8., 16., 24., 40., 56.] {
             {
                 let mut frame = app.world_mut().resource_mut::<VisualBattleFrame>();
                 let mut source = source_test_frame(0xe4);
                 source.battler_offsets[0].y = -dropped;
                 frame.source = Some(source);
-                frame.cues = [VisualBattleCueKind::SourcePicture, VisualBattleCueKind::Faint]
-                    .map(|kind| VisualBattleCue { kind, side: VisualBattleSide::Player,
-                        move_id: Arc::from("FAINT_MON"), element: Arc::from("NORMAL"),
-                        progress: dropped / 56., damaging: false }).to_vec();
+                frame.cues = [
+                    VisualBattleCueKind::SourcePicture,
+                    VisualBattleCueKind::Faint,
+                ]
+                .map(|kind| VisualBattleCue {
+                    kind,
+                    side: VisualBattleSide::Player,
+                    move_id: Arc::from("FAINT_MON"),
+                    element: Arc::from("NORMAL"),
+                    progress: dropped / 56.,
+                    damaging: false,
+                })
+                .to_vec();
             }
             let packet = app.world().resource::<VisualBattleFrame>().clone();
             app.update();
             assert!(app.world().resource::<BattleViewStatus>().active);
             let scene = app.world().resource::<BattleScene>();
             let instance = scene.actors[0].as_ref().unwrap();
-            assert_eq!(instance.entity, actor, "fainting must not swap a model for a sprite");
+            assert_eq!(
+                instance.entity, actor,
+                "fainting must not swap a model for a sprite"
+            );
             assert!(instance.key.modeled);
             let bounds = scene.species_bounds.get("CYNDAQUIL").unwrap();
             let battler = packet.battlers[0].as_ref().unwrap();
             let padding = (battler.source_rect.max.y - battler.source_opaque_rect.max.y).max(0.);
             let height = (bounds.max.y - bounds.min.y) * instance.base_pose.scale.y.abs();
             let expected = instance.base_pose.translation.y
-                - (dropped - padding).max(0.) * height / battler.source_opaque_rect.height().max(1.);
+                - (dropped - padding).max(0.) * height
+                    / battler.source_opaque_rect.height().max(1.);
             let position = app.world().get::<Transform>(actor).unwrap().translation;
             assert!((position.y - expected).abs() < 0.0001);
-            assert_eq!(app.world().resource::<BattleSceneLayout>().origins, original.origins);
-            assert_eq!(*app.world().resource::<VisualBattleFrame>(), packet,
-                "rendering cannot advance the source faint clock");
+            assert_eq!(
+                app.world().resource::<BattleSceneLayout>().origins,
+                original.origins
+            );
+            assert_eq!(
+                *app.world().resource::<VisualBattleFrame>(),
+                packet,
+                "rendering cannot advance the source faint clock"
+            );
         }
     }
 
@@ -3376,7 +3709,8 @@ pub(super) mod tests {
     fn send_out_handoff_fits_once_and_registers_the_grounded_source_bank() {
         for side in [VisualBattleSide::Player, VisualBattleSide::Enemy] {
             let mut app = headless_battle_app();
-            app.world_mut().spawn((Window::default(), bevy::window::PrimaryWindow));
+            app.world_mut()
+                .spawn((Window::default(), bevy::window::PrimaryWindow));
             {
                 let mut frame = app.world_mut().resource_mut::<VisualBattleFrame>();
                 let player = frame.battlers[0].as_mut().unwrap();
@@ -3397,53 +3731,90 @@ pub(super) mod tests {
                     let battler = frame.battlers[side.index()].as_mut().unwrap();
                     battler.allow_species_model = tick >= 6;
                     battler.visible = tick >= 4;
-                    battler.texture = Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(1000 + tick as u128), std::marker::PhantomData);
+                    battler.texture = Handle::Uuid(
+                        bevy::asset::uuid::Uuid::from_u128(1000 + tick as u128),
+                        std::marker::PhantomData,
+                    );
                     battler.source_opaque_rect = if reveal {
                         Rect::from_center_size(battler.source_rect.center(), Vec2::splat(16.0))
-                    } else { battler.source_rect };
+                    } else {
+                        battler.source_rect
+                    };
                     let mut source = source_test_frame(0xe4);
                     source.frame = tick;
                     source.battler_offsets = [Vec2::ZERO; 2];
-                    source.objects[0].placement = Some(crystal_render_api::VisualBattleSourcePlacement::BattlerLocal { side });
+                    source.objects[0].placement = Some(
+                        crystal_render_api::VisualBattleSourcePlacement::BattlerLocal { side },
+                    );
                     frame.source = Some(source);
-                    frame.cues = if tick < 36 { vec![VisualBattleCue {
-                        kind: VisualBattleCueKind::SendOut, side,
-                        move_id: Arc::from("SEND_OUT"), element: Arc::from("NORMAL"),
-                        progress: tick as f32 / 36.0, damaging: false,
-                    }] } else { Vec::new() };
+                    frame.cues = if tick < 36 {
+                        vec![VisualBattleCue {
+                            kind: VisualBattleCueKind::SendOut,
+                            side,
+                            move_id: Arc::from("SEND_OUT"),
+                            element: Arc::from("NORMAL"),
+                            progress: tick as f32 / 36.0,
+                            damaging: false,
+                        }]
+                    } else {
+                        Vec::new()
+                    };
                 }
                 let presented = app.world().resource::<VisualBattleFrame>().clone();
                 app.update();
                 assert_eq!(*app.world().resource::<VisualBattleFrame>(), presented);
-                assert_eq!(app.world().resource::<BattleScene>().layout_fits, 1,
-                    "source picture-bank changes must not repeat the establishing search");
+                assert_eq!(
+                    app.world().resource::<BattleScene>().layout_fits,
+                    1,
+                    "source picture-bank changes must not repeat the establishing search"
+                );
                 let layout = app.world().resource::<BattleSceneLayout>().clone();
                 assert_eq!(layout.origins, original.origins);
                 assert_eq!(layout.body_poses, original.body_poses);
                 let scene = app.world().resource::<BattleScene>();
                 let actor = scene.actors[side.index()].as_ref().unwrap();
-                assert!(actor.key.modeled, "send-out tick {tick} must retain the model");
-                assert!(app.world().resource::<BattleViewStatus>().source_art_species.is_empty());
+                assert!(
+                    actor.key.modeled,
+                    "send-out tick {tick} must retain the model"
+                );
+                assert!(
+                    app.world()
+                        .resource::<BattleViewStatus>()
+                        .source_art_species
+                        .is_empty()
+                );
                 let entity = actor.entity;
                 if tick > 0 {
                     assert_eq!(entity, retained_entity.expect("initial modeled entity"));
                 }
                 retained_entity = Some(entity);
-
             }
             let viewport = {
                 let world = app.world_mut();
                 let window = world.query::<&Window>().single(world).unwrap();
-                Vec2::new(window.physical_width() as f32, window.physical_height() as f32)
+                Vec2::new(
+                    window.physical_width() as f32,
+                    window.physical_height() as f32,
+                )
             };
-            app.world_mut().resource_mut::<BattleUiBounds>().reserve(viewport, 0.27, 0.70);
+            app.world_mut()
+                .resource_mut::<BattleUiBounds>()
+                .reserve(viewport, 0.27, 0.70);
             app.update();
-            assert_eq!(app.world().resource::<BattleScene>().layout_fits, 2,
-                "settling a real HUD reservation must legitimately refit the scene");
-            app.world_mut().resource_mut::<BattleUiBounds>().reserve(viewport, 0.27, 0.70);
+            assert_eq!(
+                app.world().resource::<BattleScene>().layout_fits,
+                2,
+                "settling a real HUD reservation must legitimately refit the scene"
+            );
+            app.world_mut()
+                .resource_mut::<BattleUiBounds>()
+                .reserve(viewport, 0.27, 0.70);
             app.update();
-            assert_eq!(app.world().resource::<BattleScene>().layout_fits, 2,
-                "unchanged measured HUD bounds must not restart the search");
+            assert_eq!(
+                app.world().resource::<BattleScene>().layout_fits,
+                2,
+                "unchanged measured HUD bounds must not restart the search"
+            );
         }
     }
 
@@ -3458,12 +3829,20 @@ pub(super) mod tests {
         source.frame = 4;
         frame.source = Some(source);
         assert!(!layout_uses_species_model(&frame, &battler));
-        frame.cues.push(VisualBattleCue { kind: VisualBattleCueKind::SendOut,
-            side: battler.side, move_id: Arc::from("SEND_OUT"), element: Arc::from("NORMAL"),
-            progress: 4.0 / 36.0, damaging: false });
+        frame.cues.push(VisualBattleCue {
+            kind: VisualBattleCueKind::SendOut,
+            side: battler.side,
+            move_id: Arc::from("SEND_OUT"),
+            element: Arc::from("NORMAL"),
+            progress: 4.0 / 36.0,
+            damaging: false,
+        });
         assert!(layout_uses_species_model(&frame, &battler));
         battler.texture_size = Vec2::splat(16.0);
-        assert!(!layout_uses_species_model(&frame, &battler), "Substitute/Minimize keep their source body");
+        assert!(
+            !layout_uses_species_model(&frame, &battler),
+            "Substitute/Minimize keep their source body"
+        );
         battler.texture_size = Vec2::splat(48.0);
         frame.source.as_mut().unwrap().frame = 6;
         assert!(!layout_uses_species_model(&frame, &battler));
@@ -3483,7 +3862,9 @@ pub(super) mod tests {
             .init_resource::<BattleScene>()
             .init_resource::<BattleGrassMask>()
             .add_systems(Update, sync_grass_mask);
-        let target = app.world_mut().resource_mut::<Assets<Image>>()
+        let target = app
+            .world_mut()
+            .resource_mut::<Assets<Image>>()
             .add(battle_row_target_image(UVec2::ONE));
         {
             let mut mask = app.world_mut().resource_mut::<BattleGrassMask>();
@@ -3491,55 +3872,100 @@ pub(super) mod tests {
             mask.active = true;
         }
         app.world_mut().resource_mut::<BattleScene>().render_size = UVec2::new(320, 240);
-        let main = app.world_mut().spawn((Camera::default(), BattleCamera)).id();
-        let mask = app.world_mut().spawn((Camera::default(), BattleGrassMaskCamera)).id();
+        let main = app
+            .world_mut()
+            .spawn((Camera::default(), BattleCamera))
+            .id();
+        let mask = app
+            .world_mut()
+            .spawn((Camera::default(), BattleGrassMaskCamera))
+            .id();
         app.update();
-        assert!(app.world().get::<Camera>(main).unwrap().is_active,
-            "the actual battle camera must keep rendering");
+        assert!(
+            app.world().get::<Camera>(main).unwrap().is_active,
+            "the actual battle camera must keep rendering"
+        );
         assert!(!app.world().get::<Camera>(mask).unwrap().is_active);
         assert!(!app.world().resource::<BattleGrassMask>().active);
         let revision = app.world().resource::<BattleGrassMask>().revision;
-        let camera_change = app.world().entity(mask).get_ref::<Camera>().unwrap().last_changed();
+        let camera_change = app
+            .world()
+            .entity(mask)
+            .get_ref::<Camera>()
+            .unwrap()
+            .last_changed();
         let image_count = app.world().resource::<Assets<Image>>().len();
         app.world_mut().resource_mut::<BattleScene>().render_size = UVec2::new(1280, 720);
         app.update();
         assert_eq!(app.world().resource::<BattleGrassMask>().revision, revision);
-        assert_eq!(app.world().entity(mask).get_ref::<Camera>().unwrap().last_changed(), camera_change);
+        assert_eq!(
+            app.world()
+                .entity(mask)
+                .get_ref::<Camera>()
+                .unwrap()
+                .last_changed(),
+            camera_change
+        );
         assert_eq!(app.world().resource::<Assets<Image>>().len(), image_count);
-        assert_eq!(app.world().resource::<Assets<Image>>().get(&target).unwrap().size(), UVec2::ONE,
-            "resizing the battle view must not allocate an unused full-resolution target");
+        assert_eq!(
+            app.world()
+                .resource::<Assets<Image>>()
+                .get(&target)
+                .unwrap()
+                .size(),
+            UVec2::ONE,
+            "resizing the battle view must not allocate an unused full-resolution target"
+        );
         assert!(app.world().get::<Camera>(main).unwrap().is_active);
         for side in 0..2 {
             let layers = battle_actor_layers(&VisualBattleFrame::default(), side, true);
             assert!(layers.intersects(&RenderLayers::layer(BATTLE_LAYER)));
             assert!(layers.intersects(&RenderLayers::layer(BATTLE_ROW_LAYERS[side])));
-            assert!(!layers.intersects(&RenderLayers::layer(BATTLE_ROW_LAYERS[1-side])));
+            assert!(!layers.intersects(&RenderLayers::layer(BATTLE_ROW_LAYERS[1 - side])));
         }
     }
 
     #[test]
     fn mew_layout_envelope_contains_rendered_hover_without_changing_size() {
-        let mut app=headless_battle_app();
-        let battler={
-            let mut frame=app.world_mut().resource_mut::<VisualBattleFrame>();
-            let battler=frame.battlers[0].as_mut().unwrap();
-            battler.species_id=Arc::from("MEW");battler.pokedex_size_m=Some(0.4064);
+        let mut app = headless_battle_app();
+        let battler = {
+            let mut frame = app.world_mut().resource_mut::<VisualBattleFrame>();
+            let battler = frame.battlers[0].as_mut().unwrap();
+            battler.species_id = Arc::from("MEW");
+            battler.pokedex_size_m = Some(0.4064);
             battler.clone()
         };
-        let body=modeled_layout_body(&mut app.world_mut().resource_mut::<BattleScene>(),&battler).unwrap();
-        let rig=crate::species_rig::for_species("MEW").unwrap();
-        let (min,max)=body.visual_bounds.unwrap();
-        assert_eq!((body.min,body.max),rig.neutral_bounds);
-        let (mut pose,mut matrices)=(vec![Transform::IDENTITY;rig.joints.len()],vec![Mat4::IDENTITY;rig.joints.len()]);
-        for clip in crate::species_rig::Clip::ALL {for step in 0..=16 {
-            rig.sample_into(clip,rig.clip(clip).duration*step as f32/16.0,crate::species_rig::Playback::Clamp,&mut pose).unwrap();
-            crate::species_rig::motion::battle_float(rig,&mut pose);
-            rig.skin_matrices_into(&pose,&mut matrices).unwrap();
-            for v in 0..rig.neutral.positions.len() {
-                let point=rig.skin_point(v,&matrices);
-                assert!(point.cmpge(min-Vec3::splat(0.00001)).all() && point.cmple(max+Vec3::splat(0.00001)).all(),"rendered Mew leaves fitted envelope: {point:?}, {min:?}..{max:?}");
+        let body =
+            modeled_layout_body(&mut app.world_mut().resource_mut::<BattleScene>(), &battler)
+                .unwrap();
+        let rig = crate::species_rig::for_species("MEW").unwrap();
+        let (min, max) = body.visual_bounds.unwrap();
+        assert_eq!((body.min, body.max), rig.neutral_bounds);
+        let (mut pose, mut matrices) = (
+            vec![Transform::IDENTITY; rig.joints.len()],
+            vec![Mat4::IDENTITY; rig.joints.len()],
+        );
+        for clip in crate::species_rig::Clip::ALL {
+            for step in 0..=16 {
+                rig.sample_into(
+                    clip,
+                    rig.clip(clip).duration * step as f32 / 16.0,
+                    crate::species_rig::Playback::Clamp,
+                    &mut pose,
+                )
+                .unwrap();
+                crate::species_rig::motion::battle_float(rig, &mut pose);
+                rig.skin_matrices_into(&pose, &mut matrices).unwrap();
+                for v in 0..rig.neutral.positions.len() {
+                    let point = rig.skin_point(v, &matrices);
+                    assert!(
+                        point.cmpge(min - Vec3::splat(0.00001)).all()
+                            && point.cmple(max + Vec3::splat(0.00001)).all(),
+                        "rendered Mew leaves fitted envelope: {point:?}, {min:?}..{max:?}"
+                    );
+                }
             }
-        }}
+        }
     }
 
     #[test]
@@ -3566,17 +3992,38 @@ pub(super) mod tests {
                 .corners(Transform::IDENTITY)
                 .map(|point| point.to_array());
             let registration = projected_actor_footprint(&after, &corners, pose, viewport);
-            let (mut local, mut matrices)=(vec![Transform::IDENTITY;rig.joints.len()],vec![Mat4::IDENTITY;rig.joints.len()]);
-            for clip in crate::species_rig::Clip::ALL { for frame in 0..=32 {
-                rig.sample_into(clip,rig.clip(clip).duration*frame as f32/32.,crate::species_rig::Playback::Clamp,&mut local).unwrap();
-                rig.skin_matrices_into(&local,&mut matrices).unwrap();
-                for vertex in 0..rig.neutral.positions.len() {
-                    let point=rig.skin_point(vertex,&matrices).to_array();
-                    let projected=projected_actor_footprint(&after,&[point],pose,viewport);
-                    assert!(registration.min.cmple(projected.min+Vec2::splat(0.00001)).all());
-                    assert!(registration.max.cmpge(projected.max-Vec2::splat(0.00001)).all());
+            let (mut local, mut matrices) = (
+                vec![Transform::IDENTITY; rig.joints.len()],
+                vec![Mat4::IDENTITY; rig.joints.len()],
+            );
+            for clip in crate::species_rig::Clip::ALL {
+                for frame in 0..=32 {
+                    rig.sample_into(
+                        clip,
+                        rig.clip(clip).duration * frame as f32 / 32.,
+                        crate::species_rig::Playback::Clamp,
+                        &mut local,
+                    )
+                    .unwrap();
+                    rig.skin_matrices_into(&local, &mut matrices).unwrap();
+                    for vertex in 0..rig.neutral.positions.len() {
+                        let point = rig.skin_point(vertex, &matrices).to_array();
+                        let projected = projected_actor_footprint(&after, &[point], pose, viewport);
+                        assert!(
+                            registration
+                                .min
+                                .cmple(projected.min + Vec2::splat(0.00001))
+                                .all()
+                        );
+                        assert!(
+                            registration
+                                .max
+                                .cmpge(projected.max - Vec2::splat(0.00001))
+                                .all()
+                        );
+                    }
                 }
-            }}
+            }
         }
     }
 
@@ -3659,36 +4106,57 @@ pub(super) mod tests {
         use bevy::camera::CameraProjection;
         let mut app = headless_battle_app();
         app.world_mut().resource_mut::<BattleScene>().quality = BattleRenderQuality::Balanced;
-        app.world_mut().spawn((Window::default(), bevy::window::PrimaryWindow));
+        app.world_mut()
+            .spawn((Window::default(), bevy::window::PrimaryWindow));
         let mut projection = OrthographicProjection::default_2d();
         projection.update(640.0, 576.0);
-        let camera = app.world_mut().spawn((
-            Camera2d,
-            Projection::Orthographic(projection),
-            RenderLayers::layer(BATTLE_COMPOSITE_LAYER),
-        )).id();
+        let camera = app
+            .world_mut()
+            .spawn((
+                Camera2d,
+                Projection::Orthographic(projection),
+                RenderLayers::layer(BATTLE_COMPOSITE_LAYER),
+            ))
+            .id();
         app.world_mut().resource_mut::<VisualBattleFrame>().source = Some(source_test_frame(0));
         let assert_composite = |app: &mut App, expected| {
             let world = app.world_mut();
-            let visible: Vec<_> = world.query_filtered::<&Visibility, With<BattleCompositeSprite>>()
-                .iter(world).copied().collect();
+            let visible: Vec<_> = world
+                .query_filtered::<&Visibility, With<BattleCompositeSprite>>()
+                .iter(world)
+                .copied()
+                .collect();
             assert_eq!(visible, vec![expected]);
         };
         app.update();
         assert_composite(&mut app, Visibility::Visible);
-        let image = app.world_mut().resource_mut::<Assets<Image>>().add(Image::new_target_texture(
-            640, 576, TextureFormat::Rgba8UnormSrgb, None,
-        ));
-        app.world_mut().entity_mut(camera).insert(RenderTarget::Image(image.into()));
+        let image = app
+            .world_mut()
+            .resource_mut::<Assets<Image>>()
+            .add(Image::new_target_texture(
+                640,
+                576,
+                TextureFormat::Rgba8UnormSrgb,
+                None,
+            ));
+        app.world_mut()
+            .entity_mut(camera)
+            .insert(RenderTarget::Image(image.into()));
         app.update();
         assert_composite(&mut app, Visibility::Hidden);
-        app.world_mut().entity_mut(camera).insert(BattleCompositeImageCamera);
+        app.world_mut()
+            .entity_mut(camera)
+            .insert(BattleCompositeImageCamera);
         app.update();
         assert_composite(&mut app, Visibility::Visible);
-        app.world_mut().entity_mut(camera).remove::<BattleCompositeImageCamera>();
+        app.world_mut()
+            .entity_mut(camera)
+            .remove::<BattleCompositeImageCamera>();
         app.update();
         assert_composite(&mut app, Visibility::Hidden);
-        app.world_mut().entity_mut(camera).insert(RenderTarget::default());
+        app.world_mut()
+            .entity_mut(camera)
+            .insert(RenderTarget::default());
         app.update();
         assert_composite(&mut app, Visibility::Visible);
     }
@@ -3726,16 +4194,17 @@ pub(super) mod tests {
         hud_projection.update(1180.0, 812.0);
         let camera_id = app
             .world_mut()
-            .spawn((Camera2d, hud_camera, Projection::Orthographic(hud_projection), RenderLayers::layer(0)))
+            .spawn((
+                Camera2d,
+                hud_camera,
+                Projection::Orthographic(hud_projection),
+                RenderLayers::layer(0),
+            ))
             .id();
         let hud_transform = Transform::from_xyz(310.0, 210.0, 3.2);
         let hud = app
             .world_mut()
-            .spawn((
-                (Sprite::default(),
-hud_transform,),
-                RenderLayers::layer(0),
-            ))
+            .spawn(((Sprite::default(), hud_transform), RenderLayers::layer(0)))
             .id();
         app.world_mut().resource_mut::<VisualBattleFrame>().source = Some(source_test_frame(0));
         let frame = app.world().resource::<VisualBattleFrame>().clone();
@@ -3766,10 +4235,8 @@ hud_transform,),
                 .unwrap()
                 .resolution
                 .set(width as f32, height as f32);
-            if let Projection::Orthographic(projection) = &mut *app
-                .world_mut()
-                .get_mut::<Projection>(camera_id)
-                .unwrap()
+            if let Projection::Orthographic(projection) =
+                &mut *app.world_mut().get_mut::<Projection>(camera_id).unwrap()
             {
                 projection.update(width as f32, height as f32);
             }
@@ -3918,7 +4385,10 @@ hud_transform,),
             (actor.entity, actor.material.clone())
         };
         for image in 100..110 {
-            let texture = Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(image), std::marker::PhantomData);
+            let texture = Handle::Uuid(
+                bevy::asset::uuid::Uuid::from_u128(image),
+                std::marker::PhantomData,
+            );
             app.world_mut()
                 .resource_mut::<VisualBattleFrame>()
                 .source
@@ -4038,15 +4508,24 @@ hud_transform,),
             for (before, after) in previous.iter().zip(&filled) {
                 assert_eq!(after[3], before[3]);
                 assert!(after[..3].iter().all(|value| value.is_finite()));
-                assert!(after[0] > before[0], "both opposed actors gain readable fill");
+                assert!(
+                    after[0] > before[0],
+                    "both opposed actors gain readable fill"
+                );
             }
             let top_gain = filled[0][0] / previous[0][0];
             let underside_gain = filled[1][0] / previous[1][0];
             assert!(underside_gain > top_gain, "lift shade more than highlights");
             assert!(top_gain < 1.15, "do not overexpose the lit paper planes");
-            assert!(filled[0][0] > filled[1][0] * 1.5, "retain directional volume");
+            assert!(
+                filled[0][0] > filled[1][0] * 1.5,
+                "retain directional volume"
+            );
             for color in &filled {
-                assert!(color[0] >= 0.8 * 0.60, "shaded actor faces retain visible source color");
+                assert!(
+                    color[0] >= 0.8 * 0.60,
+                    "shaded actor faces retain visible source color"
+                );
             }
         }
         assert_eq!(data, original, "lighting never changes authored mesh data");
@@ -4063,8 +4542,14 @@ hud_transform,),
         let lit = actor_vertex_lit_colors(&data, Quat::IDENTITY);
         assert_eq!(lit[0], [0.0, 0.0, 0.0, 0.7]);
         for mapped in [[0.0, 0.0, 0.0, 0.7], [1.0, 1.0, 1.0, 0.7]] {
-            assert_eq!(source_lit_color(lit[1], mapped, 0x00, BattleFlashMode::Full), mapped);
-            assert_eq!(source_lit_color(lit[1], mapped, 0xe4, BattleFlashMode::Full), lit[1]);
+            assert_eq!(
+                source_lit_color(lit[1], mapped, 0x00, BattleFlashMode::Full),
+                mapped
+            );
+            assert_eq!(
+                source_lit_color(lit[1], mapped, 0xe4, BattleFlashMode::Full),
+                lit[1]
+            );
             let reduced = source_lit_color(lit[1], mapped, 0x00, BattleFlashMode::Reduced);
             for channel in 0..3 {
                 assert!(reduced[channel] > lit[1][channel].min(mapped[channel]));
@@ -4104,7 +4589,10 @@ hud_transform,),
             unown_form: None,
             pokedex_size_m: Some(1.0),
             party_index: Some(0),
-            texture: Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(1), std::marker::PhantomData),
+            texture: Handle::Uuid(
+                bevy::asset::uuid::Uuid::from_u128(1),
+                std::marker::PhantomData,
+            ),
             texture_size: Vec2::splat(56.0),
             source_rect: Rect::new(96.0, 0.0, 152.0, 56.0),
             source_opaque_rect: Rect::new(96.0, 0.0, 152.0, 56.0),
@@ -4184,7 +4672,10 @@ hud_transform,),
             unown_form: None,
             pokedex_size_m: Some(1.0),
             party_index: Some(3),
-            texture: Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(1), std::marker::PhantomData),
+            texture: Handle::Uuid(
+                bevy::asset::uuid::Uuid::from_u128(1),
+                std::marker::PhantomData,
+            ),
             texture_size: Vec2::splat(56.0),
             source_rect: Rect::new(96.0, 0.0, 152.0, 56.0),
             source_opaque_rect: Rect::new(96.0, 0.0, 152.0, 56.0),
@@ -4221,16 +4712,33 @@ hud_transform,),
         let center = Vec3::new(angle.cos() * radius, 0., angle.sin() * radius);
         // The back tree at index fourteen remains outside the battlers' sightline.
         let mut tree = crate::mesh::TerrainMeshData::default();
-        crate::foliage::append_grove_tree(&mut tree,
-            [center.x - 0.6, center.x + 0.6, center.z - 0.6, center.z + 0.6],
-            0., 0.6, [14, 500], [false; 4]);
+        crate::foliage::append_grove_tree(
+            &mut tree,
+            [
+                center.x - 0.6,
+                center.x + 0.6,
+                center.z - 0.6,
+                center.z + 0.6,
+            ],
+            0.,
+            0.6,
+            [14, 500],
+            [false; 4],
+        );
         assert!(!tree.solid.positions.is_empty());
         assert!(tree.scenery.is_empty());
-        for environment in [VisualBattleEnvironment::Meadow, VisualBattleEnvironment::Forest] {
+        for environment in [
+            VisualBattleEnvironment::Meadow,
+            VisualBattleEnvironment::Forest,
+        ] {
             let arena = arena_mesh(environment);
-            assert!(arena.positions.windows(tree.solid.positions.len())
-                .any(|vertices| vertices == tree.solid.positions.as_slice()),
-                "battle trees must match the shared overworld producer");
+            assert!(
+                arena
+                    .positions
+                    .windows(tree.solid.positions.len())
+                    .any(|vertices| vertices == tree.solid.positions.as_slice()),
+                "battle trees must match the shared overworld producer"
+            );
         }
     }
 
@@ -4312,7 +4820,10 @@ hud_transform,),
             unown_form: None,
             pokedex_size_m: Some(if species == "CYNDAQUIL" { 0.508 } else { 1.0 }),
             party_index: Some(side.index()),
-            texture: Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(20 + side.index() as u128), std::marker::PhantomData),
+            texture: Handle::Uuid(
+                bevy::asset::uuid::Uuid::from_u128(20 + side.index() as u128),
+                std::marker::PhantomData,
+            ),
             texture_size: Vec2::splat(56.0),
             source_rect: Rect::new(96.0, 0.0, 152.0, 56.0),
             source_opaque_rect: Rect::new(96.0, 0.0, 152.0, 56.0),
@@ -4321,7 +4832,9 @@ hud_transform,),
             shiny: false,
             model_palette: None,
         };
-        app.world_mut().resource_mut::<BattleScene>().isolated_renderer_test = true;
+        app.world_mut()
+            .resource_mut::<BattleScene>()
+            .isolated_renderer_test = true;
         app.insert_resource(VisualBattleFrame {
             active: true,
             map_id: Arc::from("Route29"),
@@ -4337,16 +4850,32 @@ hud_transform,),
     #[test]
     fn preparing_scene_warms_the_hidden_target_without_claiming_presentation() {
         let mut app = headless_battle_app();
-        app.world_mut().resource_mut::<VisualBattleFrame>().preparing = true;
+        app.world_mut()
+            .resource_mut::<VisualBattleFrame>()
+            .preparing = true;
         app.update();
         let status = app.world().resource::<BattleViewStatus>();
         assert!(status.prepared);
         assert!(!status.active);
         assert_eq!(status.active_frames, 0);
-        assert!(app.world().resource::<BattleScene>().actors.iter().all(Option::is_some));
-        let mut sprites = app.world_mut().query_filtered::<&Visibility, With<BattleCompositeSprite>>();
-        assert!(sprites.iter(app.world()).all(|visible| *visible == Visibility::Hidden));
-        app.world_mut().resource_mut::<VisualBattleFrame>().preparing = false;
+        assert!(
+            app.world()
+                .resource::<BattleScene>()
+                .actors
+                .iter()
+                .all(Option::is_some)
+        );
+        let mut sprites = app
+            .world_mut()
+            .query_filtered::<&Visibility, With<BattleCompositeSprite>>();
+        assert!(
+            sprites
+                .iter(app.world())
+                .all(|visible| *visible == Visibility::Hidden)
+        );
+        app.world_mut()
+            .resource_mut::<VisualBattleFrame>()
+            .preparing = false;
         app.update();
         assert!(app.world().resource::<BattleViewStatus>().active);
     }
@@ -4480,7 +5009,10 @@ hud_transform,),
             app.update();
             assert!(app.world().resource::<BattleViewStatus>().active);
             let world = app.world_mut();
-            let fog = world.query_filtered::<&DistanceFog, With<BattleCamera>>().single(world).unwrap();
+            let fog = world
+                .query_filtered::<&DistanceFog, With<BattleCamera>>()
+                .single(world)
+                .unwrap();
             assert!((fog.color.alpha() - alpha).abs() < 0.001, "{map}");
         }
     }
@@ -4557,7 +5089,16 @@ hud_transform,),
                 [0.3, 0.3, 0.3, 1.0],
                 [0.0, 0.0, 0.0, 1.0],
             ]; 2],
-            battler_textures: [Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(50), std::marker::PhantomData), Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(51), std::marker::PhantomData)],
+            battler_textures: [
+                Handle::Uuid(
+                    bevy::asset::uuid::Uuid::from_u128(50),
+                    std::marker::PhantomData,
+                ),
+                Handle::Uuid(
+                    bevy::asset::uuid::Uuid::from_u128(51),
+                    std::marker::PhantomData,
+                ),
+            ],
             battler_offsets: [Vec2::new(4.0, 0.0), Vec2::ZERO],
             screen_offset: Vec2::ZERO,
             line_x_offsets: None,
@@ -4566,8 +5107,14 @@ hud_transform,),
             objects: vec![crystal_render_api::VisualBattleSourceObject {
                 slot: 0,
                 object_id: Arc::from("PRESENTED_SOURCE_OBJECT"),
-                texture: Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(60), std::marker::PhantomData),
-                neutral_texture: Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(61), std::marker::PhantomData),
+                texture: Handle::Uuid(
+                    bevy::asset::uuid::Uuid::from_u128(60),
+                    std::marker::PhantomData,
+                ),
+                neutral_texture: Handle::Uuid(
+                    bevy::asset::uuid::Uuid::from_u128(61),
+                    std::marker::PhantomData,
+                ),
                 center: Vec2::new(92.0, 68.0),
                 size: Vec2::splat(16.0),
                 uv_rect: Rect::from_corners(Vec2::ZERO, Vec2::ONE),
@@ -4638,7 +5185,10 @@ hud_transform,),
                 .get(&material)
                 .unwrap()
                 .base_color_texture,
-            Some(Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(61), std::marker::PhantomData)),
+            Some(Handle::Uuid(
+                bevy::asset::uuid::Uuid::from_u128(61),
+                std::marker::PhantomData
+            )),
             "reduced mode retains OAM/frame but suppresses object palette cycling"
         );
     }
@@ -4921,7 +5471,10 @@ hud_transform,),
         let mut app = headless_battle_app();
         app.world_mut()
             .spawn((Window::default(), bevy::window::PrimaryWindow));
-        app.world_mut().spawn((Camera2d, Projection::Orthographic(OrthographicProjection::default_2d())));
+        app.world_mut().spawn((
+            Camera2d,
+            Projection::Orthographic(OrthographicProjection::default_2d()),
+        ));
         app.world_mut().resource_mut::<VisualBattleFrame>().source = Some(source_test_frame(0xe4));
         app.world_mut()
             .resource_mut::<VisualBattleFrame>()
@@ -5062,7 +5615,10 @@ hud_transform,),
                 .unwrap();
             assert_eq!(
                 material.base_color_texture,
-                Some(Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(60), std::marker::PhantomData))
+                Some(Handle::Uuid(
+                    bevy::asset::uuid::Uuid::from_u128(60),
+                    std::marker::PhantomData
+                ))
             );
             assert_eq!(material.uv_transform.transform_point2(Vec2::ZERO), crop.min);
             assert_eq!(material.uv_transform.transform_point2(Vec2::ONE), crop.max);
@@ -5237,106 +5793,250 @@ hud_transform,),
     #[test]
     fn production_scene_requires_the_witnessed_map_and_never_allocates_an_arena() {
         let mut app = headless_battle_app();
-        app.world_mut().resource_mut::<BattleScene>().isolated_renderer_test = false;
+        app.world_mut()
+            .resource_mut::<BattleScene>()
+            .isolated_renderer_test = false;
         app.update();
         let world = app.world_mut();
         assert!(!world.resource::<BattleViewStatus>().active);
-        assert_eq!(world.query_filtered::<Entity, With<BattleArena>>().iter(world).count(), 0);
-        assert!(world.query_filtered::<&Camera, With<BattleCamera>>()
-            .iter(world).all(|camera| !camera.is_active));
-        assert!(world.query_filtered::<&Visibility, With<BattleActor>>()
-            .iter(world).all(|visibility| *visibility == Visibility::Hidden));
-        assert!(world.resource::<BattleViewStatus>().map_scenery_id.is_none());
+        assert_eq!(
+            world
+                .query_filtered::<Entity, With<BattleArena>>()
+                .iter(world)
+                .count(),
+            0
+        );
+        assert!(
+            world
+                .query_filtered::<&Camera, With<BattleCamera>>()
+                .iter(world)
+                .all(|camera| !camera.is_active)
+        );
+        assert!(
+            world
+                .query_filtered::<&Visibility, With<BattleActor>>()
+                .iter(world)
+                .all(|visibility| *visibility == Visibility::Hidden)
+        );
+        assert!(
+            world
+                .resource::<BattleViewStatus>()
+                .map_scenery_id
+                .is_none()
+        );
     }
 
     #[test]
-    fn contact_shadow_low_body_clip_preserves_overhangs_excludes_high_plumes_and_ignores_tessellation() {
-        let mut model=SurfaceMeshData {
-            positions:vec![[0.,0.,0.],[-0.4,0.2,-0.3],[0.4,0.2,-0.3],[-0.4,0.2,0.3],[0.4,0.2,0.3],[0.,1.,0.],[-2.,0.8,0.],[2.,0.8,0.],[0.,0.9,2.]],
-            indices:vec![0,1,2, 1,3,4, 1,4,2, 1,5,2, 6,7,8],..default()
+    fn contact_shadow_low_body_clip_preserves_overhangs_excludes_high_plumes_and_ignores_tessellation()
+     {
+        let mut model = SurfaceMeshData {
+            positions: vec![
+                [0., 0., 0.],
+                [-0.4, 0.2, -0.3],
+                [0.4, 0.2, -0.3],
+                [-0.4, 0.2, 0.3],
+                [0.4, 0.2, 0.3],
+                [0., 1., 0.],
+                [-2., 0.8, 0.],
+                [2., 0.8, 0.],
+                [0., 0.9, 2.],
+            ],
+            indices: vec![0, 1, 2, 1, 3, 4, 1, 4, 2, 1, 5, 2, 6, 7, 8],
+            ..default()
         };
-        let bounds=BattleModelBounds::from_surface(&model);
-        let contact=grounded_contact_bounds(&model,bounds).unwrap();
-        let low=low_body_shadow_bounds(&model,bounds).unwrap();
-        assert!(low.min.abs_diff_eq(Vec3::new(-0.4,0.,-0.3),0.000001));
-        assert!(low.max.abs_diff_eq(Vec3::new(0.4,0.3,0.3),0.000001));
-        assert!(low.max.x-low.min.x>(contact.max.x-contact.min.x)*3.);
-        model.positions.push([0.,0.2,0.]);
-        model.indices=vec![0,1,2, 1,3,9, 3,4,9, 4,2,9, 2,1,9, 1,5,2, 6,7,8];
-        let refined=low_body_shadow_bounds(&model,bounds).unwrap();
-        assert!(refined.min.abs_diff_eq(low.min,0.000001));assert!(refined.max.abs_diff_eq(low.max,0.000001));
-        assert!(low_body_shadow_bounds(&SurfaceMeshData::default(),BattleModelBounds{min:Vec3::ZERO,max:Vec3::ZERO}).is_none());
+        let bounds = BattleModelBounds::from_surface(&model);
+        let contact = grounded_contact_bounds(&model, bounds).unwrap();
+        let low = low_body_shadow_bounds(&model, bounds).unwrap();
+        assert!(low.min.abs_diff_eq(Vec3::new(-0.4, 0., -0.3), 0.000001));
+        assert!(low.max.abs_diff_eq(Vec3::new(0.4, 0.3, 0.3), 0.000001));
+        assert!(low.max.x - low.min.x > (contact.max.x - contact.min.x) * 3.);
+        model.positions.push([0., 0.2, 0.]);
+        model.indices = vec![
+            0, 1, 2, 1, 3, 9, 3, 4, 9, 4, 2, 9, 2, 1, 9, 1, 5, 2, 6, 7, 8,
+        ];
+        let refined = low_body_shadow_bounds(&model, bounds).unwrap();
+        assert!(refined.min.abs_diff_eq(low.min, 0.000001));
+        assert!(refined.max.abs_diff_eq(low.max, 0.000001));
+        assert!(
+            low_body_shadow_bounds(
+                &SurfaceMeshData::default(),
+                BattleModelBounds {
+                    min: Vec3::ZERO,
+                    max: Vec3::ZERO
+                }
+            )
+            .is_none()
+        );
     }
 
     #[test]
-    fn contact_shadow_adds_bounded_faint_low_body_shading_without_replacing_support_or_floating_shadows() {
-        for species in ["PINECO","FORRETRESS","SENTRET","CLOYSTER"] {
-            let mut app=headless_battle_app();
-            {let mut frame=app.world_mut().resource_mut::<VisualBattleFrame>();let player=frame.battlers[0].as_mut().unwrap();player.species_id=Arc::from(species);player.pokedex_size_m=Some(1.);frame.source=Some(source_test_frame(0xe4));}
-            app.update();app.update();let world=app.world_mut();
-            let actor=world.resource::<BattleScene>().actors[0].as_ref().unwrap();
-            let pose=actor.base_pose;let low=actor.low_body_bounds;let contact=actor.contact_bounds;
-            let shadows=world.query::<(&BattleContactShadow,&Transform,&Visibility,&MeshMaterial3d<StandardMaterial>)>().iter(world)
-                .filter(|(shadow,_,_,_)|shadow.0==VisualBattleSide::Player).map(|(s,t,v,m)|(s.1,*t,*v,m.0.clone())).collect::<Vec<_>>();
-            assert_eq!(shadows.len(),2);
-            let tight=shadows.iter().find(|s|s.0==GroundShade::Contact).unwrap();
-            let ambient=shadows.iter().find(|s|s.0==GroundShade::LowBody).unwrap();
-            assert_eq!(tight.2,Visibility::Visible);
-            if species=="CLOYSTER" {assert!(low.is_none() && contact.is_none());assert_eq!(ambient.2,Visibility::Hidden);continue;}
-            let low=low.unwrap();let contact=contact.unwrap();assert_eq!(ambient.2,Visibility::Visible);
-            let center=pose.transform_point((low.min+low.max)*0.5);
+    fn contact_shadow_adds_bounded_faint_low_body_shading_without_replacing_support_or_floating_shadows()
+     {
+        for species in ["PINECO", "FORRETRESS", "SENTRET", "CLOYSTER"] {
+            let mut app = headless_battle_app();
+            {
+                let mut frame = app.world_mut().resource_mut::<VisualBattleFrame>();
+                let player = frame.battlers[0].as_mut().unwrap();
+                player.species_id = Arc::from(species);
+                player.pokedex_size_m = Some(1.);
+                frame.source = Some(source_test_frame(0xe4));
+            }
+            app.update();
+            app.update();
+            let world = app.world_mut();
+            let actor = world.resource::<BattleScene>().actors[0].as_ref().unwrap();
+            let pose = actor.base_pose;
+            let low = actor.low_body_bounds;
+            let contact = actor.contact_bounds;
+            let shadows = world
+                .query::<(
+                    &BattleContactShadow,
+                    &Transform,
+                    &Visibility,
+                    &MeshMaterial3d<StandardMaterial>,
+                )>()
+                .iter(world)
+                .filter(|(shadow, _, _, _)| shadow.0 == VisualBattleSide::Player)
+                .map(|(s, t, v, m)| (s.1, *t, *v, m.0.clone()))
+                .collect::<Vec<_>>();
+            assert_eq!(shadows.len(), 2);
+            let tight = shadows
+                .iter()
+                .find(|s| s.0 == GroundShade::Contact)
+                .unwrap();
+            let ambient = shadows
+                .iter()
+                .find(|s| s.0 == GroundShade::LowBody)
+                .unwrap();
+            assert_eq!(tight.2, Visibility::Visible);
+            if species == "CLOYSTER" {
+                assert!(low.is_none() && contact.is_none());
+                assert_eq!(ambient.2, Visibility::Hidden);
+                continue;
+            }
+            let low = low.unwrap();
+            let contact = contact.unwrap();
+            assert_eq!(ambient.2, Visibility::Visible);
+            let center = pose.transform_point((low.min + low.max) * 0.5);
             // source_test_frame displaces the player four source pixels in X.
-            let source_offset=world.resource::<BattleSceneLayout>().source_displacement(Vec2::new(4.,0.));
-            assert!((ambient.1.translation.x-center.x-source_offset.x).abs()<0.00001);
-            assert!((ambient.1.translation.z-center.z-source_offset.z).abs()<0.00001);
-            assert!((ambient.1.scale.x-(low.max.x-low.min.x)*pose.scale.x*0.40).abs()<0.00001);
-            assert!((ambient.1.scale.z-(low.max.z-low.min.z)*pose.scale.z*0.40).abs()<0.00001);
-            assert!(ambient.1.scale.x*1.25 <= (low.max.x-low.min.x)*pose.scale.x*0.5+0.00001);
-            let bounds=world.resource::<BattleScene>().species_bounds[species];
-            let extent=(contact.max-contact.min)*pose.scale;let minimum=(bounds.max.y-bounds.min.y)*pose.scale.y*0.02;
-            assert!((tight.1.scale.x-(extent.x*0.60).max(minimum)).abs()<0.00001);
-            assert!((tight.1.scale.z-(extent.z*0.60).max(minimum)).abs()<0.00001);
-            let materials=world.resource::<Assets<StandardMaterial>>();
-            assert!((materials.get(&ambient.3).unwrap().base_color.alpha()-0.45).abs()<0.000001);
-            assert_eq!(materials.get(&tight.3).unwrap().base_color.alpha(),1.);
-            if species=="PINECO" {assert!(ambient.1.scale.x>tight.1.scale.x && ambient.1.scale.z>tight.1.scale.z, "low armor needs a broader shadow than the core tip");}
+            let source_offset = world
+                .resource::<BattleSceneLayout>()
+                .source_displacement(Vec2::new(4., 0.));
+            assert!((ambient.1.translation.x - center.x - source_offset.x).abs() < 0.00001);
+            assert!((ambient.1.translation.z - center.z - source_offset.z).abs() < 0.00001);
+            assert!(
+                (ambient.1.scale.x - (low.max.x - low.min.x) * pose.scale.x * 0.40).abs() < 0.00001
+            );
+            assert!(
+                (ambient.1.scale.z - (low.max.z - low.min.z) * pose.scale.z * 0.40).abs() < 0.00001
+            );
+            assert!(
+                ambient.1.scale.x * 1.25 <= (low.max.x - low.min.x) * pose.scale.x * 0.5 + 0.00001
+            );
+            let bounds = world.resource::<BattleScene>().species_bounds[species];
+            let extent = (contact.max - contact.min) * pose.scale;
+            let minimum = (bounds.max.y - bounds.min.y) * pose.scale.y * 0.02;
+            assert!((tight.1.scale.x - (extent.x * 0.60).max(minimum)).abs() < 0.00001);
+            assert!((tight.1.scale.z - (extent.z * 0.60).max(minimum)).abs() < 0.00001);
+            let materials = world.resource::<Assets<StandardMaterial>>();
+            assert!(
+                (materials.get(&ambient.3).unwrap().base_color.alpha() - 0.45).abs() < 0.000001
+            );
+            assert_eq!(materials.get(&tight.3).unwrap().base_color.alpha(), 1.);
+            if species == "PINECO" {
+                assert!(
+                    ambient.1.scale.x > tight.1.scale.x && ambient.1.scale.z > tight.1.scale.z,
+                    "low armor needs a broader shadow than the core tip"
+                );
+            }
         }
     }
 
     #[test]
     fn contact_shadow_both_layers_follow_battler_visibility_and_classic_view() {
-        let mut app=headless_battle_app();
-        {let mut frame=app.world_mut().resource_mut::<VisualBattleFrame>();let player=frame.battlers[0].as_mut().unwrap();player.species_id=Arc::from("PINECO");player.pokedex_size_m=Some(0.6096);frame.source=Some(source_test_frame(0xe4));}
-        app.update();app.update();
-        {let world=app.world_mut();assert_eq!(world.query::<(&BattleContactShadow,&Visibility)>().iter(world).filter(|(s,v)|s.0==VisualBattleSide::Player && **v==Visibility::Visible).count(),2);}
-        app.world_mut().resource_mut::<VisualBattleFrame>().battlers[0].as_mut().unwrap().visible=false;app.update();
-        {let world=app.world_mut();assert!(world.query::<(&BattleContactShadow,&Visibility)>().iter(world).filter(|(s,_)|s.0==VisualBattleSide::Player).all(|(_,v)|*v==Visibility::Hidden));}
-        app.world_mut().resource_mut::<VisualBattleFrame>().battlers[0].as_mut().unwrap().visible=true;
-        app.world_mut().resource_mut::<VoxelViewSettings>().enabled=false;app.update();
-        let world=app.world_mut();assert!(world.query_filtered::<&Visibility,With<BattleContactShadow>>().iter(world).all(|v|*v==Visibility::Hidden));
+        let mut app = headless_battle_app();
+        {
+            let mut frame = app.world_mut().resource_mut::<VisualBattleFrame>();
+            let player = frame.battlers[0].as_mut().unwrap();
+            player.species_id = Arc::from("PINECO");
+            player.pokedex_size_m = Some(0.6096);
+            frame.source = Some(source_test_frame(0xe4));
+        }
+        app.update();
+        app.update();
+        {
+            let world = app.world_mut();
+            assert_eq!(
+                world
+                    .query::<(&BattleContactShadow, &Visibility)>()
+                    .iter(world)
+                    .filter(|(s, v)| s.0 == VisualBattleSide::Player && **v == Visibility::Visible)
+                    .count(),
+                2
+            );
+        }
+        app.world_mut().resource_mut::<VisualBattleFrame>().battlers[0]
+            .as_mut()
+            .unwrap()
+            .visible = false;
+        app.update();
+        {
+            let world = app.world_mut();
+            assert!(
+                world
+                    .query::<(&BattleContactShadow, &Visibility)>()
+                    .iter(world)
+                    .filter(|(s, _)| s.0 == VisualBattleSide::Player)
+                    .all(|(_, v)| *v == Visibility::Hidden)
+            );
+        }
+        app.world_mut().resource_mut::<VisualBattleFrame>().battlers[0]
+            .as_mut()
+            .unwrap()
+            .visible = true;
+        app.world_mut().resource_mut::<VoxelViewSettings>().enabled = false;
+        app.update();
+        let world = app.world_mut();
+        assert!(
+            world
+                .query_filtered::<&Visibility, With<BattleContactShadow>>()
+                .iter(world)
+                .all(|v| *v == Visibility::Hidden)
+        );
     }
 
     #[test]
     fn contact_shadow_support_region_excludes_high_bridges_and_ignores_tessellation() {
         let mut model = SurfaceMeshData {
             positions: vec![
-                [0.,0.,0.], [-0.1,0.1,-0.1], [0.1,0.1,-0.1], [0.,1.,0.],
-                [1.,0.01,0.], [1.1,0.02,0.1], [0.9,0.02,-0.1],
+                [0., 0., 0.],
+                [-0.1, 0.1, -0.1],
+                [0.1, 0.1, -0.1],
+                [0., 1., 0.],
+                [1., 0.01, 0.],
+                [1.1, 0.02, 0.1],
+                [0.9, 0.02, -0.1],
             ],
-            indices: vec![0,1,2, 1,3,4, 4,5,6],
+            indices: vec![0, 1, 2, 1, 3, 4, 4, 5, 6],
             ..default()
         };
         let bounds = BattleModelBounds::from_surface(&model);
-        let original = grounded_contact_bounds(&model,bounds).unwrap();
-        assert!(original.min.distance(Vec3::new(-0.06,0.,-0.06))<0.000001);
-        assert!(original.max.distance(Vec3::new(0.06,0.06,0.))<0.000001,
-            "the suspended low patch must stay excluded across its high bridge");
-        model.positions.extend([[-0.05,0.05,-0.05],[0.05,0.05,-0.05],[0.,0.1,-0.1]]);
-        model.indices = vec![0,7,8, 7,1,9, 8,9,2, 7,9,8, 1,3,4, 4,5,6];
-        let refined = grounded_contact_bounds(&model,bounds).unwrap();
-        assert!(refined.min.distance(original.min)<0.000001);
-        assert!(refined.max.distance(original.max)<0.000001,
-            "subdividing the identical support surface must not resize its shadow");
+        let original = grounded_contact_bounds(&model, bounds).unwrap();
+        assert!(original.min.distance(Vec3::new(-0.06, 0., -0.06)) < 0.000001);
+        assert!(
+            original.max.distance(Vec3::new(0.06, 0.06, 0.)) < 0.000001,
+            "the suspended low patch must stay excluded across its high bridge"
+        );
+        model
+            .positions
+            .extend([[-0.05, 0.05, -0.05], [0.05, 0.05, -0.05], [0., 0.1, -0.1]]);
+        model.indices = vec![0, 7, 8, 7, 1, 9, 8, 9, 2, 7, 9, 8, 1, 3, 4, 4, 5, 6];
+        let refined = grounded_contact_bounds(&model, bounds).unwrap();
+        assert!(refined.min.distance(original.min) < 0.000001);
+        assert!(
+            refined.max.distance(original.max) < 0.000001,
+            "subdividing the identical support surface must not resize its shadow"
+        );
     }
 
     #[test]
@@ -5356,23 +6056,46 @@ hud_transform,),
         let actor = scene.actors[0].as_ref().unwrap();
         let pose = *world.get::<Transform>(actor.entity).unwrap();
         let data = scene.species_meshes["SENTRET"].as_ref().unwrap();
-        let support = data.positions.iter().min_by(|a,b|a[1].total_cmp(&b[1])).unwrap();
-        let support = Vec2::new(support[0],support[2]);
+        let support = data
+            .positions
+            .iter()
+            .min_by(|a, b| a[1].total_cmp(&b[1]))
+            .unwrap();
+        let support = Vec2::new(support[0], support[2]);
         let skin = actor.skinned.as_ref().unwrap();
         let mut matrices = vec![Mat4::IDENTITY; skin.rig.joints.len()];
         skin.effect_matrices(&mut matrices);
         let floor = (0..skin.rig.neutral.positions.len())
             .map(|v| pose.transform_point(skin.rig.skin_point(v, &matrices)).y)
             .fold(f32::INFINITY, f32::min);
-        assert!((floor-world.resource::<BattleSceneLayout>().origin(0).y).abs()<0.000001,
-            "the rendered support itself must remain on the floor");
-        let shadow = *world.query::<(&BattleContactShadow,&Transform)>().iter(world)
-            .find(|(shadow,_)|shadow.0==VisualBattleSide::Player && shadow.1==GroundShade::Contact).unwrap().1;
-        let local = pose.compute_affine().inverse().transform_point3(shadow.translation);
-        assert!(Vec2::new(local.x,local.z).distance(support)<0.06,
-            "contact shadow misses Sentret's supporting curl: local={local:?}, support={support:?}");
-        assert!(shadow.scale.x/pose.scale.x<0.15,"contact shadow uses the airborne body's width");
-        assert!(shadow.scale.z/pose.scale.z<0.15,"contact shadow uses the airborne body's depth");
+        assert!(
+            (floor - world.resource::<BattleSceneLayout>().origin(0).y).abs() < 0.000001,
+            "the rendered support itself must remain on the floor"
+        );
+        let shadow = *world
+            .query::<(&BattleContactShadow, &Transform)>()
+            .iter(world)
+            .find(|(shadow, _)| {
+                shadow.0 == VisualBattleSide::Player && shadow.1 == GroundShade::Contact
+            })
+            .unwrap()
+            .1;
+        let local = pose
+            .compute_affine()
+            .inverse()
+            .transform_point3(shadow.translation);
+        assert!(
+            Vec2::new(local.x, local.z).distance(support) < 0.06,
+            "contact shadow misses Sentret's supporting curl: local={local:?}, support={support:?}"
+        );
+        assert!(
+            shadow.scale.x / pose.scale.x < 0.15,
+            "contact shadow uses the airborne body's width"
+        );
+        assert!(
+            shadow.scale.z / pose.scale.z < 0.15,
+            "contact shadow uses the airborne body's depth"
+        );
     }
 
     #[test]
@@ -5393,43 +6116,68 @@ hud_transform,),
             let actor = scene.actors[0].as_ref().unwrap();
             let pose = *world.get::<Transform>(actor.entity).unwrap();
             let bounds = scene.species_bounds[species];
-            let expected = if species=="ARTICUNO" {
+            let expected = if species == "ARTICUNO" {
                 assert!(actor.contact_bounds.is_some());
                 let rig = crate::species_rig::for_species(species).unwrap();
                 let mut min = Vec3::splat(f32::INFINITY);
                 let mut max = Vec3::splat(f32::NEG_INFINITY);
                 for part in &rig.anatomy {
-                    if ["Foot /","Toe /","Talon /"].iter().any(|prefix|part.name.starts_with(prefix)) {
+                    if ["Foot /", "Toe /", "Talon /"]
+                        .iter()
+                        .any(|prefix| part.name.starts_with(prefix))
+                    {
                         for v in part.vertices.clone() {
                             let p = Vec3::from_array(rig.neutral.positions[v]);
-                            min = min.min(p); max = max.max(p);
+                            min = min.min(p);
+                            max = max.max(p);
                         }
                     }
                 }
-                (min+max)*0.5
-            } else if species=="LAPRAS" {
-                let contact = actor.contact_bounds.expect("Lapras's seated belly needs ground contact");
-                assert!(contact.min.y.abs()<0.00001);
-                assert!(contact.max.y<=(bounds.max.y-bounds.min.y)*0.06001);
-                assert!(contact.max.x-contact.min.x<(bounds.max.x-bounds.min.x)*0.8,
-                    "swimming flipper tips must not size the belly contact");
-                (contact.min+contact.max)*0.5
+                (min + max) * 0.5
+            } else if species == "LAPRAS" {
+                let contact = actor
+                    .contact_bounds
+                    .expect("Lapras's seated belly needs ground contact");
+                assert!(contact.min.y.abs() < 0.00001);
+                assert!(contact.max.y <= (bounds.max.y - bounds.min.y) * 0.06001);
+                assert!(
+                    contact.max.x - contact.min.x < (bounds.max.x - bounds.min.x) * 0.8,
+                    "swimming flipper tips must not size the belly contact"
+                );
+                (contact.min + contact.max) * 0.5
             } else {
                 assert!(actor.contact_bounds.is_none());
-                (bounds.min+bounds.max)*0.5
+                (bounds.min + bounds.max) * 0.5
             };
-            let shadow = *world.query::<(&BattleContactShadow,&Transform)>().iter(world)
-                .find(|(shadow,_)|shadow.0==VisualBattleSide::Player && shadow.1==GroundShade::Contact).unwrap().1;
-            let local = pose.compute_affine().inverse().transform_point3(shadow.translation);
-            assert!(Vec2::new(local.x,local.z).distance(Vec2::new(expected.x,expected.z))<0.04,
-                "{species} contact shadow is displaced from its support");
-            if species=="ARTICUNO" {
-                assert!(shadow.scale.x/pose.scale.x<0.25,"wing span must not size the foot contact");
-                assert!(shadow.scale.z/pose.scale.z<0.25,"streamer length must not size the foot contact");
-            } else if species=="CLOYSTER" {
-                let extent = (bounds.max-bounds.min)*pose.scale;
-                assert!((shadow.scale.x-extent.x*0.48).abs()<0.000001);
-                assert!((shadow.scale.z-extent.z*0.48).abs()<0.000001);
+            let shadow = *world
+                .query::<(&BattleContactShadow, &Transform)>()
+                .iter(world)
+                .find(|(shadow, _)| {
+                    shadow.0 == VisualBattleSide::Player && shadow.1 == GroundShade::Contact
+                })
+                .unwrap()
+                .1;
+            let local = pose
+                .compute_affine()
+                .inverse()
+                .transform_point3(shadow.translation);
+            assert!(
+                Vec2::new(local.x, local.z).distance(Vec2::new(expected.x, expected.z)) < 0.04,
+                "{species} contact shadow is displaced from its support"
+            );
+            if species == "ARTICUNO" {
+                assert!(
+                    shadow.scale.x / pose.scale.x < 0.25,
+                    "wing span must not size the foot contact"
+                );
+                assert!(
+                    shadow.scale.z / pose.scale.z < 0.25,
+                    "streamer length must not size the foot contact"
+                );
+            } else if species == "CLOYSTER" {
+                let extent = (bounds.max - bounds.min) * pose.scale;
+                assert!((shadow.scale.x - extent.x * 0.48).abs() < 0.000001);
+                assert!((shadow.scale.z - extent.z * 0.48).abs() < 0.000001);
             }
         }
     }
@@ -5461,7 +6209,8 @@ hud_transform,),
             world
                 .query::<(&BattleContactShadow, &Visibility)>()
                 .iter(world)
-                .filter(|(shadow, visibility)| shadow.1 == GroundShade::Contact && **visibility == Visibility::Visible)
+                .filter(|(shadow, visibility)| shadow.1 == GroundShade::Contact
+                    && **visibility == Visibility::Visible)
                 .count(),
             2
         );
@@ -5565,7 +6314,10 @@ hud_transform,),
             .world_mut()
             .spawn((Window::default(), bevy::window::PrimaryWindow))
             .id();
-        app.world_mut().spawn((Camera2d, Projection::Orthographic(OrthographicProjection::default_2d())));
+        app.world_mut().spawn((
+            Camera2d,
+            Projection::Orthographic(OrthographicProjection::default_2d()),
+        ));
         app.world_mut().resource_mut::<VisualBattleFrame>().source = None;
         app.update();
         app.update();
@@ -5740,7 +6492,10 @@ hud_transform,),
         let mut app = headless_battle_app();
         app.world_mut()
             .spawn((Window::default(), bevy::window::PrimaryWindow));
-        app.world_mut().spawn((Camera2d, Projection::Orthographic(OrthographicProjection::default_2d())));
+        app.world_mut().spawn((
+            Camera2d,
+            Projection::Orthographic(OrthographicProjection::default_2d()),
+        ));
         let mut source = source_test_frame(0xe4);
         source.battler_rows[0] = Some(crystal_render_api::VisualBattleBattlerRows {
             source_y: Vec2::new(48.0, 64.0),
@@ -5789,7 +6544,9 @@ hud_transform,),
             let image = battle_row_target_image(UVec2::new(8, 8));
             assert!(
                 image
-                    .data.as_ref().expect("CPU image pixels")
+                    .data
+                    .as_ref()
+                    .expect("CPU image pixels")
                     .chunks_exact(4)
                     .all(|pixel| pixel == [0, 0, 0, 0])
             );
@@ -5804,7 +6561,14 @@ hud_transform,),
         );
         {
             let world = app.world_mut();
-            let overlay = world.query_filtered::<(&MeshMaterial2d<BattleCompositeMaterial>, &Transform, &Visibility), With<BattleRowCompositeSprite>>().single(world).unwrap();
+            let overlay = world
+                .query_filtered::<(
+                    &MeshMaterial2d<BattleCompositeMaterial>,
+                    &Transform,
+                    &Visibility,
+                ), With<BattleRowCompositeSprite>>()
+                .single(world)
+                .unwrap();
             assert_eq!(
                 overlay.1.translation.z, 3.9,
                 "row overlay must inherit the current source OAM depth"
@@ -5854,7 +6618,8 @@ hud_transform,),
             world
                 .query_filtered::<&RenderLayers, With<BattleActor>>()
                 .iter(world)
-                .all(|layers| *layers == RenderLayers::from_layers(&[BATTLE_LAYER, BATTLE_GRASS_MASK_LAYER]))
+                .all(|layers| *layers
+                    == RenderLayers::from_layers(&[BATTLE_LAYER, BATTLE_GRASS_MASK_LAYER]))
         );
         assert_eq!(
             (
@@ -5882,7 +6647,10 @@ hud_transform,),
         let mut app = headless_battle_app();
         app.world_mut()
             .spawn((Window::default(), bevy::window::PrimaryWindow));
-        app.world_mut().spawn((Camera2d, Projection::Orthographic(OrthographicProjection::default_2d())));
+        app.world_mut().spawn((
+            Camera2d,
+            Projection::Orthographic(OrthographicProjection::default_2d()),
+        ));
         app.update();
         app.update();
         app.world_mut().resource_mut::<VisualBattleFrame>().battlers[1]
@@ -6015,7 +6783,10 @@ hud_transform,),
         let mut app = headless_battle_app();
         app.world_mut()
             .spawn((Window::default(), bevy::window::PrimaryWindow));
-        app.world_mut().spawn((Camera2d, Projection::Orthographic(OrthographicProjection::default_2d())));
+        app.world_mut().spawn((
+            Camera2d,
+            Projection::Orthographic(OrthographicProjection::default_2d()),
+        ));
         {
             let mut frame = app.world_mut().resource_mut::<VisualBattleFrame>();
             let player = frame.battlers[0].as_mut().unwrap();

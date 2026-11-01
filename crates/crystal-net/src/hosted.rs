@@ -145,9 +145,12 @@ pub struct LeaderboardStats {
 impl LeaderboardStats {
     pub fn score(&self, metric: &str) -> Option<u64> {
         Some(match metric {
-            "pvp_wins" => self.pvp_wins, "pvp_battles" => self.pvp_battles,
-            "pve_wins" => self.pve_wins, "pve_battles" => self.pve_battles,
-            "trades" => self.trades, "party_level" => u64::from(self.party_level),
+            "pvp_wins" => self.pvp_wins,
+            "pvp_battles" => self.pvp_battles,
+            "pve_wins" => self.pve_wins,
+            "pve_battles" => self.pve_battles,
+            "trades" => self.trades,
+            "party_level" => u64::from(self.party_level),
             _ => return None,
         })
     }

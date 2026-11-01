@@ -443,11 +443,20 @@ mod portal_tests {
         super::super::append(&mut mesh, &g, p, &cells, [0, 0]);
         assert_eq!(mesh.footing_heights, vec![6.; 16]);
         assert!(!p.cuts_foundation());
-        let categories = mesh.solid.uvs.iter().map(|uv| (uv[1] / 100000.).round() as u32)
+        let categories = mesh
+            .solid
+            .uvs
+            .iter()
+            .map(|uv| (uv[1] / 100000.).round() as u32)
             .collect::<std::collections::BTreeSet<_>>();
-        assert!(categories.contains(&32) && categories.contains(&34),
-            "portal shell and lining must expose the forward body aperture");
-        assert!(categories.contains(&28), "sky opening keeps its source light role");
+        assert!(
+            categories.contains(&32) && categories.contains(&34),
+            "portal shell and lining must expose the forward body aperture"
+        );
+        assert!(
+            categories.contains(&28),
+            "sky opening keeps its source light role"
+        );
         assert!(mesh.solid.positions.iter().all(|p| p[0] >= 16.
             && p[0] <= 32.
             && p[2] >= 16.

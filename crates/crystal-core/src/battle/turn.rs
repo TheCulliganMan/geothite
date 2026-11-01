@@ -27,8 +27,8 @@ use crate::battle::damage::{
     truncate_damage_stats,
 };
 use crate::battle::start::{
-    ActiveBattleEnemyError, ActiveBattlePartyError, deactivate_battle_after_draw,
-    deactivate_battle_after_contest_balls_exhausted,
+    ActiveBattleEnemyError, ActiveBattlePartyError,
+    deactivate_battle_after_contest_balls_exhausted, deactivate_battle_after_draw,
     require_active_battle_enemy_party_index, require_active_battle_party_index,
     update_active_battle_enemy,
 };
@@ -2571,9 +2571,11 @@ pub fn commit_battle_turn_outcome(
         && state.bug_contest.park_balls_remaining == 0
         && outcome.state.player.hp > 0
         && outcome.state.enemy.hp > 0
-        && outcome.events.iter().any(|event| matches!(event,
+        && outcome.events.iter().any(|event| {
+            matches!(event,
             BattleEvent::BallThrown { side: BattleSide::Player, outcome }
-                if !outcome.caught && !outcome.blocked))
+                if !outcome.caught && !outcome.blocked)
+        })
     {
         // BattleTurn loops through CheckContestBattleOver after the enemy's
         // response and between-turn effects. Capture/faint exits happen first.
@@ -3734,10 +3736,12 @@ pub fn determine_turn_order(
     }
 
     let mut player_first = rng.battle_random_byte() < 128;
-    if state.link_battle && matches!(
-        state.serial_connection_status,
-        LinkSerialConnectionStatus::UsingExternalClock
-    ) {
+    if state.link_battle
+        && matches!(
+            state.serial_connection_status,
+            LinkSerialConnectionStatus::UsingExternalClock
+        )
+    {
         player_first = !player_first;
     }
     Ok(if player_first {
@@ -15157,9 +15161,7 @@ fn damage_category(
     type_categories: &TypeCategories,
     move_data: &Move,
 ) -> Result<BattleDamageCategory, BattleTurnError> {
-    if is_physical_move(type_categories, move_data)
-        .map_err(BattleTurnError::DamageCalculation)?
-    {
+    if is_physical_move(type_categories, move_data).map_err(BattleTurnError::DamageCalculation)? {
         Ok(BattleDamageCategory::Physical)
     } else {
         Ok(BattleDamageCategory::Special)

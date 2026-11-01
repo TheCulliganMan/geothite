@@ -43,23 +43,25 @@ fn main() -> anyhow::Result<()> {
     let result = ResultState::default();
     let count = ExtractedCount::default();
     let mut app = App::new();
-    app.insert_resource(result.clone()).insert_resource(count.clone())
+    app.insert_resource(result.clone())
+        .insert_resource(count.clone())
         .init_resource::<CaptureState>()
         .add_plugins(
-        DefaultPlugins
-            .build()
+            DefaultPlugins
+                .build()
                 .disable::<bevy::winit::WinitPlugin>()
                 .disable::<bevy::render::pipelined_rendering::PipelinedRenderingPlugin>()
                 .set(bevy::render::RenderPlugin {
-                synchronous_pipeline_compilation: true,
-                ..default()
-            })
-            .set(WindowPlugin {
-                primary_window: None,
+                    synchronous_pipeline_compilation: true,
+                    ..default()
+                })
+                .set(WindowPlugin {
+                    primary_window: None,
                     exit_condition: ExitCondition::DontExit,
-                ..default()
-            }),
-    ).add_plugins(ScheduleRunnerPlugin::run_loop(Duration::from_millis(1)));
+                    ..default()
+                }),
+        )
+        .add_plugins(ScheduleRunnerPlugin::run_loop(Duration::from_millis(1)));
     source_sprite_renderer::install(&mut app);
     app.sub_app_mut(RenderApp)
         .insert_resource(count)
@@ -132,7 +134,7 @@ fn setup(mut commands: Commands, mut images: ResMut<Assets<Image>>) {
             ),
         ));
     }
-commands.spawn((
+    commands.spawn((
         Sprite {
             color: Color::srgba(1.0, 0.0, 0.0, ALPHAS[0]),
             custom_size: Some(Vec2::new(640.0, 480.0)),
@@ -184,13 +186,14 @@ fn capture(
     }
     let phase = state.phase;
     state.pending = true;
-        commands.spawn(Screenshot::image(target.0.clone())).observe(
-            move |capture: On<ScreenshotCaptured>, mut state: ResMut<CaptureState>,
+    commands.spawn(Screenshot::image(target.0.clone())).observe(
+        move |capture: On<ScreenshotCaptured>,
+              mut state: ResMut<CaptureState>,
               count: Res<ExtractedCount>,
               result: Res<ResultState>,
               mut overlays: Query<&mut Sprite, With<TintOverlay>>,
               mut exit: MessageWriter<AppExit>| {
-                let checked = (|| -> Result<(), String> {
+            let checked = (|| -> Result<(), String> {
                 let path = std::env::args().nth(1).map(std::path::PathBuf::from);
                 if let Some(path) = &path {
                     crystal_bevy::capture_archive::archive_existing(path)
@@ -252,22 +255,21 @@ fn capture(
                 }
                 Ok(())
             })();
-            if let Err(error)=checked {
-        *result.0.lock().expect("GPU result lock") = Some(Err(error));
+            if let Err(error) = checked {
+                *result.0.lock().expect("GPU result lock") = Some(Err(error));
                 exit.write(AppExit::error());
                 return;
             }
             state.phase += 1;
             if state.phase == ALPHAS.len() {
                 *result.0.lock().expect("GPU result lock") = Some(Ok(()));
-        exit.write(AppExit::Success);
-    }
-else {
+                exit.write(AppExit::Success);
+            } else {
                 overlays.single_mut().expect("one tint overlay").color =
                     Color::srgba(1.0, 0.0, 0.0, ALPHAS[state.phase]);
                 state.pending = false;
                 state.settled = 0;
             }
-},
+        },
     );
 }

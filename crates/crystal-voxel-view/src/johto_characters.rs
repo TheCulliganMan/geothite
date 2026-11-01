@@ -239,9 +239,15 @@ pub(crate) const SOURCE_KINDS: [(&str, CharacterKind); 74] = [
 ];
 
 pub(super) fn kind_for_source(source: &str) -> Option<CharacterKind> {
-    if source == "outdoorsman" { return Some(CharacterKind::Outdoorsman); }
-    if source == "chris_bike" { return Some(CharacterKind::Trainer); }
-    if source == "kris_bike" { return Some(CharacterKind::TrainerFemale); }
+    if source == "outdoorsman" {
+        return Some(CharacterKind::Outdoorsman);
+    }
+    if source == "chris_bike" {
+        return Some(CharacterKind::Trainer);
+    }
+    if source == "kris_bike" {
+        return Some(CharacterKind::TrainerFemale);
+    }
     SOURCE_KINDS
         .iter()
         .find_map(|&(name, kind)| (name == source).then_some(kind))

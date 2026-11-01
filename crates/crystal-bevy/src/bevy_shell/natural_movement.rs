@@ -20,7 +20,11 @@ impl NaturalMovement {
     }
     pub fn take_input(&mut self, vector: Vec2) -> Vec2 {
         let pending = std::mem::take(&mut self.pending_input);
-        if vector == Vec2::ZERO { pending } else { vector }
+        if vector == Vec2::ZERO {
+            pending
+        } else {
+            vector
+        }
     }
     pub fn crossing(&self) -> bool {
         self.pending.is_some()
@@ -405,12 +409,24 @@ mod tests {
     fn natural_movement_keyboard_tracks_the_rendered_camera_at_every_heading() {
         use crystal_voxel_view::{VoxelCameraControls, VoxelViewSettings};
         let mut app = app();
-        let start = app.world().resource::<BevyRuntimeShell>()
-            .shell.session().overworld().player.tile;
+        let start = app
+            .world()
+            .resource::<BevyRuntimeShell>()
+            .shell
+            .session()
+            .overworld()
+            .player
+            .tile;
         let chords: &[(&[KeyCode], Vec2)] = &[
             (&[KeyCode::ArrowUp], Vec2::NEG_Y),
-            (&[KeyCode::KeyW, KeyCode::KeyD], Vec2::new(1., -1.).normalize()),
-            (&[KeyCode::ArrowLeft, KeyCode::ArrowDown], Vec2::new(-1., 1.).normalize()),
+            (
+                &[KeyCode::KeyW, KeyCode::KeyD],
+                Vec2::new(1., -1.).normalize(),
+            ),
+            (
+                &[KeyCode::ArrowLeft, KeyCode::ArrowDown],
+                Vec2::new(-1., 1.).normalize(),
+            ),
             (&[KeyCode::KeyS], Vec2::Y),
         ];
         for first_person in [false, true] {
@@ -425,22 +441,33 @@ mod tests {
                 let right = transform.right();
                 let right = Vec2::new(right.x, right.z).normalize();
                 for &(chord, local) in chords {
-                    app.world_mut().resource_mut::<BevyRuntimeShell>().natural_movement = NaturalMovement::default();
-                    app.world_mut().resource_mut::<ButtonInput<KeyCode>>().reset_all();
+                    app.world_mut()
+                        .resource_mut::<BevyRuntimeShell>()
+                        .natural_movement = NaturalMovement::default();
+                    app.world_mut()
+                        .resource_mut::<ButtonInput<KeyCode>>()
+                        .reset_all();
                     for &key_code in chord {
                         key(&mut app, key_code, true);
                     }
                     app.update();
                     let shell = app.world().resource::<BevyRuntimeShell>();
                     assert_eq!(shell.last_error, None);
-                    assert!(shell.natural_movement.enabled, "3D defaults to natural movement");
+                    assert!(
+                        shell.natural_movement.enabled,
+                        "3D defaults to natural movement"
+                    );
                     assert_eq!(shell.shell.session().overworld().player.tile, start);
                     let offset = Vec2::from_array(shell.natural_movement.position.offset);
                     let expected = (right * local.x - forward * local.y) * 0.125;
-                    assert!(offset.abs_diff_eq(expected, 1e-5),
-                        "rotation={rotation} first_person={first_person} chord={chord:?}: {offset:?} != {expected:?}");
-                    assert!((offset.length() - 0.125).abs() < 1e-5,
-                        "diagonals retain the cardinal walking speed");
+                    assert!(
+                        offset.abs_diff_eq(expected, 1e-5),
+                        "rotation={rotation} first_person={first_person} chord={chord:?}: {offset:?} != {expected:?}"
+                    );
+                    assert!(
+                        (offset.length() - 0.125).abs() < 1e-5,
+                        "diagonals retain the cardinal walking speed"
+                    );
                 }
             }
         }
@@ -451,11 +478,23 @@ mod tests {
         let mut app = app();
         key(&mut app, KeyCode::ArrowUp, true);
         app.update();
-        let before = app.world().resource::<BevyRuntimeShell>().natural_movement.position.offset;
-        app.world_mut().resource_mut::<crystal_voxel_view::VoxelViewSettings>()
-            .camera.rotation_step = 2.;
+        let before = app
+            .world()
+            .resource::<BevyRuntimeShell>()
+            .natural_movement
+            .position
+            .offset;
+        app.world_mut()
+            .resource_mut::<crystal_voxel_view::VoxelViewSettings>()
+            .camera
+            .rotation_step = 2.;
         app.update();
-        let after = app.world().resource::<BevyRuntimeShell>().natural_movement.position.offset;
+        let after = app
+            .world()
+            .resource::<BevyRuntimeShell>()
+            .natural_movement
+            .position
+            .offset;
         assert!((after[0] - before[0] + 0.125).abs() < 1e-6);
         assert!((after[1] - before[1]).abs() < 1e-6);
     }
@@ -465,33 +504,53 @@ mod tests {
     fn natural_movement_uses_same_frame_mouse_rotation_with_native_input() {
         let mut app = app();
         app.add_message::<WindowFocused>()
-            .insert_resource(crystal_render_api::VisualWorldFrame { active: true, ..default() })
-            .insert_resource(bevy::input::mouse::AccumulatedMouseMotion { delta: Vec2::new(100., 0.) })
+            .insert_resource(crystal_render_api::VisualWorldFrame {
+                active: true,
+                ..default()
+            })
+            .insert_resource(bevy::input::mouse::AccumulatedMouseMotion {
+                delta: Vec2::new(100., 0.),
+            })
             .init_resource::<ButtonInput<MouseButton>>();
         handheld_input::install(&mut app);
-        app.world_mut().resource_mut::<ButtonInput<MouseButton>>().press(MouseButton::Right);
+        app.world_mut()
+            .resource_mut::<ButtonInput<MouseButton>>()
+            .press(MouseButton::Right);
         let mut pad = Gamepad::default();
         pad.analog_mut().set(GamepadAxis::LeftStickY, 1.);
         app.world_mut().spawn(pad);
         app.update();
-        let camera = app.world().resource::<crystal_voxel_view::VoxelViewSettings>().camera;
+        let camera = app
+            .world()
+            .resource::<crystal_voxel_view::VoxelViewSettings>()
+            .camera;
         assert_ne!(camera.rotation_step, 0.);
         let forward = camera.pose(Vec2::new(160., 144.)).transform().forward();
         let expected = Vec2::new(forward.x, forward.z).normalize() * 0.125;
         let shell = app.world().resource::<BevyRuntimeShell>();
         assert_eq!(shell.last_error, None);
         let offset = Vec2::from_array(shell.natural_movement.position.offset);
-        assert!(offset.abs_diff_eq(expected, 1e-6),
-            "movement uses the new mouse yaw in the same frame: {offset:?} != {expected:?}");
+        assert!(
+            offset.abs_diff_eq(expected, 1e-6),
+            "movement uses the new mouse yaw in the same frame: {offset:?} != {expected:?}"
+        );
     }
 
     #[test]
     fn natural_movement_rotated_keyboard_diagonal_crosses_authoritative_cells() {
         let mut app = app();
-        let start = app.world().resource::<BevyRuntimeShell>()
-            .shell.session().overworld().player.tile;
-        app.world_mut().resource_mut::<crystal_voxel_view::VoxelViewSettings>()
-            .camera.rotation_step = 6.;
+        let start = app
+            .world()
+            .resource::<BevyRuntimeShell>()
+            .shell
+            .session()
+            .overworld()
+            .player
+            .tile;
+        app.world_mut()
+            .resource_mut::<crystal_voxel_view::VoxelViewSettings>()
+            .camera
+            .rotation_step = 6.;
         key(&mut app, KeyCode::KeyW, true);
         key(&mut app, KeyCode::KeyA, true);
         for _ in 0..7 {
@@ -499,15 +558,25 @@ mod tests {
         }
         let shell = app.world().resource::<BevyRuntimeShell>();
         assert_eq!(shell.last_error, None);
-        assert_eq!(shell.shell.session().overworld().player.tile,
-            TilePosition { x: start.x + 1, y: start.y - 1 });
+        assert_eq!(
+            shell.shell.session().overworld().player.tile,
+            TilePosition {
+                x: start.x + 1,
+                y: start.y - 1
+            }
+        );
         assert_eq!(shell.player_walk_frame_ticks, 0);
     }
 
     #[test]
     fn natural_movement_opposing_keyboard_directions_cancel() {
         let mut app = app();
-        for key_code in [KeyCode::ArrowUp, KeyCode::KeyS, KeyCode::ArrowRight, KeyCode::KeyA] {
+        for key_code in [
+            KeyCode::ArrowUp,
+            KeyCode::KeyS,
+            KeyCode::ArrowRight,
+            KeyCode::KeyA,
+        ] {
             key(&mut app, key_code, true);
         }
         app.update();
@@ -519,12 +588,22 @@ mod tests {
     #[test]
     fn natural_movement_short_wasd_diagonal_survives_between_ticks_and_rotates_once() {
         let mut app = app();
-        let start = app.world().resource::<BevyRuntimeShell>()
-            .shell.session().overworld().player.tile;
-        app.world_mut().resource_mut::<crystal_voxel_view::VoxelViewSettings>()
-            .camera.rotation_step = 1.;
+        let start = app
+            .world()
+            .resource::<BevyRuntimeShell>()
+            .shell
+            .session()
+            .overworld()
+            .player
+            .tile;
+        app.world_mut()
+            .resource_mut::<crystal_voxel_view::VoxelViewSettings>()
+            .camera
+            .rotation_step = 1.;
         // A render update can see the whole press/release before a gameplay tick.
-        app.world_mut().resource_mut::<RuntimeTickTimer>().step_seconds = 1.;
+        app.world_mut()
+            .resource_mut::<RuntimeTickTimer>()
+            .step_seconds = 1.;
         {
             let mut keys = app.world_mut().resource_mut::<ButtonInput<KeyCode>>();
             keys.press(KeyCode::KeyW);
@@ -533,7 +612,9 @@ mod tests {
             keys.release(KeyCode::KeyD);
         }
         app.update();
-        app.world_mut().resource_mut::<RuntimeTickTimer>().step_seconds = 0.;
+        app.world_mut()
+            .resource_mut::<RuntimeTickTimer>()
+            .step_seconds = 0.;
         app.update();
         let shell = app.world().resource::<BevyRuntimeShell>();
         assert_eq!(shell.last_error, None);
@@ -541,23 +622,38 @@ mod tests {
         let offset = Vec2::from_array(shell.natural_movement.position.offset);
         assert!(offset.abs_diff_eq(Vec2::new(0., -0.125), 1e-6));
         app.update();
-        assert_eq!(app.world().resource::<BevyRuntimeShell>().natural_movement.position.offset,
-            offset.to_array(), "the tap is consumed exactly once");
+        assert_eq!(
+            app.world()
+                .resource::<BevyRuntimeShell>()
+                .natural_movement
+                .position
+                .offset,
+            offset.to_array(),
+            "the tap is consumed exactly once"
+        );
     }
 
     #[test]
     fn natural_movement_discards_latched_input_on_focus_loss() {
         let mut app = app();
-        app.add_message::<WindowFocused>()
-            .add_systems(Update, release_input_on_focus_loss.before(apply_keyboard_input));
-        app.world_mut().resource_mut::<RuntimeTickTimer>().step_seconds = 1.;
+        app.add_message::<WindowFocused>().add_systems(
+            Update,
+            release_input_on_focus_loss.before(apply_keyboard_input),
+        );
+        app.world_mut()
+            .resource_mut::<RuntimeTickTimer>()
+            .step_seconds = 1.;
         key(&mut app, KeyCode::KeyW, true);
         app.update();
-        app.world_mut().resource_mut::<Messages<WindowFocused>>().write(WindowFocused {
-            window: Entity::PLACEHOLDER,
-            focused: false,
-        });
-        app.world_mut().resource_mut::<RuntimeTickTimer>().step_seconds = 0.;
+        app.world_mut()
+            .resource_mut::<Messages<WindowFocused>>()
+            .write(WindowFocused {
+                window: Entity::PLACEHOLDER,
+                focused: false,
+            });
+        app.world_mut()
+            .resource_mut::<RuntimeTickTimer>()
+            .step_seconds = 0.;
         app.update();
         let shell = app.world().resource::<BevyRuntimeShell>();
         assert_eq!(shell.last_error, None);
@@ -567,12 +663,18 @@ mod tests {
     #[test]
     fn natural_movement_does_not_latch_modified_keyboard_input() {
         let mut app = app();
-        app.world_mut().resource_mut::<RuntimeTickTimer>().step_seconds = 1.;
+        app.world_mut()
+            .resource_mut::<RuntimeTickTimer>()
+            .step_seconds = 1.;
         key(&mut app, KeyCode::AltLeft, true);
         key(&mut app, KeyCode::KeyW, true);
         app.update();
-        app.world_mut().resource_mut::<ButtonInput<KeyCode>>().reset_all();
-        app.world_mut().resource_mut::<RuntimeTickTimer>().step_seconds = 0.;
+        app.world_mut()
+            .resource_mut::<ButtonInput<KeyCode>>()
+            .reset_all();
+        app.world_mut()
+            .resource_mut::<RuntimeTickTimer>()
+            .step_seconds = 0.;
         app.update();
         let shell = app.world().resource::<BevyRuntimeShell>();
         assert_eq!(shell.last_error, None);

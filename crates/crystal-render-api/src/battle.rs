@@ -69,15 +69,16 @@ impl VisualBattleBattler {
     /// remain independent of this presentation-only form selection.
     pub fn model_id(&self) -> &str {
         const UNOWN: [&str; 26] = [
-            "UNOWN_A", "UNOWN_B", "UNOWN_C", "UNOWN_D", "UNOWN_E", "UNOWN_F",
-            "UNOWN_G", "UNOWN_H", "UNOWN_I", "UNOWN_J", "UNOWN_K", "UNOWN_L",
-            "UNOWN_M", "UNOWN_N", "UNOWN_O", "UNOWN_P", "UNOWN_Q", "UNOWN_R",
-            "UNOWN_S", "UNOWN_T", "UNOWN_U", "UNOWN_V", "UNOWN_W", "UNOWN_X",
+            "UNOWN_A", "UNOWN_B", "UNOWN_C", "UNOWN_D", "UNOWN_E", "UNOWN_F", "UNOWN_G", "UNOWN_H",
+            "UNOWN_I", "UNOWN_J", "UNOWN_K", "UNOWN_L", "UNOWN_M", "UNOWN_N", "UNOWN_O", "UNOWN_P",
+            "UNOWN_Q", "UNOWN_R", "UNOWN_S", "UNOWN_T", "UNOWN_U", "UNOWN_V", "UNOWN_W", "UNOWN_X",
             "UNOWN_Y", "UNOWN_Z",
         ];
         if self.species_id.eq_ignore_ascii_case("UNOWN") {
-            self.unown_form.and_then(|form| form.checked_sub(1))
-                .and_then(|index| UNOWN.get(usize::from(index))).copied()
+            self.unown_form
+                .and_then(|form| form.checked_sub(1))
+                .and_then(|index| UNOWN.get(usize::from(index)))
+                .copied()
                 .unwrap_or("UNOWN_UNRESOLVED")
         } else {
             &self.species_id
@@ -358,7 +359,8 @@ impl VisualBattleFrame {
                 return Err("invalid source battle presentation");
             }
             for rows in source.battler_rows.iter().flatten() {
-                if !rows.oam_depth.is_finite() || !rows.source_y.is_finite()
+                if !rows.oam_depth.is_finite()
+                    || !rows.source_y.is_finite()
                     || rows.source_y.x < 0.0
                     || rows.source_y.y > 144.0
                     || rows.source_y.x >= rows.source_y.y
@@ -402,7 +404,10 @@ mod tests {
         battler.species_id = Arc::from("UNOWN");
         for letter in 1..=26 {
             battler.unown_form = Some(letter);
-            assert_eq!(battler.model_id(), format!("UNOWN_{}", char::from(b'A' + letter - 1)));
+            assert_eq!(
+                battler.model_id(),
+                format!("UNOWN_{}", char::from(b'A' + letter - 1))
+            );
             assert_eq!(battler.species_id.as_ref(), "UNOWN");
         }
         for unknown in [None, Some(0), Some(27), Some(u8::MAX)] {
@@ -436,14 +441,17 @@ mod tests {
                     unown_form: None,
                     pokedex_size_m: Some(0.508),
                     party_index: Some(2),
-                    texture: Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(4), std::marker::PhantomData),
+                    texture: Handle::Uuid(
+                        bevy::asset::uuid::Uuid::from_u128(4),
+                        std::marker::PhantomData,
+                    ),
                     texture_size: Vec2::splat(56.0),
                     source_rect: Rect::new(16.0, 48.0, 72.0, 104.0),
                     source_opaque_rect: Rect::new(16.0, 48.0, 72.0, 104.0),
                     visible: true,
                     allow_species_model: true,
                     shiny: false,
-            model_palette: None,
+                    model_palette: None,
                 }),
                 None,
             ],

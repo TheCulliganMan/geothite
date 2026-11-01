@@ -63,8 +63,12 @@ pub struct FieldMoveCatalog {
     pub pokegear: Option<FieldItemRule>,
 }
 
-fn required_optional_field_item_rule<'de, D>(deserializer: D) -> Result<Option<FieldItemRule>, D::Error>
-where D: serde::Deserializer<'de> {
+fn required_optional_field_item_rule<'de, D>(
+    deserializer: D,
+) -> Result<Option<FieldItemRule>, D::Error>
+where
+    D: serde::Deserializer<'de>,
+{
     Option::<FieldItemRule>::deserialize(deserializer)
 }
 
@@ -1763,14 +1767,22 @@ pub fn validate_town_map_item(
     catalog: &FieldMoveCatalog,
     item: &Item,
 ) -> Result<(), FieldMoveError> {
-    validate_field_item_id("town_map", &catalog.town_map.clone().unwrap_or_default(), item)
+    validate_field_item_id(
+        "town_map",
+        &catalog.town_map.clone().unwrap_or_default(),
+        item,
+    )
 }
 
 pub fn validate_pokegear_item(
     catalog: &FieldMoveCatalog,
     item: &Item,
 ) -> Result<(), FieldMoveError> {
-    validate_field_item_id("pokegear", &catalog.pokegear.clone().unwrap_or_default(), item)
+    validate_field_item_id(
+        "pokegear",
+        &catalog.pokegear.clone().unwrap_or_default(),
+        item,
+    )
 }
 
 pub fn blue_card_balance(state: &GameState) -> Result<u8, FieldMoveError> {
@@ -2282,7 +2294,14 @@ mod tests {
         value["town_map"] = serde_json::json!({"item_id":" TOWN_MAP"});
         assert!(serde_json::from_value::<FieldMoveCatalog>(value.clone()).is_err());
         value["town_map"] = serde_json::json!({"item_id":"CUSTOM_MAP"});
-        assert_eq!(serde_json::from_value::<FieldMoveCatalog>(value.clone()).unwrap().town_map.unwrap().item_id, "CUSTOM_MAP");
+        assert_eq!(
+            serde_json::from_value::<FieldMoveCatalog>(value.clone())
+                .unwrap()
+                .town_map
+                .unwrap()
+                .item_id,
+            "CUSTOM_MAP"
+        );
         value.as_object_mut().unwrap().remove("town_map");
         assert!(serde_json::from_value::<FieldMoveCatalog>(value).is_err());
     }
@@ -2296,8 +2315,14 @@ mod tests {
         value["pokegear"] = serde_json::json!({"item_id":" BAD"});
         assert!(serde_json::from_value::<FieldMoveCatalog>(value.clone()).is_err());
         value["pokegear"] = serde_json::json!({"item_id":"CUSTOM_POKEGEAR"});
-        assert_eq!(serde_json::from_value::<FieldMoveCatalog>(value.clone()).unwrap()
-            .pokegear.unwrap().item_id, "CUSTOM_POKEGEAR");
+        assert_eq!(
+            serde_json::from_value::<FieldMoveCatalog>(value.clone())
+                .unwrap()
+                .pokegear
+                .unwrap()
+                .item_id,
+            "CUSTOM_POKEGEAR"
+        );
         value.as_object_mut().unwrap().remove("pokegear");
         assert!(serde_json::from_value::<FieldMoveCatalog>(value).is_err());
     }

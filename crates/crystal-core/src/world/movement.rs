@@ -983,9 +983,23 @@ mod tests {
     #[test]
     fn running_shoes_keep_fixed_ledge_speed() {
         let mut state = PlayerMovementState::new(TilePosition::new(2, 2));
-        let outcome = attempt_ledge_jump(&mut state, Direction::Down, &ledge_map(),
-            &ledge_tileset(permissions::FLOOR), StepOptions { running: true, ..StepOptions::default() });
-        assert!(matches!(outcome, LedgeJumpOutcome::Jumped { speed_multiplier: 1, .. }));
+        let outcome = attempt_ledge_jump(
+            &mut state,
+            Direction::Down,
+            &ledge_map(),
+            &ledge_tileset(permissions::FLOOR),
+            StepOptions {
+                running: true,
+                ..StepOptions::default()
+            },
+        );
+        assert!(matches!(
+            outcome,
+            LedgeJumpOutcome::Jumped {
+                speed_multiplier: 1,
+                ..
+            }
+        ));
         assert_eq!(state.tile, TilePosition::new(2, 4));
     }
 

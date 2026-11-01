@@ -277,14 +277,16 @@ pub(super) fn append(
         let shoulder = r * r * (3. - 2. * r);
         let drift = (0.72
             + new_bark::meadow_noise(map_x * 0.55, map_z * 0.55) * 0.22
-            + cave_cliff::slab(map_x * 1.6, map_z * 1.6).abs() * 0.32).clamp(0.52, 1.);
+            + cave_cliff::slab(map_x * 1.6, map_z * 1.6).abs() * 0.32)
+            .clamp(0.52, 1.);
         p.y = shoulder * drift * g.tile_height * 0.5;
         // Shape only exposed edges. Shared source-cell seams keep identical
         // map samples; the untouched floor below closes the eroded footprint.
         let rise = (p.y / (g.tile_height * 0.35)).clamp(0., 1.);
         let erosion = (0.08
             + cave_cliff::slab(map_x * 0.9 + 31., map_z * 0.9).abs() * 0.18
-            + new_bark::meadow_noise(map_x * 0.75 + 19., map_z * 0.75) * 0.04) * rise;
+            + new_bark::meadow_noise(map_x * 0.75 + 19., map_z * 0.75) * 0.04)
+            * rise;
         let [dx, dz] = contour_push(&neighbors, u, v);
         p.x += dx * erosion * g.tile_width;
         p.z += dz * erosion * g.tile_height;
@@ -327,7 +329,8 @@ pub(super) fn append(
         let first = out.positions.len() as u32;
         out.positions.extend(p);
         out.normals.extend(ns);
-        out.uvs.extend(p.map(|p|cave_cliff::stone_uv(Vec3::from_array(p),g,origin,true)));
+        out.uvs
+            .extend(p.map(|p| cave_cliff::stone_uv(Vec3::from_array(p), g, origin, true)));
         out.colors.extend((0..4).map(|i| color(p[i], ns[i])));
         out.indices
             .extend([first, first + 1, first + 2, first, first + 2, first + 3]);
@@ -384,18 +387,20 @@ mod tests {
     #[test]
     fn exit_block_rim_does_not_claim_the_threshold_or_ladder_art() {
         for x in 2..4 {
-            let rim = source(0x2a,0x8a+u16::from(x-2),x,0);
-            assert_eq!(edges(&rim),Some(NORTH));
-            assert_eq!(shape_for_source(&rim).surface_height(8.),0.);
-            for wrong in [source(0x2a,rim.tile_index,x,1),
-                source(0x2a,rim.tile_index,x-2,0),
-                source(0x07,rim.tile_index,x,0),
-                source(0x2a,rim.tile_index+1,x,0)] {
-                assert_eq!(edges(&wrong),None);
+            let rim = source(0x2a, 0x8a + u16::from(x - 2), x, 0);
+            assert_eq!(edges(&rim), Some(NORTH));
+            assert_eq!(shape_for_source(&rim).surface_height(8.), 0.);
+            for wrong in [
+                source(0x2a, rim.tile_index, x, 1),
+                source(0x2a, rim.tile_index, x - 2, 0),
+                source(0x07, rim.tile_index, x, 0),
+                source(0x2a, rim.tile_index + 1, x, 0),
+            ] {
+                assert_eq!(edges(&wrong), None);
             }
         }
-        assert_eq!(edges(&source(0x2a,0x42,0,0)),None);
-        assert_eq!(edges(&source(0x2a,0x43,1,0)),None);
+        assert_eq!(edges(&source(0x2a, 0x42, 0, 0)), None);
+        assert_eq!(edges(&source(0x2a, 0x43, 1, 0)), None);
     }
     #[test]
     fn southeast_3e_corner_finishes_only_its_exact_frozen_course() {
@@ -573,10 +578,20 @@ mod tests {
             [0, 0],
             std::array::from_fn(|i| (i == 4).then_some(&s))
         ));
-        assert!(mesh.positions.iter().zip(&mesh.uvs).filter(|(p,_)|p[1]>0.001)
-            .all(|(_,uv)|uv[0]>90000. && (uv[1]/100000.).round()==7.));
-        assert!(mesh.positions.iter().zip(&mesh.uvs).any(|(p,uv)|p[1]==0.
-            && uv[0]>90000. && (uv[1]/100000.).round()==5.), "continuous stone backing");
+        assert!(
+            mesh.positions
+                .iter()
+                .zip(&mesh.uvs)
+                .filter(|(p, _)| p[1] > 0.001)
+                .all(|(_, uv)| uv[0] > 90000. && (uv[1] / 100000.).round() == 7.)
+        );
+        assert!(
+            mesh.positions
+                .iter()
+                .zip(&mesh.uvs)
+                .any(|(p, uv)| p[1] == 0. && uv[0] > 90000. && (uv[1] / 100000.).round() == 5.),
+            "continuous stone backing"
+        );
         assert!(mesh.positions.iter().all(|p| (0.0..=8.0).contains(&p[0])
             && (0.0..=8.0).contains(&p[2])
             && (0.0..=4.0).contains(&p[1])));

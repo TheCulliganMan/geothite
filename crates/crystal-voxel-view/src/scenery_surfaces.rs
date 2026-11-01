@@ -3,15 +3,12 @@
 #[cfg(feature = "terrain-worker")]
 #[path = "terrain_worker/scenery_wire.rs"]
 pub(super) mod worker_wire;
-use bevy::asset::RenderAssetUsages;
 use crate::mesh::SurfaceMeshData;
 use base64::Engine as _;
+use bevy::asset::RenderAssetUsages;
 use bevy::{
     prelude::*,
-    render::{
-
-        render_resource::{Extent3d, TextureDimension, TextureFormat},
-    },
+    render::render_resource::{Extent3d, TextureDimension, TextureFormat},
 };
 use serde::Deserialize;
 use std::sync::Arc;
@@ -95,7 +92,10 @@ impl SceneryTexture {
         }))
     }
     pub fn image(&self) -> Image {
-        let _trace = crate::loading_trace::span("region.prepare_scenery_image", || serde_json::json!({"width":self.width,"height":self.height,"bytes":self.pixels.len()}));
+        let _trace = crate::loading_trace::span(
+            "region.prepare_scenery_image",
+            || serde_json::json!({"width":self.width,"height":self.height,"bytes":self.pixels.len()}),
+        );
         let mut image = Image::new(
             Extent3d {
                 width: self.width,
@@ -107,23 +107,27 @@ impl SceneryTexture {
             TextureFormat::Rgba8UnormSrgb,
             RenderAssetUsages::all(),
         );
-        image.sampler = bevy::image::ImageSampler::Descriptor(
-            bevy::image::ImageSamplerDescriptor {
+        image.sampler =
+            bevy::image::ImageSampler::Descriptor(bevy::image::ImageSamplerDescriptor {
                 address_mode_u: self.wrap_u.address(),
                 address_mode_v: self.wrap_v.address(),
                 ..bevy::image::ImageSamplerDescriptor::linear()
-            },
-        );
+            });
         if crate::render_quality::requested().materials() {
             crate::texture_filtering::mipmap(&mut image, self.alpha_cutoff);
         }
         image
     }
     pub fn alpha_mode(&self) -> AlphaMode {
-        if self.blend {return AlphaMode::Blend;}
+        if self.blend {
+            return AlphaMode::Blend;
+        }
         let mode = self.alpha_cutoff.map_or(AlphaMode::Opaque, AlphaMode::Mask);
         if std::env::var_os("CRYSTAL_VOXEL_PIPELINE_TRACE").is_some() {
-            eprintln!("scenery alpha: mode={mode:?} size={}x{}", self.width, self.height);
+            eprintln!(
+                "scenery alpha: mode={mode:?} size={}x{}",
+                self.width, self.height
+            );
         }
         mode
     }
@@ -133,14 +137,34 @@ impl SceneryTexture {
     /// pane vertices, leaving the source atlas and opaque frames untouched.
     pub(crate) fn live_glazing(width: u32, height: u32, pixels: Vec<u8>) -> Arc<Self> {
         assert_eq!(pixels.len(), width as usize * height as usize * 4);
-        Arc::new(Self { blend:true,width,height,pixels,alpha_cutoff:None,double_sided:true,
-            wrap_u:TextureWrap::Clamp,wrap_v:TextureWrap::Clamp })
+        Arc::new(Self {
+            blend: true,
+            width,
+            height,
+            pixels,
+            alpha_cutoff: None,
+            double_sided: true,
+            wrap_u: TextureWrap::Clamp,
+            wrap_v: TextureWrap::Clamp,
+        })
     }
 
     pub fn glass_panel() -> Arc<Self> {
-        static GLASS: std::sync::OnceLock<Arc<SceneryTexture>>=std::sync::OnceLock::new();
-        GLASS.get_or_init(||Arc::new(Self{blend:true,width:1,height:1,pixels:vec![255;4],
-            alpha_cutoff:None,double_sided:true,wrap_u:TextureWrap::Clamp,wrap_v:TextureWrap::Clamp})).clone()
+        static GLASS: std::sync::OnceLock<Arc<SceneryTexture>> = std::sync::OnceLock::new();
+        GLASS
+            .get_or_init(|| {
+                Arc::new(Self {
+                    blend: true,
+                    width: 1,
+                    height: 1,
+                    pixels: vec![255; 4],
+                    alpha_cutoff: None,
+                    double_sided: true,
+                    wrap_u: TextureWrap::Clamp,
+                    wrap_v: TextureWrap::Clamp,
+                })
+            })
+            .clone()
     }
 }
 
@@ -192,20 +216,30 @@ mod tests {
     }
     #[test]
     fn authored_glazing_blends_without_changing_imported_scenery_modes() {
-        let glass=SceneryTexture::glass_panel();
-        assert_eq!(glass.alpha_mode(),AlphaMode::Blend);
+        let glass = SceneryTexture::glass_panel();
+        assert_eq!(glass.alpha_mode(), AlphaMode::Blend);
         assert!(glass.double_sided);
-        assert!(Arc::ptr_eq(&glass,&SceneryTexture::glass_panel()));
-        assert_eq!(glass.image().data.as_deref(),Some(&[255;4][..]));
-        let mut opaque=encoded();opaque.alpha_cutoff=None;
-        assert_eq!(SceneryTexture::decode(opaque).unwrap().alpha_mode(),AlphaMode::Opaque);
-        assert_eq!(SceneryTexture::decode(encoded()).unwrap().alpha_mode(),AlphaMode::Mask(0.5));
+        assert!(Arc::ptr_eq(&glass, &SceneryTexture::glass_panel()));
+        assert_eq!(glass.image().data.as_deref(), Some(&[255; 4][..]));
+        let mut opaque = encoded();
+        opaque.alpha_cutoff = None;
+        assert_eq!(
+            SceneryTexture::decode(opaque).unwrap().alpha_mode(),
+            AlphaMode::Opaque
+        );
+        assert_eq!(
+            SceneryTexture::decode(encoded()).unwrap().alpha_mode(),
+            AlphaMode::Mask(0.5)
+        );
     }
     #[test]
     fn cutouts_keep_alpha_srgb_and_the_source_wrap_mode() {
         let texture = SceneryTexture::decode(encoded()).unwrap();
         let image = texture.image();
-        assert_eq!(&image.data.as_ref().expect("CPU image pixels")[..8], [80, 120, 70, 0, 80, 120, 70, 255]);
+        assert_eq!(
+            &image.data.as_ref().expect("CPU image pixels")[..8],
+            [80, 120, 70, 0, 80, 120, 70, 255]
+        );
         assert_eq!(
             image.texture_descriptor.format,
             TextureFormat::Rgba8UnormSrgb

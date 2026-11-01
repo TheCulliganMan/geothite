@@ -16,14 +16,24 @@ const RIGHT: [[u16; 4]; 4] = [
     [0x1a, 0x1a, 0x1a, 0x3c],
 ];
 
-pub(super) fn compact_source(width: usize, x: usize, y: usize, doorless: bool) -> (u16,u16) {
-    let (block,art)=if x<4 {(if doorless {0x30}else{0x02},LEFT)}
-        else if x>=width-4 {(0x03,RIGHT)}else{(0x09,BAY)};
-    let mut tile=art[y][x%4];
-    if doorless && x<4 {
-        tile=match (x,y) {(2,2)=>0x0a,(3,2)=>0x22,(2|3,3)=>0x1a,_=>tile};
+pub(super) fn compact_source(width: usize, x: usize, y: usize, doorless: bool) -> (u16, u16) {
+    let (block, art) = if x < 4 {
+        (if doorless { 0x30 } else { 0x02 }, LEFT)
+    } else if x >= width - 4 {
+        (0x03, RIGHT)
+    } else {
+        (0x09, BAY)
+    };
+    let mut tile = art[y][x % 4];
+    if doorless && x < 4 {
+        tile = match (x, y) {
+            (2, 2) => 0x0a,
+            (3, 2) => 0x22,
+            (2 | 3, 3) => 0x1a,
+            _ => tile,
+        };
     }
-    (block,tile)
+    (block, tile)
 }
 
 // The full-height cottage and underground entrances share two native window
@@ -129,16 +139,22 @@ pub(super) fn matches(cells: &[&VisualTile], g: &GridGeometry, p: BuildingPlacem
         };
         // The same blue cottage roof also carries the civic right end cap.
         // Its two $0a panes are lit; the underground variant uses $32 there.
-        let bright_end=roof==0x38 && facade==0x10
-            && cells[(p.row+4)*g.width+p.column+4].source.metatile_id==0x12;
+        let bright_end = roof == 0x38
+            && facade == 0x10
+            && cells[(p.row + 4) * g.width + p.column + 4]
+                .source
+                .metatile_id
+                == 0x12;
         return (0..8).all(|y| {
             (0..8).all(|x| {
                 let Some((mut block, mut tile)) = tall_cell(roof, facade, x, y) else {
                     return false;
                 };
-                if bright_end && y>=4 && x>=4 {
-                    block=0x12;
-                    if tile==0x32 {tile=0x0a;}
+                if bright_end && y >= 4 && x >= 4 {
+                    block = 0x12;
+                    if tile == 0x32 {
+                        tile = 0x0a;
+                    }
                 }
                 cells
                     .get((p.row + y) * g.width + p.column + x)
@@ -379,15 +395,22 @@ fn roof(out: &mut SurfaceMeshData, b: [f32; 4], unit: f32, p: &Paint) {
                     };
                     plane[0].lerp(plane[1], u).lerp(upper, t) + Vec3::Y * unit * 0.025
                 };
-                let stagger=if row%2==0 {0.}else{0.5};
-                let a = ((col as f32-stagger+0.018)/cols as f32).clamp(0.,1.);
-                let b = ((col as f32-stagger+0.982)/cols as f32).clamp(0.,1.);
-                if b<=a {continue;}
+                let stagger = if row % 2 == 0 { 0. } else { 0.5 };
+                let a = ((col as f32 - stagger + 0.018) / cols as f32).clamp(0., 1.);
+                let b = ((col as f32 - stagger + 0.982) / cols as f32).clamp(0., 1.);
+                if b <= a {
+                    continue;
+                }
                 let c = (row as f32 + 0.02) / rows as f32;
                 let d = (row as f32 + 0.98) / rows as f32;
                 let gain = 0.90 + ((row * 3 + col * 7 + side) % 5) as f32 * 0.018;
-                ceramic_tile(out, [[at(a,c),at(b,c)],[at(a,d),at(b,d)]],
-                    unit, unit*0.070, ceramic.map(|x|x*gain));
+                ceramic_tile(
+                    out,
+                    [[at(a, c), at(b, c)], [at(a, d), at(b, d)]],
+                    unit,
+                    unit * 0.070,
+                    ceramic.map(|x| x * gain),
+                );
             }
         }
     }
@@ -747,13 +770,20 @@ pub(super) fn append(out: &mut SurfaceMeshData, b: [f32; 4], unit: f32, door: f3
     }
     drop(part);
     for (vertices, lit) in glass_ranges {
-        let (mut low,mut high)=(Vec3::splat(f32::INFINITY),Vec3::splat(f32::NEG_INFINITY));
+        let (mut low, mut high) = (Vec3::splat(f32::INFINITY), Vec3::splat(f32::NEG_INFINITY));
         for &p in &out.positions[vertices.clone()] {
-            let p=Vec3::from_array(p);low=low.min(p);high=high.max(p);
+            let p = Vec3::from_array(p);
+            low = low.min(p);
+            high = high.max(p);
         }
         // Retain each native lamp identity while giving lit and dark panes
         // the shared recessed glass and sky reflection coordinates.
-        crate::scenery_finish::mark_source_glass(out,vertices,[low.x,high.x,low.y,high.y],lit);
+        crate::scenery_finish::mark_source_glass(
+            out,
+            vertices,
+            [low.x, high.x, low.y, high.y],
+            lit,
+        );
     }
     roof(
         out,
@@ -1037,14 +1067,18 @@ mod tests {
                 lit + 1,
                 "only native $0a panes and the door light emit; $32 glass remains dark"
             );
-            for (_,_,is_lit) in original.windows.iter().chain(&original.upper_windows) {
-                assert!(mesh.uvs.iter().any(|&uv|
+            for (_, _, is_lit) in original.windows.iter().chain(&original.upper_windows) {
+                assert!(mesh.uvs.iter().any(|&uv| {
                     crate::scenery_finish::source_glass_coordinates(uv)
-                        .is_some_and(|(p,lit)|lit==*is_lit && p[0]>0.99 && p[1]>0.99)));
+                        .is_some_and(|(p, lit)| lit == *is_lit && p[0] > 0.99 && p[1] > 0.99)
+                }));
             }
-            assert!(mesh.uvs.iter().filter_map(|&uv|
-                crate::scenery_finish::source_glass_coordinates(uv))
-                .all(|(p,_)|p.iter().all(|v|(0. ..=1.).contains(v))));
+            assert!(
+                mesh.uvs
+                    .iter()
+                    .filter_map(|&uv| crate::scenery_finish::source_glass_coordinates(uv))
+                    .all(|(p, _)| p.iter().all(|v| (0. ..=1.).contains(v)))
+            );
             let upper_cell = 4 * g.width + original.upper_windows[0].0;
             let tile = cells[upper_cell];
             let mut pixels = tile_rgba(&images, tile).unwrap().to_vec();
@@ -1149,7 +1183,7 @@ mod tests {
         }
         // Both the roof deck and shared curved courses seal their bottoms
         // and returns, including a narrowing hip tile.
-        let mut primitives=Vec::new();
+        let mut primitives = Vec::new();
         for top in [
             vec![Vec3::ZERO, Vec3::X, Vec3::new(0.5, 1., 0.5)],
             vec![
@@ -1163,12 +1197,25 @@ mod tests {
             prism(&mut mesh, top, 0.1, [0.2, 0.4, 0.5], 1.);
             primitives.push(mesh);
         }
-        for upper in [[Vec3::new(0.,1.,1.),Vec3::new(1.,1.,1.)],
-            [Vec3::new(0.25,1.,1.),Vec3::new(0.75,1.,1.)]] {
-            let mut mesh=SurfaceMeshData::default();
-            ceramic_tile(&mut mesh,[[Vec3::ZERO,Vec3::X],upper],1.,0.045,[0.2,0.4,0.5]);
-            assert!(mesh.normals.iter().filter(|n|n[1]>0.5)
-                .any(|n|n[0].abs()>0.01),"ceramic shoulders provide physical curvature");
+        for upper in [
+            [Vec3::new(0., 1., 1.), Vec3::new(1., 1., 1.)],
+            [Vec3::new(0.25, 1., 1.), Vec3::new(0.75, 1., 1.)],
+        ] {
+            let mut mesh = SurfaceMeshData::default();
+            ceramic_tile(
+                &mut mesh,
+                [[Vec3::ZERO, Vec3::X], upper],
+                1.,
+                0.045,
+                [0.2, 0.4, 0.5],
+            );
+            assert!(
+                mesh.normals
+                    .iter()
+                    .filter(|n| n[1] > 0.5)
+                    .any(|n| n[0].abs() > 0.01),
+                "ceramic shoulders provide physical curvature"
+            );
             primitives.push(mesh);
         }
         for mesh in primitives {

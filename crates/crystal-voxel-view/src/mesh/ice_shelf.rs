@@ -108,13 +108,13 @@ fn shelf_point(
         // The shared field also reaches neighboring caps at outside corners.
         let opening = ((along - start).min(end - along) / 0.4).clamp(0., 1.);
         let noise = new_bark::meadow_noise(x * 1.05, z * 1.05);
-        let face=(p.y-base)/g.tile_height/1.50;
-        let depth=face.clamp(0.,1.);
-        let taper=(depth/0.20).min((1.-depth)/0.24).clamp(0.,1.);
-        let fracture=cave_cliff::slab(x*1.1+face*1.50*0.16,z*1.1-face*1.50*0.12);
+        let face = (p.y - base) / g.tile_height / 1.50;
+        let depth = face.clamp(0., 1.);
+        let taper = (depth / 0.20).min((1. - depth) / 0.24).clamp(0., 1.);
+        let fracture = cave_cliff::slab(x * 1.1 + face * 1.50 * 0.16, z * 1.1 - face * 1.50 * 0.12);
         // Body recesses use the same complete contour as caps. A separate
         // per-face displacement pulled orthogonal corner edges apart.
-        let bed=(0.09+fracture.abs()*0.35)*taper;
+        let bed = (0.09 + fracture.abs() * 0.35) * taper;
         // Retreat the upper lip farther than the body below it. This widens
         // the existing shoulder horizontally, preserving every authored Y
         // value and keeping the retreat inside the border tile's center.
@@ -202,9 +202,17 @@ pub(super) fn append(
             let first = out.positions.len() as u32;
             out.positions.extend(p.map(|p| p.to_array()));
             out.normals.extend([normal.to_array(); 3]);
-            out.uvs.extend(p.map(|p| if snow {
-                { let mut uv = cave_cliff::stone_uv(p,g,origin,true); uv[1] += 200000.; uv }
-            } else { [0.;2] }));
+            out.uvs.extend(p.map(|p| {
+                if snow {
+                    {
+                        let mut uv = cave_cliff::stone_uv(p, g, origin, true);
+                        uv[1] += 200000.;
+                        uv
+                    }
+                } else {
+                    [0.; 2]
+                }
+            }));
             out.colors.extend(p.map(|p| {
                 let x = (p.x - g.origin_x) / g.tile_width + origin[0] as f32;
                 let z = (p.z - g.origin_z) / g.tile_height + origin[1] as f32;
@@ -269,9 +277,12 @@ pub(super) fn append(
                     let first = out.positions.len() as u32;
                     out.positions.extend(q.map(|p| p.to_array()));
                     out.normals.extend([normal.to_array(); 3]);
-                    out.uvs.extend(q.map(|p|cave_cliff::stone_uv(p,g,origin,true)));
+                    out.uvs
+                        .extend(q.map(|p| cave_cliff::stone_uv(p, g, origin, true)));
                     out.colors.extend(q.map(|p| {
-                        (body_color(p, base, g, origin) * shade).extend(1.).to_array()
+                        (body_color(p, base, g, origin) * shade)
+                            .extend(1.)
+                            .to_array()
                     }));
                     out.indices.extend([first, first + 1, first + 2]);
                 }
@@ -285,32 +296,61 @@ mod tests {
     use super::*;
     #[test]
     fn orthogonal_shelf_faces_keep_one_closed_corner_through_the_recessed_body() {
-        let g=GridGeometry {width:4,height:4,tile_width:8.,tile_height:8.,origin_x:-16.,origin_z:-16.};
-        let edges=contour(&[(0x0e,[0.,0.])],&g);
-        let mut out=SurfaceMeshData::default();
-        append(&mut out,Kind::IceShelfSoutheast,0x0e,[0.,0.],0.,&g,[10,20],&edges);
+        let g = GridGeometry {
+            width: 4,
+            height: 4,
+            tile_width: 8.,
+            tile_height: 8.,
+            origin_x: -16.,
+            origin_z: -16.,
+        };
+        let edges = contour(&[(0x0e, [0., 0.])], &g);
+        let mut out = SurfaceMeshData::default();
+        append(
+            &mut out,
+            Kind::IceShelfSoutheast,
+            0x0e,
+            [0., 0.],
+            0.,
+            &g,
+            [10, 20],
+            &edges,
+        );
         for row in 0..=8 {
-            let y=1.50*row as f32/8.*8.;
-            let corner=[16.,y,16.];
+            let y = 1.50 * row as f32 / 8. * 8.;
+            let corner = [16., y, 16.];
             // Both orthogonal body faces must retain this actual contour end.
-            assert!(out.positions.iter().filter(|p| **p==corner).count()>=2,
-                "split frozen corner at {y}");
+            assert!(
+                out.positions.iter().filter(|p| **p == corner).count() >= 2,
+                "split frozen corner at {y}"
+            );
         }
-        let caps: Vec<_> = out.indices.chunks_exact(3).filter_map(|ids| {
-            let p = [ids[0], ids[1], ids[2]].map(|i| Vec3::from_array(out.positions[i as usize]));
-            p.iter().all(|p| p.y == 16.).then_some(p)
-        }).collect();
+        let caps: Vec<_> = out
+            .indices
+            .chunks_exact(3)
+            .filter_map(|ids| {
+                let p =
+                    [ids[0], ids[1], ids[2]].map(|i| Vec3::from_array(out.positions[i as usize]));
+                p.iter().all(|p| p.y == 16.).then_some(p)
+            })
+            .collect();
         assert!(!caps.is_empty());
-        assert!(caps.iter().all(|p| (p[1] - p[0]).cross(p[2] - p[0]).normalize().y > 0.9999),
-            "widening the shoulder must not fold the walking cap");
+        assert!(
+            caps.iter()
+                .all(|p| (p[1] - p[0]).cross(p[2] - p[0]).normalize().y > 0.9999),
+            "widening the shoulder must not fold the walking cap"
+        );
         let walker = Vec3::new(12., 16., 12.);
-        assert!(caps.iter().any(|p| {
-            let area = (p[1] - p[0]).cross(p[2] - p[0]).y.abs();
-            let parts = (p[0] - walker).cross(p[1] - walker).y.abs()
-                + (p[1] - walker).cross(p[2] - walker).y.abs()
-                + (p[2] - walker).cross(p[0] - walker).y.abs();
-            (parts - area).abs() < 0.0001
-        }), "the border tile's walking center must remain on the full-height cap");
+        assert!(
+            caps.iter().any(|p| {
+                let area = (p[1] - p[0]).cross(p[2] - p[0]).y.abs();
+                let parts = (p[0] - walker).cross(p[1] - walker).y.abs()
+                    + (p[1] - walker).cross(p[2] - walker).y.abs()
+                    + (p[2] - walker).cross(p[0] - walker).y.abs();
+                (parts - area).abs() < 0.0001
+            }),
+            "the border tile's walking center must remain on the full-height cap"
+        );
     }
     #[test]
     fn sculpted_contour_flows_across_blocks_without_moving_stairs_or_datum() {
@@ -340,11 +380,16 @@ mod tests {
         assert!(sculpted.z < seam.z && sculpted.z > 12.);
         let shoulder_base = shelf_point(Vec3::new(16., 1.50 * 8., 16.), 0., &edges, &g, [10, 20]);
         assert_eq!(shoulder_base.y, 1.50 * 8.);
-        assert!(shoulder_base.z - sculpted.z > 1., "upper lip must form a broad sloping shoulder");
+        assert!(
+            shoulder_base.z - sculpted.z > 1.,
+            "upper lip must form a broad sloping shoulder"
+        );
         let near_body = shelf_point(Vec3::new(16., 13., 16.), 0., &edges, &g, [10, 20]);
         let near_cap = shelf_point(Vec3::new(16., 15., 16.), 0., &edges, &g, [10, 20]);
-        assert!(near_cap.z - sculpted.z > (shoulder_base.z - near_body.z) * 2.,
-            "the shoulder must curve toward the cap instead of forming a straight chamfer");
+        assert!(
+            near_cap.z - sculpted.z > (shoulder_base.z - near_body.z) * 2.,
+            "the shoulder must curve toward the cap instead of forming a straight chamfer"
+        );
         // The southeast face reaches the north cap's shared edge through one
         // common field, not a per-model displacement with mismatched joins.
         let join = Vec3::new(80., 16., -16.);
@@ -436,11 +481,26 @@ mod tests {
             .flat_map(|(p, q)| p.iter().zip(q).map(|(p, q)| (p - q).abs()))
             .fold(0_f32, f32::max);
         assert!(color_delta < 0.0001, "scrolling color delta {color_delta}");
-        assert!(a.uvs.iter().any(|uv| uv[0]>90000. && (uv[1]/100000.).round()==9.));
-        assert!(a.uvs.iter().any(|uv| uv[0]>90000. && (uv[1]/100000.).round()==7.));
-        assert!(a.uvs.iter().any(|uv| *uv==[0.;2]), "stair material remains authored");
-        assert!(a.uvs.iter().zip(&b.uvs).all(|(a,b)|
-            (a[0]-b[0]).abs()<=0.0625 && (a[1]-b[1]).abs()<=0.0625));
+        assert!(
+            a.uvs
+                .iter()
+                .any(|uv| uv[0] > 90000. && (uv[1] / 100000.).round() == 9.)
+        );
+        assert!(
+            a.uvs
+                .iter()
+                .any(|uv| uv[0] > 90000. && (uv[1] / 100000.).round() == 7.)
+        );
+        assert!(
+            a.uvs.iter().any(|uv| *uv == [0.; 2]),
+            "stair material remains authored"
+        );
+        assert!(
+            a.uvs
+                .iter()
+                .zip(&b.uvs)
+                .all(|(a, b)| (a[0] - b[0]).abs() <= 0.0625 && (a[1] - b[1]).abs() <= 0.0625)
+        );
         for (p, q) in a.positions.iter().zip(&b.positions) {
             assert!(
                 (p[0] - q[0] - 8.).abs() < 0.00001

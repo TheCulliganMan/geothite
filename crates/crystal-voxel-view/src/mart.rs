@@ -413,19 +413,28 @@ mod tests {
     #[test]
     fn blue_case_variants_claim_only_the_complete_right_hand_rack() {
         let rows = [[0x26, 0x27], [0x36, 0x37], [0x28, 0x29], [0x38, 0x39]];
-        for block in [0x12,0x23,0x28] {
-        for row in 0..4 {
-            for column in 0..2 {
-                let mut tile = source(2 + column, row, rows[usize::from(row)][usize::from(column)]);
-                tile.metatile_id = block;
-                assert_eq!(display_rack_local(&tile), Some((column, row)));
-                tile.tile_index^=1;
-                assert_eq!(display_rack_local(&tile),None);
+        for block in [0x12, 0x23, 0x28] {
+            for row in 0..4 {
+                for column in 0..2 {
+                    let mut tile =
+                        source(2 + column, row, rows[usize::from(row)][usize::from(column)]);
+                    tile.metatile_id = block;
+                    assert_eq!(display_rack_local(&tile), Some((column, row)));
+                    tile.tile_index ^= 1;
+                    assert_eq!(display_rack_local(&tile), None);
+                }
             }
-        }
-        let mut floor = source(0, 0, if block==0x12 {FLOOR_TILE}else{STANDARD_MART_FLOOR_TILE});
-        floor.metatile_id = block;
-        assert_eq!(display_rack_local(&floor), None);
+            let mut floor = source(
+                0,
+                0,
+                if block == 0x12 {
+                    FLOOR_TILE
+                } else {
+                    STANDARD_MART_FLOOR_TILE
+                },
+            );
+            floor.metatile_id = block;
+            assert_eq!(display_rack_local(&floor), None);
         }
     }
 

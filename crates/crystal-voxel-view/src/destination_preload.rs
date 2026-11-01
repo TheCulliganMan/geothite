@@ -9,11 +9,17 @@ mod retention;
 /// Speculative work must have a real CPU worker, never a frame-thread fallback.
 pub fn supported() -> bool {
     #[cfg(not(target_arch = "wasm32"))]
-    { true }
+    {
+        true
+    }
     #[cfg(all(target_arch = "wasm32", feature = "terrain-worker-browser"))]
-    { terrain_worker::browser::availability() == terrain_worker::browser::Availability::Ready }
+    {
+        terrain_worker::browser::availability() == terrain_worker::browser::Availability::Ready
+    }
     #[cfg(all(target_arch = "wasm32", not(feature = "terrain-worker-browser")))]
-    { false }
+    {
+        false
+    }
 }
 
 #[derive(Resource, Default)]
@@ -80,22 +86,29 @@ pub(super) fn hide(cache: &TerrainRevisionCache, commands: &mut Commands) {
     for root in roots(cache) {
         commands.entity(root).insert(Visibility::Hidden);
         #[cfg(not(target_arch = "wasm32"))]
-        commands.entity(root).insert(pipeline_preload::HiddenDestination);
+        commands
+            .entity(root)
+            .insert(pipeline_preload::HiddenDestination);
     }
 }
 
 pub(super) fn compatible(built: &VisualWorldFrame, live: &VisualWorldFrame) -> bool {
-    if !terrain_tracking::can_reuse(built, live) { return false; }
-    let delta = live.grid_origin - built.grid_origin
+    if !terrain_tracking::can_reuse(built, live) {
+        return false;
+    }
+    let delta = live.grid_origin
+        - built.grid_origin
         - built.connected_source_shift(live).unwrap_or(IVec2::ZERO);
     let width = built.grid_size.x as i32;
     let height = built.grid_size.y as i32;
     live.tiles.iter().all(|tile| {
         let p = IVec2::new(tile.column as i32, tile.row as i32) + delta;
-        if p.x < 0 || p.y < 0 || p.x >= width || p.y >= height { return true; }
+        if p.x < 0 || p.y < 0 || p.x >= width || p.y >= height {
+            return true;
+        }
         let old = &built.tiles[(p.y * width + p.x) as usize];
-        old.texture == tile.texture || (old.animation_frames.is_some()
-            && old.animation_frames == tile.animation_frames)
+        old.texture == tile.texture
+            || (old.animation_frames.is_some() && old.animation_frames == tile.animation_frames)
     })
 }
 
@@ -108,8 +121,17 @@ pub(super) fn activate(
     builds: &mut TerrainBuildQueue,
     commands: &mut Commands,
 ) {
-    if live.built_frame.as_ref().is_some_and(|old| old.map_id == frame.map_id) { return; }
-    if live.key.as_ref().is_some_and(|key| key.profiles_revision == profiles.revision)
+    if live
+        .built_frame
+        .as_ref()
+        .is_some_and(|old| old.map_id == frame.map_id)
+    {
+        return;
+    }
+    if live
+        .key
+        .as_ref()
+        .is_some_and(|key| key.profiles_revision == profiles.revision)
         && retain_connected_terrain(frame, live)
     {
         // The camera is still inside resident world coverage. Crossing a
@@ -159,7 +181,9 @@ pub(super) fn activate(
     // their own immutable atlas; the host's live compositor never aliases it.
     hide(live, commands);
     std::mem::swap(live, &mut destination.cache);
-    if ready { bind_preloaded_compositor(frame, live); }
+    if ready {
+        bind_preloaded_compositor(frame, live);
+    }
     let started = builds.started;
     if in_flight && !ready {
         // A fast exit adopts the already-running task instead of throwing it
@@ -167,7 +191,10 @@ pub(super) fn activate(
         std::mem::swap(builds, &mut destination.builds);
         builds.started = started;
     } else {
-        *builds = TerrainBuildQueue { started, ..default() };
+        *builds = TerrainBuildQueue {
+            started,
+            ..default()
+        };
     }
     destination.builds = TerrainBuildQueue::default();
     destination.source_frame = None;
@@ -176,7 +203,9 @@ pub(super) fn activate(
     for root in roots(live) {
         commands.entity(root).insert(Visibility::Visible);
         #[cfg(not(target_arch = "wasm32"))]
-        commands.entity(root).remove::<pipeline_preload::HiddenDestination>();
+        commands
+            .entity(root)
+            .remove::<pipeline_preload::HiddenDestination>();
     }
     request.hits += 1;
 }
@@ -339,8 +368,7 @@ pub(super) fn prepare(
             continue;
         }
         #[cfg(target_arch = "wasm32")]
-        if !streaming && crate::sky::outdoors(&current) && crate::sky::outdoors(requested)
-        {
+        if !streaming && crate::sky::outdoors(&current) && crate::sky::outdoors(requested) {
             // Connected outdoor acreage belongs to the progressive lane,
             // including the frame before its first request is published.
             // Starting a second border job here occupies the worker needed
@@ -360,8 +388,8 @@ pub(super) fn prepare(
                     world_stream::advances_coverage(resident, old, &current)
                         && cached_compatible(old, &current, &mut destination.live_compatibility)
                 });
-                let publishing = destination.cache.built_frame.is_some()
-                    && destination.ready_frames < 3;
+                let publishing =
+                    destination.cache.built_frame.is_some() && destination.ready_frames < 3;
                 let publication_covers_live = publishing
                     && cached_compatible(old, &current, &mut destination.live_compatibility);
                 // Finish CPU/GPU publication before retargeting. Once ready,
@@ -376,7 +404,8 @@ pub(super) fn prepare(
         } else {
             None
         };
-        if streaming && retained.is_none()
+        if streaming
+            && retained.is_none()
             && let Some(old) = destination.source_frame.as_ref()
             && !world_stream::same_window(old, requested)
         {
@@ -556,13 +585,14 @@ pub(super) fn pending_destination_covers(
     next: &mut PreparedDestination,
 ) -> bool {
     let key = next.builds.key.as_ref().or(next.cache.key.as_ref());
-    let pending = next.builds.key.is_some()
-        || (next.cache.built_frame.is_some() && next.ready_frames < 3);
+    let pending =
+        next.builds.key.is_some() || (next.cache.built_frame.is_some() && next.ready_frames < 3);
     pending
         && key.is_some_and(|key| key.profiles_revision == profiles.revision)
-        && next.source_frame.as_ref().is_some_and(|source| {
-            cached_compatible(source, frame, &mut next.live_compatibility)
-        })
+        && next
+            .source_frame
+            .as_ref()
+            .is_some_and(|source| cached_compatible(source, frame, &mut next.live_compatibility))
 }
 
 #[cfg(test)]
@@ -574,12 +604,28 @@ mod tests {
         use crystal_render_api::{VisualTile, VisualTileSource};
         let mut images = Assets::<Image>::default();
         let texture = images.add(Image::default());
-        let frame = VisualWorldFrame { active: true, map_id: "NewBarkTown".into(),
-            grid_size: UVec2::ONE, tile_size: Vec2::splat(8.), viewport_size: Vec2::splat(8.),
-            tiles: vec![VisualTile { column: 0, row: 0, texture, priority: false,
-                animation_frames: None, source: VisualTileSource { tileset_id: "johto".into(),
-                    metatile_id: 1, tile_index: 1, subtile_column: 0, subtile_row: 0 } }],
-            ..default() };
+        let frame = VisualWorldFrame {
+            active: true,
+            map_id: "NewBarkTown".into(),
+            grid_size: UVec2::ONE,
+            tile_size: Vec2::splat(8.),
+            viewport_size: Vec2::splat(8.),
+            tiles: vec![VisualTile {
+                column: 0,
+                row: 0,
+                texture,
+                priority: false,
+                animation_frames: None,
+                source: VisualTileSource {
+                    tileset_id: "johto".into(),
+                    metatile_id: 1,
+                    tile_index: 1,
+                    subtile_column: 0,
+                    subtile_row: 0,
+                },
+            }],
+            ..default()
+        };
         assert!(compatible(&frame, &frame));
         let mut live = frame.clone();
         live.tiles[0].texture = images.add(Image::default());
@@ -593,46 +639,115 @@ mod tests {
         let old_root = app.world_mut().spawn(Visibility::Visible).id();
         let town_root = app.world_mut().spawn(Visibility::Hidden).id();
         #[cfg(not(target_arch = "wasm32"))]
-        app.world_mut().entity_mut(town_root).insert(pipeline_preload::HiddenDestination);
-        let mut frame = VisualWorldFrame { active: true, map_id: "NewBarkTown".into(),
-            grid_size: UVec2::ONE, tile_size: Vec2::splat(8.), viewport_size: Vec2::splat(8.),
-            ..default() };
+        app.world_mut()
+            .entity_mut(town_root)
+            .insert(pipeline_preload::HiddenDestination);
+        let mut frame = VisualWorldFrame {
+            active: true,
+            map_id: "NewBarkTown".into(),
+            grid_size: UVec2::ONE,
+            tile_size: Vec2::splat(8.),
+            viewport_size: Vec2::splat(8.),
+            ..default()
+        };
         // Use the complete real tile fixture from the compatibility test.
         frame.tiles.push(crystal_render_api::VisualTile {
-            column: 0, row: 0, texture: Handle::default(), priority: false, animation_frames: None,
-            source: crystal_render_api::VisualTileSource { tileset_id: "johto".into(),
-                metatile_id: 1, tile_index: 1, subtile_column: 0, subtile_row: 0 } });
-        let mut interior = frame.clone(); interior.map_id = "PlayersHouse1F".into();
+            column: 0,
+            row: 0,
+            texture: Handle::default(),
+            priority: false,
+            animation_frames: None,
+            source: crystal_render_api::VisualTileSource {
+                tileset_id: "johto".into(),
+                metatile_id: 1,
+                tile_index: 1,
+                subtile_column: 0,
+                subtile_row: 0,
+            },
+        });
+        let mut interior = frame.clone();
+        interior.map_id = "PlayersHouse1F".into();
         app.insert_resource(frame.clone())
             .insert_resource(live_profiles::LiveProfiles::default())
-            .insert_resource(DestinationPreload { frame: Some(frame.clone()), ..default() })
-            .insert_resource(TerrainRevisionCache { solid_entity: Some(old_root),
-                built_frame: Some(interior), ..default() })
+            .insert_resource(DestinationPreload {
+                frame: Some(frame.clone()),
+                ..default()
+            })
+            .insert_resource(TerrainRevisionCache {
+                solid_entity: Some(old_root),
+                built_frame: Some(interior),
+                ..default()
+            })
             .insert_resource(TerrainBuildQueue::default())
-            .insert_resource(PreparedDestination { ready_frames: 0,
-                cache: TerrainRevisionCache { key: Some(TerrainCacheKey::from_frame(&frame)),
-                    built_frame: Some(frame), solid_entity: Some(town_root),
-                    built_footing_heights: vec![7.], ..default() }, ..default() })
-            .add_systems(Update, |frame: Res<VisualWorldFrame>, profiles: Res<live_profiles::LiveProfiles>,
-                mut destination: ResMut<PreparedDestination>, mut request: ResMut<DestinationPreload>,
-                mut cache: ResMut<TerrainRevisionCache>, mut builds: ResMut<TerrainBuildQueue>, mut commands: Commands| {
-                activate(&frame, &profiles, &mut destination, &mut request, &mut cache, &mut builds, &mut commands);
-            });
+            .insert_resource(PreparedDestination {
+                ready_frames: 0,
+                cache: TerrainRevisionCache {
+                    key: Some(TerrainCacheKey::from_frame(&frame)),
+                    built_frame: Some(frame),
+                    solid_entity: Some(town_root),
+                    built_footing_heights: vec![7.],
+                    ..default()
+                },
+                ..default()
+            })
+            .add_systems(
+                Update,
+                |frame: Res<VisualWorldFrame>,
+                 profiles: Res<live_profiles::LiveProfiles>,
+                 mut destination: ResMut<PreparedDestination>,
+                 mut request: ResMut<DestinationPreload>,
+                 mut cache: ResMut<TerrainRevisionCache>,
+                 mut builds: ResMut<TerrainBuildQueue>,
+                 mut commands: Commands| {
+                    activate(
+                        &frame,
+                        &profiles,
+                        &mut destination,
+                        &mut request,
+                        &mut cache,
+                        &mut builds,
+                        &mut commands,
+                    );
+                },
+            );
         app.update();
         assert_eq!(app.world().resource::<DestinationPreload>().hits, 1);
         let cache = app.world().resource::<TerrainRevisionCache>();
         assert_eq!(cache.solid_entity, Some(town_root));
         assert_eq!(cache.built_footing_heights, [7.]);
-        assert_eq!(*app.world().get::<Visibility>(old_root).unwrap(), Visibility::Hidden);
-        assert_eq!(*app.world().get::<Visibility>(town_root).unwrap(), Visibility::Visible);
+        assert_eq!(
+            *app.world().get::<Visibility>(old_root).unwrap(),
+            Visibility::Hidden
+        );
+        assert_eq!(
+            *app.world().get::<Visibility>(town_root).unwrap(),
+            Visibility::Visible
+        );
         #[cfg(not(target_arch = "wasm32"))]
         {
-            assert!(app.world().get::<pipeline_preload::HiddenDestination>(old_root).is_some());
-            assert!(app.world().get::<pipeline_preload::HiddenDestination>(town_root).is_none());
+            assert!(
+                app.world()
+                    .get::<pipeline_preload::HiddenDestination>(old_root)
+                    .is_some()
+            );
+            assert!(
+                app.world()
+                    .get::<pipeline_preload::HiddenDestination>(town_root)
+                    .is_none()
+            );
         }
-        assert_eq!(app.world().resource::<TerrainBuildQueue>().started, 0,
-            "promoting a destination must not submit another mesh build");
-        assert_eq!(app.world().resource::<PreparedDestination>().cache.solid_entity, Some(old_root));
+        assert_eq!(
+            app.world().resource::<TerrainBuildQueue>().started,
+            0,
+            "promoting a destination must not submit another mesh build"
+        );
+        assert_eq!(
+            app.world()
+                .resource::<PreparedDestination>()
+                .cache
+                .solid_entity,
+            Some(old_root)
+        );
         app.update();
         assert_eq!(app.world().resource::<DestinationPreload>().hits, 1);
     }
@@ -640,215 +755,516 @@ mod tests {
     #[test]
     fn in_flight_destination_survives_the_hosts_next_doorway_request() {
         let mut app = App::new();
-        let mut frame = VisualWorldFrame { active: true, map_id: "NewBarkTown".into(),
-            grid_size: UVec2::ONE, tile_size: Vec2::splat(8.), viewport_size: Vec2::splat(8.),
-            ..default() };
+        let mut frame = VisualWorldFrame {
+            active: true,
+            map_id: "NewBarkTown".into(),
+            grid_size: UVec2::ONE,
+            tile_size: Vec2::splat(8.),
+            viewport_size: Vec2::splat(8.),
+            ..default()
+        };
         frame.tiles.push(crystal_render_api::VisualTile {
-            column: 0, row: 0, texture: Handle::default(), priority: false, animation_frames: None,
-            source: crystal_render_api::VisualTileSource { tileset_id: "johto".into(),
-                metatile_id: 1, tile_index: 1, subtile_column: 0, subtile_row: 0 } });
-        let mut next = frame.clone(); next.map_id = "PlayersHouse1F".into();
+            column: 0,
+            row: 0,
+            texture: Handle::default(),
+            priority: false,
+            animation_frames: None,
+            source: crystal_render_api::VisualTileSource {
+                tileset_id: "johto".into(),
+                metatile_id: 1,
+                tile_index: 1,
+                subtile_column: 0,
+                subtile_row: 0,
+            },
+        });
+        let mut next = frame.clone();
+        next.map_id = "PlayersHouse1F".into();
         let old_root = app.world_mut().spawn(Visibility::Visible).id();
-        let mut live = TerrainRevisionCache { built_frame: Some(next.clone()),
-            solid_entity: Some(old_root), ..default() };
-        let mut builds = TerrainBuildQueue { started: 7, ..default() };
+        let mut live = TerrainRevisionCache {
+            built_frame: Some(next.clone()),
+            solid_entity: Some(old_root),
+            ..default()
+        };
+        let mut builds = TerrainBuildQueue {
+            started: 7,
+            ..default()
+        };
         let mut destination = PreparedDestination {
             source_frame: Some(Arc::new(frame.clone())),
-            builds: TerrainBuildQueue { key: Some(TerrainCacheKey::from_frame(&frame)),
-                started: 1, ..default() }, ..default() };
+            builds: TerrainBuildQueue {
+                key: Some(TerrainCacheKey::from_frame(&frame)),
+                started: 1,
+                ..default()
+            },
+            ..default()
+        };
         #[cfg(not(target_arch = "wasm32"))]
         {
-            let pool = bevy::tasks::AsyncComputeTaskPool::get_or_init(||
-                bevy::tasks::TaskPoolBuilder::new().num_threads(2).build());
-            destination.builds.task = Some(pool.spawn(std::future::pending::<TerrainBuildResult>()));
+            let pool = bevy::tasks::AsyncComputeTaskPool::get_or_init(|| {
+                bevy::tasks::TaskPoolBuilder::new().num_threads(2).build()
+            });
+            destination.builds.task =
+                Some(pool.spawn(std::future::pending::<TerrainBuildResult>()));
         }
         // The compositor already points speculation at the return doorway.
-        let mut request = DestinationPreload { frame: Some(next), ..default() };
+        let mut request = DestinationPreload {
+            frame: Some(next),
+            ..default()
+        };
         let profiles = live_profiles::LiveProfiles::default();
         let mut queue = bevy::ecs::world::CommandQueue::default();
         {
             let mut commands = Commands::new(&mut queue, app.world());
-            activate(&frame, &profiles, &mut destination, &mut request, &mut live, &mut builds, &mut commands);
+            activate(
+                &frame,
+                &profiles,
+                &mut destination,
+                &mut request,
+                &mut live,
+                &mut builds,
+                &mut commands,
+            );
         }
         queue.apply(app.world_mut());
         assert_eq!(request.hits, 1);
-        assert_eq!(builds.key.as_ref().map(|key| key.map_id.as_ref()), Some("NewBarkTown"));
-        assert_eq!(builds.started, 7, "adoption must not count as a new foreground build");
+        assert_eq!(
+            builds.key.as_ref().map(|key| key.map_id.as_ref()),
+            Some("NewBarkTown")
+        );
+        assert_eq!(
+            builds.started, 7,
+            "adoption must not count as a new foreground build"
+        );
         #[cfg(not(target_arch = "wasm32"))]
-        assert!(builds.task.is_some(), "the existing asynchronous task must transfer with its key");
-        assert!(live.built_frame.is_none(), "continue the original unfinished job");
+        assert!(
+            builds.task.is_some(),
+            "the existing asynchronous task must transfer with its key"
+        );
+        assert!(
+            live.built_frame.is_none(),
+            "continue the original unfinished job"
+        );
         assert_eq!(destination.cache.solid_entity, Some(old_root));
-        assert_eq!(*app.world().get::<Visibility>(old_root).unwrap(), Visibility::Hidden);
+        assert_eq!(
+            *app.world().get::<Visibility>(old_root).unwrap(),
+            Visibility::Hidden
+        );
     }
 
     #[test]
     fn pending_connected_destination_keeps_the_completed_scene_visible() {
         use crystal_render_api::{VisualSourceRegion, VisualTile, VisualTileSource};
-        let texture=Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(1),std::marker::PhantomData);
-        let mut built = VisualWorldFrame { map_texture:texture.clone(), active: true, map_id: "RouteA".into(),
-            grid_size: UVec2::splat(28), tile_size: Vec2::splat(8.),
-            viewport_size: Vec2::splat(8.), source_regions: vec![
-                VisualSourceRegion {map_id:"RouteA".into(),origin:IVec2::ZERO,size:UVec2::new(20,28)},
-                VisualSourceRegion {map_id:"RouteB".into(),origin:IVec2::new(20,0),size:UVec2::new(20,28)},
-            ].into(), ..default() };
-        for row in 0..28 { for column in 0..28 {
-            built.tiles.push(VisualTile {row,column,texture:texture.clone(),priority:false,
-                animation_frames:None, source:VisualTileSource {tileset_id:"johto".into(),
-                    metatile_id:1,tile_index:1,subtile_column:0,subtile_row:0}});
-        }}
-        let mut frame=built.clone();frame.map_id="RouteB".into();frame.grid_origin=IVec2::new(-20,0);
-        frame.source_regions=vec![
-            VisualSourceRegion {map_id:"RouteB".into(),origin:IVec2::ZERO,size:UVec2::new(20,28)},
-            VisualSourceRegion {map_id:"RouteA".into(),origin:IVec2::new(-20,0),size:UVec2::new(20,28)},
-        ].into();
-        assert!(terrain_tracking::connected_frame_shift(&built,&frame).is_ok());
-        let mut app=App::new();let root=app.world_mut().spawn(Visibility::Visible).id();
-        let mut live=TerrainRevisionCache {key:Some(TerrainCacheKey::from_frame(&built)),
-            built_frame:Some(built),solid_entity:Some(root),..default()};
-        let mut destination=PreparedDestination {source_frame:Some(Arc::new(frame.clone())),
-            builds:TerrainBuildQueue {key:Some(TerrainCacheKey::from_frame(&frame)),..default()},..default()};
-        let mut request=DestinationPreload::default();let mut builds=TerrainBuildQueue {started:7,..default()};
-        let mut queue=bevy::ecs::world::CommandQueue::default();
+        let texture = Handle::Uuid(
+            bevy::asset::uuid::Uuid::from_u128(1),
+            std::marker::PhantomData,
+        );
+        let mut built = VisualWorldFrame {
+            map_texture: texture.clone(),
+            active: true,
+            map_id: "RouteA".into(),
+            grid_size: UVec2::splat(28),
+            tile_size: Vec2::splat(8.),
+            viewport_size: Vec2::splat(8.),
+            source_regions: vec![
+                VisualSourceRegion {
+                    map_id: "RouteA".into(),
+                    origin: IVec2::ZERO,
+                    size: UVec2::new(20, 28),
+                },
+                VisualSourceRegion {
+                    map_id: "RouteB".into(),
+                    origin: IVec2::new(20, 0),
+                    size: UVec2::new(20, 28),
+                },
+            ]
+            .into(),
+            ..default()
+        };
+        for row in 0..28 {
+            for column in 0..28 {
+                built.tiles.push(VisualTile {
+                    row,
+                    column,
+                    texture: texture.clone(),
+                    priority: false,
+                    animation_frames: None,
+                    source: VisualTileSource {
+                        tileset_id: "johto".into(),
+                        metatile_id: 1,
+                        tile_index: 1,
+                        subtile_column: 0,
+                        subtile_row: 0,
+                    },
+                });
+            }
+        }
+        let mut frame = built.clone();
+        frame.map_id = "RouteB".into();
+        frame.grid_origin = IVec2::new(-20, 0);
+        frame.source_regions = vec![
+            VisualSourceRegion {
+                map_id: "RouteB".into(),
+                origin: IVec2::ZERO,
+                size: UVec2::new(20, 28),
+            },
+            VisualSourceRegion {
+                map_id: "RouteA".into(),
+                origin: IVec2::new(-20, 0),
+                size: UVec2::new(20, 28),
+            },
+        ]
+        .into();
+        assert!(terrain_tracking::connected_frame_shift(&built, &frame).is_ok());
+        let mut app = App::new();
+        let root = app.world_mut().spawn(Visibility::Visible).id();
+        let mut live = TerrainRevisionCache {
+            key: Some(TerrainCacheKey::from_frame(&built)),
+            built_frame: Some(built),
+            solid_entity: Some(root),
+            ..default()
+        };
+        let mut destination = PreparedDestination {
+            source_frame: Some(Arc::new(frame.clone())),
+            builds: TerrainBuildQueue {
+                key: Some(TerrainCacheKey::from_frame(&frame)),
+                ..default()
+            },
+            ..default()
+        };
+        let mut request = DestinationPreload::default();
+        let mut builds = TerrainBuildQueue {
+            started: 7,
+            ..default()
+        };
+        let mut queue = bevy::ecs::world::CommandQueue::default();
         {
-            let mut commands=Commands::new(&mut queue,app.world());
-            activate(&frame,&live_profiles::LiveProfiles::default(),&mut destination,
-                &mut request,&mut live,&mut builds,&mut commands);
+            let mut commands = Commands::new(&mut queue, app.world());
+            activate(
+                &frame,
+                &live_profiles::LiveProfiles::default(),
+                &mut destination,
+                &mut request,
+                &mut live,
+                &mut builds,
+                &mut commands,
+            );
         }
         queue.apply(app.world_mut());
-        assert_eq!(request.hits,0);
-        assert_eq!(live.solid_entity,Some(root));
-        assert_eq!(live.built_frame.as_ref().unwrap().map_id.as_ref(),"RouteA");
-        assert_eq!(*app.world().get::<Visibility>(root).unwrap(),Visibility::Visible);
+        assert_eq!(request.hits, 0);
+        assert_eq!(live.solid_entity, Some(root));
+        assert_eq!(live.built_frame.as_ref().unwrap().map_id.as_ref(), "RouteA");
+        assert_eq!(
+            *app.world().get::<Visibility>(root).unwrap(),
+            Visibility::Visible
+        );
         assert!(builds.key.is_none());
-        assert_eq!(builds.started,7);
-        assert_eq!(destination.builds.key.as_ref().unwrap().map_id.as_ref(),"RouteB");
+        assert_eq!(builds.started, 7);
+        assert_eq!(
+            destination.builds.key.as_ref().unwrap().map_id.as_ref(),
+            "RouteB"
+        );
     }
 
     #[cfg(not(target_arch = "wasm32"))]
     #[test]
     fn destination_builds_and_stays_hidden_while_initial_room_is_pending() {
-        use std::sync::{Arc, atomic::{AtomicBool, Ordering}};
-        let pool=bevy::tasks::TaskPoolBuilder::new().num_threads(1).build();
-        let gate=Arc::new(AtomicBool::new(false));
-        let worker_gate=gate.clone();
-        let painted=painted_stone::NativePreparation::from_task(pool.spawn(async move {
+        use std::sync::{
+            Arc,
+            atomic::{AtomicBool, Ordering},
+        };
+        let pool = bevy::tasks::TaskPoolBuilder::new().num_threads(1).build();
+        let gate = Arc::new(AtomicBool::new(false));
+        let worker_gate = gate.clone();
+        let painted = painted_stone::NativePreparation::from_task(pool.spawn(async move {
             while !worker_gate.load(Ordering::SeqCst) {
                 bevy::tasks::futures_lite::future::yield_now().await;
             }
-            painted_stone::PreparedImages {stone:Image::default(),bedrock:Image::default()}
+            painted_stone::PreparedImages {
+                stone: Image::default(),
+                bedrock: Image::default(),
+            }
         }));
-        let mut app=App::new();
-        app.add_plugins((MinimalPlugins,bevy::transform::TransformPlugin));
-        let mut images=Assets::<Image>::default();
-        let texture=images.add(Image::default());
-        let frame=VisualWorldFrame {active:true,map_id:"NewBarkTown".into(),
-            map_texture:texture.clone(),grid_size:UVec2::ONE,tile_size:Vec2::splat(8.),
-            viewport_size:Vec2::splat(8.),tiles:vec![crystal_render_api::VisualTile {
-                column:0,row:0,texture:texture.clone(),priority:false,animation_frames:None,
-                source:crystal_render_api::VisualTileSource {tileset_id:"johto".into(),
-                    metatile_id:1,tile_index:1,subtile_column:0,subtile_row:0}}],..default()};
+        let mut app = App::new();
+        app.add_plugins((MinimalPlugins, bevy::transform::TransformPlugin));
+        let mut images = Assets::<Image>::default();
+        let texture = images.add(Image::default());
+        let frame = VisualWorldFrame {
+            active: true,
+            map_id: "NewBarkTown".into(),
+            map_texture: texture.clone(),
+            grid_size: UVec2::ONE,
+            tile_size: Vec2::splat(8.),
+            viewport_size: Vec2::splat(8.),
+            tiles: vec![crystal_render_api::VisualTile {
+                column: 0,
+                row: 0,
+                texture: texture.clone(),
+                priority: false,
+                animation_frames: None,
+                source: crystal_render_api::VisualTileSource {
+                    tileset_id: "johto".into(),
+                    metatile_id: 1,
+                    tile_index: 1,
+                    subtile_column: 0,
+                    subtile_row: 0,
+                },
+            }],
+            ..default()
+        };
         frame.validate().unwrap();
         app.insert_resource(images)
-            .insert_resource(VisualWorldFrame {active:true,map_id:"PlayersHouse2F".into(),..default()})
-            .insert_resource(VoxelViewStatus {active:false,terrain_pending:true,..default()})
-            .insert_resource(VoxelViewSettings {enabled:true,..default()})
-            .insert_resource(DestinationPreload {frame:Some(frame),..default()})
+            .insert_resource(VisualWorldFrame {
+                active: true,
+                map_id: "PlayersHouse2F".into(),
+                ..default()
+            })
+            .insert_resource(VoxelViewStatus {
+                active: false,
+                terrain_pending: true,
+                ..default()
+            })
+            .insert_resource(VoxelViewSettings {
+                enabled: true,
+                ..default()
+            })
+            .insert_resource(DestinationPreload {
+                frame: Some(frame),
+                ..default()
+            })
             .init_resource::<TerrainRevisionCache>()
-            .insert_resource(TerrainBuildQueue {painted,..default()})
-            .init_resource::<PreparedDestination>().init_resource::<live_profiles::LiveProfiles>()
-            .init_resource::<Assets<Mesh>>().init_resource::<Assets<VoxelMaterial>>()
-            .add_systems(Update,prepare);
+            .insert_resource(TerrainBuildQueue {
+                painted,
+                ..default()
+            })
+            .init_resource::<PreparedDestination>()
+            .init_resource::<live_profiles::LiveProfiles>()
+            .init_resource::<Assets<Mesh>>()
+            .init_resource::<Assets<VoxelMaterial>>()
+            .add_systems(Update, prepare);
         app.update();
-        assert_eq!(app.world().resource::<PreparedDestination>().builds.started,1);
-        assert!(app.world().resource::<PreparedDestination>().builds.painted.pending());
-        assert!(app.world().resource::<PreparedDestination>().cache.key.is_none());
-        assert_eq!(app.world().resource::<Assets<Image>>().len(),2,
-            "the destination retains its independent source-atlas snapshot");
-        gate.store(true,Ordering::SeqCst);
-        let started=std::time::Instant::now();
+        assert_eq!(
+            app.world().resource::<PreparedDestination>().builds.started,
+            1
+        );
+        assert!(
+            app.world()
+                .resource::<PreparedDestination>()
+                .builds
+                .painted
+                .pending()
+        );
+        assert!(
+            app.world()
+                .resource::<PreparedDestination>()
+                .cache
+                .key
+                .is_none()
+        );
+        assert_eq!(
+            app.world().resource::<Assets<Image>>().len(),
+            2,
+            "the destination retains its independent source-atlas snapshot"
+        );
+        gate.store(true, Ordering::SeqCst);
+        let started = std::time::Instant::now();
         while app.world().resource::<PreparedDestination>().ready_frames < 3
-            && started.elapsed()<std::time::Duration::from_secs(5) {
-            app.update();std::thread::sleep(std::time::Duration::from_millis(2));
+            && started.elapsed() < std::time::Duration::from_secs(5)
+        {
+            app.update();
+            std::thread::sleep(std::time::Duration::from_millis(2));
         }
-        let cache=&app.world().resource::<PreparedDestination>().cache;
-        let expected=(cache.painted_stone.clone().unwrap(),cache.painted_bedrock.clone().unwrap());
-        let mut foreground=app.world().resource::<TerrainBuildQueue>().painted.clone();
-        assert_eq!(foreground.poll(&mut app.world_mut().resource_mut::<Assets<Image>>()),Some(expected));
-        assert_eq!(app.world().resource::<Assets<Image>>().len(),4,
-            "foreground and destination must publish each immutable image only once");
-        let destination=app.world().resource::<PreparedDestination>();
-        assert_eq!(destination.ready_frames,3,"the hidden destination must finish before the room is ready");
-        assert_eq!(destination.builds.started,1,"pending room must not restart destination work");
-        let roots=roots(&destination.cache).collect::<Vec<_>>();
+        let cache = &app.world().resource::<PreparedDestination>().cache;
+        let expected = (
+            cache.painted_stone.clone().unwrap(),
+            cache.painted_bedrock.clone().unwrap(),
+        );
+        let mut foreground = app.world().resource::<TerrainBuildQueue>().painted.clone();
+        assert_eq!(
+            foreground.poll(&mut app.world_mut().resource_mut::<Assets<Image>>()),
+            Some(expected)
+        );
+        assert_eq!(
+            app.world().resource::<Assets<Image>>().len(),
+            4,
+            "foreground and destination must publish each immutable image only once"
+        );
+        let destination = app.world().resource::<PreparedDestination>();
+        assert_eq!(
+            destination.ready_frames, 3,
+            "the hidden destination must finish before the room is ready"
+        );
+        assert_eq!(
+            destination.builds.started, 1,
+            "pending room must not restart destination work"
+        );
+        let roots = roots(&destination.cache).collect::<Vec<_>>();
         assert!(!roots.is_empty());
-        for root in roots {assert_eq!(app.world().get::<Visibility>(root),Some(&Visibility::Hidden));}
-        let status=app.world().resource::<VoxelViewStatus>();
+        for root in roots {
+            assert_eq!(
+                app.world().get::<Visibility>(root),
+                Some(&Visibility::Hidden)
+            );
+        }
+        let status = app.world().resource::<VoxelViewStatus>();
         assert!(!status.active && status.terrain_pending);
-        assert_eq!(app.world().resource::<VisualWorldFrame>().map_id.as_ref(),"PlayersHouse2F");
+        assert_eq!(
+            app.world().resource::<VisualWorldFrame>().map_id.as_ref(),
+            "PlayersHouse2F"
+        );
     }
 
     #[test]
     fn settled_destination_does_not_mutate_hidden_roots_or_restart_builds() {
         let mut app = App::new();
-        let camera = app.world_mut().spawn((VoxelWorldCamera,
-            Projection::Perspective(PerspectiveProjection { aspect_ratio: 1., ..default() }))).id();
-        let root = app.world_mut().spawn((VoxelTerrain, Visibility::Hidden, Transform::default())).id();
+        let camera = app
+            .world_mut()
+            .spawn((
+                VoxelWorldCamera,
+                Projection::Perspective(PerspectiveProjection {
+                    aspect_ratio: 1.,
+                    ..default()
+                }),
+            ))
+            .id();
+        let root = app
+            .world_mut()
+            .spawn((VoxelTerrain, Visibility::Hidden, Transform::default()))
+            .id();
         let mut images = Assets::<Image>::default();
         let texture = images.add(Image::default());
-        let frame = VisualWorldFrame { active: true, map_id: "ElmsLab".into(),
+        let frame = VisualWorldFrame {
+            active: true,
+            map_id: "ElmsLab".into(),
             map_texture: texture.clone(),
-            grid_size: UVec2::ONE, tile_size: Vec2::splat(8.), viewport_size: Vec2::splat(8.),
-            tiles: vec![crystal_render_api::VisualTile { column: 0, row: 0,
-                texture, priority: false, animation_frames: None,
-                source: crystal_render_api::VisualTileSource { tileset_id: "johto".into(),
-                    metatile_id: 1, tile_index: 1, subtile_column: 0, subtile_row: 0 } }], ..default() };
+            grid_size: UVec2::ONE,
+            tile_size: Vec2::splat(8.),
+            viewport_size: Vec2::splat(8.),
+            tiles: vec![crystal_render_api::VisualTile {
+                column: 0,
+                row: 0,
+                texture,
+                priority: false,
+                animation_frames: None,
+                source: crystal_render_api::VisualTileSource {
+                    tileset_id: "johto".into(),
+                    metatile_id: 1,
+                    tile_index: 1,
+                    subtile_column: 0,
+                    subtile_row: 0,
+                },
+            }],
+            ..default()
+        };
         frame.validate().unwrap();
         app.insert_resource(images);
-        let sunlight = app.world_mut().spawn((VoxelSun,
-            DirectionalLight { illuminance: 1000., shadow_maps_enabled: true, ..default() },
-            Transform::default())).id();
-        let settings = VoxelViewSettings { enabled: true, ..default() };
+        let sunlight = app
+            .world_mut()
+            .spawn((
+                VoxelSun,
+                DirectionalLight {
+                    illuminance: 1000.,
+                    shadow_maps_enabled: true,
+                    ..default()
+                },
+                Transform::default(),
+            ))
+            .id();
+        let settings = VoxelViewSettings {
+            enabled: true,
+            ..default()
+        };
         let key = TerrainCacheKey::from_frame(&frame);
-        app.insert_resource(DestinationPreload { frame: Some(frame.clone()), ..default() })
-            .insert_resource(VisualWorldFrame { active: true, map_id: "NewBarkTown".into(), ..default() })
-            .insert_resource(VoxelViewStatus { active: true, ..default() })
-            .insert_resource(settings.clone())
-            .init_resource::<live_profiles::LiveProfiles>()
-            .init_resource::<TerrainRevisionCache>()
-            .init_resource::<TerrainBuildQueue>()
-            .init_resource::<Assets<Image>>()
-            .init_resource::<Assets<Mesh>>()
-            .init_resource::<Assets<VoxelMaterial>>()
-            .insert_resource(PreparedDestination { ready_frames: 3,
-                settled_key: Some((key.clone(), settings.camera, None, 1_f32.to_bits())),
-                cache: TerrainRevisionCache { key: Some(key), built_frame: Some(frame),
-                    built_footing_heights: vec![0.],
-                    solid_entity: Some(root), ..default() }, ..default() })
-            .add_systems(Update, prepare);
+        app.insert_resource(DestinationPreload {
+            frame: Some(frame.clone()),
+            ..default()
+        })
+        .insert_resource(VisualWorldFrame {
+            active: true,
+            map_id: "NewBarkTown".into(),
+            ..default()
+        })
+        .insert_resource(VoxelViewStatus {
+            active: true,
+            ..default()
+        })
+        .insert_resource(settings.clone())
+        .init_resource::<live_profiles::LiveProfiles>()
+        .init_resource::<TerrainRevisionCache>()
+        .init_resource::<TerrainBuildQueue>()
+        .init_resource::<Assets<Image>>()
+        .init_resource::<Assets<Mesh>>()
+        .init_resource::<Assets<VoxelMaterial>>()
+        .insert_resource(PreparedDestination {
+            ready_frames: 3,
+            settled_key: Some((key.clone(), settings.camera, None, 1_f32.to_bits())),
+            cache: TerrainRevisionCache {
+                key: Some(key),
+                built_frame: Some(frame),
+                built_footing_heights: vec![0.],
+                solid_entity: Some(root),
+                ..default()
+            },
+            ..default()
+        })
+        .add_systems(Update, prepare);
         app.update();
-        let before = app.world().entity(root).get_ref::<Visibility>().unwrap().last_changed();
+        let before = app
+            .world()
+            .entity(root)
+            .get_ref::<Visibility>()
+            .unwrap()
+            .last_changed();
         for step in 0..10 {
-            app.world_mut().get_mut::<Transform>(sunlight).unwrap().rotation =
-                Quat::from_rotation_y(step as f32 * 0.1);
+            app.world_mut()
+                .get_mut::<Transform>(sunlight)
+                .unwrap()
+                .rotation = Quat::from_rotation_y(step as f32 * 0.1);
             app.update();
         }
-        assert_eq!(app.world().entity(root).get_ref::<Visibility>().unwrap().last_changed(), before,
-            "a hidden preload must not toggle visibility on idle frames");
+        assert_eq!(
+            app.world()
+                .entity(root)
+                .get_ref::<Visibility>()
+                .unwrap()
+                .last_changed(),
+            before,
+            "a hidden preload must not toggle visibility on idle frames"
+        );
         let destination = app.world().resource::<PreparedDestination>();
         assert_eq!(destination.ready_frames, 3);
         assert_eq!(destination.builds.started, 0);
-        assert_eq!(*app.world().get::<Visibility>(root).unwrap(), Visibility::Hidden);
+        assert_eq!(
+            *app.world().get::<Visibility>(root).unwrap(),
+            Visibility::Hidden
+        );
         // The source/settings remain identical, but a wider output changes
         // the destination's visible grove footprint. Refresh it while hidden.
-        let Projection::Perspective(mut projection) = app.world().get::<Projection>(camera).unwrap().clone()
-            else { unreachable!() };
+        let Projection::Perspective(mut projection) =
+            app.world().get::<Projection>(camera).unwrap().clone()
+        else {
+            unreachable!()
+        };
         projection.aspect_ratio = 2.;
-        app.world_mut().entity_mut(camera).insert(Projection::Perspective(projection));
+        app.world_mut()
+            .entity_mut(camera)
+            .insert(Projection::Perspective(projection));
         app.update();
-        assert_ne!(app.world().entity(root).get_ref::<Visibility>().unwrap().last_changed(), before,
-            "resizing the actual camera must refresh the settled hidden destination");
-        assert_eq!(*app.world().get::<Visibility>(root).unwrap(), Visibility::Hidden);
-        assert_eq!(app.world().resource::<PreparedDestination>().builds.started, 0);
+        assert_ne!(
+            app.world()
+                .entity(root)
+                .get_ref::<Visibility>()
+                .unwrap()
+                .last_changed(),
+            before,
+            "resizing the actual camera must refresh the settled hidden destination"
+        );
+        assert_eq!(
+            *app.world().get::<Visibility>(root).unwrap(),
+            Visibility::Hidden
+        );
+        assert_eq!(
+            app.world().resource::<PreparedDestination>().builds.started,
+            0
+        );
     }
-
 }

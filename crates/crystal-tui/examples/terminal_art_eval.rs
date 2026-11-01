@@ -40,7 +40,10 @@ fn main() -> Result<()> {
         let snapshot = game.presentation_snapshot()?;
         // Fixture names are not proof of the visible phase (a "battle" save
         // can start on the grass before the encounter). Label actual state.
-        let name = format!("{}-{:?}-{name}", snapshot.overworld.map_name, snapshot.phase);
+        let name = format!(
+            "{}-{:?}-{name}",
+            snapshot.overworld.map_name, snapshot.phase
+        );
         let checksum = snapshot.state_checksum.clone();
         let text = RuntimeTextRenderer::default().render(&snapshot);
         for (cols, rows) in [(80, 24), (120, 40), (160, 48)] {

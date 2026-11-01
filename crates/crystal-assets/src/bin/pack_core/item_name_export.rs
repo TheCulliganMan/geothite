@@ -210,10 +210,16 @@ mod tests {
         let rom = std::fs::read(root.join("vendor/pokecrystal/pokecrystal.gbc")).unwrap();
         let table = crate::source_syntax::test_rom_offset(&root, "ItemDescriptions");
         for (index, description) in descriptions.iter().enumerate() {
-            let pointer = usize::from(u16::from_le_bytes([rom[table + index * 2], rom[table + index * 2 + 1]]));
+            let pointer = usize::from(u16::from_le_bytes([
+                rom[table + index * 2],
+                rom[table + index * 2 + 1],
+            ]));
             let address = (table / 0x4000) * 0x4000 + pointer % 0x4000;
-            assert!(crystal_core::models::item::is_exact_item_description(description),
-                "source description slot {} was rejected by item validation", index + 1);
+            assert!(
+                crystal_core::models::item::is_exact_item_description(description),
+                "source description slot {} was rejected by item validation",
+                index + 1
+            );
             let mut bytes = Vec::new();
             for (line_index, line) in description.split('\n').enumerate() {
                 if line_index != 0 {
@@ -225,7 +231,10 @@ mod tests {
             let encoded: String = bytes.iter().map(|byte| format!("{byte:02x}")).collect();
             assert_eq!(
                 encoded,
-                rom[address..address + bytes.len()].iter().map(|byte| format!("{byte:02x}")).collect::<String>(),
+                rom[address..address + bytes.len()]
+                    .iter()
+                    .map(|byte| format!("{byte:02x}"))
+                    .collect::<String>(),
                 "item slot {}",
                 index + 1
             );

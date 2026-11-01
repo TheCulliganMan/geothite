@@ -21,11 +21,23 @@ pub(super) const JOHTO_GATE_ROOMS: &[&str] = &[
 ];
 
 pub(super) fn reviewed_gate_map(map: &str) -> bool {
-    JOHTO_GATE_ROOMS.contains(&map) || matches!(map,
-        "Route15FuchsiaGate"|"Route16Gate"|"Route17Route18Gate"
-        |"Route19FuchsiaGate"|"Route2Gate"|"Route5SaffronGate"|"Route6SaffronGate"
-        |"Route5UndergroundPathEntrance"|"Route6UndergroundPathEntrance"
-        |"Route7SaffronGate"|"Route8SaffronGate"|"SafariZoneFuchsiaGateBeta"|"VictoryRoadGate")
+    JOHTO_GATE_ROOMS.contains(&map)
+        || matches!(
+            map,
+            "Route15FuchsiaGate"
+                | "Route16Gate"
+                | "Route17Route18Gate"
+                | "Route19FuchsiaGate"
+                | "Route2Gate"
+                | "Route5SaffronGate"
+                | "Route6SaffronGate"
+                | "Route5UndergroundPathEntrance"
+                | "Route6UndergroundPathEntrance"
+                | "Route7SaffronGate"
+                | "Route8SaffronGate"
+                | "SafariZoneFuchsiaGateBeta"
+                | "VictoryRoadGate"
+        )
 }
 
 struct Network {
@@ -48,7 +60,7 @@ pub(super) struct Placement {
     row: usize,
     ground: usize,
     grid_origin: [i32; 2],
-    native_palette_sources: Option<[usize;2]>,
+    native_palette_sources: Option<[usize; 2]>,
 }
 impl Placement {
     pub(super) fn indices(&self, width: usize) -> impl Iterator<Item = usize> + '_ {
@@ -64,7 +76,11 @@ impl Placement {
             })
     }
 }
-fn cafe_network(n:&Network)->bool {n.maps.iter().any(|map|matches!(*map,"CeladonCafe"|"OlivineCafe"))}
+fn cafe_network(n: &Network) -> bool {
+    n.maps
+        .iter()
+        .any(|map| matches!(*map, "CeladonCafe" | "OlivineCafe"))
+}
 
 fn owns(n: &Network, x: isize, y: isize) -> bool {
     x >= 0
@@ -132,10 +148,22 @@ fn complete(
             (0..n.width).map(move |dx| &cells[(y + dy) * g.width + x + dx].source)
         })
     };
-    sources().all(|s| s.tileset_id.as_ref() == if cafe_network(n) {"game_corner"} else {"gate"}) && identity_hash(sources()) == n.fingerprint
+    sources().all(|s| {
+        s.tileset_id.as_ref()
+            == if cafe_network(n) {
+                "game_corner"
+            } else {
+                "gate"
+            }
+    }) && identity_hash(sources()) == n.fingerprint
 }
 fn valid_ground(map: &str, cell: &VisualTile) -> bool {
-    cell.source.tileset_id.as_ref() == if matches!(map,"CeladonCafe"|"OlivineCafe") {"game_corner"} else {"gate"}
+    cell.source.tileset_id.as_ref()
+        == if matches!(map, "CeladonCafe" | "OlivineCafe") {
+            "game_corner"
+        } else {
+            "gate"
+        }
         && cell.source.tile_index == 0x01
         && matches!(
             shape_for_source_on_map(map, &cell.source),
@@ -195,18 +223,30 @@ fn resolve_networks(
                     grid_origin,
                     native_palette_sources: None,
                 };
-                let mut p=p;
+                let mut p = p;
                 if reviewed_gate_map(map) {
-                    let top=p.indices(g.width).find(|&i|cells[i].source.tile_index==0x07);
-                    let side=p.indices(g.width).find(|&i|matches!(cells[i].source.tile_index,0x24|0x25));
-                    let (Some(top),Some(side))=(top,side) else {continue;};
-                    p.native_palette_sources=Some([top,side]);
+                    let top = p
+                        .indices(g.width)
+                        .find(|&i| cells[i].source.tile_index == 0x07);
+                    let side = p
+                        .indices(g.width)
+                        .find(|&i| matches!(cells[i].source.tile_index, 0x24 | 0x25));
+                    let (Some(top), Some(side)) = (top, side) else {
+                        continue;
+                    };
+                    p.native_palette_sources = Some([top, side]);
                 }
-                if matches!(map,"CeladonCafe"|"OlivineCafe") {
-                    let top=p.indices(g.width).find(|&i|cells[i].source.tile_index==0x0e);
-                    let side=p.indices(g.width).find(|&i|cells[i].source.tile_index==0x1e);
-                    let (Some(top),Some(side))=(top,side) else {continue;};
-                    p.native_palette_sources=Some([top,side]);
+                if matches!(map, "CeladonCafe" | "OlivineCafe") {
+                    let top = p
+                        .indices(g.width)
+                        .find(|&i| cells[i].source.tile_index == 0x0e);
+                    let side = p
+                        .indices(g.width)
+                        .find(|&i| cells[i].source.tile_index == 0x1e);
+                    let (Some(top), Some(side)) = (top, side) else {
+                        continue;
+                    };
+                    p.native_palette_sources = Some([top, side]);
                 }
                 if p.indices(g.width).any(|i| blocked[i]) {
                     continue;
@@ -227,101 +267,199 @@ pub(super) fn append(
     p: &Placement,
     claimed: &mut [bool],
 ) -> bool {
-    let cafe=cafe_network(p.network);
+    let cafe = cafe_network(p.network);
     if claimed.len() != cells.len()
         || p.ground >= cells.len()
-        || !valid_ground(if cafe {p.network.maps[0]}else{""}, cells[p.ground])
+        || !valid_ground(if cafe { p.network.maps[0] } else { "" }, cells[p.ground])
         || !complete(cells, g, p.grid_origin, p.column, p.row, p.network)
         || p.indices(g.width).any(|i| claimed[i])
-        || p.native_palette_sources.is_some_and(|[top,side]| {
-            !p.indices(g.width).any(|i|i==top) || !p.indices(g.width).any(|i|i==side)
-                || if cafe {cells[top].source.tile_index!=0x0e || cells[side].source.tile_index!=0x1e}
-                   else {cells[top].source.tile_index!=0x07 || !matches!(cells[side].source.tile_index,0x24|0x25)}
+        || p.native_palette_sources.is_some_and(|[top, side]| {
+            !p.indices(g.width).any(|i| i == top)
+                || !p.indices(g.width).any(|i| i == side)
+                || if cafe {
+                    cells[top].source.tile_index != 0x0e || cells[side].source.tile_index != 0x1e
+                } else {
+                    cells[top].source.tile_index != 0x07
+                        || !matches!(cells[side].source.tile_index, 0x24 | 0x25)
+                }
         })
     {
         return false;
     }
     // Validate all palette roles before mutating ground or object surfaces.
-    let native=p.native_palette_sources.map(|[top,side]| {
-        let sample=|i:usize,x:usize,y:usize| {
-            let uv=g.uv(i%g.width,i/g.width);
-            [uv.0+(uv.1-uv.0)*(x as f32+0.5)/8.,
-             uv.2+(uv.3-uv.2)*(y as f32+0.5)/8.]
+    let native = p.native_palette_sources.map(|[top, side]| {
+        let sample = |i: usize, x: usize, y: usize| {
+            let uv = g.uv(i % g.width, i / g.width);
+            [
+                uv.0 + (uv.1 - uv.0) * (x as f32 + 0.5) / 8.,
+                uv.2 + (uv.3 - uv.2) * (y as f32 + 0.5) / 8.,
+            ]
         };
         if cafe {
             // Wood body and green top are independent live source palettes.
-            return [sample(side,3,0),sample(side,3,2),sample(side,3,3),sample(side,3,2)];
+            return [
+                sample(side, 3, 0),
+                sample(side, 3, 2),
+                sample(side, 3, 3),
+                sample(side, 3, 2),
+            ];
         }
-        let shadow_x=if cells[side].source.tile_index==0x24{1}else{6};
-        [sample(side,shadow_x,3),sample(top,4,3),sample(top,4,1),sample(top,4,3)]
+        let shadow_x = if cells[side].source.tile_index == 0x24 {
+            1
+        } else {
+            6
+        };
+        [
+            sample(side, shadow_x, 3),
+            sample(top, 4, 3),
+            sample(top, 4, 1),
+            sample(top, 4, 3),
+        ]
     });
-    if native.is_some() && p.indices(g.width).any(|i| {
-        !crate::gate_counter_models::segment(exposed(p.network,i%g.width-p.column,i/g.width-p.row))
+    if native.is_some()
+        && p.indices(g.width).any(|i| {
+            !crate::gate_counter_models::segment(exposed(
+                p.network,
+                i % g.width - p.column,
+                i / g.width - p.row,
+            ))
             .has_native_gate_counter_materials()
-    }) {return false;}
-    let native_phone=native.is_some() && !cafe && !p.network.phones.is_empty();
-    if native_phone && (!crate::gate_counter_models::phone().has_native_gate_phone_materials()
-        || p.network.phones.iter().any(|&(dx,dy)| {
-            [0x0e,0x0f,0x20,0x21].iter().enumerate().any(|(offset,&tile)| {
-                let i=(p.row+dy+offset/2)*g.width+p.column+dx+offset%2;
-                cells[i].source.tile_index!=tile
-            })
-        })) {return false;}
+        })
+    {
+        return false;
+    }
+    let native_phone = native.is_some() && !cafe && !p.network.phones.is_empty();
+    if native_phone
+        && (!crate::gate_counter_models::phone().has_native_gate_phone_materials()
+            || p.network.phones.iter().any(|&(dx, dy)| {
+                [0x0e, 0x0f, 0x20, 0x21]
+                    .iter()
+                    .enumerate()
+                    .any(|(offset, &tile)| {
+                        let i = (p.row + dy + offset / 2) * g.width + p.column + dx + offset % 2;
+                        cells[i].source.tile_index != tile
+                    })
+            }))
+    {
+        return false;
+    }
     let ground = cells[p.ground];
     let uv = g.uv(ground.column as usize, ground.row as usize);
     // The native civic drawing has one eight-pixel front course. A 12px
     // body hides the guard's torso; source plot depth is not extra height.
     // Only verified civic palette bindings use this fit. Legacy rooms keep
     // their existing dimensions and the cafe retains its own counter height.
-    let height = if cafe {crate::cafe::SERVICE_COUNTER_HEIGHT}
-        else if native.is_some() {8.0}else{12.0} * g.tile_height / 8.0;
+    let height = if cafe {
+        crate::cafe::SERVICE_COUNTER_HEIGHT
+    } else if native.is_some() {
+        8.0
+    } else {
+        12.0
+    } * g.tile_height
+        / 8.0;
     for i in p.indices(g.width) {
         let x = i % g.width;
         let y = i / g.width;
         let (west, east, mut north, south) = g.bounds(x, y);
-        if cafe && y-p.row==1 {
+        if cafe && y - p.row == 1 {
             // The source cap sits below the rear timber course. Keep its
             // physical end inside that three-pixel wall depth.
-            north=south-3.*g.tile_height/8.;
+            north = south - 3. * g.tile_height / 8.;
         }
-        let floor_uv=if cafe {
-            let source=&cells[i].source;
-            let tile=[1,0x10,0x11,0x12][usize::from(source.subtile_row%2)*2+usize::from(source.subtile_column%2)];
-            cells.iter().position(|t|t.source.tileset_id.as_ref()=="game_corner" &&t.source.tile_index==tile
-                &&matches!(shape_for_source_on_map(p.network.maps[0],&t.source),CellShape::Flat|CellShape::PlaneAt{height:0.}))
-                .map(|j|g.uv(j%g.width,j/g.width)).unwrap_or(uv)
-        } else {uv};
-        append_top(&mut mesh.textured, [west, east, north, south], 0.0, floor_uv);
-        let model=crate::gate_counter_models::segment(exposed(p.network, x-p.column, y-p.row));
-        if let Some(swatches)=native {
+        let floor_uv = if cafe {
+            let source = &cells[i].source;
+            let tile = [1, 0x10, 0x11, 0x12]
+                [usize::from(source.subtile_row % 2) * 2 + usize::from(source.subtile_column % 2)];
+            cells
+                .iter()
+                .position(|t| {
+                    t.source.tileset_id.as_ref() == "game_corner"
+                        && t.source.tile_index == tile
+                        && matches!(
+                            shape_for_source_on_map(p.network.maps[0], &t.source),
+                            CellShape::Flat | CellShape::PlaneAt { height: 0. }
+                        )
+                })
+                .map(|j| g.uv(j % g.width, j / g.width))
+                .unwrap_or(uv)
+        } else {
+            uv
+        };
+        append_top(
+            &mut mesh.textured,
+            [west, east, north, south],
+            0.0,
+            floor_uv,
+        );
+        let model =
+            crate::gate_counter_models::segment(exposed(p.network, x - p.column, y - p.row));
+        if let Some(swatches) = native {
             if cafe {
-                let top=p.native_palette_sources.unwrap()[0];let uv=g.uv(top%g.width,top/g.width);
-                let top_uv=[uv.0+(uv.1-uv.0)*3.5/8.,uv.2+(uv.3-uv.2)*3.5/8.];
-                assert!(model.append_native_service_counter(&mut mesh.textured,[west,east,north,south],height,swatches,top_uv),
-                    "native service worktop keeps green off vertical trim");
+                let top = p.native_palette_sources.unwrap()[0];
+                let uv = g.uv(top % g.width, top / g.width);
+                let top_uv = [
+                    uv.0 + (uv.1 - uv.0) * 3.5 / 8.,
+                    uv.2 + (uv.3 - uv.2) * 3.5 / 8.,
+                ];
+                assert!(
+                    model.append_native_service_counter(
+                        &mut mesh.textured,
+                        [west, east, north, south],
+                        height,
+                        swatches,
+                        top_uv
+                    ),
+                    "native service worktop keeps green off vertical trim"
+                );
             } else {
-                assert!(model.append_native_gate_counter(&mut mesh.textured,
-                    [west,east,north,south],height,swatches),"native connected service counter requires complete material roles");
+                assert!(
+                    model.append_native_gate_counter(
+                        &mut mesh.textured,
+                        [west, east, north, south],
+                        height,
+                        swatches
+                    ),
+                    "native connected service counter requires complete material roles"
+                );
             }
         } else {
-            model.append_fitted(&mut mesh.solid,[west,east,north,south],0.,height);
+            model.append_fitted(&mut mesh.solid, [west, east, north, south], 0., height);
         }
     }
     for &(dx, dy) in p.network.phones {
         let (west, _, north, _) = g.bounds(p.column + dx, p.row + dy);
         // The receiver remains on the two-by-two source phone plot, on top of
         // the joined counter. Its handset, keys and coiled cord are solid art.
-        let bounds=[west+g.tile_width*0.25,west+g.tile_width*1.75,
-            north+g.tile_height*0.5,north+g.tile_height*1.5];
-        let phone=crate::gate_counter_models::phone();
-        let phone_height=12.0*g.tile_height/8.0;
+        let bounds = [
+            west + g.tile_width * 0.25,
+            west + g.tile_width * 1.75,
+            north + g.tile_height * 0.5,
+            north + g.tile_height * 1.5,
+        ];
+        let phone = crate::gate_counter_models::phone();
+        let phone_height = 12.0 * g.tile_height / 8.0;
         if native_phone {
-            let uv=g.uv(p.column+dx,p.row+dy);
-            let sample=|x:f32,y:f32|[uv.0+(uv.1-uv.0)*(x+0.5)/8.,uv.2+(uv.3-uv.2)*(y+0.5)/8.];
-            assert!(phone.append_native_gate_phone(&mut mesh.textured,bounds,height,phone_height,
-                [sample(2.,4.),sample(3.,0.),sample(0.,0.),sample(1.,0.)]));
+            let uv = g.uv(p.column + dx, p.row + dy);
+            let sample = |x: f32, y: f32| {
+                [
+                    uv.0 + (uv.1 - uv.0) * (x + 0.5) / 8.,
+                    uv.2 + (uv.3 - uv.2) * (y + 0.5) / 8.,
+                ]
+            };
+            assert!(phone.append_native_gate_phone(
+                &mut mesh.textured,
+                bounds,
+                height,
+                phone_height,
+                [
+                    sample(2., 4.),
+                    sample(3., 0.),
+                    sample(0., 0.),
+                    sample(1., 0.)
+                ]
+            ));
         } else {
-            phone.append_fitted(&mut mesh.solid,bounds,height,phone_height);
+            phone.append_fitted(&mut mesh.solid, bounds, height, phone_height);
         }
     }
     for i in p.indices(g.width) {
@@ -332,7 +470,9 @@ pub(super) fn append(
                 p.network.phones.iter().any(|&(x, y)| {
                     local.0 >= x && local.0 < x + 2 && local.1 >= y && local.1 < y + 2
                 });
-            mesh.authored_cells[i] = Some(if cafe {"cafe/joined_service_counter"} else if phone {
+            mesh.authored_cells[i] = Some(if cafe {
+                "cafe/joined_service_counter"
+            } else if phone {
                 "gate/phone_console"
             } else {
                 "gate/joined_counter"
@@ -394,178 +534,437 @@ mod tests {
     }
     #[test]
     fn native_gate_phone_palette_uses_only_its_complete_plot_across_reviewed_rooms() {
-        let explicit=std::env::var_os("CRYSTAL_RENDER_TEST_PACK");
-        let path=explicit.as_ref().map(std::path::PathBuf::from).unwrap_or_else(||
-            std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../content-packs/text-tui.crystalpack"));
-        assert!(explicit.is_none()||path.is_file(),"explicit external pack must exist");
-        if !path.is_file(){return;}
-        let pack=crystal_assets::read_loaded_verified_compiled_game_pack(&path).unwrap();
-        let layout=&pack.pack().runtime_files()["data/tilesets/gate_metatiles.bin"];
-        let mut phones=0;
-        for (map,module) in &pack.pack().data().maps {
-            if !reviewed_gate_map(map) {continue;}
-            let (w,h)=(module.attributes.width as usize*4,module.attributes.height as usize*4);
-            let mut tiles=Vec::new();
-            for y in 0..h {for x in 0..w {
-                let block=module.blocks[y/4*(w/4)+x/4];
-                tiles.push(VisualTile{animation_frames:None,column:x as u32,row:y as u32,texture:Default::default(),priority:false,
-                    source:VisualTileSource{tileset_id:Arc::from("gate"),metatile_id:block,subtile_column:(x%4)as u8,
-                        subtile_row:(y%4)as u8,tile_index:layout[block as usize*16+y%4*4+x%4]as u16}});
-            }}
-            let g=GridGeometry{width:w,height:h,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
-            let refs=tiles.iter().collect::<Vec<_>>();let blank=vec![false;tiles.len()];
-            let expected=tiles.iter().filter(|t|t.source.tile_index==0x0e).count();
-            let mut room_phones=0;
-            for p in resolve(map,&refs,&g,[0,0],None,&blank) {
-                if p.network.phones.is_empty(){continue;}
-                let mut mesh=TerrainMeshData{footing_heights:vec![2.75;tiles.len()],..Default::default()};
-                let mut claims=blank.clone();assert!(append(&mut mesh,&refs,&g,&p,&mut claims),"{map}");
-                assert!(mesh.solid.positions.is_empty(),"{map}: native phone avoids cyan solid paint");
-                assert_eq!(claims.iter().filter(|&&v|v).count(),p.indices(w).count());
-                assert!(mesh.footing_heights.iter().all(|&v|v==2.75));
-                for &(dx,dy) in p.network.phones {
-                    phones+=1;
-                    room_phones+=1;
-                    let uv=g.uv(p.column+dx,p.row+dy);
-                    for (x,y) in [(2.,4.),(3.,0.),(0.,0.),(1.,0.)] {
-                        let sample=[uv.0+(uv.1-uv.0)*(x+0.5)/8.,uv.2+(uv.3-uv.2)*(y+0.5)/8.];
-                        assert!(mesh.textured.uvs.contains(&sample),"{map}: own phone swatch");
+        let explicit = std::env::var_os("CRYSTAL_RENDER_TEST_PACK");
+        let path = explicit
+            .as_ref()
+            .map(std::path::PathBuf::from)
+            .unwrap_or_else(|| {
+                std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+                    .join("../../content-packs/text-tui.crystalpack")
+            });
+        assert!(
+            explicit.is_none() || path.is_file(),
+            "explicit external pack must exist"
+        );
+        if !path.is_file() {
+            return;
+        }
+        let pack = crystal_assets::read_loaded_verified_compiled_game_pack(&path).unwrap();
+        let layout = &pack.pack().runtime_files()["data/tilesets/gate_metatiles.bin"];
+        let mut phones = 0;
+        for (map, module) in &pack.pack().data().maps {
+            if !reviewed_gate_map(map) {
+                continue;
+            }
+            let (w, h) = (
+                module.attributes.width as usize * 4,
+                module.attributes.height as usize * 4,
+            );
+            let mut tiles = Vec::new();
+            for y in 0..h {
+                for x in 0..w {
+                    let block = module.blocks[y / 4 * (w / 4) + x / 4];
+                    tiles.push(VisualTile {
+                        animation_frames: None,
+                        column: x as u32,
+                        row: y as u32,
+                        texture: Default::default(),
+                        priority: false,
+                        source: VisualTileSource {
+                            tileset_id: Arc::from("gate"),
+                            metatile_id: block,
+                            subtile_column: (x % 4) as u8,
+                            subtile_row: (y % 4) as u8,
+                            tile_index: layout[block as usize * 16 + y % 4 * 4 + x % 4] as u16,
+                        },
+                    });
+                }
+            }
+            let g = GridGeometry {
+                width: w,
+                height: h,
+                tile_width: 8.,
+                tile_height: 8.,
+                origin_x: 0.,
+                origin_z: 0.,
+            };
+            let refs = tiles.iter().collect::<Vec<_>>();
+            let blank = vec![false; tiles.len()];
+            let expected = tiles.iter().filter(|t| t.source.tile_index == 0x0e).count();
+            let mut room_phones = 0;
+            for p in resolve(map, &refs, &g, [0, 0], None, &blank) {
+                if p.network.phones.is_empty() {
+                    continue;
+                }
+                let mut mesh = TerrainMeshData {
+                    footing_heights: vec![2.75; tiles.len()],
+                    ..Default::default()
+                };
+                let mut claims = blank.clone();
+                assert!(append(&mut mesh, &refs, &g, &p, &mut claims), "{map}");
+                assert!(
+                    mesh.solid.positions.is_empty(),
+                    "{map}: native phone avoids cyan solid paint"
+                );
+                assert_eq!(claims.iter().filter(|&&v| v).count(), p.indices(w).count());
+                assert!(mesh.footing_heights.iter().all(|&v| v == 2.75));
+                for &(dx, dy) in p.network.phones {
+                    phones += 1;
+                    room_phones += 1;
+                    let uv = g.uv(p.column + dx, p.row + dy);
+                    for (x, y) in [(2., 4.), (3., 0.), (0., 0.), (1., 0.)] {
+                        let sample = [
+                            uv.0 + (uv.1 - uv.0) * (x + 0.5) / 8.,
+                            uv.2 + (uv.3 - uv.2) * (y + 0.5) / 8.,
+                        ];
+                        assert!(
+                            mesh.textured.uvs.contains(&sample),
+                            "{map}: own phone swatch"
+                        );
                     }
                 }
             }
-            assert_eq!(room_phones,expected,"{map}: every native phone drawing is bound");
+            assert_eq!(
+                room_phones, expected,
+                "{map}: every native phone drawing is bound"
+            );
         }
-        assert!(phones>=20,"must exercise shared Kanto and Johto phone plots, got {phones}");
+        assert!(
+            phones >= 20,
+            "must exercise shared Kanto and Johto phone plots, got {phones}"
+        );
     }
 
     #[test]
     fn olivine_cafe_counter_keeps_service_bay_and_validates_every_source_cell() {
-        let path=std::env::var("CRYSTAL_RENDER_TEST_PACK").expect("external pack for native cafe check");
-        let loaded=crystal_assets::read_loaded_verified_compiled_game_pack(&path).unwrap();let pack=loaded.pack();
-        let map=&pack.data().maps["OlivineCafe"];let art=&pack.runtime_files()["data/tilesets/game_corner_metatiles.bin"];
-        let (w,h)=(map.attributes.width as usize*4,map.attributes.height as usize*4);
-        let mut tiles=(0..w*h).map(|i|{let(x,y)=(i%w,i/w);let b=map.blocks[y/4*(w/4)+x/4];
-            VisualTile{animation_frames:None,column:x as u32,row:y as u32,texture:Default::default(),priority:false,
-                source:VisualTileSource{tileset_id:"game_corner".into(),metatile_id:b,subtile_column:(x%4)as u8,
-                    subtile_row:(y%4)as u8,tile_index:art[b as usize*16+y%4*4+x%4]as u16}}
-        }).collect::<Vec<_>>();
-        let g=GridGeometry{width:w,height:h,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
-        let refs=tiles.iter().collect::<Vec<_>>();let free=vec![false;tiles.len()];
-        let ps=resolve("OlivineCafe",&refs,&g,[0,0],None,&free);assert_eq!(ps.len(),1);let p=&ps[0];
-        assert_eq!((p.column,p.row,p.indices(w).count()),(12,0,26));
-        let mut mesh=TerrainMeshData{footing_heights:vec![1.25;tiles.len()],authored_cells:vec![None;tiles.len()],..Default::default()};
-        let mut claims=free.clone();assert!(append(&mut mesh,&refs,&g,p,&mut claims));
-        assert!(mesh.solid.indices.is_empty());assert!(mesh.textured.positions.iter().all(|v|v[1]<=8.));
-        assert!(mesh.textured.positions.iter().all(|v|v[2]>=13.),"counter stays inside the rear course");
-        assert!(mesh.footing_heights.iter().all(|v|*v==1.25));
-        for y in 2..10 {for x in 14..16 {assert!(!claims[y*w+x],"staff walking bay remains open");}}
-        let mut reserved=free.clone();reserved[w+12]=true;
-        assert!(resolve("OlivineCafe",&refs,&g,[0,0],None,&reserved).is_empty());
-        assert!(resolve("CeladonCafe",&refs,&g,[0,0],None,&free).is_empty());
+        let path =
+            std::env::var("CRYSTAL_RENDER_TEST_PACK").expect("external pack for native cafe check");
+        let loaded = crystal_assets::read_loaded_verified_compiled_game_pack(&path).unwrap();
+        let pack = loaded.pack();
+        let map = &pack.data().maps["OlivineCafe"];
+        let art = &pack.runtime_files()["data/tilesets/game_corner_metatiles.bin"];
+        let (w, h) = (
+            map.attributes.width as usize * 4,
+            map.attributes.height as usize * 4,
+        );
+        let mut tiles = (0..w * h)
+            .map(|i| {
+                let (x, y) = (i % w, i / w);
+                let b = map.blocks[y / 4 * (w / 4) + x / 4];
+                VisualTile {
+                    animation_frames: None,
+                    column: x as u32,
+                    row: y as u32,
+                    texture: Default::default(),
+                    priority: false,
+                    source: VisualTileSource {
+                        tileset_id: "game_corner".into(),
+                        metatile_id: b,
+                        subtile_column: (x % 4) as u8,
+                        subtile_row: (y % 4) as u8,
+                        tile_index: art[b as usize * 16 + y % 4 * 4 + x % 4] as u16,
+                    },
+                }
+            })
+            .collect::<Vec<_>>();
+        let g = GridGeometry {
+            width: w,
+            height: h,
+            tile_width: 8.,
+            tile_height: 8.,
+            origin_x: 0.,
+            origin_z: 0.,
+        };
+        let refs = tiles.iter().collect::<Vec<_>>();
+        let free = vec![false; tiles.len()];
+        let ps = resolve("OlivineCafe", &refs, &g, [0, 0], None, &free);
+        assert_eq!(ps.len(), 1);
+        let p = &ps[0];
+        assert_eq!((p.column, p.row, p.indices(w).count()), (12, 0, 26));
+        let mut mesh = TerrainMeshData {
+            footing_heights: vec![1.25; tiles.len()],
+            authored_cells: vec![None; tiles.len()],
+            ..Default::default()
+        };
+        let mut claims = free.clone();
+        assert!(append(&mut mesh, &refs, &g, p, &mut claims));
+        assert!(mesh.solid.indices.is_empty());
+        assert!(mesh.textured.positions.iter().all(|v| v[1] <= 8.));
+        assert!(
+            mesh.textured.positions.iter().all(|v| v[2] >= 13.),
+            "counter stays inside the rear course"
+        );
+        assert!(mesh.footing_heights.iter().all(|v| *v == 1.25));
+        for y in 2..10 {
+            for x in 14..16 {
+                assert!(!claims[y * w + x], "staff walking bay remains open");
+            }
+        }
+        let mut reserved = free.clone();
+        reserved[w + 12] = true;
+        assert!(resolve("OlivineCafe", &refs, &g, [0, 0], None, &reserved).is_empty());
+        assert!(resolve("CeladonCafe", &refs, &g, [0, 0], None, &free).is_empty());
         drop(refs);
-        for y in 0..12 {for x in 12..16 {
-            let i=y*w+x;let old=tiles[i].source.tile_index;tiles[i].source.tile_index=0xffff;
-            assert!(resolve("OlivineCafe",&tiles.iter().collect::<Vec<_>>(),&g,[0,0],None,&free).is_empty());
-            tiles[i].source.tile_index=old;
-        }}
+        for y in 0..12 {
+            for x in 12..16 {
+                let i = y * w + x;
+                let old = tiles[i].source.tile_index;
+                tiles[i].source.tile_index = 0xffff;
+                assert!(
+                    resolve(
+                        "OlivineCafe",
+                        &tiles.iter().collect::<Vec<_>>(),
+                        &g,
+                        [0, 0],
+                        None,
+                        &free
+                    )
+                    .is_empty()
+                );
+                tiles[i].source.tile_index = old;
+            }
+        }
     }
 
     #[test]
     fn kanto_native_cafe_counter_reuses_connected_modules_and_native_palette() {
-        let path=std::env::var("CRYSTAL_RENDER_TEST_PACK").unwrap_or_else(|_|"content-packs/realtime-clock.browser.crystalpack".into());
-        if !std::path::Path::new(&path).exists(){return;}
-        let pack=crystal_assets::read_loaded_verified_compiled_game_pack(&path).unwrap();
-        let module=&pack.pack().data().maps["CeladonCafe"];
-        let layout=pack.pack().runtime_files().get("data/tilesets/game_corner_metatiles.bin").unwrap();
-        let (w,h)=(module.attributes.width as usize*4,module.attributes.height as usize*4);
-        let mut tiles=Vec::new();
-        for y in 0..h {for x in 0..w {
-            let block=module.blocks[y/4*(w/4)+x/4];
-            tiles.push(VisualTile{animation_frames:None,column:x as u32,row:y as u32,texture:Default::default(),priority:false,
-                source:VisualTileSource{tileset_id:Arc::from("game_corner"),metatile_id:block,subtile_column:(x%4)as u8,
-                    subtile_row:(y%4)as u8,tile_index:layout[block as usize*16+y%4*4+x%4]as u16}});
-        }}
-        let g=GridGeometry{width:w,height:h,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
-        let refs=tiles.iter().collect::<Vec<_>>();let reserved=vec![false;tiles.len()];
-        let ps=resolve("CeladonCafe",&refs,&g,[0,0],None,&reserved);
-        assert_eq!(ps.len(),1);let p=&ps[0];assert_eq!((p.column,p.row),(16,0));
-        assert_eq!(p.indices(w).count(),34);
-        let mut mesh=TerrainMeshData{footing_heights:vec![1.25;tiles.len()],authored_cells:vec![None;tiles.len()],..Default::default()};
-        let mut claims=reserved.clone();assert!(append(&mut mesh,&refs,&g,p,&mut claims));
-        assert!(mesh.solid.positions.is_empty());assert!(mesh.textured.positions.iter().all(|v|v[1]<=8.+1e-5));
-        assert!(mesh.textured.positions.iter().any(|v|v[1]>7.));
-        assert!(mesh.footing_heights.iter().all(|h|*h==1.25));
-        for y in 2..10 {for x in 18..24 {assert!(!claims[y*w+x],"service opening stays clear");}}
-        assert!(p.indices(w).all(|i|mesh.authored_cells[i]==Some("cafe/joined_service_counter")));
-        let mut blocked=reserved.clone();blocked[2*w+16]=true;
-        assert!(resolve("CeladonCafe",&refs,&g,[0,0],None,&blocked).is_empty());
-        assert!(resolve("OlivineCafe",&refs,&g,[0,0],None,&reserved).is_empty());
-        drop(refs);tiles[7*w+16].source.tile_index=0xffff;
-        assert!(resolve("CeladonCafe",&tiles.iter().collect::<Vec<_>>(),&g,[0,0],None,&reserved).is_empty());
+        let path = std::env::var("CRYSTAL_RENDER_TEST_PACK")
+            .unwrap_or_else(|_| "content-packs/realtime-clock.browser.crystalpack".into());
+        if !std::path::Path::new(&path).exists() {
+            return;
+        }
+        let pack = crystal_assets::read_loaded_verified_compiled_game_pack(&path).unwrap();
+        let module = &pack.pack().data().maps["CeladonCafe"];
+        let layout = pack
+            .pack()
+            .runtime_files()
+            .get("data/tilesets/game_corner_metatiles.bin")
+            .unwrap();
+        let (w, h) = (
+            module.attributes.width as usize * 4,
+            module.attributes.height as usize * 4,
+        );
+        let mut tiles = Vec::new();
+        for y in 0..h {
+            for x in 0..w {
+                let block = module.blocks[y / 4 * (w / 4) + x / 4];
+                tiles.push(VisualTile {
+                    animation_frames: None,
+                    column: x as u32,
+                    row: y as u32,
+                    texture: Default::default(),
+                    priority: false,
+                    source: VisualTileSource {
+                        tileset_id: Arc::from("game_corner"),
+                        metatile_id: block,
+                        subtile_column: (x % 4) as u8,
+                        subtile_row: (y % 4) as u8,
+                        tile_index: layout[block as usize * 16 + y % 4 * 4 + x % 4] as u16,
+                    },
+                });
+            }
+        }
+        let g = GridGeometry {
+            width: w,
+            height: h,
+            tile_width: 8.,
+            tile_height: 8.,
+            origin_x: 0.,
+            origin_z: 0.,
+        };
+        let refs = tiles.iter().collect::<Vec<_>>();
+        let reserved = vec![false; tiles.len()];
+        let ps = resolve("CeladonCafe", &refs, &g, [0, 0], None, &reserved);
+        assert_eq!(ps.len(), 1);
+        let p = &ps[0];
+        assert_eq!((p.column, p.row), (16, 0));
+        assert_eq!(p.indices(w).count(), 34);
+        let mut mesh = TerrainMeshData {
+            footing_heights: vec![1.25; tiles.len()],
+            authored_cells: vec![None; tiles.len()],
+            ..Default::default()
+        };
+        let mut claims = reserved.clone();
+        assert!(append(&mut mesh, &refs, &g, p, &mut claims));
+        assert!(mesh.solid.positions.is_empty());
+        assert!(mesh.textured.positions.iter().all(|v| v[1] <= 8. + 1e-5));
+        assert!(mesh.textured.positions.iter().any(|v| v[1] > 7.));
+        assert!(mesh.footing_heights.iter().all(|h| *h == 1.25));
+        for y in 2..10 {
+            for x in 18..24 {
+                assert!(!claims[y * w + x], "service opening stays clear");
+            }
+        }
+        assert!(
+            p.indices(w)
+                .all(|i| mesh.authored_cells[i] == Some("cafe/joined_service_counter"))
+        );
+        let mut blocked = reserved.clone();
+        blocked[2 * w + 16] = true;
+        assert!(resolve("CeladonCafe", &refs, &g, [0, 0], None, &blocked).is_empty());
+        assert!(resolve("OlivineCafe", &refs, &g, [0, 0], None, &reserved).is_empty());
+        drop(refs);
+        tiles[7 * w + 16].source.tile_index = 0xffff;
+        assert!(
+            resolve(
+                "CeladonCafe",
+                &tiles.iter().collect::<Vec<_>>(),
+                &g,
+                [0, 0],
+                None,
+                &reserved
+            )
+            .is_empty()
+        );
     }
 
     #[test]
     fn kanto_native_gate_counter_palette_keeps_connected_geometry_and_rejects_bad_donors() {
         for mask in 0..16 {
-            let model=crate::gate_counter_models::segment(mask);
+            let model = crate::gate_counter_models::segment(mask);
             assert!(model.has_native_gate_counter_materials());
-            let mut original=SurfaceMeshData::default();
-            model.append_fitted(&mut original,[0.,8.,0.,8.],0.,12.);
-            let mut native=SurfaceMeshData::default();
-            assert!(model.append_native_gate_counter(&mut native,[0.,8.,0.,8.],12.,
-                [[0.1,0.2],[0.3,0.4],[0.5,0.6],[0.7,0.8]]));
-            assert_eq!(original.positions,native.positions);
-            assert_eq!(original.normals,native.normals);
-            assert_eq!(original.indices,native.indices);
-            let mut repeat=SurfaceMeshData::default();
-            model.append_fitted(&mut repeat,[0.,8.,0.,8.],0.,12.);
-            assert_eq!(repeat.colors,original.colors,"cached model palette stays immutable");
+            let mut original = SurfaceMeshData::default();
+            model.append_fitted(&mut original, [0., 8., 0., 8.], 0., 12.);
+            let mut native = SurfaceMeshData::default();
+            assert!(model.append_native_gate_counter(
+                &mut native,
+                [0., 8., 0., 8.],
+                12.,
+                [[0.1, 0.2], [0.3, 0.4], [0.5, 0.6], [0.7, 0.8]]
+            ));
+            assert_eq!(original.positions, native.positions);
+            assert_eq!(original.normals, native.normals);
+            assert_eq!(original.indices, native.indices);
+            let mut repeat = SurfaceMeshData::default();
+            model.append_fitted(&mut repeat, [0., 8., 0., 8.], 0., 12.);
+            assert_eq!(
+                repeat.colors, original.colors,
+                "cached model palette stays immutable"
+            );
         }
-        let mut unknown=SurfaceMeshData::default();
-        assert!(!crate::interior_models::model(crate::interior_models::ModelKind::Chair)
-            .append_native_gate_counter(&mut unknown,[0.,8.,0.,8.],12.,[[0.1,0.2];4]));
+        let mut unknown = SurfaceMeshData::default();
+        assert!(
+            !crate::interior_models::model(crate::interior_models::ModelKind::Chair)
+                .append_native_gate_counter(&mut unknown, [0., 8., 0., 8.], 12., [[0.1, 0.2]; 4])
+        );
         assert!(unknown.positions.is_empty());
-        let (cells,g,mut n)=fixture();n.maps=Box::leak(JOHTO_GATE_ROOMS.iter().copied().chain([
-            "Route5SaffronGate","Route5UndergroundPathEntrance","Route6UndergroundPathEntrance"
-        ]).collect::<Vec<_>>().into_boxed_slice());
-        let networks=Box::leak(vec![n].into_boxed_slice());
-        let refs=cells.iter().collect::<Vec<_>>();
+        let (cells, g, mut n) = fixture();
+        n.maps = Box::leak(
+            JOHTO_GATE_ROOMS
+                .iter()
+                .copied()
+                .chain([
+                    "Route5SaffronGate",
+                    "Route5UndergroundPathEntrance",
+                    "Route6UndergroundPathEntrance",
+                ])
+                .collect::<Vec<_>>()
+                .into_boxed_slice(),
+        );
+        let networks = Box::leak(vec![n].into_boxed_slice());
+        let refs = cells.iter().collect::<Vec<_>>();
         for map in networks[0].maps {
-            let native=resolve_networks(networks,map,&refs,&g,[0,0],None,
-                &vec![false;cells.len()]).pop().unwrap();
-            assert_eq!(native.native_palette_sources,Some([8,12]),
-                "{map} must use its authenticated green enclosure, not generic wood");
+            let native = resolve_networks(
+                networks,
+                map,
+                &refs,
+                &g,
+                [0, 0],
+                None,
+                &vec![false; cells.len()],
+            )
+            .pop()
+            .unwrap();
+            assert_eq!(
+                native.native_palette_sources,
+                Some([8, 12]),
+                "{map} must use its authenticated green enclosure, not generic wood"
+            );
         }
-        let p=resolve_networks(networks,"Route5SaffronGate",&refs,&g,[0,0],None,
-            &vec![false;cells.len()]).pop().unwrap();
-        assert_eq!(p.native_palette_sources,Some([8,12]));
-        let mut mesh=TerrainMeshData{footing_heights:vec![2.25;cells.len()],..Default::default()};
-        let mut claims=vec![false;cells.len()];
-        assert!(append(&mut mesh,&refs,&g,&p,&mut claims));
-        assert!(mesh.solid.indices.is_empty());
-        assert!(mesh.footing_heights.iter().all(|h|*h==2.25));
-        assert_eq!(claims.iter().filter(|&&c|c).count(),8);
-        assert_eq!(mesh.textured.positions.iter().map(|p|p[1]).fold(0.,f32::max),8.);
-        let texel=|x:usize,y:usize,px:f32,py:f32| {
-            let uv=g.uv(x,y);[uv.0+(uv.1-uv.0)*px/8.,uv.2+(uv.3-uv.2)*py/8.]
+        let p = resolve_networks(
+            networks,
+            "Route5SaffronGate",
+            &refs,
+            &g,
+            [0, 0],
+            None,
+            &vec![false; cells.len()],
+        )
+        .pop()
+        .unwrap();
+        assert_eq!(p.native_palette_sources, Some([8, 12]));
+        let mut mesh = TerrainMeshData {
+            footing_heights: vec![2.25; cells.len()],
+            ..Default::default()
         };
-        for uv in [texel(0,2,4.5,3.5),texel(0,2,4.5,1.5),texel(0,3,1.5,3.5)] {
+        let mut claims = vec![false; cells.len()];
+        assert!(append(&mut mesh, &refs, &g, &p, &mut claims));
+        assert!(mesh.solid.indices.is_empty());
+        assert!(mesh.footing_heights.iter().all(|h| *h == 2.25));
+        assert_eq!(claims.iter().filter(|&&c| c).count(), 8);
+        assert_eq!(
+            mesh.textured
+                .positions
+                .iter()
+                .map(|p| p[1])
+                .fold(0., f32::max),
+            8.
+        );
+        let texel = |x: usize, y: usize, px: f32, py: f32| {
+            let uv = g.uv(x, y);
+            [
+                uv.0 + (uv.1 - uv.0) * px / 8.,
+                uv.2 + (uv.3 - uv.2) * py / 8.,
+            ]
+        };
+        for uv in [
+            texel(0, 2, 4.5, 3.5),
+            texel(0, 2, 4.5, 1.5),
+            texel(0, 3, 1.5, 3.5),
+        ] {
             assert!(mesh.textured.uvs.contains(&uv));
         }
-        let mut original=TerrainMeshData::default();
-        let legacy=Placement{native_palette_sources:None,..p};
-        assert!(append(&mut original,&refs,&g,&legacy,&mut vec![false;cells.len()]));
-        assert_eq!(original.solid.positions.iter().map(|p|p[1]).fold(0.,f32::max),12.);
+        let mut original = TerrainMeshData::default();
+        let legacy = Placement {
+            native_palette_sources: None,
+            ..p
+        };
+        assert!(append(
+            &mut original,
+            &refs,
+            &g,
+            &legacy,
+            &mut vec![false; cells.len()]
+        ));
+        assert_eq!(
+            original
+                .solid
+                .positions
+                .iter()
+                .map(|p| p[1])
+                .fold(0., f32::max),
+            12.
+        );
         // Floor precedes the palette model; conserve every original model triangle
         // and vertex count. Kanto bodies fit the native8px course, while the
         // legacy12px fit above remains available to unrelated rooms.
-        assert_eq!(mesh.textured.indices.len(),original.textured.indices.len()+original.solid.indices.len());
-        assert_eq!(mesh.textured.positions.len(),original.textured.positions.len()+original.solid.positions.len());
-        let forged=Placement{native_palette_sources:Some([0,12]),..legacy};
-        let mut empty=TerrainMeshData::default();let mut unclaimed=vec![false;cells.len()];
-        assert!(!append(&mut empty,&refs,&g,&forged,&mut unclaimed));
+        assert_eq!(
+            mesh.textured.indices.len(),
+            original.textured.indices.len() + original.solid.indices.len()
+        );
+        assert_eq!(
+            mesh.textured.positions.len(),
+            original.textured.positions.len() + original.solid.positions.len()
+        );
+        let forged = Placement {
+            native_palette_sources: Some([0, 12]),
+            ..legacy
+        };
+        let mut empty = TerrainMeshData::default();
+        let mut unclaimed = vec![false; cells.len()];
+        assert!(!append(&mut empty, &refs, &g, &forged, &mut unclaimed));
         assert!(empty.textured.positions.is_empty() && empty.solid.positions.is_empty());
-        assert!(unclaimed.iter().all(|c|!*c));
+        assert!(unclaimed.iter().all(|c| !*c));
     }
 
     #[test]

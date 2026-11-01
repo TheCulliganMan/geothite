@@ -15,15 +15,24 @@ pub(super) fn build(rig: &mut SpeciesRig) {
             // The canonical skins already own ten actual root-cap hinges.
             // Reuse those bindings instead of cutting each arm onto a new
             // world-only joint and discarding its authored battle motion.
-            rig.crawl_segments = rig.joints.iter().enumerate().filter_map(|(joint, bind)| {
-                bind.name.rsplit('/').next().unwrap().strip_prefix("crawl_tentacle_")
-                    .map(|_| CrawlSegment {
-                        joint,
-                        center: bind.inverse_bind.inverse().transform_point3(Vec3::ZERO),
-                        phase: joint as f32 * 0.8,
-                        tentacle: true,
-                    })
-            }).collect();
+            rig.crawl_segments = rig
+                .joints
+                .iter()
+                .enumerate()
+                .filter_map(|(joint, bind)| {
+                    bind.name
+                        .rsplit('/')
+                        .next()
+                        .unwrap()
+                        .strip_prefix("crawl_tentacle_")
+                        .map(|_| CrawlSegment {
+                            joint,
+                            center: bind.inverse_bind.inverse().transform_point3(Vec3::ZERO),
+                            phase: joint as f32 * 0.8,
+                            tentacle: true,
+                        })
+                })
+                .collect();
             return;
         }
         for part in rig
@@ -71,16 +80,33 @@ pub(super) fn build(rig: &mut SpeciesRig) {
         // Authored continuous skins already blend their body and pigment
         // through these joints. Reuse them without cutting or rebinding the
         // body, so the cream/green material seam remains exactly shared.
-        let mut segments: Vec<_> = rig.joints.iter().enumerate().filter_map(|(joint, bind)| {
-            bind.name.rsplit('/').next().unwrap().starts_with("segment_").then(|| {
-                let center=bind.inverse_bind.inverse().transform_point3(Vec3::ZERO);
-                (joint,center)
+        let mut segments: Vec<_> = rig
+            .joints
+            .iter()
+            .enumerate()
+            .filter_map(|(joint, bind)| {
+                bind.name
+                    .rsplit('/')
+                    .next()
+                    .unwrap()
+                    .starts_with("segment_")
+                    .then(|| {
+                        let center = bind.inverse_bind.inverse().transform_point3(Vec3::ZERO);
+                        (joint, center)
+                    })
             })
-        }).collect();
-        segments.sort_by(|(_,a),(_,b)|b.z.total_cmp(&a.z));
-        rig.crawl_segments=segments.into_iter().enumerate().map(|(order,(joint,center))|CrawlSegment {
-            joint,center,phase:order as f32*0.75,tentacle:false,
-        }).collect();
+            .collect();
+        segments.sort_by(|(_, a), (_, b)| b.z.total_cmp(&a.z));
+        rig.crawl_segments = segments
+            .into_iter()
+            .enumerate()
+            .map(|(order, (joint, center))| CrawlSegment {
+                joint,
+                center,
+                phase: order as f32 * 0.75,
+                tentacle: false,
+            })
+            .collect();
         return;
     }
     let mut parts: Vec<_> = rig
@@ -164,16 +190,23 @@ pub(super) fn sample(rig: &SpeciesRig, phase: f32, weight: f32, pose: &mut [Tran
         let wave = phase - segment.phase;
         if segment.tentacle {
             let stroke = Quat::from_rotation_y(wave.sin() * 0.08 * weight);
-            pose[segment.joint].rotation = if matches!(rig.species, Species::Omanyte | Species::Omastar) {
-                (pose[segment.joint].rotation * stroke).normalize()
-            } else { stroke };
+            pose[segment.joint].rotation =
+                if matches!(rig.species, Species::Omanyte | Species::Omastar) {
+                    (pose[segment.joint].rotation * stroke).normalize()
+                } else {
+                    stroke
+                };
             continue;
         }
         // Small compression and arching preserve the overlapping segment
         // connections. Proleg IK plants supports underneath this body wave.
         // The continuous authored skins have tiny prolegs: a large arch
         // exhausts their IK reach and pulls resting pads above the ground.
-        let arch=if matches!(rig.species,Species::Caterpie | Species::Weedle) {0.003} else {0.018};
+        let arch = if matches!(rig.species, Species::Caterpie | Species::Weedle) {
+            0.003
+        } else {
+            0.018
+        };
         pose[segment.joint].translation += Vec3::new(
             0.,
             height * arch * (1. - wave.cos()),
@@ -181,8 +214,11 @@ pub(super) fn sample(rig: &SpeciesRig, phase: f32, weight: f32, pose: &mut [Tran
         ) * weight;
     }
     // The authored head is already a child of the front body joint.
-    if let Some(front) = rig.crawl_segments.first().filter(|s| !s.tentacle
-        && !matches!(rig.species, Species::Caterpie | Species::Weedle)) {
+    if let Some(front) = rig
+        .crawl_segments
+        .first()
+        .filter(|s| !s.tentacle && !matches!(rig.species, Species::Caterpie | Species::Weedle))
+    {
         pose[2].translation += pose[front.joint].translation - front.center;
     }
 }

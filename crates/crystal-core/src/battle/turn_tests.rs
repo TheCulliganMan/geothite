@@ -27457,7 +27457,8 @@ fn successful_wild_run_skips_between_turn_damage_and_counters() {
         },
         0,
         &mut rng,
-    ).expect("successful run exits before between-turn effects");
+    )
+    .expect("successful run exits before between-turn effects");
     assert_eq!(outcome.state.player.hp, player_hp);
     assert_eq!(outcome.state.enemy.hp, enemy_hp);
     assert_eq!(outcome.state.weather_turns, 3);
@@ -31377,8 +31378,14 @@ fn modern_move_split_counter_reflects_a_physical_fire_move() {
     ]);
     let mut categories = type_categories();
     categories.moves = BTreeMap::from([
-        ("COUNTER".into(), crate::battle::damage::MoveCategory::Physical),
-        ("FIRE_PUNCH".into(), crate::battle::damage::MoveCategory::Physical),
+        (
+            "COUNTER".into(),
+            crate::battle::damage::MoveCategory::Physical,
+        ),
+        (
+            "FIRE_PUNCH".into(),
+            crate::battle::damage::MoveCategory::Physical,
+        ),
     ]);
     let mut rng = Random::new(1);
 
@@ -31434,7 +31441,6 @@ fn modern_move_split_counter_reflects_a_physical_fire_move() {
             )),
             _ => None,
         })
-
         .expect("counter reflects tackle damage");
     assert_eq!(reflected.0, source_damage);
     assert_eq!(reflected.1, source_damage * 2);
@@ -31451,11 +31457,21 @@ fn modern_move_split_screens_follow_move_categories() {
     state.enemy_reflect_turns = 3;
     state.enemy_light_screen_turns = 3;
     let mut categories = type_categories();
-    categories.moves.insert("FIRE_PUNCH".into(), MoveCategory::Physical);
-    categories.moves.insert("SHADOW_BALL".into(), MoveCategory::Special);
-    for (id, move_type, expected) in [("FIRE_PUNCH", "FIRE", BattleScreen::Reflect), ("SHADOW_BALL", "GHOST", BattleScreen::LightScreen)] {
+    categories
+        .moves
+        .insert("FIRE_PUNCH".into(), MoveCategory::Physical);
+    categories
+        .moves
+        .insert("SHADOW_BALL".into(), MoveCategory::Special);
+    for (id, move_type, expected) in [
+        ("FIRE_PUNCH", "FIRE", BattleScreen::Reflect),
+        ("SHADOW_BALL", "GHOST", BattleScreen::LightScreen),
+    ] {
         let attack = move_data(id, pokemon_type(move_type), 75, 100);
-        assert_eq!(active_damage_screen(&state, BattleSide::Enemy, &categories, &attack).unwrap(), Some(expected));
+        assert_eq!(
+            active_damage_screen(&state, BattleSide::Enemy, &categories, &attack).unwrap(),
+            Some(expected)
+        );
     }
 }
 
@@ -31471,14 +31487,19 @@ fn contest_last_failed_ball_ends_after_the_turn_without_overriding_capture_or_fa
         let mut state = GameState::default();
         let mut player = pokemon("CHIKORITA", 45, pokemon_type("GRASS"), "TACKLE");
         let enemy = pokemon("CATERPIE", 12, pokemon_type("BUG"), "TACKLE");
-        if fainted { player.hp = 0; }
+        if fainted {
+            player.hp = 0;
+        }
         state.storage.party.pokemon[0] = Some(player.clone());
         state.bug_contest.park_balls_remaining = balls;
         state.battle_result = 0x40;
         state.battle = BattleMemory::Wild {
-            battle_type: battle_type.into(), battle_music: "MUSIC_JOHTO_WILD_BATTLE".into(),
-            map_name: "NationalPark".into(), roaming_slot: None,
-            enemy_pokemon: enemy.clone(), enemy_party: vec![enemy.clone()],
+            battle_type: battle_type.into(),
+            battle_music: "MUSIC_JOHTO_WILD_BATTLE".into(),
+            map_name: "NationalPark".into(),
+            roaming_slot: None,
+            enemy_pokemon: enemy.clone(),
+            enemy_party: vec![enemy.clone()],
         };
         let outcome = BattleTurnOutcome {
             state: BattleCombatState::new(player.clone(), enemy.clone())
@@ -31487,16 +31508,27 @@ fn contest_last_failed_ball_ends_after_the_turn_without_overriding_capture_or_fa
             events: vec![BattleEvent::BallThrown {
                 side: BattleSide::Player,
                 outcome: CaptureOutcome {
-                    caught, blocked: false, storage_full: false, wobble_count: 0,
-                    animation_shakes: 0, final_catch_rate: 1, ball_id: Some("PARK_BALL".into()),
+                    caught,
+                    blocked: false,
+                    storage_full: false,
+                    wobble_count: 0,
+                    animation_shakes: 0,
+                    final_catch_rate: 1,
+                    ball_id: Some("PARK_BALL".into()),
                 },
             }],
         };
         commit_battle_turn_outcome(&mut state, 0, &outcome).unwrap();
-        assert_eq!(matches!(state.battle, BattleMemory::Inactive), ends,
-            "type={battle_type} balls={balls} caught={caught} fainted={fainted}");
+        assert_eq!(
+            matches!(state.battle, BattleMemory::Inactive),
+            ends,
+            "type={battle_type} balls={balls} caught={caught} fainted={fainted}"
+        );
         if ends {
-            assert_eq!(state.battle_result, 2, "CheckContestBattleOver clears the capture flags and adds DRAW");
+            assert_eq!(
+                state.battle_result, 2,
+                "CheckContestBattleOver clears the capture flags and adds DRAW"
+            );
             assert!(state.script_runtime.active_battle_combat.is_none());
             let script = state.script_runtime.next_script.as_ref().unwrap();
             assert_eq!(script.origin_map_name, "NationalPark");
@@ -31508,8 +31540,10 @@ fn contest_last_failed_ball_ends_after_the_turn_without_overriding_capture_or_fa
             // Capture completion has its own WIN path, but the final ball
             // still resumes the same authored out-of-balls announcement.
             crate::battle::start::deactivate_battle_after_win(&mut state);
-            assert_eq!(state.script_runtime.next_script.as_ref().unwrap().script,
-                "BugCatchingContestOutOfBallsScript");
+            assert_eq!(
+                state.script_runtime.next_script.as_ref().unwrap().script,
+                "BugCatchingContestOutOfBallsScript"
+            );
         }
     }
 }
@@ -31534,13 +31568,31 @@ fn equal_speed_link_peers_choose_the_same_trainer_first() {
         let mut peer = host.clone();
         peer.serial_connection_status = LinkSerialConnectionStatus::UsingExternalClock;
         let host_order = determine_turn_order(
-            &host, &input, &moves, &BTreeMap::new(), &move_priorities(),
-            &stat_multipliers(), &mut ScriptedBattleRandom::new(vec![roll]),
-        ).unwrap();
+            &host,
+            &input,
+            &moves,
+            &BTreeMap::new(),
+            &move_priorities(),
+            &stat_multipliers(),
+            &mut ScriptedBattleRandom::new(vec![roll]),
+        )
+        .unwrap();
         let peer_order = determine_turn_order(
-            &peer, &input, &moves, &BTreeMap::new(), &move_priorities(),
-            &stat_multipliers(), &mut ScriptedBattleRandom::new(vec![roll]),
-        ).unwrap();
-        assert_eq!(host_order, peer_order.into_iter().map(BattleSide::other).collect::<Vec<_>>());
+            &peer,
+            &input,
+            &moves,
+            &BTreeMap::new(),
+            &move_priorities(),
+            &stat_multipliers(),
+            &mut ScriptedBattleRandom::new(vec![roll]),
+        )
+        .unwrap();
+        assert_eq!(
+            host_order,
+            peer_order
+                .into_iter()
+                .map(BattleSide::other)
+                .collect::<Vec<_>>()
+        );
     }
 }

@@ -190,15 +190,28 @@ pub(super) fn export(root: &Path) -> Result<()> {
     let effects = std::fs::read_to_string(vendor.join("engine/items/item_effects.asm"))?;
     let attributes = std::fs::read_to_string(vendor.join("data/decorations/attributes.asm"))?;
     let mut boxes = serde_json::Map::new();
-    for (item, effect, decoration) in [("NORMAL_BOX", "NormalBoxEffect", "SILVER_TROPHY"),
-        ("GORGEOUS_BOX", "GorgeousBoxEffect", "GOLD_TROPHY")] {
-        ensure!(effects.contains(&format!("{effect}:\n\tld c, DECOFLAG_{decoration}_DOLL")),
-            "authored box decoration changed");
-        let flag = attributes.lines().map(code_part).filter_map(|line| line.strip_prefix("decoration ")
-            .and_then(|raw| source_arguments(raw).ok()))
+    for (item, effect, decoration) in [
+        ("NORMAL_BOX", "NormalBoxEffect", "SILVER_TROPHY"),
+        ("GORGEOUS_BOX", "GorgeousBoxEffect", "GOLD_TROPHY"),
+    ] {
+        ensure!(
+            effects.contains(&format!("{effect}:\n\tld c, DECOFLAG_{decoration}_DOLL")),
+            "authored box decoration changed"
+        );
+        let flag = attributes
+            .lines()
+            .map(code_part)
+            .filter_map(|line| {
+                line.strip_prefix("decoration ")
+                    .and_then(|raw| source_arguments(raw).ok())
+            })
             .find(|args| args.len() == 5 && args[1] == decoration)
-            .context("missing trophy decoration")?[3].clone();
-        boxes.insert(item.into(), json!({"item_id":item,"effect":effect,"decoration_flag":flag}));
+            .context("missing trophy decoration")?[3]
+            .clone();
+        boxes.insert(
+            item.into(),
+            json!({"item_id":item,"effect":effect,"decoration_flag":flag}),
+        );
     }
     let modular = data.join("content-packs/core-modular/field_box_items");
     std::fs::create_dir_all(&modular)?;

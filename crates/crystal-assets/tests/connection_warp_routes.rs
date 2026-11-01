@@ -151,7 +151,11 @@ fn blocked_border_certificate_requires_a_real_component_connected_warp_detour() 
     let assets = AssetRoot::new(env!("CARGO_MANIFEST_DIR"));
     let compiler = ModpackCompiler::new(&assets);
     let valid = compiler.audit(&data);
-    assert!(valid.reachable_maps.iter().any(|map| map == "Goal"), "{:?}", valid.diagnostics);
+    assert!(
+        valid.reachable_maps.iter().any(|map| map == "Goal"),
+        "{:?}",
+        valid.diagnostics
+    );
     assert!(!valid.diagnostics.iter().any(|d| matches!(
         d.code.as_str(),
         "invalid_connection_warp_route"

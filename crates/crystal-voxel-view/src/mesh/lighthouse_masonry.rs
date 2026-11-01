@@ -280,9 +280,7 @@ fn model(asset: Asset) -> &'static Model {
     static MODELS: OnceLock<[Model; 3]> = OnceLock::new();
     let models = MODELS.get_or_init(|| {
         [
-            crate::model_storage::include_model!(
-                "models/lighthouse_masonry/ashlar.mesh.json"
-            ),
+            crate::model_storage::include_model!("models/lighthouse_masonry/ashlar.mesh.json"),
             crate::model_storage::include_model!(
                 "models/lighthouse_masonry/window_single.mesh.json"
             ),
@@ -335,10 +333,12 @@ pub(super) fn append(mesh: &mut TerrainMeshData, g: &GridGeometry, p: &Placement
     );
     let origin = Vec3::new(west, 0., north);
     let cutaway_start = mesh.textured.positions.len();
-    let sample=|pixel:[usize;2]| {
-        let uv=g.uv(p.column+pixel[0]/8,p.row+pixel[1]/8);
-        [uv.0+(uv.1-uv.0)*((pixel[0]%8)as f32+0.5)/8.,
-         uv.2+(uv.3-uv.2)*((pixel[1]%8)as f32+0.5)/8.]
+    let sample = |pixel: [usize; 2]| {
+        let uv = g.uv(p.column + pixel[0] / 8, p.row + pixel[1] / 8);
+        [
+            uv.0 + (uv.1 - uv.0) * ((pixel[0] % 8) as f32 + 0.5) / 8.,
+            uv.2 + (uv.3 - uv.2) * ((pixel[1] % 8) as f32 + 0.5) / 8.,
+        ]
     };
     for part in &model(detail.asset).parts {
         let side = world_side(part.side, detail);
@@ -353,8 +353,12 @@ pub(super) fn append(mesh: &mut TerrainMeshData, g: &GridGeometry, p: &Placement
             // Recess the masonry backing behind the native low rubble skirt.
             // The rocks themselves remain inside the original wall footprint.
             if detail.moss {
-                let height = if detail.asset == Asset::Ashlar {0.5} else {0.25};
-                let inset = 0.90 + 0.10 * (point.y / height).clamp(0.,1.);
+                let height = if detail.asset == Asset::Ashlar {
+                    0.5
+                } else {
+                    0.25
+                };
+                let inset = 0.90 + 0.10 * (point.y / height).clamp(0., 1.);
                 point.x *= inset;
                 point.z *= inset;
             }
@@ -376,28 +380,50 @@ pub(super) fn append(mesh: &mut TerrainMeshData, g: &GridGeometry, p: &Placement
             // normals after recessing the backing so narrow window reveals
             // retain correct lighting and winding.
             for tri in source.indices.chunks_exact(3) {
-                let mut ids = [tri[0] as usize + base as usize, tri[1] as usize + base as usize,
-                    tri[2] as usize + base as usize];
-                if detail.reflect { ids.swap(1,2); }
-                let [a,b,c] = ids.map(|i|Vec3::from_array(mesh.textured.positions[i]));
-                let normal = (b-a).cross(c-a).normalize().to_array();
-                for i in ids { mesh.textured.normals[i] = normal; }
+                let mut ids = [
+                    tri[0] as usize + base as usize,
+                    tri[1] as usize + base as usize,
+                    tri[2] as usize + base as usize,
+                ];
+                if detail.reflect {
+                    ids.swap(1, 2);
+                }
+                let [a, b, c] = ids.map(|i| Vec3::from_array(mesh.textured.positions[i]));
+                let normal = (b - a).cross(c - a).normalize().to_array();
+                for i in ids {
+                    mesh.textured.normals[i] = normal;
+                }
             }
         }
-        for (i,color) in source.colors.iter().enumerate() {
+        for (i, color) in source.colors.iter().enumerate() {
             // The authored model's cream paint is not lighthouse stone. Read
             // charcoal from this complete block's upper ashlar, and glass/frame
             // from its own window half. Retain subtle modeled stone variation.
-            let glass=color[2]>color[1]&&color[1]>color[0];
-            let frame=color[0]>0.4&&color[2]<0.3;
-            let normal=Vec3::from_array(mesh.textured.normals[base as usize+i]);
-            let bevel=Vec3::from_array(source.normals[i]).abs().max_element()<0.98;
-            let pixel=if glass {[3,19]}else if frame {[1,17]}
-                else if side<4&&bevel {[3,11]}else{[3,3]};
-            let tone=if glass||frame {1.}else{(color[0]/0.63).clamp(0.8,1.12)};
+            let glass = color[2] > color[1] && color[1] > color[0];
+            let frame = color[0] > 0.4 && color[2] < 0.3;
+            let normal = Vec3::from_array(mesh.textured.normals[base as usize + i]);
+            let bevel = Vec3::from_array(source.normals[i]).abs().max_element() < 0.98;
+            let pixel = if glass {
+                [3, 19]
+            } else if frame {
+                [1, 17]
+            } else if side < 4 && bevel {
+                [3, 11]
+            } else {
+                [3, 3]
+            };
+            let tone = if glass || frame {
+                1.
+            } else {
+                (color[0] / 0.63).clamp(0.8, 1.12)
+            };
             mesh.textured.uvs.push(sample(pixel));
-            mesh.textured.colors.push(crate::interior_models::authored_face_color(
-                [tone,tone,tone,1.],normal));
+            mesh.textured
+                .colors
+                .push(crate::interior_models::authored_face_color(
+                    [tone, tone, tone, 1.],
+                    normal,
+                ));
         }
         for tri in source.indices.chunks_exact(3) {
             let [a, b, c] = [tri[0] + base, tri[1] + base, tri[2] + base];
@@ -424,31 +450,62 @@ pub(super) fn append(mesh: &mut TerrainMeshData, g: &GridGeometry, p: &Placement
 fn append_moss_rocks(out: &mut SurfaceMeshData, g: &GridGeometry, p: &Placement, detail: Detail) {
     let (west, _, north, _) = g.bounds(p.column, p.row);
     let tall = detail.asset == Asset::Ashlar;
-    let scale = Vec3::new(4. * g.tile_width, g.tile_height * if tall {2.} else {1.}, 4. * g.tile_height);
+    let scale = Vec3::new(
+        4. * g.tile_width,
+        g.tile_height * if tall { 2. } else { 1. },
+        4. * g.tile_height,
+    );
     for side in 0..4 {
-        if !detail.open[side] { continue; }
+        if !detail.open[side] {
+            continue;
+        }
         for rock in 0..4 {
             let left = rock as f32 / 4.;
             let right = (rock + 1) as f32 / 4.;
             let h0 = [0.75, 0.95, 0.8, 0.9][rock];
             let h1 = [0.95, 0.8, 0.9, 0.75][rock];
             let mut uv = g.uv(p.column + rock, p.row + 3);
-            if tall { uv.2 = g.uv(p.column + rock, p.row + 2).2; }
-            let front = [[left, 0., 1.0], [right, 0., 1.0],
-                [right, h1, 0.995], [left, h0, 0.995]];
-            let crown = [[left, h0, 0.995], [right, h1, 0.995],
-                [right, h1 * 0.8, 0.90], [left, h0 * 0.8, 0.90]];
-            for (points, tex) in [(front, [[uv.0,uv.3],[uv.1,uv.3],[uv.1,uv.2],[uv.0,uv.2]]),
-                (crown, [[uv.0,uv.2],[uv.1,uv.2],[uv.1,uv.3],[uv.0,uv.3]])] {
+            if tall {
+                uv.2 = g.uv(p.column + rock, p.row + 2).2;
+            }
+            let front = [
+                [left, 0., 1.0],
+                [right, 0., 1.0],
+                [right, h1, 0.995],
+                [left, h0, 0.995],
+            ];
+            let crown = [
+                [left, h0, 0.995],
+                [right, h1, 0.995],
+                [right, h1 * 0.8, 0.90],
+                [left, h0 * 0.8, 0.90],
+            ];
+            for (points, tex) in [
+                (
+                    front,
+                    [[uv.0, uv.3], [uv.1, uv.3], [uv.1, uv.2], [uv.0, uv.2]],
+                ),
+                (
+                    crown,
+                    [[uv.0, uv.2], [uv.1, uv.2], [uv.1, uv.3], [uv.0, uv.3]],
+                ),
+            ] {
                 let points = points.map(|v| {
-                    let local = rotate(Vec3::from_array(v) - Vec3::new(0.5,0.,0.5),
-                        ((side + 2) % 4) as u8) + Vec3::new(0.5,0.,0.5);
-                    (Vec3::new(west,0.,north) + local * scale).to_array()
+                    let local = rotate(
+                        Vec3::from_array(v) - Vec3::new(0.5, 0., 0.5),
+                        ((side + 2) % 4) as u8,
+                    ) + Vec3::new(0.5, 0., 0.5);
+                    (Vec3::new(west, 0., north) + local * scale).to_array()
                 });
-                let [a,b,c,_] = points.map(Vec3::from_array);
-                let normal = (b-a).cross(c-a).normalize();
-                append_quad(out, points, normal.to_array(), tex,
-                    crate::interior_models::authored_face_color([1.;4], normal));
+                let [a, b, c, _] = points.map(Vec3::from_array);
+                let normal = (b - a).cross(c - a).normalize();
+                append_quad(
+                    out,
+                    points,
+                    normal.to_array(),
+                    tex,
+                    crate::interior_models::authored_face_color([1.; 4], normal),
+                );
             }
         }
     }
@@ -519,33 +576,77 @@ mod tests {
     }
     #[test]
     fn external_lighthouse_family_uses_native_charcoal_and_preserves_wall_ownership() {
-        let path=std::env::var_os("CRYSTAL_RENDER_TEST_PACK").map(std::path::PathBuf::from)
-            .unwrap_or_else(||std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../content-packs/text-tui.crystalpack"));
-        if !path.is_file(){return;}
-        let loaded=crystal_assets::read_loaded_verified_compiled_game_pack(&path).unwrap();
-        let pack=loaded.pack();let art=&pack.runtime_files()["data/tilesets/lighthouse_metatiles.bin"];
-        let pixels=image::load_from_memory(&pack.runtime_files()["gfx/tilesets/lighthouse.png"]).unwrap().to_luma8();
-        assert_eq!(pixels.get_pixel((0x5e%16)*8+3,(0x5e/16)*8+3)[0],0,"wall body is native charcoal");
+        let path = std::env::var_os("CRYSTAL_RENDER_TEST_PACK")
+            .map(std::path::PathBuf::from)
+            .unwrap_or_else(|| {
+                std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+                    .join("../../content-packs/text-tui.crystalpack")
+            });
+        if !path.is_file() {
+            return;
+        }
+        let loaded = crystal_assets::read_loaded_verified_compiled_game_pack(&path).unwrap();
+        let pack = loaded.pack();
+        let art = &pack.runtime_files()["data/tilesets/lighthouse_metatiles.bin"];
+        let pixels = image::load_from_memory(&pack.runtime_files()["gfx/tilesets/lighthouse.png"])
+            .unwrap()
+            .to_luma8();
+        assert_eq!(
+            pixels.get_pixel((0x5e % 16) * 8 + 3, (0x5e / 16) * 8 + 3)[0],
+            0,
+            "wall body is native charcoal"
+        );
         for level in 1..=6 {
-            let name=format!("OlivineLighthouse{level}F");let map=&pack.data().maps[&name];
-            let (w,h)=(map.attributes.width as usize*4,map.attributes.height as usize*4);
-            let tiles=(0..w*h).map(|i| {
-                let (x,y)=(i%w,i/w);let block=map.blocks[y/4*(w/4)+x/4];
-                VisualTile{column:x as u32,row:y as u32,texture:Default::default(),priority:false,animation_frames:None,
-                    source:VisualTileSource{tileset_id:"lighthouse".into(),metatile_id:block,
-                        subtile_column:(x%4)as u8,subtile_row:(y%4)as u8,
-                        tile_index:art[block as usize*16+y%4*4+x%4]as u16}}
-            }).collect::<Vec<_>>();
-            let g=grid(w,h);let refs=tiles.iter().collect::<Vec<_>>();let placements=resolve(&tiles,&g,&name);
-            assert!(!placements.is_empty(),"{name} must actually resolve native masonry");
+            let name = format!("OlivineLighthouse{level}F");
+            let map = &pack.data().maps[&name];
+            let (w, h) = (
+                map.attributes.width as usize * 4,
+                map.attributes.height as usize * 4,
+            );
+            let tiles = (0..w * h)
+                .map(|i| {
+                    let (x, y) = (i % w, i / w);
+                    let block = map.blocks[y / 4 * (w / 4) + x / 4];
+                    VisualTile {
+                        column: x as u32,
+                        row: y as u32,
+                        texture: Default::default(),
+                        priority: false,
+                        animation_frames: None,
+                        source: VisualTileSource {
+                            tileset_id: "lighthouse".into(),
+                            metatile_id: block,
+                            subtile_column: (x % 4) as u8,
+                            subtile_row: (y % 4) as u8,
+                            tile_index: art[block as usize * 16 + y % 4 * 4 + x % 4] as u16,
+                        },
+                    }
+                })
+                .collect::<Vec<_>>();
+            let g = grid(w, h);
+            let refs = tiles.iter().collect::<Vec<_>>();
+            let placements = resolve(&tiles, &g, &name);
+            assert!(
+                !placements.is_empty(),
+                "{name} must actually resolve native masonry"
+            );
             for p in &placements {
-                assert_eq!(block_at(&refs,&g,p.column,p.row),Some(tiles[p.row*w+p.column].source.metatile_id));
-                let mut mesh=TerrainMeshData{footing_heights:vec![6.;w*h],..Default::default()};
-                append(&mut mesh,&g,p,detail(p));
+                assert_eq!(
+                    block_at(&refs, &g, p.column, p.row),
+                    Some(tiles[p.row * w + p.column].source.metatile_id)
+                );
+                let mut mesh = TerrainMeshData {
+                    footing_heights: vec![6.; w * h],
+                    ..Default::default()
+                };
+                append(&mut mesh, &g, p, detail(p));
                 assert!(mesh.solid.positions.is_empty());
-                assert_eq!(mesh.footing_heights,vec![6.;w*h]);
-                assert_eq!(mesh.textured.cutaway_ranges[0].start,64,"opaque floor excluded from reveal");
-                assert!(mesh.textured.positions.iter().any(|v|v[1]==32.));
+                assert_eq!(mesh.footing_heights, vec![6.; w * h]);
+                assert_eq!(
+                    mesh.textured.cutaway_ranges[0].start, 64,
+                    "opaque floor excluded from reveal"
+                );
+                assert!(mesh.textured.positions.iter().any(|v| v[1] == 32.));
             }
         }
     }
@@ -578,22 +679,26 @@ mod tests {
                             if !tri.iter().all(|i| reveal.contains(&(*i as usize))) {
                                 return false;
                             }
-                            let [a,b,c] = [tri[0],tri[1],tri[2]]
+                            let [a, b, c] = [tri[0], tri[1], tri[2]]
                                 .map(|i| Vec3::from_array(surface.positions[i as usize]));
-                            let e1 = b-a;
-                            let e2 = c-a;
+                            let e1 = b - a;
+                            let e2 = c - a;
                             let h = direction.cross(e2);
                             let determinant = e1.dot(h);
-                            if determinant <= 1e-6 { return false; }
-                            let relative = start-a;
-                            let u = relative.dot(h)/determinant;
+                            if determinant <= 1e-6 {
+                                return false;
+                            }
+                            let relative = start - a;
+                            let u = relative.dot(h) / determinant;
                             let q = relative.cross(e1);
-                            let v = direction.dot(q)/determinant;
-                            let t = e2.dot(q)/determinant;
-                            u >= -1e-5 && v >= -1e-5 && u+v <= 1.00001
-                                && t > 0. && t < 1.
+                            let v = direction.dot(q) / determinant;
+                            let t = e2.dot(q) / determinant;
+                            u >= -1e-5 && v >= -1e-5 && u + v <= 1.00001 && t > 0. && t < 1.
                         });
-                        assert!(hit, "closed outward end: block={id:x} turns={turns} side={outward:?} offset={offset}");
+                        assert!(
+                            hit,
+                            "closed outward end: block={id:x} turns={turns} side={outward:?} offset={offset}"
+                        );
                     }
                 }
             }
@@ -601,22 +706,32 @@ mod tests {
     }
     #[test]
     fn moss_rocks_follow_native_band_and_cull_joined_faces() {
-        let g = grid(16,12);
-        for id in [0x29,0x3c,0x3d,0x3e] {
-            let mut t = floor(16,12);
-            block(&mut t,16,4,4,id);
-            block(&mut t,16,8,4,id);
-            let ps = resolve(&t,&g,"OlivineLighthouse2F");
-            assert_eq!(ps.len(),2);
+        let g = grid(16, 12);
+        for id in [0x29, 0x3c, 0x3d, 0x3e] {
+            let mut t = floor(16, 12);
+            block(&mut t, 16, 4, 4, id);
+            block(&mut t, 16, 8, 4, id);
+            let ps = resolve(&t, &g, "OlivineLighthouse2F");
+            assert_eq!(ps.len(), 2);
             for p in &ps {
                 let d = detail(p);
-                assert_eq!(d.moss,id != 0x3e);
-                assert_eq!(d.open.iter().filter(|v|**v).count(),3);
+                assert_eq!(d.moss, id != 0x3e);
+                assert_eq!(d.open.iter().filter(|v| **v).count(), 3);
                 let mut out = SurfaceMeshData::default();
-                if d.moss { append_moss_rocks(&mut out,&g,p,d); }
-                assert_eq!(out.positions.len(),if id==0x3e {0}else{3*4*8});
-                assert!(out.positions.iter().all(|v| (0.0..if id==0x3c {16.0}else{8.0}).contains(&v[1])));
-                assert!(out.normals.iter().all(|n|Vec3::from_array(*n).is_normalized()));
+                if d.moss {
+                    append_moss_rocks(&mut out, &g, p, d);
+                }
+                assert_eq!(out.positions.len(), if id == 0x3e { 0 } else { 3 * 4 * 8 });
+                assert!(
+                    out.positions
+                        .iter()
+                        .all(|v| (0.0..if id == 0x3c { 16.0 } else { 8.0 }).contains(&v[1]))
+                );
+                assert!(
+                    out.normals
+                        .iter()
+                        .all(|n| Vec3::from_array(*n).is_normalized())
+                );
             }
         }
     }
@@ -794,40 +909,64 @@ mod tests {
                 append(&mut mesh, &g, &p[0], d);
                 assert_eq!(mesh.footing_heights, vec![1.25; t.len()]);
                 assert!(mesh.solid.positions.is_empty());
-                assert_eq!(mesh.textured.cutaway_ranges,vec![64..mesh.textured.positions.len()]);
+                assert_eq!(
+                    mesh.textured.cutaway_ranges,
+                    vec![64..mesh.textured.positions.len()]
+                );
                 assert!(mesh.solid.cutaway_ranges.is_empty());
-                let uv=g.uv(p[0].column,p[0].row);
-                let body=[uv.0+(uv.1-uv.0)*3.5/8.,uv.2+(uv.3-uv.2)*3.5/8.];
-                assert!(mesh.textured.uvs[64..].contains(&body),"stone uses its own charcoal pixel");
-                if matches!(id,0x3c|0x3e) {
-                    let uv=g.uv(p[0].column,p[0].row+1);
-                    let edge=[uv.0+(uv.1-uv.0)*3.5/8.,uv.2+(uv.3-uv.2)*3.5/8.];
-                    assert!(mesh.textured.uvs[64..].contains(&edge),"beveled joints keep native gray85");
-                    let stone_end = mesh.textured.positions.len() - if d.moss {d.open.iter().filter(|v|**v).count()*32} else {0};
+                let uv = g.uv(p[0].column, p[0].row);
+                let body = [
+                    uv.0 + (uv.1 - uv.0) * 3.5 / 8.,
+                    uv.2 + (uv.3 - uv.2) * 3.5 / 8.,
+                ];
+                assert!(
+                    mesh.textured.uvs[64..].contains(&body),
+                    "stone uses its own charcoal pixel"
+                );
+                if matches!(id, 0x3c | 0x3e) {
+                    let uv = g.uv(p[0].column, p[0].row + 1);
+                    let edge = [
+                        uv.0 + (uv.1 - uv.0) * 3.5 / 8.,
+                        uv.2 + (uv.3 - uv.2) * 3.5 / 8.,
+                    ];
+                    assert!(
+                        mesh.textured.uvs[64..].contains(&edge),
+                        "beveled joints keep native gray85"
+                    );
+                    let stone_end = mesh.textured.positions.len()
+                        - if d.moss {
+                            d.open.iter().filter(|v| **v).count() * 32
+                        } else {
+                            0
+                        };
                     for i in 64..stone_end {
-                        let n=Vec3::from_array(mesh.textured.normals[i]);
-                        if n.abs().max_element()>0.999 {
-                            assert_eq!(mesh.textured.uvs[i],body,"broad faces cannot become alternating gray blocks");
+                        let n = Vec3::from_array(mesh.textured.normals[i]);
+                        if n.abs().max_element() > 0.999 {
+                            assert_eq!(
+                                mesh.textured.uvs[i], body,
+                                "broad faces cannot become alternating gray blocks"
+                            );
                         }
                     }
                 }
-                assert!(mesh
-                    .textured
-                    .positions
-                    .iter()
-                    .all(|p| (32.0..=64.0).contains(&p[0])
-                        && (0.0..=32.0).contains(&p[1])
-                        && (32.0..=64.0).contains(&p[2])));
-                assert!((mesh.textured.indices.len()-96) / 3 <= 1100);
+                assert!(
+                    mesh.textured
+                        .positions
+                        .iter()
+                        .all(|p| (32.0..=64.0).contains(&p[0])
+                            && (0.0..=32.0).contains(&p[1])
+                            && (32.0..=64.0).contains(&p[2]))
+                );
+                assert!((mesh.textured.indices.len() - 96) / 3 <= 1100);
                 for tri in mesh.textured.indices.chunks_exact(3) {
                     let a = Vec3::from_array(mesh.textured.positions[tri[0] as usize]);
                     let b = Vec3::from_array(mesh.textured.positions[tri[1] as usize]);
                     let c = Vec3::from_array(mesh.textured.positions[tri[2] as usize]);
                     let n = (b - a).cross(c - a);
                     assert!(n.length_squared() > 1e-8);
-                    assert!(tri
-                        .iter()
-                        .all(|&i| n.dot(Vec3::from_array(mesh.textured.normals[i as usize])) > 0.0));
+                    assert!(tri.iter().all(|&i| {
+                        n.dot(Vec3::from_array(mesh.textured.normals[i as usize])) > 0.0
+                    }));
                 }
             }
         }

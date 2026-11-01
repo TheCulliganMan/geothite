@@ -21,10 +21,18 @@ struct ApronStyle {
     band: [u8; 3],
 }
 const WORK_APRON: ApronStyle = ApronStyle {
-    height: 1.025, normal_gap: 0., cloth: [185, 151, 105], pocket: [169, 135, 92], band: [153, 118, 77],
+    height: 1.025,
+    normal_gap: 0.,
+    cloth: [185, 151, 105],
+    pocket: [169, 135, 92],
+    band: [153, 118, 77],
 };
 const SHORT_APRON: ApronStyle = ApronStyle {
-    height: 0.825, normal_gap: 0.003, cloth: [234, 233, 220], pocket: [222, 221, 204], band: [209, 208, 190],
+    height: 0.825,
+    normal_gap: 0.003,
+    cloth: [234, 233, 220],
+    pocket: [222, 221, 204],
+    band: [209, 208, 190],
 };
 
 struct Sample {
@@ -183,7 +191,9 @@ fn normals(surface: &mut SurfaceMeshData) {
         for _ in 0..12 {
             for face in &faces {
                 let deficit = 0.20 - n.dot(*face);
-                if deficit > 0.0 { n = (n + *face * deficit).normalize(); }
+                if deficit > 0.0 {
+                    n = (n + *face * deficit).normalize();
+                }
             }
         }
         *normal = n.to_array();
@@ -199,8 +209,8 @@ fn front_normals(surface: &mut SurfaceMeshData, layer: usize) {
         if face.iter().any(|&i| i as usize >= layer) {
             continue;
         }
-        let p = [face[0], face[1], face[2]]
-            .map(|i| Vec3::from_array(surface.positions[i as usize]));
+        let p =
+            [face[0], face[1], face[2]].map(|i| Vec3::from_array(surface.positions[i as usize]));
         let n = (p[1] - p[0]).cross(p[2] - p[0]).normalize();
         for (corner, &i) in face.iter().enumerate() {
             let a = (p[(corner + 1) % 3] - p[corner]).normalize();
@@ -216,11 +226,19 @@ fn front_normals(surface: &mut SurfaceMeshData, layer: usize) {
 /// The closing edge has its own normal at a fabric crease. Coincident copies
 /// keep exactly the same position, UV and skin; they remain joined in motion.
 #[cfg(all(feature = "people-review", not(target_arch = "wasm32")))]
-fn rim_normals(surface: &mut SurfaceMeshData, joints: &mut Vec<[u16; 4]>,
-    weights: &mut Vec<[f32; 4]>, first: usize) {
+fn rim_normals(
+    surface: &mut SurfaceMeshData,
+    joints: &mut Vec<[u16; 4]>,
+    weights: &mut Vec<[f32; 4]>,
+    first: usize,
+) {
     for at in (first..surface.indices.len()).step_by(3) {
-        let ids = [surface.indices[at], surface.indices[at + 1], surface.indices[at + 2]]
-            .map(|i| i as usize);
+        let ids = [
+            surface.indices[at],
+            surface.indices[at + 1],
+            surface.indices[at + 2],
+        ]
+        .map(|i| i as usize);
         let p = ids.map(|i| Vec3::from_array(surface.positions[i]));
         let normal = (p[1] - p[0]).cross(p[2] - p[0]).normalize();
         for (corner, i) in ids.into_iter().enumerate() {
@@ -251,9 +269,11 @@ fn belt(source: &CostumeMesh, style: ApronStyle) -> CostumeMesh {
                 surface.positions.push([dir.x * r, y, 0.05 + dir.y * r]);
                 surface.normals.push([0.; 3]);
                 surface.uvs.push([0.; 2]);
-                surface
-                    .colors
-                    .push(Color::srgb_u8(style.band[0], style.band[1], style.band[2]).to_linear().to_f32_array());
+                surface.colors.push(
+                    Color::srgb_u8(style.band[0], style.band[1], style.band[2])
+                        .to_linear()
+                        .to_f32_array(),
+                );
                 joints.push(fit.joints);
                 weights.push(fit.weights);
             }
@@ -336,7 +356,9 @@ fn panel(source: &CostumeMesh, pocket: bool, style: ApronStyle) -> CostumeMesh {
                 // The shorter skirt tilts steeply during Run. A z-only gap
                 // becomes nearly tangent; preserve clearance along its actual
                 // outward surface normal without changing the work apron.
-                surface.positions.push((Vec3::new(x, y, z) + fit.normal * style.normal_gap).to_array());
+                surface
+                    .positions
+                    .push((Vec3::new(x, y, z) + fit.normal * style.normal_gap).to_array());
                 surface.normals.push([0.; 3]);
                 let rgb = if pocket {
                     style.pocket
@@ -364,7 +386,11 @@ fn panel(source: &CostumeMesh, pocket: bool, style: ApronStyle) -> CostumeMesh {
         let p = face.map(|i| Vec3::from_array(surface.positions[i as usize]));
         let edges = [(p[1] - p[0]), (p[2] - p[1]), (p[0] - p[2])];
         let area = edges[0].cross(-edges[2]).length_squared();
-        area / edges.iter().map(|edge| edge.length_squared()).sum::<f32>().powi(2)
+        area / edges
+            .iter()
+            .map(|edge| edge.length_squared())
+            .sum::<f32>()
+            .powi(2)
     };
     let mut front_faces = Vec::with_capacity(COLS * ROWS * 2);
     for row in 0..ROWS {
@@ -474,10 +500,18 @@ mod tests {
         let female =
             PersonRig::parse(&std::fs::read(root.join("people/kenney/human-female.glb")).unwrap())
                 .unwrap();
-        for kind in [CharacterKind::Kurt, CharacterKind::KurtOutside,
-            CharacterKind::PokefanF, CharacterKind::Mom, CharacterKind::RedsMom] {
+        for kind in [
+            CharacterKind::Kurt,
+            CharacterKind::KurtOutside,
+            CharacterKind::PokefanF,
+            CharacterKind::Mom,
+            CharacterKind::RedsMom,
+        ] {
             let look = crate::npc_appearance::look(kind);
-            let short = matches!(kind, CharacterKind::PokefanF | CharacterKind::Mom | CharacterKind::RedsMom);
+            let short = matches!(
+                kind,
+                CharacterKind::PokefanF | CharacterKind::Mom | CharacterKind::RedsMom
+            );
             let rig = if short { &female } else { &male };
             let style = if short { SHORT_APRON } else { WORK_APRON };
             let costume = crate::npc_appearance::costume_mesh(&rig, look).unwrap();

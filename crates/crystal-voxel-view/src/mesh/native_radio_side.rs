@@ -180,7 +180,7 @@ pub(super) fn append(
                     points.reverse();
                     uvs.reverse();
                 }
-                let first=out.positions.len();
+                let first = out.positions.len();
                 append_quad(out, points, [normal, 0., 0.], uvs, TEXTURED_SHADE);
                 super::super::super::radio_glazing::mark(out, first, 0.12);
             }

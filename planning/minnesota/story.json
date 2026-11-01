@@ -2321,26 +2321,27 @@
       "62f318a1758b5d966e558f7855e15646369c38d33c7241c671fb68daa1f3bfb7",
       "697f6cddd44680f8d548223a70243e67cedb86810039a16d778614330ca32fdd",
       "63f1330753882bf4dfad9eef85e933a48c018d6ab9bc6163f294e0e432e27ff9",
-      "a7f6270ac5c7cdc83fe0f7484fd8485990ceb9749a0fde803dc43cbd22b90bad"
+      "a7f6270ac5c7cdc83fe0f7484fd8485990ceb9749a0fde803dc43cbd22b90bad",
+      "544539b3c51802c03cc284ae7ec3d683ea251596af80c71ef6f886ef4888aa16"
     ],
     "texts": {
       "MnWinonaHome1F": {
         "MnWHomeIntroText": [
           [
-            "MOM: Wait a",
-            "moment!"
+            "MOM: Oh, good!",
+            "TAMARACK stopped"
           ],
           [
-            "DR TAMARACK asked",
-            "to see you today."
+            "by earlier.",
+            "She needs a hand."
           ],
           [
             "Her field station",
             "is by the river."
           ],
           [
-            "Come home and tell",
-            "me how it went!"
+            "Oh! Your POKEGEAR",
+            "is fixed at last!"
           ]
         ],
         "MnWGuardianRestText": [
@@ -2372,6 +2373,24 @@
             "Your team can rest",
             "here too."
           ]
+        ],
+        "MnWHomeGearReceivedText": [
+          [
+            "You received the",
+            "POKEGEAR!"
+          ],
+          [
+            "MOM: Open POKEGEAR",
+            "from START."
+          ],
+          [
+            "The map will help",
+            "you find your way."
+          ],
+          [
+            "Bring your team",
+            "home for a rest."
+          ]
         ]
       },
       "MnWinonaFieldStation": {
@@ -2385,52 +2404,40 @@
             "and its POKEMON."
           ],
           [
-            "IVY works at the",
-            "ROCHESTER clinic."
+            "IVY's a doctor in",
+            "ROCHESTER."
           ],
           [
-            "She needs my notes",
-            "on water levels."
+            "The river's low.",
+            "Nests are drying."
           ],
           [
-            "Will you take her",
-            "this envelope?"
+            "She needs my logs.",
+            "Can you take them?"
           ],
           [
-            "Wild POKEMON live",
-            "along the trail."
-          ],
-          [
-            "Choose a partner",
-            "for your journey."
+            "Choose a partner.",
+            "The trail is wild."
           ]
         ],
         "MnWChooseText": [
           [
-            "TAMARACK: Choose",
-            "your partner."
+            "TAMARACK: No rush.",
+            "Take your time."
           ]
         ],
         "MnWReadingsText": [
           [
             "TAMARACK: You two",
-            "look ready!"
+            "make a great team!"
           ],
           [
-            "These are my",
-            "original notes."
+            "Take my original",
+            "river logs to IVY."
           ],
           [
-            "You received the",
-            "sealed envelope."
-          ],
-          [
-            "TAMARACK: IVY is",
-            "at the clinic."
-          ],
-          [
-            "Take ROUTE 01 west",
-            "to ROCHESTER."
+            "She's at the",
+            "ROCHESTER clinic."
           ]
         ],
         "MnOverhaulStarterReceivedText": [
@@ -2554,8 +2561,12 @@
             "safe and sound."
           ],
           [
-            "Did your partner",
-            "enjoy the trip?"
+            "Our aide can offer",
+            "the other starters"
+          ],
+          [
+            "for your research.",
+            "Ask at the desk!"
           ]
         ],
         "MnWTamarackSurveyReturnText": [
@@ -2655,8 +2666,28 @@
         ],
         "MnNSETamarackQuestText": [
           [
-            "TAMARACK: ROUTE 01",
-            "leads to IVY."
+            "TAMARACK: Don't",
+            "mind REED."
+          ],
+          [
+            "Your partner is",
+            "healed and ready."
+          ],
+          [
+            "Take DRIFTLESS",
+            "TRAIL west to the"
+          ],
+          [
+            "ROCHESTER clinic",
+            "with my logs."
+          ],
+          [
+            "My aide by the",
+            "door has POKE"
+          ],
+          [
+            "BALLS for your",
+            "trip. Be safe!"
           ]
         ],
         "MnNSETamarackRestText": [
@@ -2710,16 +2741,20 @@
         ],
         "MnNSEEggAfterText": [
           [
-            "TAMARACK: How is",
-            "your team doing?"
+            "TAMARACK: IVY said",
+            "our courier ELLIS"
           ],
           [
-            "Keep the EGG with",
-            "you on your trip."
+            "went missing in",
+            "MINNEAPOLIS."
           ],
           [
-            "It should hatch",
-            "soon!"
+            "Head north through",
+            "MANKATO and visit"
+          ],
+          [
+            "JO's house in",
+            "MINNEAPOLIS!"
           ]
         ],
         "MnArcTamarackAfterText": [
@@ -2746,6 +2781,157 @@
           [
             "REED: You need",
             "more practice."
+          ]
+        ],
+        "MnWPokedexReceivedText": [
+          [
+            "You received the",
+            "sealed envelope"
+          ],
+          [
+            "and a POKEDEX!"
+          ],
+          [
+            "TAMARACK: It lists",
+            "the POKEMON you"
+          ],
+          [
+            "see or catch.",
+            "Try it on the way!"
+          ]
+        ],
+        "MnWTamarackGuideChampionText": [
+          [
+            "TAMARACK: Our new",
+            "CHAMPION!"
+          ],
+          [
+            "Come in. Your team",
+            "has earned a rest."
+          ]
+        ],
+        "MnWTamarackGuideRestoredText": [
+          [
+            "TAMARACK: No more",
+            "pumps."
+          ],
+          [
+            "The shore needs",
+            "time to recover."
+          ],
+          [
+            "Let me heal your",
+            "team, too."
+          ],
+          [
+            "The LEAGUE lies",
+            "north of ELY."
+          ],
+          [
+            "You'll need all",
+            "eight badges."
+          ]
+        ],
+        "MnWTamarackGuideBoundaryText": [
+          [
+            "TAMARACK: Send the",
+            "log by radio."
+          ],
+          [
+            "Find the shelter",
+            "past GRAND MARAIS."
+          ]
+        ],
+        "MnWTamarackGuideDuluthText": [
+          [
+            "TAMARACK: Take the",
+            "gauge to DULUTH."
+          ],
+          [
+            "The harbor crew",
+            "knows these pumps."
+          ]
+        ],
+        "MnWTamarackGuideNorthText": [
+          [
+            "TAMARACK: Read the",
+            "record at ITASCA."
+          ],
+          [
+            "Show it to the",
+            "BEMIDJI officer."
+          ]
+        ],
+        "MnWTamarackGuideBrainerdText": [
+          [
+            "TAMARACK: MINA's",
+            "worried about the"
+          ],
+          [
+            "lift crew.",
+            "Ask in BRAINERD."
+          ],
+          [
+            "Go north through",
+            "ST CLOUD."
+          ]
+        ],
+        "MnWTamarackGuideStPaulText": [
+          [
+            "TAMARACK: ELLIS is",
+            "safe. Thank you."
+          ],
+          [
+            "Ask him about the",
+            "dispatch copy."
+          ],
+          [
+            "Then head east to",
+            "the ST PAUL depot."
+          ]
+        ],
+        "MnWTamarackGuideIntakeText": [
+          [
+            "TAMARACK: Meet IVY",
+            "at the intake."
+          ],
+          [
+            "Her crew will help",
+            "you finish there."
+          ]
+        ],
+        "MnWTamarackGuideDepotText": [
+          [
+            "TAMARACK: Take the",
+            "meter to the depot"
+          ],
+          [
+            "in GRAND RAPIDS.",
+            "Ask about its log."
+          ]
+        ],
+        "MnWTamarackGuideMineText": [
+          [
+            "TAMARACK: Look for",
+            "the missing meter."
+          ],
+          [
+            "Try the IRON RANGE",
+            "mine. Take it to"
+          ],
+          [
+            "the survey depot",
+            "in GRAND RAPIDS."
+          ]
+        ],
+        "MnWTamarackGuideManifestText": [
+          [
+            "TAMARACK: MINA can",
+            "show you the log."
+          ],
+          [
+            "Read it at the",
+            "ST PAUL depot."
           ]
         ]
       },
@@ -3802,18 +3988,22 @@
             "WINONA"
           ],
           [
-            "Passenger service",
-            "is not running."
+            "The conductor has",
+            "return trip times."
           ]
         ],
         "MN_ST_PAUL_DEPOT_CLERKText": [
           [
-            "CLERK: The public",
-            "hall is open."
+            "CLERK: Welcome to",
+            "UNION DEPOT."
           ],
           [
-            "Passenger trains",
-            "are not running."
+            "The conductor can",
+            "take you back to"
+          ],
+          [
+            "stations you have",
+            "visited on foot."
           ]
         ],
         "MN_ST_PAUL_DEPOT_COURIERText": [
@@ -5128,30 +5318,46 @@
         ],
         "MnArcIntakeIvyText": [
           [
-            "IVY: I found my",
-            "crew down here."
+            "IVY: My crew was",
+            "sent to build this"
           ],
           [
-            "They were sent to",
-            "build this intake."
+            "intake. REED now",
+            "guards the drive."
           ],
           [
-            "Now we can get",
-            "everyone home."
+            "Keep clear of the",
+            "green water."
+          ],
+          [
+            "The drill, outlet",
+            "and clean bypass"
+          ],
+          [
+            "have separate",
+            "controls."
           ]
         ],
         "MnArcIntakeFinnText": [
           [
-            "FINN: Watch",
-            "this gauge."
+            "FINN: Stop the",
+            "drill first."
           ],
           [
-            "The pressure has",
-            "to fall first."
+            "Seal the dirty",
+            "outlet in the"
           ],
           [
-            "Stop the motor",
-            "before opening it."
+            "lower bay. Then",
+            "open the clean"
+          ],
+          [
+            "bypass beside the",
+            "west drive."
+          ],
+          [
+            "We can get the",
+            "crew clear then."
           ]
         ],
         "MnArcIntakeReedExitText": [
@@ -5879,16 +6085,24 @@
       "MnLeechLake": {
         "MN_LEECH_SHORE_FISHERText": [
           [
-            "FISHER: LODE says",
-            "the water is fine."
+            "FISHER: LODE lists",
+            "last year's catch."
           ],
           [
-            "My nets have been",
-            "empty all week."
+            "My nets came up",
+            "empty this week."
           ],
           [
-            "I told the officer",
-            "in BEMIDJI."
+            "The pine island's",
+            "landing is west."
+          ],
+          [
+            "WHIRLPOOL opens",
+            "the eastern cove."
+          ],
+          [
+            "Try ITEMFINDER at",
+            "the eastern rocks."
           ]
         ],
         "MN_LEECH_SHORE_WALKERText": [
@@ -5903,6 +6117,13 @@
           [
             "We can fish here",
             "without their say."
+          ],
+          [
+            "The pine path",
+            "joins both cabins."
+          ],
+          [
+            "Watch the grass."
           ]
         ],
         "MnLeechLakeCheckBadgesText": [
@@ -6854,6 +7075,29 @@
           [
             "Her field station",
             "is by the river."
+          ]
+        ],
+        "MnWTrailWardenText": [
+          [
+            "Hold up! You need",
+            "a POKEMON partner"
+          ],
+          [
+            "for this trail.",
+            "Ask TAMARACK at"
+          ],
+          [
+            "the field station",
+            "by the river."
+          ]
+        ],
+        "MnWTrailWardenClearedText": [
+          [
+            "ROCHESTER is west.",
+            "Rest at home if"
+          ],
+          [
+            "your team tires."
           ]
         ]
       },
@@ -7985,12 +8229,146 @@
       "MnWinonaHome2F": {
         "MN_SMALL_INTERIOR_WINONA_COUSINInteriorText": [
           [
-            "COUSIN: I'm trying",
-            "your game."
+            "COUSIN: One more",
+            "game? Just one?"
           ],
           [
-            "Say hi to your mom",
-            "before you go."
+            "Your mom's waiting",
+            "downstairs."
+          ]
+        ],
+        "MnWinonaCousinStarterText": [
+          [
+            "COUSIN: Can I pet",
+            "your new partner?"
+          ],
+          [
+            "Come back soon.",
+            "Tell me the news."
+          ]
+        ],
+        "MnWinonaCousinRochesterText": [
+          [
+            "COUSIN: ROCHESTER!",
+            "How was the walk?"
+          ],
+          [
+            "My legs hurt just",
+            "thinking about it."
+          ]
+        ],
+        "MnWinonaCousinMinneapolisText": [
+          [
+            "COUSIN: Mom told",
+            "me about ELLIS."
+          ],
+          [
+            "Glad he's home.",
+            "Are you all right?"
+          ]
+        ],
+        "MnWinonaCousinStPaulText": [
+          [
+            "COUSIN: Was REED",
+            "that grumpy here?"
+          ],
+          [
+            "If he comes back,",
+            "he can lose to me."
+          ]
+        ],
+        "MnWinonaCousinBrainerdText": [
+          [
+            "COUSIN: Up north!",
+            "See any loons?"
+          ],
+          [
+            "I'd like to hear",
+            "one that close."
+          ]
+        ],
+        "MnWinonaCousinIronRangeText": [
+          [
+            "COUSIN: Mom said",
+            "the crew got out."
+          ],
+          [
+            "She let out a sigh",
+            "I heard upstairs."
+          ]
+        ],
+        "MnWinonaCousinRestoredText": [
+          [
+            "COUSIN: No more",
+            "pumps? Good."
+          ],
+          [
+            "Stay for a game.",
+            "Stay home a bit."
+          ]
+        ],
+        "MnWinonaCousinChampionText": [
+          [
+            "COUSIN: CHAMPION!",
+            "I knew you could!"
+          ],
+          [
+            "You still owe me",
+            "a game, though."
+          ]
+        ]
+      },
+      "MnR01C00R00": {
+        "MnFossilSlabText": [
+          [
+            "Look, a shell!",
+            "Right in the rock."
+          ],
+          [
+            "This cliff used to",
+            "lie under a sea."
+          ],
+          [
+            "Two fossils came",
+            "out. Want one?"
+          ]
+        ],
+        "MnFossilLensChoiceText": [
+          [
+            "Take LENS FOSSIL?"
+          ],
+          [
+            "YES: LENS FOSSIL",
+            "NO: SPIRE FOSSIL"
+          ]
+        ],
+        "MnFossilLensConfirmText": [
+          [
+            "Take the many-eyed",
+            "LENS FOSSIL?"
+          ]
+        ],
+        "MnFossilSpireConfirmText": [
+          [
+            "Take the chambered",
+            "SPIRE FOSSIL?"
+          ]
+        ],
+        "MnFossilDirectionsText": [
+          [
+            "My colleague works",
+            "by the ROCHESTER"
+          ],
+          [
+            "clinic courtyard.",
+            "Take it to her."
+          ],
+          [
+            "With a CARE BADGE,",
+            "you can have her"
+          ],
+          [
+            "revive the fossil."
           ]
         ]
       }

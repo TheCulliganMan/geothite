@@ -52,9 +52,7 @@ pub(super) fn raise(
                     if remaining.remove(&p) {
                         body.push(p);
                     }
-                } else if other.tileset_id.as_ref() == "kanto"
-                    && plateau(other)
-                {
+                } else if other.tileset_id.as_ref() == "kanto" && plateau(other) {
                     // Relief fades at the pocket boundary. Use the native
                     // mineral base plus its calibrated terrace, never a peak.
                     let terrace = levels[index(p)].into_iter().fold(f32::INFINITY, f32::min);
@@ -164,21 +162,31 @@ mod tests {
     }
     #[test]
     fn native_east_cliff_courses_do_not_receive_a_second_plateau_lift() {
-        let mut sources=fixture();
-        for (_,source,_) in &mut sources {
-            if source.metatile_id==0x2c {
-                source.metatile_id=0x29;
-                source.tile_index=if source.subtile_column<2 {0x11}else{0x24};
+        let mut sources = fixture();
+        for (_, source, _) in &mut sources {
+            if source.metatile_id == 0x2c {
+                source.metatile_id = 0x29;
+                source.tile_index = if source.subtile_column < 2 {
+                    0x11
+                } else {
+                    0x24
+                };
             }
         }
-        let native=sources.iter().map(|(p,s,land)|((p.y,p.x),(s,*land))).collect();
-        let mut levels=vec![[2.;4];144];
-        assert!(raise(&native,IVec2::splat(-6),12,&mut levels));
-        let rim=2.+crate::kanto_cliff::KANTO_CLIFF_HEIGHT/crate::profile::JUMP_LEDGE_HEIGHT;
-        for (i,level) in levels.iter().enumerate() {
-            let pocket=(3..9).contains(&(i%12)) && (3..9).contains(&(i/12));
-            assert_eq!(*level,[if pocket {rim}else{2.};4],
-                "only the pond meets the native cliff; its rock courses already own their height at {i}");
+        let native = sources
+            .iter()
+            .map(|(p, s, land)| ((p.y, p.x), (s, *land)))
+            .collect();
+        let mut levels = vec![[2.; 4]; 144];
+        assert!(raise(&native, IVec2::splat(-6), 12, &mut levels));
+        let rim = 2. + crate::kanto_cliff::KANTO_CLIFF_HEIGHT / crate::profile::JUMP_LEDGE_HEIGHT;
+        for (i, level) in levels.iter().enumerate() {
+            let pocket = (3..9).contains(&(i % 12)) && (3..9).contains(&(i / 12));
+            assert_eq!(
+                *level,
+                [if pocket { rim } else { 2. }; 4],
+                "only the pond meets the native cliff; its rock courses already own their height at {i}"
+            );
         }
     }
 

@@ -384,10 +384,38 @@ pub(super) fn fields(
             )
         }
         "Intro_Scene16_AnimateSuicune" => {
-            source.operation("Intro_ColoredSuicuneFrameSwap", &["hlcoord 0, 0", "ld bc, SCREEN_AREA"], "source_suicune_tile_region", json!({}))?;
-            source.operation("Intro_ColoredSuicuneFrameSwap", &["inc hl", "dec bc", "ld a, c", "or b", "jr nz, .loop"], "source_suicune_tile_loop", json!({}))?;
-            source.operation("Intro_ColoredSuicuneFrameSwap", &["ld a, [hl]", "and a", "jr z, .skip", "cp $80", "jr nc, .skip", "xor $8", "ld [hl], a"], "source_suicune_tile_toggle", json!({}))?;
-            source.operation("Intro_ColoredSuicuneFrameSwap", &["ld a, $1", "ldh [hBGMapMode], a", "ret"], "source_suicune_swap_complete", json!({}))?;
+            source.operation(
+                "Intro_ColoredSuicuneFrameSwap",
+                &["hlcoord 0, 0", "ld bc, SCREEN_AREA"],
+                "source_suicune_tile_region",
+                json!({}),
+            )?;
+            source.operation(
+                "Intro_ColoredSuicuneFrameSwap",
+                &["inc hl", "dec bc", "ld a, c", "or b", "jr nz, .loop"],
+                "source_suicune_tile_loop",
+                json!({}),
+            )?;
+            source.operation(
+                "Intro_ColoredSuicuneFrameSwap",
+                &[
+                    "ld a, [hl]",
+                    "and a",
+                    "jr z, .skip",
+                    "cp $80",
+                    "jr nc, .skip",
+                    "xor $8",
+                    "ld [hl], a",
+                ],
+                "source_suicune_tile_toggle",
+                json!({}),
+            )?;
+            source.operation(
+                "Intro_ColoredSuicuneFrameSwap",
+                &["ld a, $1", "ldh [hBGMapMode], a", "ret"],
+                "source_suicune_swap_complete",
+                json!({}),
+            )?;
             source.operation(
                 helper,
                 &[

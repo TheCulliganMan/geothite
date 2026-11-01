@@ -259,7 +259,9 @@ fn validate_exact_item_text(field: &str, value: &str) -> Result<(), String> {
 /// Source ItemDescriptions may end with NEXT followed by an empty line.
 /// Validate each authored line without trimming away those control boundaries.
 pub fn is_exact_item_description(value: &str) -> bool {
-    value.split('\n').all(|line| line.trim() == line && !line.chars().any(char::is_control))
+    value
+        .split('\n')
+        .all(|line| line.trim() == line && !line.chars().any(char::is_control))
 }
 
 fn validate_item_description(value: &str) -> Result<(), String> {
@@ -427,7 +429,14 @@ mod tests {
         let description = "Restores #MON\nHP by 20.";
         assert!(validate_item_description(description).is_ok());
         assert!(validate_item_description("A black APRICORN.\n").is_ok());
-        for invalid in [" padded", "trailing ", "trailing \n", "a\tb", "a\rb", "a\0b"] {
+        for invalid in [
+            " padded",
+            "trailing ",
+            "trailing \n",
+            "a\tb",
+            "a\rb",
+            "a\0b",
+        ] {
             assert!(validate_item_description(invalid).is_err(), "{invalid:?}");
         }
         assert!(validate_exact_item_text("item.name", description).is_err());

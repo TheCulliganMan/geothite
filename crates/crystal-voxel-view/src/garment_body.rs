@@ -25,12 +25,16 @@ pub(crate) fn nurse_legs(
 ) {
     let bare = look.texture_key == "nurse";
     #[cfg(all(feature = "people-review", not(target_arch = "wasm32")))]
-    let bare = bare || (crate::garment_drape_trial::local_body()
-        && look.texture_key == "karen");
-    if !bare { return; }
+    let bare = bare || (crate::garment_drape_trial::local_body() && look.texture_key == "karen");
+    if !bare {
+        return;
+    }
     for face in mesh.indices.chunks_exact_mut(3) {
         let ids = [face[0] as usize, face[1] as usize, face[2] as usize];
-        if !ids.iter().all(|&i| mesh.uvs[i][0] >= 0.605 && mesh.uvs[i][1] >= 0.745) {
+        if !ids
+            .iter()
+            .all(|&i| mesh.uvs[i][0] >= 0.605 && mesh.uvs[i][1] >= 0.745)
+        {
             continue;
         }
         for (index, &i) in face.iter_mut().zip(&ids) {
@@ -83,7 +87,13 @@ pub(crate) fn cover(
             let by = mesh.positions[b][1];
             // Nurse's rising hem needs the upper leg surface too, while the
             // hidden hip surface must not poke through the fitted skirt.
-            let limit = if shirt { 1.615 } else if look.texture_key == "nurse" { 1.25 } else { hem + 0.015 };
+            let limit = if shirt {
+                1.615
+            } else if look.texture_key == "nurse" {
+                1.25
+            } else {
+                hem + 0.015
+            };
             let keep = |y: f32| if shirt { y >= limit } else { y <= limit };
             if keep(ay) {
                 polygon.push(a);
@@ -145,8 +155,10 @@ pub(crate) fn cover(
 fn nurse_shirt(mesh: &SurfaceMeshData, ids: &[usize; 3]) -> bool {
     ids.iter().all(|&i| {
         let p = mesh.positions[i];
-        p[0].abs() < 0.43 && (1.25..2.2).contains(&p[1])
-            && mesh.uvs[i][0] < 0.625 && mesh.uvs[i][1] >= 0.46
+        p[0].abs() < 0.43
+            && (1.25..2.2).contains(&p[1])
+            && mesh.uvs[i][0] < 0.625
+            && mesh.uvs[i][1] >= 0.46
     })
 }
 
@@ -164,54 +176,121 @@ mod tests {
     fn kurt_running_shoes_do_not_cross_robe_panels() {
         use crate::{new_bark_actors::character_meshes::CharacterKind, open_people::PersonRig};
         let root = std::path::PathBuf::from(std::env::var_os("CRYSTAL_OPEN_MODEL_ROOT").unwrap());
-        let rig = PersonRig::parse(&std::fs::read(root.join("people/kenney/human-male.glb")).unwrap()).unwrap();
+        let rig =
+            PersonRig::parse(&std::fs::read(root.join("people/kenney/human-male.glb")).unwrap())
+                .unwrap();
         for kind in [CharacterKind::Kurt, CharacterKind::KurtOutside] {
-        let look = crate::npc_appearance::look(kind);
-        let cloth = crate::npc_appearance::costume_mesh(&rig, look).unwrap();
-        let mut mesh = rig.mesh.clone();
-        let mut joints = rig.ids.clone();
-        let mut weights = rig.weights.clone();
-        crate::footwear::adapt(&mut mesh, &mut joints, &mut weights, look);
-        let shoes = mesh.indices.chunks_exact(3).filter(|f|
-            f.iter().all(|&i| mesh.positions[i as usize][1] < 0.27)).collect::<Vec<_>>();
-        assert!(!shoes.is_empty());
-        let panels = cloth.surface.indices.chunks_exact(3).filter(|f|
-            f.iter().all(|&i| cloth.surface.positions[i as usize][1] < 1.0)).collect::<Vec<_>>();
-        let deform = |p: [f32; 3], ids: [u16; 4], weights: [f32; 4], skin: &[Mat4]| {
-            (0..4).map(|i| skin[ids[i] as usize].transform_point3(Vec3::from_array(p)) * weights[i]).sum::<Vec3>()
-        };
-        // Segment/triangle intersection catches a shoe piercing fabric even
-        // when both meshes still have valid weights and outward winding.
-        let crosses = |a: Vec3, b: Vec3, tri: [Vec3; 3]| {
-            let dir = b - a; let e1 = tri[1] - tri[0]; let e2 = tri[2] - tri[0];
-            let h = dir.cross(e2); let det = e1.dot(h);
-            if det.abs() < 1e-10 { return false; }
-            let s = a - tri[0]; let u = s.dot(h) / det;
-            if !(0.0001..0.9999).contains(&u) { return false; }
-            let q = s.cross(e1); let v = dir.dot(q) / det; let t = e2.dot(q) / det;
-            v > 0.0001 && u + v < 0.9999 && t > 0.0001 && t < 0.9999
-        };
-        for step in 0..32 {
-            let mut pose = rig.nodes.clone(); rig.sample("Run", rig.duration("Run") * step as f32 / 32., &mut pose);
-            let inverse = world(rig.mesh_node, &pose, &rig.parents).inverse();
-            let skin = rig.skin_nodes.iter().zip(&rig.inverse_binds).map(|(&n, b)| inverse * world(n, &pose, &rig.parents) * *b).collect::<Vec<_>>();
-            let body = mesh.positions.iter().enumerate().map(|(i, &p)| deform(p, joints[i], weights[i], &skin)).collect::<Vec<_>>();
-            let fabric = cloth.surface.positions.iter().enumerate().map(|(i, &p)| deform(p, cloth.joints[i], cloth.weights[i], &skin)).collect::<Vec<_>>();
-            let floor = shoes.iter().flat_map(|face| face.iter()).map(|&i| body[i as usize].y).fold(f32::INFINITY, f32::min);
-            let hem_floor = fabric.iter().map(|p| p.y).fold(f32::INFINITY, f32::min);
-            assert!(hem_floor >= floor - 0.002,
-                "Kurt robe passes below the shoe floor at Run {step}/32: hem={hem_floor}, floor={floor}");
-            for shoe in &shoes { for panel in &panels {
-                let tri = [fabric[panel[0] as usize], fabric[panel[1] as usize], fabric[panel[2] as usize]];
-                for edge in 0..3 {
-                    assert!(!crosses(body[shoe[edge] as usize], body[shoe[(edge + 1) % 3] as usize], tri),
-                        "Kurt shoe crosses robe at Run {step}/32: shoe={shoe:?} panel={panel:?}, \
-                         shoe_edge={:?}, posed_panel={tri:?}, bind_panel={:?}",
-                        [body[shoe[edge] as usize], body[shoe[(edge + 1) % 3] as usize]],
-                        panel.iter().map(|&i| cloth.surface.positions[i as usize]).collect::<Vec<_>>());
+            let look = crate::npc_appearance::look(kind);
+            let cloth = crate::npc_appearance::costume_mesh(&rig, look).unwrap();
+            let mut mesh = rig.mesh.clone();
+            let mut joints = rig.ids.clone();
+            let mut weights = rig.weights.clone();
+            crate::footwear::adapt(&mut mesh, &mut joints, &mut weights, look);
+            let shoes = mesh
+                .indices
+                .chunks_exact(3)
+                .filter(|f| f.iter().all(|&i| mesh.positions[i as usize][1] < 0.27))
+                .collect::<Vec<_>>();
+            assert!(!shoes.is_empty());
+            let panels = cloth
+                .surface
+                .indices
+                .chunks_exact(3)
+                .filter(|f| {
+                    f.iter()
+                        .all(|&i| cloth.surface.positions[i as usize][1] < 1.0)
+                })
+                .collect::<Vec<_>>();
+            let deform = |p: [f32; 3], ids: [u16; 4], weights: [f32; 4], skin: &[Mat4]| {
+                (0..4)
+                    .map(|i| {
+                        skin[ids[i] as usize].transform_point3(Vec3::from_array(p)) * weights[i]
+                    })
+                    .sum::<Vec3>()
+            };
+            // Segment/triangle intersection catches a shoe piercing fabric even
+            // when both meshes still have valid weights and outward winding.
+            let crosses = |a: Vec3, b: Vec3, tri: [Vec3; 3]| {
+                let dir = b - a;
+                let e1 = tri[1] - tri[0];
+                let e2 = tri[2] - tri[0];
+                let h = dir.cross(e2);
+                let det = e1.dot(h);
+                if det.abs() < 1e-10 {
+                    return false;
                 }
-            }}
-        }
+                let s = a - tri[0];
+                let u = s.dot(h) / det;
+                if !(0.0001..0.9999).contains(&u) {
+                    return false;
+                }
+                let q = s.cross(e1);
+                let v = dir.dot(q) / det;
+                let t = e2.dot(q) / det;
+                v > 0.0001 && u + v < 0.9999 && t > 0.0001 && t < 0.9999
+            };
+            for step in 0..32 {
+                let mut pose = rig.nodes.clone();
+                rig.sample("Run", rig.duration("Run") * step as f32 / 32., &mut pose);
+                let inverse = world(rig.mesh_node, &pose, &rig.parents).inverse();
+                let skin = rig
+                    .skin_nodes
+                    .iter()
+                    .zip(&rig.inverse_binds)
+                    .map(|(&n, b)| inverse * world(n, &pose, &rig.parents) * *b)
+                    .collect::<Vec<_>>();
+                let body = mesh
+                    .positions
+                    .iter()
+                    .enumerate()
+                    .map(|(i, &p)| deform(p, joints[i], weights[i], &skin))
+                    .collect::<Vec<_>>();
+                let fabric = cloth
+                    .surface
+                    .positions
+                    .iter()
+                    .enumerate()
+                    .map(|(i, &p)| deform(p, cloth.joints[i], cloth.weights[i], &skin))
+                    .collect::<Vec<_>>();
+                let floor = shoes
+                    .iter()
+                    .flat_map(|face| face.iter())
+                    .map(|&i| body[i as usize].y)
+                    .fold(f32::INFINITY, f32::min);
+                let hem_floor = fabric.iter().map(|p| p.y).fold(f32::INFINITY, f32::min);
+                assert!(
+                    hem_floor >= floor - 0.002,
+                    "Kurt robe passes below the shoe floor at Run {step}/32: hem={hem_floor}, floor={floor}"
+                );
+                for shoe in &shoes {
+                    for panel in &panels {
+                        let tri = [
+                            fabric[panel[0] as usize],
+                            fabric[panel[1] as usize],
+                            fabric[panel[2] as usize],
+                        ];
+                        for edge in 0..3 {
+                            assert!(
+                                !crosses(
+                                    body[shoe[edge] as usize],
+                                    body[shoe[(edge + 1) % 3] as usize],
+                                    tri
+                                ),
+                                "Kurt shoe crosses robe at Run {step}/32: shoe={shoe:?} panel={panel:?}, \
+                         shoe_edge={:?}, posed_panel={tri:?}, bind_panel={:?}",
+                                [
+                                    body[shoe[edge] as usize],
+                                    body[shoe[(edge + 1) % 3] as usize]
+                                ],
+                                panel
+                                    .iter()
+                                    .map(|&i| cloth.surface.positions[i as usize])
+                                    .collect::<Vec<_>>()
+                            );
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -274,11 +353,15 @@ mod tests {
                     .iter()
                     .enumerate()
                     .map(|(i, &n)| {
-                        let matrix=(0..4).fold(Mat4::ZERO,|sum,slot|
-                            sum+skin[cloth.joints[i][slot] as usize]*cloth.weights[i][slot]);
-                        let basis=Mat3::from_cols(matrix.x_axis.truncate(),
-                            matrix.y_axis.truncate(),matrix.z_axis.truncate());
-                        (basis.inverse().transpose()*Vec3::from_array(n)).normalize()
+                        let matrix = (0..4).fold(Mat4::ZERO, |sum, slot| {
+                            sum + skin[cloth.joints[i][slot] as usize] * cloth.weights[i][slot]
+                        });
+                        let basis = Mat3::from_cols(
+                            matrix.x_axis.truncate(),
+                            matrix.y_axis.truncate(),
+                            matrix.z_axis.truncate(),
+                        );
+                        (basis.inverse().transpose() * Vec3::from_array(n)).normalize()
                     })
                     .collect();
                 for face in cloth.surface.indices.chunks_exact(3) {
@@ -313,7 +396,11 @@ mod tests {
             }
         }
         assert_eq!(checked, 25);
-        assert!(failures.is_empty(), "reversed panels by role and Run phase: {failures:?}\n{}", examples.join("\n"));
+        assert!(
+            failures.is_empty(),
+            "reversed panels by role and Run phase: {failures:?}\n{}",
+            examples.join("\n")
+        );
     }
 
     #[test]
@@ -360,18 +447,28 @@ mod tests {
             assert_eq!(joints.len(), weights.len());
             for face in rig.mesh.indices.chunks_exact(3) {
                 let hidden_shirt = look.texture_key == "nurse"
-                    && nurse_shirt(&rig.mesh, &[face[0] as usize, face[1] as usize, face[2] as usize])
-                    && face.iter().any(|&i| rig.mesh.positions[i as usize][1] < 1.615);
+                    && nurse_shirt(
+                        &rig.mesh,
+                        &[face[0] as usize, face[1] as usize, face[2] as usize],
+                    )
+                    && face
+                        .iter()
+                        .any(|&i| rig.mesh.positions[i as usize][1] < 1.615);
                 if face
                     .iter()
                     .all(|&i| rig.mesh.positions[i as usize][1] < 0.24)
-                    || (look.texture_key == "nurse" && !hidden_shirt && face.iter().all(|&i| {
-                        rig.mesh.positions[i as usize][1] <= 1.25
-                            && rig.mesh.uvs[i as usize][0] >= 0.605 && rig.mesh.uvs[i as usize][1] >= 0.745
-                    }))
-                    || (!hidden_shirt && !face.iter().all(|&i| {
-                        rig.mesh.uvs[i as usize][0] >= 0.605 && rig.mesh.uvs[i as usize][1] >= 0.745
-                    }))
+                    || (look.texture_key == "nurse"
+                        && !hidden_shirt
+                        && face.iter().all(|&i| {
+                            rig.mesh.positions[i as usize][1] <= 1.25
+                                && rig.mesh.uvs[i as usize][0] >= 0.605
+                                && rig.mesh.uvs[i as usize][1] >= 0.745
+                        }))
+                    || (!hidden_shirt
+                        && !face.iter().all(|&i| {
+                            rig.mesh.uvs[i as usize][0] >= 0.605
+                                && rig.mesh.uvs[i as usize][1] >= 0.745
+                        }))
                 {
                     assert!(
                         mesh.indices.chunks_exact(3).any(|f| f == face),
@@ -382,18 +479,27 @@ mod tests {
             }
             for face in mesh.indices.chunks_exact(3) {
                 if look.texture_key == "nurse"
-                    && nurse_shirt(&mesh, &[face[0] as usize, face[1] as usize, face[2] as usize]) {
-                    assert!(face.iter().all(|&i| mesh.positions[i as usize][1] >= 1.61499),
-                        "hidden Nurse shirt crosses the fitted skirt");
+                    && nurse_shirt(
+                        &mesh,
+                        &[face[0] as usize, face[1] as usize, face[2] as usize],
+                    )
+                {
+                    assert!(
+                        face.iter()
+                            .all(|&i| mesh.positions[i as usize][1] >= 1.61499),
+                        "hidden Nurse shirt crosses the fitted skirt"
+                    );
                 }
                 if face
                     .iter()
                     .all(|&i| mesh.uvs[i as usize][0] >= 0.605 && mesh.uvs[i as usize][1] >= 0.745)
                 {
-                    assert!(
-                        face.iter()
-                            .all(|&i| mesh.positions[i as usize][1] <= if look.texture_key == "nurse" { 1.25001 } else { hem + 0.01501 })
-                    );
+                    assert!(face.iter().all(|&i| mesh.positions[i as usize][1]
+                        <= if look.texture_key == "nurse" {
+                            1.25001
+                        } else {
+                            hem + 0.01501
+                        }));
                 }
                 let p = [face[0], face[1], face[2]]
                     .map(|i| Vec3::from_array(mesh.positions[i as usize]));
@@ -421,7 +527,9 @@ mod tests {
     fn nurse_retains_leg_surface_above_the_neutral_hem_through_run() {
         use crate::{new_bark_actors::character_meshes::CharacterKind, open_people::PersonRig};
         let root = std::path::PathBuf::from(std::env::var_os("CRYSTAL_OPEN_MODEL_ROOT").unwrap());
-        let rig = PersonRig::parse(&std::fs::read(root.join("people/kenney/human-female.glb")).unwrap()).unwrap();
+        let rig =
+            PersonRig::parse(&std::fs::read(root.join("people/kenney/human-female.glb")).unwrap())
+                .unwrap();
         let look = crate::npc_appearance::look(CharacterKind::Nurse);
         let mut body = rig.mesh.clone();
         let mut joints = rig.ids.clone();
@@ -432,23 +540,42 @@ mod tests {
             if !face.iter().all(|&i| {
                 let i = i as usize;
                 rig.mesh.positions[i][1] < 1.25
-                    && rig.mesh.uvs[i][0] >= 0.605 && rig.mesh.uvs[i][1] >= 0.745
-            }) { continue; }
-            let at = body.indices.chunks_exact(3).position(|candidate| candidate == face)
+                    && rig.mesh.uvs[i][0] >= 0.605
+                    && rig.mesh.uvs[i][1] >= 0.745
+            }) {
+                continue;
+            }
+            let at = body
+                .indices
+                .chunks_exact(3)
+                .position(|candidate| candidate == face)
                 .expect("Nurse leg face was removed by a neutral-hem cut");
             leg_faces.push((at, [face[0] as usize, face[1] as usize, face[2] as usize]));
         }
-        assert!(leg_faces.iter().any(|(_, face)| face.iter().any(|&i| rig.mesh.positions[i][1] > 0.785)),
-            "regression must cover legs above the neutral skirt hem");
+        assert!(
+            leg_faces
+                .iter()
+                .any(|(_, face)| face.iter().any(|&i| rig.mesh.positions[i][1] > 0.785)),
+            "regression must cover legs above the neutral skirt hem"
+        );
         nurse_legs(&mut body, &mut joints, &mut weights, look);
         for step in 0..61 {
             let mut pose = rig.nodes.clone();
             rig.sample("Run", rig.duration("Run") * step as f32 / 60.0, &mut pose);
             let inverse = world(rig.mesh_node, &pose, &rig.parents).inverse();
-            let skin = rig.skin_nodes.iter().zip(&rig.inverse_binds)
-                .map(|(&node, bind)| inverse * world(node, &pose, &rig.parents) * *bind).collect::<Vec<_>>();
+            let skin = rig
+                .skin_nodes
+                .iter()
+                .zip(&rig.inverse_binds)
+                .map(|(&node, bind)| inverse * world(node, &pose, &rig.parents) * *bind)
+                .collect::<Vec<_>>();
             let deform = |p: [f32; 3], ids: [u16; 4], weights: [f32; 4]| {
-                (0..4).map(|slot| skin[ids[slot] as usize].transform_point3(Vec3::from_array(p)) * weights[slot]).sum::<Vec3>()
+                (0..4)
+                    .map(|slot| {
+                        skin[ids[slot] as usize].transform_point3(Vec3::from_array(p))
+                            * weights[slot]
+                    })
+                    .sum::<Vec3>()
             };
             for &(at, source) in &leg_faces {
                 for (corner, old) in source.into_iter().enumerate() {
@@ -460,8 +587,10 @@ mod tests {
                     assert!(body.uvs[new][0] > 0.8 && body.uvs[new][1] < 0.45);
                     let actual = deform(body.positions[new], joints[new], weights[new]);
                     let expected = deform(rig.mesh.positions[old], rig.ids[old], rig.weights[old]);
-                    assert!(actual.is_finite() && actual.distance(expected) < 1e-5,
-                        "Nurse leg surface changed at Run {step}/60");
+                    assert!(
+                        actual.is_finite() && actual.distance(expected) < 1e-5,
+                        "Nurse leg surface changed at Run {step}/60"
+                    );
                 }
             }
         }

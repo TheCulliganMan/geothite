@@ -71,9 +71,11 @@ pub(super) fn register(app: &mut App) {
 }
 
 fn supports_pass_diagnostics(features: WgpuFeatures) -> bool {
-    features.contains(WgpuFeatures::TIMESTAMP_QUERY
-        | WgpuFeatures::TIMESTAMP_QUERY_INSIDE_ENCODERS
-        | WgpuFeatures::TIMESTAMP_QUERY_INSIDE_PASSES)
+    features.contains(
+        WgpuFeatures::TIMESTAMP_QUERY
+            | WgpuFeatures::TIMESTAMP_QUERY_INSIDE_ENCODERS
+            | WgpuFeatures::TIMESTAMP_QUERY_INSIDE_PASSES,
+    )
 }
 
 fn recorder_is_safe(features: WgpuFeatures, cpu_requested: bool) -> bool {
@@ -90,26 +92,38 @@ struct GatedRenderDiagnostics;
 impl Plugin for GatedRenderDiagnostics {
     fn build(&self, _: &mut App) {}
     fn finish(&self, app: &mut App) {
-        let Some(render) = app.get_sub_app_mut(RenderApp) else { return; };
+        let Some(render) = app.get_sub_app_mut(RenderApp) else {
+            return;
+        };
         let world = render.world();
-        let Some(device) = world.get_resource::<RenderDevice>() else { return; };
+        let Some(device) = world.get_resource::<RenderDevice>() else {
+            return;
+        };
         let features = device.features();
         if let Some(shared) = world.get_resource::<SharedTiming>()
-            && let (Some(adapter), Some(queue)) = (world.get_resource::<RenderAdapterInfo>(), world.get_resource::<RenderQueue>())
+            && let (Some(adapter), Some(queue)) = (
+                world.get_resource::<RenderAdapterInfo>(),
+                world.get_resource::<RenderQueue>(),
+            )
             && let Ok(mut data) = shared.data.lock()
         {
             data.adapter = Some(AdapterTiming {
-                name: adapter.name.clone(), backend: format!("{:?}",adapter.backend),
+                name: adapter.name.clone(),
+                backend: format!("{:?}", adapter.backend),
                 timestamp_query_enabled: features.contains(WgpuFeatures::TIMESTAMP_QUERY),
-                timestamp_inside_encoders_enabled: features.contains(WgpuFeatures::TIMESTAMP_QUERY_INSIDE_ENCODERS),
-                timestamp_inside_passes_enabled: features.contains(WgpuFeatures::TIMESTAMP_QUERY_INSIDE_PASSES),
+                timestamp_inside_encoders_enabled: features
+                    .contains(WgpuFeatures::TIMESTAMP_QUERY_INSIDE_ENCODERS),
+                timestamp_inside_passes_enabled: features
+                    .contains(WgpuFeatures::TIMESTAMP_QUERY_INSIDE_PASSES),
                 timestamp_period_ns: queue.get_timestamp_period(),
             });
         }
         let cpu_requested = std::env::var("CRYSTAL_RENDER_PASS_TIMING").as_deref() == Ok("on");
         if !recorder_is_safe(features, cpu_requested) {
             if cpu_requested {
-                bevy::log::warn!("Per-pass timing is unavailable for this device; use CRYSTAL_LOADING_TRACE for CPU schedule timings");
+                bevy::log::warn!(
+                    "Per-pass timing is unavailable for this device; use CRYSTAL_LOADING_TRACE for CPU schedule timings"
+                );
             }
             return;
         }
@@ -123,9 +137,13 @@ impl Plugin for GatedRenderDiagnostics {
             && supports_pass_diagnostics(features)
             && render.world().contains_resource::<SharedTiming>()
         {
-            render.add_systems(RenderGraph, mark_frame
-                .after(RenderGraphSystems::Render).before(resolve_encoder)
-                .before(RenderGraphSystems::Submit));
+            render.add_systems(
+                RenderGraph,
+                mark_frame
+                    .after(RenderGraphSystems::Render)
+                    .before(resolve_encoder)
+                    .before(RenderGraphSystems::Submit),
+            );
         }
     }
 }
@@ -529,17 +547,30 @@ fn report(time: Res<Time<Real>>, diagnostics: Res<DiagnosticsStore>, mut next: L
 mod tests {
     #[test]
     fn boundary_only_timestamp_devices_do_not_install_a_recorder() {
-        assert!(super::recorder_is_safe(bevy::render::render_resource::WgpuFeatures::empty(), true));
-        assert!(!super::recorder_is_safe(bevy::render::render_resource::WgpuFeatures::empty(), false));
-        assert!(!super::recorder_is_safe(bevy::render::render_resource::WgpuFeatures::TIMESTAMP_QUERY, true));
-        assert!(!super::supports_pass_diagnostics(bevy::render::render_resource::WgpuFeatures::TIMESTAMP_QUERY));
+        assert!(super::recorder_is_safe(
+            bevy::render::render_resource::WgpuFeatures::empty(),
+            true
+        ));
+        assert!(!super::recorder_is_safe(
+            bevy::render::render_resource::WgpuFeatures::empty(),
+            false
+        ));
+        assert!(!super::recorder_is_safe(
+            bevy::render::render_resource::WgpuFeatures::TIMESTAMP_QUERY,
+            true
+        ));
+        assert!(!super::supports_pass_diagnostics(
+            bevy::render::render_resource::WgpuFeatures::TIMESTAMP_QUERY
+        ));
         let all = bevy::render::render_resource::WgpuFeatures::TIMESTAMP_QUERY
             | bevy::render::render_resource::WgpuFeatures::TIMESTAMP_QUERY_INSIDE_ENCODERS
             | bevy::render::render_resource::WgpuFeatures::TIMESTAMP_QUERY_INSIDE_PASSES;
         assert!(super::supports_pass_diagnostics(all));
-        for missing in [bevy::render::render_resource::WgpuFeatures::TIMESTAMP_QUERY,
+        for missing in [
+            bevy::render::render_resource::WgpuFeatures::TIMESTAMP_QUERY,
             bevy::render::render_resource::WgpuFeatures::TIMESTAMP_QUERY_INSIDE_ENCODERS,
-            bevy::render::render_resource::WgpuFeatures::TIMESTAMP_QUERY_INSIDE_PASSES] {
+            bevy::render::render_resource::WgpuFeatures::TIMESTAMP_QUERY_INSIDE_PASSES,
+        ] {
             assert!(!super::supports_pass_diagnostics(all - missing));
         }
         let mut app = bevy::prelude::App::new();

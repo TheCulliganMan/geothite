@@ -408,7 +408,8 @@ where
             self.free_offset + 1
         );
         if node_index.to_usize() >= self.nodes.len() {
-            self.nodes.resize(node_index.to_usize() + 1, Node::default());
+            self.nodes
+                .resize(node_index.to_usize() + 1, Node::default());
         }
         self.nodes[node_index.to_usize()] = Node {
             data_offset,

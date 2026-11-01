@@ -58,10 +58,13 @@ impl ShoreBlend {
                         Direction::East => ([e, n], [e, s]),
                     };
                     let index = result.edges.len();
-                    result.edges.push((edge.0, edge.1,
+                    result.edges.push((
+                        edge.0,
+                        edge.1,
                         ground_material(&cells[i].source) == Some(GroundMaterial::Path)
                             || super::super::kanto_shore::source_bank(&cells[i].source),
-                        cells[i].source.tileset_id.as_ref()=="kanto"));
+                        cells[i].source.tileset_id.as_ref() == "kanto",
+                    ));
                     for y in row.saturating_sub(1)..=(row + 1).min(g.height - 1) {
                         for x in col.saturating_sub(1)..=(col + 1).min(g.width - 1) {
                             result.candidates[y * g.width + x].push(index);
@@ -129,9 +132,13 @@ impl ShoreBlend {
         }
         // Damp Kanto sand retains its received pigment and time-of-day color.
         // Mixing a fixed daylight brown into native night paint lights the rim.
-        let soil = if source_tinted { [base[0]*0.50,base[1]*0.52,base[2]*0.55] }
-            else if sandy { [0.28, 0.205, 0.12] }
-            else { ledge_finish::soil_color(x, z, 0.45) };
+        let soil = if source_tinted {
+            [base[0] * 0.50, base[1] * 0.52, base[2] * 0.55]
+        } else if sandy {
+            [0.28, 0.205, 0.12]
+        } else {
+            ledge_finish::soil_color(x, z, 0.45)
+        };
         [
             base[0] + (soil[0] - base[0]) * amount,
             base[1] + (soil[1] - base[1]) * amount,
@@ -228,74 +235,139 @@ mod tests {
     }
     #[test]
     fn native_kanto_bank_caps_carry_the_damp_transition_to_the_real_waterline() {
-        let sources=(0..9).map(|i| {
-            let (x,z)=((i%3)as u8,(i/3)as u8);
-            let mut s=source_with_tile(if z==0 {1}else{0x1f},x,z.saturating_sub(1),
-                if z==0 {0x23}else if z==1 {0x33}else{0x14});
-            s.tileset_id="kanto".into();s
-        }).collect();
-        let f=frame(3,3,sources);
-        let g=GridGeometry {width:3,height:3,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
-        let make=|| {
-            let mut mesh=TerrainMeshData {authored_cells:vec![None;9],footing_heights:vec![0.;9],..Default::default()};
-            super::super::ledge_finish::append_natural_bank(&mut mesh.solid,
-                [[8.,0.,8.],[8.,0.,16.],[16.,0.,16.],[16.,0.,8.]],
-                [0.,1.,0.],&g,[0,0],[[0.6,0.5,0.3],[0.3,0.2,0.1]]);
+        let sources = (0..9)
+            .map(|i| {
+                let (x, z) = ((i % 3) as u8, (i / 3) as u8);
+                let mut s = source_with_tile(
+                    if z == 0 { 1 } else { 0x1f },
+                    x,
+                    z.saturating_sub(1),
+                    if z == 0 {
+                        0x23
+                    } else if z == 1 {
+                        0x33
+                    } else {
+                        0x14
+                    },
+                );
+                s.tileset_id = "kanto".into();
+                s
+            })
+            .collect();
+        let f = frame(3, 3, sources);
+        let g = GridGeometry {
+            width: 3,
+            height: 3,
+            tile_width: 8.,
+            tile_height: 8.,
+            origin_x: 0.,
+            origin_z: 0.,
+        };
+        let make = || {
+            let mut mesh = TerrainMeshData {
+                authored_cells: vec![None; 9],
+                footing_heights: vec![0.; 9],
+                ..Default::default()
+            };
+            super::super::ledge_finish::append_natural_bank(
+                &mut mesh.solid,
+                [[8., 0., 8.], [8., 0., 16.], [16., 0., 16.], [16., 0., 8.]],
+                [0., 1., 0.],
+                &g,
+                [0, 0],
+                [[0.6, 0.5, 0.3], [0.3, 0.2, 0.1]],
+            );
             mesh
         };
-        let mut dry_frame=f.clone();
-        for tile in &mut dry_frame.tiles {if tile.row==2 {tile.source.tile_index=0x99;}}
-        let mut wet=make();let mut dry=make();
-        let before=wet.clone();
-        super::super::polish_world_surfaces(&mut wet,"Route20",&f.tiles.iter().collect::<Vec<_>>(),&g,[0,0]);
-        super::super::polish_world_surfaces(&mut dry,"Route20",&dry_frame.tiles.iter().collect::<Vec<_>>(),&g,[0,0]);
-        assert_eq!(wet.solid.positions,before.solid.positions);
-        assert_eq!(wet.solid.indices,before.solid.indices);
-        assert_eq!(wet.footing_heights,before.footing_heights);
+        let mut dry_frame = f.clone();
+        for tile in &mut dry_frame.tiles {
+            if tile.row == 2 {
+                tile.source.tile_index = 0x99;
+            }
+        }
+        let mut wet = make();
+        let mut dry = make();
+        let before = wet.clone();
+        super::super::polish_world_surfaces(
+            &mut wet,
+            "Route20",
+            &f.tiles.iter().collect::<Vec<_>>(),
+            &g,
+            [0, 0],
+        );
+        super::super::polish_world_surfaces(
+            &mut dry,
+            "Route20",
+            &dry_frame.tiles.iter().collect::<Vec<_>>(),
+            &g,
+            [0, 0],
+        );
+        assert_eq!(wet.solid.positions, before.solid.positions);
+        assert_eq!(wet.solid.indices, before.solid.indices);
+        assert_eq!(wet.footing_heights, before.footing_heights);
         for i in 0..wet.solid.positions.len() {
-            if wet.solid.positions[i][2]==16. {
-                assert!((0..3).all(|c|wet.solid.colors[i][c]<dry.solid.colors[i][c]*0.85),
-                    "the source bank cap must reach the damp edge instead of inheriting dry sand");
+            if wet.solid.positions[i][2] == 16. {
+                assert!(
+                    (0..3).all(|c| wet.solid.colors[i][c] < dry.solid.colors[i][c] * 0.85),
+                    "the source bank cap must reach the damp edge instead of inheriting dry sand"
+                );
             }
         }
     }
 
     #[test]
     fn kanto_native_sand_gets_a_damp_edge_with_its_received_day_or_night_pigment() {
-        let mut f=fixture();
+        let mut f = fixture();
         for tile in &mut f.tiles {
-            let s=&mut tile.source;s.tileset_id="kanto".into();
-            if tile.column==0 {
-                s.metatile_id=0x7b;s.subtile_column=0;s.subtile_row=tile.row as u8;
-                s.tile_index=if tile.row%2==0 {0x30}else{0x39};
-            } else {s.metatile_id=0x1f;s.subtile_row=1;}
+            let s = &mut tile.source;
+            s.tileset_id = "kanto".into();
+            if tile.column == 0 {
+                s.metatile_id = 0x7b;
+                s.subtile_column = 0;
+                s.subtile_row = tile.row as u8;
+                s.tile_index = if tile.row % 2 == 0 { 0x30 } else { 0x39 };
+            } else {
+                s.metatile_id = 0x1f;
+                s.subtile_row = 1;
+            }
         }
-        let g=grid();
-        let cells=f.tiles.iter().collect::<Vec<_>>();
-        let blend=ShoreBlend::new("Route20",&cells,&g);
-        assert_eq!(blend.edges.len(),2);
-        let day=[0.68,0.52,0.31,1.];let night=[0.08,0.12,0.19,1.];
-        for base in [day,night] {
-            let wet=blend.color([7.,0.,4.],&g,[0,0],base);
-            assert!((0..3).all(|c|wet[c]<base[c] && wet[c]>base[c]*0.65));
-            assert_eq!(wet[3],base[3]);
-            assert_eq!(blend.color([8.1,0.,4.],&g,[0,0],base),base);
-            assert_eq!(blend.color([7.,1.,4.],&g,[0,0],base),base);
+        let g = grid();
+        let cells = f.tiles.iter().collect::<Vec<_>>();
+        let blend = ShoreBlend::new("Route20", &cells, &g);
+        assert_eq!(blend.edges.len(), 2);
+        let day = [0.68, 0.52, 0.31, 1.];
+        let night = [0.08, 0.12, 0.19, 1.];
+        for base in [day, night] {
+            let wet = blend.color([7., 0., 4.], &g, [0, 0], base);
+            assert!((0..3).all(|c| wet[c] < base[c] && wet[c] > base[c] * 0.65));
+            assert_eq!(wet[3], base[3]);
+            assert_eq!(blend.color([8.1, 0., 4.], &g, [0, 0], base), base);
+            assert_eq!(blend.color([7., 1., 4.], &g, [0, 0], base), base);
         }
-        let day_wet=blend.color([7.,0.,4.],&g,[0,0],day);
-        let night_wet=blend.color([7.,0.,4.],&g,[0,0],night);
-        for c in 0..3 {assert!((day_wet[c]/day[c]-night_wet[c]/night[c]).abs()<0.00001);}
-        for tile in &mut f.tiles {if tile.column==0 {tile.source.tile_index^=1;}}
-        let changed=f.tiles.iter().collect::<Vec<_>>();
-        assert!(ShoreBlend::new("Route20",&changed,&g).edges.is_empty(),
-            "changed sand art cannot acquire the shoreline finish");
+        let day_wet = blend.color([7., 0., 4.], &g, [0, 0], day);
+        let night_wet = blend.color([7., 0., 4.], &g, [0, 0], night);
+        for c in 0..3 {
+            assert!((day_wet[c] / day[c] - night_wet[c] / night[c]).abs() < 0.00001);
+        }
+        for tile in &mut f.tiles {
+            if tile.column == 0 {
+                tile.source.tile_index ^= 1;
+            }
+        }
+        let changed = f.tiles.iter().collect::<Vec<_>>();
+        assert!(
+            ShoreBlend::new("Route20", &changed, &g).edges.is_empty(),
+            "changed sand art cannot acquire the shoreline finish"
+        );
     }
 
     #[test]
     fn sand_has_a_wider_damp_transition_without_painting_the_water() {
         let mut f = fixture();
         for tile in &mut f.tiles {
-            if tile.column == 0 { tile.source.tile_index = 0x06; }
+            if tile.column == 0 {
+                tile.source.tile_index = 0x06;
+            }
         }
         let g = grid();
         let cells: Vec<_> = f.tiles.iter().collect();
@@ -308,7 +380,11 @@ mod tests {
         assert_ne!(sand.color([3., 0., 4.], &g, [0, 0], base), base);
         assert_eq!(sand.color([8.1, 0., 4.], &g, [0, 0], base), base);
         assert_eq!(sand.color([7., 2., 4.], &g, [0, 0], base), base);
-        let moved = GridGeometry { origin_x: -80., origin_z: 48., ..g };
+        let moved = GridGeometry {
+            origin_x: -80.,
+            origin_z: 48.,
+            ..g
+        };
         let shifted = ShoreBlend::new("CherrygroveCity", &cells, &moved);
         assert_eq!(wet, shifted.color([-73., 0., 52.], &moved, [0, 0], base));
     }

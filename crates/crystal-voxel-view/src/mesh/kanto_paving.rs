@@ -6,10 +6,10 @@ const LABEL: &str = "outdoor/kanto-paving";
 const BRIDGE_LABEL: &str = "outdoor/kanto-brick-bridge";
 const BRICK_PATH_LABEL: &str = "outdoor/kanto-brick-path";
 const TOWER_PATH_LABEL: &str = "outdoor/tournament-brick-path";
-fn source_drawing(source: &VisualTileSource) -> Option<[u16;16]> {
+fn source_drawing(source: &VisualTileSource) -> Option<[u16; 16]> {
     match source.tileset_id.as_ref() {
         "kanto" => drawing(source.metatile_id),
-        "battle_tower_outside" if source.metatile_id==0x06 => Some([0x2f;16]),
+        "battle_tower_outside" if source.metatile_id == 0x06 => Some([0x2f; 16]),
         _ => None,
     }
 }
@@ -139,7 +139,8 @@ fn palette(
         }
     }
     if matches!(cells[indices[0]].source.metatile_id, 0x05 | 0x55)
-        || cells[indices[0]].source.tileset_id.as_ref()=="battle_tower_outside" {
+        || cells[indices[0]].source.tileset_id.as_ref() == "battle_tower_outside"
+    {
         let a = colors[0]?;
         let b = colors[1]?;
         return (a != b).then_some([a, b, a, b]);
@@ -192,8 +193,11 @@ fn quad(out: &mut SurfaceMeshData, p: [[f32; 3]; 4], color: [f32; 4]) {
     // These colors already contain the current source time-of-day palette.
     // Tag bevels and grout too: untagged faces receive a second moon tint.
     append_quad(
-        out, p, normal.to_array(),
-        [crate::scenery_finish::SOURCE_PAINT_UV; 4], color,
+        out,
+        p,
+        normal.to_array(),
+        [crate::scenery_finish::SOURCE_PAINT_UV; 4],
+        color,
     );
 }
 fn slab(out: &mut SurfaceMeshData, b: [f32; 4], color: [f32; 4], scale: f32) {
@@ -305,8 +309,8 @@ fn brick_deck(
     let (w, e, n, s) = g.bounds(i % g.width, i / g.width);
     let scale = g.tile_width.min(g.tile_height);
     let land = source.tile_index == 0x5b;
-    let bridge = source.tile_index == 0x4b
-        && matches!(source.tileset_id.as_ref(), "kanto" | "johto");
+    let bridge =
+        source.tile_index == 0x4b && matches!(source.tileset_id.as_ref(), "kanto" | "johto");
     let colors = if land {
         [colors[1], colors[0], colors[1], colors[0]]
     } else {
@@ -325,7 +329,9 @@ fn brick_deck(
             // with luminous mortar. Use the shared live mineral pigment and
             // derive recessed joints from the brick's own exposure.
             land_brick_paint(colors[1], 0.54)
-        } else { paint(colors[0], 0.76) },
+        } else {
+            paint(colors[0], 0.76)
+        },
     );
     let rows = if land { 2 } else { 3 };
     let height = (s - n) / rows as f32;
@@ -360,35 +366,61 @@ fn brick_deck(
         }
     }
 }
-fn raised_brick_colors(tile:&VisualTile,images:&TerrainImageSamples)->Option<[[u8;4];4]> {
-    let rgba=tile_rgba(images,tile).ok()?;
-    if rgba.len()!=256 {return None;}
-    let mut colors=[None;2];
-    for (p,bytes) in rgba.chunks_exact(4).enumerate() {
-        let color:[u8;4]=bytes.try_into().ok()?;
-        let slot=&mut colors[ink(0x4b,p%8,p/8)];
-        if color[3]!=255 || slot.is_some_and(|old|old!=color) {return None;}
-        *slot=Some(color);
+fn raised_brick_colors(tile: &VisualTile, images: &TerrainImageSamples) -> Option<[[u8; 4]; 4]> {
+    let rgba = tile_rgba(images, tile).ok()?;
+    if rgba.len() != 256 {
+        return None;
     }
-    let [Some(a),Some(b)]=colors else {return None;};
-    (a!=b).then_some([a,b,a,b])
+    let mut colors = [None; 2];
+    for (p, bytes) in rgba.chunks_exact(4).enumerate() {
+        let color: [u8; 4] = bytes.try_into().ok()?;
+        let slot = &mut colors[ink(0x4b, p % 8, p / 8)];
+        if color[3] != 255 || slot.is_some_and(|old| old != color) {
+            return None;
+        }
+        *slot = Some(color);
+    }
+    let [Some(a), Some(b)] = colors else {
+        return None;
+    };
+    (a != b).then_some([a, b, a, b])
 }
 
 /// The suspended masonry deck continues around its shallow structural edge.
 /// Live native paint owns both the deck and fascia; timber piers keep their frame.
-pub(super) fn raised_brick_side(out:&mut SurfaceMeshData,tile:&VisualTile,
-    images:&TerrainImageSamples,face:[[f32;3];4],normal:[f32;3],scale:f32)->bool {
-    let Some(colors)=raised_brick_colors(tile,images) else {return false;};
+pub(super) fn raised_brick_side(
+    out: &mut SurfaceMeshData,
+    tile: &VisualTile,
+    images: &TerrainImageSamples,
+    face: [[f32; 3]; 4],
+    normal: [f32; 3],
+    scale: f32,
+) -> bool {
+    let Some(colors) = raised_brick_colors(tile, images) else {
+        return false;
+    };
     // Bridge side winding starts along its bottom edge; the shared beveled
     // masonry producer starts up its left edge. Rotate without reversing it.
-    let p=[face[1],face[2],face[3],face[0]].map(Vec3::from_array);
-    let first=out.positions.len();
+    let p = [face[1], face[2], face[3], face[0]].map(Vec3::from_array);
+    let first = out.positions.len();
     for j in 0..2 {
-        let a=j as f32/2.;let b=(j+1)as f32/2.;
-        let q=[p[0].lerp(p[3],a),p[1].lerp(p[2],a),
-            p[1].lerp(p[2],b),p[0].lerp(p[3],b)].map(|p|p.to_array());
-        beveled_masonry_face(out,q,normal,land_brick_paint(colors[1],0.54),
-            land_brick_paint(colors[1],0.82*0.94),scale);
+        let a = j as f32 / 2.;
+        let b = (j + 1) as f32 / 2.;
+        let q = [
+            p[0].lerp(p[3], a),
+            p[1].lerp(p[2], a),
+            p[1].lerp(p[2], b),
+            p[0].lerp(p[3], b),
+        ]
+        .map(|p| p.to_array());
+        beveled_masonry_face(
+            out,
+            q,
+            normal,
+            land_brick_paint(colors[1], 0.54),
+            land_brick_paint(colors[1], 0.82 * 0.94),
+            scale,
+        );
     }
     // The fascia is already fitted to its deck, including bevels projecting
     // across a shore contact. Land shaping must not lift it a second time.
@@ -398,20 +430,40 @@ pub(super) fn raised_brick_side(out:&mut SurfaceMeshData,tile:&VisualTile,
 
 // Kanto 4b and Johto 07 share this exact two-ink brick drawing.
 // Reuse its modeled joints at the deck datum instead of flattening the art.
-pub(super) fn raised_brick_deck(out:&mut SurfaceMeshData,g:&GridGeometry,i:usize,
-    tile:&VisualTile,images:&TerrainImageSamples,heights:[f32;4])->bool {
-    let Some(colors)=raised_brick_colors(tile,images) else {return false;};
-    let mut source=tile.source.clone();source.tile_index=0x4b;
-    let first=out.positions.len();brick_deck(out,g,i,&source,colors);
-    let (w,e,n,s)=g.bounds(i%g.width,i/g.width);
-    for (point,normal) in out.positions[first..].iter_mut().zip(&mut out.normals[first..]) {
-        let x=(point[0]-w)/(e-w);let z=(point[2]-n)/(s-n);
-        let north=heights[0]*(1.-x)+heights[3]*x;
-        let south=heights[1]*(1.-x)+heights[2]*x;
-        point[1]+=north*(1.-z)+south*z;
-        let dx=((heights[3]-heights[0])*(1.-z)+(heights[2]-heights[1])*z)/(e-w);
-        let dz=(south-north)/(s-n);
-        *normal=Vec3::new(normal[0]-normal[1]*dx,normal[1],normal[2]-normal[1]*dz).normalize().to_array();
+pub(super) fn raised_brick_deck(
+    out: &mut SurfaceMeshData,
+    g: &GridGeometry,
+    i: usize,
+    tile: &VisualTile,
+    images: &TerrainImageSamples,
+    heights: [f32; 4],
+) -> bool {
+    let Some(colors) = raised_brick_colors(tile, images) else {
+        return false;
+    };
+    let mut source = tile.source.clone();
+    source.tile_index = 0x4b;
+    let first = out.positions.len();
+    brick_deck(out, g, i, &source, colors);
+    let (w, e, n, s) = g.bounds(i % g.width, i / g.width);
+    for (point, normal) in out.positions[first..]
+        .iter_mut()
+        .zip(&mut out.normals[first..])
+    {
+        let x = (point[0] - w) / (e - w);
+        let z = (point[2] - n) / (s - n);
+        let north = heights[0] * (1. - x) + heights[3] * x;
+        let south = heights[1] * (1. - x) + heights[2] * x;
+        point[1] += north * (1. - z) + south * z;
+        let dx = ((heights[3] - heights[0]) * (1. - z) + (heights[2] - heights[1]) * z) / (e - w);
+        let dz = (south - north) / (s - n);
+        *normal = Vec3::new(
+            normal[0] - normal[1] * dx,
+            normal[1],
+            normal[2] - normal[1] * dz,
+        )
+        .normalize()
+        .to_array();
     }
     out.uvs[first..].fill(crate::scenery_finish::LEVEL_PAVING_UV);
     true
@@ -423,10 +475,23 @@ fn brick_water_face(
     colors: [[u8; 4]; 4],
     scale: f32,
 ) {
-    beveled_masonry_face(out,p,normal,paint(colors[0],0.72),paint(colors[1],0.94),scale);
+    beveled_masonry_face(
+        out,
+        p,
+        normal,
+        paint(colors[0], 0.72),
+        paint(colors[1], 0.94),
+        scale,
+    );
 }
-fn beveled_masonry_face(out:&mut SurfaceMeshData,p:[[f32;3];4],normal:[f32;3],
-    grout:[f32;4],stone:[f32;4],scale:f32) {
+fn beveled_masonry_face(
+    out: &mut SurfaceMeshData,
+    p: [[f32; 3]; 4],
+    normal: [f32; 3],
+    grout: [f32; 4],
+    stone: [f32; 4],
+    scale: f32,
+) {
     let outer = p.map(Vec3::from_array);
     let n = Vec3::from_array(normal);
     let tangent = (outer[3] - outer[0]).normalize();
@@ -438,11 +503,7 @@ fn beveled_masonry_face(out:&mut SurfaceMeshData,p:[[f32;3];4],normal:[f32;3],
         outer[3] - tangent * gap + Vec3::Y * gap + n * gap,
     ];
     quad(out, p, grout);
-    quad(
-        out,
-        inner.map(|point| point.to_array()),
-        stone,
-    );
+    quad(out, inner.map(|point| point.to_array()), stone);
     for j in 0..4 {
         let k = (j + 1) % 4;
         quad(
@@ -465,21 +526,30 @@ fn append(
     colors: [[u8; 4]; 4],
 ) {
     let tile = source.tile_index;
-    if source.tileset_id.as_ref()=="battle_tower_outside" && tile==0x2f {
+    if source.tileset_id.as_ref() == "battle_tower_outside" && tile == 0x2f {
         // Same native two-ink bond as harbor brick, using its shared solid
         // geometry. Live gold pigment becomes muted ochre stone and grout.
-        let mineral=|c:[u8;4]| {
-            let l=0.2126*c[0] as f32+0.7152*c[1] as f32+0.0722*c[2] as f32;
-            [0,1,2,3].map(|j|if j==3 {255} else {
-                (c[j] as f32*0.45+l*[1.,0.97,0.88][j]*0.55).round() as u8
+        let mineral = |c: [u8; 4]| {
+            let l = 0.2126 * c[0] as f32 + 0.7152 * c[1] as f32 + 0.0722 * c[2] as f32;
+            [0, 1, 2, 3].map(|j| {
+                if j == 3 {
+                    255
+                } else {
+                    (c[j] as f32 * 0.45 + l * [1., 0.97, 0.88][j] * 0.55).round() as u8
+                }
             })
         };
-        let stone=mineral(colors[1]);
-        let grout=std::array::from_fn(|j|if j==3 {255} else {
-            (stone[j] as f32*0.48+mineral(colors[0])[j] as f32*0.12).round() as u8
+        let stone = mineral(colors[1]);
+        let grout = std::array::from_fn(|j| {
+            if j == 3 {
+                255
+            } else {
+                (stone[j] as f32 * 0.48 + mineral(colors[0])[j] as f32 * 0.12).round() as u8
+            }
         });
-        let mut shared=source.clone();shared.tile_index=0x4b;
-        brick_deck(out,g,i,&shared,[grout,stone,grout,stone]);
+        let mut shared = source.clone();
+        shared.tile_index = 0x4b;
+        brick_deck(out, g, i, &shared, [grout, stone, grout, stone]);
         return;
     }
     if matches!(tile, 0x4b | 0x5b) {
@@ -491,12 +561,23 @@ fn append(
     if tile == 0x23 {
         // This native field is blank, not a tile bond. Carry continuous mineral
         // paving across source cells; authored curbs and covers keep their trim.
-        quad(out,[[w,0.,n],[w,0.,s],[e,0.,s],[e,0.,n]],
-            land_brick_paint(colors[0],0.66));
+        quad(
+            out,
+            [[w, 0., n], [w, 0., s], [e, 0., s], [e, 0., n]],
+            land_brick_paint(colors[0], 0.66),
+        );
         return;
     }
-    quad(out,[[w,-scale*0.02,n],[w,-scale*0.02,s],
-        [e,-scale*0.02,s],[e,-scale*0.02,n]],paint(colors[1],0.78));
+    quad(
+        out,
+        [
+            [w, -scale * 0.02, n],
+            [w, -scale * 0.02, s],
+            [e, -scale * 0.02, s],
+            [e, -scale * 0.02, n],
+        ],
+        paint(colors[1], 0.78),
+    );
     if tile == 0x21 {
         let center = Vec3::new((w + e) * 0.5, 0., (n + s) * 0.5);
         let ring: Vec<_> = (0..16)
@@ -507,8 +588,10 @@ fn append(
             .collect();
         let top: Vec<_> = ring.iter().map(|p| center + (*p - center) * 0.92).collect();
         let inner: Vec<_> = top.iter().map(|p| center + (*p - center) * 0.66).collect();
-        let vertices: Vec<_> = inner.iter()
-            .map(|p| (p.to_array(), crate::scenery_finish::SOURCE_PAINT_UV)).collect();
+        let vertices: Vec<_> = inner
+            .iter()
+            .map(|p| (p.to_array(), crate::scenery_finish::SOURCE_PAINT_UV))
+            .collect();
         append_polygon(out, &vertices, [0., 1., 0.], paint(colors[0], 0.90));
         for j in 0..16 {
             let k = (j + 1) % 16;
@@ -541,39 +624,84 @@ fn append(
 /// Carry an adjacent, complete native brick street under a replacement Kanto
 /// cottage or brick building. The exposed plot border uses the same paving producer as the
 /// street. Cutaways can reveal the centre, so it receives finished paving too.
-pub(super) fn building_underlay(out: &mut SurfaceMeshData, cells: &[&VisualTile],
-    shapes: &[CellShape], g: &GridGeometry, rect: [usize;4],
-    images: &TerrainImageSamples, origin: [i32;2]) -> bool {
-    let [x,y,w,h]=rect;
-    if x+w>g.width || y+h>g.height || cells.len()!=g.width*g.height
-        || shapes.len()!=cells.len() {return false;}
-    let mut colors=None;
-    'search: for yy in y.saturating_sub(1)..(y+h+1).min(g.height) {
-        for xx in x.saturating_sub(1)..(x+w+1).min(g.width) {
-            if (x..x+w).contains(&xx) && (y..y+h).contains(&yy) {continue;}
-            let s=&cells[yy*g.width+xx].source;
-            if s.tileset_id.as_ref()!="kanto" || s.metatile_id!=0x55 || s.tile_index!=0x5b
-                || s.subtile_column>3 || s.subtile_row>3 {continue;}
-            let (Some(bx),Some(by))=(xx.checked_sub(s.subtile_column as usize),yy.checked_sub(s.subtile_row as usize)) else {continue;};
-            if bx+4>g.width || by+4>g.height {continue;}
-            let indices=std::array::from_fn(|j|(by+j/4)*g.width+bx+j%4);
-            if indices.iter().enumerate().any(|(j,&i)| {
-                let s=&cells[i].source;
-                s.tileset_id.as_ref()!="kanto" || s.metatile_id!=0x55 || s.tile_index!=0x5b
-                    || s.subtile_column as usize!=j%4 || s.subtile_row as usize!=j/4
-                    || !matches!(shapes[i],CellShape::Flat|CellShape::PlaneAt{height:0.})
-            }) {continue;}
-            if let Some(paint)=palette(cells,&indices,images) {colors=Some(paint);break 'search;}
+pub(super) fn building_underlay(
+    out: &mut SurfaceMeshData,
+    cells: &[&VisualTile],
+    shapes: &[CellShape],
+    g: &GridGeometry,
+    rect: [usize; 4],
+    images: &TerrainImageSamples,
+    origin: [i32; 2],
+) -> bool {
+    let [x, y, w, h] = rect;
+    if x + w > g.width
+        || y + h > g.height
+        || cells.len() != g.width * g.height
+        || shapes.len() != cells.len()
+    {
+        return false;
+    }
+    let mut colors = None;
+    'search: for yy in y.saturating_sub(1)..(y + h + 1).min(g.height) {
+        for xx in x.saturating_sub(1)..(x + w + 1).min(g.width) {
+            if (x..x + w).contains(&xx) && (y..y + h).contains(&yy) {
+                continue;
+            }
+            let s = &cells[yy * g.width + xx].source;
+            if s.tileset_id.as_ref() != "kanto"
+                || s.metatile_id != 0x55
+                || s.tile_index != 0x5b
+                || s.subtile_column > 3
+                || s.subtile_row > 3
+            {
+                continue;
+            }
+            let (Some(bx), Some(by)) = (
+                xx.checked_sub(s.subtile_column as usize),
+                yy.checked_sub(s.subtile_row as usize),
+            ) else {
+                continue;
+            };
+            if bx + 4 > g.width || by + 4 > g.height {
+                continue;
+            }
+            let indices = std::array::from_fn(|j| (by + j / 4) * g.width + bx + j % 4);
+            if indices.iter().enumerate().any(|(j, &i)| {
+                let s = &cells[i].source;
+                s.tileset_id.as_ref() != "kanto"
+                    || s.metatile_id != 0x55
+                    || s.tile_index != 0x5b
+                    || s.subtile_column as usize != j % 4
+                    || s.subtile_row as usize != j / 4
+                    || !matches!(
+                        shapes[i],
+                        CellShape::Flat | CellShape::PlaneAt { height: 0. }
+                    )
+            }) {
+                continue;
+            }
+            if let Some(paint) = palette(cells, &indices, images) {
+                colors = Some(paint);
+                break 'search;
+            }
         }
     }
-    let Some(colors)=colors else {return false;};
-    for yy in y..y+h {for xx in x..x+w {
-        let i=yy*g.width+xx;
-        let source=VisualTileSource{tileset_id:"kanto".into(),metatile_id:0x55,tile_index:0x5b,
-            subtile_column:(xx as i32+origin[0]).rem_euclid(4) as u8,
-            subtile_row:(yy as i32+origin[1]).rem_euclid(4) as u8};
-        brick_deck(out,g,i,&source,colors);
-    }}
+    let Some(colors) = colors else {
+        return false;
+    };
+    for yy in y..y + h {
+        for xx in x..x + w {
+            let i = yy * g.width + xx;
+            let source = VisualTileSource {
+                tileset_id: "kanto".into(),
+                metatile_id: 0x55,
+                tile_index: 0x5b,
+                subtile_column: (xx as i32 + origin[0]).rem_euclid(4) as u8,
+                subtile_row: (yy as i32 + origin[1]).rem_euclid(4) as u8,
+            };
+            brick_deck(out, g, i, &source, colors);
+        }
+    }
     true
 }
 
@@ -584,11 +712,17 @@ pub(super) fn finish(
     g: &GridGeometry,
     images: &TerrainImageSamples,
 ) {
-    finish_at_origin(mesh,cells,shapes,g,images,[0,0]);
+    finish_at_origin(mesh, cells, shapes, g, images, [0, 0]);
 }
 
-pub(super) fn finish_at_origin(mesh:&mut TerrainMeshData,cells:&[&VisualTile],
-    shapes:&[CellShape],g:&GridGeometry,images:&TerrainImageSamples,origin:[i32;2]) {
+pub(super) fn finish_at_origin(
+    mesh: &mut TerrainMeshData,
+    cells: &[&VisualTile],
+    shapes: &[CellShape],
+    g: &GridGeometry,
+    images: &TerrainImageSamples,
+    origin: [i32; 2],
+) {
     let old = &mesh.textured;
     if g.width == 0
         || cells.len() != g.width * g.height
@@ -638,9 +772,7 @@ pub(super) fn finish_at_origin(mesh:&mut TerrainMeshData,cells:&[&VisualTile],
     let mut removed = std::collections::HashSet::new();
     for start in 0..cells.len() {
         let first = &cells[start].source;
-        if first.subtile_column != 0
-            || first.subtile_row != 0
-        {
+        if first.subtile_column != 0 || first.subtile_row != 0 {
             continue;
         }
         let Some(drawing) = source_drawing(first) else {
@@ -685,30 +817,34 @@ pub(super) fn finish_at_origin(mesh:&mut TerrainMeshData,cells:&[&VisualTile],
             continue;
         };
         for &i in &indices {
-            let first_vertex=mesh.solid.positions.len();
+            let first_vertex = mesh.solid.positions.len();
             append(&mut mesh.solid, g, i, &cells[i].source, colors);
-            if first.metatile_id==0x55 || first.tileset_id.as_ref()=="battle_tower_outside"
-                || cells[i].source.tile_index==0x23 {
-                let base=if cells[i].source.tile_index==0x23 {
+            if first.metatile_id == 0x55
+                || first.tileset_id.as_ref() == "battle_tower_outside"
+                || cells[i].source.tile_index == 0x23
+            {
+                let base = if cells[i].source.tile_index == 0x23 {
                     crate::scenery_finish::ROAD_GRAIN_BASE
-                } else {crate::scenery_finish::PAVING_GRAIN_BASE};
+                } else {
+                    crate::scenery_finish::PAVING_GRAIN_BASE
+                };
                 for v in first_vertex..mesh.solid.positions.len() {
-                    let p=mesh.solid.positions[v];
-                    mesh.solid.uvs[v]=[
-                        base[0]+origin[0] as f32
-                            +(p[0]-g.origin_x)/g.tile_width,
-                        base[1]-origin[1] as f32
-                            -(p[2]-g.origin_z)/g.tile_height,
+                    let p = mesh.solid.positions[v];
+                    mesh.solid.uvs[v] = [
+                        base[0] + origin[0] as f32 + (p[0] - g.origin_x) / g.tile_width,
+                        base[1] - origin[1] as f32 - (p[2] - g.origin_z) / g.tile_height,
                     ];
                 }
             }
-            mesh.authored_cells[i] = Some(if first.tileset_id.as_ref()=="battle_tower_outside" {
+            mesh.authored_cells[i] = Some(if first.tileset_id.as_ref() == "battle_tower_outside" {
                 TOWER_PATH_LABEL
-            } else {match first.metatile_id {
-                0x05 => BRIDGE_LABEL,
-                0x55 => BRICK_PATH_LABEL,
-                _ => LABEL,
-            }});
+            } else {
+                match first.metatile_id {
+                    0x05 => BRIDGE_LABEL,
+                    0x55 => BRICK_PATH_LABEL,
+                    _ => LABEL,
+                }
+            });
             removed.insert(faces[i].unwrap());
             for &q in &bridge_walls[i] {
                 brick_water_face(
@@ -815,95 +951,209 @@ mod tests {
     }
     #[test]
     fn tournament_walkway_reuses_brick_geometry_without_changing_support_or_unknown_art() {
-        let (mut cells,_,g,images,original)=fixture(5);
+        let (mut cells, _, g, images, original) = fixture(5);
         for cell in &mut cells {
-            cell.source.tileset_id="battle_tower_outside".into();
-            cell.source.metatile_id=6;cell.source.tile_index=0x2f;
+            cell.source.tileset_id = "battle_tower_outside".into();
+            cell.source.metatile_id = 6;
+            cell.source.tile_index = 0x2f;
         }
-        let shapes=vec![CellShape::Flat;16];
-        let mut mesh=original.clone();
-        finish_at_origin(&mut mesh,&cells.iter().collect::<Vec<_>>(),&shapes,&g,&images,[16,20]);
+        let shapes = vec![CellShape::Flat; 16];
+        let mut mesh = original.clone();
+        finish_at_origin(
+            &mut mesh,
+            &cells.iter().collect::<Vec<_>>(),
+            &shapes,
+            &g,
+            &images,
+            [16, 20],
+        );
         assert!(mesh.textured.indices.is_empty());
-        assert!(mesh.authored_cells.iter().all(|v|*v==Some(TOWER_PATH_LABEL)));
-        assert_eq!(mesh.footing_heights,original.footing_heights);
-        assert!(mesh.solid.positions.iter().all(|p|p[1]<=0. && p[1]>=-0.16));
-        let refs=cells.iter().collect::<Vec<_>>();
-        let colors=palette(&refs,&std::array::from_fn(|i|i),&images).unwrap();
-        let mut shared=SurfaceMeshData::default();
+        assert!(
+            mesh.authored_cells
+                .iter()
+                .all(|v| *v == Some(TOWER_PATH_LABEL))
+        );
+        assert_eq!(mesh.footing_heights, original.footing_heights);
+        assert!(
+            mesh.solid
+                .positions
+                .iter()
+                .all(|p| p[1] <= 0. && p[1] >= -0.16)
+        );
+        let refs = cells.iter().collect::<Vec<_>>();
+        let colors = palette(&refs, &std::array::from_fn(|i| i), &images).unwrap();
+        let mut shared = SurfaceMeshData::default();
         for i in 0..16 {
-            let mut source=cells[i].source.clone();source.tile_index=0x4b;
-            brick_deck(&mut shared,&g,i,&source,colors);
+            let mut source = cells[i].source.clone();
+            source.tile_index = 0x4b;
+            brick_deck(&mut shared, &g, i, &source, colors);
         }
-        assert_eq!(mesh.solid.positions,shared.positions);
-        assert_eq!(mesh.solid.indices,shared.indices);
-        assert!(mesh.solid.uvs.iter().all(|uv|uv[0]>=83000. && uv[1]< -3000.));
+        assert_eq!(mesh.solid.positions, shared.positions);
+        assert_eq!(mesh.solid.indices, shared.indices);
+        assert!(
+            mesh.solid
+                .uvs
+                .iter()
+                .all(|uv| uv[0] >= 83000. && uv[1] < -3000.)
+        );
         for altered in 0..3 {
-            let mut rejected_cells=cells.clone();let mut rejected_images=images.clone();
+            let mut rejected_cells = cells.clone();
+            let mut rejected_images = images.clone();
             match altered {
-                0 => rejected_cells[0].source.tile_index=0x30,
-                1 => for c in &mut rejected_cells {c.source.tileset_id="johto".into();},
-                _ => if let TileImageSample::Rgba(p)=rejected_images.pixels.get_mut(&cells[0].texture.id()).unwrap(){p[0]^=1;},
+                0 => rejected_cells[0].source.tile_index = 0x30,
+                1 => {
+                    for c in &mut rejected_cells {
+                        c.source.tileset_id = "johto".into();
+                    }
+                }
+                _ => {
+                    if let TileImageSample::Rgba(p) = rejected_images
+                        .pixels
+                        .get_mut(&cells[0].texture.id())
+                        .unwrap()
+                    {
+                        p[0] ^= 1;
+                    }
+                }
             }
-            let mut rejected=original.clone();
-            finish(&mut rejected,&rejected_cells.iter().collect::<Vec<_>>(),&shapes,&g,&rejected_images);
-            assert_eq!(rejected,original,"unproven drawing must retain its native art");
+            let mut rejected = original.clone();
+            finish(
+                &mut rejected,
+                &rejected_cells.iter().collect::<Vec<_>>(),
+                &shapes,
+                &g,
+                &rejected_images,
+            );
+            assert_eq!(
+                rejected, original,
+                "unproven drawing must retain its native art"
+            );
         }
     }
     #[test]
     fn elevated_pier_bricks_preserve_native_joints_and_follow_the_shore_ramp() {
-        let (cells,_,g,mut images,_)=fixture(5);
-        let mut baseline=SurfaceMeshData::default();
-        let refs=cells.iter().collect::<Vec<_>>();
-        let indices=std::array::from_fn(|i|i);
-        let colors=palette(&refs,&indices,&images).unwrap();
-        brick_deck(&mut baseline,&g,0,&cells[0].source,colors);
-        for heights in [[8.;4],[0.,4.,4.,0.]] {
-            let mut raised=SurfaceMeshData::default();
-            let mut johto=cells[0].clone();johto.source.tileset_id="johto".into();johto.source.tile_index=7;
-            assert!(raised_brick_deck(&mut raised,&g,0,&johto,&images,heights));
-            assert_eq!(raised.indices,baseline.indices);assert_eq!(raised.colors,baseline.colors);
-            let (_,_,n,s)=g.bounds(0,0);
-            for (old,new) in baseline.positions.iter().zip(&raised.positions) {
-                let z=(old[2]-n)/(s-n);let offset=heights[0]*(1.-z)+heights[1]*z;
-                assert!((new[1]-old[1]-offset).abs()<0.0001);
-                assert_eq!([new[0],new[2]],[old[0],old[2]]);
+        let (cells, _, g, mut images, _) = fixture(5);
+        let mut baseline = SurfaceMeshData::default();
+        let refs = cells.iter().collect::<Vec<_>>();
+        let indices = std::array::from_fn(|i| i);
+        let colors = palette(&refs, &indices, &images).unwrap();
+        brick_deck(&mut baseline, &g, 0, &cells[0].source, colors);
+        for heights in [[8.; 4], [0., 4., 4., 0.]] {
+            let mut raised = SurfaceMeshData::default();
+            let mut johto = cells[0].clone();
+            johto.source.tileset_id = "johto".into();
+            johto.source.tile_index = 7;
+            assert!(raised_brick_deck(
+                &mut raised,
+                &g,
+                0,
+                &johto,
+                &images,
+                heights
+            ));
+            assert_eq!(raised.indices, baseline.indices);
+            assert_eq!(raised.colors, baseline.colors);
+            let (_, _, n, s) = g.bounds(0, 0);
+            for (old, new) in baseline.positions.iter().zip(&raised.positions) {
+                let z = (old[2] - n) / (s - n);
+                let offset = heights[0] * (1. - z) + heights[1] * z;
+                assert!((new[1] - old[1] - offset).abs() < 0.0001);
+                assert_eq!([new[0], new[2]], [old[0], old[2]]);
             }
             for tri in raised.indices.chunks_exact(3) {
-                let p=tri.iter().map(|i|Vec3::from_array(raised.positions[*i as usize])).collect::<Vec<_>>();
-                let winding=(p[1]-p[0]).cross(p[2]-p[0]);
-                if winding.length()>0.00001 {assert!(winding.dot(Vec3::from_array(raised.normals[tri[0]as usize]))>0.);}
+                let p = tri
+                    .iter()
+                    .map(|i| Vec3::from_array(raised.positions[*i as usize]))
+                    .collect::<Vec<_>>();
+                let winding = (p[1] - p[0]).cross(p[2] - p[0]);
+                if winding.length() > 0.00001 {
+                    assert!(winding.dot(Vec3::from_array(raised.normals[tri[0] as usize])) > 0.);
+                }
             }
         }
-        if let TileImageSample::Rgba(rgba)=images.pixels.get_mut(&cells[0].texture.id()).unwrap() {rgba[0]^=1;}
-        let mut rejected=SurfaceMeshData::default();
-        assert!(!raised_brick_deck(&mut rejected,&g,0,&cells[0],&images,[8.;4]));
+        if let TileImageSample::Rgba(rgba) = images.pixels.get_mut(&cells[0].texture.id()).unwrap()
+        {
+            rgba[0] ^= 1;
+        }
+        let mut rejected = SurfaceMeshData::default();
+        assert!(!raised_brick_deck(
+            &mut rejected,
+            &g,
+            0,
+            &cells[0],
+            &images,
+            [8.; 4]
+        ));
         assert!(rejected.positions.is_empty());
     }
     #[test]
     fn brick_building_underlay_uses_only_complete_adjacent_native_paving() {
-        let (base,_,g,images,_)=fixture(0x55);
-        let g=GridGeometry{width:8,..g};let mut cells=Vec::new();
-        for y in 0..4 {for x in 0..8 {
-            let mut cell=base[y*4+x%4].clone();cell.column=x as u32;
-            if x>=4 {cell.source.metatile_id=0x20;cell.source.tile_index=0x4c;}
-            cells.push(cell);
-        }}
-        let shapes=vec![CellShape::Flat;cells.len()];let original=cells.clone();
-        let mut out=SurfaceMeshData::default();
-        assert!(building_underlay(&mut out,&cells.iter().collect::<Vec<_>>(),&shapes,&g,[4,0,4,4],&images,[17,9]));
-        assert!(!out.indices.is_empty());assert_eq!(cells,original);
-        let (w,_,n,_)=g.bounds(4,0);let (_,e,_,s)=g.bounds(7,3);
-        assert!(out.positions.iter().all(|p|p[0]>=w-0.001 && p[0]<=e+0.001 && p[2]>=n-0.001 && p[2]<=s+0.001));
-        for yy in 1..3 {for xx in 5..7 {
-            let (w,e,n,s)=g.bounds(xx,yy);
-            assert!(out.positions.iter().any(|p|p[0]>w && p[0]<e && p[2]>n && p[2]<s),
-                "cutaways must reveal finished bricks inside the plot too");
-        }}
-        let mut rejected=SurfaceMeshData::default();
-        assert!(!building_underlay(&mut rejected,&cells.iter().collect::<Vec<_>>(),&shapes,&g,[5,0,3,4],&images,[17,9]));
+        let (base, _, g, images, _) = fixture(0x55);
+        let g = GridGeometry { width: 8, ..g };
+        let mut cells = Vec::new();
+        for y in 0..4 {
+            for x in 0..8 {
+                let mut cell = base[y * 4 + x % 4].clone();
+                cell.column = x as u32;
+                if x >= 4 {
+                    cell.source.metatile_id = 0x20;
+                    cell.source.tile_index = 0x4c;
+                }
+                cells.push(cell);
+            }
+        }
+        let shapes = vec![CellShape::Flat; cells.len()];
+        let original = cells.clone();
+        let mut out = SurfaceMeshData::default();
+        assert!(building_underlay(
+            &mut out,
+            &cells.iter().collect::<Vec<_>>(),
+            &shapes,
+            &g,
+            [4, 0, 4, 4],
+            &images,
+            [17, 9]
+        ));
+        assert!(!out.indices.is_empty());
+        assert_eq!(cells, original);
+        let (w, _, n, _) = g.bounds(4, 0);
+        let (_, e, _, s) = g.bounds(7, 3);
+        assert!(out.positions.iter().all(|p| p[0] >= w - 0.001
+            && p[0] <= e + 0.001
+            && p[2] >= n - 0.001
+            && p[2] <= s + 0.001));
+        for yy in 1..3 {
+            for xx in 5..7 {
+                let (w, e, n, s) = g.bounds(xx, yy);
+                assert!(
+                    out.positions
+                        .iter()
+                        .any(|p| p[0] > w && p[0] < e && p[2] > n && p[2] < s),
+                    "cutaways must reveal finished bricks inside the plot too"
+                );
+            }
+        }
+        let mut rejected = SurfaceMeshData::default();
+        assert!(!building_underlay(
+            &mut rejected,
+            &cells.iter().collect::<Vec<_>>(),
+            &shapes,
+            &g,
+            [5, 0, 3, 4],
+            &images,
+            [17, 9]
+        ));
         assert!(rejected.indices.is_empty());
-        cells[0].source.tile_index=0x5c;
-        assert!(!building_underlay(&mut rejected,&cells.iter().collect::<Vec<_>>(),&shapes,&g,[4,0,4,4],&images,[17,9]));
+        cells[0].source.tile_index = 0x5c;
+        assert!(!building_underlay(
+            &mut rejected,
+            &cells.iter().collect::<Vec<_>>(),
+            &shapes,
+            &g,
+            [4, 0, 4, 4],
+            &images,
+            [17, 9]
+        ));
         assert!(rejected.positions.is_empty());
     }
 
@@ -1058,54 +1308,112 @@ mod tests {
 
     #[test]
     fn city_mineral_grain_keeps_the_same_map_coordinates_across_streamed_crops() {
-        let (cells,shapes,g,images,mut crop)=fixture(0x55);
-        let wide_g=GridGeometry {width:8,..g};
-        let mut wide=TerrainMeshData {footing_heights:vec![0.;32],
-            authored_cells:vec![None;32],..Default::default()};
-        let mut wide_cells=Vec::new();let mut wide_shapes=Vec::new();
-        for row in 0..4 {for col in 0..8 {
-            let mut tile=cells[row*4+col%4].clone();
-            tile.column=col as u32;tile.row=row as u32;
-            wide_cells.push(tile);wide_shapes.push(shapes[row*4+col%4]);
-            let (w,e,n,s)=wide_g.bounds(col,row);
-            append_top_shaded(&mut wide.textured,[w,e,n,s],0.,wide_g.uv(col,row),[1.;4]);
-        }}
-        finish_at_origin(&mut wide,&wide_cells.iter().collect::<Vec<_>>(),
-            &wide_shapes,&wide_g,&images,[100,80]);
-        let crop_g=GridGeometry {origin_x:g.origin_x+32.,..g};
-        for p in &mut crop.textured.positions {p[0]+=32.;}
-        finish_at_origin(&mut crop,&cells.iter().collect::<Vec<_>>(),
-            &shapes,&crop_g,&images,[104,80]);
+        let (cells, shapes, g, images, mut crop) = fixture(0x55);
+        let wide_g = GridGeometry { width: 8, ..g };
+        let mut wide = TerrainMeshData {
+            footing_heights: vec![0.; 32],
+            authored_cells: vec![None; 32],
+            ..Default::default()
+        };
+        let mut wide_cells = Vec::new();
+        let mut wide_shapes = Vec::new();
+        for row in 0..4 {
+            for col in 0..8 {
+                let mut tile = cells[row * 4 + col % 4].clone();
+                tile.column = col as u32;
+                tile.row = row as u32;
+                wide_cells.push(tile);
+                wide_shapes.push(shapes[row * 4 + col % 4]);
+                let (w, e, n, s) = wide_g.bounds(col, row);
+                append_top_shaded(
+                    &mut wide.textured,
+                    [w, e, n, s],
+                    0.,
+                    wide_g.uv(col, row),
+                    [1.; 4],
+                );
+            }
+        }
+        finish_at_origin(
+            &mut wide,
+            &wide_cells.iter().collect::<Vec<_>>(),
+            &wide_shapes,
+            &wide_g,
+            &images,
+            [100, 80],
+        );
+        let crop_g = GridGeometry {
+            origin_x: g.origin_x + 32.,
+            ..g
+        };
+        for p in &mut crop.textured.positions {
+            p[0] += 32.;
+        }
+        finish_at_origin(
+            &mut crop,
+            &cells.iter().collect::<Vec<_>>(),
+            &shapes,
+            &crop_g,
+            &images,
+            [104, 80],
+        );
         // Ignore the shared bedding edge itself: both adjacent source blocks
         // legitimately own vertices exactly on that boundary.
-        let selected=|surface:&SurfaceMeshData|surface.uvs.iter().enumerate().filter_map(|(i,&uv)| {
-            let p=crate::scenery_finish::paving_coordinates(uv).unwrap();
-            (p[0]>104.001).then_some(i)
-        }).collect::<Vec<_>>();
-        let right=selected(&wide.solid);let cropped=selected(&crop.solid);
-        assert_eq!(right.len(),cropped.len());assert!(right.len()>100);
-        for (&i,&j) in right.iter().zip(&cropped) {
-            assert_eq!(wide.solid.uvs[i],crop.solid.uvs[j]);
-            assert_eq!(wide.solid.colors[i],crop.solid.colors[j]);
-            assert_eq!(wide.solid.positions[i],crop.solid.positions[j]);
+        let selected = |surface: &SurfaceMeshData| {
+            surface
+                .uvs
+                .iter()
+                .enumerate()
+                .filter_map(|(i, &uv)| {
+                    let p = crate::scenery_finish::paving_coordinates(uv).unwrap();
+                    (p[0] > 104.001).then_some(i)
+                })
+                .collect::<Vec<_>>()
+        };
+        let right = selected(&wide.solid);
+        let cropped = selected(&crop.solid);
+        assert_eq!(right.len(), cropped.len());
+        assert!(right.len() > 100);
+        for (&i, &j) in right.iter().zip(&cropped) {
+            assert_eq!(wide.solid.uvs[i], crop.solid.uvs[j]);
+            assert_eq!(wide.solid.colors[i], crop.solid.colors[j]);
+            assert_eq!(wide.solid.positions[i], crop.solid.positions[j]);
         }
-        assert_eq!(crop.footing_heights,vec![0.;16]);
-        assert!(crop.solid.uvs.windows(2).any(|uv|uv[0]!=uv[1]),
-            "grain needs material coordinates, not a constant style flag");
-        for block in [5,0x22] {
-            let (tiles,shapes,g,images,mut control)=fixture(block);
-            finish_at_origin(&mut control,&tiles.iter().collect::<Vec<_>>(),
-                &shapes,&g,&images,[104,80]);
+        assert_eq!(crop.footing_heights, vec![0.; 16]);
+        assert!(
+            crop.solid.uvs.windows(2).any(|uv| uv[0] != uv[1]),
+            "grain needs material coordinates, not a constant style flag"
+        );
+        for block in [5, 0x22] {
+            let (tiles, shapes, g, images, mut control) = fixture(block);
+            finish_at_origin(
+                &mut control,
+                &tiles.iter().collect::<Vec<_>>(),
+                &shapes,
+                &g,
+                &images,
+                [104, 80],
+            );
             for triangle in control.solid.indices.chunks_exact(3) {
-                let p=[triangle[0],triangle[1],triangle[2]].map(|i|Vec3::from_array(control.solid.positions[i as usize]));
-                if (p[1]-p[0]).cross(p[2]-p[0]).length_squared()<0.00000001 {continue;}
-                let center=(p[0]+p[1]+p[2])/3.;
-                let i=((center.z-g.origin_z)/g.tile_height).floor() as usize*g.width
-                    +((center.x-g.origin_x)/g.tile_width).floor() as usize;
-                let plain_road=tiles[i].source.tile_index==0x23;
-                assert!(triangle.iter().all(|&i|
-                    crate::scenery_finish::paving_coordinates(control.solid.uvs[i as usize]).is_some()==plain_road),
-                    "only plain road fields gain grain; bridges and decorative borders retain their material");
+                let p = [triangle[0], triangle[1], triangle[2]]
+                    .map(|i| Vec3::from_array(control.solid.positions[i as usize]));
+                if (p[1] - p[0]).cross(p[2] - p[0]).length_squared() < 0.00000001 {
+                    continue;
+                }
+                let center = (p[0] + p[1] + p[2]) / 3.;
+                let i = ((center.z - g.origin_z) / g.tile_height).floor() as usize * g.width
+                    + ((center.x - g.origin_x) / g.tile_width).floor() as usize;
+                let plain_road = tiles[i].source.tile_index == 0x23;
+                assert!(
+                    triangle
+                        .iter()
+                        .all(|&i| crate::scenery_finish::paving_coordinates(
+                            control.solid.uvs[i as usize]
+                        )
+                        .is_some()
+                            == plain_road),
+                    "only plain road fields gain grain; bridges and decorative borders retain their material"
+                );
             }
         }
     }
@@ -1143,60 +1451,116 @@ mod tests {
 
     #[test]
     fn suspended_brick_fascia_follows_sloped_corners_and_live_source_paint() {
-        let (cells,_,g,images,_)=bridge_fixture();
-        let tile=&cells[7];
-        for scale in [0.5,1.,2.] {
-            for normal in [[1.,0.,0.],[-1.,0.,0.],[0.,0.,1.],[0.,0.,-1.]] {
-                let n=Vec3::from_array(normal);
-                let tangent=Vec3::Y.cross(n);
-                let bottom=Vec3::new(17.,3.,29.);
-                let end=bottom+tangent*8.*scale+Vec3::Y*0.75*scale;
-                let face=[bottom,end,end+Vec3::Y*2.*scale,bottom+Vec3::Y*2.*scale].map(|p|p.to_array());
-                let mut out=SurfaceMeshData::default();
-                assert!(raised_brick_side(&mut out,tile,&images,face,normal,8.*scale));
-                assert!(face.iter().all(|p|out.positions.contains(p)),"keep all four structural contacts");
+        let (cells, _, g, images, _) = bridge_fixture();
+        let tile = &cells[7];
+        for scale in [0.5, 1., 2.] {
+            for normal in [[1., 0., 0.], [-1., 0., 0.], [0., 0., 1.], [0., 0., -1.]] {
+                let n = Vec3::from_array(normal);
+                let tangent = Vec3::Y.cross(n);
+                let bottom = Vec3::new(17., 3., 29.);
+                let end = bottom + tangent * 8. * scale + Vec3::Y * 0.75 * scale;
+                let face = [
+                    bottom,
+                    end,
+                    end + Vec3::Y * 2. * scale,
+                    bottom + Vec3::Y * 2. * scale,
+                ]
+                .map(|p| p.to_array());
+                let mut out = SurfaceMeshData::default();
+                assert!(raised_brick_side(
+                    &mut out,
+                    tile,
+                    &images,
+                    face,
+                    normal,
+                    8. * scale
+                ));
+                assert!(
+                    face.iter().all(|p| out.positions.contains(p)),
+                    "keep all four structural contacts"
+                );
                 for tri in out.indices.chunks_exact(3) {
-                    let [a,b,c]=[tri[0],tri[1],tri[2]].map(|i|Vec3::from_array(out.positions[i as usize]));
-                    let cross=(b-a).cross(c-a);
-                    if cross.length_squared()>1e-10 {
-                        assert!(cross.dot(Vec3::from_array(out.normals[tri[0]as usize]))>0.);
+                    let [a, b, c] = [tri[0], tri[1], tri[2]]
+                        .map(|i| Vec3::from_array(out.positions[i as usize]));
+                    let cross = (b - a).cross(c - a);
+                    if cross.length_squared() > 1e-10 {
+                        assert!(cross.dot(Vec3::from_array(out.normals[tri[0] as usize])) > 0.);
                     }
                 }
                 for p in &out.positions {
-                    let p=Vec3::from_array(*p)-bottom;
-                    let u=p.dot(tangent)/(8.*scale);
-                    let height=p.y-u*0.75*scale;
-                    assert!(u>=-0.00001 && u<=1.00001);
-                    assert!(height>=-0.00001 && height<=2.*scale+0.00001,
-                        "fascia stays below the walking surface and above the original soffit");
+                    let p = Vec3::from_array(*p) - bottom;
+                    let u = p.dot(tangent) / (8. * scale);
+                    let height = p.y - u * 0.75 * scale;
+                    assert!(u >= -0.00001 && u <= 1.00001);
+                    assert!(
+                        height >= -0.00001 && height <= 2. * scale + 0.00001,
+                        "fascia stays below the walking surface and above the original soffit"
+                    );
                 }
-                let mut night=images.clone();
+                let mut night = images.clone();
                 for sample in night.pixels.values_mut() {
-                    if let TileImageSample::Rgba(bytes)=sample {
-                        for rgba in bytes.chunks_exact_mut(4) {rgba[0]/=2;rgba[1]/=2;}
+                    if let TileImageSample::Rgba(bytes) = sample {
+                        for rgba in bytes.chunks_exact_mut(4) {
+                            rgba[0] /= 2;
+                            rgba[1] /= 2;
+                        }
                     }
                 }
-                let mut other=SurfaceMeshData::default();
-                assert!(raised_brick_side(&mut other,tile,&night,face,normal,8.*scale));
-                assert_eq!(out.positions,other.positions);assert_eq!(out.normals,other.normals);
-                assert_eq!(out.indices,other.indices);assert_ne!(out.colors,other.colors);
-                let mut gold_grout=images.clone();
-                if let Some(TileImageSample::Rgba(bytes))=gold_grout.pixels.get_mut(&tile.texture.id()) {
-                    for (pixel,rgba) in bytes.chunks_exact_mut(4).enumerate() {
-                        if ink(0x4b,pixel%8,pixel/8)==0 {rgba.copy_from_slice(&[255,190,0,255]);}
+                let mut other = SurfaceMeshData::default();
+                assert!(raised_brick_side(
+                    &mut other,
+                    tile,
+                    &night,
+                    face,
+                    normal,
+                    8. * scale
+                ));
+                assert_eq!(out.positions, other.positions);
+                assert_eq!(out.normals, other.normals);
+                assert_eq!(out.indices, other.indices);
+                assert_ne!(out.colors, other.colors);
+                let mut gold_grout = images.clone();
+                if let Some(TileImageSample::Rgba(bytes)) =
+                    gold_grout.pixels.get_mut(&tile.texture.id())
+                {
+                    for (pixel, rgba) in bytes.chunks_exact_mut(4).enumerate() {
+                        if ink(0x4b, pixel % 8, pixel / 8) == 0 {
+                            rgba.copy_from_slice(&[255, 190, 0, 255]);
+                        }
                     }
                 }
-                let mut grounded=SurfaceMeshData::default();
-                assert!(raised_brick_side(&mut grounded,tile,&gold_grout,face,normal,8.*scale));
-                assert_eq!(out.colors,grounded.colors,
-                    "source bond ink is a joint, not luminous metallic mortar");
+                let mut grounded = SurfaceMeshData::default();
+                assert!(raised_brick_side(
+                    &mut grounded,
+                    tile,
+                    &gold_grout,
+                    face,
+                    normal,
+                    8. * scale
+                ));
+                assert_eq!(
+                    out.colors, grounded.colors,
+                    "source bond ink is a joint, not luminous metallic mortar"
+                );
             }
         }
-        let mut altered=images.clone();
-        if let Some(TileImageSample::Rgba(bytes))=altered.pixels.get_mut(&tile.texture.id()) {bytes[3]=0;}
-        let mut out=SurfaceMeshData::default();
-        assert!(!raised_brick_side(&mut out,tile,&altered,[[0.;3];4],[1.,0.,0.],g.tile_width));
-        assert!(out.positions.is_empty(),"transparent or altered source ink keeps the existing frame");
+        let mut altered = images.clone();
+        if let Some(TileImageSample::Rgba(bytes)) = altered.pixels.get_mut(&tile.texture.id()) {
+            bytes[3] = 0;
+        }
+        let mut out = SurfaceMeshData::default();
+        assert!(!raised_brick_side(
+            &mut out,
+            tile,
+            &altered,
+            [[0.; 3]; 4],
+            [1., 0., 0.],
+            g.tile_width
+        ));
+        assert!(
+            out.positions.is_empty(),
+            "transparent or altered source ink keeps the existing frame"
+        );
     }
 
     #[test]
@@ -1384,43 +1748,78 @@ mod tests {
     }
     #[test]
     fn blank_road_fields_are_unbroken_at_the_native_datum_and_keep_world_grain() {
-        let (cells,shapes,g,images,original)=fixture(0x27);
-        let refs=cells.iter().collect::<Vec<_>>();
-        let mut road=original.clone();
-        finish_at_origin(&mut road,&refs,&shapes,&g,&images,[17,29]);
-        assert_eq!(road.footing_heights,original.footing_heights);
-        assert!(road.authored_cells.iter().all(|c|*c==Some(LABEL)));
-        for (cell,tile) in cells.iter().enumerate().filter(|(_,t)|t.source.tile_index==0x23) {
-            let (w,e,n,s)=g.bounds(cell%g.width,cell/g.width);
-            let mut area=0.;let mut triangles=0;
+        let (cells, shapes, g, images, original) = fixture(0x27);
+        let refs = cells.iter().collect::<Vec<_>>();
+        let mut road = original.clone();
+        finish_at_origin(&mut road, &refs, &shapes, &g, &images, [17, 29]);
+        assert_eq!(road.footing_heights, original.footing_heights);
+        assert!(road.authored_cells.iter().all(|c| *c == Some(LABEL)));
+        for (cell, tile) in cells
+            .iter()
+            .enumerate()
+            .filter(|(_, t)| t.source.tile_index == 0x23)
+        {
+            let (w, e, n, s) = g.bounds(cell % g.width, cell / g.width);
+            let mut area = 0.;
+            let mut triangles = 0;
             for ids in road.solid.indices.chunks_exact(3) {
-                let p=[ids[0],ids[1],ids[2]].map(|i|Vec3::from_array(road.solid.positions[i as usize]));
-                let center=(p[0]+p[1]+p[2])/3.;
-                if center.x<=w || center.x>=e || center.z<=n || center.z>=s {continue;}
-                triangles+=1;area+=(p[1]-p[0]).cross(p[2]-p[0]).y*0.5;
-                assert!(p.iter().all(|p|p.y==0. && (p.x==w||p.x==e) && (p.z==n||p.z==s)),
-                    "the blank source field must have no inset tile seams: {:?}",tile.source);
-                assert!(ids.iter().all(|&i|crate::scenery_finish::road_coordinates(road.solid.uvs[i as usize]).is_some()),
-                    "blank pavement must have its own aggregate finish, not the brick bond material");
+                let p = [ids[0], ids[1], ids[2]]
+                    .map(|i| Vec3::from_array(road.solid.positions[i as usize]));
+                let center = (p[0] + p[1] + p[2]) / 3.;
+                if center.x <= w || center.x >= e || center.z <= n || center.z >= s {
+                    continue;
+                }
+                triangles += 1;
+                area += (p[1] - p[0]).cross(p[2] - p[0]).y * 0.5;
+                assert!(
+                    p.iter()
+                        .all(|p| p.y == 0. && (p.x == w || p.x == e) && (p.z == n || p.z == s)),
+                    "the blank source field must have no inset tile seams: {:?}",
+                    tile.source
+                );
+                assert!(
+                    ids.iter().all(|&i| crate::scenery_finish::road_coordinates(
+                        road.solid.uvs[i as usize]
+                    )
+                    .is_some()),
+                    "blank pavement must have its own aggregate finish, not the brick bond material"
+                );
             }
-            assert_eq!(triangles,2);assert!((area-g.tile_width*g.tile_height).abs()<0.00001);
+            assert_eq!(triangles, 2);
+            assert!((area - g.tile_width * g.tile_height).abs() < 0.00001);
         }
-        let shifted_g=GridGeometry{origin_x:g.origin_x+64.,origin_z:g.origin_z+32.,..g};
-        let mut shifted=original.clone();
-        for p in &mut shifted.textured.positions {p[0]+=64.;p[2]+=32.;}
-        finish_at_origin(&mut shifted,&refs,&shapes,&shifted_g,&images,[17,29]);
-        assert_eq!(road.solid.indices,shifted.solid.indices);
-        let mut grain_vertices=0;
-        for (i,uv) in road.solid.uvs.iter().enumerate() {
-            if let Some(at)=crate::scenery_finish::paving_coordinates(*uv) {
-                grain_vertices+=1;
-                let p=road.solid.positions[i];
-                assert_eq!(at,[17.+(p[0]-g.origin_x)/g.tile_width,29.+(p[2]-g.origin_z)/g.tile_height]);
-                assert_eq!(*uv,shifted.solid.uvs[i]);
-                assert_eq!(road.solid.colors[i],shifted.solid.colors[i]);
+        let shifted_g = GridGeometry {
+            origin_x: g.origin_x + 64.,
+            origin_z: g.origin_z + 32.,
+            ..g
+        };
+        let mut shifted = original.clone();
+        for p in &mut shifted.textured.positions {
+            p[0] += 64.;
+            p[2] += 32.;
+        }
+        finish_at_origin(&mut shifted, &refs, &shapes, &shifted_g, &images, [17, 29]);
+        assert_eq!(road.solid.indices, shifted.solid.indices);
+        let mut grain_vertices = 0;
+        for (i, uv) in road.solid.uvs.iter().enumerate() {
+            if let Some(at) = crate::scenery_finish::paving_coordinates(*uv) {
+                grain_vertices += 1;
+                let p = road.solid.positions[i];
+                assert_eq!(
+                    at,
+                    [
+                        17. + (p[0] - g.origin_x) / g.tile_width,
+                        29. + (p[2] - g.origin_z) / g.tile_height
+                    ]
+                );
+                assert_eq!(*uv, shifted.solid.uvs[i]);
+                assert_eq!(road.solid.colors[i], shifted.solid.colors[i]);
             }
         }
-        assert_eq!(grain_vertices,32,"eight blank source cells share one continuous finish");
+        assert_eq!(
+            grain_vertices, 32,
+            "eight blank source cells share one continuous finish"
+        );
     }
 
     #[test]

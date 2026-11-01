@@ -46,7 +46,9 @@ impl HallOfFameSequence {
         })
     }
 
-    pub fn elapsed_frames(&self) -> u16 { self.elapsed }
+    pub fn elapsed_frames(&self) -> u16 {
+        self.elapsed
+    }
 
     pub fn phase(&self) -> HallOfFamePhase {
         self.phase

@@ -50,24 +50,50 @@ mod tests {
     #[test]
     fn sky_temperature_comes_from_live_classic_pixels_and_rejects_missing_art() {
         use bevy::asset::RenderAssetUsages;
-        use bevy::render::render_resource::{Extent3d,TextureDimension,TextureFormat};
-        let mut images=Assets::<Image>::default();
-        let mut data=[28,16,36,255].repeat(32);
-        data.extend([198,165,222,255].repeat(32));
-        let texture=images.add(Image::new(Extent3d{width:8,height:8,depth_or_array_layers:1},
-            TextureDimension::D2,data,TextureFormat::Rgba8UnormSrgb,RenderAssetUsages::MAIN_WORLD));
-        let frame=VisualWorldFrame{active:true,tiles:vec![VisualTile{
-            column:0,row:0,texture:texture.clone(),animation_frames:None,priority:false,
-            source:VisualTileSource{tileset_id:"dark_cave".into(),metatile_id:0x24,
-                tile_index:0x01,subtile_column:2,subtile_row:2}}],..Default::default()};
-        let tint=sky_tint(&frame,&images);
-        assert_eq!(tint.w,1.);
-        assert_eq!(tint.z,1.);
-        assert!(tint.x>tint.y && tint.x<tint.z,"preserve the classic violet temperature");
-        images.get_mut(&texture).unwrap().data.as_mut().unwrap()[3]=0;
-        assert_eq!(sky_tint(&frame,&images),Vec4::ZERO);
+        use bevy::render::render_resource::{Extent3d, TextureDimension, TextureFormat};
+        let mut images = Assets::<Image>::default();
+        let mut data = [28, 16, 36, 255].repeat(32);
+        data.extend([198, 165, 222, 255].repeat(32));
+        let texture = images.add(Image::new(
+            Extent3d {
+                width: 8,
+                height: 8,
+                depth_or_array_layers: 1,
+            },
+            TextureDimension::D2,
+            data,
+            TextureFormat::Rgba8UnormSrgb,
+            RenderAssetUsages::MAIN_WORLD,
+        ));
+        let frame = VisualWorldFrame {
+            active: true,
+            tiles: vec![VisualTile {
+                column: 0,
+                row: 0,
+                texture: texture.clone(),
+                animation_frames: None,
+                priority: false,
+                source: VisualTileSource {
+                    tileset_id: "dark_cave".into(),
+                    metatile_id: 0x24,
+                    tile_index: 0x01,
+                    subtile_column: 2,
+                    subtile_row: 2,
+                },
+            }],
+            ..Default::default()
+        };
+        let tint = sky_tint(&frame, &images);
+        assert_eq!(tint.w, 1.);
+        assert_eq!(tint.z, 1.);
+        assert!(
+            tint.x > tint.y && tint.x < tint.z,
+            "preserve the classic violet temperature"
+        );
+        images.get_mut(&texture).unwrap().data.as_mut().unwrap()[3] = 0;
+        assert_eq!(sky_tint(&frame, &images), Vec4::ZERO);
         images.remove(texture.id());
-        assert_eq!(sky_tint(&frame,&images),Vec4::ZERO);
+        assert_eq!(sky_tint(&frame, &images), Vec4::ZERO);
     }
 
     #[test]
@@ -149,7 +175,9 @@ pub(super) fn sky_tint(frame: &VisualWorldFrame, images: &Assets<Image>) -> Vec4
             let mut brightest = Vec3::ZERO;
             let weights = Vec3::new(0.2126, 0.7152, 0.0722);
             for pixel in data.chunks_exact(4) {
-                let color = Vec3::from_array([pixel[0], pixel[1], pixel[2]].map(crate::source_color::linear));
+                let color = Vec3::from_array(
+                    [pixel[0], pixel[1], pixel[2]].map(crate::source_color::linear),
+                );
                 if color.dot(weights) > brightest.dot(weights) {
                     brightest = color;
                 }

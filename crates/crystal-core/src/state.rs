@@ -389,17 +389,31 @@ impl GameState {
     // Namespaced extension keys preserve the existing positional binary save
     // layout. Old saves contain neither key and naturally start at zero.
     pub fn pve_battles(&self) -> u64 {
-        self.script_runtime.memory.get("GEOTHITE_PVE_BATTLES").and_then(|n| n.parse().ok()).unwrap_or(0)
+        self.script_runtime
+            .memory
+            .get("GEOTHITE_PVE_BATTLES")
+            .and_then(|n| n.parse().ok())
+            .unwrap_or(0)
     }
 
     pub fn pve_wins(&self) -> u64 {
-        self.script_runtime.memory.get("GEOTHITE_PVE_WINS").and_then(|n| n.parse().ok()).unwrap_or(0)
+        self.script_runtime
+            .memory
+            .get("GEOTHITE_PVE_WINS")
+            .and_then(|n| n.parse().ok())
+            .unwrap_or(0)
     }
 
     pub(crate) fn record_pve_battle(&mut self, won: bool) {
-        self.script_runtime.memory.insert("GEOTHITE_PVE_BATTLES".into(), self.pve_battles().saturating_add(1).to_string());
+        self.script_runtime.memory.insert(
+            "GEOTHITE_PVE_BATTLES".into(),
+            self.pve_battles().saturating_add(1).to_string(),
+        );
         if won {
-            self.script_runtime.memory.insert("GEOTHITE_PVE_WINS".into(), self.pve_wins().saturating_add(1).to_string());
+            self.script_runtime.memory.insert(
+                "GEOTHITE_PVE_WINS".into(),
+                self.pve_wins().saturating_add(1).to_string(),
+            );
         }
     }
 
@@ -585,7 +599,11 @@ impl LuckyNumberCountdown {
     pub fn restart(&mut self, current_day: u8) {
         let weekday = current_day % 7;
         // Friday itself restarts for the following Friday, not zero days.
-        self.remaining_days = if weekday < 5 { 5 - weekday } else { 12 - weekday };
+        self.remaining_days = if weekday < 5 {
+            5 - weekday
+        } else {
+            12 - weekday
+        };
         self.last_checked_day = current_day;
     }
 
@@ -1704,8 +1722,8 @@ impl Serialize for RoamingPokemonState {
         // bytes as an Option tag and corrupt every following roamer/save field.
         let omit_hp = crate::save::roaming_save_v24_wire()
             || (serializer.is_human_readable() && self.scaled_hp.is_none());
-        let mut value = serializer
-            .serialize_struct("RoamingPokemonState", if omit_hp { 6 } else { 7 })?;
+        let mut value =
+            serializer.serialize_struct("RoamingPokemonState", if omit_hp { 6 } else { 7 })?;
         value.serialize_field("species", &self.species)?;
         value.serialize_field("level", &self.level)?;
         value.serialize_field("map_group", &self.map_group)?;
@@ -1805,8 +1823,13 @@ impl RoamingPokemonState {
     }
 
     fn validate_saved_state(&self, index: usize) -> Result<(), String> {
-        if self.scaled_hp.is_some_and(|hp| self.hp != hp.min(u16::from(u8::MAX)) as u8) {
-            return Err(format!("roaming_pokemon[{index}] scaled HP does not match its HP byte"));
+        if self
+            .scaled_hp
+            .is_some_and(|hp| self.hp != hp.min(u16::from(u8::MAX)) as u8)
+        {
+            return Err(format!(
+                "roaming_pokemon[{index}] scaled HP does not match its HP byte"
+            ));
         }
         if let Some(species) = &self.species {
             validate_script_runtime_token(&format!("roaming_pokemon[{index}].species"), species)?;
@@ -3772,12 +3795,19 @@ impl ScriptRuntimeMemory {
             validate_script_runtime_token(&format!("variables[{key}]"), key)?;
         }
         let mut career = [0u64; 2];
-        for (index, key) in ["GEOTHITE_PVE_BATTLES", "GEOTHITE_PVE_WINS"].iter().enumerate() {
+        for (index, key) in ["GEOTHITE_PVE_BATTLES", "GEOTHITE_PVE_WINS"]
+            .iter()
+            .enumerate()
+        {
             if let Some(value) = self.memory.get(*key) {
-                career[index] = value.parse::<u64>().map_err(|_| format!("invalid {key} counter"))?;
+                career[index] = value
+                    .parse::<u64>()
+                    .map_err(|_| format!("invalid {key} counter"))?;
             }
         }
-        if career[1] > career[0] { return Err("PvE wins exceed completed battles".into()); }
+        if career[1] > career[0] {
+            return Err("PvE wins exceed completed battles".into());
+        }
         for key in self.memory.keys() {
             // `memcall wCallerContact + PHONE_CONTACT_SCRIPT2_BANK` is one
             // exact compiled ASM operand, not three independent WRAM keys.
@@ -6399,7 +6429,12 @@ pub fn validate_saved_object_overrides(
     object_exists: impl FnMut(&str) -> bool,
 ) -> Result<(), ObjectOverrideSaveError> {
     validate_saved_object_overrides_with_source_positions(
-        map_name, memory, runtime_tile_bounds, map_object_count, object_exists, |_| None,
+        map_name,
+        memory,
+        runtime_tile_bounds,
+        map_object_count,
+        object_exists,
+        |_| None,
     )
 }
 
@@ -6444,12 +6479,17 @@ pub fn validate_saved_object_overrides_with_source_positions(
             || runtime_tile.y < 0
             || i32::from(runtime_tile.x) >= i32::from(width)
             || i32::from(runtime_tile.y) >= i32::from(height);
-        let source_staging = outside && source_position(object_id).is_some_and(|(index, x, y)| {
-            index < object_count && x == object_memory.x && y == object_memory.y
-                && !memory.object_structs.structs.iter().any(|slot| {
-                    usize::from(slot.map_object_index) == index + 1
-                })
-        });
+        let source_staging = outside
+            && source_position(object_id).is_some_and(|(index, x, y)| {
+                index < object_count
+                    && x == object_memory.x
+                    && y == object_memory.y
+                    && !memory
+                        .object_structs
+                        .structs
+                        .iter()
+                        .any(|slot| usize::from(slot.map_object_index) == index + 1)
+            });
         if outside && !source_staging {
             return Err(ObjectOverrideSaveError::RuntimeTileOutOfBounds {
                 map_name: map_name.to_string(),
@@ -7877,14 +7917,20 @@ fn validate_optional_script_runtime_token(field: &str, value: Option<&str>) -> R
 }
 
 fn validate_optional_script_map_setup_token(
-    field: &str, command: &str, value: Option<&str>,
+    field: &str,
+    command: &str,
+    value: Option<&str>,
 ) -> Result<(), String> {
     // Native reanchormap operands can be literal bytes (the Elite Four uses
     // $86). Keep that operand verbatim; refresh events do not dispatch a named
     // map-setup callback. Other commands retain their identifier contract.
-    if command == "reanchormap" && value.is_some_and(|value|
-        value.strip_prefix('$').is_some_and(|digits|
-            (1..=2).contains(&digits.len()) && digits.bytes().all(|b| b.is_ascii_hexdigit()))) {
+    if command == "reanchormap"
+        && value.is_some_and(|value| {
+            value.strip_prefix('$').is_some_and(|digits| {
+                (1..=2).contains(&digits.len()) && digits.bytes().all(|b| b.is_ascii_hexdigit())
+            })
+        })
+    {
         return Ok(());
     }
     validate_optional_script_runtime_token(field, value)
@@ -8496,92 +8542,95 @@ impl GameState {
         next.fishing.daily_flags1 = 0;
         // Fruit pickups use one saved flag per native tree. Expire the
         // harvest, while leaving item pickups and story flags permanent.
-        next.flags.event_flags.retain(|flag, _| {
-            !(flag.starts_with("FRUITTREE_") && flag.ends_with("_COLLECTED"))
-        });
+        next.flags
+            .event_flags
+            .retain(|flag, _| !(flag.starts_with("FRUITTREE_") && flag.ends_with("_COLLECTED")));
         // CheckDailyResetTimer clears the daily, swarm, rematch and phone flag
         // banks. Named flags are stored separately from fishing's raw bytes.
         // Keep permanent story/event flags and the retained Buena password.
-        next.flags.engine_flags.retain(|flag, _| !matches!(flag.as_str(),
-            "ENGINE_KURT_MAKING_BALLS"
-            | "ENGINE_DAILY_BUG_CONTEST"
-            | "ENGINE_QWILFISH_SWARM"
-            | "ENGINE_TIME_CAPSULE"
-            | "ENGINE_ALL_FRUIT_TREES"
-            | "ENGINE_GOT_SHUCKIE_TODAY"
-            | "ENGINE_GOLDENROD_UNDERGROUND_MERCHANT_CLOSED"
-            | "ENGINE_FOUGHT_IN_TRAINER_HALL_TODAY"
-            | "ENGINE_MT_MOON_SQUARE_CLEFAIRY"
-            | "ENGINE_UNION_CAVE_LAPRAS"
-            | "ENGINE_GOLDENROD_UNDERGROUND_GOT_HAIRCUT"
-            | "ENGINE_GOLDENROD_DEPT_STORE_TM27_RETURN"
-            | "ENGINE_DAISYS_GROOMING"
-            | "ENGINE_INDIGO_PLATEAU_RIVAL_FIGHT"
-            | "ENGINE_DAILY_MOVE_TUTOR"
-            | "ENGINE_BUENAS_PASSWORD"
-            | "ENGINE_BUENAS_PASSWORD_2"
-            | "ENGINE_GOLDENROD_DEPT_STORE_SALE_IS_ON"
-            | "ENGINE_JACK_READY_FOR_REMATCH"
-            | "ENGINE_HUEY_READY_FOR_REMATCH"
-            | "ENGINE_GAVEN_READY_FOR_REMATCH"
-            | "ENGINE_BETH_READY_FOR_REMATCH"
-            | "ENGINE_JOSE_READY_FOR_REMATCH"
-            | "ENGINE_REENA_READY_FOR_REMATCH"
-            | "ENGINE_JOEY_READY_FOR_REMATCH"
-            | "ENGINE_WADE_READY_FOR_REMATCH"
-            | "ENGINE_RALPH_READY_FOR_REMATCH"
-            | "ENGINE_LIZ_READY_FOR_REMATCH"
-            | "ENGINE_ANTHONY_READY_FOR_REMATCH"
-            | "ENGINE_TODD_READY_FOR_REMATCH"
-            | "ENGINE_GINA_READY_FOR_REMATCH"
-            | "ENGINE_ARNIE_READY_FOR_REMATCH"
-            | "ENGINE_ALAN_READY_FOR_REMATCH"
-            | "ENGINE_DANA_READY_FOR_REMATCH"
-            | "ENGINE_CHAD_READY_FOR_REMATCH"
-            | "ENGINE_TULLY_READY_FOR_REMATCH"
-            | "ENGINE_BRENT_READY_FOR_REMATCH"
-            | "ENGINE_TIFFANY_READY_FOR_REMATCH"
-            | "ENGINE_VANCE_READY_FOR_REMATCH"
-            | "ENGINE_WILTON_READY_FOR_REMATCH"
-            | "ENGINE_PARRY_READY_FOR_REMATCH"
-            | "ENGINE_ERIN_READY_FOR_REMATCH"
-            | "ENGINE_BEVERLY_HAS_NUGGET"
-            | "ENGINE_JOSE_HAS_STAR_PIECE"
-            | "ENGINE_WADE_HAS_ITEM"
-            | "ENGINE_GINA_HAS_LEAF_STONE"
-            | "ENGINE_ALAN_HAS_FIRE_STONE"
-            | "ENGINE_DANA_HAS_THUNDERSTONE"
-            | "ENGINE_DEREK_HAS_NUGGET"
-            | "ENGINE_TULLY_HAS_WATER_STONE"
-            | "ENGINE_TIFFANY_HAS_PINK_BOW"
-            | "ENGINE_WILTON_HAS_ITEM"
-            | "ENGINE_JACK_MONDAY_MORNING"
-            | "ENGINE_HUEY_WEDNESDAY_NIGHT"
-            | "ENGINE_GAVEN_THURSDAY_MORNING"
-            | "ENGINE_BETH_FRIDAY_AFTERNOON"
-            | "ENGINE_JOSE_SATURDAY_NIGHT"
-            | "ENGINE_REENA_SUNDAY_MORNING"
-            | "ENGINE_JOEY_MONDAY_AFTERNOON"
-            | "ENGINE_WADE_TUESDAY_NIGHT"
-            | "ENGINE_RALPH_WEDNESDAY_MORNING"
-            | "ENGINE_LIZ_THURSDAY_AFTERNOON"
-            | "ENGINE_ANTHONY_FRIDAY_NIGHT"
-            | "ENGINE_TODD_SATURDAY_MORNING"
-            | "ENGINE_GINA_SUNDAY_AFTERNOON"
-            | "ENGINE_ARNIE_TUESDAY_MORNING"
-            | "ENGINE_ALAN_WEDNESDAY_AFTERNOON"
-            | "ENGINE_DANA_THURSDAY_NIGHT"
-            | "ENGINE_CHAD_FRIDAY_MORNING"
-            | "ENGINE_TULLY_SUNDAY_NIGHT"
-            | "ENGINE_BRENT_MONDAY_MORNING"
-            | "ENGINE_TIFFANY_TUESDAY_AFTERNOON"
-            | "ENGINE_VANCE_WEDNESDAY_NIGHT"
-            | "ENGINE_WILTON_THURSDAY_MORNING"
-            | "ENGINE_PARRY_FRIDAY_AFTERNOON"
-            | "ENGINE_ERIN_SATURDAY_NIGHT"
-            | "ENGINE_DUNSPARCE_SWARM"
-            | "ENGINE_YANMA_SWARM"
-        ));
+        next.flags.engine_flags.retain(|flag, _| {
+            !matches!(
+                flag.as_str(),
+                "ENGINE_KURT_MAKING_BALLS"
+                    | "ENGINE_DAILY_BUG_CONTEST"
+                    | "ENGINE_QWILFISH_SWARM"
+                    | "ENGINE_TIME_CAPSULE"
+                    | "ENGINE_ALL_FRUIT_TREES"
+                    | "ENGINE_GOT_SHUCKIE_TODAY"
+                    | "ENGINE_GOLDENROD_UNDERGROUND_MERCHANT_CLOSED"
+                    | "ENGINE_FOUGHT_IN_TRAINER_HALL_TODAY"
+                    | "ENGINE_MT_MOON_SQUARE_CLEFAIRY"
+                    | "ENGINE_UNION_CAVE_LAPRAS"
+                    | "ENGINE_GOLDENROD_UNDERGROUND_GOT_HAIRCUT"
+                    | "ENGINE_GOLDENROD_DEPT_STORE_TM27_RETURN"
+                    | "ENGINE_DAISYS_GROOMING"
+                    | "ENGINE_INDIGO_PLATEAU_RIVAL_FIGHT"
+                    | "ENGINE_DAILY_MOVE_TUTOR"
+                    | "ENGINE_BUENAS_PASSWORD"
+                    | "ENGINE_BUENAS_PASSWORD_2"
+                    | "ENGINE_GOLDENROD_DEPT_STORE_SALE_IS_ON"
+                    | "ENGINE_JACK_READY_FOR_REMATCH"
+                    | "ENGINE_HUEY_READY_FOR_REMATCH"
+                    | "ENGINE_GAVEN_READY_FOR_REMATCH"
+                    | "ENGINE_BETH_READY_FOR_REMATCH"
+                    | "ENGINE_JOSE_READY_FOR_REMATCH"
+                    | "ENGINE_REENA_READY_FOR_REMATCH"
+                    | "ENGINE_JOEY_READY_FOR_REMATCH"
+                    | "ENGINE_WADE_READY_FOR_REMATCH"
+                    | "ENGINE_RALPH_READY_FOR_REMATCH"
+                    | "ENGINE_LIZ_READY_FOR_REMATCH"
+                    | "ENGINE_ANTHONY_READY_FOR_REMATCH"
+                    | "ENGINE_TODD_READY_FOR_REMATCH"
+                    | "ENGINE_GINA_READY_FOR_REMATCH"
+                    | "ENGINE_ARNIE_READY_FOR_REMATCH"
+                    | "ENGINE_ALAN_READY_FOR_REMATCH"
+                    | "ENGINE_DANA_READY_FOR_REMATCH"
+                    | "ENGINE_CHAD_READY_FOR_REMATCH"
+                    | "ENGINE_TULLY_READY_FOR_REMATCH"
+                    | "ENGINE_BRENT_READY_FOR_REMATCH"
+                    | "ENGINE_TIFFANY_READY_FOR_REMATCH"
+                    | "ENGINE_VANCE_READY_FOR_REMATCH"
+                    | "ENGINE_WILTON_READY_FOR_REMATCH"
+                    | "ENGINE_PARRY_READY_FOR_REMATCH"
+                    | "ENGINE_ERIN_READY_FOR_REMATCH"
+                    | "ENGINE_BEVERLY_HAS_NUGGET"
+                    | "ENGINE_JOSE_HAS_STAR_PIECE"
+                    | "ENGINE_WADE_HAS_ITEM"
+                    | "ENGINE_GINA_HAS_LEAF_STONE"
+                    | "ENGINE_ALAN_HAS_FIRE_STONE"
+                    | "ENGINE_DANA_HAS_THUNDERSTONE"
+                    | "ENGINE_DEREK_HAS_NUGGET"
+                    | "ENGINE_TULLY_HAS_WATER_STONE"
+                    | "ENGINE_TIFFANY_HAS_PINK_BOW"
+                    | "ENGINE_WILTON_HAS_ITEM"
+                    | "ENGINE_JACK_MONDAY_MORNING"
+                    | "ENGINE_HUEY_WEDNESDAY_NIGHT"
+                    | "ENGINE_GAVEN_THURSDAY_MORNING"
+                    | "ENGINE_BETH_FRIDAY_AFTERNOON"
+                    | "ENGINE_JOSE_SATURDAY_NIGHT"
+                    | "ENGINE_REENA_SUNDAY_MORNING"
+                    | "ENGINE_JOEY_MONDAY_AFTERNOON"
+                    | "ENGINE_WADE_TUESDAY_NIGHT"
+                    | "ENGINE_RALPH_WEDNESDAY_MORNING"
+                    | "ENGINE_LIZ_THURSDAY_AFTERNOON"
+                    | "ENGINE_ANTHONY_FRIDAY_NIGHT"
+                    | "ENGINE_TODD_SATURDAY_MORNING"
+                    | "ENGINE_GINA_SUNDAY_AFTERNOON"
+                    | "ENGINE_ARNIE_TUESDAY_MORNING"
+                    | "ENGINE_ALAN_WEDNESDAY_AFTERNOON"
+                    | "ENGINE_DANA_THURSDAY_NIGHT"
+                    | "ENGINE_CHAD_FRIDAY_MORNING"
+                    | "ENGINE_TULLY_SUNDAY_NIGHT"
+                    | "ENGINE_BRENT_MONDAY_MORNING"
+                    | "ENGINE_TIFFANY_TUESDAY_AFTERNOON"
+                    | "ENGINE_VANCE_WEDNESDAY_NIGHT"
+                    | "ENGINE_WILTON_THURSDAY_MORNING"
+                    | "ENGINE_PARRY_FRIDAY_AFTERNOON"
+                    | "ENGINE_ERIN_SATURDAY_NIGHT"
+                    | "ENGINE_DUNSPARCE_SWARM"
+                    | "ENGINE_YANMA_SWARM"
+            )
+        });
         next.fishing.swarm_flag = 0;
         next.swarms.active.clear();
         next.apply_pokerus_tick(1);
@@ -10420,11 +10469,16 @@ mod tests {
     fn buena_daily_reset_clears_broadcast_and_claim_flags_but_retains_password() {
         let mut state = GameState::default();
         state.kenji_break_timer = 2;
-        state.buenas_password = BuenasPasswordState { category_index: 10, option_index: 2 };
+        state.buenas_password = BuenasPasswordState {
+            category_index: 10,
+            option_index: 2,
+        };
         for flag in ["ENGINE_BUENAS_PASSWORD", "ENGINE_BUENAS_PASSWORD_2"] {
             state.flags.set_engine_flag(flag, true).unwrap();
         }
-        state.apply_daily_reset(&mut ReplayDivider::new([])).unwrap();
+        state
+            .apply_daily_reset(&mut ReplayDivider::new([]))
+            .unwrap();
         for flag in ["ENGINE_BUENAS_PASSWORD", "ENGINE_BUENAS_PASSWORD_2"] {
             assert!(!state.flags.is_engine_flag_set(flag).unwrap());
         }
@@ -10437,9 +10491,15 @@ mod tests {
 
     #[test]
     fn buena_password_save_has_only_the_retained_source_password_bytes() {
-        let password = BuenasPasswordState { category_index: 10, option_index: 2 };
+        let password = BuenasPasswordState {
+            category_index: 10,
+            option_index: 2,
+        };
         let encoded = serde_json::to_value(&password).unwrap();
-        assert_eq!(encoded, serde_json::json!({ "category_index": 10, "option_index": 2 }));
+        assert_eq!(
+            encoded,
+            serde_json::json!({ "category_index": 10, "option_index": 2 })
+        );
         let decoded: BuenasPasswordState = serde_json::from_value(encoded).unwrap();
         assert_eq!(decoded, password);
     }
@@ -10609,7 +10669,12 @@ mod tests {
             state.unused_two_day_timer,
             UnusedTwoDayTimerState::default()
         );
-        assert!(!state.flags.is_engine_flag_set("ENGINE_LUCKY_NUMBER_SHOW").unwrap());
+        assert!(
+            !state
+                .flags
+                .is_engine_flag_set("ENGINE_LUCKY_NUMBER_SHOW")
+                .unwrap()
+        );
         assert_eq!(state.lucky_number_day, None);
         assert_eq!(state.lucky_id_number, 0);
         assert_eq!(state.current_pc_box, 0);
@@ -10744,21 +10809,36 @@ mod tests {
             "ENGINE_JACK_MONDAY_MORNING",
         ];
         let permanent = [
-            "ENGINE_PLAINBADGE", "ENGINE_POKEDEX", "ENGINE_POKEGEAR",
-            "ENGINE_LUCKY_NUMBER_SHOW", "ENGINE_ROCKETS_IN_MAHOGANY",
+            "ENGINE_PLAINBADGE",
+            "ENGINE_POKEDEX",
+            "ENGINE_POKEGEAR",
+            "ENGINE_LUCKY_NUMBER_SHOW",
+            "ENGINE_ROCKETS_IN_MAHOGANY",
         ];
         for flag in daily.into_iter().chain(permanent) {
             state.flags.set_engine_flag(flag, true).unwrap();
         }
-        state.flags.set_event_flag("EVENT_GOT_HM01_CUT", true).unwrap();
-        state.flags.set_event_flag("EVENT_BEAT_BUGSY", true).unwrap();
+        state
+            .flags
+            .set_event_flag("EVENT_GOT_HM01_CUT", true)
+            .unwrap();
+        state
+            .flags
+            .set_event_flag("EVENT_BEAT_BUGSY", true)
+            .unwrap();
         let events = state.flags.event_flags.clone();
-        state.apply_daily_reset(&mut ReplayDivider::new([])).unwrap();
+        state
+            .apply_daily_reset(&mut ReplayDivider::new([]))
+            .unwrap();
         // Persisted flags must not resurrect the expired daily restrictions.
-        let flags: EventFlagMemory = serde_json::from_str(
-            &serde_json::to_string(&state.flags).unwrap()).unwrap();
-        for flag in daily { assert!(!flags.is_engine_flag_set(flag).unwrap(), "{flag}"); }
-        for flag in permanent { assert!(flags.is_engine_flag_set(flag).unwrap(), "{flag}"); }
+        let flags: EventFlagMemory =
+            serde_json::from_str(&serde_json::to_string(&state.flags).unwrap()).unwrap();
+        for flag in daily {
+            assert!(!flags.is_engine_flag_set(flag).unwrap(), "{flag}");
+        }
+        for flag in permanent {
+            assert!(flags.is_engine_flag_set(flag).unwrap(), "{flag}");
+        }
         assert_eq!(flags.event_flags, events);
     }
 
@@ -11571,7 +11651,9 @@ mod tests {
         );
         prebuilt_egg.is_egg = true;
         state.day_care.egg = Some(prebuilt_egg);
-        state.validate_saved_state().expect("a ready egg survives parent withdrawal");
+        state
+            .validate_saved_state()
+            .expect("a ready egg survives parent withdrawal");
 
         state = GameState::default();
         state.day_care.compatibility_score = 70;

@@ -31,7 +31,12 @@ fn main() -> Result<()> {
     while let Some(argument) = args.next() {
         match argument.as_str() {
             "--audit" => audit = true,
-            "--title-unvalidated" => title_unvalidated = Some(PathBuf::from(args.next().context("missing unvalidated title catalog path")?)),
+            "--title-unvalidated" => {
+                title_unvalidated = Some(PathBuf::from(
+                    args.next()
+                        .context("missing unvalidated title catalog path")?,
+                ))
+            }
             _ => anyhow::bail!("unexpected argument {argument}"),
         }
     }
@@ -74,16 +79,20 @@ fn main() -> Result<()> {
     if assets.join("data/wild_encounters.json").exists() {
         data.wild_encounters = serde_json::from_value(json("wild_encounters.json")?)?;
         data.encounter_slot_tables = serde_json::from_value(json("encounter_slot_tables.json")?)?;
-        data.encounter_music_modifiers = serde_json::from_value(json("encounter_music_modifiers.json")?)?;
+        data.encounter_music_modifiers =
+            serde_json::from_value(json("encounter_music_modifiers.json")?)?;
     }
     if assets.join("data/phone_contacts.json").exists() {
         data.phone_contacts = serde_json::from_value(json("phone_contacts.json")?)?;
-        data.permanent_phone_numbers = serde_json::from_value(json("permanent_phone_numbers.json")?)?;
+        data.permanent_phone_numbers =
+            serde_json::from_value(json("permanent_phone_numbers.json")?)?;
         data.special_phone_calls = serde_json::from_value(json("special_phone_calls.json")?)?;
     }
     if assets.join("data/sprite_palette_defaults.json").exists() {
-        data.sprite_palette_defaults = serde_json::from_value(json("sprite_palette_defaults.json")?)?;
-        data.pokegear_town_map_palette_map = serde_json::from_value(json("pokegear_town_map_palette_map.json")?)?;
+        data.sprite_palette_defaults =
+            serde_json::from_value(json("sprite_palette_defaults.json")?)?;
+        data.pokegear_town_map_palette_map =
+            serde_json::from_value(json("pokegear_town_map_palette_map.json")?)?;
         data.pokegear_landmarks = serde_json::from_value(json("pokegear_landmarks.json")?)?;
     }
     if assets.join("data/battle_animations.json").exists() {
@@ -125,7 +134,8 @@ fn main() -> Result<()> {
         data.marts = serde_json::from_value(json("marts.json")?)?;
     }
     if assets.join("data/battle_stat_multipliers.json").exists() {
-        data.battle_stat_multipliers = serde_json::from_value(json("battle_stat_multipliers.json")?)?;
+        data.battle_stat_multipliers =
+            serde_json::from_value(json("battle_stat_multipliers.json")?)?;
     }
     if assets.join("data/move_priorities.json").exists() {
         data.move_priorities = serde_json::from_value(json("move_priorities.json")?)?;
@@ -137,8 +147,12 @@ fn main() -> Result<()> {
     if assets.join("data/weather_modifiers.json").exists() {
         data.weather_modifiers = serde_json::from_value(json("weather_modifiers.json")?)?;
     }
-    if assets.join("data/capture_wobble_probabilities.json").exists() {
-        data.capture_wobble_probabilities = serde_json::from_value(json("capture_wobble_probabilities.json")?)?;
+    if assets
+        .join("data/capture_wobble_probabilities.json")
+        .exists()
+    {
+        data.capture_wobble_probabilities =
+            serde_json::from_value(json("capture_wobble_probabilities.json")?)?;
     }
     if assets.join("data/pokemon_cries.json").exists() {
         data.pokemon_cries = serde_json::from_value(json("pokemon_cries.json")?)?;
@@ -150,7 +164,13 @@ fn main() -> Result<()> {
     if assets.join("data/playability.json").exists() {
         data.playability = serde_json::from_value(json("playability.json")?)?;
     }
-    if assets.join("data/story_event_script_constants.json").exists() { data.story_event_script_constants=serde_json::from_value(json("story_event_script_constants.json")?)?; }
+    if assets
+        .join("data/story_event_script_constants.json")
+        .exists()
+    {
+        data.story_event_script_constants =
+            serde_json::from_value(json("story_event_script_constants.json")?)?;
+    }
     for value in json("items.json")?
         .as_array()
         .context("source items array")?
@@ -163,13 +183,21 @@ fn main() -> Result<()> {
     }
     data.story_events
         .push(json("story_events/StandardScripts.json")?);
-    if assets.join("data/story_events/OverworldEvents.json").exists() {
-        data.story_events.push(json("story_events/OverworldEvents.json")?);
+    if assets
+        .join("data/story_events/OverworldEvents.json")
+        .exists()
+    {
+        data.story_events
+            .push(json("story_events/OverworldEvents.json")?);
         data.phone_scripts.push(json("phone_scripts/Global.json")?);
     }
     data.pokemon_frontpic_anim = serde_json::from_value(json("pokemon_frontpic_anim.json")?)?;
-    if assets.join("data/story_event_script_constants.json").exists() {
-        data.story_event_script_constants = serde_json::from_value(json("story_event_script_constants.json")?)?;
+    if assets
+        .join("data/story_event_script_constants.json")
+        .exists()
+    {
+        data.story_event_script_constants =
+            serde_json::from_value(json("story_event_script_constants.json")?)?;
     }
     if assets.join("data/battle_reward_rules.json").exists() {
         data.battle_reward_rules = serde_json::from_value(json("battle_reward_rules.json")?)?;
@@ -190,7 +218,8 @@ fn main() -> Result<()> {
         data.evolutions = serde_json::from_value(json("evolutions.json")?)?;
     }
     if assets.join("data/buena_password_categories.json").exists() {
-        data.buena_password_categories = serde_json::from_value(json("buena_password_categories.json")?)?;
+        data.buena_password_categories =
+            serde_json::from_value(json("buena_password_categories.json")?)?;
         data.buena_prizes = serde_json::from_value(json("buena_prizes.json")?)?;
         data.kurt_apricorn_recipes = serde_json::from_value(json("kurt_apricorn_recipes.json")?)?;
     }
@@ -206,7 +235,12 @@ fn main() -> Result<()> {
         for asset in &mut data.audio {
             if matches!(asset.source, crystal_assets::ModpackAudioSource::Pcm) {
                 asset.source = crystal_assets::ModpackAudioSource::Midi;
-                asset.path = asset.path.strip_suffix(".pcm").context("source PCM asset path")?.to_owned() + ".mid";
+                asset.path = asset
+                    .path
+                    .strip_suffix(".pcm")
+                    .context("source PCM asset path")?
+                    .to_owned()
+                    + ".mid";
                 asset.validate()?;
             }
         }
@@ -225,33 +259,55 @@ fn main() -> Result<()> {
             data.runtime_spawn_points = serde_json::from_value(json("runtime_spawn_points.json")?)?;
         }
         data.npcs = serde_json::from_value(json("npcs.json")?)?;
-        if assets.join("data/tilesets.json").exists() { data.tilesets = serde_json::from_value(json("tilesets.json")?)?; }
+        if assets.join("data/tilesets.json").exists() {
+            data.tilesets = serde_json::from_value(json("tilesets.json")?)?;
+        }
         let mut failures = Vec::new();
         for name in data.map_attributes.keys() {
             match data.assemble_map_module_from_compiled_payloads(name) {
-                Ok(module) => { data.maps.insert(name.clone(),module); },
-                Err(error) => { failures.push(format!("{name}: {error:#}")); }
+                Ok(module) => {
+                    data.maps.insert(name.clone(), module);
+                }
+                Err(error) => {
+                    failures.push(format!("{name}: {error:#}"));
+                }
             }
         }
-        for failure in failures.iter().take(8) { eprintln!("incomplete map module: {failure}"); }
-        eprintln!("assembled {} source map modules; {} need further export",data.maps.len(),failures.len());
+        for failure in failures.iter().take(8) {
+            eprintln!("incomplete map module: {failure}");
+        }
+        eprintln!(
+            "assembled {} source map modules; {} need further export",
+            data.maps.len(),
+            failures.len()
+        );
     }
     // The serialized checkpoint must contain the same executable standard
     // scripts that the audit sees. Materializing only after writing left
     // jumpstd targets absent from otherwise successfully audited packs.
-    data.materialize_global_scripts().context("materialize authored global scripts before checkpoint serialization")?;
+    data.materialize_global_scripts()
+        .context("materialize authored global scripts before checkpoint serialization")?;
     let mut files = BTreeMap::new();
     for &name in crystal_assets::REQUIRED_POKEGEAR_RUNTIME_FILE_KEYS {
         files.insert(name.to_string(), std::fs::read(assets.join(name))?);
     }
-    collect_files(&assets,&assets,&mut files)?;
+    collect_files(&assets, &assets, &mut files)?;
     for resource in &data.runtime_title_screen.program.resources {
         if resource.kind == "graphics" && resource.path.ends_with(".lz") {
-            anyhow::ensure!(!resource.path.starts_with('/') && !resource.path.split('/').any(|part| part == ".."), "invalid compressed resource path");
-            files.insert(resource.path.clone(), std::fs::read(assets.join(&resource.path))?);
+            anyhow::ensure!(
+                !resource.path.starts_with('/')
+                    && !resource.path.split('/').any(|part| part == ".."),
+                "invalid compressed resource path"
+            );
+            files.insert(
+                resource.path.clone(),
+                std::fs::read(assets.join(&resource.path))?,
+            );
         }
     }
-    for &name in crystal_assets::REQUIRED_VENDOR_RUNTIME_FILE_KEYS { files.insert(name.to_string(), std::fs::read(root.join(name))?); }
+    for &name in crystal_assets::REQUIRED_VENDOR_RUNTIME_FILE_KEYS {
+        files.insert(name.to_string(), std::fs::read(root.join(name))?);
+    }
     let manifest = ModpackAudioManifest::from_assets(&data.audio, &BTreeMap::new())?;
     let report = ModpackCompileReport {
         manifests: vec!["core-modular".into()],
@@ -310,26 +366,61 @@ fn main() -> Result<()> {
         bytes.len(),
         data.items.len(),
         data.pokemon.len(),
-        data.moves.len(), data.maps.len()
+        data.moves.len(),
+        data.maps.len()
     );
     if audit {
         data.audio = serde_json::from_value(json("audio.json")?)?;
         let root = crystal_assets::AssetRoot::new(root);
         let report = crystal_assets::modpack::ModpackCompiler::new(&root).audit(&data);
         for diagnostic in &report.diagnostics {
-            println!("{:?} {} [{}]: {}", diagnostic.severity, diagnostic.subject, diagnostic.code, diagnostic.message);
+            println!(
+                "{:?} {} [{}]: {}",
+                diagnostic.severity, diagnostic.subject, diagnostic.code, diagnostic.message
+            );
         }
-        ensure!(!report.has_errors(), "checkpoint complete-source audit failed");
+        ensure!(
+            !report.has_errors(),
+            "checkpoint complete-source audit failed"
+        );
     }
     Ok(())
 }
 
-fn collect_files(root: &std::path::Path, directory: &std::path::Path, output: &mut BTreeMap<String,Vec<u8>>) -> Result<()> {
+fn collect_files(
+    root: &std::path::Path,
+    directory: &std::path::Path,
+    output: &mut BTreeMap<String, Vec<u8>>,
+) -> Result<()> {
     for entry in std::fs::read_dir(directory)? {
-        let path=entry?.path();
-        if path.is_dir() {collect_files(root,&path,output)?;}
-        else if path.extension().and_then(|ext|ext.to_str()).is_some_and(|ext| matches!(ext,"png"|"2bpp"|"1bpp"|"gbcpal"|"pal"|"tilemap"|"rle"|"bin"|"attrmap"|"dimensions")) {
-            output.insert(path.strip_prefix(root)?.to_string_lossy().replace('\\',"/"),std::fs::read(&path)?);
+        let path = entry?.path();
+        if path.is_dir() {
+            collect_files(root, &path, output)?;
+        } else if path
+            .extension()
+            .and_then(|ext| ext.to_str())
+            .is_some_and(|ext| {
+                matches!(
+                    ext,
+                    "png"
+                        | "2bpp"
+                        | "1bpp"
+                        | "gbcpal"
+                        | "pal"
+                        | "tilemap"
+                        | "rle"
+                        | "bin"
+                        | "attrmap"
+                        | "dimensions"
+                )
+            })
+        {
+            output.insert(
+                path.strip_prefix(root)?
+                    .to_string_lossy()
+                    .replace('\\', "/"),
+                std::fs::read(&path)?,
+            );
         }
     }
     Ok(())

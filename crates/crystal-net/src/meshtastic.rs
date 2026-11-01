@@ -1654,8 +1654,15 @@ mod tests {
     fn fragmentation_accepts_exact_link_limit_and_rejects_larger_messages() {
         let maximum = vec![0x5a; DEFAULT_MAX_FRAME_BYTES];
         let frames = fragment_payload(1, 1, &maximum).unwrap();
-        assert_eq!(frames.len(), DEFAULT_MAX_FRAME_BYTES.div_ceil(FRAGMENT_DATA_BYTES));
-        assert!(frames.iter().all(|frame| frame.len() <= MESHTASTIC_DATA_BYTES));
+        assert_eq!(
+            frames.len(),
+            DEFAULT_MAX_FRAME_BYTES.div_ceil(FRAGMENT_DATA_BYTES)
+        );
+        assert!(
+            frames
+                .iter()
+                .all(|frame| frame.len() <= MESHTASTIC_DATA_BYTES)
+        );
         assert_eq!(
             fragment_payload(1, 2, &vec![0; DEFAULT_MAX_FRAME_BYTES + 1]),
             Err(MeshtasticProtocolError::MessageTooLarge)
@@ -1670,11 +1677,19 @@ mod tests {
         let frames = fragment_payload(77, 9, &[7; FRAGMENT_DATA_BYTES * 4]).unwrap();
         let now = Instant::now();
         let mut active = Reassembly::new(&WirePacket::decode(&frames[0]).unwrap(), now);
-        active.insert(WirePacket::decode(&frames[0]).unwrap(), now).unwrap();
-        active.insert(WirePacket::decode(&frames[3]).unwrap(), now).unwrap();
+        active
+            .insert(WirePacket::decode(&frames[0]).unwrap(), now)
+            .unwrap();
+        active
+            .insert(WirePacket::decode(&frames[3]).unwrap(), now)
+            .unwrap();
         transport.inbound = Some(active);
-        transport.request_missing_if_stalled(now + RETRY_BASE).unwrap();
-        transport.request_missing_if_stalled(now + RETRY_BASE).unwrap();
+        transport
+            .request_missing_if_stalled(now + RETRY_BASE)
+            .unwrap();
+        transport
+            .request_missing_if_stalled(now + RETRY_BASE)
+            .unwrap();
         let packets = mesh.borrow_mut().inboxes.remove(&20).unwrap();
         assert_eq!(packets.len(), 1);
         let request = WirePacket::decode(&packets[0].payload).unwrap();

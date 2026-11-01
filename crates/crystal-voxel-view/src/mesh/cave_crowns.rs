@@ -4,7 +4,10 @@ use super::*;
 use bevy::math::{Vec2, Vec4};
 
 pub(super) fn enabled(map: &str) -> bool {
-    matches!(map, "VictoryRoad" | "SilverCaveRoom2" | "SilverCaveRoom3" | "BurnedTowerB1F" | "TohjoFalls")
+    matches!(
+        map,
+        "VictoryRoad" | "SilverCaveRoom2" | "SilverCaveRoom3" | "BurnedTowerB1F" | "TohjoFalls"
+    )
 }
 
 pub(super) fn resolve(
@@ -18,9 +21,9 @@ pub(super) fn resolve(
     if !enabled(frame.map_id.as_ref()) {
         return;
     }
-    let upstream=(frame.map_id.as_ref()=="TohjoFalls").then(|| {
-        let falls=crate::waterfall::waterfall_placements(cells,g.width,g.height);
-        crate::waterfall::tohjo_upstream_pool("TohjoFalls",cells,g.width,g.height,&falls)
+    let upstream = (frame.map_id.as_ref() == "TohjoFalls").then(|| {
+        let falls = crate::waterfall::waterfall_placements(cells, g.width, g.height);
+        crate::waterfall::tohjo_upstream_pool("TohjoFalls", cells, g.width, g.height, &falls)
     });
     let within = |i: usize| {
         let x = frame.grid_origin.x + i as i32 % g.width as i32;
@@ -80,18 +83,28 @@ pub(super) fn resolve(
                 }
             }
         }
-        let joins_upper_pool=upstream.as_ref().is_none_or(|upper|region.iter().any(|&i| {
-            let (x,z)=((i%g.width)as isize,(i/g.width)as isize);
-            [(-1,0),(1,0),(0,-1),(0,1)].into_iter().any(|(dx,dz)| {
-                let (x1,z1,x2,z2)=(x+dx,z+dz,x+dx*2,z+dz*2);
-                if x1<0 || z1<0 || x1>=g.width as isize || z1>=g.height as isize {return false;}
-                let rim=z1 as usize*g.width+x1 as usize;
-                upper[rim] || (x2>=0 && z2>=0 && x2<g.width as isize && z2<g.height as isize
-                    && matches!(shapes[rim],CellShape::LedgeBand {height,..}
+        let joins_upper_pool = upstream.as_ref().is_none_or(|upper| {
+            region.iter().any(|&i| {
+                let (x, z) = ((i % g.width) as isize, (i / g.width) as isize);
+                [(-1, 0), (1, 0), (0, -1), (0, 1)]
+                    .into_iter()
+                    .any(|(dx, dz)| {
+                        let (x1, z1, x2, z2) = (x + dx, z + dz, x + dx * 2, z + dz * 2);
+                        if x1 < 0 || z1 < 0 || x1 >= g.width as isize || z1 >= g.height as isize {
+                            return false;
+                        }
+                        let rim = z1 as usize * g.width + x1 as usize;
+                        upper[rim]
+                            || (x2 >= 0
+                                && z2 >= 0
+                                && x2 < g.width as isize
+                                && z2 < g.height as isize
+                                && matches!(shapes[rim],CellShape::LedgeBand {height,..}
                         if height==crate::cave::CAVE_SHELF_HEIGHT)
-                    && upper[z2 as usize*g.width+x2 as usize])
+                                && upper[z2 as usize * g.width + x2 as usize])
+                    })
             })
-        }));
+        });
         if cap && !open && joins_upper_pool {
             for &i in &region {
                 let source = &cells[i].source;
@@ -101,9 +114,11 @@ pub(super) fn resolve(
                     source.tileset_id.clone(),
                 ));
                 shapes[i] = CellShape::RaisedTop {
-                    height: if frame.map_id.as_ref()=="TohjoFalls" {
+                    height: if frame.map_id.as_ref() == "TohjoFalls" {
                         crate::cave::rock_height(source)
-                    } else {crate::cave::CAVE_ROCK_HEIGHT},
+                    } else {
+                        crate::cave::CAVE_ROCK_HEIGHT
+                    },
                     solid: SolidKind::Bank,
                 };
             }
@@ -124,13 +139,16 @@ pub(super) fn resolve(
         // Tohjo's island joins the same high rock tier as its two cascade
         // heads. Its native shallow rim must join the raised walking dust;
         // otherwise the northern path is submerged beneath the upper basin.
-        let crown_height=if frame.map_id.as_ref()=="TohjoFalls" {
+        let crown_height = if frame.map_id.as_ref() == "TohjoFalls" {
             crate::cave::rock_height(s)
-        } else {crate::cave::CAVE_ROCK_HEIGHT};
+        } else {
+            crate::cave::CAVE_ROCK_HEIGHT
+        };
         match &mut shapes[i] {
             CellShape::RaisedTop { height, .. } | CellShape::LedgeBand { height, .. }
                 if *height == crate::cave::rock_height(s)
-                    || frame.map_id.as_ref()=="TohjoFalls" && *height==crate::cave::CAVE_SHELF_HEIGHT =>
+                    || frame.map_id.as_ref() == "TohjoFalls"
+                        && *height == crate::cave::CAVE_SHELF_HEIGHT =>
             {
                 *height = crown_height
             }
@@ -145,8 +163,12 @@ pub(super) fn resolve(
             _ => {}
         }
     }
-    resolve_descents_with_regions(cells, shapes, g,
-        matches!(frame.map_id.as_ref(),"SilverCaveRoom3"|"BurnedTowerB1F"));
+    resolve_descents_with_regions(
+        cells,
+        shapes,
+        g,
+        matches!(frame.map_id.as_ref(), "SilverCaveRoom3" | "BurnedTowerB1F"),
+    );
     #[cfg(not(target_arch = "wasm32"))]
     trace_stair_neighbors(frame, cells, shapes, g);
 }
@@ -265,7 +287,7 @@ fn resolve_chain_landings(
         for column in 0..g.width.saturating_sub(1) {
             let i = row * g.width + column;
             let s = &cells[i].source;
-            if !(matches!(s.metatile_id, 0x12 | 0x30) || wide_crown && s.metatile_id==0x36)
+            if !(matches!(s.metatile_id, 0x12 | 0x30) || wide_crown && s.metatile_id == 0x36)
                 || s.subtile_row != 2
                 || s.subtile_column != if s.metatile_id == 0x12 { 2 } else { 0 }
                 || !(0..2).all(|dz| {
@@ -331,7 +353,11 @@ fn resolve_chain_landings(
             incoming[id] == 1
                 && outgoing[id].len() == 1
                 && (region.len() == 16 && max_x - min_x == 7 && max_z - min_z == 1
-                    || wide_crown && min_x>0 && min_z>0 && max_x+1<g.width && max_z+1<g.height)
+                    || wide_crown
+                        && min_x > 0
+                        && min_z > 0
+                        && max_x + 1 < g.width
+                        && max_z + 1 < g.height)
         })
         .collect::<Vec<_>>();
     let mut heights = std::collections::BTreeMap::new();
@@ -408,15 +434,20 @@ fn resolve_chain_landings(
 
 #[cfg(test)]
 fn resolve_descents(cells: &[&VisualTile], shapes: &mut [CellShape], g: &GridGeometry) {
-    resolve_descents_with_regions(cells,shapes,g,false);
+    resolve_descents_with_regions(cells, shapes, g, false);
 }
 
-fn resolve_descents_with_regions(cells: &[&VisualTile], shapes: &mut [CellShape], g: &GridGeometry,wide_crown:bool) {
-    let chain_landings = resolve_chain_landings(cells, shapes, g,wide_crown);
+fn resolve_descents_with_regions(
+    cells: &[&VisualTile],
+    shapes: &mut [CellShape],
+    g: &GridGeometry,
+    wide_crown: bool,
+) {
+    let chain_landings = resolve_chain_landings(cells, shapes, g, wide_crown);
     for row in 1..g.height.saturating_sub(2) {
         for column in 0..g.width.saturating_sub(1) {
             let s = &cells[row * g.width + column].source;
-            if !(matches!(s.metatile_id, 0x12 | 0x30) || wide_crown && s.metatile_id==0x36)
+            if !(matches!(s.metatile_id, 0x12 | 0x30) || wide_crown && s.metatile_id == 0x36)
                 || s.subtile_row != 2
                 || s.subtile_column != if s.metatile_id == 0x12 { 2 } else { 0 }
             {
@@ -783,30 +814,48 @@ pub(super) fn finish_sides(
     // its replacement stair cheeks. Enclosing-wall reveal on these faces
     // exposes a dark strip at the otherwise closed socket. Keep tall rock
     // ownership separate, including its lower courses beside the crown.
-    let mut structural_vertices=std::collections::BTreeSet::new();
-    let mut structural_triangles=std::collections::BTreeSet::new();
-    for (face,triangle) in mesh.solid.indices.chunks_exact(3).enumerate() {
+    let mut structural_vertices = std::collections::BTreeSet::new();
+    let mut structural_triangles = std::collections::BTreeSet::new();
+    for (face, triangle) in mesh.solid.indices.chunks_exact(3).enumerate() {
         if !triangle.iter().all(|&i| {
-            let i=i as usize;
-            (mesh.solid.uvs[i][1]/100000.).round()==2.
-                && mesh.solid.positions[i][1]<=crate::cave::CAVE_ROCK_HEIGHT*g.tile_height/SOURCE_TILE_HEIGHT+0.001
-        }) {continue;}
-        let center=triangle.iter().map(|&i|Vec3::from_array(mesh.solid.positions[i as usize]))
-            .sum::<Vec3>()/3.;
-        let x=((center.x-g.origin_x)/g.tile_width).floor() as isize;
-        let z=((center.z-g.origin_z)/g.tile_height).floor() as isize;
-        let mut crown=false; let mut enclosing=false;
-        for dz in -1..=0 {for dx in -1..=0 {
-            let (cx,cz)=(x+dx,z+dz);
-            if cx<0 || cz<0 || cx>=g.width as isize || cz>=g.height as isize {continue;}
-            let shape=shapes[cz as usize*g.width+cx as usize];
-            let height=shape.surface_height(SOURCE_TILE_HEIGHT);
-            enclosing|=height>crate::cave::CAVE_ROCK_HEIGHT;
-            crown|=height>crate::cave::CAVE_SHELF_HEIGHT && height<=crate::cave::CAVE_ROCK_HEIGHT
-                && matches!(shape,CellShape::RaisedTop {solid:SolidKind::Bank,..}|CellShape::LedgeBand {..});
-        }}
+            let i = i as usize;
+            (mesh.solid.uvs[i][1] / 100000.).round() == 2.
+                && mesh.solid.positions[i][1]
+                    <= crate::cave::CAVE_ROCK_HEIGHT * g.tile_height / SOURCE_TILE_HEIGHT + 0.001
+        }) {
+            continue;
+        }
+        let center = triangle
+            .iter()
+            .map(|&i| Vec3::from_array(mesh.solid.positions[i as usize]))
+            .sum::<Vec3>()
+            / 3.;
+        let x = ((center.x - g.origin_x) / g.tile_width).floor() as isize;
+        let z = ((center.z - g.origin_z) / g.tile_height).floor() as isize;
+        let mut crown = false;
+        let mut enclosing = false;
+        for dz in -1..=0 {
+            for dx in -1..=0 {
+                let (cx, cz) = (x + dx, z + dz);
+                if cx < 0 || cz < 0 || cx >= g.width as isize || cz >= g.height as isize {
+                    continue;
+                }
+                let shape = shapes[cz as usize * g.width + cx as usize];
+                let height = shape.surface_height(SOURCE_TILE_HEIGHT);
+                enclosing |= height > crate::cave::CAVE_ROCK_HEIGHT;
+                crown |= height > crate::cave::CAVE_SHELF_HEIGHT
+                    && height <= crate::cave::CAVE_ROCK_HEIGHT
+                    && matches!(
+                        shape,
+                        CellShape::RaisedTop {
+                            solid: SolidKind::Bank,
+                            ..
+                        } | CellShape::LedgeBand { .. }
+                    );
+            }
+        }
         if crown && !enclosing {
-            structural_vertices.extend(triangle.iter().map(|&i|i as usize));
+            structural_vertices.extend(triangle.iter().map(|&i| i as usize));
             structural_triangles.insert(face);
         }
     }
@@ -815,29 +864,39 @@ pub(super) fn finish_sides(
     // those domains creates unrelated roles across the neighboring triangle.
     // Split only vertices shared across that ownership boundary, preserving
     // the exact geometry, normals and authored cutaway metadata.
-    let mut retained_vertices=std::collections::BTreeMap::new();
-    for face in 0..mesh.solid.indices.len()/3 {
-        if structural_triangles.contains(&face) {continue;}
+    let mut retained_vertices = std::collections::BTreeMap::new();
+    for face in 0..mesh.solid.indices.len() / 3 {
+        if structural_triangles.contains(&face) {
+            continue;
+        }
         for corner in 0..3 {
-            let index=face*3+corner;
-            let old=mesh.solid.indices[index] as usize;
-            if !structural_vertices.contains(&old) {continue;}
-            let new=*retained_vertices.entry(old).or_insert_with(|| {
-                let new=mesh.solid.positions.len();
+            let index = face * 3 + corner;
+            let old = mesh.solid.indices[index] as usize;
+            if !structural_vertices.contains(&old) {
+                continue;
+            }
+            let new = *retained_vertices.entry(old).or_insert_with(|| {
+                let new = mesh.solid.positions.len();
                 mesh.solid.positions.push(mesh.solid.positions[old]);
                 mesh.solid.normals.push(mesh.solid.normals[old]);
                 mesh.solid.uvs.push(mesh.solid.uvs[old]);
                 mesh.solid.colors.push(mesh.solid.colors[old]);
-                if mesh.solid.cutaway_ranges.iter().any(|range|range.contains(&old)) {
-                    mesh.solid.cutaway_ranges.push(new..new+1);
+                if mesh
+                    .solid
+                    .cutaway_ranges
+                    .iter()
+                    .any(|range| range.contains(&old))
+                {
+                    mesh.solid.cutaway_ranges.push(new..new + 1);
                 }
                 new as u32
             });
-            mesh.solid.indices[index]=new;
+            mesh.solid.indices[index] = new;
         }
     }
     for i in structural_vertices {
-        mesh.solid.uvs[i]=cave_cliff::stone_uv(Vec3::from_array(mesh.solid.positions[i]),g,origin,false);
+        mesh.solid.uvs[i] =
+            cave_cliff::stone_uv(Vec3::from_array(mesh.solid.positions[i]), g, origin, false);
     }
     for i in 0..mesh.solid.positions.len() {
         let p = Vec3::from_array(mesh.solid.positions[i]);
@@ -882,88 +941,219 @@ mod tests {
     use super::*;
     #[test]
     fn cave_crown_material_boundary_does_not_interpolate_reveal_roles() {
-        let g=GridGeometry {width:2,height:2,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
-        let points=[[0.,0.,8.],[8.,0.,8.],[8.,16.,8.],[0.,20.,8.]];
-        let mut mesh=TerrainMeshData::default();
-        append_quad(&mut mesh.solid,points,[0.,0.,1.],
-            points.map(|p|cave_cliff::rock_uv(Vec3::from_array(p),&g,[0,0],false)),[0.34;4]);
+        let g = GridGeometry {
+            width: 2,
+            height: 2,
+            tile_width: 8.,
+            tile_height: 8.,
+            origin_x: 0.,
+            origin_z: 0.,
+        };
+        let points = [[0., 0., 8.], [8., 0., 8.], [8., 16., 8.], [0., 20., 8.]];
+        let mut mesh = TerrainMeshData::default();
+        append_quad(
+            &mut mesh.solid,
+            points,
+            [0., 0., 1.],
+            points.map(|p| cave_cliff::rock_uv(Vec3::from_array(p), &g, [0, 0], false)),
+            [0.34; 4],
+        );
         mesh.solid.cutaway_ranges.push(0..4);
-        let before=mesh.solid.clone();
-        finish_sides(&mut mesh,&vec![CellShape::RaisedTop {height:16.,solid:SolidKind::Bank};4],&g,[0,0]);
-        let mut roles=Vec::new();
-        for (old,new) in before.indices.chunks_exact(3).zip(mesh.solid.indices.chunks_exact(3)) {
-            let role=(mesh.solid.uvs[new[0] as usize][1]/100000.).round();
+        let before = mesh.solid.clone();
+        finish_sides(
+            &mut mesh,
+            &vec![
+                CellShape::RaisedTop {
+                    height: 16.,
+                    solid: SolidKind::Bank
+                };
+                4
+            ],
+            &g,
+            [0, 0],
+        );
+        let mut roles = Vec::new();
+        for (old, new) in before
+            .indices
+            .chunks_exact(3)
+            .zip(mesh.solid.indices.chunks_exact(3))
+        {
+            let role = (mesh.solid.uvs[new[0] as usize][1] / 100000.).round();
             roles.push(role);
-            for (&old,&new) in old.iter().zip(new) {
-                assert_eq!((mesh.solid.uvs[new as usize][1]/100000.).round(),role);
-                assert_eq!(mesh.solid.positions[new as usize],before.positions[old as usize]);
-                assert_eq!(mesh.solid.normals[new as usize],before.normals[old as usize]);
-                assert!(mesh.solid.cutaway_ranges.iter().any(|r|r.contains(&(new as usize))));
+            for (&old, &new) in old.iter().zip(new) {
+                assert_eq!((mesh.solid.uvs[new as usize][1] / 100000.).round(), role);
+                assert_eq!(
+                    mesh.solid.positions[new as usize],
+                    before.positions[old as usize]
+                );
+                assert_eq!(
+                    mesh.solid.normals[new as usize],
+                    before.normals[old as usize]
+                );
+                assert!(
+                    mesh.solid
+                        .cutaway_ranges
+                        .iter()
+                        .any(|r| r.contains(&(new as usize)))
+                );
             }
         }
         assert!(roles.contains(&2.) && roles.contains(&6.));
     }
     #[test]
     fn cave_low_crown_closures_keep_stone_ownership_without_disabling_enclosing_reveal() {
-        let g=GridGeometry {width:2,height:2,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
-        let points=[[0.,0.,8.],[8.,0.,8.],[8.,16.,8.],[0.,16.,8.]];
-        let mut initial=TerrainMeshData {footing_heights:vec![16.;4],..Default::default()};
-        append_quad(&mut initial.solid,points,[0.,0.,1.],
-            points.map(|p|cave_cliff::rock_uv(Vec3::from_array(p),&g,[0,0],false)),[0.34;4]);
-        let cap=[[0.,16.,0.],[0.,16.,8.],[8.,16.,8.],[8.,16.,0.]];
-        append_quad(&mut initial.solid,cap,[0.,1.,0.],
-            cap.map(|p|cave_cliff::rock_uv(Vec3::from_array(p),&g,[0,0],false)),[0.34;4]);
-        let crown=vec![CellShape::RaisedTop {height:16.,solid:SolidKind::Bank};4];
-        let mut low=initial.clone(); finish_sides(&mut low,&crown,&g,[0,0]);
-        assert!(low.solid.uvs.iter().all(|uv|(uv[1]/100000.).round()==6.));
-        assert_eq!(low.solid.positions,initial.solid.positions);
-        assert_eq!(low.solid.normals,initial.solid.normals);
-        assert_eq!(low.solid.indices,initial.solid.indices);
-        assert_eq!(low.footing_heights,initial.footing_heights);
-        let mut enclosing=crown; enclosing[0]=CellShape::RaisedTop {height:40.,solid:SolidKind::Bank};
-        let mut tall=initial.clone(); finish_sides(&mut tall,&enclosing,&g,[0,0]);
-        assert_eq!(tall.solid.uvs,initial.solid.uvs,"lower enclosing courses retain gradual reveal");
+        let g = GridGeometry {
+            width: 2,
+            height: 2,
+            tile_width: 8.,
+            tile_height: 8.,
+            origin_x: 0.,
+            origin_z: 0.,
+        };
+        let points = [[0., 0., 8.], [8., 0., 8.], [8., 16., 8.], [0., 16., 8.]];
+        let mut initial = TerrainMeshData {
+            footing_heights: vec![16.; 4],
+            ..Default::default()
+        };
+        append_quad(
+            &mut initial.solid,
+            points,
+            [0., 0., 1.],
+            points.map(|p| cave_cliff::rock_uv(Vec3::from_array(p), &g, [0, 0], false)),
+            [0.34; 4],
+        );
+        let cap = [[0., 16., 0.], [0., 16., 8.], [8., 16., 8.], [8., 16., 0.]];
+        append_quad(
+            &mut initial.solid,
+            cap,
+            [0., 1., 0.],
+            cap.map(|p| cave_cliff::rock_uv(Vec3::from_array(p), &g, [0, 0], false)),
+            [0.34; 4],
+        );
+        let crown = vec![
+            CellShape::RaisedTop {
+                height: 16.,
+                solid: SolidKind::Bank
+            };
+            4
+        ];
+        let mut low = initial.clone();
+        finish_sides(&mut low, &crown, &g, [0, 0]);
+        assert!(
+            low.solid
+                .uvs
+                .iter()
+                .all(|uv| (uv[1] / 100000.).round() == 6.)
+        );
+        assert_eq!(low.solid.positions, initial.solid.positions);
+        assert_eq!(low.solid.normals, initial.solid.normals);
+        assert_eq!(low.solid.indices, initial.solid.indices);
+        assert_eq!(low.footing_heights, initial.footing_heights);
+        let mut enclosing = crown;
+        enclosing[0] = CellShape::RaisedTop {
+            height: 40.,
+            solid: SolidKind::Bank,
+        };
+        let mut tall = initial.clone();
+        finish_sides(&mut tall, &enclosing, &g, [0, 0]);
+        assert_eq!(
+            tall.solid.uvs, initial.solid.uvs,
+            "lower enclosing courses retain gradual reveal"
+        );
     }
     #[test]
     fn external_burned_basement_has_two_joined_source_stairs_and_bounded_landings() {
-        let path=std::env::var_os("CRYSTAL_RENDER_TEST_PACK").map(std::path::PathBuf::from)
-            .unwrap_or_else(||std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../content-packs/text-tui.crystalpack"));
-        if !path.is_file(){return;}
-        let loaded=crystal_assets::read_loaded_verified_compiled_game_pack(&path).unwrap();let pack=loaded.pack();
-        let map=&pack.data().maps["BurnedTowerB1F"];
-        let (w,h)=(map.attributes.width as usize*4,map.attributes.height as usize*4);
-        let art=&pack.runtime_files()["data/tilesets/cave_metatiles.bin"];
-        let sources=(0..w*h).map(|i| {
-            let (x,y)=(i%w,i/w);let b=map.blocks[y/4*(w/4)+x/4];
-            source(b,(x%4)as u8,(y%4)as u8,art[b as usize*16+y%4*4+x%4]as u16)
-        }).collect();
-        let mut frame=super::super::tests::frame(w as u32,h as u32,sources);
-        frame.map_id="BurnedTowerB1F".into();frame.source_map_size_core_tiles=Some(bevy::math::UVec2::new((w/2)as u32,(h/2)as u32));
-        let cells=frame.tiles.iter().collect::<Vec<_>>();
-        let g=GridGeometry{width:w,height:h,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
-        let raw=cells.iter().map(|t|shape_for_source_on_map(&frame.map_id,&t.source)).collect::<Vec<_>>();
-        let mut shapes=raw.clone();resolve(&frame,&cells,&mut shapes,&g);
-        let mut stairs=0;
-        for (i,t) in cells.iter().enumerate() {
-            let s=&t.source;
-            if s.metatile_id==0x30&&s.subtile_column==0&&s.subtile_row==2 {
-                stairs+=1;
-                let top=shapes[i-w].surface_height(8.);let bottom=shapes[i+2*w].surface_height(8.);
-                assert!(top>bottom,"source stair {},{}: {top} -> {bottom}",i%w,i/w);
+        let path = std::env::var_os("CRYSTAL_RENDER_TEST_PACK")
+            .map(std::path::PathBuf::from)
+            .unwrap_or_else(|| {
+                std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+                    .join("../../content-packs/text-tui.crystalpack")
+            });
+        if !path.is_file() {
+            return;
+        }
+        let loaded = crystal_assets::read_loaded_verified_compiled_game_pack(&path).unwrap();
+        let pack = loaded.pack();
+        let map = &pack.data().maps["BurnedTowerB1F"];
+        let (w, h) = (
+            map.attributes.width as usize * 4,
+            map.attributes.height as usize * 4,
+        );
+        let art = &pack.runtime_files()["data/tilesets/cave_metatiles.bin"];
+        let sources = (0..w * h)
+            .map(|i| {
+                let (x, y) = (i % w, i / w);
+                let b = map.blocks[y / 4 * (w / 4) + x / 4];
+                source(
+                    b,
+                    (x % 4) as u8,
+                    (y % 4) as u8,
+                    art[b as usize * 16 + y % 4 * 4 + x % 4] as u16,
+                )
+            })
+            .collect();
+        let mut frame = super::super::tests::frame(w as u32, h as u32, sources);
+        frame.map_id = "BurnedTowerB1F".into();
+        frame.source_map_size_core_tiles =
+            Some(bevy::math::UVec2::new((w / 2) as u32, (h / 2) as u32));
+        let cells = frame.tiles.iter().collect::<Vec<_>>();
+        let g = GridGeometry {
+            width: w,
+            height: h,
+            tile_width: 8.,
+            tile_height: 8.,
+            origin_x: 0.,
+            origin_z: 0.,
+        };
+        let raw = cells
+            .iter()
+            .map(|t| shape_for_source_on_map(&frame.map_id, &t.source))
+            .collect::<Vec<_>>();
+        let mut shapes = raw.clone();
+        resolve(&frame, &cells, &mut shapes, &g);
+        let mut stairs = 0;
+        for (i, t) in cells.iter().enumerate() {
+            let s = &t.source;
+            if s.metatile_id == 0x30 && s.subtile_column == 0 && s.subtile_row == 2 {
+                stairs += 1;
+                let top = shapes[i - w].surface_height(8.);
+                let bottom = shapes[i + 2 * w].surface_height(8.);
+                assert!(
+                    top > bottom,
+                    "source stair {},{}: {top} -> {bottom}",
+                    i % w,
+                    i / w
+                );
                 for dx in 0..2 {
-                    assert!(matches!(shapes[i+dx],CellShape::RampNorth{north_height,south_height}
-                        if north_height==top&&south_height==(top+bottom)*0.5));
-                    assert!(matches!(shapes[i+w+dx],CellShape::RampNorth{north_height,south_height}
-                        if north_height==(top+bottom)*0.5&&south_height==bottom));
+                    assert!(
+                        matches!(shapes[i+dx],CellShape::RampNorth{north_height,south_height}
+                        if north_height==top&&south_height==(top+bottom)*0.5)
+                    );
+                    assert!(
+                        matches!(shapes[i+w+dx],CellShape::RampNorth{north_height,south_height}
+                        if north_height==(top+bottom)*0.5&&south_height==bottom)
+                    );
                 }
             }
         }
-        assert_eq!(stairs,2);
-        assert_eq!(shapes[(5*2)*w+10*2].surface_height(8.),16.,"beasts' platform");
-        let outer=raw[(13*2)*w+10*2].surface_height(8.);
-        assert_eq!(outer,crate::cave::CAVE_SHELF_HEIGHT);
-        assert_eq!(shapes[(9*2)*w+10*2].surface_height(8.),(16.+outer)*0.5,"intermediate courtyard");
-        assert_eq!(shapes[(13*2)*w+10*2].surface_height(8.),raw[(13*2)*w+10*2].surface_height(8.),"outer floor");
+        assert_eq!(stairs, 2);
+        assert_eq!(
+            shapes[(5 * 2) * w + 10 * 2].surface_height(8.),
+            16.,
+            "beasts' platform"
+        );
+        let outer = raw[(13 * 2) * w + 10 * 2].surface_height(8.);
+        assert_eq!(outer, crate::cave::CAVE_SHELF_HEIGHT);
+        assert_eq!(
+            shapes[(9 * 2) * w + 10 * 2].surface_height(8.),
+            (16. + outer) * 0.5,
+            "intermediate courtyard"
+        );
+        assert_eq!(
+            shapes[(13 * 2) * w + 10 * 2].surface_height(8.),
+            raw[(13 * 2) * w + 10 * 2].surface_height(8.),
+            "outer floor"
+        );
     }
     fn exported_cave_frame(map: &str, block_width: usize, block_height: usize) -> VisualWorldFrame {
         let root = std::path::PathBuf::from(
@@ -1052,32 +1242,73 @@ mod tests {
     #[test]
     #[ignore = "requires CRYSTAL_CAVE_EXPORT_ROOT pointing to a compatible external export"]
     fn silver_summit_source_crown_supports_the_trainer_and_its_complete_descent() {
-        let frame=exported_cave_frame("SilverCaveRoom3",10,18);
-        let cells=frame.tiles.iter().collect::<Vec<_>>();
-        let g=GridGeometry {width:40,height:72,tile_width:8.,tile_height:8.,origin_x:0.,origin_z:0.};
-        let mut shapes=cells.iter().map(|tile|shape_for_source_on_map(&frame.map_id,&tile.source)).collect::<Vec<_>>();
-        resolve(&frame,&cells,&mut shapes,&g);
+        let frame = exported_cave_frame("SilverCaveRoom3", 10, 18);
+        let cells = frame.tiles.iter().collect::<Vec<_>>();
+        let g = GridGeometry {
+            width: 40,
+            height: 72,
+            tile_width: 8.,
+            tile_height: 8.,
+            origin_x: 0.,
+            origin_z: 0.,
+        };
+        let mut shapes = cells
+            .iter()
+            .map(|tile| shape_for_source_on_map(&frame.map_id, &tile.source))
+            .collect::<Vec<_>>();
+        resolve(&frame, &cells, &mut shapes, &g);
         // Red's core (9,10) belongs to the same bounded crown as the
         // complete $12 stair at source (18,26). The corridor's complete $36
         // descent at (20,62) ends on six-pixel shelf art, proving two flights
         // from the sixteen-pixel summit to that shelf through an eleven-pixel
         // intermediate corridor, rather than flattening both crowns together.
-        for (x,z) in [(18,20),(19,21),(18,24),(19,25)] {
-            assert_eq!(shapes[z*40+x].surface_height(8.),16.,"summit crown support {x},{z}");
+        for (x, z) in [(18, 20), (19, 21), (18, 24), (19, 25)] {
+            assert_eq!(
+                shapes[z * 40 + x].surface_height(8.),
+                16.,
+                "summit crown support {x},{z}"
+            );
         }
         for x in 18..20 {
-            assert_eq!(shapes[26*40+x],CellShape::RampNorth {north_height:16.,south_height:13.5});
-            assert_eq!(shapes[27*40+x],CellShape::RampNorth {north_height:13.5,south_height:11.});
-            assert_eq!(shapes[28*40+x].surface_height(8.),11.);
+            assert_eq!(
+                shapes[26 * 40 + x],
+                CellShape::RampNorth {
+                    north_height: 16.,
+                    south_height: 13.5
+                }
+            );
+            assert_eq!(
+                shapes[27 * 40 + x],
+                CellShape::RampNorth {
+                    north_height: 13.5,
+                    south_height: 11.
+                }
+            );
+            assert_eq!(shapes[28 * 40 + x].surface_height(8.), 11.);
         }
         for x in 20..22 {
-            assert_eq!(shapes[62*40+x],CellShape::RampNorth {north_height:11.,south_height:8.5});
-            assert_eq!(shapes[63*40+x],CellShape::RampNorth {north_height:8.5,south_height:6.});
-            assert_eq!(shapes[64*40+x].surface_height(8.),6.);
+            assert_eq!(
+                shapes[62 * 40 + x],
+                CellShape::RampNorth {
+                    north_height: 11.,
+                    south_height: 8.5
+                }
+            );
+            assert_eq!(
+                shapes[63 * 40 + x],
+                CellShape::RampNorth {
+                    north_height: 8.5,
+                    south_height: 6.
+                }
+            );
+            assert_eq!(shapes[64 * 40 + x].surface_height(8.), 6.);
         }
-        for (tile,shape) in cells.iter().zip(&shapes) {
-            if tile.source.metatile_id==0x2e {
-                assert_eq!(shape.surface_height(8.),crate::cave::rock_height(&tile.source));
+        for (tile, shape) in cells.iter().zip(&shapes) {
+            if tile.source.metatile_id == 0x2e {
+                assert_eq!(
+                    shape.surface_height(8.),
+                    crate::cave::rock_height(&tile.source)
+                );
             }
         }
     }
@@ -1139,10 +1370,12 @@ mod tests {
             assert_eq!(south_height, next);
             assert_eq!(bottom, shapes[i + 2 * g.width].surface_height(8.));
             // The full approach row must remain a level crown, not a trench.
-            for dz in 1..=2 {for dx in 0..2 {
-                assert!(matches!(shapes[i-dz*g.width+dx],
+            for dz in 1..=2 {
+                for dx in 0..2 {
+                    assert!(matches!(shapes[i-dz*g.width+dx],
                     CellShape::RaisedTop {height,..} if height==north_height));
-            }}
+                }
+            }
         }
         assert_eq!(
             anchors, 6,
@@ -1366,12 +1599,20 @@ mod tests {
                 [0.5, 0.3, 0.1, 1.],
             );
         }
-        let first=mesh.solid.positions.len();
-        append_solid_quad(&mut mesh.solid,
-            [[24.,0.,0.],[24.,0.,8.],[24.,40.,8.],[24.,40.,0.]],
-            [-1.,0.,0.],[0.5,0.3,0.1,1.]);
+        let first = mesh.solid.positions.len();
+        append_solid_quad(
+            &mut mesh.solid,
+            [[24., 0., 0.], [24., 0., 8.], [24., 40., 8.], [24., 40., 0.]],
+            [-1., 0., 0.],
+            [0.5, 0.3, 0.1, 1.],
+        );
         for i in first..mesh.solid.positions.len() {
-            mesh.solid.uvs[i]=cave_cliff::rock_uv(Vec3::from_array(mesh.solid.positions[i]),&g,[-20,30],false);
+            mesh.solid.uvs[i] = cave_cliff::rock_uv(
+                Vec3::from_array(mesh.solid.positions[i]),
+                &g,
+                [-20, 30],
+                false,
+            );
         }
         let before = mesh.clone();
         finish_sides(&mut mesh, &shapes, &g, [-20, 30]);
@@ -1380,8 +1621,12 @@ mod tests {
         assert_eq!(mesh.solid.indices, before.solid.indices);
         assert_eq!(mesh.footing_heights, before.footing_heights);
         assert!(mesh.solid.uvs[..4].iter().all(|uv| uv[0] > 90000.));
-        assert!(mesh.solid.uvs[..4].iter().all(|uv| (uv[1]/100000.).round()==6.),
-            "structural stair sides retain an opaque silhouette");
+        assert!(
+            mesh.solid.uvs[..4]
+                .iter()
+                .all(|uv| (uv[1] / 100000.).round() == 6.),
+            "structural stair sides retain an opaque silhouette"
+        );
         assert_eq!(mesh.solid.uvs[4..], before.solid.uvs[4..]);
         assert_eq!(mesh.solid.colors[4..], before.solid.colors[4..]);
     }

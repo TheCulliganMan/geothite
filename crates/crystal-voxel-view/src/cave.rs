@@ -64,9 +64,14 @@ pub(crate) fn flat_ladder_local(source: &VisualTileSource) -> Option<(u8, u8)> {
 /// Unlike inter-floor ladders this opens to the outdoor approach.
 pub(crate) fn daylight_exit_local(s: &VisualTileSource) -> Option<(u8, u8)> {
     (matches!(s.tileset_id.as_ref(), "cave" | "dark_cave")
-        && s.metatile_id == 0x24 && s.tile_index == 0x01
-        && (2..4).contains(&s.subtile_column) && (2..4).contains(&s.subtile_row))
-        .then_some((s.subtile_column.saturating_sub(2), s.subtile_row.saturating_sub(2)))
+        && s.metatile_id == 0x24
+        && s.tile_index == 0x01
+        && (2..4).contains(&s.subtile_column)
+        && (2..4).contains(&s.subtile_row))
+    .then_some((
+        s.subtile_column.saturating_sub(2),
+        s.subtile_row.saturating_sub(2),
+    ))
 }
 
 /// The paired lower-row exit motif is a sill, not a complete ladder flight.
@@ -211,7 +216,13 @@ fn authored_cave_shape(source: &VisualTileSource) -> Option<CellShape> {
     if flat_ladder_local(source).is_some() {
         // The light-floor hatch starts on the same six-pixel shelf as its
         // surrounding $01 cells. Rendered shaft depth never lowers support.
-        return Some(CellShape::PlaneAt { height: if matches!(source.metatile_id, 0x1b | 0x1f) { CAVE_SHELF_HEIGHT } else { 0.0 } });
+        return Some(CellShape::PlaneAt {
+            height: if matches!(source.metatile_id, 0x1b | 0x1f) {
+                CAVE_SHELF_HEIGHT
+            } else {
+                0.0
+            },
+        });
     }
 
     // `$23` mixes a real shallow south lip in its west half with only the
@@ -574,7 +585,13 @@ mod tests {
                         assert_eq!(flat_ladder_local(&cell), Some((column as u8, row as u8)));
                         assert_eq!(
                             authored_cave_shape(&cell),
-                            Some(CellShape::PlaneAt { height: if matches!(metatile, 0x1b | 0x1f) { CAVE_SHELF_HEIGHT } else { 0.0 } })
+                            Some(CellShape::PlaneAt {
+                                height: if matches!(metatile, 0x1b | 0x1f) {
+                                    CAVE_SHELF_HEIGHT
+                                } else {
+                                    0.0
+                                }
+                            })
                         );
                     }
                 }
@@ -672,9 +689,9 @@ mod tests {
     #[test]
     fn cave_water_corners_do_not_inherit_reused_shelf_edges() {
         for (metatile, drawing) in [
-            (0x25, [[0x14,0x14,0x14,0x15];4]),
-            (0x26, [[0x17,0x14,0x14,0x14];4]),
-            (0x27, [[0x26;4],[0x14;4],[0x14;4],[0x14;4]]),
+            (0x25, [[0x14, 0x14, 0x14, 0x15]; 4]),
+            (0x26, [[0x17, 0x14, 0x14, 0x14]; 4]),
+            (0x27, [[0x26; 4], [0x14; 4], [0x14; 4], [0x14; 4]]),
             (
                 0x3d,
                 [
@@ -1083,18 +1100,25 @@ mod tests {
     #[test]
     fn cave_wall_backed_ladders_keep_the_surrounding_lower_floor() {
         for tileset in ["cave", "dark_cave"] {
-            for (block, art) in [(0x14, [[0x2a,0x2b],[0x3a,0x3b]]),
-                                 (0x15, [[0x22,0x23],[0x32,0x33]])] {
-                for y in 0..2 { for x in 0..2 {
-                    let mut ladder=source(tileset,art[y][x]);
-                    ladder.metatile_id=block;
-                    ladder.subtile_column=x as u8+2;
-                    ladder.subtile_row=y as u8+2;
-                    assert_eq!(flat_ladder_local(&ladder),Some((x as u8,y as u8)));
-                    assert_eq!(authored_cave_shape(&ladder),Some(CellShape::PlaneAt {height:0.}));
-                    ladder.tile_index=0xff;
-                    assert_eq!(flat_ladder_local(&ladder),None);
-                }}
+            for (block, art) in [
+                (0x14, [[0x2a, 0x2b], [0x3a, 0x3b]]),
+                (0x15, [[0x22, 0x23], [0x32, 0x33]]),
+            ] {
+                for y in 0..2 {
+                    for x in 0..2 {
+                        let mut ladder = source(tileset, art[y][x]);
+                        ladder.metatile_id = block;
+                        ladder.subtile_column = x as u8 + 2;
+                        ladder.subtile_row = y as u8 + 2;
+                        assert_eq!(flat_ladder_local(&ladder), Some((x as u8, y as u8)));
+                        assert_eq!(
+                            authored_cave_shape(&ladder),
+                            Some(CellShape::PlaneAt { height: 0. })
+                        );
+                        ladder.tile_index = 0xff;
+                        assert_eq!(flat_ladder_local(&ladder), None);
+                    }
+                }
             }
         }
     }

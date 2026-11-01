@@ -19,44 +19,76 @@ pub(crate) fn is_cafe_map(map_id: &str) -> bool {
 }
 
 /// Exact Celadon table drawing; an edited or cropped block cannot invent furniture.
-pub(crate) fn celadon_table_local(map:&str,s:&VisualTileSource)->Option<(u8,u8)> {
-    const ART:[u16;16]=[0x1c,0x20,0x21,0x1d,0x1c,0x30,0x31,0x1d,
-        0x3e,0x50,0x50,0x3f,0xa8,0x4e,0x4f,0xa9];
-    if map!="CeladonCafe" || s.tileset_id.as_ref()!="game_corner"
-        || s.subtile_column>=4 || s.subtile_row>=4 {return None;}
-    if matches!(s.metatile_id,0x2c|0x2d) && s.subtile_row==3
-        && s.tile_index==[0x2e,0x0d,0x0d,0x2f][s.subtile_column as usize] {
-        return Some((s.subtile_column,0));
+pub(crate) fn celadon_table_local(map: &str, s: &VisualTileSource) -> Option<(u8, u8)> {
+    const ART: [u16; 16] = [
+        0x1c, 0x20, 0x21, 0x1d, 0x1c, 0x30, 0x31, 0x1d, 0x3e, 0x50, 0x50, 0x3f, 0xa8, 0x4e, 0x4f,
+        0xa9,
+    ];
+    if map != "CeladonCafe"
+        || s.tileset_id.as_ref() != "game_corner"
+        || s.subtile_column >= 4
+        || s.subtile_row >= 4
+    {
+        return None;
     }
-    (s.metatile_id==0x2e
-        && s.tile_index==ART[s.subtile_row as usize*4+s.subtile_column as usize])
-        .then_some((s.subtile_column,s.subtile_row+1))
+    if matches!(s.metatile_id, 0x2c | 0x2d)
+        && s.subtile_row == 3
+        && s.tile_index == [0x2e, 0x0d, 0x0d, 0x2f][s.subtile_column as usize]
+    {
+        return Some((s.subtile_column, 0));
+    }
+    (s.metatile_id == 0x2e
+        && s.tile_index == ART[s.subtile_row as usize * 4 + s.subtile_column as usize])
+        .then_some((s.subtile_column, s.subtile_row + 1))
 }
 
 /// Olivine's undecorated table is a complete four-by-four drawing.
-pub(crate) fn olivine_table_local(map:&str,s:&VisualTileSource)->Option<(u8,u8)> {
-    const ART:[[u16;4];4]=[[0x2e,0x0d,0x0d,0x2f],[0x1c,0x0c,0x0c,0x1d],
-        [0x3e,0x50,0x50,0x3f],[0xa8,0x4e,0x4f,0xa9]];
-    if map!="OlivineCafe" || s.tileset_id.as_ref()!="game_corner" || s.metatile_id!=0x15
-        ||s.subtile_column>=4||s.subtile_row>=4 {return None;}
-    (s.tile_index==ART[s.subtile_row as usize][s.subtile_column as usize])
-        .then_some((s.subtile_column,s.subtile_row))
+pub(crate) fn olivine_table_local(map: &str, s: &VisualTileSource) -> Option<(u8, u8)> {
+    const ART: [[u16; 4]; 4] = [
+        [0x2e, 0x0d, 0x0d, 0x2f],
+        [0x1c, 0x0c, 0x0c, 0x1d],
+        [0x3e, 0x50, 0x50, 0x3f],
+        [0xa8, 0x4e, 0x4f, 0xa9],
+    ];
+    if map != "OlivineCafe"
+        || s.tileset_id.as_ref() != "game_corner"
+        || s.metatile_id != 0x15
+        || s.subtile_column >= 4
+        || s.subtile_row >= 4
+    {
+        return None;
+    }
+    (s.tile_index == ART[s.subtile_row as usize][s.subtile_column as usize])
+        .then_some((s.subtile_column, s.subtile_row))
 }
 
-pub(crate) fn olivine_plant_local(map:&str,s:&VisualTileSource)->Option<(u8,u8)> {
-    const ART:[[u16;2];4]=[[0x19,0x2c],[0x29,0x3c],[0x39,0x0f],[0x24,0x25]];
-    if map!="OlivineCafe" || s.tileset_id.as_ref()!="game_corner" || s.metatile_id!=0x2a
-        ||s.subtile_column>=2||s.subtile_row>=4 {return None;}
-    (s.tile_index==ART[s.subtile_row as usize][s.subtile_column as usize])
-        .then_some((s.subtile_column,s.subtile_row))
+pub(crate) fn olivine_plant_local(map: &str, s: &VisualTileSource) -> Option<(u8, u8)> {
+    const ART: [[u16; 2]; 4] = [[0x19, 0x2c], [0x29, 0x3c], [0x39, 0x0f], [0x24, 0x25]];
+    if map != "OlivineCafe"
+        || s.tileset_id.as_ref() != "game_corner"
+        || s.metatile_id != 0x2a
+        || s.subtile_column >= 2
+        || s.subtile_row >= 4
+    {
+        return None;
+    }
+    (s.tile_index == ART[s.subtile_row as usize][s.subtile_column as usize])
+        .then_some((s.subtile_column, s.subtile_row))
 }
 
 /// The front counter has two complete stools in the upper half of block19.
-pub(crate) fn celadon_counter_stool_local(map:&str,s:&VisualTileSource)->Option<(u8,u8)> {
-    if !matches!(map,"CeladonCafe"|"OlivineCafe") || s.tileset_id.as_ref()!="game_corner" || s.metatile_id!=0x19
-        || s.subtile_column>=4 || s.subtile_row>=2 {return None;}
-    let x=s.subtile_column%2;let y=s.subtile_row;
-    (s.tile_index==[[0x0a,0x0b],[0x1a,0x1b]][y as usize][x as usize]).then_some((x,y))
+pub(crate) fn celadon_counter_stool_local(map: &str, s: &VisualTileSource) -> Option<(u8, u8)> {
+    if !matches!(map, "CeladonCafe" | "OlivineCafe")
+        || s.tileset_id.as_ref() != "game_corner"
+        || s.metatile_id != 0x19
+        || s.subtile_column >= 4
+        || s.subtile_row >= 2
+    {
+        return None;
+    }
+    let x = s.subtile_column % 2;
+    let y = s.subtile_row;
+    (s.tile_index == [[0x0a, 0x0b], [0x1a, 0x1b]][y as usize][x as usize]).then_some((x, y))
 }
 
 /// Each café table has its own authenticated drawing. The Safari office keeps
@@ -66,8 +98,8 @@ pub(crate) fn is_table(map_id: &str, source: &VisualTileSource) -> bool {
         return false;
     }
     match map_id {
-        "CeladonCafe" => celadon_table_local(map_id,source).is_some(),
-        "OlivineCafe" => olivine_table_local(map_id,source).is_some(),
+        "CeladonCafe" => celadon_table_local(map_id, source).is_some(),
+        "OlivineCafe" => olivine_table_local(map_id, source).is_some(),
         "SafariZoneMainOffice" => source.metatile_id == 0x15,
         _ => false,
     }
@@ -93,10 +125,10 @@ fn is_service_counter(map_id: &str, source: &VisualTileSource) -> bool {
 
 pub(crate) fn shape(map_id: &str, source: &VisualTileSource) -> Option<CellShape> {
     if is_table(map_id, source) {
-        if matches!(map_id,"CeladonCafe"|"OlivineCafe") {
+        if matches!(map_id, "CeladonCafe" | "OlivineCafe") {
             // The complete authored table owns this drawing atomically. An
             // incomplete source stays on its original plane, without a guessed pedestal.
-            return Some(CellShape::PlaneAt{height:0.});
+            return Some(CellShape::PlaneAt { height: 0. });
         }
         return Some(CellShape::FloatingRelief {
             height: TABLETOP_THICKNESS,
@@ -122,7 +154,7 @@ mod tests {
             metatile_id,
             subtile_column: column,
             subtile_row: row,
-            tile_index: if metatile_id==0x15 {0x2e}else{0x1c},
+            tile_index: if metatile_id == 0x15 { 0x2e } else { 0x1c },
         }
     }
 
@@ -137,8 +169,14 @@ mod tests {
             ground_tile_index: FLOOR_TILE,
             base_height: TABLETOP_BOTTOM,
         });
-        assert_eq!(shape("CeladonCafe", &source(0x2e)), Some(CellShape::PlaneAt{height:0.}));
-        assert_eq!(shape("OlivineCafe", &source(0x15)), Some(CellShape::PlaneAt{height:0.}));
+        assert_eq!(
+            shape("CeladonCafe", &source(0x2e)),
+            Some(CellShape::PlaneAt { height: 0. })
+        );
+        assert_eq!(
+            shape("OlivineCafe", &source(0x15)),
+            Some(CellShape::PlaneAt { height: 0. })
+        );
         assert_eq!(shape("SafariZoneMainOffice", &source(0x15)), expected);
         assert_eq!(shape("CeladonCafe", &source(0x15)), None);
         assert_eq!(shape("OlivineCafe", &source(0x2e)), None);

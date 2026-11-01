@@ -24,22 +24,12 @@ pub(super) fn install(pack: &mut CompiledGamePack, source: &ArcSource) -> Result
             c("sjump", &["MnArcRCOffer"]),
         ],
     );
-    arc::put(
-        &mut clinic,
-        "MnArcRCEntry",
-        vec![
-            c("checkevent", &[EARLY]),
-            c("iftrue", &["MnArcRCEnd"]),
-            c("checkevent", &["EVENT_MN_DELIVERED_ROCHESTER_PARCEL"]),
-            c("iffalse", &["MnArcRCEnd"]),
-            c("sjump", &["MnArcRCOffer"]),
-        ],
-    );
     let mut offer = vec![
         c("checkevent", &[EARLY]),
         c("iftrue", &["MnArcRCChoice"]),
         c("setevent", &[EARLY]),
         c("faceobject", &["MN_ARC_RC_REED", "PLAYER"]),
+        c("faceobject", &["PLAYER", "MN_ARC_RC_REED"]),
     ];
     offer.extend(a::say("MnArcRCPathsText"));
     offer.extend([c("sjump", &["MnArcRCChoice"])]);
@@ -68,12 +58,45 @@ pub(super) fn install(pack: &mut CompiledGamePack, source: &ArcSource) -> Result
     arc::jump(&mut clinic, "MnArcRCWaiting", "MnArcRCWaitingText");
     arc::jump(&mut clinic, "MnArcRCDeclined", "MnArcRCDeclinedText");
     arc::put(&mut clinic, "MnArcRCEnd", vec![c("end", &[])]);
-    for x in 6..=11 {
+    for x in 8..=11 {
+        let entry = format!("MnArcRCEntryX{x}");
+        let approach = format!("MnArcRCApproachX{x}");
+        // (8, 11) is a wall. Approach that lane from its clear eastern side.
+        let mut steps: Vec<(&str, usize)> = Vec::new();
+        if x == 8 {
+            steps.push(("DOWN", 2));
+        } else {
+            if x > 9 {
+                steps.push(("RIGHT", usize::from(x - 9)));
+            }
+            steps.push(("DOWN", 1));
+        }
+        arc::movement(&mut clinic, &approach, &steps);
+        arc::put(
+            &mut clinic,
+            &entry,
+            vec![
+                c("checkevent", &[EARLY]),
+                c("iftrue", &["MnArcRCEnd"]),
+                c("checkevent", &["EVENT_MN_DELIVERED_ROCHESTER_PARCEL"]),
+                c("iffalse", &["MnArcRCEnd"]),
+                c("applymovement", &["MN_ARC_RC_REED", &approach]),
+                c(
+                    "turnobject",
+                    &["MN_ARC_RC_REED", if x == 8 { "LEFT" } else { "DOWN" }],
+                ),
+                c(
+                    "turnobject",
+                    &["PLAYER", if x == 8 { "RIGHT" } else { "UP" }],
+                ),
+                c("sjump", &["MnArcRCOffer"]),
+            ],
+        );
         clinic.events.coord_events.push(CoordEvent {
             x,
             y: 12,
             scene_id: "-1".into(),
-            script_name: "MnArcRCEntry".into(),
+            script_name: entry,
         });
     }
     arc::publish(pack, clinic)?;

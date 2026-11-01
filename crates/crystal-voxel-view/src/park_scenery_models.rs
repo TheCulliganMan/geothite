@@ -6,9 +6,7 @@ pub(crate) fn model(index: usize) -> &'static Model {
     &MODELS.get_or_init(|| {
         [
             crate::model_storage::include_model!("models/park_scenery/litter_bin.mesh.json"),
-            crate::model_storage::include_model!(
-                "models/park_scenery/pedestal_fountain.mesh.json"
-            ),
+            crate::model_storage::include_model!("models/park_scenery/pedestal_fountain.mesh.json"),
             crate::model_storage::include_model!("models/park_scenery/pond_basin.mesh.json"),
         ]
         .into_iter()

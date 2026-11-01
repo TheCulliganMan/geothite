@@ -34,7 +34,16 @@ pub(crate) fn append_patch(
     detailed: bool,
     joined: [bool; 4], // west, east, north, south
 ) {
-    append_styled_patch(out, bounds, base, height, coordinates, detailed, joined, PatchKind::Meadow);
+    append_styled_patch(
+        out,
+        bounds,
+        base,
+        height,
+        coordinates,
+        detailed,
+        joined,
+        PatchKind::Meadow,
+    );
 }
 
 #[derive(Clone, Copy, PartialEq, Eq)]
@@ -48,10 +57,11 @@ impl PatchKind {
     /// Source-pixel height before deterministic taper. Shared by the overworld
     /// and retained battle scenery (whose world scale is one sixteenth).
     pub(crate) fn height(self, tile_height: f32) -> f32 {
-        tile_height * match self {
-            Self::Meadow | Self::ParkShort => 3.0,
-            Self::ParkLong => 4.75,
-        }
+        tile_height
+            * match self {
+                Self::Meadow | Self::ParkShort => 3.0,
+                Self::ParkLong => 4.75,
+            }
     }
 }
 
@@ -120,10 +130,14 @@ pub(crate) fn append_styled_patch(
             let lo = if a { 0.04 } else { 0.18 };
             let hi = if b { 0.96 } else { 0.82 };
             let slot = blade % edge_count;
-            let stagger = if slot == 0 || slot == edge_count - 1 { 0. } else { (seed - 0.5) * 0.7 };
-            let along = unit * (lo + (slot as f32 + stagger)
-                / (edge_count - 1) as f32 * (hi - lo));
-            let inset = unit * (0.015 + random(coordinates[0], coordinates[1], blade * 7 + 4) * 0.035);
+            let stagger = if slot == 0 || slot == edge_count - 1 {
+                0.
+            } else {
+                (seed - 0.5) * 0.7
+            };
+            let along = unit * (lo + (slot as f32 + stagger) / (edge_count - 1) as f32 * (hi - lo));
+            let inset =
+                unit * (0.015 + random(coordinates[0], coordinates[1], blade * 7 + 4) * 0.035);
             match edge {
                 0 => {
                     root.x = inset;
@@ -151,29 +165,47 @@ pub(crate) fn append_styled_patch(
             (!joined[1]).then_some(unit - root.x),
             (!joined[2]).then_some(root.z),
             (!joined[3]).then_some(unit - root.z),
-        ].into_iter().flatten().fold(unit, f32::min);
+        ]
+        .into_iter()
+        .flatten()
+        .fold(unit, f32::min);
         let edge_height = if park {
             let t = (edge_distance / (unit * 0.30)).clamp(0., 1.);
             0.90 + 0.10 * t * t * (3. - 2. * t)
-        } else { 1. };
+        } else {
+            1.
+        };
         let h = height * (0.80 + seed * 0.20) * edge_height;
         // Pigment follows a continuous field in authored source coordinates,
         // with a weaker blade-to-blade change instead of a tint per tile.
         let pigment = if kind == PatchKind::Meadow {
-            let mut patch = crate::foliage::leaf_pigment(Vec3::new(
-                coordinates[0] as f32 + root.x/unit,0.4,
-                coordinates[1] as f32 + root.z/unit),2.7);
-            let blade_tone = 1.+(random(coordinates[0],coordinates[1],blade*7+6)-0.5)*0.05;
-            for channel in &mut patch { *channel *= blade_tone; }
+            let mut patch = crate::foliage::leaf_pigment(
+                Vec3::new(
+                    coordinates[0] as f32 + root.x / unit,
+                    0.4,
+                    coordinates[1] as f32 + root.z / unit,
+                ),
+                2.7,
+            );
+            let blade_tone =
+                1. + (random(coordinates[0], coordinates[1], blade * 7 + 6) - 0.5) * 0.05;
+            for channel in &mut patch {
+                *channel *= blade_tone;
+            }
             patch
-        } else { [1.;3] };
-        let width = unit * match kind {
-            PatchKind::Meadow => 0.035 + seed * 0.025,
-            PatchKind::ParkShort => 0.030 + seed * 0.016,
-            PatchKind::ParkLong => 0.062 + seed * 0.025,
+        } else {
+            [1.; 3]
         };
+        let width = unit
+            * match kind {
+                PatchKind::Meadow => 0.035 + seed * 0.025,
+                PatchKind::ParkShort => 0.030 + seed * 0.016,
+                PatchKind::ParkLong => 0.062 + seed * 0.025,
+            };
         let bend = match kind {
-            PatchKind::Meadow => 0.10 + random(coordinates[0], coordinates[1], blade * 7 + 5) * 0.08,
+            PatchKind::Meadow => {
+                0.10 + random(coordinates[0], coordinates[1], blade * 7 + 5) * 0.08
+            }
             PatchKind::ParkLong => 0.24,
             PatchKind::ParkShort => 0.17,
         };
@@ -241,15 +273,28 @@ pub(crate) fn append_styled_patch(
                             // remain the original map geometry.
                             out.uvs.push([84000.0, p[i].y]);
                             let color = match kind {
-                                PatchKind::Meadow => [0.055 + seed * 0.045 + t * 0.22,
-                                    0.18 + seed * 0.05 + t * 0.27, 0.065 + t * 0.035],
-                                PatchKind::ParkShort => [0.035 + seed * 0.025 + t * 0.11,
-                                    0.16 + seed * 0.035 + t * 0.24, 0.085 + t * 0.065],
-                                PatchKind::ParkLong => [0.075 + seed * 0.04 + t * 0.27,
-                                    0.19 + seed * 0.04 + t * 0.29, 0.045 + t * 0.045],
+                                PatchKind::Meadow => [
+                                    0.055 + seed * 0.045 + t * 0.22,
+                                    0.18 + seed * 0.05 + t * 0.27,
+                                    0.065 + t * 0.035,
+                                ],
+                                PatchKind::ParkShort => [
+                                    0.035 + seed * 0.025 + t * 0.11,
+                                    0.16 + seed * 0.035 + t * 0.24,
+                                    0.085 + t * 0.065,
+                                ],
+                                PatchKind::ParkLong => [
+                                    0.075 + seed * 0.04 + t * 0.27,
+                                    0.19 + seed * 0.04 + t * 0.29,
+                                    0.045 + t * 0.045,
+                                ],
                             };
-                            out.colors.push([color[0]*shade*pigment[0],color[1]*shade*pigment[1],
-                                color[2]*shade*pigment[2],1.]);
+                            out.colors.push([
+                                color[0] * shade * pigment[0],
+                                color[1] * shade * pigment[1],
+                                color[2] * shade * pigment[2],
+                                1.,
+                            ]);
                         }
                         out.indices.extend([first, first + 1, first + 2]);
                     }
@@ -270,53 +315,111 @@ mod tests {
         for kind in [PatchKind::Meadow, PatchKind::ParkShort, PatchKind::ParkLong] {
             for (coordinates, tile_height) in [([0, 0], 8.), ([20, 24], 32.), ([-17, 31], 64.)] {
                 let mut mesh = SurfaceMeshData::default();
-                append_styled_patch(&mut mesh, [0., tile_height, 0., tile_height], 2.,
-                    kind.height(tile_height), coordinates, true, [false; 4], kind);
+                append_styled_patch(
+                    &mut mesh,
+                    [0., tile_height, 0., tile_height],
+                    2.,
+                    kind.height(tile_height),
+                    coordinates,
+                    true,
+                    [false; 4],
+                    kind,
+                );
                 // Find actual leaf tips through shared geometric neighbors;
                 // two-sided triangles and clipped edges need not have fixed counts.
                 let mut peaks = std::collections::HashMap::new();
                 for triangle in mesh.positions.chunks_exact(3) {
                     for p in triangle {
-                        let entry = peaks.entry(p.map(f32::to_bits)).or_insert((p[1] - 2., false));
+                        let entry = peaks
+                            .entry(p.map(f32::to_bits))
+                            .or_insert((p[1] - 2., false));
                         entry.1 |= triangle.iter().any(|q| q[1] > p[1]);
                     }
                 }
                 let tips: Vec<_> = peaks.values().filter(|(_, higher)| !higher).collect();
                 assert!(tips.len() >= 16);
                 for &&(tip, _) in &tips {
-                    let world_tip = tip / 16. * crate::grass_rustle::retained_height_scale(tile_height).x;
-                    assert!(world_tip >= chest, "blade tip {world_tip} falls below battle chest height");
+                    let world_tip =
+                        tip / 16. * crate::grass_rustle::retained_height_scale(tile_height).x;
+                    assert!(
+                        world_tip >= chest,
+                        "blade tip {world_tip} falls below battle chest height"
+                    );
                 }
-                assert!(mesh.positions.iter().any(|p| p[1] == 2.), "taller blades retain their roots");
+                assert!(
+                    mesh.positions.iter().any(|p| p[1] == 2.),
+                    "taller blades retain their roots"
+                );
             }
         }
     }
 
     #[test]
     fn park_grasses_have_distinct_leaf_shapes_and_palette_with_rooted_edges() {
-        for coordinates in [[0,0],[20,24],[-17,31]] {
+        for coordinates in [[0, 0], [20, 24], [-17, 31]] {
             let mut short = SurfaceMeshData::default();
             let mut long = SurfaceMeshData::default();
             for (mesh, kind, height) in [
-                (&mut short,PatchKind::ParkShort,PatchKind::ParkShort.height(8.)),
-                (&mut long,PatchKind::ParkLong,PatchKind::ParkLong.height(8.)),
+                (
+                    &mut short,
+                    PatchKind::ParkShort,
+                    PatchKind::ParkShort.height(8.),
+                ),
+                (
+                    &mut long,
+                    PatchKind::ParkLong,
+                    PatchKind::ParkLong.height(8.),
+                ),
             ] {
-                append_styled_patch(mesh,[0.,8.,0.,8.],2.,height,coordinates,true,[false;4],kind);
+                append_styled_patch(
+                    mesh,
+                    [0., 8., 0., 8.],
+                    2.,
+                    height,
+                    coordinates,
+                    true,
+                    [false; 4],
+                    kind,
+                );
                 assert!(!mesh.positions.is_empty());
-                assert!(mesh.positions.iter().all(|p| Vec3::from_array(*p).is_finite()
-                    && p[1]>=2. && (0. ..=8.).contains(&p[0]) && (0. ..=8.).contains(&p[2])));
-                assert!(mesh.positions.iter().any(|p| p[1]==2.),"grass stays rooted at the source floor");
+                assert!(
+                    mesh.positions
+                        .iter()
+                        .all(|p| Vec3::from_array(*p).is_finite()
+                            && p[1] >= 2.
+                            && (0. ..=8.).contains(&p[0])
+                            && (0. ..=8.).contains(&p[2]))
+                );
+                assert!(
+                    mesh.positions.iter().any(|p| p[1] == 2.),
+                    "grass stays rooted at the source floor"
+                );
             }
-            let top = |m:&SurfaceMeshData| m.positions.iter().map(|p|p[1]-2.).fold(0.,f32::max);
-            assert!(top(&long)>top(&short)*1.45,"long grass must read distinctly taller");
-            let warmth = |m:&SurfaceMeshData| {
-                let sum=m.colors.iter().fold([0.;2],|mut sum,c| {sum[0]+=c[0];sum[1]+=c[1];sum});
-                sum[0]/sum[1]
+            let top =
+                |m: &SurfaceMeshData| m.positions.iter().map(|p| p[1] - 2.).fold(0., f32::max);
+            assert!(
+                top(&long) > top(&short) * 1.45,
+                "long grass must read distinctly taller"
+            );
+            let warmth = |m: &SurfaceMeshData| {
+                let sum = m.colors.iter().fold([0.; 2], |mut sum, c| {
+                    sum[0] += c[0];
+                    sum[1] += c[1];
+                    sum
+                });
+                sum[0] / sum[1]
             };
-            assert!(warmth(&long)>warmth(&short)*1.5,"two source regions need visible palette contrast");
-            let blade_width = |m:&SurfaceMeshData|
-                Vec3::from_array(m.positions[0]).distance(Vec3::from_array(m.positions[8]));
-            assert!(blade_width(&long)>blade_width(&short)*1.5,"long-grass leaves have a broader folded silhouette");
+            assert!(
+                warmth(&long) > warmth(&short) * 1.5,
+                "two source regions need visible palette contrast"
+            );
+            let blade_width = |m: &SurfaceMeshData| {
+                Vec3::from_array(m.positions[0]).distance(Vec3::from_array(m.positions[8]))
+            };
+            assert!(
+                blade_width(&long) > blade_width(&short) * 1.5,
+                "long-grass leaves have a broader folded silhouette"
+            );
         }
     }
     #[test]
@@ -437,11 +540,16 @@ mod tests {
             assert_eq!(a.indices, b.indices);
             assert_eq!(a.colors, b.colors);
             assert_eq!(a.normals, b.normals);
-            assert_eq!(a.uvs, b.uvs, "blade-root metadata stays fixed while the grid scrolls");
+            assert_eq!(
+                a.uvs, b.uvs,
+                "blade-root metadata stays fixed while the grid scrolls"
+            );
             for (point, uv) in a.positions.iter().zip(&a.uvs) {
                 assert_eq!(uv[0], 84000.0);
-                assert!((uv[1] - (point[1] - 2.0)).abs() < 0.00001,
-                    "trimming must measure from the original blade root");
+                assert!(
+                    (uv[1] - (point[1] - 2.0)).abs() < 0.00001,
+                    "trimming must measure from the original blade root"
+                );
             }
             for (p, q) in a.positions.iter().zip(&b.positions) {
                 assert!((p[0] - q[0] - 8.).abs() < 0.00001);

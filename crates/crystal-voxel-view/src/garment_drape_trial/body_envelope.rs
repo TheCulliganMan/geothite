@@ -160,11 +160,17 @@ fn adaptive_planes(points: &[Vec3]) -> Vec<(Vec3, f32)> {
                 (-radius / length) as f32,
                 (f64::from(cos) * height / length) as f32,
             );
-            let support = normal.dot(points[pair[0].2]).max(normal.dot(points[pair[1].2])) + 0.001;
+            let support = normal
+                .dot(points[pair[0].2])
+                .max(normal.dot(points[pair[1].2]))
+                + 0.001;
             planes.push((normal, support));
         }
     }
-    assert!(!planes.is_empty(), "garment envelope requires a vertical extent");
+    assert!(
+        !planes.is_empty(),
+        "garment envelope requires a vertical extent"
+    );
     planes
 }
 
@@ -380,29 +386,46 @@ fn validate_adaptive_hulls() {
             }
         }
     }
-    let exact = Envelope { planes: adaptive_planes(&wedge) };
-    let fixed = Envelope { planes: support_planes(&wedge) };
+    let exact = Envelope {
+        planes: adaptive_planes(&wedge),
+    };
+    let fixed = Envelope {
+        planes: support_planes(&wedge),
+    };
     let point = Vec3::new(0., 0.47, CENTER_Z + 1.);
     assert!((exact.radius(point) - 0.42).abs() < 0.002);
     let middle = Vec3 { y: 0.60, ..point };
     let wanted = 0.42 + (0.07 - 0.42) * (0.60 - 0.47) / (1. - 0.47);
     assert!((exact.radius(middle) - wanted).abs() < 0.002);
-    assert!(fixed.radius(middle) - exact.radius(middle) > 0.002,
-        "fixture must expose the fixed-slope shelf");
+    assert!(
+        fixed.radius(middle) - exact.radius(middle) > 0.002,
+        "fixture must expose the fixed-slope shelf"
+    );
     for seed in 0..6 {
-        let points: Vec<_> = (0..128).map(|i| {
-            let angle = (i * 31 + seed * 17) as f32 * 0.173;
-            let radius = 0.25 + 0.55 * (angle * 0.7).sin().abs();
-            Vec3::new(radius * angle.sin(), 0.25 + (i % 23) as f32 * 0.061,
-                radius * angle.cos())
-        }).collect();
-        let envelope = Envelope { planes: adaptive_planes(&points) };
+        let points: Vec<_> = (0..128)
+            .map(|i| {
+                let angle = (i * 31 + seed * 17) as f32 * 0.173;
+                let radius = 0.25 + 0.55 * (angle * 0.7).sin().abs();
+                Vec3::new(
+                    radius * angle.sin(),
+                    0.25 + (i % 23) as f32 * 0.061,
+                    radius * angle.cos(),
+                )
+            })
+            .collect();
+        let envelope = Envelope {
+            planes: adaptive_planes(&points),
+        };
         for &(normal, support) in &envelope.planes {
             assert!(normal.is_finite() && (normal.length() - 1.).abs() < 0.00001);
-            let all_point_support = points.iter().map(|p| normal.dot(*p))
+            let all_point_support = points
+                .iter()
+                .map(|p| normal.dot(*p))
                 .fold(f32::NEG_INFINITY, f32::max);
-            assert!((support - all_point_support - 0.001).abs() < 0.000002,
-                "projected edge is not a supporting plane");
+            assert!(
+                (support - all_point_support - 0.001).abs() < 0.000002,
+                "projected edge is not a supporting plane"
+            );
         }
         for side in 0..48 {
             let angle = side as f32 / 48. * TAU;
@@ -410,7 +433,10 @@ fn validate_adaptive_hulls() {
             let column = envelope.column(point);
             for row in 0..128 {
                 let height = 0.25 + 1.2 * row as f32 / 128.;
-                assert!((column.radius(height) - envelope.radius(Vec3 { y: height, ..point })).abs() < 0.00002);
+                assert!(
+                    (column.radius(height) - envelope.radius(Vec3 { y: height, ..point })).abs()
+                        < 0.00002
+                );
             }
         }
     }

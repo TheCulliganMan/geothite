@@ -161,12 +161,26 @@ pub(super) fn resolve_with_images(
             let b = live[index(point, evidence.grid_origin)];
             if a.source != b.source
                 || a.priority != b.priority
-                || !(phase_compatible_textures(&built.map_id, a, b, profiles, &mut checked_families, images)
-                    || identical_source_pixels(&a.texture, &b.texture, images)
+                || !(phase_compatible_textures(
+                    &built.map_id,
+                    a,
+                    b,
+                    profiles,
+                    &mut checked_families,
+                    images,
+                ) || identical_source_pixels(&a.texture, &b.texture, images)
                     || retained_flower_phase(a, b, images))
             {
                 #[cfg(not(target_arch = "wasm32"))]
-                trace_first_mismatch(evidence, built, &old, &live, overlap_min, overlap_max, (point, a, b));
+                trace_first_mismatch(
+                    evidence,
+                    built,
+                    &old,
+                    &live,
+                    overlap_min,
+                    overlap_max,
+                    (point, a, b),
+                );
                 return Err("retained terrain cells do not match walking evidence");
             }
         }
@@ -180,30 +194,58 @@ pub(super) fn resolve_with_images(
 }
 
 /// Separate cache allocations must preserve every authored pixel and sampler.
-fn identical_source_pixels(a: &Handle<Image>, b: &Handle<Image>, images: Option<&Assets<Image>>) -> bool {
-    let Some(images) = images else { return false; };
-    let (Some(a), Some(b)) = (images.get(a), images.get(b)) else { return false; };
-    let (Some(pixels_a), Some(pixels_b)) = (&a.data, &b.data) else { return false; };
+fn identical_source_pixels(
+    a: &Handle<Image>,
+    b: &Handle<Image>,
+    images: Option<&Assets<Image>>,
+) -> bool {
+    let Some(images) = images else {
+        return false;
+    };
+    let (Some(a), Some(b)) = (images.get(a), images.get(b)) else {
+        return false;
+    };
+    let (Some(pixels_a), Some(pixels_b)) = (&a.data, &b.data) else {
+        return false;
+    };
     let da = &a.texture_descriptor;
     let db = &b.texture_descriptor;
-    matches!(da.format, bevy::render::render_resource::TextureFormat::Rgba8Unorm | bevy::render::render_resource::TextureFormat::Rgba8UnormSrgb)
-        && da.mip_level_count == 1 && da.sample_count == 1
-        && da.size.width == 8 && da.size.height == 8 && da.size.depth_or_array_layers == 1
-        && da.size == db.size && da.dimension == db.dimension && da.format == db.format
-        && da.mip_level_count == db.mip_level_count && da.sample_count == db.sample_count
-        && a.sampler == b.sampler && pixels_a.len() == 256 && pixels_a == pixels_b
+    matches!(
+        da.format,
+        bevy::render::render_resource::TextureFormat::Rgba8Unorm
+            | bevy::render::render_resource::TextureFormat::Rgba8UnormSrgb
+    ) && da.mip_level_count == 1
+        && da.sample_count == 1
+        && da.size.width == 8
+        && da.size.height == 8
+        && da.size.depth_or_array_layers == 1
+        && da.size == db.size
+        && da.dimension == db.dimension
+        && da.format == db.format
+        && da.mip_level_count == db.mip_level_count
+        && da.sample_count == db.sample_count
+        && a.sampler == b.sampler
+        && pixels_a.len() == 256
+        && pixels_a == pixels_b
 }
 
 /// The native flower domains are mutable and `freeze` copies their current
 /// CPU meshes. Prove the complete shared source family, rather than requiring
 /// their live palette phase to equal the earlier battle witness.
 fn retained_flower_phase(a: &VisualTile, b: &VisualTile, images: Option<&Assets<Image>>) -> bool {
-    if images.is_none() || crate::flower::flower_shape(&a.source).is_none() { return false; }
-    let (Some(first), Some(second)) = (&a.animation_frames, &b.animation_frames) else { return false; };
-    if first.is_empty() || first.len() > 32 || first.len() != second.len() { return false; }
-    first.iter().zip(second.iter()).all(|(x, y)| *x != Handle::<Image>::default()
-        && (x == y || identical_source_pixels(x, y, images)))
-        && first.contains(&a.texture) && second.contains(&b.texture)
+    if images.is_none() || crate::flower::flower_shape(&a.source).is_none() {
+        return false;
+    }
+    let (Some(first), Some(second)) = (&a.animation_frames, &b.animation_frames) else {
+        return false;
+    };
+    if first.is_empty() || first.len() > 32 || first.len() != second.len() {
+        return false;
+    }
+    first.iter().zip(second.iter()).all(|(x, y)| {
+        *x != Handle::<Image>::default() && (x == y || identical_source_pixels(x, y, images))
+    }) && first.contains(&a.texture)
+        && second.contains(&b.texture)
 }
 
 #[cfg(test)]
@@ -211,8 +253,17 @@ fn retained_flower_phase(a: &VisualTile, b: &VisualTile, images: Option<&Assets<
 fn identical_cache_copies_require_every_pixel_and_sampling_property() {
     use bevy::render::render_resource::{Extent3d, TextureDimension, TextureFormat};
     let mut images = Assets::<Image>::default();
-    let tile = Image::new_fill(Extent3d { width: 8, height: 8, depth_or_array_layers: 1 },
-        TextureDimension::D2, &[20, 60, 100, 255], TextureFormat::Rgba8UnormSrgb, RenderAssetUsages::default());
+    let tile = Image::new_fill(
+        Extent3d {
+            width: 8,
+            height: 8,
+            depth_or_array_layers: 1,
+        },
+        TextureDimension::D2,
+        &[20, 60, 100, 255],
+        TextureFormat::Rgba8UnormSrgb,
+        RenderAssetUsages::default(),
+    );
     let a = images.add(tile.clone());
     let b = images.add(tile);
     assert_ne!(a, b);
@@ -241,12 +292,30 @@ fn phase_compatible_textures(
     };
     // A profile drawing may change its silhouette. An opaque ground sample
     // only changes pigment; admit that case solely with complete CPU families.
-    let opaque_ground = || images.is_some_and(|assets| [&a.animation_frames, &b.animation_frames].into_iter().all(|family|
-        family.as_ref().is_some_and(|frames| !frames.is_empty() && frames.len() <= 32 && frames.iter().all(|handle|
-            assets.get(handle).and_then(|image| image.data.as_ref()).is_some_and(|data|
-                data.len() == 256 && data.chunks_exact(4).all(|pixel| pixel[3] == 255))))));
+    let opaque_ground = || {
+        images.is_some_and(|assets| {
+            [&a.animation_frames, &b.animation_frames]
+                .into_iter()
+                .all(|family| {
+                    family.as_ref().is_some_and(|frames| {
+                        !frames.is_empty()
+                            && frames.len() <= 32
+                            && frames.iter().all(|handle| {
+                                assets
+                                    .get(handle)
+                                    .and_then(|image| image.data.as_ref())
+                                    .is_some_and(|data| {
+                                        data.len() == 256
+                                            && data.chunks_exact(4).all(|pixel| pixel[3] == 255)
+                                    })
+                            })
+                    })
+                })
+        })
+    };
     let invariant_shape = match crate::profile::shape_for_source_on_map(map, &a.source) {
-        crate::profile::CellShape::Flat | crate::profile::CellShape::Water
+        crate::profile::CellShape::Flat
+        | crate::profile::CellShape::Water
         | crate::profile::CellShape::Waterfall => true,
         // A source-authored plane has fixed geometry across pigment phases.
         // Require every complete original phase to be opaque: a changing
@@ -254,7 +323,9 @@ fn phase_compatible_textures(
         crate::profile::CellShape::PlaneAt { height } => height.is_finite() && opaque_ground(),
         _ => false,
     };
-    if !invariant_shape { return false; }
+    if !invariant_shape {
+        return false;
+    }
     if profiles.objects.iter().any(|object| {
         object.tileset == a.source.tileset_id.as_ref()
             && object.map.as_deref().is_none_or(|id| id == map)
@@ -284,8 +355,13 @@ fn phase_compatible_textures(
         Arc::as_ptr(second) as *const () as usize,
     );
     if !checked.contains(&key) {
-        if !(Arc::ptr_eq(first, second) || first.as_ref() == second.as_ref()
-                || first.len() == second.len() && first.iter().zip(second.iter()).all(|(x, y)| identical_source_pixels(x, y, images)))
+        if !(Arc::ptr_eq(first, second)
+            || first.as_ref() == second.as_ref()
+            || first.len() == second.len()
+                && first
+                    .iter()
+                    .zip(second.iter())
+                    .all(|(x, y)| identical_source_pixels(x, y, images)))
             || first
                 .iter()
                 .any(|handle| *handle == Handle::<Image>::default())
@@ -373,8 +449,16 @@ fn trace_first_mismatch(
             b.texture.id(),
             a.priority,
             b.priority,
-            a.animation_frames.as_ref().map(|frames| (frames.len(), frames.contains(&a.texture), frames.contains(&b.texture))),
-            b.animation_frames.as_ref().map(|frames| (frames.len(), frames.contains(&a.texture), frames.contains(&b.texture))),
+            a.animation_frames.as_ref().map(|frames| (
+                frames.len(),
+                frames.contains(&a.texture),
+                frames.contains(&b.texture)
+            )),
+            b.animation_frames.as_ref().map(|frames| (
+                frames.len(),
+                frames.contains(&a.texture),
+                frames.contains(&b.texture)
+            )),
             crate::profile::shape_for_source_on_map(&built.map_id, &a.source),
         );
     }
@@ -429,7 +513,10 @@ mod tests {
             tile_size: Vec2::splat(32.0),
             viewport_size: Vec2::splat(128.0),
             center: Vec2::new(123.0, -87.0),
-            map_texture: Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(1), std::marker::PhantomData),
+            map_texture: Handle::Uuid(
+                bevy::asset::uuid::Uuid::from_u128(1),
+                std::marker::PhantomData,
+            ),
             ..Default::default()
         };
         for row in 0..12 {
@@ -447,7 +534,10 @@ mod tests {
                         subtile_row: point.y.rem_euclid(4) as u8,
                         tile_index: identity as u16,
                     },
-                    texture: Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(u128::from(identity) + 100), std::marker::PhantomData),
+                    texture: Handle::Uuid(
+                        bevy::asset::uuid::Uuid::from_u128(u128::from(identity) + 100),
+                        std::marker::PhantomData,
+                    ),
                     priority: point.x.rem_euclid(3) == 0,
                 });
             }
@@ -480,7 +570,12 @@ mod tests {
         built.map_id = "UnionCave1F".into();
         witness.map_id = built.map_id.clone();
         let family: Arc<[Handle<Image>]> = (0..32)
-            .map(|i| Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(700_000 + i), std::marker::PhantomData))
+            .map(|i| {
+                Handle::Uuid(
+                    bevy::asset::uuid::Uuid::from_u128(700_000 + i),
+                    std::marker::PhantomData,
+                )
+            })
             .collect::<Vec<_>>()
             .into();
         let source = VisualTileSource {
@@ -510,8 +605,17 @@ mod tests {
         let mut first = Vec::new();
         let mut second = Vec::new();
         for phase in 0..2 {
-            let tile = Image::new_fill(Extent3d { width: 8, height: 8, depth_or_array_layers: 1 },
-                TextureDimension::D2, &[phase, 60, 100, 255], TextureFormat::Rgba8UnormSrgb, RenderAssetUsages::default());
+            let tile = Image::new_fill(
+                Extent3d {
+                    width: 8,
+                    height: 8,
+                    depth_or_array_layers: 1,
+                },
+                TextureDimension::D2,
+                &[phase, 60, 100, 255],
+                TextureFormat::Rgba8UnormSrgb,
+                RenderAssetUsages::default(),
+            );
             first.push(images.add(tile.clone()));
             second.push(images.add(tile));
         }
@@ -521,9 +625,13 @@ mod tests {
         tile.texture = second[1].clone();
         tile.animation_frames = Some(second.clone().into());
         assert!(resolve_with_profiles(&witness, &built, Some(&profiles.document)).is_err());
-        assert!(resolve_with_images(&witness, &built, Some(&profiles.document), Some(&images)).is_ok());
+        assert!(
+            resolve_with_images(&witness, &built, Some(&profiles.document), Some(&images)).is_ok()
+        );
         images.get_mut(&second[0]).unwrap().data.as_mut().unwrap()[3] = 0;
-        assert!(resolve_with_images(&witness, &built, Some(&profiles.document), Some(&images)).is_err());
+        assert!(
+            resolve_with_images(&witness, &built, Some(&profiles.document), Some(&images)).is_err()
+        );
     }
 
     #[test]
@@ -535,8 +643,17 @@ mod tests {
         let mut first = Vec::new();
         let mut second = Vec::new();
         for phase in 0..32 {
-            let tile = Image::new_fill(Extent3d { width: 8, height: 8, depth_or_array_layers: 1 },
-                TextureDimension::D2, &[phase, 60, 100, 255], TextureFormat::Rgba8UnormSrgb, RenderAssetUsages::default());
+            let tile = Image::new_fill(
+                Extent3d {
+                    width: 8,
+                    height: 8,
+                    depth_or_array_layers: 1,
+                },
+                TextureDimension::D2,
+                &[phase, 60, 100, 255],
+                TextureFormat::Rgba8UnormSrgb,
+                RenderAssetUsages::default(),
+            );
             first.push(images.add(tile.clone()));
             second.push(images.add(tile));
         }
@@ -545,10 +662,14 @@ mod tests {
         let tile = &mut Arc::make_mut(&mut witness.tiles)[0];
         tile.texture = second[17].clone();
         tile.animation_frames = Some(second.clone().into());
-        assert!(resolve_with_images(&witness, &built, Some(&profiles.document), Some(&images)).is_ok());
+        assert!(
+            resolve_with_images(&witness, &built, Some(&profiles.document), Some(&images)).is_ok()
+        );
         // Reject even an unused animation phase whose authored silhouette changes.
         images.get_mut(&second[31]).unwrap().data.as_mut().unwrap()[3] = 0;
-        assert!(resolve_with_images(&witness, &built, Some(&profiles.document), Some(&images)).is_err());
+        assert!(
+            resolve_with_images(&witness, &built, Some(&profiles.document), Some(&images)).is_err()
+        );
     }
 
     #[test]
@@ -561,22 +682,41 @@ mod tests {
         built.tiles[2].source.subtile_column = 3;
         built.tiles[2].source.subtile_row = 2;
         Arc::make_mut(&mut witness.tiles)[0].source = built.tiles[2].source.clone();
-        assert!(matches!(crate::profile::shape_for_source_on_map(&built.map_id, &built.tiles[2].source),
-            crate::profile::CellShape::PlaneAt { height: 0.0 }));
+        assert!(matches!(
+            crate::profile::shape_for_source_on_map(&built.map_id, &built.tiles[2].source),
+            crate::profile::CellShape::PlaneAt { height: 0.0 }
+        ));
         let mut images = Assets::<Image>::default();
-        let family: Arc<[Handle<Image>]> = (0..4).map(|phase| images.add(Image::new_fill(
-            Extent3d { width: 8, height: 8, depth_or_array_layers: 1 }, TextureDimension::D2,
-            &[phase, 60, 100, 255], TextureFormat::Rgba8UnormSrgb, RenderAssetUsages::default()))).collect::<Vec<_>>().into();
+        let family: Arc<[Handle<Image>]> = (0..4)
+            .map(|phase| {
+                images.add(Image::new_fill(
+                    Extent3d {
+                        width: 8,
+                        height: 8,
+                        depth_or_array_layers: 1,
+                    },
+                    TextureDimension::D2,
+                    &[phase, 60, 100, 255],
+                    TextureFormat::Rgba8UnormSrgb,
+                    RenderAssetUsages::default(),
+                ))
+            })
+            .collect::<Vec<_>>()
+            .into();
         built.tiles[2].texture = family[0].clone();
         built.tiles[2].animation_frames = Some(family.clone());
         let tile = &mut Arc::make_mut(&mut witness.tiles)[0];
         tile.texture = family[1].clone();
         tile.animation_frames = Some(family.clone());
         assert!(resolve_with_profiles(&witness, &built, Some(&profiles.document)).is_err());
-        assert!(resolve_with_images(&witness, &built, Some(&profiles.document), Some(&images)).is_ok());
+        assert!(
+            resolve_with_images(&witness, &built, Some(&profiles.document), Some(&images)).is_ok()
+        );
         images.get_mut(&family[3]).unwrap().data.as_mut().unwrap()[3] = 0;
-        assert!(resolve_with_images(&witness, &built, Some(&profiles.document), Some(&images)).is_err(),
-            "even an unused phase cannot change the source plane's silhouette");
+        assert!(
+            resolve_with_images(&witness, &built, Some(&profiles.document), Some(&images)).is_err(),
+            "even an unused phase cannot change the source plane's silhouette"
+        );
     }
 
     #[test]
@@ -637,7 +777,10 @@ mod tests {
                     tile.animation_frames = Some(family.into());
                 }
                 3 => {
-                    family.push(Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(900_000), std::marker::PhantomData));
+                    family.push(Handle::Uuid(
+                        bevy::asset::uuid::Uuid::from_u128(900_000),
+                        std::marker::PhantomData,
+                    ));
                     tile.animation_frames = Some(family.into());
                 }
                 4 => {
@@ -649,13 +792,24 @@ mod tests {
                     family.reverse();
                     tile.animation_frames = Some(family.into());
                 }
-                6 => tile.texture = Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(900_001), std::marker::PhantomData),
+                6 => {
+                    tile.texture = Handle::Uuid(
+                        bevy::asset::uuid::Uuid::from_u128(900_001),
+                        std::marker::PhantomData,
+                    )
+                }
                 7 => {
-                    family[31] = Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(900_002), std::marker::PhantomData);
+                    family[31] = Handle::Uuid(
+                        bevy::asset::uuid::Uuid::from_u128(900_002),
+                        std::marker::PhantomData,
+                    );
                     tile.animation_frames = Some(family.into());
                 }
                 _ => {
-                    tile.texture = Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(900_003), std::marker::PhantomData);
+                    tile.texture = Handle::Uuid(
+                        bevy::asset::uuid::Uuid::from_u128(900_003),
+                        std::marker::PhantomData,
+                    );
                     tile.animation_frames =
                         Some(vec![built.tiles[2].texture.clone(), tile.texture.clone()].into());
                 }
@@ -690,7 +844,12 @@ mod tests {
                 1 => tile.priority ^= true,
                 _ => {
                     let other: Arc<[Handle<Image>]> = (0..32)
-                        .map(|i| Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(800_000 + i), std::marker::PhantomData))
+                        .map(|i| {
+                            Handle::Uuid(
+                                bevy::asset::uuid::Uuid::from_u128(800_000 + i),
+                                std::marker::PhantomData,
+                            )
+                        })
                         .collect::<Vec<_>>()
                         .into();
                     tile.texture = other[17].clone();
@@ -730,10 +889,7 @@ mod tests {
 
     #[test]
     fn retained_correspondence_old_witness_survives_actual_shifted_phase_refresh() {
-        use bevy::render::{
-
-            render_resource::{Extent3d, TextureDimension, TextureFormat},
-        };
+        use bevy::render::render_resource::{Extent3d, TextureDimension, TextureFormat};
         let (mut built, witness) = phase_pair("cave", 0x3e, 0x14);
         let profiles = crate::live_profiles::Document::default();
         let family = built.tiles[2].animation_frames.as_ref().unwrap().clone();
@@ -794,7 +950,10 @@ mod tests {
         ] {
             let mut live = frame(built.grid_origin + delta * 2);
             live.center = Vec2::new(137.5, -42.25);
-            live.map_texture = Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(2), std::marker::PhantomData);
+            live.map_texture = Handle::Uuid(
+                bevy::asset::uuid::Uuid::from_u128(2),
+                std::marker::PhantomData,
+            );
             let result = resolve(&evidence(&live), &built).unwrap();
             let offset = crate::terrain_tracking::offset(&built, &live);
             assert_eq!(result.center, live.center + Vec2::new(offset.x, -offset.y));
@@ -843,8 +1002,10 @@ mod tests {
                 match case {
                     0 => Arc::make_mut(&mut changed.tiles)[0].source.tile_index += 1,
                     1 => {
-                        Arc::make_mut(&mut changed.tiles)[0].texture =
-                            Handle::Uuid(bevy::asset::uuid::Uuid::from_u128(999999), std::marker::PhantomData)
+                        Arc::make_mut(&mut changed.tiles)[0].texture = Handle::Uuid(
+                            bevy::asset::uuid::Uuid::from_u128(999999),
+                            std::marker::PhantomData,
+                        )
                     }
                     _ => Arc::make_mut(&mut changed.tiles)[0].priority ^= true,
                 }

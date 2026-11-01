@@ -1,7 +1,7 @@
 //! Bounded decoding of build-generated gzip data inside each catalog's existing
 //! OnceLock loader. Canonical JSON and GLB are normal source files; compression
 //! exists only in Cargo's output directory. Binary GLB stays binary on decode.
-use serde::{de::DeserializeOwned, Deserialize};
+use serde::{Deserialize, de::DeserializeOwned};
 use sha2::{Digest, Sha256};
 use std::{borrow::Cow, io::Read};
 
@@ -225,11 +225,13 @@ mod tests {
             [stored.1.clone(), stored.1.clone()].concat(),
         ] {
             let data = metadata(raw, &gzip);
-            assert!(decode(Source::Gzip {
-                metadata: &data,
-                payload: &gzip
-            })
-            .is_err());
+            assert!(
+                decode(Source::Gzip {
+                    metadata: &data,
+                    payload: &gzip
+                })
+                .is_err()
+            );
         }
         assert!(decode(source(&packed(b"\xff"))).is_err());
     }

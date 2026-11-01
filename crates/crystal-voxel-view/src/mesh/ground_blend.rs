@@ -15,8 +15,8 @@ struct Edge {
     path_positive: bool,
 }
 impl GroundBlend {
-    pub(super) fn material_at(&self, p: [f32;3], g: &GridGeometry) -> Option<GroundMaterial> {
-        cell_at(g,p[0],p[2]).and_then(|i|self.materials.get(i).copied().flatten())
+    pub(super) fn material_at(&self, p: [f32; 3], g: &GridGeometry) -> Option<GroundMaterial> {
+        cell_at(g, p[0], p[2]).and_then(|i| self.materials.get(i).copied().flatten())
     }
     #[cfg(test)]
     pub(super) fn new(materials: &[Option<GroundMaterial>], g: &GridGeometry) -> Self {
@@ -158,11 +158,18 @@ impl GroundBlend {
             nearest = nearest.min(distance);
             // A continuous world-space edge wiggle avoids a repeated stencil.
             let along = map_p[other] / g.tile_width;
-            let across = (edge.line - if edge.axis == 0 { g.origin_x } else { g.origin_z })
-                / g.tile_width + origin[edge.axis / 2] as f32;
+            let across = (edge.line
+                - if edge.axis == 0 {
+                    g.origin_x
+                } else {
+                    g.origin_z
+                })
+                / g.tile_width
+                + origin[edge.axis / 2] as f32;
             let wobble = (meadow_noise(along * 1.7, across * 0.37 + 71.0)
                 + meadow_noise(along * 4.3, across * 0.61 - 19.0) * 0.35)
-                * g.tile_width * 0.45;
+                * g.tile_width
+                * 0.45;
             let signed = (p[edge.axis] - edge.line) * if edge.path_positive { 1. } else { -1. };
             let t = ((signed + wobble) / width * 0.5 + 0.5).clamp(0., 1.);
             let t = t * t * (3. - 2. * t);
@@ -195,41 +202,85 @@ mod tests {
     use super::*;
     #[test]
     fn wobbled_band_rejoins_unblended_ground_without_a_color_step() {
-        let g = GridGeometry { width: 2, height: 1, tile_width: 8., tile_height: 8.,
-            origin_x: 0., origin_z: 0. };
+        let g = GridGeometry {
+            width: 2,
+            height: 1,
+            tile_width: 8.,
+            tile_height: 8.,
+            origin_x: 0.,
+            origin_z: 0.,
+        };
         let materials = [Some(GroundMaterial::Lawn), Some(GroundMaterial::Path)];
         let blend = GroundBlend::new(&materials, &g);
         let width = g.tile_width * 0.65;
         for palette in [None, Some([0.50, 0.54, 0.46])] {
-        for origin in [[0,0],[-31,-7],[17,43],[64,-32]] {
-            for (sign, material) in [(-1., GroundMaterial::Lawn),(1., GroundMaterial::Path)] {
-                let at = |distance| [8. + sign * distance, 0., 4.];
-                let sample = |p: [f32;3]| blend.color_with_path_palette(p, &g, origin,
-                    palette).unwrap_or_else(||
-                    ground_color_with_path_palette(material,
-                        [p[0] + origin[0] as f32 * 8., p[1],
-                        p[2] + origin[1] as f32 * 8.], &g, palette));
-                let inside = sample(at(width - 0.001));
-                let outside = sample(at(width + 0.001));
-                assert!(inside.iter().zip(outside).all(|(a,b)| (a-b).abs() < 0.0001),
-                    "the outer blend boundary must be continuous at source phase {origin:?}");
+            for origin in [[0, 0], [-31, -7], [17, 43], [64, -32]] {
+                for (sign, material) in [(-1., GroundMaterial::Lawn), (1., GroundMaterial::Path)] {
+                    let at = |distance| [8. + sign * distance, 0., 4.];
+                    let sample = |p: [f32; 3]| {
+                        blend
+                            .color_with_path_palette(p, &g, origin, palette)
+                            .unwrap_or_else(|| {
+                                ground_color_with_path_palette(
+                                    material,
+                                    [
+                                        p[0] + origin[0] as f32 * 8.,
+                                        p[1],
+                                        p[2] + origin[1] as f32 * 8.,
+                                    ],
+                                    &g,
+                                    palette,
+                                )
+                            })
+                    };
+                    let inside = sample(at(width - 0.001));
+                    let outside = sample(at(width + 0.001));
+                    assert!(
+                        inside
+                            .iter()
+                            .zip(outside)
+                            .all(|(a, b)| (a - b).abs() < 0.0001),
+                        "the outer blend boundary must be continuous at source phase {origin:?}"
+                    );
+                }
             }
-        }
         }
     }
     #[test]
     fn adjoining_edges_blend_continuously_across_the_corner_bisector() {
-        let g = GridGeometry { width: 3, height: 3, tile_width: 8., tile_height: 8.,
-            origin_x: 0., origin_z: 0. };
-        let mut materials = [Some(GroundMaterial::Lawn);9];
-        for i in [0,1,3] { materials[i] = Some(GroundMaterial::Path); }
+        let g = GridGeometry {
+            width: 3,
+            height: 3,
+            tile_width: 8.,
+            tile_height: 8.,
+            origin_x: 0.,
+            origin_z: 0.,
+        };
+        let mut materials = [Some(GroundMaterial::Lawn); 9];
+        for i in [0, 1, 3] {
+            materials[i] = Some(GroundMaterial::Path);
+        }
         let blend = GroundBlend::new(&materials, &g);
-        for origin in [[0,0],[-31,-7],[17,43],[64,-32]] {
-            for distance in [0.5,1.,2.,3.] {
-                let a = blend.color([8.+distance-0.001,0.,8.+distance+0.001], &g, origin).unwrap();
-                let b = blend.color([8.+distance+0.001,0.,8.+distance-0.001], &g, origin).unwrap();
-                assert!(a.iter().zip(b).all(|(a,b)| (a-b).abs() < 0.001),
-                    "overlapping edges must not switch pigment at their bisector");
+        for origin in [[0, 0], [-31, -7], [17, 43], [64, -32]] {
+            for distance in [0.5, 1., 2., 3.] {
+                let a = blend
+                    .color(
+                        [8. + distance - 0.001, 0., 8. + distance + 0.001],
+                        &g,
+                        origin,
+                    )
+                    .unwrap();
+                let b = blend
+                    .color(
+                        [8. + distance + 0.001, 0., 8. + distance - 0.001],
+                        &g,
+                        origin,
+                    )
+                    .unwrap();
+                assert!(
+                    a.iter().zip(b).all(|(a, b)| (a - b).abs() < 0.001),
+                    "overlapping edges must not switch pigment at their bisector"
+                );
             }
         }
     }
@@ -285,9 +336,11 @@ mod tests {
                 .len(),
             1
         );
-        assert!(GroundBlend::at_heights(&materials, &[0., 3.], &g)
-            .edges
-            .is_empty());
+        assert!(
+            GroundBlend::at_heights(&materials, &[0., 3.], &g)
+                .edges
+                .is_empty()
+        );
     }
 
     #[test]
@@ -309,24 +362,29 @@ mod tests {
         let right = blend.color([8.001, 0., 4.], &g, [0, 0]).unwrap();
         assert!(left.iter().zip(right).all(|(a, b)| (*a - b).abs() < 0.001));
         assert!(blend.color([1., 0., 4.], &g, [0, 0]).is_none());
-        assert!(GroundBlend::new(
-            &[Some(GroundMaterial::Water), Some(GroundMaterial::Path)],
-            &g
-        )
-        .edges
-        .is_empty());
-        assert!(GroundBlend::new(&[None, Some(GroundMaterial::Path)], &g)
+        assert!(
+            GroundBlend::new(
+                &[Some(GroundMaterial::Water), Some(GroundMaterial::Path)],
+                &g
+            )
             .edges
-            .is_empty());
+            .is_empty()
+        );
+        assert!(
+            GroundBlend::new(&[None, Some(GroundMaterial::Path)], &g)
+                .edges
+                .is_empty()
+        );
         let shifted_g = GridGeometry { origin_x: -8., ..g };
         let shifted = GroundBlend::new(
             &[Some(GroundMaterial::Lawn), Some(GroundMaterial::Path)],
             &shifted_g,
         );
         let scrolled = shifted.color([-0.001, 0., 4.], &shifted_g, [0, 0]).unwrap();
-        assert!(left
-            .iter()
-            .zip(scrolled)
-            .all(|(a, b)| (*a - b).abs() < 0.000001));
+        assert!(
+            left.iter()
+                .zip(scrolled)
+                .all(|(a, b)| (*a - b).abs() < 0.000001)
+        );
     }
 }

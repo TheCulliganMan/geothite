@@ -403,8 +403,10 @@ mod tests {
             mesh.layered_alpha_textured_ranges, mesh.textured.cutaway_ranges,
             "all twelve closed units keep smooth alpha with depth ordering"
         );
-        assert!(mesh.depth_coverage_textured_ranges.is_empty(),
-            "machine housings must not stipple the player or companion");
+        assert!(
+            mesh.depth_coverage_textured_ranges.is_empty(),
+            "machine housings must not stipple the player or companion"
+        );
         for ((x, y), range) in plots.iter().zip(&mesh.textured.cutaway_ranges) {
             assert!(
                 mesh.textured.positions[range.clone()]

@@ -3,10 +3,10 @@ use super::{Cursor, Source};
 use anyhow::{Context, Result, ensure};
 use serde_json::{Value, json};
 use std::{collections::BTreeMap, path::Path};
-#[path = "source_intro_scene_dynamic.rs"]
-mod dynamic;
 #[path = "source_intro_background_bindings.rs"]
 mod backgrounds;
+#[path = "source_intro_scene_dynamic.rs"]
+mod dynamic;
 #[path = "source_intro_scene_helpers.rs"]
 mod helpers;
 
@@ -41,7 +41,6 @@ pub(super) fn scene_dispatch(vendor: &Path, constants: &BTreeMap<String, i64>) -
                 .iter()
                 .cloned(),
         );
-
     }
     // Rendering metadata follows all returning executable scene bodies.
     operations.extend((1..=28).map(|number| bindings[&format!("IntroScene{number}")].clone()));

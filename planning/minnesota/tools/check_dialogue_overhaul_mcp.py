@@ -27,11 +27,7 @@ def read(client, pages):
         assert actual == '\n'.join(expected), (expected, actual)
         observed.append(actual)
         client.press('a')
-    for _ in range(4):
-        if not client.status()['dialogue']:
-            return '\n\n'.join(observed)
-        client.press('a')
-    raise AssertionError('text did not release input')
+    return '\n\n'.join(observed)
 
 
 def main():
@@ -63,6 +59,11 @@ def main():
             client.move('down', 3)
             client.at('MnWinonaHome1F', 9, 1)
             mom = read(client, texts['MnWinonaHome1F']['MnWHomeIntroText'])
+            gear = read(client, texts['MnWinonaHome1F']['MnWHomeGearReceivedText'])
+            assert not client.status()['dialogue'], 'Mom must release input after the receipt'
+            client.press('start')
+            assert 'PACK' in client.observe()['content'][0]['text']
+            client.press('b')
             walk(client, pack, (6, 6))
             enter(client, 'down', 'MnWinona')
             walk(client, pack, (18, 20))
@@ -71,14 +72,20 @@ def main():
             client.move('right', 3)
             client.at('MnWinonaFieldStation', 4, 2)
             professor = read(client, texts['MnWinonaFieldStation']['MnOverhaulTamarackIntroText'])
+            assert not client.status()['dialogue'], 'lab introduction must finish'
+            client.press('right')
+            client.press('a')
+            reminder = read(client, texts['MnWinonaFieldStation']['MnWChooseText'])
+            assert not client.status()['dialogue'], 'short reminder must release input'
             walk(client, pack, (7, 4))
             client.press('up')
             client.press('a')
             choose(client, False)
             read(client, texts['MnWinonaFieldStation']['MnWDeclineText'])
+            assert not client.status()['dialogue'], 'declining must return to exploration'
             client.press('start')
             assert 'PACK' in client.observe()['content'][0]['text']
-            print(mom + '\n\n' + professor)
+            print('\n\n'.join([mom, gear, professor, reminder]))
         finally:
             process.stdin.close()
             assert process.wait(timeout=30) == 0, 'client failed to exit'

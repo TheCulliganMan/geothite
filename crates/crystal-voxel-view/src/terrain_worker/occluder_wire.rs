@@ -31,7 +31,7 @@ struct GroupWire {
     coverage_fade: bool,
     depth_coverage_fade: bool,
     residual_opacity: u32,
-    camera_wall: Option<[u32;3]>,
+    camera_wall: Option<[u32; 3]>,
     runtime_lazy_sorted: bool,
 }
 
@@ -889,7 +889,7 @@ impl Capture {
             coverage_fade: group.coverage_fade,
             depth_coverage_fade: group.depth_coverage_fade,
             residual_opacity: group.residual_opacity.to_bits(),
-            camera_wall: group.camera_wall.map(|p|p.map(f32::to_bits)),
+            camera_wall: group.camera_wall.map(|p| p.map(f32::to_bits)),
             runtime_lazy_sorted: group.runtime_lazy_sorted,
         })
     }
@@ -976,7 +976,7 @@ impl GroupFrame {
             coverage_fade: self.wire.coverage_fade,
             depth_coverage_fade: self.wire.depth_coverage_fade,
             residual_opacity: f32::from_bits(self.wire.residual_opacity),
-            camera_wall: self.wire.camera_wall.map(|p|p.map(f32::from_bits)),
+            camera_wall: self.wire.camera_wall.map(|p| p.map(f32::from_bits)),
             runtime_lazy_sorted: self.wire.runtime_lazy_sorted,
         })
     }

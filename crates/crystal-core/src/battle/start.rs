@@ -1677,7 +1677,7 @@ pub fn advance_active_trainer_battle_with_replacement(
         (index != current_enemy_index
             && pokemon.hp > 0
             && replacement.is_none_or(|selected| selected == index))
-            .then_some((index, pokemon.clone()))
+        .then_some((index, pokemon.clone()))
     });
     if let Some((index, pokemon)) = next {
         let mut entered = pokemon;
@@ -1748,9 +1748,12 @@ fn reset_active_battle_slots(state: &mut GameState, items: &BTreeMap<String, Ite
 
 fn deactivate_battle_with_current_result(state: &mut GameState) {
     let pve = match &state.battle {
-        BattleMemory::Wild { battle_type, .. } | BattleMemory::StaticWild { battle_type, .. }
-            | BattleMemory::Trainer { battle_type, .. } =>
-                !matches!(battle_type.as_str(), "BATTLETYPE_LINK" | "BATTLETYPE_TUTORIAL" | "BATTLETYPE_DEBUG"),
+        BattleMemory::Wild { battle_type, .. }
+        | BattleMemory::StaticWild { battle_type, .. }
+        | BattleMemory::Trainer { battle_type, .. } => !matches!(
+            battle_type.as_str(),
+            "BATTLETYPE_LINK" | "BATTLETYPE_TUTORIAL" | "BATTLETYPE_DEBUG"
+        ),
         BattleMemory::Inactive => false,
     };
     if pve {
@@ -1786,7 +1789,11 @@ fn deactivate_battle_with_current_result(state: &mut GameState) {
             win_cleanup_applied: false,
         });
     }
-    if let BattleMemory::Wild { battle_type, map_name, .. } = &state.battle
+    if let BattleMemory::Wild {
+        battle_type,
+        map_name,
+        ..
+    } = &state.battle
         && battle_type == "BATTLETYPE_CONTEST"
         && state.bug_contest.park_balls_remaining == 0
         && state.battle_result & 0x3f != 1
@@ -2069,9 +2076,12 @@ mod tests {
         let mut state = GameState::default();
         let enemy = Pokemon::new_for_tests(species(), 5, Dv::default());
         let battle = |kind: &str| BattleMemory::Wild {
-            battle_type: kind.into(), battle_music: "MUSIC_JOHTO_WILD_BATTLE".into(),
-            map_name: "Route29".into(), roaming_slot: None,
-            enemy_pokemon: enemy.clone(), enemy_party: vec![enemy.clone()],
+            battle_type: kind.into(),
+            battle_music: "MUSIC_JOHTO_WILD_BATTLE".into(),
+            map_name: "Route29".into(),
+            roaming_slot: None,
+            enemy_pokemon: enemy.clone(),
+            enemy_party: vec![enemy.clone()],
         };
         state.battle = battle("BATTLETYPE_NORMAL");
         deactivate_battle_after_win(&mut state);
@@ -2094,11 +2104,20 @@ mod tests {
         let mut state = GameState::default();
         let legacy = serde_json::to_value(&state).unwrap();
         assert!(legacy.get("pve_battles").is_none());
-        assert_eq!(serde_json::from_value::<GameState>(legacy.clone()).unwrap().pve_battles(), 0);
-        state.record_pve_battle(true); state.record_pve_battle(true); state.record_pve_battle(false);
-        let restored: GameState = serde_json::from_value(serde_json::to_value(&state).unwrap()).unwrap();
+        assert_eq!(
+            serde_json::from_value::<GameState>(legacy.clone())
+                .unwrap()
+                .pve_battles(),
+            0
+        );
+        state.record_pve_battle(true);
+        state.record_pve_battle(true);
+        state.record_pve_battle(false);
+        let restored: GameState =
+            serde_json::from_value(serde_json::to_value(&state).unwrap()).unwrap();
         assert_eq!((restored.pve_battles(), restored.pve_wins()), (3, 2));
-        let mut malformed = legacy; malformed["script_runtime"]["memory"]["GEOTHITE_PVE_WINS"] = "1".into();
+        let mut malformed = legacy;
+        malformed["script_runtime"]["memory"]["GEOTHITE_PVE_WINS"] = "1".into();
         assert!(serde_json::from_value::<GameState>(malformed).is_err());
     }
 

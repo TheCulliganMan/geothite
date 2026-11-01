@@ -31,8 +31,10 @@ fn color(p: Vec3, ice: bool, g: &GridGeometry, origin: [i32; 2]) -> [f32; 4] {
     // Grain stays below the broad translucent bands. Strong frost sampled at
     // mesh vertices forms isolated bright polygon patches at gameplay scale.
     let cloud = new_bark::meadow_noise(x * 0.68 + 37., z * 0.68 - 21.);
-    let c = deep.lerp(clear, (0.50 + streak * 0.13 + broad * 0.35 + cloud * 0.25).clamp(0., 1.))
-        + Vec3::splat(fine * 0.015);
+    let c = deep.lerp(
+        clear,
+        (0.50 + streak * 0.13 + broad * 0.35 + cloud * 0.25).clamp(0., 1.),
+    ) + Vec3::splat(fine * 0.015);
     c.extend(1.).to_array()
 }
 
@@ -49,19 +51,42 @@ pub(super) fn append(
 // Sample distances to authenticated material cells, rather than fading each
 // tile independently. Shared edges receive the same frost color and the field
 // remains fixed when the published grid scrolls. No support geometry changes.
-fn blended_color(p: Vec3, ice: bool, g: &GridGeometry, origin: [i32; 2], cells: &[&VisualTile]) -> [f32; 4] {
-    let local = Vec2::new((p.x - g.origin_x) / g.tile_width, (p.z - g.origin_z) / g.tile_height);
+fn blended_color(
+    p: Vec3,
+    ice: bool,
+    g: &GridGeometry,
+    origin: [i32; 2],
+    cells: &[&VisualTile],
+) -> [f32; 4] {
+    let local = Vec2::new(
+        (p.x - g.origin_x) / g.tile_width,
+        (p.z - g.origin_z) / g.tile_height,
+    );
     let mut seam = f32::INFINITY;
     let mut wall = f32::INFINITY;
     for z in local.y.floor() as i32 - 2..=local.y.floor() as i32 + 1 {
         for x in local.x.floor() as i32 - 2..=local.x.floor() as i32 + 1 {
-            if x < 0 || z < 0 || x >= g.width as i32 || z >= g.height as i32 { continue; }
-            let Some(tile) = cells.get(z as usize * g.width + x as usize) else { continue; };
-            if tile.source.tileset_id.as_ref() != "ice_path" { continue; }
-            let distance = (local - local.clamp(Vec2::new(x as f32, z as f32), Vec2::new(x as f32 + 1., z as f32 + 1.))).length();
+            if x < 0 || z < 0 || x >= g.width as i32 || z >= g.height as i32 {
+                continue;
+            }
+            let Some(tile) = cells.get(z as usize * g.width + x as usize) else {
+                continue;
+            };
+            if tile.source.tileset_id.as_ref() != "ice_path" {
+                continue;
+            }
+            let distance = (local
+                - local.clamp(
+                    Vec2::new(x as f32, z as f32),
+                    Vec2::new(x as f32 + 1., z as f32 + 1.),
+                ))
+            .length();
             let material = new_bark::ice_path_ground_material(&tile.source);
-            if matches!(material, Some(new_bark::GroundMaterial::Ice | new_bark::GroundMaterial::Stone))
-                && (material == Some(new_bark::GroundMaterial::Ice)) != ice {
+            if matches!(
+                material,
+                Some(new_bark::GroundMaterial::Ice | new_bark::GroundMaterial::Stone)
+            ) && (material == Some(new_bark::GroundMaterial::Ice)) != ice
+            {
                 seam = seam.min(distance);
             }
             if crate::ice_path::rock_mass_local(&tile.source).is_some() {
@@ -73,10 +98,16 @@ fn blended_color(p: Vec3, ice: bool, g: &GridGeometry, origin: [i32; 2], cells: 
     let z = local.y + origin[1] as f32;
     let noise = new_bark::meadow_noise;
     let width = 0.65 + noise(x * 1.2 + 43., z * 1.2 - 17.) * 0.30;
-    let feather = |d: f32| { let t = (1. - d / width).clamp(0., 1.); t * t * (3. - 2. * t) };
+    let feather = |d: f32| {
+        let t = (1. - d / width).clamp(0., 1.);
+        t * t * (3. - 2. * t)
+    };
     let base = Vec3::from_array(color(p, ice, g, origin)[..3].try_into().unwrap());
-    let frost = Vec3::new(0.41, 0.60, 0.61) + Vec3::splat(noise(x * 0.68 + 37., z * 0.68 - 21.) * 0.045);
-    let c = base.lerp(frost, feather(seam)).lerp(Vec3::new(0.39, 0.51, 0.54), feather(wall) * 0.75);
+    let frost =
+        Vec3::new(0.41, 0.60, 0.61) + Vec3::splat(noise(x * 0.68 + 37., z * 0.68 - 21.) * 0.045);
+    let c = base
+        .lerp(frost, feather(seam))
+        .lerp(Vec3::new(0.39, 0.51, 0.54), feather(wall) * 0.75);
     c.extend(1.).to_array()
 }
 
@@ -223,33 +254,80 @@ mod tests {
     use super::*;
     #[test]
     fn frost_crosses_authenticated_ice_stone_joins_without_touching_support() {
-        let g = GridGeometry { width: 2, height: 1, tile_width: 8., tile_height: 8., origin_x: 0., origin_z: 0. };
+        let g = GridGeometry {
+            width: 2,
+            height: 1,
+            tile_width: 8.,
+            tile_height: 8.,
+            origin_x: 0.,
+            origin_z: 0.,
+        };
         let tiles = [
-            VisualTile { column: 0, row: 0, animation_frames: None, priority: false, texture: Default::default(),
-                source: VisualTileSource { tileset_id: "ice_path".into(), metatile_id: 0x02, subtile_column: 1, subtile_row: 0, tile_index: 0x19 } },
-            VisualTile { column: 1, row: 0, animation_frames: None, priority: false, texture: Default::default(),
-                source: VisualTileSource { tileset_id: "ice_path".into(), metatile_id: 0x1f, subtile_column: 0, subtile_row: 0, tile_index: 0xc6 } },
+            VisualTile {
+                column: 0,
+                row: 0,
+                animation_frames: None,
+                priority: false,
+                texture: Default::default(),
+                source: VisualTileSource {
+                    tileset_id: "ice_path".into(),
+                    metatile_id: 0x02,
+                    subtile_column: 1,
+                    subtile_row: 0,
+                    tile_index: 0x19,
+                },
+            },
+            VisualTile {
+                column: 1,
+                row: 0,
+                animation_frames: None,
+                priority: false,
+                texture: Default::default(),
+                source: VisualTileSource {
+                    tileset_id: "ice_path".into(),
+                    metatile_id: 0x1f,
+                    subtile_column: 0,
+                    subtile_row: 0,
+                    tile_index: 0xc6,
+                },
+            },
         ];
         let cells = tiles.iter().collect::<Vec<_>>();
         let p = Vec3::new(8., 0., 4.);
-        assert_eq!(blended_color(p, false, &g, [20, 30], &cells), blended_color(p, true, &g, [20, 30], &cells));
+        assert_eq!(
+            blended_color(p, false, &g, [20, 30], &cells),
+            blended_color(p, true, &g, [20, 30], &cells)
+        );
         for ice in [false, true] {
             let side = if ice { 1. } else { -1. };
             let a = blended_color(p + Vec3::X * side * 0.001, ice, &g, [20, 30], &cells);
             let b = blended_color(p, ice, &g, [20, 30], &cells);
-            assert!(a.iter().zip(b).all(|(a,b)| (a-b).abs() < 0.001));
+            assert!(a.iter().zip(b).all(|(a, b)| (a - b).abs() < 0.001));
             let mut mesh = SurfaceMeshData::default();
             let x = if ice { 8. } else { 0. };
-            append_blended(&mut mesh, [[x,0.,0.],[x,0.,8.],[x+8.,0.,8.],[x+8.,0.,0.]], ice, &g, [20,30], &cells);
+            append_blended(
+                &mut mesh,
+                [[x, 0., 0.], [x, 0., 8.], [x + 8., 0., 8.], [x + 8., 0., 0.]],
+                ice,
+                &g,
+                [20, 30],
+                &cells,
+            );
             assert!(mesh.positions.iter().all(|p| p[1] >= 0. && p[1] <= 0.00081));
         }
         let mut moved = g;
         moved.origin_x -= 8.;
-        assert_eq!(blended_color(p, false, &g, [20,30], &cells), blended_color(p - Vec3::X * 8., false, &moved, [20,30], &cells));
+        assert_eq!(
+            blended_color(p, false, &g, [20, 30], &cells),
+            blended_color(p - Vec3::X * 8., false, &moved, [20, 30], &cells)
+        );
         let mut unknown = tiles;
         unknown[1].source.tile_index = 0x00;
         let unknown = unknown.iter().collect::<Vec<_>>();
-        assert_eq!(blended_color(p, false, &g, [20,30], &unknown), color(p, false, &g, [20,30]));
+        assert_eq!(
+            blended_color(p, false, &g, [20, 30], &unknown),
+            color(p, false, &g, [20, 30])
+        );
     }
     #[test]
     fn finish_is_continuous_and_stays_on_the_source_plane() {
@@ -266,7 +344,10 @@ mod tests {
         moved.origin_z += 16.;
         for ice in [false, true] {
             let p = Vec3::new(-5., 0., 7.);
-            assert_eq!(ice_uv(p, &g, [20, 30]), ice_uv(p + Vec3::new(-8., 0., 16.), &moved, [20, 30]));
+            assert_eq!(
+                ice_uv(p, &g, [20, 30]),
+                ice_uv(p + Vec3::new(-8., 0., 16.), &moved, [20, 30])
+            );
             assert_eq!((ice_uv(p, &g, [20, 30])[1] / 100000.).round(), 8.);
             assert_eq!(
                 color(p, ice, &g, [20, 30]),

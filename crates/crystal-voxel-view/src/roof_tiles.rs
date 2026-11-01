@@ -39,7 +39,14 @@ pub(crate) fn refine_traditional(
     if !name.starts_with("violet") {
         return false;
     }
-    refine_family(mesh, first, index, name, [color[0], color[1], color[2]], true)
+    refine_family(
+        mesh,
+        first,
+        index,
+        name,
+        [color[0], color[1], color[2]],
+        true,
+    )
 }
 
 fn refine_family(
@@ -144,9 +151,10 @@ fn refine_family(
             // Identical paint across the central valley merged two tiles into
             // one broad sheet at the normal game camera distance.
             let firing = if separate_panels {
-                1.0 + ((center.x + panel as f32 * du.x * 0.5) * 17.3
-                    + center.z * 9.7).sin() * 0.025
-            } else {1.0};
+                1.0 + ((center.x + panel as f32 * du.x * 0.5) * 17.3 + center.z * 9.7).sin() * 0.025
+            } else {
+                1.0
+            };
             for y in 0..V {
                 for x in 0..U {
                     let q = [
@@ -163,9 +171,13 @@ fn refine_family(
                         let sun = Vec3::new(0.45, 0.80, 0.55).normalize();
                         let first = mesh.colors.len() - 3;
                         for (vertex, i) in t.into_iter().enumerate() {
-                            let edge = [x,x+1,x+1,x][i];
-                            let joint = if separate_panels && (edge==0 || edge==U) {0.84} else {1.0};
-                            let light = (0.60 + 0.40 * q[i].1.dot(sun).max(0.0))*joint*firing;
+                            let edge = [x, x + 1, x + 1, x][i];
+                            let joint = if separate_panels && (edge == 0 || edge == U) {
+                                0.84
+                            } else {
+                                1.0
+                            };
+                            let light = (0.60 + 0.40 * q[i].1.dot(sun).max(0.0)) * joint * firing;
                             for c in 0..3 {
                                 mesh.colors[first + vertex][c] *= light;
                             }

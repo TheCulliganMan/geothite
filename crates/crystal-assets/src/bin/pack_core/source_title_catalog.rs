@@ -10,10 +10,10 @@ use std::{
     path::Path,
 };
 
-#[path = "source_title_splash.rs"]
-mod source_title_splash;
 #[path = "source_title_credits.rs"]
 mod source_title_credits;
+#[path = "source_title_splash.rs"]
+mod source_title_splash;
 
 pub(super) struct Certificate {
     file: String,
@@ -454,14 +454,20 @@ pub(super) fn export(root: &Path, intro: Value) -> Result<()> {
     Ok(())
 }
 
-pub(super) fn export_timing_graphics(root: &Path, program: &RuntimePresentationProgram) -> Result<()> {
+pub(super) fn export_timing_graphics(
+    root: &Path,
+    program: &RuntimePresentationProgram,
+) -> Result<()> {
     for resource in &program.resources {
         if resource.kind == "graphics" && resource.path.ends_with(".lz") {
             crystal_assets::validate_compiled_runtime_file_key(&resource.path)?;
             let target = root.join("apps/web/assets").join(&resource.path);
             std::fs::create_dir_all(target.parent().context("source timing graphic parent")?)?;
-            std::fs::copy(root.join("vendor/pokecrystal").join(&resource.path), &target)
-                .with_context(|| format!("export source timing graphic {}", resource.path))?;
+            std::fs::copy(
+                root.join("vendor/pokecrystal").join(&resource.path),
+                &target,
+            )
+            .with_context(|| format!("export source timing graphic {}", resource.path))?;
         }
     }
     Ok(())

@@ -88,7 +88,16 @@ impl StreamWire {
         cells.tiles = source.cells.clone();
         cells.actors.clear();
         Self {
-            bounds: stream.bounds.iter().map(|(lo, hi)| (lo.to_array().map(f32::to_bits), hi.to_array().map(f32::to_bits))).collect(),
+            bounds: stream
+                .bounds
+                .iter()
+                .map(|(lo, hi)| {
+                    (
+                        lo.to_array().map(f32::to_bits),
+                        hi.to_array().map(f32::to_bits),
+                    )
+                })
+                .collect(),
             bank_regions: source
                 .bank_regions
                 .get()
@@ -108,7 +117,9 @@ impl StreamWire {
                     tile_height: r.tile_height.to_bits(),
                     coordinates: r.coordinates,
                     neighbors: r.neighbors,
-                    understory: r.understory_bounds.map(|p| (p.bounds.map(f32::to_bits),p.cells,p.occupied)),
+                    understory: r
+                        .understory_bounds
+                        .map(|p| (p.bounds.map(f32::to_bits), p.cells, p.occupied)),
                     coverage: r.coverage_fade,
                 })
                 .collect(),
@@ -164,14 +175,18 @@ impl StreamWire {
         if self.bounds.len() != self.recipes.len() {
             return Err("grove bounds do not match source recipes".into());
         }
-        let bounds = self.bounds.into_iter().map(|(lo,hi)| {
-            let lo = Vec3::from_array(lo.map(f32::from_bits));
-            let hi = Vec3::from_array(hi.map(f32::from_bits));
-            if !lo.is_finite() || !hi.is_finite() || lo.cmpgt(hi).any() {
-                return Err("invalid prepared grove bounds".to_string());
-            }
-            Ok((lo,hi))
-        }).collect::<Result<Vec<_>,String>>()?;
+        let bounds = self
+            .bounds
+            .into_iter()
+            .map(|(lo, hi)| {
+                let lo = Vec3::from_array(lo.map(f32::from_bits));
+                let hi = Vec3::from_array(hi.map(f32::from_bits));
+                if !lo.is_finite() || !hi.is_finite() || lo.cmpgt(hi).any() {
+                    return Err("invalid prepared grove bounds".to_string());
+                }
+                Ok((lo, hi))
+            })
+            .collect::<Result<Vec<_>, String>>()?;
         if self.recipes.len() > 65_536
             || self.ledges.len() > 65_536
             || self.shapes.len() > 262_144
@@ -232,7 +247,13 @@ impl StreamWire {
                     tile_height: f32::from_bits(r.tile_height),
                     coordinates: r.coordinates,
                     neighbors: r.neighbors,
-                    understory_bounds: r.understory.map(|(bounds,cells,occupied)| crate::understory::Plot {bounds:bounds.map(f32::from_bits),cells,occupied}),
+                    understory_bounds: r.understory.map(|(bounds, cells, occupied)| {
+                        crate::understory::Plot {
+                            bounds: bounds.map(f32::from_bits),
+                            cells,
+                            occupied,
+                        }
+                    }),
                     coverage_fade: r.coverage,
                 })
             })

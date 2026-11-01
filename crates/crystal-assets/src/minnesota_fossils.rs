@@ -76,7 +76,7 @@ pub fn build_minnesota_fossils(base: &CompiledGamePack) -> Result<CompiledGamePa
         );
     }
     let mut bluff = map(&pack, "MnR01C00R00")?;
-    add_actor(&pack, &mut bluff, "MnFossilBluff", [39, 21])?;
+    add_actor(&pack, &mut bluff, "MnFossilBluff", [26, 14])?;
     put(
         &mut bluff,
         "MnFossilBluff",
@@ -165,55 +165,27 @@ pub fn build_minnesota_fossils(base: &CompiledGamePack) -> Result<CompiledGamePa
         vec![c("jumptext", &["MnFossilDirectionsText"])],
     );
     common_text(&mut bluff);
-    for (label, lines) in [
-        (
-            "MnFossilSlabText",
-            vec![
-                "This bluff was once",
-                "the floor of a sea.",
-                "The slab holds two",
-                "fossil specimens.",
-                "Study one with me?",
-            ],
-        ),
-        (
-            "MnFossilLensChoiceText",
-            vec!["Take LENS FOSSIL?", "YES: many-eyed", "NO: spire shell"],
-        ),
-        (
-            "MnFossilLensConfirmText",
-            vec!["Choose LENS FOSSIL", "for this trip?"],
-        ),
-        (
-            "MnFossilSpireConfirmText",
-            vec!["Take SPIRE FOSSIL", "for this trip?"],
-        ),
-        (
-            "MnFossilDirectionsText",
-            vec![
-                "Bring your fossil",
-                "to our researcher",
-                "by ROCHESTER's",
-                "clinic courtyard.",
-                "Earn the CARE BADGE",
-                "and leave room for",
-                "your new friend.",
-            ],
-        ),
-        (
-            "MnFossilExchangeText",
-            vec![
-                "Your League record",
-                "secured a research",
-                "exchange. We can",
-                "offer the specimen",
-                "you left behind.",
-                "Would you like it?",
-            ],
-        ),
+    for label in [
+        "MnFossilSlabText",
+        "MnFossilLensChoiceText",
+        "MnFossilLensConfirmText",
+        "MnFossilSpireConfirmText",
+        "MnFossilDirectionsText",
     ] {
-        text(&mut bluff, label, &lines);
+        crate::authored_dialogue::install_canonical(&mut bluff, label)?;
     }
+    text(
+        &mut bluff,
+        "MnFossilExchangeText",
+        &[
+            "Your League record",
+            "secured a research",
+            "exchange. We can",
+            "offer the specimen",
+            "you left behind.",
+            "Would you like it?",
+        ],
+    );
     publish(&mut pack, bluff)?;
 
     let mut city = map(&pack, "MnRochester")?;

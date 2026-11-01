@@ -46,7 +46,9 @@ fn paint(tile: &VisualTile, images: &TerrainImageSamples) -> Option<[f32; 3]> {
     let mineral = rgb[0] * 0.2126 + rgb[1] * 0.7152 + rgb[2] * 0.0722;
     // The brightest sprite pixel includes the highlight, not the stone's
     // entire albedo. Retain its mineral tint without making every tread chalk.
-    Some(std::array::from_fn(|i| (rgb[i]*0.20+mineral*0.80)*[0.62,0.60,0.56][i]))
+    Some(std::array::from_fn(|i| {
+        (rgb[i] * 0.20 + mineral * 0.80) * [0.62, 0.60, 0.56][i]
+    }))
 }
 
 fn slab(
@@ -105,11 +107,7 @@ fn append(out: &mut SurfaceMeshData, b: [f32; 4], h: [f32; 4], unit: f32, paint:
         // Each tread meets the ramp at its uphill edge. Sampling the centre
         // left a half-riser gap under the upper landing's exposed edge.
         let t = row as f32 / 4.;
-        let lift = if flat {
-            unit * 0.045 * (1. - t)
-        } else {
-            0.
-        };
+        let lift = if flat { unit * 0.045 * (1. - t) } else { 0. };
         let heights = [nw + (sw - nw) * t + lift, ne + (se - ne) * t + lift];
         let za = n + (s - n) * row as f32 / 4.;
         let zb = n + (s - n) * (row + 1) as f32 / 4.;
@@ -136,7 +134,7 @@ pub(super) fn finish(
     cells: &[&VisualTile],
     g: &GridGeometry,
     images: &TerrainImageSamples,
-    origin: [i32;2],
+    origin: [i32; 2],
 ) {
     // Most maps have no such drawing; do not scan their submitted geometry.
     if !cells.iter().any(|tile| stair(&tile.source, 2)) {
@@ -242,7 +240,7 @@ pub(super) fn finish(
     }
     let mut removed = std::collections::HashSet::new();
     for (i, b, h, color) in plans {
-        let first=mesh.solid.positions.len();
+        let first = mesh.solid.positions.len();
         append(
             &mut mesh.solid,
             b,
@@ -250,9 +248,14 @@ pub(super) fn finish(
             g.tile_width.min(g.tile_height),
             color,
         );
-        for (p,uv) in mesh.solid.positions[first..].iter().zip(&mut mesh.solid.uvs[first..]) {
-            *uv=[88000.+(p[0]-g.origin_x+origin[0] as f32*g.tile_width)/8.,
-                -20000.-(p[2]-g.origin_z+origin[1] as f32*g.tile_height)/8.];
+        for (p, uv) in mesh.solid.positions[first..]
+            .iter()
+            .zip(&mut mesh.solid.uvs[first..])
+        {
+            *uv = [
+                88000. + (p[0] - g.origin_x + origin[0] as f32 * g.tile_width) / 8.,
+                -20000. - (p[2] - g.origin_z + origin[1] as f32 * g.tile_height) / 8.,
+            ];
         }
         removed.extend(faces[i].iter().chain(&faces[i + 1]).copied());
         mesh.authored_cells[i] = Some(LABEL);
@@ -339,7 +342,13 @@ mod tests {
         let (mut mesh, tiles, g, images) = fixture();
         let support = mesh.footing_heights.clone();
         let old_positions = mesh.textured.positions.clone();
-        finish(&mut mesh, &tiles.iter().collect::<Vec<_>>(), &g, &images, [0,0]);
+        finish(
+            &mut mesh,
+            &tiles.iter().collect::<Vec<_>>(),
+            &g,
+            &images,
+            [0, 0],
+        );
         assert_eq!(mesh.authored_cells, vec![Some(LABEL), Some(LABEL), None]);
         assert_eq!(mesh.footing_heights, support);
         assert_eq!(mesh.textured.positions, old_positions);
@@ -351,7 +360,7 @@ mod tests {
             mesh.solid
                 .uvs
                 .iter()
-                .all(|uv| uv[0]>87000. && uv[0]<90000. && uv[1]< -10000.)
+                .all(|uv| uv[0] > 87000. && uv[0] < 90000. && uv[1] < -10000.)
         );
         assert!(
             mesh.solid
@@ -361,9 +370,19 @@ mod tests {
         );
         // A complete horizontal stone edge seals against the six-unit upper
         // landing. The old centre-sampled tread stopped below this edge.
-        assert!(mesh.solid.positions.iter().any(|p|p[0]==0. && p[2]==0. && p[1]==6.));
-        assert!(mesh.solid.positions.iter().any(|p|p[0]==16. && p[2]==0. && p[1]==6.));
-        assert!(mesh.solid.positions.iter().all(|p|p[1]<=6.));
+        assert!(
+            mesh.solid
+                .positions
+                .iter()
+                .any(|p| p[0] == 0. && p[2] == 0. && p[1] == 6.)
+        );
+        assert!(
+            mesh.solid
+                .positions
+                .iter()
+                .any(|p| p[0] == 16. && p[2] == 0. && p[1] == 6.)
+        );
+        assert!(mesh.solid.positions.iter().all(|p| p[1] <= 6.));
         // Every individual tread is a closed, outward-facing volume, including
         // its buried bottom. No paper risers or open stair undersides.
         for prism in mesh.solid.indices.chunks_exact(48) {
@@ -395,23 +414,34 @@ mod tests {
 
     #[test]
     fn stone_grain_remains_fixed_when_the_viewport_origin_moves() {
-        let (mut a, tiles, g, images)=fixture();
-        let mut b=a.clone();
-        let delta=Vec3::new(-16.,0.,24.);
-        for p in &mut b.textured.positions {*p=(Vec3::from_array(*p)+delta).to_array();}
-        let shifted=GridGeometry{origin_x:g.origin_x+delta.x,origin_z:g.origin_z+delta.z,..g};
-        let cells=tiles.iter().collect::<Vec<_>>();
-        finish(&mut a,&cells,&g,&images,[17,9]);
-        finish(&mut b,&cells,&shifted,&images,[17,9]);
-        assert!(!a.solid.indices.is_empty());
-        assert_eq!(a.solid.indices,b.solid.indices);
-        assert_eq!(a.solid.uvs,b.solid.uvs);
-        for (a,b) in a.solid.colors.iter().zip(&b.solid.colors) {
-            assert!(a.iter().zip(b).all(|(a,b)|(a-b).abs()<0.0001));
+        let (mut a, tiles, g, images) = fixture();
+        let mut b = a.clone();
+        let delta = Vec3::new(-16., 0., 24.);
+        for p in &mut b.textured.positions {
+            *p = (Vec3::from_array(*p) + delta).to_array();
         }
-        assert!(a.solid.colors.iter().all(|c|c[0]<0.65 && c[1]<0.65 && c[2]<0.65));
-        for (a,b) in a.solid.positions.iter().zip(&b.solid.positions) {
-            assert!((Vec3::from_array(*a)+delta-Vec3::from_array(*b)).length()<0.0001);
+        let shifted = GridGeometry {
+            origin_x: g.origin_x + delta.x,
+            origin_z: g.origin_z + delta.z,
+            ..g
+        };
+        let cells = tiles.iter().collect::<Vec<_>>();
+        finish(&mut a, &cells, &g, &images, [17, 9]);
+        finish(&mut b, &cells, &shifted, &images, [17, 9]);
+        assert!(!a.solid.indices.is_empty());
+        assert_eq!(a.solid.indices, b.solid.indices);
+        assert_eq!(a.solid.uvs, b.solid.uvs);
+        for (a, b) in a.solid.colors.iter().zip(&b.solid.colors) {
+            assert!(a.iter().zip(b).all(|(a, b)| (a - b).abs() < 0.0001));
+        }
+        assert!(
+            a.solid
+                .colors
+                .iter()
+                .all(|c| c[0] < 0.65 && c[1] < 0.65 && c[2] < 0.65)
+        );
+        for (a, b) in a.solid.positions.iter().zip(&b.solid.positions) {
+            assert!((Vec3::from_array(*a) + delta - Vec3::from_array(*b)).length() < 0.0001);
         }
     }
 
@@ -428,7 +458,13 @@ mod tests {
                 tile.source.tile_index = 0x04;
             }
             let support = mesh.footing_heights.clone();
-            finish(&mut mesh, &tiles.iter().collect::<Vec<_>>(), &g, &images, [0,0]);
+            finish(
+                &mut mesh,
+                &tiles.iter().collect::<Vec<_>>(),
+                &g,
+                &images,
+                [0, 0],
+            );
             assert_eq!(mesh.authored_cells, vec![Some(LABEL), Some(LABEL), None]);
             assert_eq!(mesh.footing_heights, support);
             assert_eq!(mesh.solid.indices.len(), 128 * 3);
@@ -452,7 +488,13 @@ mod tests {
                 _ => images.pixels.clear(),
             }
             let indices = mesh.textured.indices.clone();
-            finish(&mut mesh, &tiles.iter().collect::<Vec<_>>(), &g, &images, [0,0]);
+            finish(
+                &mut mesh,
+                &tiles.iter().collect::<Vec<_>>(),
+                &g,
+                &images,
+                [0, 0],
+            );
             assert!(mesh.solid.indices.is_empty(), "fault {fault}");
             assert_eq!(mesh.textured.indices, indices, "fault {fault}");
         }

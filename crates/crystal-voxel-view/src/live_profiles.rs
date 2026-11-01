@@ -107,7 +107,9 @@ impl Document {
                 || usize::from(object.origin[1]) + height > 8
                 || object.tiles.iter().any(|row| row.len() != width)
                 || object.top_pixels >= height * 8
-                || object.footing_pixels.is_some_and(|h| !h.is_finite() || !(0.0..=64.0).contains(&h))
+                || object
+                    .footing_pixels
+                    .is_some_and(|h| !h.is_finite() || !(0.0..=64.0).contains(&h))
                 || !object.depth_pixels.is_finite()
                 || !(0.0..=32.0).contains(&object.depth_pixels)
                 || (object.top_pixels > 0 && object.depth_pixels == 0.0)

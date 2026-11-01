@@ -14,7 +14,9 @@ pub(crate) struct CardGroup {
 
 pub(crate) fn card_group(map_id: &str, source: &VisualTileSource) -> Option<CardGroup> {
     if source.tileset_id.as_ref() != "elite_four_room"
-        || source.subtile_column >= 4 || source.subtile_row >= 4 {
+        || source.subtile_column >= 4
+        || source.subtile_row >= 4
+    {
         return None;
     }
     match source.metatile_id {

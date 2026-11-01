@@ -38,7 +38,7 @@ impl Kind {
             // Native actor foot is (8,16); the full chair stays north of it.
             Self::Chair => ([2., 14., 0., 8.], 11.4),
             Self::Sofa => ([1., 31., 1., 15.], 11.),
-            Self::ReceptionCounter => ([0.,96.,8.,64.],8.),
+            Self::ReceptionCounter => ([0., 96., 8., 64.], 8.),
         }
     }
 }

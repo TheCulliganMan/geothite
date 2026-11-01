@@ -1,9 +1,9 @@
 use std::{env, path::PathBuf, process::Command};
 
-use anyhow::{bail, Context, Result};
-use crystal_assets::{read_loaded_verified_compiled_game_pack, AssetRoot};
-use crystal_bevy::{BevyShellConfig, BevyShellStart};
+use anyhow::{Context, Result, bail};
+use crystal_assets::{AssetRoot, read_loaded_verified_compiled_game_pack};
 use crystal_bevy::bevy_shell::runtime_supports_voxel_view;
+use crystal_bevy::{BevyShellConfig, BevyShellStart};
 use crystal_runtime::CrystalRuntime;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -60,11 +60,17 @@ fn main() -> Result<()> {
     let _trace = crystal_bevy::operation_trace::start();
     let args = parse_args(env::args().skip(1))?;
     if args.preview_doll.is_some()
-        && (args.map.as_deref() != Some("PlayersHouse2F") || args.screenshot.is_none()
-            || args.live || args.all_maps || !args.maps.is_empty()
-            || args.tile_x.is_some() || args.tile_y.is_some())
+        && (args.map.as_deref() != Some("PlayersHouse2F")
+            || args.screenshot.is_none()
+            || args.live
+            || args.all_maps
+            || !args.maps.is_empty()
+            || args.tile_x.is_some()
+            || args.tile_y.is_some())
     {
-        bail!("--preview-doll requires one PlayersHouse2F screenshot at its title spawn; omit --x/--y");
+        bail!(
+            "--preview-doll requires one PlayersHouse2F screenshot at its title spawn; omit --x/--y"
+        );
     }
     // The existing same-view capture mode can compare two actual 3D poses
     // without a visible-window readback. Normal single-view captures stay single.
@@ -78,7 +84,9 @@ fn main() -> Result<()> {
             || args.live
             || args.walk.is_some())
     {
-        bail!("same-view 3D temporal capture requires one --map and --screenshot, without --live or --walk");
+        bail!(
+            "same-view 3D temporal capture requires one --map and --screenshot, without --live or --walk"
+        );
     }
 
     if args.preview_flag.is_some()
@@ -88,10 +96,11 @@ fn main() -> Result<()> {
             || args.screenshot.is_none())
         && (args.maps.is_empty() || args.all_maps || args.output_dir.is_none())
     {
-        bail!("--preview-flag requires --map/--screenshot or an explicit --maps list/--output-dir; it seeds disposable visual fixtures");
+        bail!(
+            "--preview-flag requires --map/--screenshot or an explicit --maps list/--output-dir; it seeds disposable visual fixtures"
+        );
     }
-    if args.walk.is_some()
-        && (args.all_maps || !args.maps.is_empty() || args.screenshot.is_none())
+    if args.walk.is_some() && (args.all_maps || !args.maps.is_empty() || args.screenshot.is_none())
     {
         bail!("--walk requires a single map or save and --screenshot");
     }
@@ -170,9 +179,7 @@ fn render_single_map(
         .map(|path| runtime.load_save(path))
         .transpose()?;
     let saved_pose = match saved.as_ref().map(|state| &state.overworld) {
-        Some(crystal_runtime::core::state::OverworldMemory::Active {
-            map_name, tile, ..
-        }) => {
+        Some(crystal_runtime::core::state::OverworldMemory::Active { map_name, tile, .. }) => {
             Some((map_name.clone(), *tile))
         }
         Some(_) => bail!("--save must contain an active overworld scene"),
@@ -236,9 +243,9 @@ fn render_single_map(
         args.preview_flag,
         (
             args.preview_doll.as_ref(),
-            args.save.as_ref().map(|path| {
-                std::fs::metadata(path).and_then(|m| m.modified())
-            })
+            args.save
+                .as_ref()
+                .map(|path| { std::fs::metadata(path).and_then(|m| m.modified()) })
         )
     );
     let previous = second
@@ -278,8 +285,16 @@ fn render_single_map(
                 "Crystal Render Tester — {map} ({tile_x}, {tile_y}) — {}",
                 args.view.label()
             )),
-            render_test_screenshot: if args.view==ViewMode::Both {second.clone()} else {first.clone()},
-            render_test_second_screenshot: if args.view==ViewMode::Both {first.clone()} else {second.clone()},
+            render_test_screenshot: if args.view == ViewMode::Both {
+                second.clone()
+            } else {
+                first.clone()
+            },
+            render_test_second_screenshot: if args.view == ViewMode::Both {
+                first.clone()
+            } else {
+                second.clone()
+            },
             render_test_live: args.live,
             render_test_walk: args.walk,
             // Continue the saved clock through the production RTC path. The
@@ -288,7 +303,8 @@ fn render_single_map(
             render_test_window_size: env::var("CRYSTAL_RENDER_TEST_WINDOW_SIZE")
                 .ok()
                 .map(|size| {
-                    let (width, height) = size.split_once('x')
+                    let (width, height) = size
+                        .split_once('x')
                         .context("CRYSTAL_RENDER_TEST_WINDOW_SIZE must be WIDTHxHEIGHT")?;
                     Ok::<_, anyhow::Error>((width.parse::<u32>()?, height.parse::<u32>()?))
                 })
@@ -404,15 +420,30 @@ fn render_map_batch(
                 // restart in this process. Keep the verified immutable pack,
                 // but initialize a fresh production shell and renderer per map.
                 let mut single = parse_args([
-                    "--pack".to_owned(), args.pack.to_string_lossy().into_owned(),
-                    "--map".into(), map.clone(), "--x".into(), tile_x.to_string(),
-                    "--y".into(), tile_y.to_string(), "--view".into(), view.into(),
-                    "--hour".into(), args.hour.to_string(), "--screenshot".into(),
+                    "--pack".to_owned(),
+                    args.pack.to_string_lossy().into_owned(),
+                    "--map".into(),
+                    map.clone(),
+                    "--x".into(),
+                    tile_x.to_string(),
+                    "--y".into(),
+                    tile_y.to_string(),
+                    "--view".into(),
+                    view.into(),
+                    "--hour".into(),
+                    args.hour.to_string(),
+                    "--screenshot".into(),
                     output.to_string_lossy().into_owned(),
                 ])?;
                 single.preview_flag = args.preview_flag.clone();
-                render_single_map(single, runtime.clone(), asset_root.clone(), pack_path.clone(),
-                    false, std::time::Instant::now())?;
+                render_single_map(
+                    single,
+                    runtime.clone(),
+                    asset_root.clone(),
+                    pack_path.clone(),
+                    false,
+                    std::time::Instant::now(),
+                )?;
                 continue;
             }
             let status = Command::new(&executable)
@@ -430,7 +461,11 @@ fn render_map_batch(
                 .arg(args.hour.to_string())
                 .arg("--screenshot")
                 .arg(&output)
-                .args(args.preview_flag.iter().flat_map(|flag| ["--preview-flag", flag.as_str()]))
+                .args(
+                    args.preview_flag
+                        .iter()
+                        .flat_map(|flag| ["--preview-flag", flag.as_str()]),
+                )
                 .status()
                 .with_context(|| format!("launch batch render for {map}"))?;
             if !status.success() {
@@ -463,25 +498,46 @@ fn nearest_walkable_tile(
         let x = i16::try_from(x)?;
         let y = i16::try_from(y)?;
         let tile = crystal_runtime::core::world::map::TilePosition::new(x, y);
-        if let Ok(session)=runtime.data().overworld_session(map,tile,0) {
+        if let Ok(session) = runtime.data().overworld_session(map, tile, 0) {
             // Disposable review spawns must not overlap authored actors,
             // including those not yet loaded by the startup visibility pass.
             // Runtime movement will keep wandering actors clear afterwards.
-            if session.objects.iter().enumerate().any(|(index,object)|
-                session.object_runtime_tile_checked(index,object).is_ok_and(|position|position==tile)) {
+            if session.objects.iter().enumerate().any(|(index, object)| {
+                session
+                    .object_runtime_tile_checked(index, object)
+                    .is_ok_and(|position| position == tile)
+            }) {
                 continue;
             }
             // Session initialization also permits connection-source exceptions.
             // Perimeter review needs a standable source tile, not a wall that
             // happens to share the connection's coordinate range.
-            use crystal_runtime::core::world::collision::{can_enter_tile,is_warp_permission,sample_collision,allows_ledge_direction,PlayerTraversalState};
+            use crystal_runtime::core::world::collision::{
+                PlayerTraversalState, allows_ledge_direction, can_enter_tile, is_warp_permission,
+                sample_collision,
+            };
             use crystal_runtime::core::world::map::Direction;
-            let directions=[Direction::Down,Direction::Up,Direction::Left,Direction::Right];
-            if sample_collision(&session.map,&session.tileset,tile).is_some_and(|s|
+            let directions = [
+                Direction::Down,
+                Direction::Up,
+                Direction::Left,
+                Direction::Right,
+            ];
+            if sample_collision(&session.map, &session.tileset, tile).is_some_and(|s| {
                 !is_warp_permission(s.permission)
-                && !directions.iter().any(|&d|allows_ledge_direction(s.permission,d)))
-                && directions.into_iter().any(|d|can_enter_tile(&session.map,&session.tileset,tile,d,PlayerTraversalState::Walk)) {
-                return Ok((x,y));
+                    && !directions
+                        .iter()
+                        .any(|&d| allows_ledge_direction(s.permission, d))
+            }) && directions.into_iter().any(|d| {
+                can_enter_tile(
+                    &session.map,
+                    &session.tileset,
+                    tile,
+                    d,
+                    PlayerTraversalState::Walk,
+                )
+            }) {
+                return Ok((x, y));
             }
         }
     }
@@ -651,7 +707,9 @@ fn parse_args(values: impl IntoIterator<Item = String>) -> Result<Args> {
             }
             "--live" => live = true,
             "--preview-flag" => preview_flag = Some(next_value(&mut values, "--preview-flag")?),
-            "--preview-doll" | "--preview-big-doll" => preview_doll = Some(next_value(&mut values, &flag)?),
+            "--preview-doll" | "--preview-big-doll" => {
+                preview_doll = Some(next_value(&mut values, &flag)?)
+            }
             "--x" => tile_x = Some(next_value(&mut values, "--x")?.parse::<i16>()?),
             "--y" => tile_y = Some(next_value(&mut values, "--y")?.parse::<i16>()?),
             "--view" => view = ViewMode::parse(&next_value(&mut values, "--view")?)?,
@@ -770,24 +828,35 @@ mod tests {
     #[test]
     #[ignore = "requires the user-supplied external pack"]
     fn perimeter_fixtures_avoid_authored_actor_positions() {
-        let path=PathBuf::from(env::var_os("CRYSTAL_RENDER_TEST_PACK").expect("explicit external pack"));
-        let root=AssetRoot::new(path.parent().unwrap());
-        let loaded=read_loaded_verified_compiled_game_pack(&path).unwrap();
-        let runtime=CrystalRuntime::from_loaded_compiled_pack(&root,loaded).unwrap();
-        for (map,occupied,target) in [("OlivineLighthouse3F",(9,2),(10,2)),
-            ("OlivineLighthouse5F",(2,13),(2,15))] {
-            let (w,h)=runtime.data().saved_map_tile_bounds(map).unwrap();
-            let actor=crystal_runtime::core::world::map::TilePosition::new(occupied.0,occupied.1);
-            let old=runtime.data().overworld_session(map,actor,0).unwrap();
-            assert!(old.objects.iter().any(|object|
-                crystal_runtime::core::world::session::object_tile_position_checked(object)==Some(actor)),
-                "exercise the actual source actor that the former {map} pose overlapped");
-            let (x,y)=nearest_walkable_tile(&runtime,map,w,h,target.0,target.1).unwrap();
-            assert_ne!((x,y),occupied);
-            let tile=crystal_runtime::core::world::map::TilePosition::new(x,y);
-            let session=runtime.data().overworld_session(map,tile,0).unwrap();
-            assert!(session.objects.iter().enumerate().all(|(index,object)|
-                session.object_runtime_tile_checked(index,object).is_ok_and(|position|position!=tile)));
+        let path =
+            PathBuf::from(env::var_os("CRYSTAL_RENDER_TEST_PACK").expect("explicit external pack"));
+        let root = AssetRoot::new(path.parent().unwrap());
+        let loaded = read_loaded_verified_compiled_game_pack(&path).unwrap();
+        let runtime = CrystalRuntime::from_loaded_compiled_pack(&root, loaded).unwrap();
+        for (map, occupied, target) in [
+            ("OlivineLighthouse3F", (9, 2), (10, 2)),
+            ("OlivineLighthouse5F", (2, 13), (2, 15)),
+        ] {
+            let (w, h) = runtime.data().saved_map_tile_bounds(map).unwrap();
+            let actor =
+                crystal_runtime::core::world::map::TilePosition::new(occupied.0, occupied.1);
+            let old = runtime.data().overworld_session(map, actor, 0).unwrap();
+            assert!(
+                old.objects.iter().any(|object| {
+                    crystal_runtime::core::world::session::object_tile_position_checked(object)
+                        == Some(actor)
+                }),
+                "exercise the actual source actor that the former {map} pose overlapped"
+            );
+            let (x, y) = nearest_walkable_tile(&runtime, map, w, h, target.0, target.1).unwrap();
+            assert_ne!((x, y), occupied);
+            let tile = crystal_runtime::core::world::map::TilePosition::new(x, y);
+            let session = runtime.data().overworld_session(map, tile, 0).unwrap();
+            assert!(session.objects.iter().enumerate().all(|(index, object)| {
+                session
+                    .object_runtime_tile_checked(index, object)
+                    .is_ok_and(|position| position != tile)
+            }));
             println!("perimeter-actor-clear: {x},{y} map={map}");
         }
     }

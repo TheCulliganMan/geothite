@@ -14,23 +14,36 @@ pub(crate) const PLANT_FLOOR_TILE: u16 = 0x01;
 /// Blue patterned floor and its shaded appliance apron. The solid-black 3d
 /// tile belongs to the void separating the two rooms, never gray paving.
 pub(crate) fn floor_source(map: &str, s: &VisualTileSource) -> bool {
-    if map != ADMIN_OFFICE || s.tileset_id.as_ref() != "pokecom_center"
-        || s.subtile_column >= 4 || s.subtile_row >= 4 { return false; }
+    if map != ADMIN_OFFICE
+        || s.tileset_id.as_ref() != "pokecom_center"
+        || s.subtile_column >= 4
+        || s.subtile_row >= 4
+    {
+        return false;
+    }
     let mask: u16 = match (s.tile_index, s.metatile_id) {
         (0x11, 1) => 0xffff,
         (0x11, 2 | 9 | 0xa | 0x10 | 0x2e | 0x3b) => 0xf000,
         (0x11, 4 | 6 | 8) => 0xc000,
         (0x11, 7 | 0xc | 0x1a) => 0x3000,
-        (0x11, 0xd) => 0xf333, (0x11, 0xe | 0x22) => 0xfff3,
-        (0x11, 0x11) => 0xccc0, (0x11, 0x20) => 0xfff1,
-        (0x11, 0x21) => 0xfff8, (0x11, 0x23) => 0x8000,
-        (0x11, 0x2b) => 0xfff0, (0x11, 0x2c) => 0xccff,
+        (0x11, 0xd) => 0xf333,
+        (0x11, 0xe | 0x22) => 0xfff3,
+        (0x11, 0x11) => 0xccc0,
+        (0x11, 0x20) => 0xfff1,
+        (0x11, 0x21) => 0xfff8,
+        (0x11, 0x23) => 0x8000,
+        (0x11, 0x2b) => 0xfff0,
+        (0x11, 0x2c) => 0xccff,
         (0x11, 0x2d | 0x33) => 0x00ff,
         (1, 2 | 9 | 0xa | 0x10 | 0x2e | 0x3b) => 0x0f00,
-        (1, 4) => 0x0e00, (1, 6 | 8 | 0xd) => 0x0c00,
-        (1, 7 | 0x1a) => 0x0300, (1, 0xc) => 0x0700,
-        (1, 0xf) => 0x3000, (1, 0x20 | 0x22) => 0x000c,
-        (1, 0x21) => 0x0003, (1, 0x23) => 0x0800,
+        (1, 4) => 0x0e00,
+        (1, 6 | 8 | 0xd) => 0x0c00,
+        (1, 7 | 0x1a) => 0x0300,
+        (1, 0xc) => 0x0700,
+        (1, 0xf) => 0x3000,
+        (1, 0x20 | 0x22) => 0x000c,
+        (1, 0x21) => 0x0003,
+        (1, 0x23) => 0x0800,
         (1, 0x2b | 0x34) => 0x000f,
         _ => 0,
     };
@@ -80,16 +93,20 @@ pub(crate) fn workstation_local(map_id: &str, source: &VisualTileSource) -> Opti
 }
 
 /// Complete monitor plus the adjacent keyboard tray, including its header.
-pub(crate) fn station_local(map: &str, s: &VisualTileSource) -> Option<(u8,u8)> {
-    if let Some(p) = workstation_local(map,s) { return Some(p); }
-    if map != ADMIN_OFFICE || s.tileset_id.as_ref() != "pokecom_center" || s.subtile_row >= 3 { return None; }
+pub(crate) fn station_local(map: &str, s: &VisualTileSource) -> Option<(u8, u8)> {
+    if let Some(p) = workstation_local(map, s) {
+        return Some(p);
+    }
+    if map != ADMIN_OFFICE || s.tileset_id.as_ref() != "pokecom_center" || s.subtile_row >= 3 {
+        return None;
+    }
     let x = match s.metatile_id {
         0x36 if s.subtile_column < 2 => s.subtile_column,
-        0x37 if (2..4).contains(&s.subtile_column) => s.subtile_column-2,
+        0x37 if (2..4).contains(&s.subtile_column) => s.subtile_column - 2,
         _ => return None,
     };
-    let art = [[0x24,0x24],[0xc6,0xc7],[0xd6,0xd7]];
-    (s.tile_index == art[s.subtile_row as usize][x as usize]).then_some((x+2,s.subtile_row))
+    let art = [[0x24, 0x24], [0xc6, 0xc7], [0xd6, 0xd7]];
+    (s.tile_index == art[s.subtile_row as usize][x as usize]).then_some((x + 2, s.subtile_row))
 }
 
 /// Block $34 contains two independent 16x24 potted-plant drawings. Each is

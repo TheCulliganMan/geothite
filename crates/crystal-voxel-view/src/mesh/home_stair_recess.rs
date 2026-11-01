@@ -131,14 +131,23 @@ pub(in crate::mesh::modeled_interiors) fn append(
         let thickness = 3. * g.tile_height / 8.;
         let bounds = [0., 2. * g.tile_width, -thickness, 0.];
         let mut template = SurfaceMeshData::default();
-        let append_wall=|out:&mut SurfaceMeshData,bounds| {
+        let append_wall = |out: &mut SurfaceMeshData, bounds| {
             if map.starts_with("PlayersHouse") {
-                native_home_timber::append(out,g,bounds,donor.base_pixels*g.tile_height/8.,32.*g.tile_height/8.,[donor.column,donor.row]);
-            } else {append_kanto_house_wall(out,g,&donor,bounds);}
+                native_home_timber::append(
+                    out,
+                    g,
+                    bounds,
+                    donor.base_pixels * g.tile_height / 8.,
+                    32. * g.tile_height / 8.,
+                    [donor.column, donor.row],
+                );
+            } else {
+                append_kanto_house_wall(out, g, &donor, bounds);
+            }
         };
-        append_wall(&mut template,bounds);
+        append_wall(&mut template, bounds);
         let first = mesh.textured.positions.len();
-        append_wall(&mut mesh.textured,[w,e,back-thickness,back]);
+        append_wall(&mut mesh.textured, [w, e, back - thickness, back]);
         mesh.textured
             .cutaway_ranges
             .push(first..mesh.textured.positions.len());
