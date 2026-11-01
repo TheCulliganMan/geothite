@@ -6,8 +6,10 @@ Root Beer Lady. Do not recolor this area as winter. The native precipitation
 policy explicitly excludes these maps from snow even if a future shared art
 alias contains winter graphics. Ordinary occasional rain remains enabled.
 North Shore and Grand Marais also stay warm. The user confirmed Bemidji and
-Grand Rapids for the connected inland winter belt; that larger terrain revision
-is pending, rather than delivered by the weather effect.
+Grand Rapids for the connected inland winter belt. That complete terrain
+continuation now has a [verified combined candidate](../../revisions/reviewed-maps-v01/README.md),
+including the snowlines and Ely, now selected for local map review. The older
+verification epochs below describe this weather effect's original introduction.
 
 `plan.json` records scope and honest implementation status. Native policy lives
 in `crates/crystal-bevy/src/bevy_shell/outdoor_weather_policy.rs` and the bounded
@@ -37,6 +39,7 @@ passes. Workspace formatting still has unrelated existing differences, recorded
 in `.local/weather-workspace-format-v1002.log`. The earlier frozen executable
 does not contain that parameter-only cleanup.
 
-The larger inland winter terrain, ice/icy-grass gameplay, readable wet menus and
-battles, Continue checks and full regional travel verification remain active
-work. No completion of those features is implied by clear/rain screenshots.
+The [combined regional review](../../revisions/reviewed-maps-v01/REGIONAL-REVIEW.md)
+records the later winter/icy-grass terrain, current weather cases and river
+journey. The clear/rain screenshots alone do not establish those mechanics or
+an earned full regional campaign. Broader visual and story review remains open.

@@ -1,0 +1,397 @@
+{
+  "schema_version": 1,
+  "id": "MN_R02_WORKING_FARMYARD",
+  "map": "MnR02C00R00",
+  "parent_pack": "content-packs/minnesota-reviewed-maps-v08.crystalpack",
+  "parent_pack_sha256": "38366f43092e040d40e1084ac4437cef967d812029d4e0c9e04d160b06139df7",
+  "parent_content_hash": "c9c4af424190022ac77a1588010edc8edade235ea9fad5f6973f2a93a2e25d7d",
+  "native_module_sha256": "605b65ff576d0bce7d082932eae900d733664727ea862c5edacea037c1284af4",
+  "tileset": "mn_prairie_kanto",
+  "dimensions_metatiles": [
+    30,
+    22
+  ],
+  "source_pixels_modified": false,
+  "before_rows": [
+    "0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 65 64 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f",
+    "0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 5f 65 64 1b 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f",
+    "0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 5f 65 64 1b 0f 0f 0f 0f 0f 28 0f 0f 0f 0f 0f 0f",
+    "0f 0f 0f 0f 0f 80 80 80 2c 81 81 81 2c 1b 5f 65 64 1b 81 81 81 81 80 28 80 80 80 80 0f 0f",
+    "0f 0f 5f 80 80 38 39 80 2c 81 81 81 4c 1b 5f 65 64 1b 2c 2c 80 2c 80 28 80 80 4c 80 0f 0f",
+    "0f 0f 5f 4c 80 3c 3d 80 2c 31 2c 2c 2c 1b 5f 65 64 1b 81 81 80 80 80 28 80 4c 80 80 0f 0f",
+    "0f 0f 5f 80 40 80 31 41 2c 31 81 81 81 1b 5f 65 64 1b 2c 2c 80 2c 80 13 80 80 80 80 56 0f",
+    "0f 0f 5f 77 77 31 31 56 2c 31 81 81 81 1b 5f 65 64 1b 31 31 80 81 80 58 31 31 31 31 31 31",
+    "0f 0f 5f 74 74 80 31 80 81 81 31 2c 2c 1b 5f 65 64 1b 81 81 80 81 80 58 80 80 31 80 0f 0f",
+    "0f 0f 5f 74 74 80 31 31 81 81 31 4c 2c 1b 5f 65 64 1b 81 81 80 81 80 13 80 56 81 80 0f 0f",
+    "0f 0f 5f 80 80 80 80 80 80 80 31 80 80 1b 5f 65 64 1b 80 80 80 80 80 28 80 80 81 80 0f 0f",
+    "0f 0f 0f 77 77 77 77 77 77 77 31 77 77 77 51 51 51 51 01 0f 01 0f 0f 28 0f 0f 31 0f 0f 0f",
+    "0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 81 81 31 31 31 31 31 31 31 31 31 0f 0f 0f 0f 0f 31 0f 0f 0f",
+    "0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 81 81 0f 0f 77 77 77 77 0f 0f 31 31 81 81 81 31 31 0f 0f 0f",
+    "0f 0f 0f 0f 81 81 81 0f 0f 0f 31 31 0f 0f 5f 1d 1f 1b 0f 0f 0f 0f 01 74 31 31 31 01 01 0f",
+    "31 31 31 31 81 81 81 81 81 81 81 81 81 0f 5f 65 64 1b 0f 0f 0f 0f 5f 74 31 20 54 21 01 0f",
+    "0f 0f 56 0f 81 81 81 0f 0f 0f 0f 31 0f 4c 5f 65 64 1b 0f 0f 0f 0f 5f 01 31 37 3a 7e 01 0f",
+    "0f 0f 01 0f 0f 0f 0f 0f 0f 0f 0f 31 01 0f 5f 65 64 1b 0f 0f 0f 0f 5f 4c 31 31 31 31 01 0f",
+    "0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 5f 65 64 1b 0f 0f 0f 0f 5f 01 56 31 31 31 01 0f",
+    "0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 5f 65 64 1b 0f 0f 0f 0f 5f 81 81 01 01 01 01 0f",
+    "0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 5f 65 64 1b 0f 0f 0f 0f 0f 77 77 77 77 77 77 0f",
+    "0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 5f 65 64 1b 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f"
+  ],
+  "rows": [
+    "0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 65 64 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f",
+    "0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 5f 65 64 1b 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f",
+    "0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 5f 65 64 1b 0f 0f 0f 0f 0f 28 0f 0f 0f 0f 0f 0f",
+    "0f 0f 0f 0f 0f 80 80 80 2c 81 81 81 2c 1b 5f 65 64 1b 81 81 81 81 80 28 80 80 80 80 0f 0f",
+    "0f 0f 5f 81 81 38 39 80 2c 81 81 81 4c 1b 5f 65 64 1b 2c 2c 80 2c 80 28 80 80 4c 80 0f 0f",
+    "0f 0f 5f 4c 2c 3c 3d 80 2c 31 2c 2c 2c 1b 5f 65 64 1b 81 81 80 80 80 28 80 4c 80 80 0f 0f",
+    "0f 0f 5f 2c 40 80 31 41 2c 31 81 81 81 1b 5f 65 64 1b 2c 2c 80 2c 80 13 80 80 80 80 56 0f",
+    "0f 0f 5f 77 77 31 31 56 2c 31 81 81 81 1b 5f 65 64 1b 31 31 80 81 80 58 31 31 31 31 31 31",
+    "0f 0f 5f 74 74 77 31 77 81 81 31 2c 2c 1b 5f 65 64 1b 81 81 80 81 80 58 80 80 31 80 0f 0f",
+    "0f 0f 5f 74 2c 2c 2c 2c 81 81 31 4c 2c 1b 5f 65 64 1b 81 81 80 81 80 13 80 56 81 80 0f 0f",
+    "0f 0f 5f 81 81 2c 2c 2c 2c 2c 31 80 80 1b 5f 65 64 1b 80 80 80 80 80 28 80 80 81 80 0f 0f",
+    "0f 0f 0f 77 77 77 77 77 77 77 31 77 77 77 51 51 51 51 01 0f 01 0f 0f 28 0f 0f 31 0f 0f 0f",
+    "0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 81 81 31 31 31 31 31 31 31 31 31 0f 0f 0f 0f 0f 31 0f 0f 0f",
+    "0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 81 81 0f 0f 77 77 77 77 0f 0f 31 31 81 81 81 31 31 0f 0f 0f",
+    "0f 0f 0f 0f 81 81 81 0f 0f 0f 31 31 0f 0f 5f 1d 1f 1b 0f 0f 0f 0f 01 74 31 31 31 01 01 0f",
+    "31 31 31 31 81 81 81 81 81 81 81 81 81 0f 5f 65 64 1b 0f 0f 0f 0f 5f 74 31 20 54 21 01 0f",
+    "0f 0f 56 0f 81 81 81 0f 0f 0f 0f 31 0f 4c 5f 65 64 1b 0f 0f 0f 0f 5f 01 31 37 3a 7e 01 0f",
+    "0f 0f 01 0f 0f 0f 0f 0f 0f 0f 0f 31 01 0f 5f 65 64 1b 0f 0f 0f 0f 5f 4c 31 31 31 31 01 0f",
+    "0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 5f 65 64 1b 0f 0f 0f 0f 5f 01 56 31 31 31 01 0f",
+    "0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 5f 65 64 1b 0f 0f 0f 0f 5f 81 81 01 01 01 01 0f",
+    "0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 5f 65 64 1b 0f 0f 0f 0f 0f 77 77 77 77 77 77 0f",
+    "0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 5f 65 64 1b 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f 0f"
+  ],
+  "changed_metatiles": 17,
+  "placements": [
+    {
+      "metatile": [
+        3,
+        4
+      ],
+      "before": "80",
+      "after": "81"
+    },
+    {
+      "metatile": [
+        4,
+        4
+      ],
+      "before": "80",
+      "after": "81"
+    },
+    {
+      "metatile": [
+        4,
+        5
+      ],
+      "before": "80",
+      "after": "2c"
+    },
+    {
+      "metatile": [
+        3,
+        6
+      ],
+      "before": "80",
+      "after": "2c"
+    },
+    {
+      "metatile": [
+        5,
+        8
+      ],
+      "before": "80",
+      "after": "77"
+    },
+    {
+      "metatile": [
+        7,
+        8
+      ],
+      "before": "80",
+      "after": "77"
+    },
+    {
+      "metatile": [
+        4,
+        9
+      ],
+      "before": "74",
+      "after": "2c"
+    },
+    {
+      "metatile": [
+        5,
+        9
+      ],
+      "before": "80",
+      "after": "2c"
+    },
+    {
+      "metatile": [
+        6,
+        9
+      ],
+      "before": "31",
+      "after": "2c"
+    },
+    {
+      "metatile": [
+        7,
+        9
+      ],
+      "before": "31",
+      "after": "2c"
+    },
+    {
+      "metatile": [
+        3,
+        10
+      ],
+      "before": "80",
+      "after": "81"
+    },
+    {
+      "metatile": [
+        4,
+        10
+      ],
+      "before": "80",
+      "after": "81"
+    },
+    {
+      "metatile": [
+        5,
+        10
+      ],
+      "before": "80",
+      "after": "2c"
+    },
+    {
+      "metatile": [
+        6,
+        10
+      ],
+      "before": "80",
+      "after": "2c"
+    },
+    {
+      "metatile": [
+        7,
+        10
+      ],
+      "before": "80",
+      "after": "2c"
+    },
+    {
+      "metatile": [
+        8,
+        10
+      ],
+      "before": "80",
+      "after": "2c"
+    },
+    {
+      "metatile": [
+        9,
+        10
+      ],
+      "before": "80",
+      "after": "2c"
+    }
+  ],
+  "new_actor": {
+    "id": "MN_R02_GARDEN_GROWER",
+    "sprite": "SPRITE_GRANNY",
+    "tile": [
+      9,
+      19
+    ],
+    "approach": [
+      10,
+      19
+    ],
+    "facing": "south",
+    "role": "A working garden beside the existing farmhouse, with a useful one-time BERRY. The original route, farmhouse, shed, trainers, two caches and required grass remain."
+  },
+  "reward": {
+    "item": "BERRY",
+    "quantity": 1,
+    "event_flag": "EVENT_MN_R02_GARDEN_BERRY",
+    "requires_badge": false,
+    "requires_field_move": false,
+    "behavior": "Acknowledge the grower dialogue to receive one native Berry. Full-pocket refusal leaves the claim available; native Toss permits retry. Repeats and Continue cannot duplicate it.",
+    "text": [
+      "The shelterbelt",
+      "berries are ripe!",
+      "Take one for the",
+      "walk to Mankato."
+    ],
+    "full_text": [
+      "Your bag is full.",
+      "Come back for one."
+    ],
+    "repeat_text": [
+      "A BERRY restores",
+      "a little HP.",
+      "Keep the field",
+      "paths open."
+    ]
+  },
+  "preserved_native_actor_positions": [
+    {
+      "id": "MN_R02_T01",
+      "tile": [
+        51,
+        21
+      ]
+    },
+    {
+      "id": "MN_R02_T02",
+      "tile": [
+        23,
+        19
+      ]
+    },
+    {
+      "id": "MN_R02_T03",
+      "tile": [
+        47,
+        37
+      ]
+    },
+    {
+      "id": "MN_R02_DRAIN_KEEPER",
+      "tile": [
+        37,
+        23
+      ]
+    },
+    {
+      "id": "MN_R02_NURSERY_HAND",
+      "tile": [
+        43,
+        11
+      ]
+    },
+    {
+      "id": "MN_R02_ITEM_01",
+      "tile": [
+        25,
+        35
+      ]
+    },
+    {
+      "id": "MN_R02_ITEM_02",
+      "tile": [
+        19,
+        11
+      ]
+    }
+  ],
+  "preserved_external_connections": [
+    {
+      "direction": "east",
+      "target_map": "MnRochester",
+      "offset": -2
+    },
+    {
+      "direction": "west",
+      "target_map": "MnMankato",
+      "offset": 6
+    }
+  ],
+  "preserved_door_pairs": [
+    {
+      "index": 1,
+      "tile": [
+        11,
+        11
+      ],
+      "target": "MnR02Farmhouse",
+      "target_index": 1
+    },
+    {
+      "index": 2,
+      "tile": [
+        11,
+        12
+      ],
+      "target": "MnR02Farmhouse",
+      "target_index": 1
+    },
+    {
+      "index": 3,
+      "tile": [
+        52,
+        33
+      ],
+      "target": "MnR02ToolShed",
+      "target_index": 1
+    },
+    {
+      "index": 4,
+      "tile": [
+        52,
+        34
+      ],
+      "target": "MnR02ToolShed",
+      "target_index": 1
+    }
+  ],
+  "preserved_roads": {
+    "west": [
+      0,
+      30
+    ],
+    "east": [
+      59,
+      14
+    ]
+  },
+  "review_views": [
+    {
+      "id": "farmhouse-and-upper-crops",
+      "core": [
+        11,
+        12
+      ]
+    },
+    {
+      "id": "working-stile",
+      "core": [
+        12,
+        17
+      ]
+    },
+    {
+      "id": "garden-grower",
+      "core": [
+        10,
+        19
+      ]
+    },
+    {
+      "id": "lower-headland",
+      "core": [
+        14,
+        20
+      ]
+    },
+    {
+      "id": "original-farm-board",
+      "core": [
+        14,
+        14
+      ]
+    },
+    {
+      "id": "unchanged-bridge",
+      "core": [
+        32,
+        24
+      ]
+    }
+  ],
+  "purpose": "Replace the empty western pasture shoulder with small golden crop beds, native stake divisions and a worked-soil headland leading to a useful garden grower. Preserve the complete 30x22 early route, both actual town roads, existing original ledge and fenced drain, both full native buildings and their room returns. Existing original Minnesota trainers/encounters and story programs are authoritative; do not rebuild from the stale Johto parties in the historical R02 dossier.",
+  "status": "Unselected source proposal; native publication, new reward dispatch and production traversal/capacity/Continue remain required."
+}

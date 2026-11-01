@@ -131,3 +131,33 @@ authoring fields; only its status annotation changes from the frozen input.
 `sources.json` composes it over the latest selected regional source index.
 The shared interior reservation changes only source/proof metadata; original
 mouth, clear arrival, outside entrance and safe return coordinates stay exact.
+
+## Current selected-map replay
+
+The selected v05 continuation retains this room's complete geometry, original
+actors, programs, encounters, rewards and forced NITE palette. Twelve current
+native camera/source comparisons have zero differing pixels in
+`renders/current-r10-survey-native-1793512209712062000/`; the complete player
+sheet was inspected against the original Union Cave and Mt. Mortar references.
+The existing room remains a deliberate gallery/turn/supply/spring loop; no new
+terrain or obstacle quota was needed after this inspection.
+
+All three current exploration cases pass in
+`renders/current-r10-native-run-controller-1793512723808119000/`. They retain
+both actual stairs, both short drops and ordinary returns, the original reader,
+both rewards, full-pocket refusal/Toss/retry, both optional battle refusals and
+native PP-spending wins, exterior travel and Continue. Initial partners remain
+level48 originals. Their declared Smoke Balls support ordinary native RUN if
+current wild scaling produces a higher encounter despite Repel; the shared RUN
+helper rejects trainer battles. No party, position, flag, resource or RNG is
+edited after setup.
+
+The retained diagnostic save from an earlier failed replay proves the input
+owner was a native level49 PELLETANK battle, not a staircase collision. Starting
+from that same unedited save, the independent two-process native RUN/step/
+Continue/return/Start replay passes31 calls with empty stderr in
+`renders/current-r10-wild-return-stdio-1793512729439941000/`. This small replay
+does not substitute for the historical full2923-call cave circuit above.
+Current build, scoped formatting and all-target Bevy Clippy pass in
+`.local/current-r10-native-run-build-1793512657011192000/`. These checks establish
+local map mechanics and source fidelity, not earned regional progression.

@@ -9,7 +9,7 @@ use super::super::super::visible_field_dialog_pages;
 use super::super::authored_route_fixture::{RouteGrid, RouteSpec, position};
 use super::super::duluth_story::press as text_press;
 use super::super::winona::{at, continued, travel};
-use super::gym_eight_approach::{accept, care, road, try_road};
+use super::gym_eight_approach::{accept, care, road, town_approach, try_road};
 use super::itasca_story::report_course;
 use super::leech_shore::{play_with_move, play_with_selected_move};
 use super::{VisibleShellController, event, finish, interact, load, point, press, walk_to};
@@ -274,7 +274,12 @@ pub(super) fn signal_course() -> (AssetRoot, CrystalRuntime, VisibleShellControl
     );
     travel(&mut c, GameButton::Right, "MnGrandRapids", (0, 24));
     travel(&mut c, GameButton::Right, "MnGrandRapids", (3, 24));
-    care(&mut c, &r, "MnGrandRapids", (9, 12));
+    care(
+        &mut c,
+        &r,
+        "MnGrandRapids",
+        town_approach(&r, "MnGrandRapidsPokecenter1F"),
+    );
     walk_to(&mut c, &r, (43, 24));
     for _ in 0..8 {
         if c.snapshot().expect("checkpoint").ui.text.is_some() {
@@ -293,7 +298,7 @@ pub(super) fn signal_course() -> (AssetRoot, CrystalRuntime, VisibleShellControl
     );
     finish(&mut c);
     assert!(!event(&c, DEPOT));
-    walk_to(&mut c, &r, (27, 14));
+    walk_to(&mut c, &r, town_approach(&r, "MnGrandRapidsSurveyDepot"));
     travel(&mut c, GameButton::Up, "MnGrandRapidsSurveyDepot", (12, 17));
     interact(&mut c, &r, (11, 9));
     accept(&mut c, DEPOT);
@@ -305,7 +310,12 @@ pub(super) fn signal_course() -> (AssetRoot, CrystalRuntime, VisibleShellControl
     assert!(event(&c, DEPOT) && !event(&c, SIGNAL));
     c = continued(c, &root, &r, "northstar-earned-depot");
     walk_to(&mut c, &r, (12, 18));
-    travel(&mut c, GameButton::Down, "MnGrandRapids", (27, 14));
+    travel(
+        &mut c,
+        GameButton::Down,
+        "MnGrandRapids",
+        super::super::grand_rapids::frontage(&r, "MnGrandRapidsSurveyDepot"),
+    );
     walk_to(&mut c, &r, (43, 24));
     travel(&mut c, GameButton::Right, "MnR10C00R00", (0, 10));
     road(&mut c, &r, 10, (95, 24));

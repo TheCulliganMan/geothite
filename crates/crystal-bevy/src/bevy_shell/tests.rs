@@ -25,6 +25,17 @@ mod minnesota_starter_return;
 mod minnesota_research_access;
 #[path = "tests/native_city_ports.rs"]
 mod native_city_ports;
+#[path = "tests/mankato_terrace_pond.rs"]
+mod mankato_terrace_pond;
+
+#[path = "tests/brainerd_lakeside_loop.rs"]
+mod brainerd_lakeside_loop;
+
+#[path = "tests/r16_seed_bank.rs"]
+mod r16_seed_bank;
+
+#[path = "tests/r02_working_farmyard.rs"]
+mod r02_working_farmyard;
 #[path = "tests/northstar_dispatch_course.rs"]
 mod northstar_dispatch_course;
 #[cfg(feature = "location-tester")]
@@ -251,6 +262,8 @@ mod earned_rod_visits;
 mod earned_route_machines;
 #[path = "tests/grand_rapids.rs"]
 mod grand_rapids;
+#[path = "tests/grand_rapids_depot_quay.rs"]
+mod grand_rapids_depot_quay;
 #[path = "tests/haulage_rock.rs"]
 mod haulage_rock;
 #[path = "tests/interior_layouts.rs"]
@@ -398,6 +411,8 @@ mod prairie_grass_rustle;
 mod prairie_story;
 #[path = "tests/rochester.rs"]
 mod rochester;
+#[path = "tests/rochester_care_green.rs"]
+mod rochester_care_green;
 #[path = "tests/rochester_earned.rs"]
 mod rochester_earned;
 #[path = "tests/ryans_house.rs"]
@@ -536,3 +551,9 @@ mod minnesota_daycares;
 
 #[path = "tests/dialogue_public_roads.rs"]
 mod dialogue_public_roads;
+
+#[path = "tests/r05_wooded_terraces.rs"]
+mod r05_wooded_terraces;
+
+#[path = "tests/r06_pine_fork.rs"]
+mod r06_pine_fork;

@@ -19,6 +19,18 @@ const TOWN: &str = "MnGrandRapids";
 const FISHER: &str = "MN_EXTRA_GR_BANK_FISHER";
 const WON: &str = "EVENT_MN_EXTRA_GR_BANK_FISHER";
 
+fn fisher_approach(r: &CrystalRuntime) -> (i16, i16) {
+    let actor = r.data().maps[TOWN]
+        .objects
+        .iter()
+        .find(|actor| actor.script == FISHER)
+        .expect("actual riverfront angler");
+    (
+        i16::try_from(actor.x).expect("angler x"),
+        i16::try_from(actor.y + 1).expect("clear southern approach"),
+    )
+}
+
 #[test]
 #[ignore = "requires the completed external riverfront pack via CRYSTAL_WINONA_TEST_PACK"]
 fn gr_riverfront_controller_native_animation_retains_source_frames_at_all_times() {
@@ -174,25 +186,34 @@ fn gr_riverfront_controller_optional_fisher_refusal_real_pp_victory_continue_and
     let mut c = fixture(&root, &r, true, true);
     c.save(out.join("initial-local-town.crystalsave"))
         .expect("explicit initial local setup");
+    let depot_sign = r.data().maps[TOWN]
+        .events
+        .bg_events
+        .iter()
+        .find(|event| event.script == "MN_GR_DEPOT_SIGN")
+        .expect("current depot marker");
     // Walk the complete service and waterfront circuits using real collision.
     for point in [
-        (9, 12),
-        (23, 12),
-        (27, 14),
-        (39, 16),
+        super::grand_rapids::frontage(&r, "MnGrandRapidsPokecenter1F"),
+        (
+            i16::try_from(depot_sign.x + 1).expect("sign x"),
+            i16::try_from(depot_sign.y).expect("sign y"),
+        ),
+        super::grand_rapids::frontage(&r, "MnGrandRapidsSurveyDepot"),
+        super::grand_rapids::frontage(&r, "MnGrandRapidsMart"),
         (38, 23),
         (16, 25),
         (20, 31),
         (31, 33),
         (26, 33),
-        (26, 36),
+        fisher_approach(&r),
     ] {
         walk(&mut c, &r, point);
     }
     no_story_grant(&c);
     assert!(!event(&c, WON));
     let party = c.snapshot().expect("party before offer").party;
-    talk(&mut c, GameButton::Left);
+    talk(&mut c, GameButton::Up);
     choice(&mut c, false);
     finish(&mut c);
     assert!(!event(&c, WON));
@@ -200,7 +221,7 @@ fn gr_riverfront_controller_optional_fisher_refusal_real_pp_victory_continue_and
     assert_eq!(c.shell.shell.session().state().money, 5000);
     c = continued(&mut c, &root, &r, out.join("fisher-declined.crystalsave"));
     let before = c.snapshot().expect("before actual battle");
-    talk(&mut c, GameButton::Left);
+    talk(&mut c, GameButton::Up);
     choice(&mut c, true);
     assert!(super::rochester_earned::try_battle(&mut c, &r, FISHER, WON));
     finish(&mut c);
@@ -224,7 +245,7 @@ fn gr_riverfront_controller_optional_fisher_refusal_real_pp_victory_continue_and
         "actual trainer prize"
     );
     c = continued(&mut c, &root, &r, out.join("fisher-won.crystalsave"));
-    talk(&mut c, GameButton::Left);
+    talk(&mut c, GameButton::Up);
     finish(&mut c);
     assert!(c.snapshot().expect("repeat conversation").battle.is_none());
     walk(&mut c, &r, (26, 38));
@@ -266,7 +287,11 @@ fn gr_riverfront_controller_pier_walks_without_surf_and_retains_move_and_badge_d
         c.save(out.join("denied-at-pier.crystalsave"))
             .expect("actual denied field action");
         walk(&mut c, &r, (26, 33));
-        walk(&mut c, &r, (9, 12));
+        walk(
+            &mut c,
+            &r,
+            super::grand_rapids::frontage(&r, "MnGrandRapidsPokecenter1F"),
+        );
     }
 }
 

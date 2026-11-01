@@ -3,7 +3,7 @@ use std::collections::BTreeMap;
 
 use crystal_core::input::GameButton;
 use crystal_core::models::Dv;
-use crystal_runtime::{RuntimeBattleKind, RuntimeShellPhase};
+use crystal_runtime::{CrystalRuntime, RuntimeBattleKind, RuntimeShellPhase};
 
 use super::super::{
     BevyShellConfig, BevyShellStart, VisibleShellController,
@@ -15,6 +15,28 @@ use super::northstar_earned_gyms;
 use super::winona::{at, continued, finish, load, opening, press, travel};
 
 const DELIVERED: &str = "EVENT_MN_DELIVERED_ROCHESTER_PARCEL";
+pub(super) fn gym_front(runtime: &CrystalRuntime) -> (i16, i16) {
+    let town = &runtime.data().maps["MnRochester"];
+    let door = town
+        .events
+        .warps
+        .iter()
+        .find(|warp| warp.target_map_constant == "MN_ROCHESTER_GYM")
+        .expect("actual installed Rochester Gym door");
+    let passive = town
+        .events
+        .warps
+        .iter()
+        .find(|warp| warp.index == door.index + 1)
+        .expect("paired exterior Gym return");
+    assert_eq!(passive.target_map_constant, "MN_ROCHESTER");
+    assert_eq!(passive.x, door.x);
+    assert_eq!(passive.y, door.y + 1);
+    (
+        i16::try_from(passive.x).expect("native Gym x"),
+        i16::try_from(passive.y).expect("native Gym y"),
+    )
+}
 fn delivered(c: &VisibleShellController) -> bool {
     c.shell
         .shell
@@ -221,7 +243,7 @@ pub(super) fn delivery() -> (
     // Preview the real room before delivery. The earlier room permits a direct
     // leader refusal; the revised room first presents its closed lane and guide.
     // Its separate parcel guard is retained by the local prerequisite cases.
-    indoor_walk(&mut c, &r, (30, 24));
+    indoor_walk(&mut c, &r, gym_front(&r));
     let selected = northstar_earned_gyms::selected(&r);
     let arrival = if selected {
         northstar_earned_gyms::arrival(&r, 1)
@@ -241,10 +263,10 @@ pub(super) fn delivery() -> (
     assert!(!delivered(&c));
     assert!(!c.shell.shell.session().state().badges.johto[0]);
     if selected {
-        northstar_earned_gyms::leave(&mut c, &r, 1, "MnRochester", (30, 24));
+        northstar_earned_gyms::leave(&mut c, &r, 1, "MnRochester", gym_front(&r));
     } else {
         indoor_walk(&mut c, &r, (6, 18));
-        travel(&mut c, GameButton::Down, "MnRochester", (30, 24));
+        travel(&mut c, GameButton::Down, "MnRochester", gym_front(&r));
     }
     indoor_walk(&mut c, &r, (15, 8));
     travel(&mut c, GameButton::Up, "MnRochesterPokecenter1F", (10, 13));
@@ -506,7 +528,7 @@ fn rochester_gym_native_trainers_badge_tm_both_city_returns_and_continue() {
     );
     for x in [6, 7] {
         indoor_walk(&mut c, &r, (x, 18));
-        travel(&mut c, GameButton::Down, "MnRochester", (30, 24));
+        travel(&mut c, GameButton::Down, "MnRochester", gym_front(&r));
         if x == 6 {
             travel(&mut c, GameButton::Up, "MnRochesterGym", (6, 17));
         }

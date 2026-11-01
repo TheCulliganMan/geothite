@@ -5,7 +5,43 @@ use std::collections::BTreeMap;
 use anyhow::{Context, Result};
 use crystal_assets::AssetRoot;
 
-use super::{Palette, load_tileset_palette_bank};
+use super::{
+    Palette, inland_winter_render, load_shared_tileset_palette_bank, load_tileset_palette_bank,
+};
+
+/// Preserve a native palette's clock-dependent background on selected glyphs
+/// of a mixed snow/green tileset. Palette-zero pixel indices remain unchanged.
+pub(super) fn load_native_backgrounds(
+    root: &AssetRoot,
+    tileset: &str,
+    time: &str,
+) -> Result<BTreeMap<usize, [u8; 3]>> {
+    let path = root
+        .runtime_assets()
+        .join(format!("data/tilesets/{tileset}_native_backgrounds.json"));
+    if !crate::runtime_asset_exists(&path) {
+        return Ok(BTreeMap::new());
+    }
+    let addresses: BTreeMap<usize, u8> =
+        serde_json::from_str(&crate::read_runtime_asset_to_string(path)?)
+            .context("native background palette addresses")?;
+    let bank = load_shared_tileset_palette_bank(root, time)?
+        .context("mixed seasonal art requires the native clock bank")?;
+    addresses
+        .into_iter()
+        .map(|(glyph, palette)| {
+            anyhow::ensure!(
+                glyph < 256 && palette < 8,
+                "native background address out of range"
+            );
+            Ok((
+                glyph,
+                bank.get(usize::from(palette))
+                    .context("native background palette missing")?[0],
+            ))
+        })
+        .collect()
+}
 
 pub(super) fn is_prairie(tileset: &str) -> bool {
     matches!(tileset, "mn_prairie_kanto" | "mn_prairie_headwaters")
@@ -20,7 +56,7 @@ pub(super) fn is_winter(tileset: &str) -> bool {
             | "mn_winter_gunflint"
             | "mn_ely_snow"
             | "mn_international_falls"
-    )
+    ) || inland_winter_render::source(tileset).is_some()
 }
 
 // The native neutral background supplies the clock's light color. Relative to

@@ -50,6 +50,10 @@ impl MetatileRenderFlags {
                         }),
                         foreground: tokens[0] == "FLOOR"
                             && tokens[1] == "FLOOR"
+                            && !super::inland_winter_render::is_cleared_cliff_floor(
+                                &tileset.tileset_id,
+                                block as u16,
+                            )
                             && tokens[2..4].iter().all(|token| {
                                 token == "WALL" || super::priority_collision_token(token)
                             }),
@@ -127,6 +131,7 @@ mod tests {
                 assert_eq!(tokens.len(), 4);
                 let foreground = tokens[0] == "FLOOR"
                     && tokens[1] == "FLOOR"
+                    && !super::super::inland_winter_render::is_cleared_cliff_floor(id, block)
                     && tokens[2..4].iter().all(|token| {
                         token == "WALL" || super::super::priority_collision_token(token)
                     });
@@ -148,6 +153,48 @@ mod tests {
             }
         }
         assert!(checked > 1_000, "exercise the production collision catalog");
+    }
+
+    #[test]
+    fn clearing_south_cliff_grass_does_not_turn_the_floor_into_a_building_eave() {
+        let collision = ["FLOOR", "FLOOR", "WALL", "WALL"]
+            .map(str::to_owned)
+            .to_vec();
+        for (id, block) in [
+            ("mn_winter_iron_descent", 0x88),
+            ("mn_iron_descent_thaw", 0xd0),
+            ("mn_iron_descent_thaw", 0xd3),
+            ("mn_iron_descent_thaw", 0xd6),
+        ] {
+            let tileset = RuntimeTilesetCatalogSnapshot {
+                tileset_id: id.into(),
+                collision: BTreeMap::from([(format!("{block:02x}"), collision.clone())]),
+                palette_map: Vec::new(),
+            };
+            let flags = MetatileRenderFlags::default();
+            for y in 0..2 {
+                for x in 0..4 {
+                    assert_eq!(
+                        flags
+                            .resolve(&tileset, block as usize + 1, block, x, y)
+                            .unwrap(),
+                        (false, false),
+                        "cleared playable upper floor {id}:{block:02x}"
+                    );
+                }
+            }
+            // A normal native facade keeps its existing foreground behavior.
+            let ordinary = RuntimeTilesetCatalogSnapshot {
+                tileset_id: "johto".into(),
+                ..tileset
+            };
+            assert_eq!(
+                MetatileRenderFlags::default()
+                    .resolve(&ordinary, block as usize + 1, block, 0, 1)
+                    .unwrap(),
+                (true, true)
+            );
+        }
     }
 
     #[test]

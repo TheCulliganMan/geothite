@@ -96,7 +96,10 @@ def scene(art, pack, tileset, width, height, blocks, actors, derived=None, archi
 
 def native_room(module, pack, archive=None, native_origin=False):
     a = module['attributes']
-    group = a['time_of_day'] or 'day'
+    group = a['time_of_day']
+    if group is None and (a['environment'] or '').lower() == 'cave':
+        group = {'PALETTE_NITE': 'nite', 'PALETTE_DARK': 'dark'}.get(a['palette'])
+    group = group or 'day'
     if native_origin:
         if group in {'dark', 'darkness'}:
             group = 'dark'

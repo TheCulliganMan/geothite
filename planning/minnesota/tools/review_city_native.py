@@ -20,6 +20,33 @@ from review_passage_native import actors, digest, write
 ROOT = Path(__file__).resolve().parents[3]
 
 
+def native_camera_center(pack, module, x, y):
+    """Match connection_composite_viewport_origin's 20 by 18 tile clamp.
+
+    Render tiles are eight source pixels; authored walking tiles contain two.
+    The wider source crop below retains a halo around this actual camera.
+    """
+    attr = module['attributes']
+    width, height = attr['width'] * 4, attr['height'] * 4
+    left, top, right, bottom = 0, 0, width, height
+    for connection in attr['connections']:
+        target = pack['data']['maps'].get(connection['target_map'])
+        if target is None:
+            continue
+        tw, th = target['attributes']['width'] * 4, target['attributes']['height'] * 4
+        offset = connection['offset'] * 4
+        origins = {'north': (offset, -th), 'south': (offset, height),
+                   'west': (-tw, offset), 'east': (width, offset)}
+        if connection['direction'].lower() not in origins:
+            continue
+        ox, oy = origins[connection['direction'].lower()]
+        left, top = min(left, ox), min(top, oy)
+        right, bottom = max(right, ox + tw), max(bottom, oy + th)
+    sx = min(max(x * 2 - 10, left), max(right - 20, left))
+    sy = min(max(y * 2 - 9, top), max(bottom - 18, top))
+    return (sx + 10) * 8, (sy + 9) * 8
+
+
 def native_scene_crop(art, module, scene, box):
     """Include the active map's repeated native border outside its extent."""
     left, top, right, bottom = box
@@ -114,6 +141,8 @@ def main():
     for name in ['pack','binary','views','output']:
         parser.add_argument('--'+name,type=Path,required=True)
     parser.add_argument('--resume',action='store_true')
+    parser.add_argument('--hour',type=int,choices=range(10,18),default=12,
+                        help='Explicit daytime fixture hour; weather remains enabled.')
     args = parser.parse_args()
     pack_path,binary,out = args.pack.resolve(),args.binary.resolve(),args.output.resolve()
     views = json.loads(args.views.read_text()); pack = load_pack(pack_path)
@@ -123,13 +152,15 @@ def main():
     if old:
         assert old['pack_sha256'] == digest(pack_path) and old['binary_sha256'] == digest(binary)
         assert old['views_sha256'] == digest(args.views)
+        assert old.get('hour',12) == args.hour
     private = ROOT/'.local'/f'city-native-{os.getpid()}'
     shutil.copy2(binary,private)
     party_species = os.environ.get(
         'CRYSTAL_RENDER_TEST_PARTY_SPECIES',
         'CINDORE' if 'CINDORE' in pack['data']['pokemon'] else 'TOTODILE')
     report = dict(pack=str(pack_path),pack_sha256=digest(pack_path),binary=str(binary),binary_sha256=digest(private),
-                  views_sha256=digest(args.views),fixture=f'Explicit local placement with {party_species}, south-facing, hour12. No progression claim.',
+                  views_sha256=digest(args.views),hour=args.hour,
+                  fixture=f'Explicit local placement with {party_species}, south-facing, hour{args.hour}. No progression claim.',
                   captures=[],personally_visually_reviewed=False)
     env = dict(os.environ,CRYSTAL_RENDER_TEST_HEADLESS='1',CRYSTAL_RENDER_TEST_CAPTURE_TARGET='image',
                CRYSTAL_RENDER_TEST_WINDOW_SIZE='640x576',CRYSTAL_PREVIEW_MUTE='1',
@@ -150,7 +181,7 @@ def main():
             folder = out/label; folder.mkdir(exist_ok=args.resume)
             png = folder/'production.png'
             cmd = [str(private),'--pack',str(pack_path),'--map',name,'--x',str(x),'--y',str(y),
-                   '--view','2d','--hour','12','--screenshot',str(png)]
+                   '--view','2d','--hour',str(args.hour),'--screenshot',str(png)]
             if old:
                 previous = next(v for v in old['captures'] if v['id'] == label)
                 assert digest(png) == previous['production_sha256']
@@ -162,7 +193,8 @@ def main():
             actual = render_stage(Image.open(png),'convert',folder,'production','RGB')
             assert actual.size == (640,576)
             scene = cached[name].copy(); scene.alpha_composite(oriented_sprite(pack,'SPRITE_CHRIS','south'),(x*16,y*16))
-            box = (x*16-256,y*16-192,x*16+256,y*16+192)
+            cx,cy = native_camera_center(pack,module,x,y)
+            box = (cx-256,cy-192,cx+256,cy+192)
             foreground_pixels = priority_scene(pack,module,scene,terrain[name],box)
             crop = native_scene_crop(art, module, scene, box)
             save_render(crop, folder/'source512-with-native-border.png')
@@ -181,6 +213,7 @@ def main():
             raw = list((folder/'.render-archive'/png.name).glob('gpu-readback-*.json'))
             assert raw,'retain actual raw GPU capture'
             report['captures'].append(dict(id=label,map=name,core=[x,y],command=cmd,production_sha256=digest(png),
+                camera_center_source_pixels=[cx,cy],
                 pixel_mismatches=best,compared_pixels=640*576,consistent_water14_phase=matched,
                 source_foreground_pixels_over_actors=foreground_pixels,
                 raw_gpu_descriptors=[str(path.relative_to(out)) for path in raw]))

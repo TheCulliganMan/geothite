@@ -18,6 +18,7 @@ from PIL import Image
 
 from inland_winter_preview_art import apply_alias
 from render_archive import save_render
+from review_selection_lineage import require_selected_ancestor
 from render_reference import SourceArt, load_pack, npc_palette_pack
 from review_passage_native import actors
 
@@ -39,9 +40,7 @@ def main():
     plan = json.loads(args.plan.read_text())
     assert plan['schema_version'] == 1
     world = json.loads(Path('planning/minnesota/world.json').read_text())
-    selected = world['active_local_review_revision']
-    assert selected == plan['selected_parent_revision'], 'active lineage changed; review and rebind the proposal'
-    assert sha(Path(world[selected]['pack']).read_bytes()) == plan['selected_parent_sha256']
+    require_selected_ancestor(world, plan['selected_parent_revision'], plan['selected_parent_sha256'])
     source_path = Path(plan['source_parent_pack'])
     assert sha(source_path.read_bytes()) == plan['source_parent_sha256'], 'source candidate changed'
     pack = load_pack(source_path)
@@ -95,7 +94,9 @@ def main():
     receipt = {'status': 'SOURCE_PROPOSAL_REQUIRES_VISUAL_REVIEW',
                'plan': str(args.plan), 'plan_sha256': sha(args.plan.read_bytes()),
                'source_candidate': str(source_path), 'source_candidate_sha256': plan['source_parent_sha256'],
-               'selected_parent_revision': selected, 'map_count': len(changed),
+               'selected_parent_revision': plan['selected_parent_revision'],
+               'active_selection_revision': world['active_local_review_revision'],
+               'map_count': len(changed),
                'compositions': recipes, 'all_original_map_rows_and_collision_exact': True,
                'all_other_maps_complete_exact': True, 'all_modules_except_tileset_exact': True,
                'no_pack_serialized': True, 'new_ice_quadrants': 0,

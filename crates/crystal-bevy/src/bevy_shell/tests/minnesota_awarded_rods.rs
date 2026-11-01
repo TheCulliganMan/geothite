@@ -3,6 +3,7 @@
 mod dry_walk;
 use crystal_core::input::GameButton;
 use crystal_core::models::Dv;
+use crystal_core::world::movement::MovementMode;
 use crystal_runtime::CrystalRuntime;
 
 use super::super::{
@@ -12,6 +13,28 @@ use super::super::{
 use super::interior_life::{collision, fixture, load, talk};
 use super::r10_gallery::{continue_save, settle};
 use super::winona::press;
+
+fn early_access(c: &mut VisibleShellController) {
+    assert_eq!(c.shell.shell.session().state().badges.johto, [false; 8]);
+    let snapshot = c.snapshot().expect("ordinary early fishing access");
+    assert_eq!(snapshot.overworld.mode, MovementMode::Normal);
+    assert!(snapshot.party.slots.iter().all(|slot| {
+        slot.pokemon
+            .moves
+            .iter()
+            .all(|m| !matches!(m.name.as_str(), "CUT" | "SURF" | "WATERFALL"))
+    }));
+}
+
+fn checkpoint(c: &mut VisibleShellController, name: &str) {
+    if let Some(folder) = std::env::var_os("CRYSTAL_EARLY_FISHING_REVIEW_DIR") {
+        let folder = std::path::PathBuf::from(folder);
+        std::fs::create_dir_all(&folder).expect("retained early fishing checkpoints");
+        let path = folder.join(format!("{name}.crystalsave"));
+        assert!(!path.exists(), "preserve every played fishing checkpoint");
+        c.save(path).expect("save actual early fishing progress");
+    }
+}
 
 fn shore(c: &mut VisibleShellController, r: &CrystalRuntime) -> ((i16, i16), GameButton) {
     let here = c.snapshot().expect("actual guru-house return").overworld;
@@ -138,6 +161,8 @@ fn minnesota_awarded_rods_native_gifts_pack_casts_encounters_and_continue() {
         state.sync_party_from_storage();
         mark_runtime_snapshot_dirty(&mut c.shell);
         // No bag, party, position, progression, HP/PP or RNG writes afterward.
+        early_access(&mut c);
+        checkpoint(&mut c, &format!("{rod}-before-gift"));
         assert_eq!(
             c.shell
                 .shell
@@ -161,6 +186,8 @@ fn minnesota_awarded_rods_native_gifts_pack_casts_encounters_and_continue() {
         let (bank, facing) = shore(&mut c, &runtime);
         walk_to_shore(&mut c, &runtime, bank);
         press(&mut c, facing);
+        early_access(&mut c);
+        checkpoint(&mut c, &format!("{rod}-awarded-bank"));
         let mut encountered = false;
         for _ in 0..64 {
             use_awarded_rod(&mut c, rod);
@@ -211,6 +238,7 @@ fn minnesota_awarded_rods_native_gifts_pack_casts_encounters_and_continue() {
             "awarded {rod} must select a native fish through ordinary RNG"
         );
         settle(&mut c, "native fishing escape");
+        early_access(&mut c);
         assert_eq!(
             c.shell
                 .shell
@@ -238,5 +266,7 @@ fn minnesota_awarded_rods_native_gifts_pack_casts_encounters_and_continue() {
         let here = c.snapshot().expect("continued fishing bank").overworld;
         assert_eq!((here.tile.x, here.tile.y), bank);
         assert_eq!(here.map_name, reached_map);
+        early_access(&mut c);
+        checkpoint(&mut c, &format!("{rod}-continued-bank"));
     }
 }

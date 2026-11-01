@@ -55,3 +55,20 @@ All nine complete headless native frames match the source at the same position, 
 Affected-crate all-target Clippy and owned Rust formatting pass. Full workspace formatting retains unrelated differences beginning at `offset-allocator/src/lib.rs:408`. Audio verification checks all 377 programs' PCM hashes, frame counts and loop ranges. The touched rooms' encounters/fishing, regional trainer references and active evolutions pass the original Minnesota roster policy audit; unrelated inherited old LAKE/SHORE references on other maps remain outside this delta.
 
 The initial partners, eight badges/lighthouse progress, positions, Repel and bag-capacity setup are declared local QA fixtures. They do not prove earned endgame access or campaign completion. The broader map and cave improvement goal remains active.
+
+## Current selected-map review
+
+The current fourteen-cave inventory and subsequent detailed Voyageurs review are
+recorded in [CAVE-REVIEW.md](../../revisions/reviewed-maps-v01/CAVE-REVIEW.md).
+Both complete room arrays remain exact in the selected v05 continuation.
+Three current v04 native cases pass both floors, all rewards/services, original
+ladder/exit returns, full-pocket retry and Continue in
+`renders/current-voyageurs-ice-play-1793509092044545000/`. Nine matched native
+frames have zero differing pixels in
+`renders/current-voyageurs-ice-pixels-1793509062981563000/`; both floor sheets
+were inspected with the actual forced night palette and coherent animation.
+The local navigation fixture supplies original partners and a Smoke Ball, then
+uses only production input. Its helper permits native RUN after an ordinary
+encounter; the successful full-journey log contains no wild encounter. This
+current check does not claim an earned regional journey or a fresh stdio course
+through these floors. Existing source geometry is retained after inspection.

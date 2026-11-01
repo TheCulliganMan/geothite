@@ -1,0 +1,42 @@
+[
+  {
+    "map": "MnMankato",
+    "id": "upper-court",
+    "core": [
+      16,
+      14
+    ]
+  },
+  {
+    "map": "MnMankato",
+    "id": "shop-court",
+    "core": [
+      33,
+      22
+    ]
+  },
+  {
+    "map": "MnMankato",
+    "id": "west-bank",
+    "core": [
+      31,
+      26
+    ]
+  },
+  {
+    "map": "MnMankato",
+    "id": "south-walk",
+    "core": [
+      36,
+      32
+    ]
+  },
+  {
+    "map": "MnMankato",
+    "id": "east-arrival",
+    "core": [
+      40,
+      18
+    ]
+  }
+]

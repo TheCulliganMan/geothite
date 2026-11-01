@@ -25,6 +25,17 @@ def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def frontage(pack, room):
+    maps = pack['data']['maps']
+    constant = maps[room]['attributes']['map_constant']
+    warps = maps[TOWN]['events']['warps']
+    door, = [w for w in warps if w['target_map_constant'] == constant]
+    outside, = [w for w in warps if w['index'] == door['index'] + 1]
+    assert outside['target_map_constant'] == maps[TOWN]['attributes']['map_constant']
+    assert (outside['x'], outside['y']) == (door['x'], door['y'] + 1)
+    return outside['x'], outside['y']
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     for name in ['pack', 'client', 'saves', 'inspector', 'output']:
@@ -32,6 +43,12 @@ def main():
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
     pack = load_pack(args.pack)
+    town = pack['data']['maps'][TOWN]
+    depot_sign, = [s for s in town['events']['bg_events']
+                   if s['script'] == 'MN_GR_DEPOT_SIGN']
+    fisher, = [o for o in town['objects']
+               if o['object_identifier'] == 'MN_EXTRA_GR_BANK_FISHER']
+    fisher_approach = fisher['x'], fisher['y'] + 1
     identity = pack['identity']
     idfile = args.output / 'modpack-id.txt'
     idfile.write_text(identity['runtime_modpack_id'])
@@ -67,14 +84,18 @@ def main():
                 if case == 'town-refusal':
                     client.at(TOWN, 6, 24)
                     before = client.status()
-                    for point in [(9, 12), (23, 12), (27, 14), (39, 16),
-                                  (38, 23), (16, 25), (20, 31), (31, 33), (26, 36)]:
+                    for point in [frontage(pack, 'MnGrandRapidsPokecenter1F'),
+                                  (depot_sign['x'] + 1, depot_sign['y']),
+                                  frontage(pack, 'MnGrandRapidsSurveyDepot'),
+                                  frontage(pack, 'MnGrandRapidsMart'),
+                                  (38, 23), (16, 25), (20, 31), (31, 33),
+                                  fisher_approach]:
                         walk(client, pack, point)
-                    client.press('left')
+                    client.press('up')
                     client.press('a')
                     choose(client, False)
                     finish(client)
-                    client.at(TOWN, 26, 36)
+                    client.at(TOWN, *fisher_approach)
                     assert client.status()['money'] == before['money']
                     shutil.copy2(saved, directory / 'actual-declined.crystalsave')
                     walk(client, pack, (26, 38))
@@ -103,7 +124,8 @@ def main():
                         if bite:
                             assert client.status()['mode'] == 'wildbattle'
                             native = inspect(saved)
-                            slots = pack['data']['fishing']['groups']['FISHGROUP_MN_SHORE']['rod_tables']['OLD_ROD']['slots']
+                            group = town['attributes']['fishing_group']
+                            slots = pack['data']['fishing']['groups'][group]['rod_tables']['OLD_ROD']['slots']
                             assert any('WILD=' + slot['species'] + ' ' in native for slot in slots)
                             shutil.copy2(saved, directory / 'actual-native-fish.crystalsave')
                             escape_wild(client)

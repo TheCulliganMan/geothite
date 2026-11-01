@@ -1,5 +1,10 @@
 # Boundary Waters Safari Preserve
 
+For the locally selected expedition and actual native trainer-back
+battles, use [current integration](../revisions/boundary-safari-runtime-v01/CURRENT-INTEGRATION.md).
+It preserves free story travel and green Boundary Waters. Older dimensions,
+closed-admission epochs and cliff-hop reviews below remain history.
+
 The historical terrain and hospitality baseline was published in the ignored **450-map** `content-packs/minnesota-boundary-waters.crystalpack`: one continuous **48×40-metatile preserve** in four clipped native chunks, plus the actual **5×4 Root Beer Cabin**. All five production-controller cases pass, including the cabin door/both carpets/passive returns/Continue, outside Dorothy services, grassy portages, Surf seams/barriers and closed admission. Seven selected asset/core-warp tests and all 377 audio checks also pass. **Expedition admission remains closed in the selected pack. Native runtime components now exist, with production-controller and visual acceptance still pending as detailed below.** The optional preserve remains separate from the free 32×24 [Boundary Waters basecamp story contract](../towns/MnBoundaryWaters.json); these fixtures do not claim earned regional progression.
 
 The user’s latest direction makes water the primary geography: **mostly connected lakes with grass and pines around them, including real portages**. The experience follows navigable lake narrows, pine-lined coves, grassy shore pockets and low islands. It is not a broad dry route with decorative ponds. Current rangers truthfully announce closed expeditions and charge nothing. Future admission/return services and **Safari Ball / Bait / Rock / Run** encounters, with neither Pokémon attacking, are the remaining gameplay goal. There is **no ordinary trainer gauntlet or substitute ordinary wild table inside**. Canoe is the visual theme; water travel uses the existing native **Surf** permission and movement system. No new boat controller, free HM bypass or painted-water floor is implied.

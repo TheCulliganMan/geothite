@@ -1,0 +1,82 @@
+[
+  {
+    "id": "upper-switchback",
+    "map": "MnR05C00R00",
+    "core": [
+      20,
+      28
+    ]
+  },
+  {
+    "id": "upper-grass-approach",
+    "map": "MnR05C00R00",
+    "core": [
+      16,
+      36
+    ]
+  },
+  {
+    "id": "upper-cave-and-return",
+    "map": "MnR05C00R00",
+    "core": [
+      31,
+      29
+    ]
+  },
+  {
+    "id": "middle-switchback",
+    "map": "MnR05C00R01",
+    "core": [
+      24,
+      14
+    ]
+  },
+  {
+    "id": "middle-trainer-fork",
+    "map": "MnR05C00R01",
+    "core": [
+      31,
+      16
+    ]
+  },
+  {
+    "id": "middle-return-trail",
+    "map": "MnR05C00R01",
+    "core": [
+      37,
+      25
+    ]
+  },
+  {
+    "id": "great-ball-grass-pocket",
+    "map": "MnR05C00R00",
+    "core": [
+      37,
+      20
+    ]
+  },
+  {
+    "id": "upper-west-rock-setback",
+    "map": "MnR05C00R00",
+    "core": [
+      17,
+      18
+    ]
+  },
+  {
+    "id": "middle-west-rock-setback",
+    "map": "MnR05C00R01",
+    "core": [
+      16,
+      9
+    ]
+  },
+  {
+    "id": "middle-connected-rim",
+    "map": "MnR05C00R01",
+    "core": [
+      25,
+      17
+    ]
+  }
+]

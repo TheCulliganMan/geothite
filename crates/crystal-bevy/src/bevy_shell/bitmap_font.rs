@@ -573,6 +573,8 @@ fn load_tileset_art(
     let palette_bank = load_tileset_palette_bank(asset_root, tileset_id, time_of_day)?;
     let foregrounds =
         seasonal_palette::load_foregrounds(asset_root, tileset_id, palette_bank.as_deref())?;
+    let backgrounds =
+        seasonal_palette::load_native_backgrounds(asset_root, tileset_id, time_of_day)?;
     let renderable_tile_count = source_tile_count.max(palette_map.len()).max(1);
     let mut tile_handles = Vec::with_capacity(renderable_tile_count);
     let mut priority_tile_handles = Vec::with_capacity(renderable_tile_count);
@@ -583,11 +585,12 @@ fn load_tileset_art(
         let vram_bank = (palette_value >> 3) & 0x01;
         let source_tile_index =
             resolve_tileset_tile_index(source_tile_count, tile_index, vram_bank);
-        let resolved_palette = tile_foreground::resolve(
+        let resolved_palette = tile_foreground::resolve_with_background(
             tile_index,
             palette_index,
             palette_bank.as_deref(),
             &foregrounds,
+            &backgrounds,
         );
         let palette = resolved_palette.as_ref();
         let mut data = vec![0_u8; SOURCE_TILE_SIZE * SOURCE_TILE_SIZE * 4];
@@ -661,7 +664,10 @@ fn load_tileset_art(
         tileset_id,
         palette_map,
         palette_bank.as_ref(),
-        &foregrounds,
+        tile_foreground::Overrides {
+            foregrounds: &foregrounds,
+            backgrounds: &backgrounds,
+        },
         &tile_handles,
         images,
     )?;
@@ -731,7 +737,7 @@ fn load_common_tileset_animations(
     tileset_id: &str,
     palette_map: &[u8],
     palette_bank: Option<&Vec<Palette>>,
-    foregrounds: &BTreeMap<usize, [[u8; 3]; 3]>,
+    overrides: tile_foreground::Overrides<'_>,
     tile_handles: &[Handle<Image>],
     images: &mut Assets<Image>,
 ) -> Result<HashMap<usize, TilesetAnimatedTile>> {
@@ -777,22 +783,40 @@ fn load_common_tileset_animations(
         _ => winter_render_behavior::animation_source(tileset_id),
     };
     if FLOWER_TILESETS.contains(&animation_source) {
-        let palette = tileset_animation_palette(FLOWER_TILE, palette_map, palette_bank);
+        let palette = tileset_animation_palette(FLOWER_TILE, palette_map, palette_bank)
+            .copied()
+            .map(|mut colors| {
+                if let Some(background) = overrides.backgrounds.get(&FLOWER_TILE) {
+                    colors[0] = *background;
+                }
+                colors
+            });
         let mut frames = Vec::with_capacity(2);
         for name in ["cgb_1.2bpp", "cgb_2.2bpp"] {
             frames.extend(load_2bpp_animation_frames(
                 &root.join("flower").join(name),
                 1,
-                palette,
+                palette.as_ref(),
                 images,
             )?);
         }
         animated.insert(FLOWER_TILE, sequential_tileset_animation(frames, 60, 0));
     }
     if WATER_TILESETS.contains(&animation_source) {
-        let palette = tileset_animation_palette(WATER_TILE, palette_map, palette_bank);
-        let frames =
-            load_2bpp_animation_frames(&root.join("water/water.2bpp"), 4, palette, images)?;
+        let palette = tileset_animation_palette(WATER_TILE, palette_map, palette_bank)
+            .copied()
+            .map(|mut colors| {
+                if let Some(background) = overrides.backgrounds.get(&WATER_TILE) {
+                    colors[0] = *background;
+                }
+                colors
+            });
+        let frames = load_2bpp_animation_frames(
+            &root.join("water/water.2bpp"),
+            4,
+            palette.as_ref(),
+            images,
+        )?;
         // ASM/TypeScript: ((wTileAnimationTimer / 11) >> 1) & 3.
         animated.insert(WATER_TILE, sequential_tileset_animation(frames, 22, 0));
     }
@@ -970,11 +994,9 @@ fn load_common_tileset_animations(
             scrolled_tileset_animation(vertical_source, false, 3, 19, 16, images)?,
         );
     }
-    let authored_path = asset_root
-        .runtime_assets()
-        .join("data/tilesets")
-        .join(format!("{tileset_id}_animations.json"));
-    if crate::runtime_asset_exists(&authored_path) {
+    if let Some(authored_path) =
+        winter_render_behavior::authored_animation_path(asset_root, tileset_id)
+    {
         let clips: BTreeMap<u8, AuthoredTileAnimation> =
             serde_json::from_str(&crate::read_runtime_asset_to_string(&authored_path)?)
                 .context("parse authored ambient tile animation")?;
@@ -990,11 +1012,12 @@ fn load_common_tileset_animations(
                     .context("authored animation palette")?
                     & 7,
             );
-            let palette = tile_foreground::resolve(
+            let palette = tile_foreground::resolve_with_background(
                 usize::from(tile),
                 palette_index,
                 palette_bank.map(Vec::as_slice),
-                foregrounds,
+                overrides.foregrounds,
+                overrides.backgrounds,
             );
             let frames = decode_2bpp_animation_frames(
                 clip.frames.as_flattened(),

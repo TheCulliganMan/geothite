@@ -107,3 +107,10 @@ Ely source. Preserve the new title/intro resources, rebuild the Ely candidate
 on that exact selected parent, and rerun the pack-bound acceptance checks
 before selecting. The verification above describes the retained Iron-parent
 candidate only.
+
+## Later winter integration
+
+The scoped pine town is now rebased and verified on the combined Itasca/winter
+parent. Use [WINTER-INTEGRATION.md](WINTER-INTEGRATION.md) for the latest
+unselected child, exact build inputs, native/controller evidence and connected
+regional atlas. The older accepted pack above remains historical evidence.

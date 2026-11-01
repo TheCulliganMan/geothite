@@ -15,6 +15,77 @@ const HAUL: &str = "EVENT_MN_IRON_HAUL_PRESSURE_OFF";
 const VENT: &str = "EVENT_MN_IRON_VENT_PRESSURE_OFF";
 
 #[test]
+#[ignore = "requires reviewed Haulage child and fresh CRYSTAL_HAULAGE_CLEARANCE_REVIEW_DIR; local fixture only"]
+fn haulage_rock_clearance_controller_stair_shoulders_boulder_faces_and_continue() {
+    let out = PathBuf::from(
+        std::env::var_os("CRYSTAL_HAULAGE_CLEARANCE_REVIEW_DIR").expect("fresh output"),
+    );
+    assert!(!out.exists());
+    std::fs::create_dir_all(&out).expect("review folder");
+    let (root, r) = load();
+    assert_eq!(r.data().maps[ROOM].blocks[2 * 18 + 4], 0x1d);
+    assert_eq!(r.data().maps[ROOM].blocks[3 * 18 + 4], 0x0d);
+    let mut c = interior_life::fixture(&root, &r, ROOM, (10, 10));
+    let state = c.shell.shell.session_mut().state_mut();
+    assert!(
+        state.storage.party.add_pokemon(
+            r.data()
+                .create_pokemon("CINDORE", 55, Dv::from_non_hp(8, 9, 8, 9))
+                .expect("declared native local QA partner")
+        )
+    );
+    state.sync_party_from_storage();
+    state.repel_steps_remaining = 250;
+    state.active_repel_item = Some("MAX_REPEL".into());
+    mark_runtime_snapshot_dirty(&mut c.shell);
+    c.save(out.join("initial-stair.crystalsave"))
+        .expect("initial fixture");
+    assert!(!event(&c, HAUL) && !event(&c, VENT));
+    for y in [9, 8, 7] {
+        travel(&mut c, GameButton::Up, ROOM, (10, y));
+    }
+    c.save(out.join("upper-stair.crystalsave"))
+        .expect("reached upper landing");
+    travel(&mut c, GameButton::Left, ROOM, (9, 7));
+    travel(&mut c, GameButton::Up, ROOM, (9, 6));
+    press(&mut c, GameButton::Up);
+    at(&mut c, ROOM, (9, 6));
+    travel(&mut c, GameButton::Left, ROOM, (8, 6));
+    press(&mut c, GameButton::Up);
+    at(&mut c, ROOM, (8, 6));
+    c.save(out.join("boulder-clearance.crystalsave"))
+        .expect("actual boulder refusal");
+    c = VisibleShellController::load_save(
+        root,
+        r.clone(),
+        out.join("boulder-clearance.crystalsave"),
+        None,
+    )
+    .expect("production Continue at the reached boulder");
+    at(&mut c, ROOM, (8, 6));
+    press(&mut c, GameButton::Up);
+    at(&mut c, ROOM, (8, 6));
+    travel(&mut c, GameButton::Down, ROOM, (8, 7));
+    travel(&mut c, GameButton::Down, ROOM, (8, 8));
+    press(&mut c, GameButton::Down);
+    at(&mut c, ROOM, (8, 8));
+    travel(&mut c, GameButton::Right, ROOM, (9, 8));
+    press(&mut c, GameButton::Down);
+    at(&mut c, ROOM, (9, 8));
+    travel(&mut c, GameButton::Up, ROOM, (9, 7));
+    travel(&mut c, GameButton::Right, ROOM, (10, 7));
+    for y in [8, 9, 10] {
+        travel(&mut c, GameButton::Down, ROOM, (10, y));
+    }
+    assert!(!event(&c, HAUL) && !event(&c, VENT));
+    c.save(out.join("returned-stair.crystalsave"))
+        .expect("ordinary stair return");
+    press(&mut c, GameButton::Start);
+    assert!(c.shell.start_menu_cursor.is_some());
+    press(&mut c, GameButton::B);
+}
+
+#[test]
 #[ignore = "requires CRYSTAL_WINONA_TEST_PACK and fresh CRYSTAL_HAULAGE_ROCK_REVIEW_DIR; local fixture only"]
 fn haulage_rock_controller_guards_pressure_network_all_five_pairs_and_continue() {
     let out =

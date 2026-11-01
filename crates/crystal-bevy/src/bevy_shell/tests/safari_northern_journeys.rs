@@ -1,8 +1,5 @@
 //! Northern portage choices and every remaining cliff, reached from paid entry.
 
-use std::cmp::Reverse;
-use std::collections::{BTreeMap, BinaryHeap};
-
 use crystal_core::input::GameButton;
 use crystal_core::systems::safari::SafariPhase;
 use crystal_core::world::movement::MovementMode;
@@ -17,70 +14,6 @@ fn launch_from_basecamp(c: &mut VisibleShellController, grid: &LakeGrid) {
     admit(c);
     travel(c, grid, (3, 90), false);
     launch(c, (3, 89));
-}
-
-// Include native down-hop candidates when minimizing grass. The planner may
-// overestimate legal approaches to a ledge; actual controller input below
-// must still execute every chosen edge, including the two-tile hop.
-fn least_grass_path(grid: &LakeGrid, from: Point, to: Point) -> Vec<Point> {
-    let mut costs = BTreeMap::from([(from, (0usize, 0usize))]);
-    let mut previous = BTreeMap::from([(from, from)]);
-    let mut pending = BinaryHeap::from([Reverse(((0usize, 0usize), from))]);
-    while let Some(Reverse((cost, at))) = pending.pop() {
-        if costs.get(&at) != Some(&cost) {
-            continue;
-        }
-        if at == to {
-            break;
-        }
-        let (x, y) = at;
-        let mut nexts = vec![(x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)];
-        if grid.kind(at) == "HOP_DOWN" {
-            nexts.push((x, y + 2));
-        }
-        for next in nexts {
-            if grid.blocked.contains(&next)
-                || !matches!(grid.kind(next), "FLOOR" | "TALL_GRASS" | "HOP_DOWN")
-            {
-                continue;
-            }
-            let candidate = (
-                cost.0 + usize::from(grid.kind(next) == "TALL_GRASS"),
-                cost.1 + 1,
-            );
-            if costs.get(&next).is_none_or(|old| candidate < *old) {
-                costs.insert(next, candidate);
-                previous.insert(next, at);
-                pending.push(Reverse((candidate, next)));
-            }
-        }
-    }
-    assert!(
-        previous.contains_key(&to),
-        "ordinary/ledge path {from:?}->{to:?}"
-    );
-    let mut path = vec![to];
-    while path.last().copied() != Some(from) {
-        path.push(previous[path.last().expect("grass path tail")]);
-    }
-    path.reverse();
-    path
-}
-
-fn hop_down(c: &mut VisibleShellController, landing: Point) {
-    release_wild(c);
-    let from = global(c);
-    assert_eq!(landing, (from.0, from.1 + 2));
-    let before = active(c).steps_remaining;
-    for _ in 0..8 {
-        if global(c) == landing {
-            break;
-        }
-        press(c, GameButton::Down);
-        assert_ne!(global(c), (from.0, from.1 + 1));
-    }
-    assert_eq!(global(c), landing);
-    assert_eq!(active(c).steps_remaining, before - 1);
 }
 
 fn read_marker(c: &mut VisibleShellController, target: Point, name: &str, checkpoint: &str) {
@@ -265,32 +198,6 @@ fn safari_paid_northern_portages_pocket_and_connected_arm_choices() {
                 before - u16::try_from(water_steps).expect("bounded paddle")
             );
             save(&mut c, &format!("{}-paddle-alternative", case.name));
-            if case.name == "northwind-portage" {
-                step(&mut c, case.far_land);
-                let route = least_grass_path(&grid, case.far_land, case.near_land);
-                assert_eq!(route.len() - 1, 38);
-                assert_eq!(
-                    route
-                        .iter()
-                        .skip(1)
-                        .filter(|p| grid.kind(**p) == "TALL_GRASS")
-                        .count(),
-                    1
-                );
-                let before = active(&mut c).steps_remaining;
-                for tile in route.into_iter().skip(1) {
-                    let from = global(&mut c);
-                    if tile == (from.0, from.1 + 2) {
-                        hop_down(&mut c, tile);
-                    } else {
-                        step(&mut c, tile);
-                    }
-                }
-                assert_eq!(active(&mut c).steps_remaining, before - 38);
-                release_wild(&mut c);
-                save(&mut c, "northwind-drier-ledge-return");
-                launch(&mut c, case.near_water);
-            }
             retire(
                 &mut c,
                 &grid,
@@ -346,130 +253,83 @@ fn safari_paid_northern_portages_pocket_and_connected_arm_choices() {
     }
 }
 
-struct Cliff {
-    name: &'static str,
-    bank: (Point, Point),
-    upper: Point,
-    hop: Point,
-    landing: Point,
-    return_steps: usize,
-    return_grass: usize,
-    return_bank: (Point, Point),
-    ranger_approach: Point,
-    ranger: Point,
-}
-
+// These are current native cave12 flights in global 16px walking coordinates.
+// The old high-cliff HOP_DOWN cells were deliberately retired, not shortcuts
+// to restore. Every trip begins at the actual ranger and pays for admission.
 #[test]
-#[ignore = "requires enabled CRYSTAL_INTERIOR_PACK Safari review"]
-fn safari_paid_remaining_cliffs_have_real_hops_climbs_and_remote_returns() {
+#[ignore = "requires enabled Safari on the current repaired preserve terrain"]
+fn safari_paid_five_native_stairs_keep_cliff_faces_closed_and_remote_returns() {
+    use super::ledges_and_exit::blocked;
+
     let cases = [
-        Cliff {
-            name: "granite-cliff",
-            bank: ((120, 43), (119, 43)),
-            upper: (107, 31),
-            hop: (107, 32),
-            landing: (107, 34),
-            return_steps: 11,
-            return_grass: 0,
-            return_bank: ((120, 43), (119, 43)),
-            ranger_approach: (115, 36),
-            ranger: (115, 35),
-        },
-        Cliff {
-            name: "northwind-upper",
-            bank: ((75, 33), (76, 33)),
-            upper: (93, 17),
-            hop: (93, 18),
-            landing: (93, 20),
-            return_steps: 11,
-            return_grass: 3,
-            return_bank: ((120, 43), (119, 43)),
-            ranger_approach: (115, 36),
-            ranger: (115, 35),
-        },
-        Cliff {
-            name: "northwind-lower",
-            bank: ((75, 33), (76, 33)),
-            upper: (83, 25),
-            hop: (83, 26),
-            landing: (83, 28),
-            return_steps: 27,
-            return_grass: 6,
-            return_bank: ((120, 43), (119, 43)),
-            ranger_approach: (115, 36),
-            ranger: (115, 35),
-        },
-        Cliff {
-            name: "eagle-point",
-            bank: ((93, 97), (94, 97)),
-            upper: (101, 79),
-            hop: (101, 80),
-            landing: (101, 82),
-            return_steps: 15,
-            return_grass: 1,
-            return_bank: ((93, 97), (94, 97)),
-            ranger_approach: (103, 100),
-            ranger: (103, 99),
-        },
+        ("palisade", (40, 58), (35, 58), ((36, 68), (36, 67))),
+        ("northwind-upper", (96, 18), (93, 18), ((75, 33), (76, 33))),
+        ("northwind-lower", (90, 26), (83, 26), ((75, 33), (76, 33))),
+        (
+            "granite-cliff",
+            (110, 32),
+            (107, 32),
+            ((120, 43), (119, 43)),
+        ),
+        ("eagle-point", (106, 80), (101, 80), ((93, 97), (94, 97))),
     ];
-    for case in cases {
+    for (name, (x, y), closed_face, bank) in cases {
         let (root, runtime, mut c) = controller_fixture();
         let grid = LakeGrid::new(&runtime);
+        assert!(!grid.cells.values().any(|kind| kind.starts_with("HOP_")));
         launch_from_basecamp(&mut c, &grid);
-        travel(&mut c, &grid, case.bank.0, true);
-        step(&mut c, case.bank.1);
-        travel(&mut c, &grid, case.upper, false);
-        save(&mut c, &format!("{}-upper-view", case.name));
-        step(&mut c, case.hop);
-        hop_down(&mut c, case.landing);
-        release_wild(&mut c);
-        save(&mut c, &format!("{}-landed", case.name));
+        travel(&mut c, &grid, bank.0, true);
+        step(&mut c, bank.1);
+        travel(&mut c, &grid, closed_face, false);
+        assert_eq!(grid.kind((closed_face.0, closed_face.1 + 1)), "WALL");
+        blocked(&mut c, GameButton::Down);
+        save(&mut c, &format!("{name}-closed-cliff"));
+        let above = (x + 1, y - 1);
+        let below = (x + 1, y + 2);
+        travel(&mut c, &grid, below, false);
+        let before = active(&mut c).steps_remaining;
+        step(&mut c, (x + 1, y + 1));
+        assert_eq!(grid.kind((x, y + 1)), "WALL");
+        blocked(&mut c, GameButton::Left);
+        step(&mut c, (x + 1, y));
+        step(&mut c, above);
+        assert_eq!(active(&mut c).steps_remaining, before - 3);
+        save(&mut c, &format!("{name}-upper-stair"));
         c = continue_save(root.clone(), runtime.clone(), &mut c);
         let before = active(&mut c).steps_remaining;
-        for _ in 0..4 {
-            press(&mut c, GameButton::Up);
-            assert_eq!(global(&mut c), case.landing);
-            assert_eq!(active(&mut c).steps_remaining, before);
-        }
-        assert_eq!(
-            grid.path(case.landing, case.upper, false).len() - 1,
-            case.return_steps
-        );
-        assert!(travel(&mut c, &grid, case.upper, false) >= case.return_grass);
-        assert_eq!(
-            active(&mut c).steps_remaining,
-            before - u16::try_from(case.return_steps).expect("bounded cliff return")
-        );
-        save(&mut c, &format!("{}-climbed-back", case.name));
-        if case.name == "granite-cliff" {
+        step(&mut c, (x + 1, y));
+        step(&mut c, (x + 1, y + 1));
+        blocked(&mut c, GameButton::Left);
+        step(&mut c, below);
+        assert_eq!(active(&mut c).steps_remaining, before - 3);
+        save(&mut c, &format!("{name}-lower-stair-return"));
+        if name == "granite-cliff" {
             travel(&mut c, &grid, (115, 42), false);
             read_marker(&mut c, (116, 42), "GRANITE BAY CAMP", "granite-camp-marker");
-        } else if case.name == "eagle-point" {
+        } else if name == "eagle-point" {
             travel(&mut c, &grid, (103, 94), false);
             read_marker(&mut c, (104, 94), "QUIET ISLAND CAMP", "quiet-camp-marker");
         }
-        let return_bank = if case.bank != case.return_bank {
-            // Descend the east shoulder rather than repeating the west-bank
-            // approach; Granite Bay's ranger finishes the northern lake loop.
-            travel(&mut c, &grid, (97, 33), false);
-            launch(&mut c, (98, 33));
-            Some(case.return_bank)
+        travel(&mut c, &grid, bank.1, false);
+        launch(&mut c, bank.0);
+        let (return_bank, approach, ranger) = if name == "eagle-point" {
+            (((93, 97), (94, 97)), (103, 100), (103, 99))
         } else {
-            None
+            (((120, 43), (119, 43)), (115, 36), (115, 35))
         };
         retire(
             &mut c,
             &grid,
             &runtime,
-            return_bank,
-            case.ranger_approach,
-            case.ranger,
-            case.name,
+            Some(return_bank),
+            approach,
+            ranger,
+            name,
         );
         c = continue_save(root, runtime, &mut c);
         assert!(
             c.snapshot()
-                .expect("cliff return Continue")
+                .expect("actual returned Continue")
                 .safari
                 .is_none()
         );

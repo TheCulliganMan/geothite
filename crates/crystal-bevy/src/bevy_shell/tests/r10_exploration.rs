@@ -15,12 +15,26 @@ use super::winona::{at, finish, travel};
 const ROOM: &str = "MnR10Cave1F";
 
 fn step(c: &mut VisibleShellController, button: GameButton, target: (i16, i16)) {
+    if c.snapshot()
+        .expect("native stair input owner")
+        .battle
+        .is_some()
+    {
+        super::rochester::flee(c);
+    }
     let start = c
         .snapshot()
         .expect("before native stair step")
         .overworld
         .tile;
     for _ in 0..8 {
+        if c.snapshot()
+            .expect("native stair encounter")
+            .battle
+            .is_some()
+        {
+            super::rochester::flee(c);
+        }
         press(c, button);
         let position = c.snapshot().expect("native stair step").overworld.tile;
         if (position.x, position.y) == target {
@@ -28,11 +42,39 @@ fn step(c: &mut VisibleShellController, button: GameButton, target: (i16, i16)) 
         }
         assert_eq!(position, start, "unexpected stair movement");
     }
-    at(c, ROOM, target);
+    stopped_traversal(c, "stair", target);
+}
+
+fn stopped_traversal(c: &mut VisibleShellController, context: &str, target: (i16, i16)) -> ! {
+    let snapshot = c.snapshot().expect("stopped native traversal");
+    if let Some(folder) = std::env::var_os("CRYSTAL_R10_EXPLORATION_REVIEW_DIR") {
+        let folder = PathBuf::from(folder).join("stopped-traversal");
+        std::fs::create_dir_all(&folder).expect("retain stopped native traversal state");
+        let file = folder.join(format!("{context}-{}-{}.crystalsave", target.0, target.1));
+        assert!(
+            !file.exists(),
+            "preserve every stopped traversal checkpoint"
+        );
+        c.save(file).expect("save actual stopped traversal input");
+    }
+    panic!(
+        "native {context} to {target:?} stopped: phase={:?}, overworld={:?}, battle={:?}, ui={:?}",
+        snapshot.phase, snapshot.overworld, snapshot.battle, snapshot.ui
+    );
 }
 
 fn walk(c: &mut VisibleShellController, r: &CrystalRuntime, target: (i16, i16)) {
     for _ in 0..1024 {
+        if c.snapshot()
+            .expect("native cave input owner")
+            .battle
+            .is_some()
+        {
+            // Current wild scaling can produce an encounter above the local
+            // companion's level despite Repel. RUN cannot skip a trainer.
+            super::rochester::flee(c);
+            continue;
+        }
         if c.shell.shell.session().state().repel_steps_remaining == 0
             && c.shell
                 .shell
@@ -60,7 +102,7 @@ fn walk(c: &mut VisibleShellController, r: &CrystalRuntime, target: (i16, i16)) 
             }
         }
     }
-    at(c, ROOM, target);
+    stopped_traversal(c, "walk", target);
 }
 
 fn output(name: &str) -> PathBuf {
@@ -84,13 +126,13 @@ fn setup(root: &AssetRoot, r: &CrystalRuntime, point: (i16, i16)) -> VisibleShel
     let mut c = fixture(root, r, ROOM, point);
     let state = c.shell.shell.session_mut().state_mut();
     for species in ["VOYAGEAR", "FORTIGARD", "MUDMENDER", "HAULGEIST"] {
-        assert!(
-            state.storage.party.add_pokemon(
-                r.data()
-                    .create_pokemon(species, 48, Dv::from_non_hp(8, 9, 8, 9))
-                    .expect("original Minnesota geometry/battle partner")
-            )
-        );
+        let mut partner = r
+            .data()
+            .create_pokemon(species, 48, Dv::from_non_hp(8, 9, 8, 9))
+            .expect("original Minnesota geometry/battle partner");
+        // Declared local navigation fixture; later encounters use native RUN.
+        partner.item = Some("SMOKE_BALL".into());
+        assert!(state.storage.party.add_pokemon(partner));
     }
     state.sync_party_from_storage();
     state.repel_steps_remaining = 250;

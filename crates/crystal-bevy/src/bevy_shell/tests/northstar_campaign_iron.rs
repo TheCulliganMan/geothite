@@ -12,7 +12,7 @@ use super::super::super::visible_field_dialog_pages;
 use super::super::northstar_earned_gyms;
 use super::super::rochester_earned::{checkout, try_battle};
 use super::super::winona::{at, continue_in_place, finish, load, press, travel};
-use super::gym_eight_approach::{accept, care, road};
+use super::gym_eight_approach::{accept, care, road, town_approach};
 use super::northstar_campaign_pine::pine;
 use super::northstar_campaign_review::boost;
 use super::{VisibleShellController, event, interact, walk_to};
@@ -186,7 +186,12 @@ fn mine(c: &mut VisibleShellController, r: &CrystalRuntime, root: &AssetRoot) {
     road(c, r, 9, (127, 24));
     travel(c, GameButton::Right, "MnGrandRapids", (0, 24));
     travel(c, GameButton::Right, "MnGrandRapids", (3, 24));
-    care(c, r, "MnGrandRapids", (9, 12));
+    care(
+        c,
+        r,
+        "MnGrandRapids",
+        town_approach(r, "MnGrandRapidsPokecenter1F"),
+    );
     walk_to(c, r, (43, 24));
     for _ in 0..8 {
         if c.snapshot().expect("custody gate").ui.text.is_some() {
@@ -205,7 +210,7 @@ fn mine(c: &mut VisibleShellController, r: &CrystalRuntime, root: &AssetRoot) {
     );
     finish(c);
     assert!(!event(c, DEPOT));
-    walk_to(c, r, (27, 14));
+    walk_to(c, r, town_approach(r, "MnGrandRapidsSurveyDepot"));
     travel(c, GameButton::Up, "MnGrandRapidsSurveyDepot", (12, 17));
 }
 
@@ -219,7 +224,12 @@ fn handover(c: &mut VisibleShellController, r: &CrystalRuntime, root: &AssetRoot
         continue_in_place(c, root, r, "campaign-depot-handover");
     }
     walk_to(c, r, (12, 18));
-    travel(c, GameButton::Down, "MnGrandRapids", (27, 14));
+    travel(
+        c,
+        GameButton::Down,
+        "MnGrandRapids",
+        super::super::grand_rapids::frontage(r, "MnGrandRapidsSurveyDepot"),
+    );
     walk_to(c, r, (43, 24));
     travel(c, GameButton::Right, "MnR10C00R00", (0, 10));
     road(c, r, 10, (95, 24));

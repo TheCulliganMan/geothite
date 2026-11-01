@@ -1,5 +1,11 @@
 # Boundary Waters capture expedition: native implementation
 
+The latest [current-map integration](CURRENT-INTEGRATION.md) rebases this feature
+onto the complete winter/Ely/Inner Basin/Haulage continuation and verifies the
+current native stairs instead of the retired high-cliff jumps. Its exact pack,
+rebuild/source index, paid and free journeys, captures and limits are recorded
+there. The older review epochs below remain historical evidence.
+
 The preserve remains closed to paid admission in the selected game pack. This
 revision implements the native core, pack-bound habitats, staged fee/warp and
 return transactions, movement accounting and replayable capture commands.

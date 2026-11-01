@@ -15,6 +15,14 @@ use super::{
     mark_runtime_snapshot_dirty, point, press, solve_puzzle, walk_to,
 };
 
+pub(super) fn town_approach(r: &CrystalRuntime, room: &str) -> (u16, u16) {
+    let (x, y) = super::super::grand_rapids::frontage(r, room);
+    (
+        u16::try_from(x).expect("native town approach x"),
+        u16::try_from(y).expect("native town approach y"),
+    )
+}
+
 const FOREMAN: &str = "EVENT_MN_DEPOT_FOREMAN_DEFEATED";
 const METER: &str = "EVENT_MN_MINE_INSTRUMENT_RECOVERED";
 const DEPOT: &str = "EVENT_MN_DEPOT_CLEARED";
@@ -252,7 +260,12 @@ fn gym_eight_approach_controller_earns_meter_handover_road_and_harbor_badge_then
     road(&mut c, &r, 9, (127, 24));
     travel(&mut c, GameButton::Right, "MnGrandRapids", (0, 24));
     travel(&mut c, GameButton::Right, "MnGrandRapids", (3, 24));
-    care(&mut c, &r, "MnGrandRapids", (9, 12));
+    care(
+        &mut c,
+        &r,
+        "MnGrandRapids",
+        town_approach(&r, "MnGrandRapidsPokecenter1F"),
+    );
     walk_to(&mut c, &r, (43, 24));
     for _ in 0..8 {
         if c.snapshot().expect("east checkpoint").ui.text.is_some() {
@@ -275,7 +288,7 @@ fn gym_eight_approach_controller_earns_meter_handover_road_and_harbor_badge_then
         !event(&c, DEPOT),
         "winning and carrying evidence do not complete its handover"
     );
-    walk_to(&mut c, &r, (27, 14));
+    walk_to(&mut c, &r, town_approach(&r, "MnGrandRapidsSurveyDepot"));
     travel(&mut c, GameButton::Up, "MnGrandRapidsSurveyDepot", (12, 17));
     interact(&mut c, &r, (11, 9));
     accept(&mut c, DEPOT);
@@ -283,7 +296,12 @@ fn gym_eight_approach_controller_earns_meter_handover_road_and_harbor_badge_then
     assert!(event(&c, DEPOT));
     c = continue_save(&mut c, &root, &r);
     walk_to(&mut c, &r, (12, 18));
-    travel(&mut c, GameButton::Down, "MnGrandRapids", (27, 14));
+    travel(
+        &mut c,
+        GameButton::Down,
+        "MnGrandRapids",
+        super::super::grand_rapids::frontage(&r, "MnGrandRapidsSurveyDepot"),
+    );
     walk_to(&mut c, &r, (43, 24));
     travel(&mut c, GameButton::Right, "MnR10C00R00", (0, 10));
     road(&mut c, &r, 10, (95, 24));

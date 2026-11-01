@@ -1,5 +1,11 @@
 # Iron Range haulage rock galleries
 
+The current [upper stair boulder setback](../haulage-rock-clearance-v01/README.md)
+extends this original gallery layout. Use the
+[combined reviewed-map recipe](../../revisions/reviewed-maps-v01/README.md)
+for the current winter/Ely/Inner Basin/Haulage continuation; the original rows
+and publication below remain its preserved preimage.
+
 The complete 18×14-metatile haulage level now uses native rock galleries,
 raised workings and a visible metal crosscut shutter. The previous warehouse
 floor and crate aisles are replaced. Ruth, both LODE guards, all five shaft

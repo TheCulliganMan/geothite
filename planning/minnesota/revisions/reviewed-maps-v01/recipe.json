@@ -1,0 +1,154 @@
+{
+  "schema_version": 1,
+  "id": "minnesota-reviewed-maps-v1",
+  "status": "Source recipe for the unselected winter/Ely/Inner Basin continuation; no selector or publication change.",
+  "parent_pack": "content-packs/minnesota-north-shore-passing-width-fauna-v02.crystalpack",
+  "parent_pack_sha256": "e951fddafee3a0c09a2356d4dd683890ac498e23daeb266d08c5f12d79ec1167",
+  "parent_source_index": {
+    "path": "planning/minnesota/revisions/north-shore-passing-width-v01/sources.json",
+    "sha256": "e6fad9d5fbbb4662cc4f4f5ebd2705a91fe81ffbb453617702e5c2eb51000065"
+  },
+  "stages": [
+    {
+      "kind": "bemidji_roof_plateau",
+      "sources": [
+        {
+          "path": "planning/minnesota/towns/bemidji-roof-plateau-v01/before.json",
+          "sha256": "e6b7976569be4dc562b9d03e7711470b414182878f98573f97d64d6a7fcdf95d"
+        },
+        {
+          "path": "planning/minnesota/towns/bemidji-roof-plateau-v01/after.json",
+          "sha256": "a7d4bf1559efecf8aa66274dc4a96147a1d4c27ed2d5a6e652952deadbfd83fb"
+        },
+        {
+          "path": "planning/minnesota/towns/bemidji-roof-plateau-v01/contract.json",
+          "sha256": "6559957b43ee2f3a026a52e5b83f332bd5a23f819942c641da897f95e4c33f9d"
+        }
+      ],
+      "expected_content_hash": "89016b35a870fd0589fd34648ca982c3cdd29a67b2125cb58e4cbb0d0117bcc6"
+    },
+    {
+      "kind": "inland_winter_belt",
+      "sources": [
+        {
+          "path": "planning/minnesota/regions/inland-winter-belt-v01/winter-belt-source-v04.json",
+          "sha256": "3d31a594112a725ce86422ecce325608a9cc13e2bf861510875c3b1618b14691"
+        }
+      ],
+      "expected_content_hash": "285047afd59def2c64e15e3c522c337a4fa6258387f73f772d7d42fda15e376a"
+    },
+    {
+      "kind": "iron_rock_clearance",
+      "sources": [
+        {
+          "path": "planning/minnesota/revisions/iron-rock-clearance-v01/source-v02.json",
+          "sha256": "d879a62cfa7e4220b4b05321e1555c58e9c0995842b79440c356fac5e3992dc2"
+        }
+      ],
+      "expected_content_hash": "4c8caa7bed4f33e48187f1022bc7ddd030091663dd7398c412f18045e930a10c"
+    },
+    {
+      "kind": "tamarack_snowline",
+      "sources": [
+        {
+          "path": "planning/minnesota/regions/tamarack-snowline-v01/source-v04.json",
+          "sha256": "d34e0e85dcbe8a69f92073c3f17b801161f1bb261b6c0a14cbf81e3c143d7831"
+        }
+      ],
+      "expected_content_hash": "865bd35765f6e659ee9e14ad1da8e1c34d6031d5f710c2ca9d845967df8073b5"
+    },
+    {
+      "kind": "iron_descent_snowline",
+      "sources": [
+        {
+          "path": "planning/minnesota/regions/iron-descent-snowline-v01/source-v01.json",
+          "sha256": "83009e35f33336350e22b0d0d5ea2ba56dfcd19cbda2e5a4c73d37bb75b4ef29"
+        }
+      ],
+      "expected_content_hash": "9efcd1bf314b20b386d24ed260ec9f63e0ed31da0fc3b586bd29a3b84bebf301"
+    },
+    {
+      "kind": "descent_rock_clearance",
+      "sources": [
+        {
+          "path": "planning/minnesota/revisions/descent-rock-clearance-v01/source-v01.json",
+          "sha256": "4423204b844096d957cd20c8878a3ec0c8b00dd2d5afd53f0f8c78303e0fa51b"
+        }
+      ],
+      "expected_content_hash": "25289671aed4bf70089f7dc95bc1b3cb110935c55b5f5d1cdb12207bc234e826"
+    },
+    {
+      "kind": "inland_grass_cut",
+      "sources": [
+        {
+          "path": "planning/minnesota/revisions/inland-grass-cut-v01/source-v02.json",
+          "sha256": "7948e87690a561afb548089d19b5bd3e22c1f3521696a0b8cfa33901ef1988ef"
+        }
+      ],
+      "expected_content_hash": "2bc2680254f492f276a52ece0b65b92bae9a1284072eb1fe1b665a40efe87836"
+    },
+    {
+      "kind": "headwaters_snowline",
+      "sources": [
+        {
+          "path": "planning/minnesota/regions/headwaters-snowline-v01/source-v01.json",
+          "sha256": "efac4a83335a645163ceb89c364a31c4efdd8461b5011731369bb30bec3739c5"
+        }
+      ],
+      "expected_content_hash": "1c264e662ee893d9665a9292cc53d45380ec4bdf6cfe2f63d161f65e04d2cd7b"
+    },
+    {
+      "kind": "headwaters_rock_clearance",
+      "sources": [
+        {
+          "path": "planning/minnesota/revisions/headwaters-rock-clearance-v01/source-v01.json",
+          "sha256": "e80f053d3035ad03e764cf96179a245e327bd3dfc2b87546b3840f5812531c18"
+        }
+      ],
+      "expected_content_hash": "e226d86fe5eaea295b5db8cde2e85c559f9cd2d1cdb6bb9c56c1372748e997bc"
+    },
+    {
+      "kind": "itasca_snowline",
+      "sources": [
+        {
+          "path": "planning/minnesota/regions/itasca-snowline-v01/source-v02.json",
+          "sha256": "ced7b7a8196f401200c19982a63bb6487feafe1e97c2407b4eb920cdd2e5f52d"
+        }
+      ],
+      "expected_content_hash": "e5019950f1e8bb4bf6b5e176ee478d519461ebf638220754492b5a1c554004e4"
+    },
+    {
+      "kind": "ely_pine_camp",
+      "sources": [
+        {
+          "path": "planning/minnesota/towns/ely-pine-camp-v01/before.json",
+          "sha256": "284bd31948735ba90d98dfef6ef041b42804feef6f42f458893e153e581f5d34"
+        },
+        {
+          "path": "planning/minnesota/towns/ely-pine-camp-v01/after.json",
+          "sha256": "5b3bb60de855283a42637e68090a2b8f69370f61cc6b34c4eb262821f719c306"
+        },
+        {
+          "path": "planning/minnesota/towns/ely-pine-camp-v01/activities.json",
+          "sha256": "d6334c3e4d7932514d2d4a0ae905e7a6012bcd596b8420705ac279efb8bf56d9"
+        },
+        {
+          "path": "planning/minnesota/towns/ely-pine-camp-v01/contract-winter-v03.json",
+          "sha256": "1c70071554c1762d032d94a86545dc6de985cb6bd9cbef11b35857985054d47d"
+        }
+      ],
+      "expected_content_hash": "0c82ca57bbf206f2005922aa40d0fe3a59a62223d978f6f44e4f41a12c8252db"
+    },
+    {
+      "kind": "inner_basin_bedrock",
+      "sources": [
+        {
+          "path": "planning/minnesota/caves/inner-basin-bedrock-v01/source-v03.json",
+          "sha256": "13c1312655b95c6fd5c1bb8103a56602d1c13e9a6f0bd7790d8ccb05df1631e4"
+        }
+      ],
+      "expected_content_hash": "9d8b418f4109749b8be36cbc97f35e4f24bd411310137237c724c45285a7865b"
+    }
+  ],
+  "expected_pack_sha256": "83a63e4791f5de5bd72b8b874426b693bf03e3b2067665bfd1a4f7182aba58ba"
+}

@@ -1,0 +1,82 @@
+[
+  {
+    "id": "new-downhill-fork",
+    "map": "MnR06C00R00",
+    "core": [
+      42,
+      25
+    ]
+  },
+  {
+    "id": "south-landing",
+    "map": "MnR06C00R00",
+    "core": [
+      42,
+      28
+    ]
+  },
+  {
+    "id": "east-grass-return",
+    "map": "MnR06C00R00",
+    "core": [
+      48,
+      25
+    ]
+  },
+  {
+    "id": "west-wooded-return",
+    "map": "MnR06C00R00",
+    "core": [
+      34,
+      20
+    ]
+  },
+  {
+    "id": "pine-peninsula",
+    "map": "MnR06C00R00",
+    "core": [
+      43,
+      33
+    ]
+  },
+  {
+    "id": "cut-lookout-grove",
+    "map": "MnR06C00R00",
+    "core": [
+      26,
+      24
+    ]
+  },
+  {
+    "id": "repaired-lookout-corner",
+    "map": "MnR06C00R00",
+    "core": [
+      17,
+      21
+    ]
+  },
+  {
+    "id": "guru-and-pier",
+    "map": "MnR06C00R00",
+    "core": [
+      39,
+      40
+    ]
+  },
+  {
+    "id": "retained-cabin",
+    "map": "MnR06C00R01",
+    "core": [
+      10,
+      15
+    ]
+  },
+  {
+    "id": "retained-south-habitat",
+    "map": "MnR06C00R01",
+    "core": [
+      16,
+      30
+    ]
+  }
+]

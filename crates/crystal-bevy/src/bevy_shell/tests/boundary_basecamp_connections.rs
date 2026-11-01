@@ -9,7 +9,7 @@ use crystal_core::input::GameButton;
 use crystal_core::models::{Dv, LearnedMove};
 use crystal_core::world::map::Direction;
 use crystal_core::world::movement::MovementMode;
-use crystal_runtime::{CrystalRuntime, RuntimeShellPhase};
+use crystal_runtime::{CrystalRuntime, RuntimeBattleKind, RuntimeShellPhase};
 
 use super::super::{
     BevyShellConfig, BevyShellStart, VisibleShellController,
@@ -155,8 +155,16 @@ fn fixture(root: &AssetRoot, runtime: &CrystalRuntime, setup: Setup) -> VisibleS
         .expect("fixture trainer name");
     let mut pokemon = runtime
         .data()
-        .create_pokemon("MEW", 80, Dv::default())
-        .expect("legal native review partner");
+        .create_pokemon("VOYAGEAR", 80, Dv::default())
+        .expect("active native Minnesota review partner");
+    assert!(
+        pokemon
+            .species
+            .tmhm_learnset
+            .iter()
+            .any(|name| name == "SURF"),
+        "the local regional partner must legally support Surf"
+    );
     pokemon.moves = vec![LearnedMove {
         name: "SURF".into(),
         current_pp: runtime.data().moves["SURF"].pp,
@@ -247,10 +255,15 @@ fn settle(controller: &mut VisibleShellController) -> BTreeSet<String> {
     let mut labels = BTreeSet::new();
     for _ in 0..192 {
         let snapshot = controller.snapshot().expect("native checkpoint ownership");
-        assert!(
-            snapshot.battle.is_none(),
-            "no battle expected on these checked ordinary Floor cells"
-        );
+        if let Some(battle) = &snapshot.battle {
+            assert_eq!(snapshot.overworld.mode, MovementMode::Surf);
+            assert!(
+                matches!(battle.kind, RuntimeBattleKind::Wild { .. }),
+                "only native Surf wildlife may interrupt the water-boundary course"
+            );
+            super::authored_route_fixture::escape_wild(controller);
+            continue;
+        }
         assert!(
             snapshot.ui.pending_yes_no.is_none(),
             "no invented admission prompt"

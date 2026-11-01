@@ -127,6 +127,16 @@ fn travel(c: &mut VisibleShellController, runtime: &CrystalRuntime, to: Point, d
         for _ in 0..4 {
             press(c, button);
             c.wait_frames(80).expect("native slide clock");
+            if let Some(battle) = c.snapshot().expect("current ice habitat").battle {
+                println!(
+                    "native ice encounter: {} level {} in {}",
+                    battle.enemy_pokemon.species.id,
+                    battle.enemy_pokemon.level,
+                    map(c)
+                );
+                super::rochester::flee(c);
+                c.wait_frames(80).expect("native slide settles after RUN");
+            }
             if tile(c) == expected || map(c) == destination {
                 break;
             }
@@ -231,13 +241,16 @@ fn setup(name: &str, at: Point) -> (AssetRoot, CrystalRuntime, VisibleShellContr
         .expect("fixture name");
     let state = c.shell.shell.session_mut().state_mut();
     for species in ["LUTEBRISK", "CINDORE"] {
-        assert!(
-            state.storage.party.add_pokemon(
-                r.data()
-                    .create_pokemon(species, 48, Dv::from_non_hp(8, 9, 8, 9))
-                    .expect("original Minnesota partner")
-            )
-        );
+        let mut partner = r
+            .data()
+            .create_pokemon(species, 48, Dv::from_non_hp(8, 9, 8, 9))
+            .expect("original Minnesota partner");
+        if species == "LUTEBRISK" {
+            // A Repel can expire during a course. This local navigation
+            // fixture handles an ordinary wild encounter through native RUN.
+            partner.item = Some("SMOKE_BALL".into());
+        }
+        assert!(state.storage.party.add_pokemon(partner));
     }
     state.sync_party_from_storage();
     state.badges.johto = [true; 8];
@@ -327,7 +340,14 @@ fn ice_turns_controller_both_floors_forced_direction_all_rewards_and_real_return
     press(&mut c, GameButton::Down);
     assert_eq!(tile(&mut c), (4, 16));
     settle(&mut c, "guide releases movement");
+    c.save(out.join("upper-guide.crystalsave"))
+        .expect("actual upper guide stop");
     collect(&mut c, &r, "MnVoyageursIceHeal", "ICE_HEAL");
+    c.save(out.join("upper-heal-pocket.crystalsave"))
+        .expect("actual upper supply pocket");
+    travel(&mut c, &r, (23, 6), "");
+    c.save(out.join("upper-ladder.crystalsave"))
+        .expect("actual upper ladder approach");
     travel(&mut c, &r, (23, 5), LOWER);
     assert_eq!(tile(&mut c), (5, 19));
     travel(&mut c, &r, (4, 20), "");
@@ -337,6 +357,8 @@ fn ice_turns_controller_both_floors_forced_direction_all_rewards_and_real_return
     press(&mut c, GameButton::Up);
     assert_eq!(tile(&mut c), (4, 20));
     settle(&mut c, "surveyor releases movement");
+    c.save(out.join("lower-surveyor.crystalsave"))
+        .expect("actual lower shelter");
     travel(&mut c, &r, (5, 18), "");
     c.press(GameButton::Up).expect("start forced north slide");
     assert_eq!(tile(&mut c).0, 5);
@@ -347,8 +369,14 @@ fn ice_turns_controller_both_floors_forced_direction_all_rewards_and_real_return
     assert!(tile(&mut c).1 < y);
     c.wait_frames(80).expect("settle at entrance tooth");
     assert_eq!(tile(&mut c), (5, 11));
+    c.save(out.join("lower-first-tooth.crystalsave"))
+        .expect("actual forced-slide stop");
     collect(&mut c, &r, "MnVoyageursIceRevive", "MAX_REVIVE");
+    c.save(out.join("lower-west-cache.crystalsave"))
+        .expect("actual west cache approach");
     collect(&mut c, &r, "MnVoyageursIceNeverMelt", "NEVERMELTICE");
+    c.save(out.join("lower-north-cache.crystalsave"))
+        .expect("actual northern shelf");
     travel(&mut c, &r, (13, 15), "");
     assert_eq!(kind(&r, &r.data().maps[LOWER], (13, 15)), "ICE");
     c = continued(

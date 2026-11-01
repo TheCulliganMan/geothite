@@ -1,0 +1,66 @@
+[
+  {
+    "map": "MnBrainerd",
+    "id": "care-court",
+    "core": [
+      10,
+      23
+    ]
+  },
+  {
+    "map": "MnBrainerd",
+    "id": "ranger-court",
+    "core": [
+      24,
+      16
+    ]
+  },
+  {
+    "map": "MnBrainerd",
+    "id": "central-junction",
+    "core": [
+      32,
+      23
+    ]
+  },
+  {
+    "map": "MnBrainerd",
+    "id": "outfitter-street",
+    "core": [
+      51,
+      24
+    ]
+  },
+  {
+    "map": "MnBrainerd",
+    "id": "pier-cap",
+    "core": [
+      47,
+      14
+    ]
+  },
+  {
+    "map": "MnBrainerd",
+    "id": "pier-body",
+    "core": [
+      47,
+      17
+    ]
+  },
+  {
+    "map": "MnBrainerd",
+    "id": "gym-stairs",
+    "core": [
+      21,
+      41
+    ]
+  },
+  {
+    "map": "MnBrainerd",
+    "id": "south-boulevard",
+    "core": [
+      33,
+      32
+    ]
+  }
+]

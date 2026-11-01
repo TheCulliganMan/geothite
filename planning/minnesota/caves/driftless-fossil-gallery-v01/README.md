@@ -35,6 +35,14 @@ installs the gallery only. It does not add that proposal's Leech Lake current.
 - [Complete local acceptance](../../renders/driftless-fossil-gallery-v774/acceptance-v792.json)
 - [Exact full-parent audit](../../renders/driftless-fossil-gallery-v774/audit-v786.json)
 
+The current v08 replay is documented in the
+[combined cave review](../../revisions/reviewed-maps-v01/CAVE-REVIEW.md).
+All three original controller courses pass again on the selected v08 bytes.
+Seven illuminated full native frames match the source exactly; both dark views
+and the connected two-level overview were inspected. Sources, programs and pack
+bytes remain unchanged. The older publication records below keep their original
+pack bindings and fixture limits.
+
 ## Connections and state
 
 Coordinates are16px native walking tiles. Metatiles are32px.

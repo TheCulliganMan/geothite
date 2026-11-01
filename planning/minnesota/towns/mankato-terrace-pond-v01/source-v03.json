@@ -1,0 +1,311 @@
+{
+  "schema_version": 1,
+  "id": "minnesota-mankato-terrace-pond-v1",
+  "status": "Reviewed whole-town source with the exact native east-arrival spawn and original ledge/return terrain retained; Rust and gameplay acceptance pending.",
+  "map": "MnMankato",
+  "parent_pack": "content-packs/minnesota-reviewed-maps-v05.crystalpack",
+  "parent_pack_sha256": "79e431d36fd47c02904b8c9a92d7871a4d9cead4c3e557ed6a73c98d27837e30",
+  "native_module_sha256": "212295edfdba36ba45dfa090a1045a512c94aa0a44b87537fbb9793d31edf9f1",
+  "dimensions_metatiles": [
+    24,
+    18
+  ],
+  "tileset": "johto",
+  "source_pixels_modified": false,
+  "building_moves": [
+    {
+      "destination": "MnMankatoPokecenter1F",
+      "source_rect_metatiles": [
+        15,
+        5,
+        2,
+        2
+      ],
+      "destination_top_left_metatiles": [
+        10,
+        4
+      ]
+    },
+    {
+      "destination": "MnMankatoMart",
+      "source_rect_metatiles": [
+        18,
+        12,
+        2,
+        2
+      ],
+      "destination_top_left_metatiles": [
+        16,
+        9
+      ]
+    }
+  ],
+  "warp_moves": [
+    {
+      "index": 1,
+      "from": [
+        31,
+        13
+      ],
+      "to": [
+        21,
+        11
+      ]
+    },
+    {
+      "index": 2,
+      "from": [
+        31,
+        14
+      ],
+      "to": [
+        21,
+        12
+      ]
+    },
+    {
+      "index": 3,
+      "from": [
+        37,
+        27
+      ],
+      "to": [
+        33,
+        21
+      ]
+    },
+    {
+      "index": 4,
+      "from": [
+        37,
+        28
+      ],
+      "to": [
+        33,
+        22
+      ]
+    }
+  ],
+  "actor_moves": [],
+  "sign_moves": [
+    {
+      "id": "MnMKGymSign",
+      "from": [
+        16,
+        12
+      ],
+      "to": [
+        16,
+        10
+      ]
+    },
+    {
+      "id": "MnMKClinicSign",
+      "from": [
+        34,
+        12
+      ],
+      "to": [
+        26,
+        10
+      ]
+    },
+    {
+      "id": "MnMKMartSign",
+      "from": [
+        40,
+        26
+      ],
+      "to": [
+        38,
+        20
+      ]
+    }
+  ],
+  "preserved_connections": [
+    {
+      "direction": "east",
+      "target_map": "MnR02C00R00",
+      "offset": -6
+    },
+    {
+      "direction": "north",
+      "target_map": "MnR03C00R01",
+      "offset": 3
+    }
+  ],
+  "public_door_returns": {
+    "MnMankatoGym": [
+      10,
+      12
+    ],
+    "MnMankatoPokecenter1F": [
+      21,
+      12
+    ],
+    "MnMankatoMart": [
+      33,
+      22
+    ]
+  },
+  "preserved_notebook": [
+    26,
+    25
+  ],
+  "preserved_gardener": [
+    29,
+    25
+  ],
+  "preserved_ledge_metatiles": [
+    [
+      5,
+      9
+    ],
+    [
+      6,
+      9
+    ],
+    [
+      7,
+      9
+    ],
+    [
+      8,
+      9
+    ],
+    [
+      9,
+      9
+    ]
+  ],
+  "before_rows": [
+    "05 05 05 05 05 05 05 05 05 05 05 05 01 05 05 05 05 05 05 05 05 05 05 05",
+    "05 05 05 05 05 05 05 05 05 05 05 05 01 05 05 05 05 05 05 05 05 05 05 05",
+    "05 05 05 05 05 05 05 05 05 05 02 02 01 02 02 05 05 05 05 05 05 05 05 05",
+    "05 05 05 02 02 02 02 02 05 05 05 02 01 02 02 05 05 05 05 05 05 05 05 05",
+    "05 05 05 02 18 1f 19 02 05 05 05 02 01 02 02 02 02 02 02 02 02 05 05 05",
+    "05 05 05 02 1c 1d 1e 02 05 05 05 05 01 02 02 18 19 02 02 02 02 05 05 05",
+    "05 05 05 01 01 01 01 01 45 05 01 01 01 02 02 1a 1b 45 02 02 02 05 05 05",
+    "05 05 05 01 01 01 01 01 01 01 01 02 01 01 01 01 02 02 04 04 02 05 05 05",
+    "05 05 05 02 02 01 02 02 02 02 02 02 01 02 02 02 02 02 02 02 02 02 02 05",
+    "05 05 05 05 05 57 57 57 57 57 05 05 01 02 02 02 02 01 01 01 01 01 01 01",
+    "05 05 05 05 05 01 02 02 02 02 05 05 01 02 02 02 02 01 02 05 05 05 05 05",
+    "05 05 05 05 05 01 02 02 02 02 02 02 01 01 01 01 01 01 02 05 05 05 05 05",
+    "05 05 05 05 05 01 01 01 01 01 01 02 01 01 01 01 01 01 18 19 02 05 05 05",
+    "05 05 05 02 02 02 02 05 05 02 01 02 02 04 02 04 02 01 1a 17 45 05 05 05",
+    "05 05 05 02 02 02 02 05 05 02 01 01 45 04 01 04 01 01 01 02 02 05 05 05",
+    "05 05 05 05 05 05 05 02 02 02 02 02 02 02 02 02 02 02 02 02 02 05 05 05",
+    "05 05 05 05 05 05 05 02 02 02 02 02 02 02 02 02 02 02 05 05 05 05 05 05",
+    "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05"
+  ],
+  "rows": [
+    "05 05 05 05 05 05 05 05 05 05 05 05 01 05 05 05 05 05 05 05 05 05 05 05",
+    "05 05 05 05 05 05 05 05 05 05 05 05 01 05 05 05 05 05 05 05 05 05 05 05",
+    "05 05 05 05 05 05 05 05 05 05 05 05 01 05 05 05 05 05 05 05 05 05 05 05",
+    "05 05 05 02 02 02 02 02 02 02 02 02 02 05 05 05 05 05 05 05 05 05 05 05",
+    "05 05 05 02 18 1f 19 02 02 02 18 19 02 02 05 05 05 05 05 05 05 05 05 05",
+    "05 05 05 02 1c 1d 1e 02 45 02 1a 1b 02 45 05 05 05 05 05 05 05 05 05 05",
+    "05 05 05 01 01 01 01 01 01 01 01 01 01 02 05 05 05 05 05 05 05 05 05 05",
+    "05 05 05 01 01 01 01 01 01 01 01 01 01 05 05 05 05 05 05 05 05 05 05 05",
+    "05 05 05 02 02 01 02 02 02 02 02 02 01 01 01 01 01 01 01 01 01 01 01 05",
+    "05 05 05 05 05 57 57 57 57 57 05 05 01 01 01 01 18 19 05 05 01 01 01 01",
+    "05 05 05 05 05 01 02 02 02 02 05 05 01 02 02 02 1a 17 01 45 04 01 05 05",
+    "05 05 05 05 05 01 02 02 02 02 02 02 01 01 01 01 01 01 49 49 49 01 05 05",
+    "05 05 05 05 05 05 05 05 05 05 05 05 01 01 04 01 01 54 76 76 55 01 05 05",
+    "05 05 05 05 05 05 05 05 05 05 05 05 01 04 04 01 58 35 35 35 59 01 05 05",
+    "05 05 05 05 05 05 05 05 05 05 05 05 45 04 02 01 58 35 35 59 05 01 05 05",
+    "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 01 40 40 40 40 40 01 05 05",
+    "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 01 01 01 01 01 01 01 05 05",
+    "05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05 05"
+  ],
+  "selected_ancestor_revision": "north_shore_passing_width_revision",
+  "selected_ancestor_sha256": "e951fddafee3a0c09a2356d4dd683890ac498e23daeb266d08c5f12d79ec1167",
+  "fishing_banks": [
+    {
+      "stand": [
+        31,
+        26
+      ],
+      "water": [
+        32,
+        26
+      ],
+      "facing": "right"
+    },
+    {
+      "stand": [
+        42,
+        26
+      ],
+      "water": [
+        41,
+        26
+      ],
+      "facing": "left"
+    }
+  ],
+  "water_is_contained": true,
+  "new_buoys_required": false,
+  "preserved_terrain_rectangles_metatiles": [
+    [
+      4,
+      8,
+      9,
+      4
+    ]
+  ],
+  "public_promenades": [
+    {
+      "id": "clinic-gym-court",
+      "rectangle_core": [
+        6,
+        12,
+        20,
+        2
+      ]
+    },
+    {
+      "id": "west-pond-path",
+      "rectangle_core": [
+        30,
+        26,
+        2,
+        8
+      ]
+    },
+    {
+      "id": "east-pond-path",
+      "rectangle_core": [
+        42,
+        22,
+        2,
+        12
+      ]
+    },
+    {
+      "id": "south-pond-path",
+      "rectangle_core": [
+        30,
+        32,
+        14,
+        2
+      ]
+    },
+    {
+      "id": "mart-rail-passing",
+      "rectangle_core": [
+        36,
+        21,
+        6,
+        2
+      ]
+    }
+  ],
+  "expected_changed_metatiles": 154,
+  "expected_water_quadrants": 52,
+  "expected_floor_quadrants": 511,
+  "preserved_spawn": [
+    40,
+    18
+  ]
+}

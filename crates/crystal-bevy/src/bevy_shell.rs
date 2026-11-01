@@ -9251,6 +9251,7 @@ pub fn authored_visual_jump_ledges(width:u16,blocks:&[u16],
 include!("bevy_shell/overworld_rendering.rs");
 include!("bevy_shell/start_menu.rs");
 include!("bevy_shell/competitive_battle.rs");
+mod inland_winter_render;
 mod minneapolis_falls_animation;
 mod seasonal_palette;
 mod tile_foreground;

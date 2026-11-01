@@ -122,6 +122,12 @@ def apply_alias(pack, specification):
             parts = donor(tileset, native_block)
         elif recipe['kind'] == 'frost_flowers':
             parts = [(raw, frost) for raw, _ in donor(source, block)]
+        elif recipe['kind'] == 'icy_grass_quadrants':
+            parts = [
+                (raw, frost) if recipe['collision'][(index // 8) * 2 + (index % 4) // 2] == 'TALL_GRASS'
+                else old_metatiles[block * 16 + index]
+                for index, (raw, _) in enumerate(donor(source, block))
+            ]
         else:
             assert recipe['kind'] == 'mixed_foliage'
             parts = []

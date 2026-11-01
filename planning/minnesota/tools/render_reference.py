@@ -71,6 +71,20 @@ class SourceArt:
         count = sheet.width*sheet.height//64
         pmap = self.pack['data']['tilesets'][tileset]['palette_map']
         foregrounds = json.loads(bytes(files.get(f'data/tilesets/{tileset}_foregrounds.json', b'{}')))
+        background_addresses = json.loads(bytes(files.get(f'data/tilesets/{tileset}_native_backgrounds.json', b'{}')))
+        native_backgrounds = []
+        if background_addresses:
+            current = 'default'
+            for raw in bytes(files['gfx/tilesets/bg_tiles.pal']).decode().splitlines():
+                line = raw.strip()
+                if line.startswith(';') and 'RGB' not in line.upper():
+                    current = line[1:].strip().lower().replace(' ', '_')
+                line = line.split(';')[0].strip()
+                if line.upper().startswith('RGB') and current == group:
+                    values = list(map(int, re.findall(r'\d+', line)))
+                    native_backgrounds.extend(tuple((v << 3) | (v >> 2) if v <= 31 else v
+                                                    for v in values[i:i + 3]) for i in range(0, len(values), 3))
+            assert len(native_backgrounds) >= 32, 'native background clock bank missing'
         tiles = []
         for index in range(256):
             value = pmap[index] if index < len(pmap) else 0
@@ -89,6 +103,10 @@ class SourceArt:
             palette = palettes[value&7]
             if str(index) in foregrounds:
                 palette = [palettes[0][0], *[tuple(color) for color in foregrounds[str(index)]]]
+            if str(index) in background_addresses:
+                address = background_addresses[str(index)]
+                assert 0 <= address < 8
+                palette = [native_backgrounds[address * 4], *palette[1:]]
             tile.putdata([palette[0 if p[0]>=213 else 1 if p[0]>=128 else 2 if p[0]>=43 else 3]
                           for p in tile.getdata()])
             tiles.append(tile)

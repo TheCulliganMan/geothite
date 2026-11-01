@@ -1,5 +1,17 @@
 # Strandrak former-shores candidate
 
+This page retains the initial authoring notes below. The later composed game
+includes the discovery. Its latest verified, unselected terrain successor is
+the [Inner Basin bedrock revision](../../../caves/inner-basin-bedrock-v01/README.md),
+which preserves the original shore reads, indicators, drain, encounter and
+capture/retry rules. That runbook binds the actual current parent, final rows,
+native/controller/stdio evidence and continuation candidate. The older site
+source and pending statements below remain historical; they do not describe
+the successor's current verification status. Resolve `world.json` separately
+for the active playable selection.
+
+## Initial authoring notes
+
 This is unpublished source work. The native dialogue/lowerer, two-map terrain,
 guarded Rust publisher, independent audit and three controller cases are authored.
 Static source geometry, Python syntax, scoped Rust formatting and whitespace

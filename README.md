@@ -1112,6 +1112,56 @@ obsolete northern geometry. New publication must use the canonical compact
 coast/Gunflint lineage; the old pack is historical, not a current build parent.
 
 
+### Reviewed Minnesota map continuation — 2026-11-01
+
+The [reviewed map rebuild](planning/minnesota/revisions/reviewed-maps-v01/README.md)
+provides one executed Rust command for all eighteen winter, cliff/boulder, native
+grass-Cut, Ely, Inner Basin, optional Safari, Rochester, Grand Rapids, Mankato and Brainerd stages. It starts from the frozen coastal parent
+and reproduces the verified continuation byte for byte. Its source index binds
+the final layouts of 30 affected native maps, preserving the other regional
+content and early dry-bank fishing. The optional expedition now has verified
+native trainer-back battles, current stairs and free story travel. The combined
+pack is selected for local map review through `world.json`; the
+[regional review](planning/minnesota/revisions/reviewed-maps-v01/REGIONAL-REVIEW.md)
+records the additional city/train/fair/river checks and remaining story and
+visual-quality work. This selection does not deploy a browser release or
+migrate existing saves. The
+[Rochester review](planning/minnesota/towns/rochester-care-green-v01/README.md)
+adds shorter inhabited streets, complete native façades, nine current controller
+cases and an earned first badge. Its whole town and five actual player views
+were inspected; two fresh stdio sessions pass with empty stderr.
+The [Grand Rapids review](planning/minnesota/towns/grand-rapids-depot-quay-v01/README.md)
+then brings care/depot onto the street and the shop onto the quay, clearing both
+street and pier lanes. Twelve current controller cases, two stdio sessions
+(269 calls, empty stderr), five native views and the updated 108-map atlas pass.
+Its v05 continuation remains available. The subsequent
+[Mankato terrace/pond garden](planning/minnesota/towns/mankato-terrace-pond-v01/README.md)
+was selected locally as `minnesota-reviewed-maps-v06.crystalpack`: care/Gym share
+the upper court, with the shop and two open dry fishing banks beside the pond.
+Six native cases,403 stdio calls with empty stderr, five saved player views and
+five complete source-frame matches pass. All742 other maps remain exact. Early
+Old Rod gift/casting/Run/Continue and guru-repeat checks pass on v06, preserving
+ten Winona and six first-route dry banks without badges or field moves.
+The subsequent [Brainerd lake-street review](planning/minnesota/towns/brainerd-lakeside-loop-v01/README.md)
+was selected as `minnesota-reviewed-maps-v07.crystalpack`. Its original supply
+cabin joins the lake street; both main-road lanes work and the pier uses its
+proper right cap. Four native cases, 845 stdio calls with empty stderr, eight
+exact source-frame matches and four actual saved views pass. All other maps,
+existing content and early dry-bank fishing remain exact.
+The subsequent [R16 prairie seed bank](planning/minnesota/routes/r16-seed-bank-v01/README.md)
+was selected locally as `minnesota-reviewed-maps-v08.crystalpack`. A short native
+hop beside the existing grower/flowers has two yellow-grass uphill returns.
+Three controller cases,186clean stdio calls and six exact native source-frame
+matches pass. Both bridges, the original hayfield drop, all other maps and early
+zero-badge fishing remain exact. The nineteen-stage Rust build reproduces it.
+The subsequent [Prairie Farm Road garden](planning/minnesota/routes/r02-working-farmyard-v01/README.md)
+is selected locally as `minnesota-reviewed-maps-v09.crystalpack`. Golden crop
+beds, working stakes and a grower's once-only Berry give the farmhouse shoulder
+a useful stop. Five native cases,496clean stdio calls, six exact native frames
+and three played views pass, including both lanes of both real town seams.
+Early fishing and every other map remain exact; the twenty-stage Rust build
+reproduces both v09 and its v08 parent.
+
 ### Selected Minnesota outdoor review — 2026-10-28
 
 For missing runtime commands after Minneapolis cyclist battles, the
@@ -1157,3 +1207,25 @@ one-screen 160×144 Minnesota Town Map, hand-composed from the original Johto
 tiles and palettes and shared with Fly. It includes the verified ignored flight
 pack, exact build/test commands, production UI renders and a controller flight
 to Grand Marais. Existing artwork and audio remain unchanged.
+
+The River Bluffs North [wooded-terrace revision](planning/minnesota/routes/r05-wooded-terraces-v01/README.md)
+was selected locally as `content-packs/minnesota-reviewed-maps-v10.crystalpack`
+and is preserved by v11.
+Winding two-tile trails and pine/grass pockets replace bare terrace shoulders;
+continuous native cliff faces replace boulder rims and interior rocks sit back
+from the edges. All five stairs, both cave mouths and early fishing pass. Eight
+native courses, 929 terrace stdio calls plus the cave course, ten exact native
+frames and three played views verify the local revision. All other maps and
+existing programs, regional fauna, fishing, art/audio and attributes stay exact.
+The twenty-one-stage source build reproduces v09 as well. Broader map quality
+and earned regional progression remain open.
+
+The [Pine Country fork revision](planning/minnesota/routes/r06-pine-fork-v01/README.md) is the current local selection,
+`content-packs/minnesota-reviewed-maps-v11.crystalpack`. Its native dry downhill
+hop, closed pine flanks and six-grass uphill choices give the lake road a distinct
+return trip. The original northern hop, Cut-gated Ether/stair, cabins, Super Rod
+guru, bridge and pier remain intact; the lookout rim is continuous. Seven native
+courses, 938 actual stdio calls, ten exact complete native frames and four played
+views pass. All 742 other maps and existing programs, fauna/fishing, rooms,
+attributes and art/audio stay exact. The twenty-two-stage source build reproduces
+v10 as well. Broader map quality and earned regional progression remain open.

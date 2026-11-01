@@ -97,10 +97,7 @@ fn native_day(raw: &[u8]) -> Result<Vec<[u8; 3]>> {
         components.len() == 96,
         "eight complete native day palettes required"
     );
-    Ok(components
-        .chunks_exact(3)
-        .map(|rgb| [rgb[0], rgb[1], rgb[2]])
-        .collect())
+    Ok(components.as_chunks::<3>().0.to_vec())
 }
 
 fn foregrounds(pack: &CompiledGamePack, tileset: &str) -> Result<Foregrounds> {
@@ -287,6 +284,18 @@ fn install(pack: &mut CompiledGamePack, alias: &Alias, day: &[[u8; 3]]) -> Resul
                 .into_iter()
                 .map(|(raw, _)| (raw, frost))
                 .collect(),
+            "icy_grass_quadrants" => donor(pack, &alias.source, block, day)?
+                .into_iter()
+                .enumerate()
+                .map(|(index, (raw, inks))| {
+                    let quadrant = (index / 8) * 2 + (index % 4) / 2;
+                    if recipe.collision[quadrant] == "TALL_GRASS" {
+                        (raw, frost)
+                    } else {
+                        (raw, inks)
+                    }
+                })
+                .collect(),
             "mixed_foliage" => donor(pack, &alias.source, block, day)?
                 .into_iter()
                 .enumerate()
@@ -305,6 +314,11 @@ fn install(pack: &mut CompiledGamePack, alias: &Alias, day: &[[u8; 3]]) -> Resul
         };
         for (index, (raw, inks)) in parts.into_iter().enumerate() {
             let glyph = old_metatiles[block * 16 + index];
+            if recipe.kind == "icy_grass_quadrants"
+                && recipe.collision[(index / 8) * 2 + (index % 4) / 2] != "TALL_GRASS"
+            {
+                continue;
+            }
             if recipe.kind == "mixed_foliage" && original.palette_map[usize::from(glyph)] & 7 != 2 {
                 continue;
             }
@@ -345,7 +359,7 @@ fn install(pack: &mut CompiledGamePack, alias: &Alias, day: &[[u8; 3]]) -> Resul
         snow_day[index] = [29, 31, 31];
     }
     let mut palette = String::from("; Native day inks with snow background0.\n");
-    for bank in snow_day.chunks_exact(4) {
+    for bank in snow_day.as_chunks::<4>().0 {
         palette.push_str("RGB ");
         palette.push_str(
             &bank
@@ -366,6 +380,21 @@ fn install(pack: &mut CompiledGamePack, alias: &Alias, day: &[[u8; 3]]) -> Resul
         serde_json::to_vec(&colors)?,
     );
     Ok(())
+}
+
+/// Reuse the same source-bound native recipes for a separately guarded climate
+/// revision. The caller owns map bindings and complete publication validation.
+pub(crate) fn install_source_bound_alias(
+    pack: &mut CompiledGamePack,
+    source: &serde_json::Value,
+) -> Result<()> {
+    let alias: Alias = serde_json::from_value(source.clone())?;
+    let day = native_day(
+        pack.runtime_files
+            .get("gfx/tilesets/bg_tiles.pal")
+            .context("native daylight palette")?,
+    )?;
+    install(pack, &alias, &day)
 }
 
 /// Builds private snow aliases for complete explicitly bound inland exteriors.
@@ -469,7 +498,13 @@ pub fn build_inland_winter_belt(
         );
         let mut map = original.clone();
         map.attributes.tileset_name = exterior.target_tileset.clone();
-        crate::authored_town_publication::replace(&mut result, map)?;
+        // Only the art binding changes. Re-publishing the entire module would
+        // re-encode unrelated authored NPC payloads from parsed object caches.
+        result
+            .data
+            .map_attributes
+            .insert(map.id.clone(), map.attributes.clone());
+        result.data.maps.insert(map.id.clone(), map);
     }
     result.report.manifests.push(MARKER.into());
     result.identity = crate::derive_compiled_game_pack_identity_from_manifest(

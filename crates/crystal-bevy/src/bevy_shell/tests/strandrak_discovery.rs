@@ -104,6 +104,13 @@ fn continued(
     cleanup_reached_save(&path);
     loaded
 }
+
+fn checkpoint(c: &mut VisibleShellController, name: &str) {
+    if std::env::var_os("CRYSTAL_MAP_RETAIN_SAVES_DIR").is_some() {
+        c.save(reached_save_path(name))
+            .expect("retain actual basin review state");
+    }
+}
 fn capture(c: &mut VisibleShellController) {
     for _ in 0..256 {
         let snapshot = c.snapshot().expect("native Strandrak capture menus");
@@ -213,6 +220,7 @@ fn strandrak_controller_terraces_all_dials_held_outlet_native_stairs_and_continu
     assert!(event(&c, &flag("SHORES_COMPARED")));
     descend(&mut c, &r);
     at(&mut c, ROOM, (2, 25));
+    checkpoint(&mut c, "basin-closed-arrival.crystalsave");
     c = continued(
         &mut c,
         &root,
@@ -239,9 +247,11 @@ fn strandrak_controller_terraces_all_dials_held_outlet_native_stairs_and_continu
     read(&mut c, &r, (10, 10), GameButton::Left);
     settle(&mut c, "upper high setting");
     assert!(event(&c, &flag("UPPER_HIGH")));
+    checkpoint(&mut c, "basin-upper-indicator.crystalsave");
     read(&mut c, &r, (17, 14), GameButton::Right);
     settle(&mut c, "center middle setting");
     assert!(event(&c, &flag("CENTER_MIDDLE")));
+    checkpoint(&mut c, "basin-center-indicator.crystalsave");
     read(&mut c, &r, (15, 20), GameButton::Left);
     settle(&mut c, "lower default is still untouched");
     assert!(!event(&c, &flag("LOWER_TOUCHED")) && !event(&c, &flag("INNER_OUTLET_ACKNOWLEDGED")));
@@ -255,12 +265,14 @@ fn strandrak_controller_terraces_all_dials_held_outlet_native_stairs_and_continu
             && !event(&c, &flag("LOWER_MIDDLE"))
             && !event(&c, &flag("LOWER_HIGH"))
     );
+    checkpoint(&mut c, "basin-lower-indicator.crystalsave");
     read(&mut c, &r, (15, 20), GameButton::Left);
     assert!(!event(&c, &flag("INNER_OUTLET_ACKNOWLEDGED")));
     c = continued(&mut c, &root, &r, "strandrak-held-inner-outlet.crystalsave");
     assert!(!event(&c, &flag("INNER_OUTLET_ACKNOWLEDGED")));
     settle(&mut c, "small inner outlet acknowledged");
     assert!(event(&c, &flag("INNER_OUTLET_ACKNOWLEDGED")));
+    checkpoint(&mut c, "basin-acknowledged-outlet.crystalsave");
     walk(&mut c, &r, (14, 8));
     travel(&mut c, GameButton::Up, ROOM, (14, 7));
     walk(&mut c, &r, (14, 3));

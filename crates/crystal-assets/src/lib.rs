@@ -1112,6 +1112,45 @@ mod bemidji_plateau_stairs;
 pub use bemidji_plateau_stairs::revise_bemidji_plateau_stairs;
 mod bemidji_roof_plateau;
 pub use bemidji_roof_plateau::rebuild_bemidji_roof_plateau;
+mod inland_winter_belt;
+pub use inland_winter_belt::build_inland_winter_belt;
+mod iron_rock_clearance;
+pub use iron_rock_clearance::revise_iron_rock_clearance;
+mod tamarack_snowline;
+pub use tamarack_snowline::build_tamarack_snowline;
+mod tamarack_snowline_art;
+mod headwaters_rock_clearance;
+pub use headwaters_rock_clearance::revise_headwaters_rock_clearance;
+
+mod inner_basin_bedrock;
+pub use inner_basin_bedrock::rebuild_inner_basin_bedrock;
+mod haulage_rock_clearance;
+pub use haulage_rock_clearance::revise_haulage_rock_clearance;
+mod rochester_care_green;
+pub use rochester_care_green::revise_rochester_care_green;
+mod grand_rapids_depot_quay;
+pub use grand_rapids_depot_quay::revise_grand_rapids_depot_quay;
+mod mankato_terrace_pond;
+pub use mankato_terrace_pond::revise_mankato_terrace_pond;
+
+mod brainerd_lakeside_loop;
+pub use brainerd_lakeside_loop::revise_brainerd_lakeside_loop;
+
+mod r16_seed_bank;
+pub use r16_seed_bank::revise_r16_seed_bank;
+
+mod r02_working_farmyard;
+pub use r02_working_farmyard::revise_r02_working_farmyard;
+mod itasca_snowline;
+pub use itasca_snowline::build_itasca_snowline;
+mod headwaters_snowline;
+pub use headwaters_snowline::build_headwaters_snowline;
+mod iron_descent_snowline;
+pub use iron_descent_snowline::build_iron_descent_snowline;
+mod descent_rock_clearance;
+pub use descent_rock_clearance::revise_descent_rock_clearance;
+mod inland_grass_cut;
+pub use inland_grass_cut::repair_inland_grass_cut;
 mod duluth_mart_facade;
 pub use duluth_mart_facade::revise_duluth_mart_facade;
 mod st_cloud_service_fronts;
@@ -1519,3 +1558,9 @@ pub use northstar_story_consolidation::consolidate_northstar_story;
 
 mod northstar_public_roads;
 pub use northstar_public_roads::open_northstar_public_roads;
+
+mod r05_wooded_terraces;
+pub use r05_wooded_terraces::revise_r05_wooded_terraces;
+
+mod r06_pine_fork;
+pub use r06_pine_fork::revise_r06_pine_fork;

@@ -23,7 +23,7 @@ use crystal_runtime::{CrystalRuntime, RuntimeBattleKind, RuntimeShellSnapshot};
 use super::super::{VisibleShellController, VisibleTmHmDecision, carried_battle_non_ball_item_ids};
 use super::authored_route_fixture::indoor_walk;
 use super::northstar_earned_gyms;
-use super::rochester::{delivery, flee, trail, try_trail_with};
+use super::rochester::{delivery, flee, gym_front, trail, try_trail_with};
 use super::winona::{at, continue_in_place, continued, finish, press, travel};
 
 /// A read-only attack preference, not an engine turn or RNG preview.
@@ -1360,7 +1360,7 @@ pub(super) fn care_badge() -> (
             }
             heal(&mut c, &r);
             clinic_exit(&mut c, &r);
-            indoor_walk(&mut c, &r, (30, 24));
+            indoor_walk(&mut c, &r, gym_front(&r));
             let selected = northstar_earned_gyms::selected(&r);
             let arrival = if selected {
                 northstar_earned_gyms::arrival(&r, 1)
@@ -1389,10 +1389,10 @@ pub(super) fn care_badge() -> (
             "{id}: bounded played retry must earn victory"
         );
         if northstar_earned_gyms::selected(&r) {
-            northstar_earned_gyms::leave(&mut c, &r, 1, "MnRochester", (30, 24));
+            northstar_earned_gyms::leave(&mut c, &r, 1, "MnRochester", gym_front(&r));
         } else {
             indoor_walk(&mut c, &r, (6, 18));
-            travel(&mut c, GameButton::Down, "MnRochester", (30, 24));
+            travel(&mut c, GameButton::Down, "MnRochester", gym_front(&r));
         }
         c = continued(c, &root, &r, id);
         assert!(event(&c, win));
@@ -1419,7 +1419,7 @@ pub(super) fn care_badge() -> (
     ));
     c = continued(c, &root, &r, "rochester-earned-care-badge");
     assert!(event(&c, "EVENT_MN_GYM_1_DEFEATED"));
-    at(&mut c, "MnRochester", (30, 24));
+    at(&mut c, "MnRochester", gym_front(&r));
     (root, r, c)
 }
 

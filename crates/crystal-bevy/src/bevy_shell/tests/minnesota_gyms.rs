@@ -3318,6 +3318,15 @@ fn mankato_leave(c: &mut VisibleShellController, r: &CrystalRuntime, carpet: Poi
 #[ignore = "requires the freshly published external Mankato city/gym pack"]
 fn minnesota_mankato_city_controller_care_pc_priced_shop_and_room_returns() {
     let (root, runtime, design) = load();
+    let outside = |room| {
+        let (at, _) = super::native_city_ports::city_port(&runtime, "MnMankato", room);
+        (
+            u16::try_from(at.0).expect("native Mankato frontage x"),
+            u16::try_from(at.1).expect("native Mankato frontage y"),
+        )
+    };
+    let clinic = outside("MnMankatoPokecenter1F");
+    let mart = outside("MnMankatoMart");
     let mut initial = design["gyms"][1].clone();
     initial["id"] = serde_json::json!("MnMankato");
     initial["arrival_core"] = serde_json::json!([40, 18]);
@@ -3333,13 +3342,7 @@ fn minnesota_mankato_city_controller_care_pc_priced_shop_and_room_returns() {
     state.money = 10000;
     state.sync_party_from_storage();
     mark_runtime_snapshot_dirty(&mut c.shell);
-    city_enter_from_north(
-        &mut c,
-        &runtime,
-        (31, 14),
-        "MnMankatoPokecenter1F",
-        (10, 13),
-    );
+    city_enter_from_north(&mut c, &runtime, clinic, "MnMankatoPokecenter1F", (10, 13));
     walk_to(&mut c, &runtime, (7, 5));
     press(&mut c, GameButton::Up);
     press(&mut c, GameButton::A);
@@ -3386,17 +3389,11 @@ fn minnesota_mankato_city_controller_care_pc_priced_shop_and_room_returns() {
     finish(&mut c);
     c = continue_save(&mut c, &root, &runtime);
     for x in [10, 11] {
-        mankato_leave(&mut c, &runtime, (x, 15), (31, 14));
-        city_enter_from_north(
-            &mut c,
-            &runtime,
-            (31, 14),
-            "MnMankatoPokecenter1F",
-            (10, 13),
-        );
+        mankato_leave(&mut c, &runtime, (x, 15), clinic);
+        city_enter_from_north(&mut c, &runtime, clinic, "MnMankatoPokecenter1F", (10, 13));
     }
-    mankato_leave(&mut c, &runtime, (10, 15), (31, 14));
-    city_enter_from_north(&mut c, &runtime, (37, 28), "MnMankatoMart", (6, 5));
+    mankato_leave(&mut c, &runtime, (10, 15), clinic);
+    city_enter_from_north(&mut c, &runtime, mart, "MnMankatoMart", (6, 5));
     walk_to(&mut c, &runtime, (3, 3));
     press(&mut c, GameButton::Left);
     press(&mut c, GameButton::A);
@@ -3466,8 +3463,8 @@ fn minnesota_mankato_city_controller_care_pc_priced_shop_and_room_returns() {
     finish(&mut c);
     c = continue_save(&mut c, &root, &runtime);
     for x in [6, 7] {
-        mankato_leave(&mut c, &runtime, (x, 7), (37, 28));
-        city_enter_from_north(&mut c, &runtime, (37, 28), "MnMankatoMart", (6, 5));
+        mankato_leave(&mut c, &runtime, (x, 7), mart);
+        city_enter_from_north(&mut c, &runtime, mart, "MnMankatoMart", (6, 5));
     }
 }
 

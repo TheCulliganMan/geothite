@@ -22,18 +22,18 @@ from review_north_shore import oriented_sprite
 from review_passage_native import actors, digest, write
 
 
-def compare(pack, art, module, at, actual, output, hidden_actors=()):
+def compare(pack, art, module, at, actual, output, hidden_actors=(), facing='south'):
     assert set(hidden_actors) <= {o["script"] for o in module["objects"]}, "default-hidden source actor missing"
     module = dict(module)
     module["objects"] = [o for o in module["objects"] if o["script"] not in hidden_actors]
     a = module['attributes']
-    assert a['time_of_day'] == 'nite'
+    assert a['time_of_day'] == 'nite' or a['palette'] == 'PALETTE_NITE'
     sprites = npc_palette_pack(pack, 'nite')
     tileset = a['tileset_name']
     terrain = art.render(tileset, a['width'], a['height'], module['blocks'], 'nite')
     scene = actors(sprites, terrain, module)
     x, y = at
-    scene.alpha_composite(oriented_sprite(sprites, 'SPRITE_CHRIS', 'south'), (x*16, y*16))
+    scene.alpha_composite(oriented_sprite(sprites, 'SPRITE_CHRIS', facing), (x*16, y*16))
     box = (x*16-256, y*16-192, x*16+256, y*16+192)
     priority_scene(pack, module, scene, terrain, box)
     left, top = box[0]//32*32, box[1]//32*32

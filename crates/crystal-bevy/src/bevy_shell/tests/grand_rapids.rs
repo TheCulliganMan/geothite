@@ -27,6 +27,33 @@ const REPORT: &str = "EVENT_MN_HEADWATERS_REPORT";
 const R09: &str = "MnR09C01R00";
 const R10: &str = "MnR10C00R00";
 
+pub(super) fn frontage(runtime: &CrystalRuntime, room: &str) -> Point {
+    let constant = runtime.data().maps[room]
+        .attributes
+        .map_constant
+        .as_deref()
+        .expect("native Grand Rapids room constant");
+    let town = &runtime.data().maps[TOWN];
+    let door = town
+        .events
+        .warps
+        .iter()
+        .find(|warp| warp.target_map_constant == constant)
+        .expect("installed Grand Rapids door");
+    let outside = town
+        .events
+        .warps
+        .iter()
+        .find(|warp| warp.index == door.index + 1)
+        .expect("paired Grand Rapids exterior return");
+    assert_eq!(outside.target_map_constant, "MN_GRAND_RAPIDS");
+    assert_eq!((outside.x, outside.y), (door.x, door.y + 1));
+    (
+        i16::try_from(outside.x).expect("native x"),
+        i16::try_from(outside.y).expect("native y"),
+    )
+}
+
 fn fixture(defeated: bool, recovered: bool) -> (AssetRoot, CrystalRuntime, VisibleShellController) {
     fixture_at(defeated, recovered, true, true, TOWN, (6, 24))
 }
@@ -333,7 +360,7 @@ fn answer(c: &mut VisibleShellController, yes: bool) {
 fn grand_rapids_controller_requires_both_win_and_recovered_evidence() {
     for (win, recovered) in [(false, false), (true, false), (false, true)] {
         let (root, runtime, mut c) = fixture(win, recovered);
-        enter(&mut c, &runtime, (27, 14), DEPOT, (12, 17));
+        enter(&mut c, &runtime, frontage(&runtime, DEPOT), DEPOT, (12, 17));
         walk(&mut c, &runtime, (11, 10));
         let before = c.shell.shell.session().state().clone();
         talk(&mut c, GameButton::Up);
@@ -357,7 +384,7 @@ fn grand_rapids_controller_requires_both_win_and_recovered_evidence() {
 #[ignore = "requires published external Grand Rapids story pack"]
 fn grand_rapids_controller_decline_continue_retry_acknowledgment_and_repeat() {
     let (root, runtime, mut c) = fixture(true, true);
-    enter(&mut c, &runtime, (27, 14), DEPOT, (12, 17));
+    enter(&mut c, &runtime, frontage(&runtime, DEPOT), DEPOT, (12, 17));
     walk(&mut c, &runtime, (11, 10));
     let before = c.snapshot().expect("pre-handover");
     let state = c.shell.shell.session().state();
@@ -401,13 +428,13 @@ fn grand_rapids_controller_decline_continue_retry_acknowledgment_and_repeat() {
     talk(&mut c, GameButton::Up);
     assert!(finish(&mut c).contains("MnGrandRapidsDepotDoneText"));
     for carpet in [(12, 19), (13, 19)] {
-        exit(&mut c, &runtime, carpet, (27, 14));
-        enter(&mut c, &runtime, (27, 14), DEPOT, (12, 17));
+        exit(&mut c, &runtime, carpet, frontage(&runtime, DEPOT));
+        enter(&mut c, &runtime, frontage(&runtime, DEPOT), DEPOT, (12, 17));
         walk(&mut c, &runtime, (11, 10));
         talk(&mut c, GameButton::Up);
         assert!(finish(&mut c).contains("MnGrandRapidsDepotDoneText"));
     }
-    exit(&mut c, &runtime, (12, 19), (27, 14));
+    exit(&mut c, &runtime, (12, 19), frontage(&runtime, DEPOT));
     walk(&mut c, &runtime, (40, 24));
     assert!(event(&c, CLEARED));
     let _loaded = continued(&mut c, &root, &runtime, "east-road");
@@ -417,7 +444,13 @@ fn grand_rapids_controller_decline_continue_retry_acknowledgment_and_repeat() {
 #[ignore = "requires published external Grand Rapids story pack"]
 fn grand_rapids_controller_native_heal_pc_priced_shop_and_safe_returns() {
     let (root, runtime, mut c) = fixture(false, false);
-    enter(&mut c, &runtime, (9, 12), CLINIC, (10, 13));
+    enter(
+        &mut c,
+        &runtime,
+        frontage(&runtime, CLINIC),
+        CLINIC,
+        (10, 13),
+    );
     walk(&mut c, &runtime, (7, 5));
     talk(&mut c, GameButton::Up);
     assert!(finish(&mut c).contains("MN_GR_NURSEText"));
@@ -528,8 +561,8 @@ fn grand_rapids_controller_native_heal_pc_priced_shop_and_safe_returns() {
     }
     finish(&mut c);
     let mut c = continued(&mut c, &root, &runtime, "healed");
-    exit(&mut c, &runtime, (10, 15), (9, 12));
-    enter(&mut c, &runtime, (39, 16), MART, (6, 5));
+    exit(&mut c, &runtime, (10, 15), frontage(&runtime, CLINIC));
+    enter(&mut c, &runtime, frontage(&runtime, MART), MART, (6, 5));
     walk(&mut c, &runtime, (3, 3));
     let before = c.shell.shell.session().state().clone();
     talk(&mut c, GameButton::Left);
@@ -585,7 +618,7 @@ fn grand_rapids_controller_native_heal_pc_priced_shop_and_safe_returns() {
         press(&mut c, b);
     }
     assert!(c.snapshot().expect("closed shop").pending_shop.is_none());
-    exit(&mut c, &runtime, (7, 7), (39, 16));
+    exit(&mut c, &runtime, (7, 7), frontage(&runtime, MART));
     walk(&mut c, &runtime, (30, 32));
     assert!(!event(&c, CLEARED));
     let _loaded = continued(&mut c, &root, &runtime, "services");
@@ -692,13 +725,13 @@ fn grand_rapids_controller_handover_releases_real_r10_and_both_seams_survive_con
         "MnGrandRapidsEastCheckEvidenceText",
     );
     at(&mut c, TOWN, (43, 24));
-    enter(&mut c, &runtime, (27, 14), DEPOT, (12, 17));
+    enter(&mut c, &runtime, frontage(&runtime, DEPOT), DEPOT, (12, 17));
     walk(&mut c, &runtime, (11, 10));
     offer(&mut c);
     answer(&mut c, true);
     assert!(finish(&mut c).contains("MnGrandRapidsDepotReadText"));
     assert!(event(&c, CLEARED));
-    exit(&mut c, &runtime, (12, 19), (27, 14));
+    exit(&mut c, &runtime, (12, 19), frontage(&runtime, DEPOT));
     walk(&mut c, &runtime, (43, 24));
     let state = c.shell.shell.session().state();
     let resources = (state.money, state.bag.clone(), state.badges.clone());
@@ -734,7 +767,13 @@ fn grand_rapids_controller_inbound_travelers_reach_care_without_outbound_permiss
         advance(&mut c, button, TOWN, town_edge);
         advance(&mut c, button, TOWN, inside);
         assert!(!event(&c, CLEARED) && !event(&c, REPORT));
-        enter(&mut c, &runtime, (9, 12), CLINIC, (10, 13));
+        enter(
+            &mut c,
+            &runtime,
+            frontage(&runtime, CLINIC),
+            CLINIC,
+            (10, 13),
+        );
         walk(&mut c, &runtime, (7, 5));
         talk(&mut c, GameButton::Up);
         assert!(finish(&mut c).contains("MN_GR_NURSEText"));

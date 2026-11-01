@@ -111,6 +111,7 @@ pub(super) fn animate(
                     &map.attributes.tileset_name,
                     map.attributes.environment.as_deref()?,
                     s.overworld.tile.x,
+                    s.overworld.tile.y,
                     &s.progression.time,
                 ))
             })

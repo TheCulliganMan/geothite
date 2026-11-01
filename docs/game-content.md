@@ -531,6 +531,91 @@ The review minimum rises to 100 for the final three League matches; native Hall
 of Fame, credits and postgame Continue pass. The runbook records the actual
 same-pack saves and distinguishes these checks from unboosted balance.
 
+## Rebuilding the reviewed Minnesota maps
+
+The [reviewed-map runbook](../planning/minnesota/revisions/reviewed-maps-v01/README.md)
+records the executed Rust `rebuild_minnesota_reviewed_maps REPOSITORY_ROOT
+PARENT_PACK RECIPE OUTPUT` command. It consumes the frozen coastal passing-width
+pack and twenty-three bound authoring files, runs eighteen existing guarded builders
+in memory, then writes one ignored continuation pack. Every stage identity and
+the final complete pack bytes match the separately verified winter/Ely/Inner
+Basin/Haulage/Safari/Rochester/Grand Rapids/Mankato/Brainerd continuation. The parent source index, recipe and complete source closure
+are checked before composition; changed/missing inputs and unsafe outputs are
+rejected without publication.
+
+Its current source index and read-only auditor resolve all 30 affected native
+layouts to their latest frozen rows. This is a verified rebuild from an existing
+regional parent. The optional Safari stage preserves terrain while enabling
+actual ranger admission, native trainer-back capture battles and safe return;
+the [current integration](../planning/minnesota/revisions/boundary-safari-runtime-v01/CURRENT-INTEGRATION.md)
+records paid journeys and free story/fishing preservation. The combined pack
+is now selected for local map review; the
+[regional review](../planning/minnesota/revisions/reviewed-maps-v01/REGIONAL-REVIEW.md)
+records 33 additional city/train/fair/river/renderer/weather tests and remaining
+story/visual work. This is not a fresh core-content initializer, full campaign
+acceptance, browser publication or save migration. Use the exact inputs and fresh
+ignored output paths; preserve early dry-bank fishing and the warm Superior/
+Boundary Waters exclusions. The
+[tighter Rochester](../planning/minnesota/towns/rochester-care-green-v01/README.md)
+keeps all 742 other maps and existing programs/art/audio exact. Nine current
+controller cases cover its doors, signs, roads, services, early research/fishing
+and earned first badge; two actual stdio sessions and five native player views
+complete the local town review.
+The [Grand Rapids depot/quay revision](../planning/minnesota/towns/grand-rapids-depot-quay-v01/README.md)
+adds the sixteenth stage, retained as
+`content-packs/minnesota-reviewed-maps-v05.crystalpack`. It brings the original
+services onto a tighter street/waterfront circuit, with complete facades and two
+clear street/pier lanes. Twelve controller cases and two actual stdio sessions
+(269 calls, empty stderr) preserve MS09, services and native fishing. Five saved
+native views and the whole 108-map atlas were inspected. Earlier recipes remain
+supported; the v04 compatibility rebuild is byte-identical. Full campaign and
+broader visual acceptance remain separate.
+The [Mankato terrace/pond garden](../planning/minnesota/towns/mankato-terrace-pond-v01/README.md)
+adds the seventeenth stage, retained as
+`content-packs/minnesota-reviewed-maps-v06.crystalpack`. Complete facades and the
+original Gym/ledge course remain; services share a tighter court/garden circuit.
+Two dry rod banks and all52 contained Surf tiles pass actual native input. Six
+controller cases,403 stdio calls with empty stderr, five saved native views and
+five exact source-frame comparisons pass. All742 other maps and602 audio
+programs remain exact. The new master reproduces v05 byte for byte; thirteen
+publisher and ten index refusals pass. Early zero-badge Old Rod gift/casting/
+Run/Continue and guru gifts/repeats pass on v06, with ten Winona and six R01
+banks reachable from dry land. See the current recipe for exact hashes, commands
+and fixture limits.
+The [Brainerd lake-street revision](../planning/minnesota/towns/brainerd-lakeside-loop-v01/README.md)
+adds the eighteenth stage and was selected as
+`content-packs/minnesota-reviewed-maps-v07.crystalpack`. The native supply cabin
+joins the lake street, the rail leaves both road lanes clear, and native42 fits
+the right pier cap. Four successful controller cases, 845 actual stdio calls
+with empty stderr, eight complete source-frame matches and four actual played
+native views bind this revision. All 742 other maps and 602 audio programs stay
+exact. The master reproduces v06 byte for byte, with thirteen publisher and
+eight index refusals passing. Both early fishing courses pass on current bytes.
+The runbook records exact source/pack hashes and fixture limits.
+The [R16 seed-bank revision](../planning/minnesota/routes/r16-seed-bank-v01/README.md)
+adds the nineteenth stage and was selected locally as
+`content-packs/minnesota-reviewed-maps-v08.crystalpack`. Fifteen native terrain
+cells fit a short low-bank hop and yellow-grass uphill gates beside the existing
+grower/flowers. Both bridge rows, the original hayfield lanes, current stories,
+early fishing and all742other maps remain exact. Three native courses,186clean
+stdio calls, six complete source-frame matches, two played native captures and
+the current108-map atlas bind the revision. All602audio checks and assets/Bevy
+all-target Clippy pass. Recipe-v08 also reproduces v07 bytes exactly; its source
+index binds32layouts, seven route groups,24sources and26town anchors. See the
+[rebuild runbook](../planning/minnesota/revisions/reviewed-maps-v01/README.md)
+for executed commands and known fixture/formatting limits.
+The [R02 working garden](../planning/minnesota/routes/r02-working-farmyard-v01/README.md)
+adds the twentieth stage and is selected locally as
+`content-packs/minnesota-reviewed-maps-v09.crystalpack`. Seventeen native cells
+shape crop beds, stakes and a two-tile approach to a new Berry grower. The grant
+is transactional and once-only, with native item use, full-pocket Toss/retry and
+Continue verified. Five native cases,496clean stdio calls, six exact source-frame
+matches and three played views pass, including both lanes of both actual town
+seams in both directions. All742other maps, all existing programs, regional
+fauna/fishing/art and all602audio programs remain exact. The twenty-stage master
+reproduces v08; the default source index binds33layouts, eight route groups,
+25sources,26retained town anchors and the new grower/reward.
+
 ## Minnesota cave reference pass
 
 The [eleven-room cave review](../planning/minnesota/caves/johto-quality-v01/REVIEW.md)
@@ -2542,3 +2627,25 @@ and a real21-command lip return versus38 ordinary steps. Regional225 policy,
 all602 PCM hashes/frame counts/loop ranges and local WebSocket identity/presence
 checks pass. Native movement/battles/items, production cameras, final earned
 journey and active selection remain separate pending acceptance.
+
+The River Bluffs North [wooded-terrace revision](../planning/minnesota/routes/r05-wooded-terraces-v01/README.md)
+was selected locally as `content-packs/minnesota-reviewed-maps-v10.crystalpack`
+and is preserved by v11.
+Winding two-tile trails and pine/grass pockets replace bare terrace shoulders;
+continuous native cliff faces replace boulder rims and interior rocks sit back
+from the edges. All five stairs, both cave mouths and early fishing pass. Eight
+native courses, 929 terrace stdio calls plus the cave course, ten exact native
+frames and three played views verify the local revision. All other maps and
+existing programs, regional fauna, fishing, art/audio and attributes stay exact.
+The twenty-one-stage source build reproduces v09 as well. Broader map quality
+and earned regional progression remain open.
+
+The [Pine Country fork revision](../planning/minnesota/routes/r06-pine-fork-v01/README.md) is the current local selection,
+`content-packs/minnesota-reviewed-maps-v11.crystalpack`. Its native dry downhill
+hop, closed pine flanks and six-grass uphill choices give the lake road a distinct
+return trip. The original northern hop, Cut-gated Ether/stair, cabins, Super Rod
+guru, bridge and pier remain intact; the lookout rim is continuous. Seven native
+courses, 938 actual stdio calls, ten exact complete native frames and four played
+views pass. All 742 other maps and existing programs, fauna/fishing, rooms,
+attributes and art/audio stay exact. The twenty-two-stage source build reproduces
+v10 as well. Broader map quality and earned regional progression remain open.

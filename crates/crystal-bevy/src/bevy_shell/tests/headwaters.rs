@@ -7,6 +7,10 @@ use std::time::{SystemTime, UNIX_EPOCH};
 use crystal_assets::{AssetRoot, read_loaded_verified_compiled_game_pack};
 use crystal_core::input::GameButton;
 use crystal_core::models::{Dv, LearnedMove};
+use crystal_core::state::GameState;
+use crystal_core::systems::script_flags::{
+    BADGE_ENGINE_FLAGS, ScriptFlagCommand, apply_script_flag_mutation,
+};
 use crystal_runtime::{CrystalRuntime, RuntimeShellPhase};
 
 use super::super::{
@@ -23,6 +27,22 @@ enum Setup {
     Empty,
     Battle,
     Cut { learns_cut: bool, hive_badge: bool },
+}
+
+fn initial_badges(state: &mut GameState, hive: bool) {
+    for (index, flag) in BADGE_ENGINE_FLAGS.iter().enumerate() {
+        let granted = index < 6 && (index != 1 || hive);
+        apply_script_flag_mutation(
+            state,
+            ScriptFlagCommand {
+                command: if granted { "setflag" } else { "clearflag" }.into(),
+                flag_id: (*flag).into(),
+                source_script: "HeadwatersInitialFixture".into(),
+                command_index: index,
+            },
+        )
+        .expect("consistent initial six-badge fixture");
+    }
 }
 
 fn fixture(start: Point, setup: Setup) -> (AssetRoot, CrystalRuntime, VisibleShellController) {
@@ -71,17 +91,17 @@ fn fixture(start: Point, setup: Setup) -> (AssetRoot, CrystalRuntime, VisibleShe
     if matches!(setup, Setup::Battle) {
         // Explicit setup only: native-created partners and six obedience badge
         // bits, not an earned badge/team claim. No state is rewritten afterward.
-        let partners = ["TYPHLOSION", "FERALIGATR"].map(|species| {
+        let partners = ["BOREALYNX", "VOYAGEAR"].map(|species| {
             runtime
                 .data()
-                .create_pokemon(species, 45, Dv::default())
+                .create_pokemon(species, 60, Dv::default())
                 .expect("legal source partner")
         });
         let state = controller.shell.shell.session_mut().state_mut();
         for partner in partners {
             assert!(state.storage.party.add_pokemon(partner));
         }
-        state.badges.johto = [true, true, true, true, true, true, false, false];
+        initial_badges(state, true);
         state.sync_party_from_storage();
         mark_runtime_snapshot_dirty(&mut controller.shell);
     }
@@ -94,25 +114,31 @@ fn fixture(start: Point, setup: Setup) -> (AssetRoot, CrystalRuntime, VisibleShe
         // legal moves and permission bits, not an earned team/HM/badge claim.
         let mut partner = runtime
             .data()
-            .create_pokemon("MEW", 45, Dv::default())
-            .expect("native HM-compatible source partner");
-        let moves = if learns_cut {
-            vec!["CUT", "PSYCHIC_M"]
-        } else {
-            vec!["PSYCHIC_M"]
-        };
-        partner.moves = moves
-            .into_iter()
-            .map(|name| LearnedMove {
-                name: name.into(),
-                current_pp: runtime.data().moves[name].pp,
-                pp_ups: 0,
-            })
-            .collect();
+            .create_pokemon("VOYAGEAR", 60, Dv::default())
+            .expect("active Minnesota HM-compatible partner");
+        assert!(
+            partner
+                .species
+                .tmhm_learnset
+                .iter()
+                .any(|name| name == "CUT")
+        );
+        assert!(!partner.moves.iter().any(|known| known.name == "CUT"));
+        if learns_cut {
+            partner.moves.insert(
+                0,
+                LearnedMove {
+                    name: "CUT".into(),
+                    current_pp: runtime.data().moves["CUT"].pp,
+                    pp_ups: 0,
+                },
+            );
+            partner.moves.truncate(4);
+        }
+        partner.item = Some("SMOKE_BALL".into());
         let state = controller.shell.shell.session_mut().state_mut();
         assert!(state.storage.party.add_pokemon(partner));
-        state.badges.johto = [true, true, true, true, true, true, false, false];
-        state.badges.johto[1] = hive_badge;
+        initial_badges(state, hive_badge);
         state.sync_party_from_storage();
         mark_runtime_snapshot_dirty(&mut controller.shell);
     }
@@ -181,7 +207,7 @@ fn barrier(controller: &mut VisibleShellController, at: Point, button: GameButto
     }
 }
 
-struct OwnedSave(PathBuf);
+struct OwnedSave(PathBuf, bool);
 
 impl OwnedSave {
     fn new(label: &str) -> Self {
@@ -189,16 +215,24 @@ impl OwnedSave {
             .duration_since(UNIX_EPOCH)
             .expect("clock")
             .as_nanos();
-        Self(std::env::temp_dir().join(format!(
-            "geothite-r14-{label}-{}-{stamp}.crystalsave",
-            std::process::id()
-        )))
+        let retained = std::env::var_os("CRYSTAL_HEADWATERS_SAVE_DIR").map(PathBuf::from);
+        let directory = retained.clone().unwrap_or_else(std::env::temp_dir);
+        std::fs::create_dir_all(&directory).expect("native QA save directory");
+        Self(
+            directory.join(format!(
+                "geothite-r14-{label}-{}-{stamp}.crystalsave",
+                std::process::id()
+            )),
+            retained.is_some(),
+        )
     }
 }
 
 impl Drop for OwnedSave {
     fn drop(&mut self) {
-        let _ = std::fs::remove_file(&self.0);
+        if !self.1 {
+            let _ = std::fs::remove_file(&self.0);
+        }
     }
 }
 
@@ -781,8 +815,8 @@ fn headwaters_controller_grassy_survey_climb_dry_drop_and_continue() {
             let name = format!("MnR14C{:02}R{:02}", x / 64, y / 48);
             let map = &runtime.data().maps[&name];
             let block = map.blocks[(y % 48 / 2) * usize::from(map.attributes.width) + x % 64 / 2];
-            let collision =
-                &runtime.data().tilesets["mn_headwaters"].collision[&format!("{block:02x}")];
+            let collision = &runtime.data().tilesets[&map.attributes.tileset_name].collision
+                [&format!("{block:02x}")];
             grass_steps += usize::from(collision[y % 2 * 2 + x % 2] == "TALL_GRASS");
         },
         escape_wild,

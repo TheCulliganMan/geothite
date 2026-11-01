@@ -25,6 +25,437 @@ const WINTER: [(&str, &str, u16); 3] = [
 ];
 const TIMES: [&str; 4] = ["morn", "day", "nite", "dark"];
 
+const INLAND: [(&str, &str); 6] = [
+    ("mn_winter_bemidji", "mn_bemidji"),
+    ("mn_winter_bemidji_northwoods", "johto"),
+    ("mn_winter_grand_rapids", "johto_modern"),
+    ("mn_winter_iron_range", "mn_iron_range"),
+    ("mn_winter_border_pines", "mn_border_pines"),
+    ("mn_winter_border_pines_south", "mn_border_pines"),
+];
+
+#[test]
+fn inland_rustles_resolve_both_border_habitats_and_do_not_color_off_map_tiles() {
+    for (winter, source) in INLAND {
+        assert_eq!(animation_source(winter), source);
+        assert!(super::super::seasonal_palette::is_winter(winter));
+        assert!(!super::super::seasonal_palette::is_winter(&format!(
+            "{winter}_extra"
+        )));
+        for point in [
+            TilePosition::new(-1, 0),
+            TilePosition::new(2, 0),
+            TilePosition::new(0, 2),
+        ] {
+            assert_eq!(rustle_tileset_at(winter, 1, &[0x37], point), source);
+        }
+    }
+    for block in [0x3d, 0x37] {
+        assert_eq!(
+            rustle_tileset_at(
+                "mn_winter_border_pines",
+                1,
+                &[block],
+                TilePosition::new(1, 1)
+            ),
+            "mn_winter_border_pines"
+        );
+    }
+    assert_eq!(
+        rustle_tileset("mn_winter_border_pines", Some(3)),
+        "mn_border_pines"
+    );
+    assert_eq!(animation_source("mn_bemidji_plateau_stairs"), "mn_bemidji");
+}
+
+#[test]
+#[ignore = "requires CRYSTAL_WINTER_RENDER_TEST_PACK containing all six inland aliases"]
+fn inland_terrain_animation_clock_and_rustle_pixels_use_installed_art() {
+    use super::super::{load_tileset_palette_bank, seasonal_palette};
+
+    let (root, runtime) = fixture();
+    let capture = capture_directory();
+    let mut captures = Vec::new();
+    let mut images = Assets::<Image>::default();
+    let mut rendered = RenderedTilesetArt::default();
+    let raw =
+        crate::open_runtime_image(root.runtime_assets().join("gfx/overworld/grass_rustle.png"))
+            .expect("original rustle")
+            .to_rgba8();
+    let zero = raw.get_pixel(0, 0);
+    let mut source_counts = BTreeMap::new();
+    for pixel in raw.pixels().filter(|pixel| *pixel != zero) {
+        *source_counts
+            .entry(palette_index_from_gray(pixel[0]))
+            .or_default() += 1;
+    }
+    for (winter, source) in INLAND {
+        let definition = &runtime.data().tilesets[winter];
+        let original_foregrounds: BTreeMap<usize, [[u8; 3]; 3]> = serde_json::from_str(
+            &crate::read_runtime_asset_to_string(
+                root.runtime_assets()
+                    .join(format!("data/tilesets/{winter}_foregrounds.json")),
+            )
+            .expect("installed foreground metadata"),
+        )
+        .expect("authored foregrounds");
+        let day = load_tileset_palette_bank(&root, winter, "day")
+            .expect("day colors")
+            .expect("day bank");
+        for time in TIMES {
+            let bank = load_tileset_palette_bank(&root, winter, time)
+                .expect("clock colors")
+                .expect("winter bank");
+            let foregrounds = seasonal_palette::load_foregrounds(&root, winter, Some(&bank))
+                .expect("clock-lit foregrounds");
+            if time == "day" {
+                assert_eq!(foregrounds, original_foregrounds);
+            } else {
+                assert_ne!(bank, day, "{winter} {time}");
+                assert_ne!(foregrounds, original_foregrounds, "{winter} {time}");
+            }
+            let art = load_tileset_art(&root, winter, time, &definition.palette_map, &mut images)
+                .expect("production inland terrain");
+            let original = load_tileset_art(
+                &root,
+                source,
+                time,
+                &runtime.data().tilesets[source].palette_map,
+                &mut images,
+            )
+            .expect("native source behavior");
+            let mut keys: Vec<_> = art.animated_tiles.keys().copied().collect();
+            let mut source_keys: Vec<_> = original.animated_tiles.keys().copied().collect();
+            keys.sort_unstable();
+            source_keys.sort_unstable();
+            assert_eq!(keys, source_keys, "{winter} {time}");
+            if matches!(source, "johto" | "johto_modern" | "mn_bemidji") {
+                assert_eq!(keys, [0x03, 0x14], "preserve flowers and running water");
+            } else {
+                assert!(keys.is_empty(), "do not add forest behavior");
+            }
+            let original_bank = load_tileset_palette_bank(&root, source, time)
+                .expect("source colors")
+                .expect("native bank");
+            for key in keys {
+                let a = &original.animated_tiles[&key];
+                let b = &art.animated_tiles[&key];
+                assert_eq!(a.frame_ticks, b.frame_ticks);
+                assert_eq!(a.phase_offset, b.phase_offset);
+                assert_eq!(a.requires_forest_restless, b.requires_forest_restless);
+                assert_eq!(a.cave_water_composite, b.cave_water_composite);
+                assert_eq!(a.advance_on_phase_offset, b.advance_on_phase_offset);
+                assert_eq!(a.additional_schedule, b.additional_schedule);
+                assert_eq!(a.frames.len(), b.frames.len());
+                let source_palette = original_bank
+                    [usize::from(runtime.data().tilesets[source].palette_map[key] & 7)];
+                let palette = bank[usize::from(definition.palette_map[key] & 7)];
+                for (before, after) in a.frames.iter().zip(b.frames.iter()) {
+                    let before = images
+                        .get(before)
+                        .expect("source frame")
+                        .data
+                        .as_deref()
+                        .expect("source pixels");
+                    let after = images
+                        .get(after)
+                        .expect("inland frame")
+                        .data
+                        .as_deref()
+                        .expect("inland pixels");
+                    assert_eq!(before.len(), after.len());
+                    for (native, derived) in before
+                        .as_chunks::<4>()
+                        .0
+                        .iter()
+                        .zip(after.as_chunks::<4>().0)
+                    {
+                        assert_eq!(native[3], derived[3]);
+                        assert!(
+                            (0..4).any(|index| native[..3] == source_palette[index]
+                                && derived[..3] == palette[index]),
+                            "native animation indices and clock colors: {winter} {time} {key:02x}"
+                        );
+                    }
+                }
+            }
+            if grass_cache_style(winter).is_some() {
+                let palette = grass_palette(&root, winter, time)
+                    .expect("rustle metadata")
+                    .expect("icy grass");
+                let frames =
+                    grass_rustle_frames_for_art(&mut rendered, &root, winter, time, &mut images)
+                        .expect("production icy rustle");
+                let native =
+                    grass_rustle_frames_for_art(&mut rendered, &root, "johto", time, &mut images)
+                        .expect("native rustle");
+                for (frame, baseline) in frames.iter().zip(&native) {
+                    let pixels = frame_pixels(frame, &images);
+                    assert_eq!(colors(pixels), expected_colors(&source_counts, &palette));
+                    assert!(
+                        pixels
+                            .as_chunks::<4>()
+                            .0
+                            .iter()
+                            .zip(frame_pixels(baseline, &images).as_chunks::<4>().0)
+                            .all(|(icy, green)| icy[3] == green[3])
+                    );
+                }
+                if let Some(directory) = &capture {
+                    captures.extend(capture_rustle_frames(
+                        directory, winter, time, &frames, &images,
+                    ));
+                }
+            }
+        }
+    }
+    assert!(rendered.grass_rustle_errors.is_empty());
+    if let Some(directory) = capture {
+        write_capture(&directory.join("receipt.json"), &serde_json::to_vec_pretty(&serde_json::json!({
+            "scope": "Production CPU terrain/animation/rustle assets; GPU weather and traversal require separate captures",
+            "aliases": INLAND, "time_banks": TIMES, "rustles": captures,
+            "assertions": "Exact animation registrations and schedules, native frame indices/opacity with authored clock colors, lit foregrounds and icy rustle OAM/colors"
+        })).expect("capture receipt"));
+    }
+}
+
+#[test]
+#[ignore = "requires CRYSTAL_WINTER_RENDER_TEST_PACK with both Tamarack aliases"]
+fn tamarack_mixed_art_keeps_native_warm_pixels_animations_clock_and_grass_masks() {
+    assert_mixed_headwaters_art(
+        "mn_tamarack_thaw",
+        &["mn_winter_tamarack"],
+        0xb1,
+        &["MnR20C01R00", "MnR20C01R01"],
+    );
+}
+
+#[test]
+#[ignore = "requires CRYSTAL_WINTER_RENDER_TEST_PACK containing the complete Headwaters snowline"]
+fn headwaters_mixed_art_keeps_native_warm_pixels_inherited_stairs_and_cut_grass_masks() {
+    assert_mixed_headwaters_art(
+        "mn_headwaters_thaw",
+        &["mn_winter_headwaters", "mn_winter_headwaters_stairs"],
+        0x9f,
+        &["MnR08C00R01", "MnR08C01R01"],
+    );
+}
+
+#[test]
+#[ignore = "requires CRYSTAL_WINTER_RENDER_TEST_PACK containing the complete Itasca snowline"]
+fn itasca_mixed_art_keeps_native_warm_pixels_clips_and_grass_masks() {
+    assert_mixed_headwaters_art(
+        "mn_itasca_thaw",
+        &["mn_winter_itasca_trail"],
+        0xb1,
+        &["MnR14C00R00", "MnR14C00R01"],
+    );
+}
+
+fn assert_mixed_headwaters_art(thaw_alias: &str, full_aliases: &[&str], melt: u16, maps: &[&str]) {
+    use super::super::{load_tileset_palette_bank, seasonal_palette};
+
+    let (root, runtime) = fixture();
+    let mut images = Assets::<Image>::default();
+    let mut rendered = RenderedTilesetArt::default();
+    let capture = capture_directory();
+    let mut captures = Vec::new();
+    for time in TIMES {
+        let source = load_tileset_art(
+            &root,
+            "mn_headwaters",
+            time,
+            &runtime.data().tilesets["mn_headwaters"].palette_map,
+            &mut images,
+        )
+        .expect("native Headwaters art");
+        let donor = load_tileset_art(
+            &root,
+            "mn_winter_outdoor",
+            time,
+            &runtime.data().tilesets["mn_winter_outdoor"].palette_map,
+            &mut images,
+        )
+        .expect("original icy grass donor");
+        let thaw = load_tileset_art(
+            &root,
+            thaw_alias,
+            time,
+            &runtime.data().tilesets[thaw_alias].palette_map,
+            &mut images,
+        )
+        .expect("mixed native snowline art");
+        assert_eq!(
+            thaw.metatile_layout[..source.metatile_layout.len()],
+            source.metatile_layout
+        );
+        for glyph in source
+            .metatile_layout
+            .iter()
+            .copied()
+            .collect::<std::collections::BTreeSet<_>>()
+        {
+            let glyph = usize::from(glyph);
+            assert_eq!(
+                source.transition_tiles[glyph].indices,
+                thaw.transition_tiles[glyph].indices
+            );
+            assert_eq!(
+                source.transition_tiles[glyph].palette, thaw.transition_tiles[glyph].palette,
+                "warm glyph {glyph:02x} keeps exact native {time} colors"
+            );
+            assert_eq!(
+                images
+                    .get(&source.tile_handles[glyph])
+                    .expect("native pixels")
+                    .data,
+                images
+                    .get(&thaw.tile_handles[glyph])
+                    .expect("warm pixels")
+                    .data
+            );
+            assert_eq!(
+                images
+                    .get(&source.priority_tile_handles[glyph])
+                    .expect("native opacity")
+                    .data,
+                images
+                    .get(&thaw.priority_tile_handles[glyph])
+                    .expect("warm opacity")
+                    .data
+            );
+        }
+        let native_bank = load_tileset_palette_bank(&root, "mn_headwaters", time)
+            .expect("native clock")
+            .expect("native bank");
+        let full_grass = [0x03];
+        let thaw_grass = [0x88, melt];
+        for (alias, grass_blocks) in full_aliases
+            .iter()
+            .map(|&alias| (alias, full_grass.as_slice()))
+            .chain(std::iter::once((thaw_alias, thaw_grass.as_slice())))
+        {
+            assert!(seasonal_palette::is_winter(alias));
+            assert_eq!(animation_source(alias), "mn_headwaters");
+            let art = load_tileset_art(
+                &root,
+                alias,
+                time,
+                &runtime.data().tilesets[alias].palette_map,
+                &mut images,
+            )
+            .expect("native seasonal alias");
+            assert_eq!(
+                art.animated_tiles.len(),
+                6,
+                "water, flowers and four native Whirlpool glyphs"
+            );
+            assert_eq!(source.animated_tiles.len(), art.animated_tiles.len());
+            for (glyph, original) in &source.animated_tiles {
+                let derived = &art.animated_tiles[glyph];
+                assert_eq!(derived.frame_ticks, original.frame_ticks);
+                assert_eq!(derived.phase_offset, original.phase_offset);
+                assert_eq!(
+                    derived.requires_forest_restless,
+                    original.requires_forest_restless
+                );
+                assert_eq!(derived.cave_water_composite, original.cave_water_composite);
+                assert_eq!(
+                    derived.advance_on_phase_offset,
+                    original.advance_on_phase_offset
+                );
+                assert_eq!(derived.additional_schedule, original.additional_schedule);
+                assert_eq!(derived.frames.len(), original.frames.len());
+                for (before, after) in original.frames.iter().zip(derived.frames.iter()) {
+                    assert_eq!(
+                        images.get(before).expect("native animation").data,
+                        images.get(after).expect("mixed animation").data,
+                        "{alias} {time} glyph{glyph:02x}"
+                    );
+                }
+            }
+            let palette = grass_palette(&root, alias, time)
+                .expect("installed icy palette")
+                .expect("icy style");
+            for &block in grass_blocks {
+                assert_eq!(rustle_tileset(alias, Some(block)), alias);
+                for part in 0..16 {
+                    let glyph = usize::from(art.metatile_layout[usize::from(block) * 16 + part]);
+                    let native = usize::from(donor.metatile_layout[0x3d * 16 + part]);
+                    assert_eq!(
+                        art.transition_tiles[glyph].indices, donor.transition_tiles[native].indices,
+                        "every native icy grass bitplane and zero hole"
+                    );
+                    assert_eq!(
+                        art.transition_tiles[glyph].palette[1..],
+                        palette[1..],
+                        "ground and rustle use the same {time} icy inks"
+                    );
+                    if block == melt {
+                        assert_eq!(
+                            art.transition_tiles[glyph].palette[0], native_bank[0][0],
+                            "melt grass has native clock-lit green behind unchanged blades"
+                        );
+                    }
+                    let a = images
+                        .get(&art.priority_tile_handles[glyph])
+                        .expect("derived priority")
+                        .data
+                        .as_deref()
+                        .expect("derived pixels");
+                    let b = images
+                        .get(&donor.priority_tile_handles[native])
+                        .expect("native priority")
+                        .data
+                        .as_deref()
+                        .expect("native pixels");
+                    assert!(
+                        a.as_chunks::<4>()
+                            .0
+                            .iter()
+                            .zip(b.as_chunks::<4>().0)
+                            .all(|(derived, native)| derived[3] == native[3])
+                    );
+                }
+            }
+            let frames =
+                grass_rustle_frames_for_art(&mut rendered, &root, alias, time, &mut images)
+                    .expect("icy rustle production assets");
+            for frame in &frames {
+                for pixel in frame_pixels(frame, &images)
+                    .as_chunks::<4>()
+                    .0
+                    .iter()
+                    .filter(|pixel| pixel[3] != 0)
+                {
+                    assert!(palette[1..].iter().any(|ink| ink == &pixel[..3]));
+                }
+            }
+            if let Some(directory) = &capture {
+                captures.extend(capture_rustle_frames(
+                    directory, alias, time, &frames, &images,
+                ));
+            }
+        }
+        assert_eq!(
+            rustle_tileset(thaw_alias, Some(3)),
+            "mn_headwaters",
+            "original green grass retains its native cache"
+        );
+    }
+    assert!(rendered.grass_rustle_errors.is_empty());
+    for block in [3, 0x88, melt] {
+        assert!(
+            maps.iter()
+                .any(|map| runtime.data().maps[*map].blocks.contains(&block)),
+            "all three grass stages must actually be placed"
+        );
+    }
+    if let Some(directory) = capture {
+        write_capture(&directory.join("receipt.json"), &serde_json::to_vec_pretty(&serde_json::json!({"scope":"Production CPU renderer assets; GPU and traversal require separate checks", "times": TIMES, "assertions":"Original warm prefix exact at every clock, all six native animations exact, three placed grass stages retain native bitplanes/priority and clock-lit inks", "rustles":captures})).expect("native asset receipt"));
+    }
+}
+
 #[test]
 fn winter_aliases_are_exact_and_green_prefix_grass_keeps_native_rustle() {
     for (winter, source, block) in WINTER {
@@ -522,5 +953,141 @@ fn outdoor_stair_aliases_preserve_native_animation_and_icy_rustle_pixels() {
                 );
             }
         }
+    }
+}
+
+#[test]
+#[ignore = "requires CRYSTAL_WINTER_RENDER_TEST_PACK with both Iron Descent aliases"]
+fn iron_descent_keeps_warm_prefix_and_corner_grass_masks_at_every_clock() {
+    use super::super::load_tileset_palette_bank;
+
+    let (root, runtime) = fixture();
+    let mut images = Assets::<Image>::default();
+    for time in TIMES {
+        let source = load_tileset_art(
+            &root,
+            "mn_r10_rockstairs",
+            time,
+            &runtime.data().tilesets["mn_r10_rockstairs"].palette_map,
+            &mut images,
+        )
+        .expect("native descent source");
+        let art = load_tileset_art(
+            &root,
+            "mn_iron_descent_thaw",
+            time,
+            &runtime.data().tilesets["mn_iron_descent_thaw"].palette_map,
+            &mut images,
+        )
+        .expect("installed descent art");
+        assert_eq!(
+            art.metatile_layout[..source.metatile_layout.len()],
+            source.metatile_layout
+        );
+        for &glyph in &source.metatile_layout {
+            let index = usize::from(glyph);
+            assert_eq!(
+                art.transition_tiles[index].indices,
+                source.transition_tiles[index].indices
+            );
+            assert_eq!(
+                art.transition_tiles[index].palette,
+                source.transition_tiles[index].palette
+            );
+            assert_eq!(
+                images
+                    .get(&art.tile_handles[index])
+                    .expect("warm pixels")
+                    .data,
+                images
+                    .get(&source.tile_handles[index])
+                    .expect("native pixels")
+                    .data
+            );
+            assert_eq!(
+                images
+                    .get(&art.priority_tile_handles[index])
+                    .expect("warm mask")
+                    .data,
+                images
+                    .get(&source.priority_tile_handles[index])
+                    .expect("native mask")
+                    .data
+            );
+        }
+        assert!(!source.animated_tiles.is_empty());
+        assert_eq!(art.animated_tiles.len(), source.animated_tiles.len());
+        for (glyph, original) in &source.animated_tiles {
+            let derived = &art.animated_tiles[glyph];
+            assert_eq!(derived.frame_ticks, original.frame_ticks);
+            assert_eq!(derived.phase_offset, original.phase_offset);
+            assert_eq!(derived.additional_schedule, original.additional_schedule);
+            assert_eq!(derived.frames.len(), original.frames.len());
+            for (a, b) in original.frames.iter().zip(derived.frames.iter()) {
+                assert_eq!(
+                    images.get(a).expect("native animation").data,
+                    images.get(b).expect("derived animation").data
+                );
+            }
+        }
+        let palette = grass_palette(&root, "mn_iron_descent_thaw", time)
+            .expect("native icy palette")
+            .expect("registered icy grass");
+        let bank = load_tileset_palette_bank(&root, "mn_r10_rockstairs", time)
+            .expect("native clock")
+            .expect("native bank");
+        for (original_block, cold, melt) in
+            [(0x81, 0xa5, 0xc9), (0x83, 0xa7, 0xcb), (0x84, 0xa8, 0xcc)]
+        {
+            let collision = &runtime.data().tilesets["mn_r10_rockstairs"].collision
+                [&format!("{original_block:02x}")];
+            for block in [cold, melt] {
+                assert_eq!(
+                    rustle_tileset("mn_iron_descent_thaw", Some(block)),
+                    "mn_iron_descent_thaw"
+                );
+                for index in 0..16 {
+                    if collision[(index / 8) * 2 + (index % 4) / 2] != "TALL_GRASS" {
+                        continue;
+                    }
+                    let before = usize::from(source.metatile_layout[original_block * 16 + index]);
+                    let after = usize::from(art.metatile_layout[usize::from(block) * 16 + index]);
+                    assert_eq!(
+                        art.transition_tiles[after].indices,
+                        source.transition_tiles[before].indices,
+                        "every half-grass blade and priority hole stays native"
+                    );
+                    assert_eq!(art.transition_tiles[after].palette[1..], palette[1..]);
+                    if block == melt {
+                        assert_eq!(art.transition_tiles[after].palette[0], bank[0][0]);
+                    }
+                    let a = images
+                        .get(&art.priority_tile_handles[after])
+                        .expect("icy priority")
+                        .data
+                        .as_deref()
+                        .expect("icy bytes");
+                    let b = images
+                        .get(&source.priority_tile_handles[before])
+                        .expect("source priority")
+                        .data
+                        .as_deref()
+                        .expect("source bytes");
+                    assert!(
+                        a.as_chunks::<4>()
+                            .0
+                            .iter()
+                            .zip(b.as_chunks::<4>().0)
+                            .all(|(a, b)| a[3] == b[3])
+                    );
+                }
+            }
+            assert_eq!(
+                rustle_tileset("mn_iron_descent_thaw", Some(original_block as u16)),
+                "johto"
+            );
+        }
+        assert_eq!(rustle_tileset("mn_iron_descent_thaw", Some(3)), "johto");
+        assert_eq!(animation_source("mn_iron_descent_thaw"), "johto");
     }
 }

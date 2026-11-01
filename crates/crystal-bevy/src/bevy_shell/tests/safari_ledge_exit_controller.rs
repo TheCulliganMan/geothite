@@ -1,4 +1,4 @@
-//! Paid one-way cliff traversal and a real walking exit that closes the permit.
+//! Paid native stair traversal and a real walking exit that closes the permit.
 
 use crystal_core::input::GameButton;
 use crystal_core::world::map::TilePosition;
@@ -9,7 +9,7 @@ use super::{
     controller_fixture, global, launch, press, release_wild, save, step, travel,
 };
 
-fn blocked(c: &mut VisibleShellController, direction: GameButton) {
+pub(super) fn blocked(c: &mut VisibleShellController, direction: GameButton) {
     release_wild(c);
     let position = global(c);
     let budget = active(c).steps_remaining;
@@ -30,7 +30,7 @@ fn blocked(c: &mut VisibleShellController, direction: GameButton) {
 
 #[test]
 #[ignore = "requires enabled current-parent CRYSTAL_INTERIOR_PACK Safari review"]
-fn safari_paid_palisade_hop_grassy_climb_and_real_buoy_boundary() {
+fn safari_paid_palisade_native_stairs_closed_cliff_and_real_buoy_boundary() {
     let (root, runtime, mut c) = controller_fixture();
     let grid = LakeGrid::new(&runtime);
     // Setup ends at the public ranger; the entire approach uses native input.
@@ -39,54 +39,34 @@ fn safari_paid_palisade_hop_grassy_climb_and_real_buoy_boundary() {
     launch(&mut c, (3, 89));
     travel(&mut c, &grid, (36, 68), true);
     step(&mut c, (36, 67));
-    assert!(travel(&mut c, &grid, (35, 57), false) >= 3);
+    let approach_grass = travel(&mut c, &grid, (35, 57), false);
     step(&mut c, (35, 58));
-    release_wild(&mut c);
-    let before_hop = active(&mut c).steps_remaining;
-    for _ in 0..8 {
-        if global(&mut c) == (35, 60) {
-            break;
-        }
-        press(&mut c, GameButton::Down);
-        assert_ne!(
-            global(&mut c),
-            (35, 59),
-            "a ledge jumps over its blocked quadrant"
-        );
+    blocked(&mut c, GameButton::Down);
+    travel(&mut c, &grid, (41, 57), false);
+    let before = active(&mut c).steps_remaining;
+    for tile in [(41, 58), (41, 59), (41, 60)] {
+        step(&mut c, tile);
     }
-    assert_eq!(global(&mut c), (35, 60));
+    release_wild(&mut c);
+    assert_eq!(active(&mut c).steps_remaining, before - 3);
     assert_eq!(
-        active(&mut c).steps_remaining,
-        before_hop - 1,
-        "one native two-tile hop is one successful travel commit"
-    );
-    assert_eq!(
-        c.snapshot().expect("landed ledge").overworld.mode,
+        c.snapshot().expect("native stair landing").overworld.mode,
         MovementMode::Normal
     );
-    save(&mut c, "paid-palisade-landing");
-    // Landing in habitat can legitimately open wildlife immediately. Retain
-    // that checkpoint, then use native Run for a separate visible cliff view.
-    release_wild(&mut c);
-    save(&mut c, "paid-palisade-landing-field");
+    save(&mut c, "paid-palisade-native-stair-landing");
     c = continue_save(root.clone(), runtime.clone(), &mut c);
-    blocked(&mut c, GameButton::Up);
-    let return_path = grid.path((35, 60), (35, 57), false);
+    let before = active(&mut c).steps_remaining;
+    step(&mut c, (41, 59));
+    blocked(&mut c, GameButton::Left);
+    step(&mut c, (41, 58));
+    step(&mut c, (41, 57));
+    assert_eq!(active(&mut c).steps_remaining, before - 3);
+    travel(&mut c, &grid, (35, 57), false);
+    save(&mut c, "paid-palisade-native-stair-return");
     assert!(
-        return_path.len() > 9,
-        "the uphill return must be a real detour"
+        approach_grass + travel(&mut c, &grid, (36, 42), false) >= 6,
+        "the complete current Palisade portage must cross its six-tile habitat"
     );
-    let before_return = active(&mut c).steps_remaining;
-    assert!(
-        travel(&mut c, &grid, (35, 57), false) >= 3,
-        "the ordinary uphill return must cross the grassy shoulder"
-    );
-    assert_eq!(
-        active(&mut c).steps_remaining,
-        before_return - u16::try_from(return_path.len() - 1).expect("bounded return path")
-    );
-    save(&mut c, "paid-palisade-grassy-return");
-    assert!(travel(&mut c, &grid, (36, 42), false) >= 6);
     launch(&mut c, (36, 41));
     c = continue_save(root.clone(), runtime.clone(), &mut c);
     travel(&mut c, &grid, (1, 92), true);

@@ -1,11 +1,14 @@
 //! Exact presentation aliases and terrain-owned colors for winter art variants.
 use std::collections::BTreeMap;
+use std::path::PathBuf;
 
 use anyhow::{Context, Result, ensure};
 use crystal_assets::AssetRoot;
 use crystal_core::world::map::TilePosition;
 
-use super::{Palette, load_tileset_palette_bank, seasonal_palette, tile_foreground};
+use super::{
+    Palette, inland_winter_render, load_tileset_palette_bank, seasonal_palette, tile_foreground,
+};
 
 fn stair_source(tileset: &str) -> &str {
     match tileset {
@@ -14,23 +17,54 @@ fn stair_source(tileset: &str) -> &str {
         "mn_outdoor_headwaters_stairs" => "mn_headwaters",
         "mn_outdoor_winter_stairs" => "mn_winter_north_shore",
         "mn_r10_rockstairs" => "johto",
+        "mn_bemidji_plateau_stairs" => "mn_bemidji",
         _ => tileset,
     }
+}
+
+fn authored_parent(tileset: &str) -> Option<&str> {
+    if let Some(source) = inland_winter_render::source(tileset) {
+        return Some(source);
+    }
+    let source = stair_source(tileset);
+    if source != tileset {
+        return Some(source);
+    }
+    match tileset {
+        "mn_grand_rapids_riverfront" => Some("johto_modern"),
+        "mn_iron_sump_rock" => Some("cave"),
+        "mn_winter_north_shore" => Some("mn_north_shore"),
+        "mn_winter_outdoor" => Some("mn_border_pines"),
+        "mn_winter_gunflint" => Some("mn_gunflint"),
+        _ => None,
+    }
+}
+
+/// Use an alias's own ambient clips when present, otherwise inherit its exact
+/// authored ancestor. Stairs must retain existing authored ambient effects.
+pub(super) fn authored_animation_path(root: &AssetRoot, tileset: &str) -> Option<PathBuf> {
+    let mut source = Some(tileset);
+    while let Some(name) = source {
+        let path = root
+            .runtime_assets()
+            .join(format!("data/tilesets/{name}_animations.json"));
+        if crate::runtime_asset_exists(&path) {
+            return Some(path);
+        }
+        source = authored_parent(name);
+    }
+    None
 }
 
 /// Preserve only the animation behavior already owned by the cloned tileset.
 /// Border Pines currently has no common animation registrations; do not alias it
 /// to forest and accidentally add new water, flowers or restless-tree animation.
 pub(super) fn animation_source(tileset: &str) -> &str {
-    let source = stair_source(tileset);
-    match source {
-        "mn_grand_rapids_riverfront" => "johto_modern",
-        "mn_iron_sump_rock" => "cave",
-        "mn_winter_north_shore" => "mn_north_shore",
-        "mn_winter_outdoor" => "mn_border_pines",
-        "mn_winter_gunflint" => "mn_gunflint",
-        _ => source,
+    let mut source = tileset;
+    while let Some(parent) = authored_parent(source) {
+        source = parent;
     }
+    source
 }
 
 pub(super) fn has_north_shore_waterfall(tileset: &str) -> bool {
@@ -42,6 +76,9 @@ pub(super) fn has_north_shore_waterfall(tileset: &str) -> bool {
 
 /// Cache exact winter palettes independently from native and prairie.
 pub(super) fn grass_cache_style(tileset: &str) -> Option<&str> {
+    if inland_winter_render::grass_block(tileset).is_some() {
+        return Some(tileset);
+    }
     match stair_source(tileset) {
         "mn_winter_outdoor" | "mn_winter_north_shore" | "mn_winter_gunflint" => Some(tileset),
         _ => None,
@@ -49,6 +86,9 @@ pub(super) fn grass_cache_style(tileset: &str) -> Option<&str> {
 }
 
 fn grass_block(tileset: &str) -> Option<usize> {
+    if let Some(block) = inland_winter_render::grass_block(tileset) {
+        return Some(block);
+    }
     match stair_source(tileset) {
         "mn_winter_outdoor" | "mn_winter_gunflint" => Some(0x3d),
         "mn_winter_north_shore" => Some(0x84),
@@ -59,7 +99,9 @@ fn grass_block(tileset: &str) -> Option<usize> {
 /// Select the palette at the actual rustle tile. Winter aliases also contain
 /// unchanged green grass, whose rustle must retain the native shared cache.
 pub(super) fn rustle_tileset(tileset: &str, block: Option<u16>) -> &str {
-    if grass_block(tileset).is_some_and(|icy| block == u16::try_from(icy).ok()) {
+    if inland_winter_render::is_icy_grass(tileset, block)
+        || grass_block(tileset).is_some_and(|icy| block == u16::try_from(icy).ok())
+    {
         tileset
     } else {
         animation_source(tileset)

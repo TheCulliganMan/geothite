@@ -1,0 +1,421 @@
+{
+  "schema_version": 1,
+  "id": "MN_INLAND_GRASS_CUT",
+  "status": "Source proposal; native Cut and visual verification remain required",
+  "selected_parent_revision": "north_shore_passing_width_revision",
+  "selected_parent_sha256": "e951fddafee3a0c09a2356d4dd683890ac498e23daeb266d08c5f12d79ec1167",
+  "parent_pack": "content-packs/minnesota-descent-rock-clearance-v01.crystalpack",
+  "parent_pack_sha256": "d63518642625850a43223b82612a5b3530037205bdab59b55012b443bd8faac4",
+  "parent_identity": {
+    "format_version": 13,
+    "runtime_modpack_id": "core-modular+all-251-catchable-v1+solo-evolutions-v1+modern-move-split+competitive-battles+wild-challenge+text-tui+minnesota-headwaters-art+minnesota-river-bluffs-0+minnesota-river-bluffs-1+minnesota-river-bluffs-2+minnesota-river-bluffs-3+minnesota-pine-country-0+minnesota-pine-country-1+minnesota-pine-country-2+minnesota-leech-lake-0+minnesota-leech-lake-1+minnesota-northern-lakes-0+minnesota-northern-lakes-1+minnesota-northern-lakes-2+minnesota-northern-lakes-3+minnesota-league-approach-0+minnesota-league-approach-1+minnesota-league-approach-2+minnesota-league-approach-3+minnesota-iron-range-art+minnesota-iron-range-0+minnesota-iron-range-1+minnesota-iron-range-2+minnesota-iron-range-3+minnesota-iron-range-4+minnesota-iron-range-descent-0+minnesota-iron-range-descent-1+minnesota-iron-range-descent-2+minnesota-red-river-prairie-0+minnesota-red-river-prairie-1+minnesota-gunflint-art+minnesota-border-pines-art+minnesota-border-pines-0+minnesota-border-pines-1+minnesota-border-pines-2+minnesota-border-pines-3+minnesota-border-pines-4+minnesota-mille-lacs-shore-0+minnesota-mille-lacs-shore-1+minnesota-voyageurs-border-loop-0+minnesota-voyageurs-border-loop-1+minnesota-voyageurs-border-loop-2+minnesota-voyageurs-border-loop-3+minnesota-voyageurs-border-loop-4+minnesota-north-shore-art+minnesota-north-shore-0+minnesota-north-shore-1+minnesota-north-shore-2+minnesota-north-shore-3+minnesota-gunflint-0+minnesota-gunflint-1+minnesota-gunflint-2+minnesota-gunflint-3+minnesota-gunflint-4+minnesota-gunflint-5+minnesota-gunflint-6+minnesota-gunflint-7+minnesota-headwaters-0+minnesota-headwaters-1+minnesota-headwaters-2+minnesota-headwaters-3+minnesota-prairie-forest-link-0+minnesota-prairie-forest-link-1+minnesota-boundary-safari-art+minnesota-root-beer-v1+minnesota-root-beer-lady-service-v1+minnesota-boundary-waters-terrain-v1-0+minnesota-boundary-waters-terrain-v1-1+minnesota-boundary-waters-terrain-v1-2+minnesota-boundary-waters-terrain-v1-3+minnesota-boundary-waters-terrain-v1-4+minnesota-boundary-waters-terrain-v1+native-field-scripts-source-repair+minnesota-driftless-0+minnesota-driftless-1+minnesota-driftless-2+minnesota-river-valley-0+minnesota-river-valley-1+minnesota-river-valley-2+minnesota-twin-cities-art+minnesota-twin-cities-0+minnesota-central-lakes-0+minnesota-central-lakes-1+minnesota-grand-marais-0+minnesota-grand-marais-1+minnesota-grand-marais-2+minnesota-grand-marais-3+minnesota-grand-marais-4+minnesota-grand-marais-5+minnesota-grand-marais-6+minnesota-prairie-farm-0+minnesota-prairie-farm-1+minnesota-prairie-farm-2+minnesota-boundary-basecamp-v1-0+minnesota-boundary-basecamp-v1-1+minnesota-boundary-basecamp-v1+minnesota-boundary-basecamp-connections-v1+minnesota-mn_prairie_kanto-art-v1+minnesota-mn_prairie_headwaters-art-v1+minnesota-gym-2-art-v1+minnesota-gym-3-art-v1+minnesota-gym-4-art-v1+minnesota-gym-5-art-v1+minnesota-gym-6-art-v1+minnesota-gym-7-art-v1+minnesota-gym-8-art-v1+minnesota-gym-interiors-v1-0+minnesota-gym-interiors-v1-1+minnesota-gym-interiors-v1-2+minnesota-gym-interiors-v1-3+minnesota-gym-interiors-v1-4+minnesota-gym-interiors-v1-5+minnesota-gym-interiors-v1-6+minnesota-gym-interiors-v1-7+minnesota-gym-interiors-v1-8+minnesota-duluth-city-v1-0+minnesota-duluth-city-v1-1+minnesota-duluth-city-v1-2+minnesota-duluth-city-v1-3+minnesota-duluth-city-v1-4+minnesota-duluth-city-v1-5+minnesota-duluth-city-v1-6+minnesota-duluth-city-v1+minnesota-brainerd-city-v1-0+minnesota-brainerd-city-v1-1+minnesota-brainerd-city-v1-2+minnesota-brainerd-city-v1-3+minnesota-brainerd-city-v1-4+minnesota-brainerd-city-v1-canonical-gym6-binding+minnesota-bemidji-timber-art-v1+minnesota-bemidji-city-v1-0+minnesota-bemidji-city-v1-1+minnesota-bemidji-city-v1-2+minnesota-bemidji-city-v1-3+minnesota-bemidji-city-v1-4+minnesota-bemidji-city-v1-5+minnesota-bemidji-city-v1+minnesota-grand-rapids-v1-0+minnesota-grand-rapids-v1-1+minnesota-grand-rapids-v1-2+minnesota-grand-rapids-v1-3+minnesota-grand-rapids-v1+minnesota-grand-rapids-connections-v1+minnesota-duluth-story-v1+minnesota-north-shore-stone-stairs-v1+minnesota-north-shore-expansion-v1-5+minnesota-north-shore-expansion-v1-6+minnesota-north-shore-expansion-v1-7+minnesota-north-shore-expansion-v1-8+minnesota-north-shore-expansion-v1-9+minnesota-north-shore-expansion-v1+minnesota-boundary-waters-stone-stairs-v1+minnesota-boundary-waters-expanded-terrain-v1-6+minnesota-boundary-waters-expanded-terrain-v1-7+minnesota-boundary-waters-expanded-terrain-v1+minnesota-duluth-connections-v2+minnesota-ryans-house-v1-room+minnesota-ryans-house-v1+minnesota-r10-seam-gallery-v1+minnesota-reviewed-gym3-replacement-v1+minnesota-minneapolis-v1-1+minnesota-minneapolis-v1-2+minnesota-minneapolis-v1-3+minnesota-minneapolis-v1-4+minnesota-minneapolis-v1-5+minnesota-minneapolis-v1+minnesota-winona-opening-v1-1+minnesota-winona-opening-v1-2+minnesota-winona-opening-v1-3+minnesota-winona-opening-v1-4+minnesota-winona-opening-v1-5+minnesota-winona-opening-v1-6+minnesota-winona-opening-v1+minnesota-gym-1-art-v1+minnesota-rochester-city-v1-0+minnesota-rochester-city-v1-1+minnesota-rochester-city-v1-2+minnesota-rochester-city-v1-4+minnesota-rochester-city-v1-5+minnesota-rochester-story-v1+minnesota-winona-rochester-links-v1+minnesota-reviewed-eight-gyms-refresh-v1+minnesota-mankato-city-v1-0+minnesota-mankato-city-v1-1+minnesota-mankato-city-v1-2+minnesota-mankato-city-v1+minnesota-st-paul-city-v1-0+minnesota-st-paul-city-v1-1+minnesota-st-paul-city-v1-2+minnesota-st-paul-city-v1-3+minnesota-st-paul-city-v1-5+minnesota-st-paul-city-v1+minnesota-st-cloud-city-v1-0+minnesota-st-cloud-city-v1-1+minnesota-st-cloud-city-v1-2+minnesota-st-cloud-city-v1-4+minnesota-st-cloud-city-v1+minnesota-prairie-story-v1+minnesota-river-city-links-v2+minnesota-courier-story-v1+minnesota-lake-country-story-v1+minnesota-leech-shore-v1-0+minnesota-leech-shore-v1-1+minnesota-leech-shore-v1-2+minnesota-leech-shore-v1+minnesota-itasca-story-v1-0+minnesota-itasca-story-v1-1+minnesota-itasca-story-v1+minnesota-r10-rockstairs-art+minnesota-r10-rockstairs-native-stair+mnminneapolis-expanded-city-art+mnminneapolissupplycoop-city-room+mnminneapolisgrainexchange-city-room+mnminneapolistoolworkshop-city-room+mnminneapolisprintshop-city-room+mnminneapolisfoundrymuseum-city-room+mnminneapolisartsstudio-city-room+mnminneapolismusicroom-city-room+mnminneapoliscommunitylibrary-city-room+mnminneapolisnortheasthome-city-room+mnminneapolisgardenshop-city-room+mnminneapolisrivernaturalist-city-room+mnminneapolisboathouse-city-room+mnminneapolisanglerhome-city-room+mnminneapolislakecabin-city-room+mnminneapolisgreenhouse-city-room+mnminneapolisbridgehome-city-room+mnminneapolisdepartmentstore1f-city-room+mnminneapolisbattleclub-city-room+mnminneapoliscedarhome-city-room+mnminneapoliscommunitykitchen-city-room+mnminneapoliscouriersdesk-city-room+mnminneapolisfieldclub-city-room+mnminneapolisgardenershome-city-room+mnminneapolisarrivalinfo-city-room+mnminneapolisriverinn-city-room+mnminneapolissouthmarket-city-room+mnminneapolismillworkershouse-city-room+mnminneapolisdepartmentstore2f-city-room+mnminneapolisdepartmentstore3f-city-room+mnminneapolisdepartmentstore4f-city-room+mnminneapolisdepartmentstore5f-city-room+mnminneapolisbookbinder-city-room+mnminneapoliscooperativeflat-city-room+mnminneapolistoolflat-city-room+mnminneapoliscornerhome-city-room+mnminneapolisriverfamilyhome-city-room+mnminneapolisgardenflat-city-room+mnminneapolispatternstudio-city-room+mnminneapolismillforemanhome-city-room+mnminneapolis-expanded-city+mnduluth-expanded-city-art+mnduluthlookoutlodge1f-city-room+mnduluthlookoutlodge2f-city-room+mnduluthpotteryhouse-city-room+mnduluthquarrypractice-city-room+mnduluthhillgardenhouse-city-room+mnduluthterracehome-city-room+mnduluthhillranger-city-room+mnduluthreadinghall1f-city-room+mnduluthreadinghall2f-city-room+mnduluthhillsidehostel1f-city-room+mnduluthhillsidehostel2f-city-room+mnduluthhillsupplies-city-room+mnduluthcommunitykitchen-city-room+mnduluthweatherstudy1f-city-room+mnduluthweatherstudy2f-city-room+mnduluthlakesidehome-city-room+mnduluthlakeoutfitter-city-room+mnduluthfieldclinic-city-room+mnduluthboatbuilder-city-room+mnduluthunionhall1f-city-room+mnduluthunionhall2f-city-room+mnduluthorewarehouse1f-city-room+mnduluthorewarehouse2f-city-room+mnduluthtoolexchange-city-room+mnduluthtrainingannex-city-room+mnduluthforemanhome-city-room+mnduluthmaritimecoop1f-city-room+mnduluthmaritimecoop2f-city-room+mnduluthmaritimecoop3f-city-room+mnduluthcargooffice-city-room+mnduluthsailorclub1f-city-room+mnduluthsailorclub2f-city-room+mnduluthdocksupplies-city-room+mnduluthsliphouse-city-room+mnduluthbeachshelter-city-room+mnduluthpointoutfitter-city-room+mnduluthsandhouse-city-room+mnduluthboatclub1f-city-room+mnduluthboatclub2f-city-room+mnduluthfishercottage-city-room+mnduluthpointgardenhome-city-room+mnduluth-expanded-city+mnstpaulfairfoodhall-city-room+mnstpaulfairgardenstand-city-room+mnstpaulfairagriculturehall-city-room+mnstpaulfairexhibitionhall-city-room+mnstpaulfaircrafthouse-city-room+mnstpaulfairquizpavilion-city-room+mnstpaulfairinfohouse-city-room+mnstpaulfairbreederbarn-city-room+mnstpaulfairberrysnack-city-room+mnstpaulfairfestivalmail-city-room+mnstpaulcapitolarchive-city-room+mnstpaulcapitollibrary-city-room+mnstpaulcivicmuseum-city-room+mnstpaulsummitmovestudyhouse-city-room+mnstpaulsummitexhibitionclub-city-room+mnstpaulsummitpresshouse-city-room+mnstpaulwestseventhbooks-city-room+mnstpaulwestseventhbakery-city-room+mnstpaulstreetgardenhouse-city-room+mnstpaullowertownexchange-city-room+mnstpaularchiveannex-city-room+mnstpaullowertowncrafts-city-room+mnstpauleastaidclinic-city-room+mnstpauleastworkshop-city-room+mnstpaulcommunityhall-city-room+mnstpaultransitheritagehouse-city-room+mnstpaulfreightoffice-city-room+mnstpaullowertowncafe-city-room+mnstpaulanglerhouse-city-room+mnstpaulriversidesupplies-city-room+mnstpaulwestsidecommunity-city-room+mnstpaulwestsidearena-city-room+mnstpaulboatcoop-city-room+mnstpaulsouthlandinginn-city-room+mnstpaulsouthlandingsurvey-city-room+mnstpaullowertownexchange2f-city-room+mnstpaullowertownexchange3f-city-room+mnstpaul-expanded-city+MN_MISSISSIPPI_CONNECTIONS-1+MN_MISSISSIPPI_CONNECTIONS-2+MN_MISSISSIPPI_CONNECTIONS-3+MN_MISSISSIPPI_CONNECTIONS-4+MN_MISSISSIPPI_CONNECTIONS-5+MN_MISSISSIPPI_CONNECTIONS-6+MN_MISSISSIPPI_CONNECTIONS-7+MN_MISSISSIPPI_CONNECTIONS-8+MN_MISSISSIPPI_CONNECTIONS-9+MN_MISSISSIPPI_CONNECTIONS-10+MN_MISSISSIPPI_CONNECTIONS-11+MN_MISSISSIPPI_CONNECTIONS-12+MN_MISSISSIPPI_CONNECTIONS-13+MN_MISSISSIPPI_CONNECTIONS-14+MN_MISSISSIPPI_CONNECTIONS-15+MN_MISSISSIPPI_CONNECTIONS-16+MN_MISSISSIPPI_CONNECTIONS-17+MN_STATE_COHESION-1+MN_STATE_COHESION-2+MN_STATE_COHESION-3+MN_STATE_COHESION-4+mn-winter-outdoor-art-v1+mn-winter-north-shore-art-v1+minnesota-rainy-river-ice-1+minnesota-rainy-river-ice-2+minnesota-winter-mixed-edges-v1+minnesota-ely-league-v1-0+minnesota-ely-league-v1-1+minnesota-ely-league-v1-2+minnesota-ely-league-v1-3+minnesota-ely-league-v1-4+minnesota-ely-league-v1-5+minnesota-ely-league-v1-6+minnesota-ely-league-v1-7+minnesota-ely-league-v1-8+minnesota-ely-league-v1-9+minnesota-ely-league-v1+minnesota-winter-gunflint-art-v1+minnesota-marais-shore-art-v1+minnesota-superior-inland-geography-v1+minnesota-ely-shore-pass-v1-snow+minnesota-ely-shore-pass-v1-0+minnesota-ely-shore-pass-v1-1+minnesota-ely-shore-pass-v1+northwoods-fairy-types-v1+minnesota-pokemon-v1+northwoods-moves-v1+northwoods-fairy-moves-v1+northstar-minnesota-only-v1+northstar-ancient-swamp-v1+minnesota-mississippi-fun-v1+minnesota-interior-life-compact-stories-v1+minnesota-interior-layout-v6+minnesota-interior-layout-clubs-v2+minnesota-interior-layout-harbor-care-v1+fishing-guru-house-0+fishing-guru-house-1+fishing-guru-house-2+minnesota-fishing-rods-v2+minnesota-interior-layout-fishing-v2+minnesota-compact-shore-gate-v1-0+minnesota-compact-shore-gate-v1+mndetroitlakes-expanded-city-art+minnesota-detroit-lakes-v1-0+minnesota-detroit-lakes-v1-1+minnesota-detroit-lakes-v1-2+minnesota-detroit-lakes-v1-3+minnesota-detroit-lakes-v1-4+minnesota-detroit-lakes-v1-5+minnesota-detroit-lakes-v1+minnesota-moorhead-v1-0+minnesota-moorhead-v1-1+minnesota-moorhead-v1-2+minnesota-moorhead-v1+minnesota-winona-station-v1-0+minnesota-winona-station-v1+minnesota-interior-layout-compact-reads-v1+minnesota-staples-station-v2-0+minnesota-staples-station-v2-1+minnesota-staples-station-v2+minnesota-voyageurs-ice-v1-0+minnesota-voyageurs-ice-v1-1+minnesota-voyageurs-ice-v1+minnesota-interior-terrain-sync-v1+minnesota-interior-terrain-sync-v2+mninternationalfalls-expanded-city-art+minnesota-international_falls-v1-0+minnesota-international_falls-v1-1+minnesota-international_falls-v1-2+minnesota-international_falls-v1+minnesota-interior-terrain-sync-v4+minnesota-interior-life-five-rail-stops-v1+state-fair-native-expanded-city-art+minnesota-state-fair-dense-v1-0+minnesota-state-fair-dense-v1-1+minnesota-state-fair-dense-v1-2+minnesota-state-fair-dense-v1-3+minnesota-state-fair-grass-v1+minnesota-interior-life-fair-woodland-directions-v1+minnesota-interior-terrain-sync-v5+minnesota-interior-terrain-sync-v6+minnesota-interior-life-active-regional-flavor-v1+minnesota-northstar-relay-art-v1+minnesota-northstar-relay-scene-v1+minnesota-northstar-supplies-v1+minnesota-northstar-returns-v1+minnesota-northstar-events-opening-v2+northstar-lair-mnicecargobasement+northstar-lair-mnicerelayfloor+minnesota-northstar-ice-lair-v2+northstar-lair-mnirondrillapproach+northstar-lair-mnironpumpgallery+northstar-lair-mnirondrillcore+minnesota-northstar-drill-lair-v2+northstar-ice-headquarters-panel-art-v1+northstar-lair-mniceoperations+northstar-lair-mnicerecords+northstar-lair-mnicemaintenance+northstar-lair-mnicetransfer+northstar-ice-headquarters-v1+northstar-lair-mnironhaulage+northstar-lair-mnironsump+northstar-lair-mnironventilation+northstar-iron-workings-v1+mn_arc_intake-native-v1+mn_arc_shelter-native-v1+mn_arc_shelter_gate-native-v1+northstar-lair-mnboundaryintake+mn_arc_harbor-native-v1+northstar-rival-arc-v3+northstar-league-finale-v1+northstar-current-story-v1+minnesota-interior-terrain-sync-v7+minnesota-interior-life-voyageurs-surveyor-v1+minnesota-interior-terrain-sync-v8+minnesota-mille-lacs-park-v1-0+minnesota-mille-lacs-park-v1+minnesota-interior-terrain-sync-v9+minnesota-interior-terrain-sync-v10+northstar-progression-rewards-v1+minnesota-interior-terrain-sync-v11+minnesota-species-habitats-v2+minneapolis-cyclists-v1+minnesota-hm-progression-v1+minnesota-script-map-command-repair-v1+minnesota-fossil-research-v1+minnesota-marais-cedar-warmth-v1+minnesota-castorock-incisor-gallery-v1+minnesota-bemidji-northwoods-grass-v1+minnesota-detroit-approach-grass-v1+minnesota-ely-shore-pass-grass-v1+minnesota-kindlit-research-v1+minnesota-mille-lacs-grass-v1+grand-marais-partner-retry-v1+minnesota-itasca-grass-v1+minnesota-preserve-pine-grass-v1+minnesota-lower-woods-grass-v1+minnesota-iron-cliff-native-stairs-v1+minnesota-upstream-woods-grass-v1+minnesota-confluence-grass-v1+minnesota-rainy-icefields-grass-v1+minnesota-state-fair-contiguous-buildings-v1+minnesota-duluth-cliff-stairs-v1+minnesota-duluth-terrace-stairs-v2+minnesota-duluth-north-stair-v1+minnesota-north-shore-corner-stairs-v1+minnesota-outdoor-stair-landings-v1+minnesota-outdoor-cliff-joins-v1+mn-outdoor-johto-stairs-expanded-city-art+mn-outdoor-modern-stairs-expanded-city-art+mn-outdoor-headwaters-stairs-expanded-city-art+mn-outdoor-winter-stairs-expanded-city-art+minnesota-outdoor-ramp-stairs-v1+minnesota-outdoor-boulder-setbacks-v1+minnesota-outdoor-trainer-sightlines-v1+minnesota-outdoor-cliff-corners-v1+minnesota-outdoor-north-stairs-v1+minnesota-r10-cache-terrain-art-v1+minnesota-r10-west-terrace-art-v1+minnesota-r10-carrier-corner-art-v2+minnesota-grand-rapids-sign-anchors-v1+minnesota-grand-rapids-building-facades-v1+minnesota-grand-marais-mart-facade-v1+minnesota-rochester-mart-facade-v1+north-shore-shops-v1-MnNorthShorePieShop+north-shore-shops-v1-MnNorthShoreSmokehouse+north-shore-shops-v1+minnesota-duluth-harbor-platforms-v1+minnesota-duluth-shore-rocks-v1+minnesota-duluth-interior-buoy-clearance-v1+minnesota-mankato-native-exterior-v2+minnesota-winona-mart-facade-v1+minnesota-bemidji-mart-facade-v1+minnesota-bemidji-plateau-stair-art-v1-expanded-city-art+minnesota-bemidji-plateau-stairs-v1+minnesota-duluth-mart-facade-v1+native-character-art-mn_city_cyclist_m-v1+native-character-art-mn_city_cyclist_f-v1+minnesota-st-cloud-service-fronts-v1+minnesota-r14-forest-bank-v1+minnesota-brainerd-mart-facade-v1+minnesota-r01-stair-guidance-v1+minnesota-r10-exploration-trainers-v1+minnesota-r03-stair-guidance-v1+minnesota-r20-winding-cleft-v1+minnesota-r05-cache-grass-bank-v1+minnesota-r09-southwest-grass-v1+minnesota-r11-upper-grass-v1+minnesota-r06-south-woods-grass-v1+minnesota-iron-haulage-native-rock-v1-expanded-city-art+minnesota-r07-north-pocket-grass-v1+minnesota-r07-stair-guidance-v1+minnesota-r08-shore-grass-v1+minnesota-r08-stair-guidance-v1+minnesota-r10-neck-grass-v1+minnesota-r10-stair-guidance-v1+minnesota-iron-sump-native-shore-v1+minnesota-r11-stair-guidance-v1+minnesota-r13-pine-grass-v1+minnesota-iron-ventilation-native-rock-v1+minnesota-r13-boundary-apron-v1+minnesota-north-shore-footbridges-v1+minnesota-r15-open-shore-guidance-v1+minnesota-r15-fence-free-staples-spur-v1+minnesota-iron-pump-gallery-rock-v1+minnesota-r16-earth-bank-guidance-v1+minnesota-game-corner-v1+minnesota-r17-trail-guidance-v1+minnesota-iron-core-native-rock-v1-expanded-city-art+minnesota-iron-core-rock-chamber-v1+minnesota-gunflint-spring-shelter-v1+minnesota-grand-rapids-riverfront-native-v1-expanded-city-art+minnesota-grand-rapids-riverfront-v1+minnesota-r19-detroit-gate-v1+minnesota-international-falls-windbreak-v1+minnesota-r13-cedar-basin-v1+northstar-lair-mndriftlesslampgallery+minnesota-driftless-fossil-gallery-v1+minnesota-glacier-line-service-v1+minnesota-landmark-habitats-v1+minnesota-fossil-lab-v1+minnesota-leech-eddy-native-animation-v1+minnesota-leech-pine-island-v1+minnesota-water-cave-habitats-v1+minnesota-leech-mainland-pines-v1+minnesota-early-research-access-v1+minnesota-gunflint-spring-grotto-v1+minnesota-iron-crosscut-bends-v1+minnesota-mn_f145-v1+minnesota-dex-roster-sync-v1+minnesota-current-release-composition-v1+mn_verdigrim_intake-native-v1+verdigrim-intake-scene-v1+northstar-lair-mndevilskettle+minnesota-marais-clinic-recovery-v1+minnesota-devils-kettle-v1+northstar-lair-mntalltaleforestgate+northstar-lair-mntalltaletrail+minnesota-northwoods-tall-tales-v1+minnesota-pepin-three-wakes-v1+northstar-lair-mnicemythservicepassage+minnesota-icemyth-exhibition-v1+northstar-lair-mnfieldmargin+minnesota-kensigard-field-margin-v1+northstar-lair-mnlayeredfen+minnesota-flarkindle-layered-fen-v1+northstar-lair-mnformershores+northstar-lair-mninnerbasin+minnesota-strandrak-former-shores-v1+minnesota-biome-ecology-v1+minnesota-encounter-progression-v1+minnesota-northstar-opening-v1+minnesota-north-shore-passing-width-v1+minnesota-bemidji-roof-plateau-v1+mn-winter-bemidji-art-v1+mn-winter-bemidji-northwoods-art-v1+mn-winter-grand-rapids-art-v1+mn-winter-iron-range-art-v1+mn-winter-border-pines-art-v1+mn-winter-border-pines-south-art-v1+minnesota-inland-winter-belt-v1+minnesota-iron-rock-clearance-v1+mn-winter-tamarack-art-v1+minnesota-tamarack-thaw-art-v1+minnesota-tamarack-snowline-v1+mn-winter-iron-descent-art-v1+minnesota-iron-descent-thaw-art-v1+minnesota-iron-descent-snowline-v1+minnesota-descent-rock-clearance-v1",
+    "content_hash": "25289671aed4bf70089f7dc95bc1b3cb110935c55b5f5d1cdb12207bc234e826",
+    "pokemon_species": 476,
+    "maps": 743,
+    "items": 270,
+    "moves": 270,
+    "music": 102,
+    "sound_effects": 207,
+    "cries": 293
+  },
+  "cut_rule_sha256": "42335da1899a490e07347053faaf6239f24c99f047590fe26e5268c806fd4c6d",
+  "prototype": {
+    "tileset": "johto",
+    "grass_block": "03",
+    "replacement_block": "02",
+    "variant": "grass"
+  },
+  "tilesets": {
+    "mn_iron_descent_thaw": {
+      "definition_sha256": "2ccc4ca3236e3ae6345b1bd0974f76d6208980b0e62190fed9d9692e4b153a36",
+      "runtime_sha256": {
+        "data/tilesets/mn_iron_descent_thaw.json": "b44ca04eec2e9b011c726c916d78ceb48d9ed64bc6b60878493e3816dd97b063",
+        "data/tilesets/mn_iron_descent_thaw_metatiles.bin": "7e277db65cf2897d4bc07d8cc46a8bde398e05fc69c02002579fde92b84d4474",
+        "data/tilesets/mn_iron_descent_thaw_palette_map.json": "89e6f786ed612bc7ba52daf9b585259b6fc2a8c9e076943e205a2bd9eea66c5a",
+        "gfx/tilesets/mn_iron_descent_thaw.2bpp": "22aaed06c05ad06b1431cd2e96093479d51941e9751304fbfc69e2605c30c058",
+        "gfx/tilesets/mn_iron_descent_thaw.png": "a70cfe0620ee80ec9ae93f0374f408530dbd76375d8e36d52ba742476cb4b2ec"
+      },
+      "source_blocks": 206
+    },
+    "mn_tamarack_thaw": {
+      "definition_sha256": "4a839914501a4c64e1bb26fee7d3ebf20e3f33d19ef9c4be79b2b3d81498b3dc",
+      "runtime_sha256": {
+        "data/tilesets/mn_tamarack_thaw.json": "06e57e71f1a5071f5544684dc4454d7128abd86e2f8176fcdf364151d89449d4",
+        "data/tilesets/mn_tamarack_thaw_metatiles.bin": "5b53f20c99292c74d99b6fe6f1e09798a042ae5ba54d5540ed09eca823407240",
+        "data/tilesets/mn_tamarack_thaw_palette_map.json": "8787642be86bd509eb8a66aeffb5036bc1ec4bc32dbd94cbb7dc16627d4e7c81",
+        "gfx/tilesets/mn_tamarack_thaw.2bpp": "0e686b85ad7babe26b86492e77ca024f0522a6d5b4e26f3e96187b6502736cfe",
+        "gfx/tilesets/mn_tamarack_thaw.png": "ed3894c121508ba80401967be4e3a606d2d28101310a1c674c1aab331ce9bc33"
+      },
+      "source_blocks": 216
+    },
+    "mn_winter_border_pines": {
+      "definition_sha256": "1ef840439843396fbec658f0d06080caa59a795b3fd8ee0006fcb5e9f3f57abb",
+      "runtime_sha256": {
+        "data/tilesets/mn_winter_border_pines.json": "fd911e71065175d8ef1aa6939215abae416d3eee4cdcc8405e014b2eb84356b9",
+        "data/tilesets/mn_winter_border_pines_metatiles.bin": "4fc5d69b8edbb96ae648fdb1db9cd87f4a68f601365e6158d7990cd5033ac68e",
+        "data/tilesets/mn_winter_border_pines_palette_map.json": "f64e31d0e50dda23ad99e82321beb5a248b7be9010ac0b1df4b33b6b44b23dcf",
+        "gfx/tilesets/mn_winter_border_pines.2bpp": "e588d5b81f65101b63e75fd72b12c8df2a1eae22c9e6cff5eaf9f51777a98458",
+        "gfx/tilesets/mn_winter_border_pines.png": "731e412f8e9a25878054f8d6d2c64e577abc228388b567dd35a467688f0eae75"
+      },
+      "source_blocks": 73
+    },
+    "mn_winter_border_pines_south": {
+      "definition_sha256": "25daf8c8502f618559a7f56d08dddb1afca33896144bce7e2dfb8411ff9bef59",
+      "runtime_sha256": {
+        "data/tilesets/mn_winter_border_pines_south.json": "6f89c3a6281c680e4d41f70bc7e68065d2a63fb90fc39a862403e504c7436d8b",
+        "data/tilesets/mn_winter_border_pines_south_metatiles.bin": "1ed2a3e7a8ca3836c786400526fe705052cad03e03482d8ef8118e2102ff1250",
+        "data/tilesets/mn_winter_border_pines_south_palette_map.json": "ed5fbe545d3157c91d83e97dad8e27325754b266f94b33a6dea662fbded273cf",
+        "gfx/tilesets/mn_winter_border_pines_south.2bpp": "5af3fe9b454959833dab782355869b8dc4cb1a607d2fe639bfe46c92bf1af4f3",
+        "gfx/tilesets/mn_winter_border_pines_south.png": "5c8095cf91e71063cec3183638a063b3e22ac16ce388047f57f06052db4b05e1"
+      },
+      "source_blocks": 60
+    },
+    "mn_winter_iron_descent": {
+      "definition_sha256": "3c2a25d7d0807c0b3deceef58b83343b64dd95e1303a4212e0fa86fd6745beed",
+      "runtime_sha256": {
+        "data/tilesets/mn_winter_iron_descent.json": "fd26cda4791992d7cac917734a44906836ddbc4def3d9b1f257e74b2845405cb",
+        "data/tilesets/mn_winter_iron_descent_metatiles.bin": "bb599c1e17fcfd7988cf564134ee40f79038fabab1dc54f27fe243db801d05f4",
+        "data/tilesets/mn_winter_iron_descent_palette_map.json": "32a2dea6a45af1330d825c406204945d0eea714882ea96b7db912bb580329814",
+        "gfx/tilesets/mn_winter_iron_descent.2bpp": "bfc5dd02d5dd99bc8a554b232111eb5afd84a4ad195a1f15728e39ba5070c26c",
+        "gfx/tilesets/mn_winter_iron_descent.png": "c057aec2150e58e1ff62d42bd1c5024557fb954054cb04545af65949863c9ed9"
+      },
+      "source_blocks": 134
+    }
+  },
+  "rules": [
+    {
+      "tileset": "mn_winter_border_pines",
+      "grass_block": "37",
+      "replacement_block": "01"
+    },
+    {
+      "tileset": "mn_winter_border_pines",
+      "grass_block": "3d",
+      "replacement_block": "01"
+    },
+    {
+      "tileset": "mn_winter_border_pines_south",
+      "grass_block": "37",
+      "replacement_block": "01"
+    },
+    {
+      "tileset": "mn_tamarack_thaw",
+      "grass_block": "88",
+      "replacement_block": "87"
+    },
+    {
+      "tileset": "mn_tamarack_thaw",
+      "grass_block": "b1",
+      "replacement_block": "b0"
+    },
+    {
+      "tileset": "mn_winter_iron_descent",
+      "grass_block": "03",
+      "replacement_block": "02"
+    },
+    {
+      "tileset": "mn_iron_descent_thaw",
+      "grass_block": "03",
+      "replacement_block": "02"
+    },
+    {
+      "tileset": "mn_iron_descent_thaw",
+      "grass_block": "88",
+      "replacement_block": "87"
+    },
+    {
+      "tileset": "mn_iron_descent_thaw",
+      "grass_block": "ac",
+      "replacement_block": "ab"
+    },
+    {
+      "tileset": "mn_winter_iron_descent",
+      "grass_block": "81",
+      "replacement_block": "86"
+    },
+    {
+      "tileset": "mn_winter_iron_descent",
+      "grass_block": "83",
+      "replacement_block": "87"
+    },
+    {
+      "tileset": "mn_winter_iron_descent",
+      "grass_block": "84",
+      "replacement_block": "88"
+    },
+    {
+      "tileset": "mn_iron_descent_thaw",
+      "grass_block": "81",
+      "replacement_block": "ce"
+    },
+    {
+      "tileset": "mn_iron_descent_thaw",
+      "grass_block": "83",
+      "replacement_block": "cf"
+    },
+    {
+      "tileset": "mn_iron_descent_thaw",
+      "grass_block": "84",
+      "replacement_block": "d0"
+    },
+    {
+      "tileset": "mn_iron_descent_thaw",
+      "grass_block": "a5",
+      "replacement_block": "d1"
+    },
+    {
+      "tileset": "mn_iron_descent_thaw",
+      "grass_block": "a7",
+      "replacement_block": "d2"
+    },
+    {
+      "tileset": "mn_iron_descent_thaw",
+      "grass_block": "a8",
+      "replacement_block": "d3"
+    },
+    {
+      "tileset": "mn_iron_descent_thaw",
+      "grass_block": "c9",
+      "replacement_block": "d4"
+    },
+    {
+      "tileset": "mn_iron_descent_thaw",
+      "grass_block": "cb",
+      "replacement_block": "d5"
+    },
+    {
+      "tileset": "mn_iron_descent_thaw",
+      "grass_block": "cc",
+      "replacement_block": "d6"
+    }
+  ],
+  "composites": [
+    {
+      "tileset": "mn_winter_iron_descent",
+      "grass_block": "81",
+      "ground_block": "02",
+      "replacement_block": "86",
+      "collision": [
+        "FLOOR",
+        "WALL",
+        "FLOOR",
+        "WALL"
+      ],
+      "native_glyph_rows": [
+        "e0 e1 3d 3d",
+        "e1 e0 3d 3d",
+        "e0 e1 3d 3d",
+        "e2 e1 3d 3d"
+      ]
+    },
+    {
+      "tileset": "mn_winter_iron_descent",
+      "grass_block": "83",
+      "ground_block": "02",
+      "replacement_block": "87",
+      "collision": [
+        "WALL",
+        "FLOOR",
+        "WALL",
+        "FLOOR"
+      ],
+      "native_glyph_rows": [
+        "3b 3b e0 e0",
+        "3b 3b e1 e1",
+        "3b 3b e1 e1",
+        "3b 3b e1 e0"
+      ]
+    },
+    {
+      "tileset": "mn_winter_iron_descent",
+      "grass_block": "84",
+      "ground_block": "02",
+      "replacement_block": "88",
+      "collision": [
+        "FLOOR",
+        "FLOOR",
+        "WALL",
+        "WALL"
+      ],
+      "native_glyph_rows": [
+        "e0 e1 e0 e0",
+        "e1 e0 e1 e1",
+        "4c 4c 4c 4c",
+        "4c 4c 4c 4c"
+      ]
+    },
+    {
+      "tileset": "mn_iron_descent_thaw",
+      "grass_block": "81",
+      "ground_block": "02",
+      "replacement_block": "ce",
+      "collision": [
+        "FLOOR",
+        "WALL",
+        "FLOOR",
+        "WALL"
+      ],
+      "native_glyph_rows": [
+        "05 05 3d 3d",
+        "05 05 3d 3d",
+        "05 05 3d 3d",
+        "05 05 3d 3d"
+      ]
+    },
+    {
+      "tileset": "mn_iron_descent_thaw",
+      "grass_block": "83",
+      "ground_block": "02",
+      "replacement_block": "cf",
+      "collision": [
+        "WALL",
+        "FLOOR",
+        "WALL",
+        "FLOOR"
+      ],
+      "native_glyph_rows": [
+        "3b 3b 05 05",
+        "3b 3b 05 05",
+        "3b 3b 05 05",
+        "3b 3b 05 05"
+      ]
+    },
+    {
+      "tileset": "mn_iron_descent_thaw",
+      "grass_block": "84",
+      "ground_block": "02",
+      "replacement_block": "d0",
+      "collision": [
+        "FLOOR",
+        "FLOOR",
+        "WALL",
+        "WALL"
+      ],
+      "native_glyph_rows": [
+        "05 05 05 05",
+        "05 05 05 05",
+        "4c 4c 4c 4c",
+        "4c 4c 4c 4c"
+      ]
+    },
+    {
+      "tileset": "mn_iron_descent_thaw",
+      "grass_block": "a5",
+      "ground_block": "87",
+      "replacement_block": "d1",
+      "collision": [
+        "FLOOR",
+        "WALL",
+        "FLOOR",
+        "WALL"
+      ],
+      "native_glyph_rows": [
+        "e0 e1 f2 f2",
+        "e1 e0 f2 f2",
+        "e0 e1 f2 f2",
+        "e2 e1 f2 f2"
+      ]
+    },
+    {
+      "tileset": "mn_iron_descent_thaw",
+      "grass_block": "a7",
+      "ground_block": "87",
+      "replacement_block": "d2",
+      "collision": [
+        "WALL",
+        "FLOOR",
+        "WALL",
+        "FLOOR"
+      ],
+      "native_glyph_rows": [
+        "f0 f0 e0 e0",
+        "f0 f0 e1 e1",
+        "f0 f0 e1 e1",
+        "f0 f0 e1 e0"
+      ]
+    },
+    {
+      "tileset": "mn_iron_descent_thaw",
+      "grass_block": "a8",
+      "ground_block": "87",
+      "replacement_block": "d3",
+      "collision": [
+        "FLOOR",
+        "FLOOR",
+        "WALL",
+        "WALL"
+      ],
+      "native_glyph_rows": [
+        "e0 e1 e0 e0",
+        "e1 e0 e1 e1",
+        "f4 f4 f4 f4",
+        "f4 f4 f4 f4"
+      ]
+    },
+    {
+      "tileset": "mn_iron_descent_thaw",
+      "grass_block": "c9",
+      "ground_block": "ab",
+      "replacement_block": "d4",
+      "collision": [
+        "FLOOR",
+        "WALL",
+        "FLOOR",
+        "WALL"
+      ],
+      "native_glyph_rows": [
+        "63 64 3d 3d",
+        "64 63 3d 3d",
+        "63 64 3d 3d",
+        "65 64 3d 3d"
+      ]
+    },
+    {
+      "tileset": "mn_iron_descent_thaw",
+      "grass_block": "cb",
+      "ground_block": "ab",
+      "replacement_block": "d5",
+      "collision": [
+        "WALL",
+        "FLOOR",
+        "WALL",
+        "FLOOR"
+      ],
+      "native_glyph_rows": [
+        "3b 3b 63 63",
+        "3b 3b 64 64",
+        "3b 3b 64 64",
+        "3b 3b 64 63"
+      ]
+    },
+    {
+      "tileset": "mn_iron_descent_thaw",
+      "grass_block": "cc",
+      "ground_block": "ab",
+      "replacement_block": "d6",
+      "collision": [
+        "FLOOR",
+        "FLOOR",
+        "WALL",
+        "WALL"
+      ],
+      "native_glyph_rows": [
+        "63 64 63 63",
+        "64 63 64 64",
+        "21 21 21 21",
+        "21 21 21 21"
+      ]
+    }
+  ],
+  "contracts": {
+    "new_cut_rules": 21,
+    "appended_floor_composites": 12,
+    "all_maps_and_existing_block_layouts_exact": true,
+    "all_existing_cut_tree_rules_exact": true,
+    "all_native_glyph_bytes_and_clock_inks_exact": true,
+    "only_tall_grass_quadrants_become_floor": true,
+    "cliff_water_tree_and_ledge_quadrants_unchanged": true,
+    "new_ice_quadrants": 0,
+    "half_grass_wall_bypass_forbidden": true
+  }
+}

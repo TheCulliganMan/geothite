@@ -3321,14 +3321,24 @@ fn source_tile_art(
     let block = if x >= 0 && y >= 0 && x < source.width && y < source.height {
         source.map.blocks[y as usize / 4 * source.map.attributes.width as usize + x as usize / 4]
     } else {
-        exterior_border_block(
-            &source.map.map_name,
+        inland_winter_render::forest_border_block(
             &source.map.attributes.tileset_name,
-            source.map.attributes.border_block,
-            source.width,
+            source.map.attributes.width,
+            source.map.attributes.height,
+            &source.map.blocks,
             x,
             y,
         )
+        .unwrap_or_else(|| {
+            exterior_border_block(
+                &source.map.map_name,
+                &source.map.attributes.tileset_name,
+                source.map.attributes.border_block,
+                source.width,
+                x,
+                y,
+            )
+        })
     };
     let index = *art
         .metatile_layout

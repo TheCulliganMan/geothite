@@ -4,6 +4,79 @@ This is an ongoing twenty-route implementation. Source review, native publicatio
 controller fixtures and earned regional progression are separate evidence.
 No current route or town has final visual approval from the user.
 
+## Reproducible reviewed maps — 2026-11-01
+
+The current selection is the [twenty-two-stage Pine Country revision](routes/r06-pine-fork-v01/README.md),
+`content-packs/minnesota-reviewed-maps-v11.crystalpack`. A native two-lane drop,
+closed pine flanks and six-step grassy uphill choices make the lakeside return
+different from the downhill trip. Pine cover and a continuous lookout rim
+replace bare shoulders and the boulder-built corner. The original northern hop,
+Cut-gated Ether/stair, cabins, guru, bridge, pier and all 742 other maps stay exact.
+Seven native courses, three actual stdio processes/938 calls, ten exact native
+frames, four played views and the 108-map atlas pass. Both town seams work in
+both lanes and directions; Cut permissions/native reset and early fishing pass.
+The master reproduces v10. The source index binds 38 layouts, ten route groups
+and 27 sources; eleven publisher and seven source-index refusals reject. Both
+affected-crate Clippy runs and all 602 audio checks pass. Owned formatting passes
+with only the prior workspace fmt issue. Broader quality, user visual approval
+and earned regional progression remain open.
+
+
+The preceding v10 selection is the [twenty-one-stage River Bluffs revision](routes/r05-wooded-terraces-v01/README.md),
+`content-packs/minnesota-reviewed-maps-v10.crystalpack`. It restores pine/grass
+shoulders and winding two-tile trails on both R05 terraces, closes old boulder
+rims with native cliff corners/faces and sets interior rocks back from the rims.
+The existing Great Ball has a four-step grass approach; all five outdoor stairs
+and original cave mouths remain intact. Eight native courses pass, including
+both cave mouths/healing/Repel and zero-badge early fishing. Two terrace stdio
+processes pass 929 calls; a third verifies the cave course with empty stderr.
+Ten exact complete native frames, three actual played views and the updated
+108-map atlas were inspected. All 741 other maps and every existing actor,
+program, regional fauna/fishing table, attribute, art and audio remain exact.
+The master reproduces v09. Both affected-crate Clippy runs and all 602 audio
+checks pass; owned formatting passes with only the prior workspace fmt issue.
+Eleven publisher and six source-index refusals reject. The source index binds
+36 layouts, nine route groups and 26 sources. Broader quality, visual approval
+and earned regional progression remain open.
+
+
+
+The preceding v09 selection is the [twenty-stage R02 garden successor](routes/r02-working-farmyard-v01/README.md),
+`content-packs/minnesota-reviewed-maps-v09.crystalpack`. Golden crop beds,
+working stakes and a native once-only Berry grower replace an empty farmhouse
+shoulder. Five native courses,496clean stdio calls, six exact native/source
+frames, three actual played views and both lanes of both town seams pass.
+The full parent audit preserves742other maps and every existing actor/program,
+regional fauna/fishing, art/audio and original attributes. Both early fishing
+courses pass again; all602audio checks and affected-crate Clippy pass. Ten
+publisher and six source-index refusals reject. The default source index binds
+33native layouts, eight route groups,25sources,26town anchors and one new grower.
+The master reproduces the preceding v08 bytes exactly. Owned formatting passes;
+workspace formatting retains unrelated offset-allocator differences. Broader map
+quality and earned regional progression remain open.
+
+The following v08 record is retained as the preceding selection.
+
+
+The [nineteen-stage Rust rebuild](revisions/reviewed-maps-v01/README.md) reproduces
+the reviewed continuation plus R16's seed bank from the frozen coastal parent,
+byte-identical to the standalone child. Its current source index binds32native
+layouts, seven route groups,24sources and26town anchors. Both affected crates
+pass all-target Clippy and all602audio checks pass. Nine current publisher
+refusals and six corrupted-index refusals pass. Owned formatting passes;
+workspace formatting retains unrelated offset-allocator differences.
+`content-packs/minnesota-reviewed-maps-v08.crystalpack` was selected before v09.
+
+The [R16 revision](routes/r16-seed-bank-v01/README.md) adds a short native hop
+beside the existing grower/flowers and two yellow-grass uphill gates. Three
+controller cases,186clean stdio calls, six exact full native source-frame
+matches, two played night/rain captures and the108-map connected atlas pass.
+All742other maps, regional encounters/parties, programs, fishing, art/audio and
+native attributes remain exact. Both early zero-badge fishing courses pass.
+The source and earlier rejected bypasses are retained. The
+[combined regional review](revisions/reviewed-maps-v01/REGIONAL-REVIEW.md) keeps
+prior statewide evidence and its limits explicit. The broader goal remains open.
+
 ## Local sleep recovery before Wind — 2026-10-27
 
 The [supplies successor](playable/northstar-relay.md#published-local-sleep-recovery-successor--2026-10-27)
