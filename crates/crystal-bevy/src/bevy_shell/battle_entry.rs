@@ -304,6 +304,8 @@ fn prepare_battle_transition_texture(
     Ok(images.add(image))
 }
 
+const BATTLE_TRANSITION_BASE_Z: f32 = 0.9;
+
 fn spawn_visible_battle_transition(
     commands: &mut Commands,
     transition: VisibleBattleTransition,
@@ -446,23 +448,32 @@ Transform::from_xyz(0.0, 0.0, 2.7),),
                     } else {
                         None
                     };
-                    for (texture, z) in std::iter::once((&texture, 0.0))
+                    for (texture, z) in std::iter::once((&texture, BATTLE_TRANSITION_BASE_Z))
                         .chain(priority_texture.as_ref().map(|priority| (priority, 2.4)))
                     {
                         for x in std::iter::once(shift).chain(wrap_shift) {
+                            // Clip each wrapped strip to the LCD. Without this,
+                            // the shifted copies escape into the wide-screen surround.
+                            let left = (x - PLAYFIELD_WIDTH * 0.5).max(-PLAYFIELD_WIDTH * 0.5);
+                            let right = (x + PLAYFIELD_WIDTH * 0.5).min(PLAYFIELD_WIDTH * 0.5);
+                            if right <= left {
+                                continue;
+                            }
+                            let source_left = (left - (x - PLAYFIELD_WIDTH * 0.5)) / source_scale;
+                            let source_right = source_left + (right - left) / source_scale;
                             commands.spawn((
                                 (Sprite { image: texture.clone(),
                                         rect: Some(Rect::new(
-                                            0.0,
+                                            source_left,
                                             source_y as f32,
-                                            TITLE_SCREEN_WIDTH as f32,
+                                            source_right,
                                             source_y as f32 + 1.0,
                                         )),
-                                        custom_size: Some(Vec2::new(PLAYFIELD_WIDTH, source_scale)),
+                                        custom_size: Some(Vec2::new(right - left, source_scale)),
                                         ..default()
                                     },
 Transform::from_xyz(
-                                        x,
+                                        (left + right) * 0.5,
                                         PLAYFIELD_TOP - (source_y as f32 + 0.5) * source_scale,
                                         z,
                                     ),),

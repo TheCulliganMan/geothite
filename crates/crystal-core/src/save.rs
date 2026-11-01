@@ -848,6 +848,25 @@ pub fn write_save_game_for_modpack(
     write_save_game(path, &save)
 }
 
+/// Write a checked migrated browser save as a single new primary generation.
+/// The caller must ensure the destination does not already exist.
+///
+/// # Errors
+/// Returns an error if the identity, state, destination, or write is invalid.
+#[cfg(target_arch = "wasm32")]
+pub fn write_migrated_save_without_backup(
+    path: impl AsRef<Path>,
+    state: GameState,
+    modpack: &SaveModpackIdentity,
+    pack_content_hash: &str,
+) -> Result<(), SaveError> {
+    let path = path.as_ref();
+    validate_save_path(path)?;
+    let save = SaveGame::new(state, modpack.clone(), pack_content_hash.to_owned())?;
+    let bytes = encode_save_game_bytes(&save)?;
+    write_primary_save_bytes(path, &bytes)
+}
+
 /// Set the source `_ResetClock` SRAM status without running the ordinary
 /// SaveRTC boundary, which would clear the request again.
 pub fn request_saved_clock_reset_for_modpack(

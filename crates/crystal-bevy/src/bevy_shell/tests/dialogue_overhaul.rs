@@ -73,16 +73,18 @@ pub(super) fn opening(index: usize) -> (AssetRoot, CrystalRuntime, VisibleShellC
         .expect("production New Game");
     c.set_runtime_journal_enabled(false);
     indoor_walk(&mut c, &r, (7, 1));
-    // The production stair warp includes its authored step onto (9,1).
-    // That tile triggers Mom's approach before the first text is published.
+    // The stair arrival remains quiet; Mom intercepts at the door.
     enter(&mut c, GameButton::Up, "MnWinonaHome1F");
     at(&mut c, "MnWinonaHome1F", (9, 1));
+    assert!(c.snapshot().expect("quiet arrival").ui.text.is_none());
+    indoor_walk(&mut c, &r, (7, 6));
+    at(&mut c, "MnWinonaHome1F", (7, 6));
     let speaking = c.snapshot().expect("Mom has approached before speaking");
     let mom = speaking.visible_object_runtime_tiles["MN_W_GUARDIAN"];
-    assert_eq!((mom.x, mom.y), (9, 2));
+    assert_eq!((mom.x, mom.y), (7, 5));
     assert_eq!(
         speaking.visible_object_facings["MN_W_GUARDIAN"],
-        crystal_core::world::map::Direction::Up
+        crystal_core::world::map::Direction::Down
     );
     c.wait_frames(128).expect("Mom's approach animation");
     let snapshot = c.snapshot().expect("Mom approaches");
@@ -90,10 +92,10 @@ pub(super) fn opening(index: usize) -> (AssetRoot, CrystalRuntime, VisibleShellC
         .visible_object_runtime_tiles
         .get("MN_W_GUARDIAN")
         .expect("visible Mom");
-    assert_eq!((mom.x, mom.y), (9, 2));
+    assert_eq!((mom.x, mom.y), (7, 5));
     assert!(!event(&c, "EVENT_MN_HOME_INTRO"));
     press(&mut c, GameButton::Down);
-    at(&mut c, "MnWinonaHome1F", (9, 1));
+    at(&mut c, "MnWinonaHome1F", (7, 6));
     continue_in_place(&mut c, &root, &r, "overhaul-mom-speaking");
     super::northstar_dialogue::acknowledge(
         &mut c,
@@ -322,6 +324,102 @@ pub(super) fn delivery(index: usize) -> (AssetRoot, CrystalRuntime, VisibleShell
     assert!(event(&c, "EVENT_MN_DELIVERED_ROCHESTER_PARCEL"));
     continue_in_place(&mut c, &root, &r, "overhaul-originals-delivered");
     (root, r, c)
+}
+
+#[test]
+#[ignore = "requires revised external pack via CRYSTAL_WINONA_TEST_PACK"]
+fn winona_wardens_explain_partner_requirement_and_remain_after_starter() {
+    let (root, r) = load();
+    let mut c = VisibleShellController::new_game(root, r.clone(), "CHRIS", None)
+        .expect("production New Game");
+    c.set_runtime_journal_enabled(false);
+    indoor_walk(&mut c, &r, (7, 1));
+    enter(&mut c, GameButton::Up, "MnWinonaHome1F");
+    indoor_walk(&mut c, &r, (7, 6));
+    finish(&mut c);
+    indoor_walk(&mut c, &r, (6, 6));
+    travel(&mut c, GameButton::Down, "MnWinona", (7, 8));
+    indoor_walk(&mut c, &r, (4, 18));
+    let before = c.snapshot().expect("wardens before the starter");
+    assert!(!event(&c, "EVENT_MN_STARTER_RECEIVED"));
+    for id in ["MN_W_TRAIL_WARDEN_NORTH", "MN_W_TRAIL_WARDEN_SOUTH"] {
+        assert!(before.visible_object_runtime_tiles.contains_key(id), "{id}");
+    }
+    for _ in 0..4 {
+        if c.snapshot().expect("warden check").ui.text.is_some() {
+            break;
+        }
+        press(&mut c, GameButton::Left);
+    }
+    for (index, expected) in [
+        "Hold up! You need\na POKEMON partner",
+        "for this trail.\nAsk TAMARACK at",
+        "the field station\nby the river.",
+    ]
+    .into_iter()
+    .enumerate()
+    {
+        let page = c
+            .snapshot()
+            .expect("warden warning")
+            .ui
+            .text
+            .expect("warning page");
+        assert_eq!(page.label, "MnWTrailWardenText");
+        assert_eq!(page.asm_text.as_deref(), Some(expected));
+        capture_checkpoint(&mut c, &format!("warden-before-{index}"));
+        press(&mut c, GameButton::A);
+    }
+    finish(&mut c);
+    at(&mut c, "MnWinona", (4, 18));
+
+    let (root, r, mut c) = opening(0);
+    travel(&mut c, GameButton::Down, "MnWinona", (7, 8));
+    continue_in_place(&mut c, &root, &r, "warden-after-starter");
+    indoor_walk(&mut c, &r, (5, 18));
+    let after = c.snapshot().expect("wardens after receiving a starter");
+    assert!(event(&c, "EVENT_MN_STARTER_RECEIVED"));
+    for (id, position) in [
+        ("MN_W_TRAIL_WARDEN_NORTH", (5, 17)),
+        ("MN_W_TRAIL_WARDEN_SOUTH", (6, 17)),
+    ] {
+        let tile = after
+            .visible_object_runtime_tiles
+            .get(id)
+            .expect("visible warden");
+        assert_eq!((tile.x, tile.y), position);
+    }
+    for x in [5, 6] {
+        indoor_walk(&mut c, &r, (x, 18));
+        press(&mut c, GameButton::Up);
+        press(&mut c, GameButton::A);
+        for (index, expected) in ["ROCHESTER is west.\nRest at home if", "your team tires."]
+            .into_iter()
+            .enumerate()
+        {
+            let page = c
+                .snapshot()
+                .expect("warden directions")
+                .ui
+                .text
+                .expect("direction page");
+            assert_eq!(page.label, "MnWTrailWardenClearedText");
+            assert_eq!(page.asm_text.as_deref(), Some(expected));
+            capture_checkpoint(&mut c, &format!("warden-after-{x}-{index}"));
+            press(&mut c, GameButton::A);
+        }
+        finish(&mut c);
+    }
+    indoor_walk(&mut c, &r, (4, 18));
+    travel(&mut c, GameButton::Left, "MnR01C00R00", (63, 24));
+    press(&mut c, GameButton::Start);
+    assert!(
+        c.snapshot()
+            .expect("Start after the trail")
+            .ui
+            .menu
+            .is_some()
+    );
 }
 
 #[test]

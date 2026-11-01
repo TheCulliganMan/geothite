@@ -73,6 +73,16 @@ pub(super) fn finish(c: &mut VisibleShellController) -> usize {
     for _ in 0..128 {
         c.wait_frames(1).expect("settle the shared native printer");
         let s = c.snapshot().expect("dialogue");
+        if c.shell
+            .shell
+            .runtime()
+            .data()
+            .maps
+            .get("MnWinonaFieldStation")
+            .is_some_and(|map| map.scripts.contains_key("MnOverhaulLabEntry"))
+        {
+            super::northstar_story_events::observe_reed_arrival(&s);
+        }
         if s.ui
             .text
             .as_ref()

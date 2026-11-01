@@ -10,6 +10,18 @@ use super::winona::{at, load, press, travel};
 use crate::bevy_shell::{VisibleShellController, mark_runtime_snapshot_dirty};
 
 const DELIVERED: &str = "EVENT_MN_DELIVERED_ROCHESTER_PARCEL";
+
+#[test]
+#[ignore = "requires CRYSTAL_WINONA_TEST_PACK with the Route 1 connecting passage"]
+fn early_route_passage_sign_identifies_both_destinations() {
+    let (root, runtime) = load();
+    let mut c = fixture(&root, &runtime, "MnR01C00R00", (16, 21));
+    let text = super::interior_life::talk(&mut c, (16, 20));
+    assert!(text.contains("LIMESTONE PASSAGE"), "{text}");
+    assert!(text.contains("WEST: ROCHESTER"), "{text}");
+    assert!(text.contains("EAST: WINONA"), "{text}");
+}
+
 fn event(c: &VisibleShellController, flag: &str) -> bool {
     c.shell
         .shell

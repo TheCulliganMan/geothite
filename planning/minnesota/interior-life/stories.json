@@ -3465,8 +3465,7 @@
         {
           "label": "MN_BEMIDJI_CUSTOMERText",
           "lines": [
-            "I am stocking up before the ITASCA trail. Medicine first, then a snack I can eat with cold fingers.",
-            "My partner votes for the snack first. We are still negotiating."
+            "Medicine for the ITASCA trail, and a snack for my partner. The snack was their idea."
           ]
         }
       ],
@@ -3557,8 +3556,7 @@
         {
           "label": "MN_BRAINERD_MART_CUSTOMERText",
           "lines": [
-            "REPELs for a quiet road, BALLs for a planned stop at the shore. I pack for the trip I actually want.",
-            "Last time I packed for three different trips and could not find my lunch."
+            "REPELs for the road, and BALLS for the shore. I hope I left room for lunch!"
           ]
         }
       ],
@@ -3708,8 +3706,7 @@
         {
           "label": "MN_GR_MART_CUSTOMERText",
           "lines": [
-            "The road descends, but the cold still finds you. I check my partners before I check my pack.",
-            "A good trip leaves enough energy for the walk back."
+            "It gets cold on the road down. I make sure my partners have enough energy for the walk back."
           ]
         }
       ],
@@ -3790,8 +3787,7 @@
         {
           "label": "MN_MK_SHOPPERText",
           "lines": [
-            "A few POTIONS make a prairie trip easier. I also leave room for the BERRIES a neighbor insists I take.",
-            "Planning is useful. Planning for hospitality takes practice."
+            "POTIONS for the prairie, and room in my pack for the BERRIES my neighbor gave me."
           ]
         }
       ],
@@ -4040,8 +4036,7 @@
         {
           "label": "MN_RC_SHOPPERText",
           "lines": [
-            "I keep a few POTIONS for the prairie, then check whether my partners need rest before we leave.",
-            "The clerk knows my list by now. I am trying to be as reliable as the clerk."
+            "A few POTIONS for the prairie. My partners are rested, so we are ready to go!"
           ]
         }
       ],
@@ -4118,8 +4113,7 @@
         {
           "label": "MN_ST_CLOUD_MART_CUSTOMERText",
           "lines": [
-            "REPELs help when you want a quiet stretch of pine road. I still stop to watch the birds.",
-            "Avoiding a battle and paying attention to the forest can be the same kind of walk."
+            "I use REPELs on the pine road when I want to watch the birds in peace."
           ]
         }
       ],
@@ -4197,8 +4191,7 @@
         {
           "label": "MN_W_CUSTOMERText",
           "lines": [
-            "An ANTIDOTE helps on Driftless Trail. So does noticing when your partner is tired before you are.",
-            "My first trip taught me both lessons. The second one was much nicer."
+            "My partner was poisoned on Driftless Trail. I always carry an ANTIDOTE now."
           ]
         }
       ],

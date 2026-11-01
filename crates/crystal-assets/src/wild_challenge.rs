@@ -161,6 +161,14 @@ impl GameDataSet {
     }
 
     pub fn competitive_wild_moves(&self, pokemon: &Pokemon) -> Result<Vec<LearnedMove>> {
+        self.competitive_wild_moves_excluding(pokemon, &BTreeSet::new())
+    }
+
+    fn competitive_wild_moves_excluding(
+        &self,
+        pokemon: &Pokemon,
+        excluded: &BTreeSet<&str>,
+    ) -> Result<Vec<LearnedMove>> {
         ensure!(
             self.learnsets.contains_key(&pokemon.species.id),
             "wild species missing learnset"
@@ -214,6 +222,7 @@ impl GameDataSet {
                 legal.insert(id.clone());
             }
         }
+        legal.retain(|id| !excluded.contains(id.as_str()));
         // Multi-hit attacks can overwhelm early teams despite low listed power.
         // Apply this to the full pool, including naturally learned moves.
         if pokemon.level < 10 {
@@ -414,9 +423,64 @@ impl GameDataSet {
         score
     }
 
-    pub(crate) fn equip_wild_challenge_moves(&self, pokemon: &mut Pokemon) -> Result<()> {
-        if self.wild_challenge.is_some() {
-            pokemon.moves = self.competitive_wild_moves(pokemon)?;
+    pub(crate) fn equip_wild_challenge_moves(
+        &self,
+        pokemon: &mut Pokemon,
+        map_name: &str,
+    ) -> Result<()> {
+        let regional = map_name.starts_with("Mn");
+        let hm_moves: BTreeSet<&str> = if regional {
+            self.items
+                .values()
+                .filter(|item| !item.consumable)
+                .filter_map(|item| item.tmhm_move.as_deref())
+                .collect()
+        } else {
+            BTreeSet::new()
+        };
+        if self.wild_challenge.is_some() && !(regional && pokemon.level <= 10) {
+            pokemon.moves = self.competitive_wild_moves_excluding(pokemon, &hm_moves)?;
+        } else if regional
+            && pokemon
+                .moves
+                .iter()
+                .any(|m| hm_moves.contains(m.name.as_str()))
+        {
+            // Rebuild the last four eligible level-up moves so earlier moves
+            // displaced by an HM remain available to the encounter.
+            let mut moves = Vec::new();
+            for entry in self
+                .learnsets
+                .get(&pokemon.species.id)
+                .into_iter()
+                .flatten()
+            {
+                if entry.0 > pokemon.level || hm_moves.contains(entry.1.as_str()) {
+                    continue;
+                }
+                let definition = self
+                    .moves
+                    .get(&entry.1)
+                    .with_context(|| format!("unknown wild move {}", entry.1))?;
+                moves.retain(|m: &LearnedMove| m.name != entry.1);
+                moves.push(LearnedMove {
+                    name: entry.1.clone(),
+                    current_pp: definition.pp,
+                    pp_ups: 0,
+                });
+                if moves.len() > 4 {
+                    moves.remove(0);
+                }
+            }
+            pokemon.moves = moves;
+        }
+        if regional {
+            ensure!(
+                !pokemon.moves.is_empty(),
+                "regional wild species {} has no non-HM moves at level {}",
+                pokemon.species.id,
+                pokemon.level
+            );
         }
         Ok(())
     }

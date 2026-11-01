@@ -2818,3 +2818,97 @@ fn handheld_gamepad_drives_production_running_and_start_menu() {
     assert!(shell.start_menu_cursor.is_none());
     assert_eq!(shell.shell.session().snapshot().tile, tile);
 }
+
+#[test]
+fn map_name_sign_survives_field_redraw_and_disappears_on_expiry() {
+    let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("../../..")
+        .canonicalize()
+        .expect("repository root");
+    let asset_root = AssetRoot::new(repo_root);
+    let runtime = workspace_desktop_runtime(&asset_root);
+    let spawn_identifier = runtime
+        .title_new_game_spawn_identifier()
+        .expect("title spawn");
+    let shell = initialize_bevy_runtime_shell(
+        asset_root,
+        runtime,
+        BevyShellStart::NewGameAtRuntimeTile {
+            spawn_identifier,
+            map_name: "NewBarkTown".to_string(),
+            tile_x: 13,
+            tile_y: 6,
+        },
+        BevyShellConfig::default(),
+    )
+    .expect("initialize field");
+    let mut app = integrated_shell_test_app(shell);
+    app.update();
+    {
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        shell.visible_map_name_sign = Some(VisibleMapNameSign {
+            landmark: "TEST".into(),
+            label: "TEST".into(),
+            frames_remaining: 58,
+        });
+        mark_runtime_snapshot_dirty(&mut shell);
+    }
+    app.update();
+    let sign_entities = |world: &mut World| {
+        world
+            .query_filtered::<Entity, With<MapNameSignMarker>>()
+            .iter(world)
+            .collect::<std::collections::HashSet<_>>()
+    };
+    let original = sign_entities(app.world_mut());
+    assert!(original.len() >= 80, "the rendered window must exist");
+    for _ in 0..3 {
+        app.world_mut()
+            .resource_mut::<RenderedViewport>()
+            .world_key = None;
+        mark_runtime_snapshot_dirty(&mut app.world_mut().resource_mut::<BevyRuntimeShell>());
+        app.update();
+        assert_eq!(
+            sign_entities(app.world_mut()),
+            original,
+            "redraw must retain the prompt"
+        );
+    }
+    // A palette mismatch must rebuild even if the semantic game state has
+    // not changed; the idle renderer must not retain stale-colored artwork.
+    {
+        let world = app.world_mut();
+        for mut marker in world.query::<&mut MapNameSignMarker>().iter_mut(world) {
+            marker.palette = "stale".into();
+        }
+        mark_runtime_snapshot_dirty(&mut world.resource_mut::<BevyRuntimeShell>());
+    }
+    app.update();
+    let refreshed = sign_entities(app.world_mut());
+    assert!(refreshed.len() >= 80, "palette refresh must retain a complete window");
+    assert!(refreshed.is_disjoint(&original), "stale palette must replace the window");
+    {
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        let sign = shell.visible_map_name_sign.as_mut().expect("visible sign");
+        sign.landmark = "OTHER".into();
+        sign.label = "OTHER".into();
+        mark_runtime_snapshot_dirty(&mut shell);
+    }
+    app.update();
+    let replacement = sign_entities(app.world_mut());
+    assert!(replacement.len() >= 80, "new destination window must appear");
+    assert!(
+        replacement.is_disjoint(&refreshed),
+        "changed destination must replace the window"
+    );
+    {
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        shell.visible_map_name_sign = None;
+        mark_runtime_snapshot_dirty(&mut shell);
+    }
+    app.update();
+    assert!(
+        sign_entities(app.world_mut()).is_empty(),
+        "expired window must be removed"
+    );
+}

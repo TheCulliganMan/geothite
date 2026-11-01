@@ -69,12 +69,10 @@ pub(crate) fn install(pack: &mut CompiledGamePack) -> Result<()> {
         }
         let lines: &[&str] = if id.starts_with("MnR01") || id.starts_with("MnR02") {
             &[
-                "Need a ROD?",
-                "The GURU's house",
-                "is on DRIFTLESS",
-                "TRAIL, by the",
-                "lower creek bank.",
-                "He gives OLD RODS!",
+                "The creek changes",
+                "after a good rain.",
+                "I like to see what",
+                "shows up here.",
             ]
         } else if id.starts_with("MnR03")
             || id.starts_with("MnR04")
@@ -101,6 +99,19 @@ pub(crate) fn install(pack: &mut CompiledGamePack) -> Result<()> {
             ]
         };
         for label in labels {
+            if id == "MnR01C00R00" && label == "MN_R01_CREEK_CHILDText" {
+                authoring::text(
+                    &mut map,
+                    &label,
+                    &[
+                        "The man inside",
+                        "loves fishing.",
+                        "I like watching",
+                        "the creek, too.",
+                    ],
+                );
+                continue;
+            }
             let body = map
                 .scripts
                 .get_mut(&label)

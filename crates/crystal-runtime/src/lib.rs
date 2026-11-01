@@ -7,6 +7,8 @@ pub mod frontpic_animation;
 pub mod hall_of_fame;
 mod map_catalog;
 mod music_catalog;
+mod northstar_save_migration;
+pub use northstar_save_migration::migrate_northstar_reviewed_save;
 mod outdoor_mods;
 mod regional_item_descriptions;
 mod runtime_presentation_text;
@@ -90,7 +92,7 @@ use crystal_assets::{
     validate_compiled_runtime_files,
 };
 use crystal_audio::{AudioKind, AudioPcmFormat, AudioProgram, AudioProgramSource};
-use crystal_core::battle::capture::{CaptureCompletion, CaptureOutcome, StoredCapture};
+use crystal_core::battle::capture::{CaptureOutcome, StoredCapture};
 use crystal_core::battle::capture::{CaptureRules, CaptureWobbleProbability};
 use crystal_core::battle::damage::{TypeCategories, TypeEffectivenessTable, WeatherModifiers};
 use crystal_core::battle::start::{
@@ -3866,6 +3868,7 @@ pub struct RuntimeScriptedBattleCompletion {
 pub struct RuntimeCaptureCompletion {
     pub stored: Option<StoredCapture>,
     pub contest_pokemon: Option<crystal_core::models::Pokemon>,
+    pub rewards: Option<crystal_core::systems::battle_rewards::BattleRewardOutcome>,
     pub state_checksum: StateChecksum,
 }
 
@@ -4034,7 +4037,8 @@ pub struct RuntimeTeleportFieldMoveUse {
     pub actor_party_index: usize,
     pub actor_species: String,
     pub source_map: String,
-    pub destination_spawn_identifier: u16,
+    /// Catalog identifier, or `None` for an authored Minnesota clinic arrival.
+    pub destination_spawn_identifier: Option<u16>,
     pub destination_map: String,
     pub destination_tile: TilePosition,
     pub state_checksum: StateChecksum,

@@ -3168,16 +3168,14 @@ impl RuntimeGameShell {
             self.session
                 .stage_active_wild_capture_completion(&self.runtime, outcome, nickname)?;
         let mutation = self.apply_recorded_runtime_mutation(recorded)?;
-        let RuntimeMutationResult::ActiveWildCaptureCompleted(CaptureCompletion {
-            stored,
-            contest_pokemon,
-        }) = mutation.result
+        let RuntimeMutationResult::ActiveWildCaptureCompleted(completion) = mutation.result
         else {
             anyhow::bail!("runtime mutation returned non-capture-completion result");
         };
         Ok(RuntimeCaptureCompletion {
-            stored,
-            contest_pokemon,
+            stored: completion.stored,
+            contest_pokemon: completion.contest_pokemon,
+            rewards: completion.rewards,
             state_checksum: mutation.state_checksum,
         })
     }

@@ -455,10 +455,11 @@ async fn run_browser() -> Result<()> {
             BevyMultiplayerConfig::Meshtastic(_) => None,
         }),
     );
-    let continue_save_path = runtime
-        .load_save_summary(&save_path)
-        .is_ok()
-        .then_some(save_path.clone());
+    let player_id = multiplayer.as_ref().and_then(|config| match config {
+        BevyMultiplayerConfig::Hosted(config) => Some(config.player_id),
+        BevyMultiplayerConfig::Meshtastic(_) => None,
+    });
+    let continue_save_path = select_browser_save(&runtime, &save_path, player_id)?;
     let config = BevyShellConfig {
         quick_save_path: Some(save_path),
         multiplayer,
@@ -476,6 +477,136 @@ async fn run_browser() -> Result<()> {
         },
         config,
     )
+}
+
+#[cfg(target_arch = "wasm32")]
+fn select_browser_save(
+    runtime: &CrystalRuntime,
+    save_path: &Path,
+    player_id: Option<u64>,
+) -> Result<Option<PathBuf>> {
+    use base64::Engine as _;
+    use sha2::Digest as _;
+
+    let window = web_sys::window().context("browser window is unavailable")?;
+    let storage = window
+        .local_storage()
+        .map_err(|error| anyhow::anyhow!("open save storage: {error:?}"))?
+        .context("browser save storage is unavailable")?;
+    let key = format!("crystal.save.v1.{}", save_path.display());
+    let is_northstar_migration = runtime
+        .modpack()
+        .id()
+        .split('+')
+        .any(|part| part == "minnesota-native-center-restoration-v1");
+    if !is_northstar_migration {
+        return Ok(runtime
+            .load_save_summary(save_path)
+            .is_ok()
+            .then(|| save_path.to_path_buf()));
+    }
+    let current = storage
+        .get_item(&key)
+        .map_err(|error| anyhow::anyhow!("read save storage: {error:?}"))?;
+    let has_backup = storage
+        .get_item(&format!("{key}.bak"))
+        .map_err(|error| anyhow::anyhow!("read save backup: {error:?}"))?
+        .is_some();
+    if current.is_some() || has_backup {
+        let encoded = current.context("current browser primary save is missing")?;
+        let bytes = base64::engine::general_purpose::STANDARD
+            .decode(encoded)
+            .context("decode current browser save")?;
+        let save = crystal_core::save::read_save_game_bytes_for_modpack(
+            &bytes,
+            save_path.display().to_string(),
+            runtime.modpack(),
+            &runtime.pack_identity().content_hash,
+        )
+        .context("validate current browser save")?;
+        runtime
+            .validate_save_state_for_runtime_pack(save.state())
+            .context("validate current browser state")?;
+        return Ok(Some(save_path.to_path_buf()));
+    }
+    let suffix = player_id
+        .map(|id| format!("-player-{id}.crystalsave"))
+        .unwrap_or_else(|| "-local.crystalsave".into());
+    let mut has_regional_save = false;
+    let mut previous_id = None;
+    for index in 0..storage
+        .length()
+        .map_err(|error| anyhow::anyhow!("inspect save storage: {error:?}"))?
+    {
+        if let Some(existing) = storage
+            .key(index)
+            .map_err(|error| anyhow::anyhow!("inspect save key: {error:?}"))?
+        {
+            let Some(name) = existing.strip_prefix("crystal.save.v1.saves/") else {
+                continue;
+            };
+            let name = name.strip_suffix(".bak").unwrap_or(name);
+            let Some(id) = name.strip_suffix(&suffix) else {
+                continue;
+            };
+            if !id.contains("+minnesota-") {
+                continue;
+            }
+            has_regional_save = true;
+            if format!("{:x}", sha2::Sha256::digest(id.as_bytes()))
+                == "d70761f0a31858f579c7f67f41deeb46b03e6e63152fea4cede8eaba47c67447"
+            {
+                previous_id = Some(id.to_owned());
+            }
+        }
+    }
+    if !has_regional_save {
+        return Ok(None);
+    }
+    let previous_id = previous_id
+        .context("existing Minnesota save is not from the expected Northstar release")?;
+    let previous_path = browser_save_path_for_identity(&previous_id, player_id);
+    let previous_key = format!("crystal.save.v1.{}", previous_path.display());
+    let encoded = storage
+        .get_item(&previous_key)
+        .map_err(|error| anyhow::anyhow!("read previous save: {error:?}"))?
+        .context("previous Northstar primary save is missing")?;
+    let bytes = base64::engine::general_purpose::STANDARD
+        .decode(encoded)
+        .context("decode previous Northstar save")?;
+    let previous_identity = crystal_core::save::SaveModpackIdentity::new(
+        previous_id,
+        "a129f66ca806cd4c9f5ed0030c622a600da86c0e748f844001898a890b9f6c91",
+    )?;
+    let state = crystal_core::save::read_save_game_bytes_for_modpack(
+        &bytes,
+        previous_path.display().to_string(),
+        &previous_identity,
+        "17bbf71fd2fa731036b93863bd4dceac0a1b6f18e2568d30cb1f187112ff1341",
+    )
+    .context("validate previous Northstar save")?
+    .into_state();
+    let migrated = crystal_runtime::migrate_northstar_reviewed_save(runtime, &state)
+        .context("migrate Northstar save")?;
+    anyhow::ensure!(
+        storage
+            .get_item(&key)
+            .map_err(|error| anyhow::anyhow!("check destination save: {error:?}"))?
+            .is_none()
+            && storage
+                .get_item(&format!("{key}.bak"))
+                .map_err(|error| anyhow::anyhow!("check destination backup: {error:?}"))?
+                .is_none(),
+        "destination save appeared during migration"
+    );
+    crystal_core::save::write_migrated_save_without_backup(
+        save_path,
+        migrated,
+        runtime.modpack(),
+        &runtime.pack_identity().content_hash,
+    )
+    .context("write migrated Northstar save")?;
+    Ok(Some(save_path.to_path_buf()))
 }
 
 fn browser_save_path_for_identity(modpack_id: &str, player_id: Option<u64>) -> PathBuf {

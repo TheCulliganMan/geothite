@@ -3404,6 +3404,14 @@ pub struct BlackoutRecoveryOutcome {
     pub healed: Vec<PartyRecoveryOutcome>,
 }
 
+/// A completed capture and its normal wild-battle experience award.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct CaptureRewardOutcome {
+    pub stored: Option<crystal_core::battle::capture::StoredCapture>,
+    pub contest_pokemon: Option<crystal_core::models::Pokemon>,
+    pub rewards: Option<crystal_core::systems::battle_rewards::BattleRewardOutcome>,
+}
+
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct RuntimePartySwapOutcome {
     pub first_party_index: usize,
@@ -3828,7 +3836,7 @@ pub enum RuntimeMutationResult {
     BattlePartyPokemonItemUsed(ItemUseOutcome, BattleItemOutcome),
     BattlePartyMoveItemUsed(ItemUseOutcome, BattleItemOutcome),
     BallThrown(CaptureOutcome),
-    ActiveWildCaptureCompleted(CaptureCompletion),
+    ActiveWildCaptureCompleted(CaptureRewardOutcome),
     ActiveBattlePartySwitched(ActiveBattlePartySwitchOutcome),
     ActiveBattleTurnResolved(BattleTurnOutcome),
     ActiveBattleCommandResolved(ActiveBattleCommandOutcome),

@@ -3687,12 +3687,24 @@ fn pending_move_replacement_uses_source_text_pause_and_sound_boundaries() {
         });
         state.sync_party_from_storage();
     }
-    runtime_shell.party_move_cursor = Some(MenuCursor {
-        surface_id: party_move_cursor_surface_id(0),
-        option_index: 0,
-    });
-
-    replace_visible_pending_move_learn(&mut runtime_shell).expect("replace the selected move");
+    let pages = visible_move_learning_text_pages(
+        &runtime_shell,
+        "_AskForgetMoveText",
+        "CYNDAQUIL",
+        "CYNDAQUIL",
+        "HEADBUTT",
+    ).expect("render move-learning prompt");
+    assert!(pages.iter().any(|page| page.contains("CYNDAQUIL")));
+    assert!(pages.iter().all(|page| !page.contains("<wMonOrItemNameBuffer>")));
+    confirm_visible_pending_move_learn(&mut runtime_shell).expect("open forget decision");
+    assert!(runtime_shell.move_learn_decision_cursor.is_some());
+    confirm_visible_pending_move_learn(&mut runtime_shell).expect("choose to forget a move");
+    assert!(runtime_shell.move_learn_forget_menu_open);
+    assert_eq!(runtime_shell.party_move_cursor.as_ref().map(|cursor| cursor.option_index), Some(0));
+    confirm_visible_pending_move_learn(&mut runtime_shell).expect("replace the selected move");
+    let state = runtime_shell.shell.session().state();
+    assert!(state.pending_move_learn.is_none());
+    assert_eq!(state.storage.party.pokemon[0].as_ref().expect("party Pokemon").moves[0].name, "HEADBUTT");
 
     assert_eq!(
         runtime_shell
@@ -4191,6 +4203,248 @@ fn new_contest_capture_stays_live_through_pokedex_then_skips_nickname() {
     );
 }
 
+#[test]
+fn capture_completion_presents_experience_before_returning_to_field() {
+    let mut shell = route36_battle_shell_for_render_regression();
+    shell.visible_battle_transition = None;
+    shell.battle_messages.clear();
+    shell.battle_message_scenes.clear();
+    shell.battle_message_scene = None;
+    let before = shell.shell.snapshot().expect("battle snapshot");
+    let experience_before = before.party.slots[0].pokemon.experience;
+    complete_visible_standard_capture(
+        &mut shell,
+        crate::core::battle::capture::CaptureOutcome {
+            caught: true,
+            blocked: false,
+            storage_full: false,
+            wobble_count: 3,
+            animation_shakes: 4,
+            final_catch_rate: u8::MAX,
+            ball_id: Some("MASTER_BALL".to_string()),
+        },
+        None,
+        None,
+    )
+    .expect("complete capture and stage rewards");
+    let after = shell.shell.snapshot().expect("capture snapshot");
+    assert!(after.party.slots[0].pokemon.experience > experience_before);
+    assert!(
+        shell
+            .battle_messages
+            .iter()
+            .any(|message| message.contains("EXP. Points!"))
+    );
+    assert!(
+        shell
+            .battle_message_scene
+            .as_ref()
+            .is_some_and(|scene| scene.battle.is_some())
+    );
+    assert!(shell.pending_plain_battle_map_reload);
+}
+
+#[cfg(feature = "fullscreen-scaling")]
+#[test]
+fn battle_screen_hides_field_and_weather_through_capture_rewards() {
+    let mut shell = route36_battle_shell_for_render_regression();
+    shell.visible_battle_transition = None;
+    shell.visible_battle_sliding_intro = None;
+    shell.battle_messages.clear();
+    shell.battle_message_scenes.clear();
+    shell.battle_message_scene = None;
+    let mut app = battle_render_regression_app(shell);
+    app.insert_resource(Time::<()>::default())
+        .insert_resource(RuntimeTickTimer::new(f64::from(GAME_TICK_SECONDS)))
+        .add_systems(Startup, setup_fullscreen_scene)
+        .add_systems(
+            Update,
+            outdoor_precipitation::animate.after(render_playfield),
+        )
+        .add_systems(
+            PostUpdate,
+            (sync_fullscreen_scene_layout, sync_fullscreen_world_layout).chain(),
+        );
+    app.world_mut()
+        .spawn((Window::default(), bevy::window::PrimaryWindow));
+    let actor = app
+        .world_mut()
+        .spawn((
+            GrassRustleMarker,
+            Transform::default(),
+            Visibility::default(),
+        ))
+        .id();
+    app.update();
+    app.update();
+
+    {
+        let world = app.world_mut();
+        assert_eq!(
+            *world
+                .query_filtered::<&Visibility, With<FullscreenWorldRoot>>()
+                .single(world)
+                .expect("battle field root"),
+            Visibility::Hidden
+        );
+    }
+
+    {
+        let world = app.world_mut();
+        let mut shell = world.resource_mut::<BevyRuntimeShell>();
+        complete_visible_standard_capture(
+            &mut shell,
+            crate::core::battle::capture::CaptureOutcome {
+                caught: true,
+                blocked: false,
+                storage_full: false,
+                wobble_count: 3,
+                animation_shakes: 4,
+                final_catch_rate: u8::MAX,
+                ball_id: Some("MASTER_BALL".into()),
+            },
+            None,
+            None,
+        )
+        .expect("complete capture and retain reward presentation");
+        assert!(
+            shell
+                .shell
+                .snapshot()
+                .expect("capture snapshot")
+                .battle
+                .is_none()
+        );
+        assert!(!shell.battle_messages.is_empty());
+        // Even an outstanding partial field panel cannot take screen ownership.
+        shell.pc_hub_session_open = true;
+        mark_runtime_snapshot_dirty(&mut shell);
+    }
+    app.update();
+    {
+        let world = app.world_mut();
+        let (root, visibility) = world
+            .query_filtered::<(Entity, &Visibility), With<FullscreenWorldRoot>>()
+            .single(world)
+            .expect("field root");
+        assert_eq!(*visibility, Visibility::Hidden);
+        assert_eq!(world.get::<ChildOf>(actor).map(ChildOf::parent), Some(root));
+        assert_eq!(
+            *world
+                .query_filtered::<&Visibility, With<FullscreenSceneBackdrop>>()
+                .single(world)
+                .expect("backdrop"),
+            Visibility::Inherited
+        );
+        let weather = world
+            .query_filtered::<&Visibility, Or<(
+                With<outdoor_precipitation::Particle>,
+                With<outdoor_precipitation::CloudShade>,
+            )>>()
+            .iter(world)
+            .copied()
+            .collect::<Vec<_>>();
+        assert!(!weather.is_empty());
+        assert!(
+            weather
+                .iter()
+                .all(|visibility| *visibility == Visibility::Hidden)
+        );
+    }
+    {
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        shell.pc_hub_session_open = false;
+        shell.battle_messages.clear();
+        shell.battle_message_scenes.clear();
+        shell.battle_message_scene = None;
+        shell.battle_exp_tween = None;
+        shell.battle_level_stats.clear();
+        mark_runtime_snapshot_dirty(&mut shell);
+    }
+    app.update();
+    let world = app.world_mut();
+    assert_eq!(
+        *world
+            .query_filtered::<&Visibility, With<FullscreenWorldRoot>>()
+            .single(world)
+            .expect("restored field root"),
+        Visibility::Inherited
+    );
+}
+
+#[test]
+fn rain_is_hidden_until_retained_battle_presentation_finishes() {
+    let mut shell = route36_battle_shell_for_render_regression();
+    let battle_scene = Arc::new(shell.shell.snapshot().expect("active battle snapshot"));
+    shell.visible_battle_transition = None;
+    shell.battle_lcd_animation_active = false;
+    shell.battle_message_scene = None;
+
+    // Use the real weather system with a rainy regional field snapshot, while
+    // retaining the real pre-capture battle scene for the terminal boundary.
+    let mut field = (*battle_scene).clone();
+    field.battle = None;
+    field.overworld.map_name = "MnWeatherRegression".into();
+    let map = Arc::make_mut(field.maps.first_mut().expect("map catalog"));
+    map.map_name = field.overworld.map_name.clone();
+    map.attributes.tileset_name = "johto".into();
+    map.attributes.environment = Some("ROUTE".into());
+    let mut wet = false;
+    for hour in 0..24 {
+        field.progression.time.registers.hours = hour;
+        for minute in [1, 21, 41] {
+            field.progression.time.registers.minutes = minute;
+            if outdoor_weather_policy::sample(
+                &field.overworld.map_name,
+                "johto",
+                "ROUTE",
+                field.overworld.tile.x,
+                field.overworld.tile.y,
+                &field.progression.time,
+            )
+            .rain > 0.0
+            {
+                wet = true;
+                break;
+            }
+        }
+        if wet {
+            break;
+        }
+    }
+    assert!(wet, "fixture must choose a rainy weather window");
+    shell.cached_snapshot = Some((shell.snapshot_revision, Arc::new(field)));
+    let mut app = App::new();
+    app.insert_resource(shell)
+        .insert_resource(RenderedViewport {
+            map_name: Some("MnWeatherRegression".into()),
+            ..Default::default()
+        })
+        .insert_resource(Time::<()>::default())
+        .insert_resource(RuntimeTickTimer::new(f64::from(GAME_TICK_SECONDS)))
+        .add_systems(Update, outdoor_precipitation::animate);
+    app.update();
+    app.update();
+
+    fn rain_visible(world: &mut World) -> bool {
+        world
+            .query_filtered::<&Visibility, With<outdoor_precipitation::Particle>>()
+            .iter(world)
+            .any(|visibility| *visibility == Visibility::Visible)
+    }
+    assert!(rain_visible(app.world_mut()), "rain must be visible on the field");
+    app.world_mut()
+        .resource_mut::<BevyRuntimeShell>()
+        .battle_message_scene = Some(battle_scene);
+    app.update();
+    assert!(!rain_visible(app.world_mut()), "retained battle text owns the screen");
+    app.world_mut()
+        .resource_mut::<BevyRuntimeShell>()
+        .battle_message_scene = None;
+    app.update();
+    assert!(rain_visible(app.world_mut()), "rain returns with the field");
+}
+
 fn contest_replacement_shell_for_regression() -> (BevyRuntimeShell, crate::core::models::Pokemon) {
     let mut runtime_shell = route36_battle_shell_for_render_regression();
     runtime_shell.visible_battle_transition = None;
@@ -4430,16 +4684,14 @@ fn ordinary_cave_transition_wave_uses_old_offset_accumulator_and_native_scanline
         let base_strips = strips
             .iter(world)
             .filter(|(sprite, transform)| {
-                sprite.rect.is_some() && (transform.translation.z - 0.0).abs() < f32::EPSILON
+                sprite.rect.is_some()
+                    && (transform.translation.z - BATTLE_TRANSITION_BASE_Z).abs() < f32::EPSILON
             })
             .collect::<Vec<_>>();
-        let mut source_rows = vec![Vec::<f32>::new(); 144];
+        let mut source_rows = vec![Vec::<(f32, f32, f32, f32)>::new(); 144];
         for (sprite, transform) in base_strips {
-            assert_eq!(
-                sprite.custom_size,
-                Some(Vec2::new(PLAYFIELD_WIDTH, TILE_SIZE / 8.0)),
-                "each native scanline must display as one 640x4 strip"
-            );
+            let size = sprite.custom_size.expect("wave strip size");
+            assert_eq!(size.y, TILE_SIZE / 8.0);
             let rect = sprite.rect.expect("wave strip source rectangle");
             let source_y = rect.min.y as u8;
             assert_eq!(
@@ -4447,7 +4699,11 @@ fn ordinary_cave_transition_wave_uses_old_offset_accumulator_and_native_scanline
                 1.0,
                 "wave strips must sample exactly one native scanline"
             );
-            source_rows[usize::from(source_y)].push(transform.translation.x);
+            let left = transform.translation.x - size.x * 0.5;
+            let right = transform.translation.x + size.x * 0.5;
+            assert!(left >= -PLAYFIELD_WIDTH * 0.5 && right <= PLAYFIELD_WIDTH * 0.5);
+            assert_eq!(size.x, (rect.max.x - rect.min.x) * (TILE_SIZE / 8.0));
+            source_rows[usize::from(source_y)].push((left, right, rect.min.x, rect.max.x));
             let expected_y =
                 PLAYFIELD_HEIGHT * 0.5 - (f32::from(source_y) + 0.5) * (TILE_SIZE / 8.0);
             assert_eq!(
@@ -4455,7 +4711,7 @@ fn ordinary_cave_transition_wave_uses_old_offset_accumulator_and_native_scanline
                 "wave row {source_y} must stay centered on its native scanline"
             );
         }
-        for (source_y, actual_positions) in source_rows.iter_mut().enumerate() {
+        for (source_y, actual_strips) in source_rows.iter_mut().enumerate() {
             let expected_shift =
                 visible_battle_anim_sine((source_y as u8).wrapping_mul(2), amplitude) as f32
                     * (TILE_SIZE / 8.0);
@@ -4465,11 +4721,26 @@ fn ordinary_cave_transition_wave_uses_old_offset_accumulator_and_native_scanline
             } else if expected_shift < 0.0 {
                 expected_positions.push(expected_shift + PLAYFIELD_WIDTH);
             }
-            actual_positions.sort_by(f32::total_cmp);
-            expected_positions.sort_by(f32::total_cmp);
+            let mut expected_strips = expected_positions
+                .into_iter()
+                .filter_map(|x| {
+                    let left = (x - PLAYFIELD_WIDTH * 0.5).max(-PLAYFIELD_WIDTH * 0.5);
+                    let right = (x + PLAYFIELD_WIDTH * 0.5).min(PLAYFIELD_WIDTH * 0.5);
+                    (right > left).then(|| {
+                        let source_left = (left - (x - PLAYFIELD_WIDTH * 0.5)) / (TILE_SIZE / 8.0);
+                        (left, right, source_left, source_left + (right - left) / (TILE_SIZE / 8.0))
+                    })
+                })
+                .collect::<Vec<_>>();
+            actual_strips.sort_by(|a, b| a.0.total_cmp(&b.0));
+            expected_strips.sort_by(|a, b| a.0.total_cmp(&b.0));
             assert_eq!(
-                *actual_positions, expected_positions,
+                *actual_strips, expected_strips,
                 "outro {outro} row {source_y} must wrap its shifted SCX scanline"
+            );
+            assert_eq!(
+                actual_strips.iter().map(|(left, right, _, _)| right - left).sum::<f32>(),
+                PLAYFIELD_WIDTH,
             );
         }
 

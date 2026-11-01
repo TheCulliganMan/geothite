@@ -135,8 +135,9 @@
           ],
           "facing": "south",
           "lines": [
-            "The field office",
-            "shares this clinic."
+            "The doctors here",
+            "care for humans",
+            "and POKEMON alike."
           ],
           "service": null
         }
@@ -362,9 +363,8 @@
           "facing": "west",
           "lines": [
             "My sister sorts",
-            "the clinic freight.",
-            "The order was right.",
-            "The boxes were not."
+            "clinic medicine",
+            "fresh off the train."
           ],
           "service": null
         }
@@ -667,10 +667,10 @@
       ],
       "facing": "south",
       "lines": [
-        "The clinic needs",
-        "the survey records.",
-        "VAREL is waiting",
-        "in the south gym."
+        "VAREL trains here.",
+        "Their partners are",
+        "strong, and they",
+        "look happy, too."
       ],
       "service": null
     },
@@ -697,8 +697,8 @@
         8
       ],
       "lines": [
-        "CLINIC / SURVEY",
-        "Freight desk inside."
+        "ROCHESTER CLINIC",
+        "HEALING & ADVICE"
       ]
     },
     {
@@ -731,7 +731,7 @@
       ],
       "lines": [
         "ROCHESTER",
-        "Please keep a copy."
+        "A CITY OF CARE"
       ]
     },
     {

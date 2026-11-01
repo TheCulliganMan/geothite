@@ -8,6 +8,13 @@ use std::sync::OnceLock;
 use anyhow::{Result, bail};
 use crystal_runtime::RuntimeTilesetCatalogSnapshot;
 
+fn is_cliff_crown_floor(tileset: &str, block: u16) -> bool {
+    // This cliff's walkable crown has the same collision pattern as a facade,
+    // but its upper floor must not be drawn in front of an actor walking on it.
+    (tileset == "mn_outdoor_johto_stairs" && block == 0x72)
+        || super::inland_winter_render::is_cleared_cliff_floor(tileset, block)
+}
+
 #[derive(Default)]
 pub(super) struct MetatileRenderFlags {
     entries: OnceLock<Vec<Entry>>,
@@ -50,10 +57,7 @@ impl MetatileRenderFlags {
                         }),
                         foreground: tokens[0] == "FLOOR"
                             && tokens[1] == "FLOOR"
-                            && !super::inland_winter_render::is_cleared_cliff_floor(
-                                &tileset.tileset_id,
-                                block as u16,
-                            )
+                            && !is_cliff_crown_floor(&tileset.tileset_id, block as u16)
                             && tokens[2..4].iter().all(|token| {
                                 token == "WALL" || super::priority_collision_token(token)
                             }),
@@ -90,7 +94,7 @@ mod tests {
     use crystal_assets::{AssetRoot, read_loaded_verified_compiled_game_pack};
     use crystal_runtime::{CrystalRuntime, RuntimeTilesetCatalogSnapshot};
 
-    use super::MetatileRenderFlags;
+    use super::{MetatileRenderFlags, is_cliff_crown_floor};
 
     #[test]
     fn cached_priority_matches_every_external_pack_collision_quadrant() {
@@ -131,7 +135,7 @@ mod tests {
                 assert_eq!(tokens.len(), 4);
                 let foreground = tokens[0] == "FLOOR"
                     && tokens[1] == "FLOOR"
-                    && !super::super::inland_winter_render::is_cleared_cliff_floor(id, block)
+                    && !is_cliff_crown_floor(id, block)
                     && tokens[2..4].iter().all(|token| {
                         token == "WALL" || super::super::priority_collision_token(token)
                     });
@@ -156,11 +160,12 @@ mod tests {
     }
 
     #[test]
-    fn clearing_south_cliff_grass_does_not_turn_the_floor_into_a_building_eave() {
+    fn cliff_crowns_do_not_turn_walkable_floor_into_a_building_eave() {
         let collision = ["FLOOR", "FLOOR", "WALL", "WALL"]
             .map(str::to_owned)
             .to_vec();
         for (id, block) in [
+            ("mn_outdoor_johto_stairs", 0x72),
             ("mn_winter_iron_descent", 0x88),
             ("mn_iron_descent_thaw", 0xd0),
             ("mn_iron_descent_thaw", 0xd3),
@@ -194,6 +199,68 @@ mod tests {
                     .unwrap(),
                 (true, true)
             );
+        }
+        let fence = RuntimeTilesetCatalogSnapshot {
+            tileset_id: "mn_outdoor_johto_stairs".into(),
+            collision: BTreeMap::from([("49".into(), collision)]),
+            palette_map: Vec::new(),
+        };
+        assert_eq!(
+            MetatileRenderFlags::default()
+                .resolve(&fence, 0x4a, 0x49, 0, 1)
+                .unwrap(),
+            (true, true),
+            "the neighboring fence retains its foreground"
+        );
+    }
+
+    #[test]
+    #[ignore = "requires a Northstar review pack"]
+    fn route_one_cliff_priority_preserves_native_fence_and_facade_flags() {
+        let path = PathBuf::from(
+            std::env::var_os("CRYSTAL_RENDER_TEST_PACK").expect("Northstar review pack path"),
+        );
+        let root = AssetRoot::new(path.parent().expect("pack parent"));
+        let loaded = read_loaded_verified_compiled_game_pack(&path).expect("load review pack");
+        let runtime = CrystalRuntime::from_loaded_compiled_pack(&root, loaded).expect("runtime");
+        let route = &runtime.data().maps["MnR01C00R00"];
+        assert_eq!(route.attributes.tileset_name, "mn_outdoor_johto_stairs");
+        assert!(
+            route.blocks.contains(&0x72),
+            "Route 1 must use the cliff crown"
+        );
+        let definition = &runtime.data().tilesets["mn_outdoor_johto_stairs"];
+        let tileset = RuntimeTilesetCatalogSnapshot {
+            tileset_id: "mn_outdoor_johto_stairs".into(),
+            collision: definition.collision.clone(),
+            palette_map: definition.palette_map.clone(),
+        };
+        let ordinary = RuntimeTilesetCatalogSnapshot {
+            tileset_id: "johto".into(),
+            ..tileset.clone()
+        };
+        let flags = MetatileRenderFlags::default();
+        let ordinary_flags = MetatileRenderFlags::default();
+        for x in 0..4 {
+            assert_eq!(
+                flags.resolve(&tileset, 0x100, 0x72, x, 1).expect("cliff"),
+                (false, false)
+            );
+        }
+        for block in [0x16, 0x1e, 0x49] {
+            for y in 0..4 {
+                for x in 0..4 {
+                    assert_eq!(
+                        flags
+                            .resolve(&tileset, 0x100, block, x, y)
+                            .expect("regional block"),
+                        ordinary_flags
+                            .resolve(&ordinary, 0x100, block, x, y)
+                            .expect("ordinary block"),
+                        "facade or fence block {block:02x} at ({x}, {y})"
+                    );
+                }
+            }
         }
     }
 

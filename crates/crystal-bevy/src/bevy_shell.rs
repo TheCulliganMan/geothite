@@ -74,6 +74,7 @@ mod source_sprite_renderer;
 mod source_view_schedule;
 #[cfg(test)]
 mod sprite_sync_tests;
+#[cfg(not(target_arch = "wasm32"))]
 use chrono::{Datelike, Local as ChronoLocal, Timelike};
 use crystal_assets::{
     AuthoredTileAnimation, RuntimeBadgeRegion, RuntimeBugContestAction, RuntimeCurrencyAccount,
@@ -629,6 +630,29 @@ pub struct VisibleShellController {
     shell: BevyRuntimeShell,
 }
 
+// Text and MCP controllers have no Bevy update schedule. Sample local time at
+// their input and observation boundaries for Minnesota games.
+fn sync_visible_controller_host_clock(shell: &mut BevyRuntimeShell) -> Result<()> {
+    if startup_policy::skips_title_sequence(&shell.runtime) {
+        let sample = NativeRtcSource::system_local().sample();
+        let clock = &shell.shell.session().state().time;
+        if clock.current_date != sample.date
+            || clock.registers.hours != sample.hour
+            || clock.registers.minutes != sample.minute
+            || clock.registers.seconds != sample.second
+            || clock.start_time != ClockTime::default()
+        {
+            shell.shell.update_clock_from_datetime(
+                sample.date,
+                sample.hour,
+                sample.minute,
+                sample.second,
+            )?;
+        }
+    }
+    Ok(())
+}
+
 pub use crystal_tui_view::{
     VisibleBattleReplay, VisibleBattleReplayFrame, VisibleBattleReplayPiece,
 };
@@ -661,6 +685,7 @@ impl VisibleShellController {
             },
         )?;
         complete_visible_smoke_player_name_if_needed(&mut shell, Some(player_name))?;
+        sync_visible_controller_host_clock(&mut shell)?;
         settle_visible_shell_until_input(&mut shell)?;
         Ok(Self { shell })
     }
@@ -680,11 +705,13 @@ impl VisibleShellController {
                 ..Default::default()
             },
         )?;
+        sync_visible_controller_host_clock(&mut shell)?;
         settle_visible_shell_until_input(&mut shell)?;
         Ok(Self { shell })
     }
 
     pub fn snapshot(&mut self) -> Result<RuntimeShellSnapshot> {
+        sync_visible_controller_host_clock(&mut self.shell)?;
         visible_controller_snapshot(&mut self.shell)
     }
 
@@ -788,6 +815,7 @@ impl VisibleShellController {
 
     /// Apply a simultaneous joypad chord through the production input owner.
     pub fn press_buttons(&mut self, buttons: impl IntoIterator<Item = GameButton>) -> Result<()> {
+        sync_visible_controller_host_clock(&mut self.shell)?;
         safari_catch_visible::restore(&mut self.shell)?;
         if advance_visible_controller_fishing_clock(&mut self.shell) {
             return Ok(());
@@ -4723,9 +4751,13 @@ impl NativeRtcSource {
     }
 }
 
+fn requires_native_server_clock(server_clock: bool, minnesota: bool) -> bool {
+    server_clock && !minnesota
+}
+
 // An explicitly configured location-test clock is deterministic even when the
-// external pack is the hosted browser variant. Normal play still requires its
-// synchronized server clock and must never silently fall back to device time.
+// external pack is the hosted browser variant. Other hosted games still
+// require their synchronized server clock rather than falling back to local time.
 fn select_native_rtc_source(
     requires_server: bool,
     configured: NativeRtcSource,
@@ -5800,8 +5832,13 @@ struct GrassRustleMarker;
 #[derive(Component)]
 struct BoulderDustMarker;
 
-#[derive(Component)]
-struct MapNameSignMarker;
+#[derive(Component, Clone, PartialEq, Eq)]
+struct MapNameSignMarker {
+    map: String,
+    landmark: String,
+    label: String,
+    palette: String,
+}
 
 #[derive(Component)]
 struct ObjectMarker;
@@ -6040,8 +6077,13 @@ pub fn run_bevy_shell(
         .unwrap_or_else(NativeRtcSource::system_local);
     #[cfg(not(any(test, feature = "location-tester")))]
     let native_rtc_source = NativeRtcSource::system_local();
-    let native_rtc_source =
-        select_native_rtc_source(runtime.data().server_clock, native_rtc_source)?;
+    let native_rtc_source = select_native_rtc_source(
+        requires_native_server_clock(
+            runtime.data().server_clock,
+            startup_policy::skips_title_sequence(&runtime),
+        ),
+        native_rtc_source,
+    )?;
     let runtime_shell = {
         #[cfg(feature = "operation-trace")]
         let _span = bevy::log::info_span!("crystal_shell_initialize").entered();
@@ -8879,6 +8921,12 @@ fn initialize_bevy_runtime_shell(
             save_path: _,
         } => RuntimeGameShell::new_game(asset_root.clone(), runtime.clone(), spawn_identifier)?,
     };
+    // Restore civil time before loaded-map callbacks can inspect it. Text
+    // frontends do not have a Bevy update before those callbacks run.
+    if restore_loaded_visible_state && skip_title_sequence {
+        let sample = NativeRtcSource::system_local().sample();
+        shell.update_clock_from_datetime(sample.date, sample.hour, sample.minute, sample.second)?;
+    }
     #[cfg(feature = "location-tester")]
     if runtime_tile_start {
         if let Some(name) = config

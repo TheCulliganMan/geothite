@@ -1,3 +1,11 @@
+#[test]
+fn northstar_client_clock_selection_preserves_other_pack_policy() {
+    assert!(!requires_native_server_clock(true, true));
+    assert!(!requires_native_server_clock(false, true));
+    assert!(requires_native_server_clock(true, false));
+    assert!(!requires_native_server_clock(false, false));
+}
+
 // Opt-in review through the production keyboard schedule and native compositor.
 #[test]
 #[ignore = "requires CRYSTAL_NORTHSTAR_TITLE_PACK and optional CRYSTAL_NORTHSTAR_REVIEW_DIR"]
@@ -9,6 +17,21 @@ fn northstar_title_and_tamarack_opening() {
     let loaded = crystal_assets::read_loaded_verified_compiled_game_pack(&path)
         .expect("verified revised pack");
     let runtime = CrystalRuntime::from_loaded_compiled_pack(&root, loaded).expect("runtime");
+    assert!(
+        runtime.data().uses_host_clock(),
+        "Northstar uses the host clock"
+    );
+    assert_eq!(
+        select_native_rtc_source(
+            requires_native_server_clock(
+                runtime.data().server_clock,
+                startup_policy::skips_title_sequence(&runtime),
+            ),
+            NativeRtcSource::system_local(),
+        )
+        .expect("Northstar selects the local clock"),
+        NativeRtcSource::SystemLocal,
+    );
     let spawn_identifier = runtime
         .title_new_game_spawn_identifier()
         .expect("regional spawn");
@@ -74,6 +97,10 @@ fn northstar_title_and_tamarack_opening() {
         let (name_menu, complete) = {
             let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
             assert_eq!(shell.last_error, None);
+            assert!(
+                shell.pending_time_set.is_none(),
+                "Northstar must not ask players to set the clock"
+            );
             // MinimalPlugins has no audio device. Acknowledge the same cry
             // completion fence after the scheduled presentation has waited.
             if shell.pending_oak_intro.as_ref().is_some_and(|intro| {
@@ -180,7 +207,26 @@ fn minnesota_direct_menu_preserves_continue() {
         VisibleShellController::new_game(root.clone(), runtime.clone(), "REED", None)
             .expect("new regional game");
     let saved = controller.snapshot().expect("saved position");
+    {
+        let time = &mut controller.shell.shell.session_mut().state_mut().time;
+        time.set_manual_time(
+            GameDate::new(2000, 1, 1),
+            12,
+            0,
+            0,
+            ClockTime::new(3, 7, 30, 0),
+        );
+        time.rtc_status_flags = crate::core::systems::time::RTC_RESET;
+    }
     controller.save(&save_path).expect("save regional game");
+    let resumed_controller =
+        VisibleShellController::load_save(root.clone(), runtime.clone(), save_path.clone(), None)
+            .expect("terminal resumes an old regional clock");
+    let clock = &resumed_controller.shell.shell.session().state().time;
+    let local = NativeRtcSource::system_local().sample();
+    assert_eq!(clock.current_date, local.date);
+    assert_eq!(clock.registers.hours, local.hour);
+    assert_eq!(clock.start_time, ClockTime::default());
     let shell = initialize_bevy_runtime_shell(
         root,
         runtime,
@@ -231,6 +277,12 @@ fn minnesota_direct_menu_preserves_continue() {
     assert_eq!(resumed.trainer.player_name, "REED");
     assert_eq!(resumed.overworld.map_name, saved.overworld.map_name);
     assert_eq!(resumed.overworld.tile, saved.overworld.tile);
+    assert!(shell.pending_time_set.is_none());
+    let clock = &shell.shell.session().state().time;
+    let sample = native_rtc_source_for_test().sample();
+    assert_eq!(clock.current_date, sample.date);
+    assert_eq!(clock.registers.hours, sample.hour);
+    assert_eq!(clock.start_time, ClockTime::default());
     std::fs::remove_file(save_path).expect("remove test save");
 }
 

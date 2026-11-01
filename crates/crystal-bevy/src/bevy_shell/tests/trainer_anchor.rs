@@ -141,6 +141,111 @@ fn trainer_anchor_fresh_shell() -> BevyRuntimeShell {
 }
 
 #[test]
+fn trainer_encounter_music_transitions_to_pack_battle_music() {
+    let mut shell = trainer_anchor_fresh_shell();
+    shell.pending_audio.clear();
+    shell.audio_source_cache.clear();
+    queue_visible_trainer_encounter_music(&mut shell, "MUSIC_YOUNGSTER_ENCOUNTER")
+        .expect("queue trainer encounter music");
+    assert_eq!(
+        shell.active_music.as_deref(),
+        Some("MUSIC_YOUNGSTER_ENCOUNTER")
+    );
+    let mut app = App::new();
+    app.insert_resource(shell).add_systems(
+        Update,
+        (sync_runtime_battle_music, play_pending_audio).chain(),
+    );
+    app.update();
+    assert_audio_cache_contains_non_silent_pcm(app.world(), 1);
+    app.world_mut()
+        .resource_mut::<BevyRuntimeShell>()
+        .shell
+        .start_scripted_trainer_battle("VioletGym", "TrainerBirdKeeperAbe", 0)
+        .expect("start trainer battle");
+    mark_runtime_snapshot_dirty(&mut app.world_mut().resource_mut::<BevyRuntimeShell>());
+    app.update();
+    let shell = app.world().resource::<BevyRuntimeShell>();
+    assert!(shell.last_error.is_none(), "{:?}", shell.last_error);
+    assert_eq!(
+        shell.active_music.as_deref(),
+        Some("MUSIC_JOHTO_TRAINER_BATTLE")
+    );
+    assert!(shell.pending_audio.is_empty());
+    assert_audio_cache_contains_non_silent_pcm(app.world(), 2);
+}
+
+#[test]
+#[ignore = "requires CRYSTAL_NORTHSTAR_AUDIO_PACK review candidate"]
+fn trainer_encounter_music_transitions_in_northstar_pack() {
+    let path =
+        PathBuf::from(std::env::var_os("CRYSTAL_NORTHSTAR_AUDIO_PACK").expect("review pack"));
+    let root = AssetRoot::new(path.parent().expect("pack parent"));
+    let loaded =
+        crystal_assets::read_loaded_verified_compiled_game_pack(&path).expect("verified pack");
+    let runtime = CrystalRuntime::from_loaded_compiled_pack(&root, loaded).expect("runtime");
+    let trainer = &runtime.data().trainers.trainers["MN_REED_WINONA"];
+    assert_eq!(trainer.trainer_class, "MN_RIVAL_REED");
+    let encounter_music = trainer.encounter_music.clone();
+    let map = "MnWinonaFieldStation";
+    let script = "MnNSEReedEncounter";
+    let command_index = runtime.data().maps[map].scripts[script]
+        .as_array()
+        .expect("script commands")
+        .iter()
+        .position(|row| row.get("command").and_then(|v| v.as_str()) == Some("startbattle"))
+        .expect("rival startbattle");
+    let mut shell = initialize_bevy_runtime_shell(
+        root,
+        runtime.clone(),
+        BevyShellStart::NewGameAtRuntimeTile {
+            spawn_identifier: runtime.title_new_game_spawn_identifier().expect("spawn"),
+            map_name: map.into(),
+            tile_x: 6,
+            tile_y: 4,
+        },
+        BevyShellConfig {
+            smoke_player_name: Some("CHRIS".into()),
+            ..Default::default()
+        },
+    )
+    .expect("regional shell");
+    complete_visible_smoke_player_name_if_needed(&mut shell, Some("CHRIS")).expect("name");
+    let pokemon = runtime
+        .data()
+        .create_pokemon("CROOKIT", 5, crate::core::models::Dv::default())
+        .expect("regional partner");
+    let state = shell.shell.session_mut().state_mut();
+    assert!(state.storage.party.add_pokemon(pokemon));
+    state.sync_party_from_storage();
+    mark_runtime_snapshot_dirty(&mut shell);
+    shell.pending_audio.clear();
+    shell.audio_source_cache.clear();
+    queue_visible_trainer_encounter_music(&mut shell, &encounter_music).expect("encounter music");
+    let mut app = App::new();
+    app.insert_resource(shell).add_systems(
+        Update,
+        (sync_runtime_battle_music, play_pending_audio).chain(),
+    );
+    app.update();
+    assert_audio_cache_contains_non_silent_pcm(app.world(), 1);
+    {
+        let mut shell = app.world_mut().resource_mut::<BevyRuntimeShell>();
+        shell
+            .shell
+            .start_scripted_trainer_battle(map, script, command_index)
+            .expect("rival battle");
+        mark_runtime_snapshot_dirty(&mut shell);
+    }
+    app.update();
+    let shell = app.world().resource::<BevyRuntimeShell>();
+    assert!(shell.last_error.is_none(), "{:?}", shell.last_error);
+    assert_eq!(shell.active_music.as_deref(), Some("MUSIC_RIVAL_BATTLE"));
+    assert!(shell.pending_audio.is_empty());
+    assert_audio_cache_contains_non_silent_pcm(app.world(), 2);
+}
+
+#[test]
 fn scripted_leader_review_first_a_opens_original_surge_intro_at_blocked_contact() {
     let shell = prepare_map_trainer_encounter_preview_for_object(
         trainer_anchor_initial_shell(), "VermilionGym", Some("VERMILIONGYM_SURGE")).unwrap();

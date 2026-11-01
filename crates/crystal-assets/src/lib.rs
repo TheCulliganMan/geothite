@@ -9,8 +9,8 @@ use anyhow::{Context, Result};
 #[cfg(any(test, feature = "test-fixtures"))]
 use crystal_core::battle::capture::throw_ball_from_bag as core_throw_ball_from_bag;
 use crystal_core::battle::capture::{
-    CaptureAttemptContext, CaptureBallRule, CaptureBallRuleIssue, CaptureCompletion,
-    CaptureOutcome, CaptureRulesIssue, CaptureWobbleProbability, CaptureWobbleProbabilityIssue,
+    CaptureAttemptContext, CaptureBallRule, CaptureBallRuleIssue, CaptureOutcome,
+    CaptureRulesIssue, CaptureWobbleProbability, CaptureWobbleProbabilityIssue,
     capture_rules_issues, capture_wobble_probability_issues,
     complete_active_wild_capture_result_with_transformed_replacement as core_complete_active_wild_capture,
     resolve_capture_attempt_exact as core_resolve_capture_attempt_exact,
@@ -736,7 +736,9 @@ pub use grand_marais_partner_retry::build_grand_marais_partner_retry;
 mod minnesota_starter_return;
 pub use minnesota_starter_return::build_minnesota_starter_return;
 mod minnesota_research_access;
-pub use minnesota_research_access::build_minnesota_research_access;
+pub use minnesota_research_access::{
+    build_minnesota_research_access, revise_minnesota_fossil_lab_dialogue,
+};
 mod northstar_publication_geometry;
 mod northstar_rival_arc;
 mod northstar_rival_art;
@@ -759,9 +761,11 @@ mod northstar_story_bridges;
 pub use northstar_drill_lair::build_northstar_drill_lair;
 mod minnesota_fishing_references;
 pub use minnesota_fishing_references::repair_minnesota_fishing_references;
+mod minnesota_center_restoration;
 mod minnesota_fishing_hints;
 mod minnesota_fishing_houses;
 mod minnesota_fishing_rods;
+pub use minnesota_center_restoration::restore_minnesota_center_nurses;
 pub use minnesota_fishing_rods::build_minnesota_fishing_rods;
 
 mod minnesota_fly_destinations;
@@ -771,6 +775,7 @@ mod minnesota_habitats;
 pub use minnesota_habitats::build_minnesota_habitats;
 mod minnesota_biome_ecology;
 mod minnesota_clinic_companion;
+mod minnesota_clinic_recovery;
 mod minnesota_ecology_coverage;
 mod minnesota_ecology_fishing;
 mod minnesota_encounter_progression;
@@ -1292,6 +1297,8 @@ pub use central_lakes_modpack::build_central_lakes_modpack;
 
 mod rochester_maze_revision;
 pub use rochester_maze_revision::revise_rochester_maze;
+mod rochester_gym_progress_repair;
+pub use rochester_gym_progress_repair::repair_rochester_gym_progress;
 mod rochester_gate_revision;
 pub use rochester_gate_revision::revise_rochester_gates;
 mod gym_room_revision;
@@ -1341,6 +1348,8 @@ mod minnesota_trainer_art;
 mod minnesota_trainer_distribution;
 pub use minnesota_trainer_art::bind_minnesota_trainer_art;
 pub use minnesota_trainer_distribution::distribute_minnesota_trainer_art;
+mod minnesota_ordinary_challenges;
+pub use minnesota_ordinary_challenges::revise_minnesota_ordinary_challenges;
 mod minnesota_script_repair;
 pub use minnesota_script_repair::repair_minnesota_script_commands;
 
@@ -1555,7 +1564,7 @@ pub use encounter_refinement_composition::compose_minnesota_encounter_refinement
 
 mod northstar_story_consolidation;
 pub use northstar_story_consolidation::{
-    apply_minnesota_story_and_scene_fixes, consolidate_northstar_story,
+    apply_minnesota_story_and_scene_fixes, consolidate_northstar_story, repair_northstar_mom_door,
 };
 
 mod northstar_public_roads;
@@ -1566,3 +1575,15 @@ pub use r05_wooded_terraces::revise_r05_wooded_terraces;
 
 mod r06_pine_fork;
 pub use r06_pine_fork::revise_r06_pine_fork;
+
+mod minnesota_ambient_dialogue;
+pub use minnesota_ambient_dialogue::revise_minnesota_ambient_dialogue;
+
+mod minnesota_mart_arrivals;
+pub use minnesota_mart_arrivals::correct_minnesota_mart_arrivals;
+
+mod rochester_dialogue_repair;
+pub use rochester_dialogue_repair::repair_rochester_dialogue;
+
+mod northstar_driftless_passage;
+pub use northstar_driftless_passage::add_northstar_driftless_passage;

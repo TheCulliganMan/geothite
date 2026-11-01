@@ -29,6 +29,75 @@ const EDDY: &str = "EVENT_MN_LEECH_EDDY_CACHE";
 #[path = "leech_lake_mainland.rs"]
 mod mainland;
 
+#[test]
+#[ignore = "requires a Minnesota pack containing the Leech Lake island"]
+fn cut_prompt_does_not_appear_on_grass_after_wild_battle() {
+    use crystal_core::world::collision::permissions;
+
+    let (_, runtime, mut controller) = fixture((31, 29), true, true, false, false);
+    land(&mut controller, &runtime);
+    walk(&mut controller, &runtime, (50, 32));
+    for step in 0..128 {
+        let direction = if step % 2 == 0 {
+            GameButton::Right
+        } else {
+            GameButton::Left
+        };
+        let target = if step % 2 == 0 { (51, 32) } else { (50, 32) };
+        for _ in 0..8 {
+            let snapshot = controller.snapshot().expect("grass encounter state");
+            if snapshot.battle.is_some()
+                || (snapshot.overworld.tile.x, snapshot.overworld.tile.y) == target
+            {
+                break;
+            }
+            press(&mut controller, direction);
+            controller.wait_frames(16).expect("grass step");
+        }
+        if controller
+            .snapshot()
+            .expect("encounter state")
+            .battle
+            .is_some()
+        {
+            super::super::rochester::flee(&mut controller);
+            assert!(
+                controller.shell.field_notice.is_none(),
+                "unexpected field notice during battle return: {:?}",
+                controller.shell.field_notice
+            );
+            assert!(controller.shell.pending_contextual_field_move.is_none());
+            let permission = controller
+                .shell
+                .shell
+                .facing_tile_collision_permission()
+                .expect("facing collision")
+                .expect("facing tile");
+            assert!(matches!(
+                permission,
+                permissions::TALL_GRASS | permissions::LONG_GRASS | permissions::LONG_GRASS_1C
+            ));
+            assert!(
+                controller
+                    .shell
+                    .shell
+                    .current_overworld_interaction_checked()
+                    .expect("facing interaction")
+                    .is_none()
+            );
+            press(&mut controller, GameButton::A);
+            assert!(
+                controller.shell.field_notice.is_none(),
+                "unexpected field notice after battle: {:?}",
+                controller.shell.field_notice
+            );
+            assert!(controller.shell.pending_contextual_field_move.is_none());
+            return;
+        }
+    }
+    panic!("island grass must produce a real regional encounter");
+}
+
 fn checkpoint(c: &mut VisibleShellController, name: &str) -> PathBuf {
     let directory = PathBuf::from(
         std::env::var_os("CRYSTAL_LEECH_ISLAND_REVIEW_DIR").expect("fresh island review directory"),

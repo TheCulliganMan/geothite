@@ -4399,13 +4399,20 @@ impl GameDataSet {
                         }
                         None => None,
                     };
-                    let spawn_identifier = match saved_spawn_identifier {
-                        Some(identifier) => identifier,
-                        None => self.home_spawn_identifier()?,
+                    let (spawn_identifier, map_name, tile) = if let Some(identifier) = saved_spawn_identifier {
+                        let spawn = self.runtime_spawn_point(identifier)?;
+                        (Some(identifier), spawn.map_name.clone(), runtime_spawn_expected_tile(spawn))
+                    } else if let Some((map_name, tile)) = state.last_spawn_map_constant.as_deref()
+                        .map(|constant| self.minnesota_clinic_arrival(constant))
+                        .transpose()?
+                        .flatten()
+                    {
+                        (None, map_name, tile)
+                    } else {
+                        let identifier = self.home_spawn_identifier()?;
+                        let spawn = self.runtime_spawn_point(identifier)?;
+                        (Some(identifier), spawn.map_name.clone(), runtime_spawn_expected_tile(spawn))
                     };
-                    let spawn = self.runtime_spawn_point(spawn_identifier)?;
-                    let map_name = spawn.map_name.clone();
-                    let tile = runtime_spawn_expected_tile(spawn);
                     state.money /= 2;
                     self.transition_overworld_session(
                         state,
@@ -4415,7 +4422,7 @@ impl GameDataSet {
                         SpawnMemoryUpdate::Preserve,
                         music_ids,
                     )?;
-                    (Some(spawn_identifier), map_name, tile)
+                    (spawn_identifier, map_name, tile)
                 };
                 if let Some(pending) = state.pending_static_wild_terminal.as_ref() {
                     anyhow::ensure!(

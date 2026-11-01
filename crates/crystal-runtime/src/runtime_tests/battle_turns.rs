@@ -1180,6 +1180,27 @@ fn runtime_ordinary_capture_records_win_cleanup_and_rejects_short_or_tailed_trac
         .expect("ordinary capture performs exact WIN cleanup once");
 
     assert!(completion.stored.is_some());
+    let rewards = completion
+        .rewards
+        .as_ref()
+        .expect("capture grants experience");
+    assert!(rewards.experience_awarded > 0);
+    let experience_after = shell.session().state().storage.party.pokemon[0]
+        .as_ref()
+        .expect("rewarded party member")
+        .experience;
+    assert_eq!(
+        experience_after - before.storage.party.pokemon[0].as_ref().unwrap().experience,
+        rewards.experience_awarded
+    );
+    assert!(shell.complete_active_wild_capture(&capture, None).is_err());
+    assert_eq!(
+        shell.session().state().storage.party.pokemon[0]
+            .as_ref()
+            .unwrap()
+            .experience,
+        experience_after
+    );
     assert_eq!(shell.session().state().battle_result, 0);
     assert_eq!(shell.session().state().money, 145);
     assert!(

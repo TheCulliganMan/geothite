@@ -65,6 +65,23 @@ mod tests {
     use super::{AuthoredDialoguePage, compile};
 
     #[test]
+    fn canonical_dialogue_fits_native_pages() {
+        let source: serde_json::Value =
+            serde_json::from_str(include_str!("../../../planning/minnesota/story.json"))
+                .expect("canonical story JSON");
+        let maps = source["dialogue_overhaul"]["texts"]
+            .as_object()
+            .expect("authored dialogue maps");
+        for (map, labels) in maps {
+            for (label, raw_pages) in labels.as_object().expect("dialogue labels") {
+                let pages: Vec<AuthoredDialoguePage> = serde_json::from_value(raw_pages.clone())
+                    .unwrap_or_else(|error| panic!("{map}/{label}: {error}"));
+                compile(&pages).unwrap_or_else(|error| panic!("{map}/{label}: {error}"));
+            }
+        }
+    }
+
+    #[test]
     fn authored_dialogue_preserves_one_line_pages_and_rejects_overflow() {
         let pages = vec![
             AuthoredDialoguePage {

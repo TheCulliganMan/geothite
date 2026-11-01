@@ -71,25 +71,124 @@ fn fixture(
     (root, runtime, controller)
 }
 
+fn open_pokegear(controller: &mut VisibleShellController) {
+    use super::super::{StartMenuOption, selected_visible_start_menu_option};
+
+    press(controller, GameButton::Start);
+    for _ in 0..8 {
+        if selected_visible_start_menu_option(&mut controller.shell).expect("Start selection")
+            == StartMenuOption::Pokegear
+        {
+            press(controller, GameButton::A);
+            assert!(
+                controller.shell.pokegear_menu_open,
+                "Pokégear opens from Start"
+            );
+            return;
+        }
+        press(controller, GameButton::Down);
+    }
+    panic!("Pokégear was not available in Start");
+}
+
+#[test]
+#[ignore = "requires revised CRYSTAL_WINONA_TEST_PACK"]
+fn pokegear_opening_and_legacy_home_return() {
+    let (root, runtime) = load();
+    let mut fresh = VisibleShellController::new_game(root, runtime.clone(), "CHRIS", None)
+        .expect("production New Game");
+    fresh.set_runtime_journal_enabled(false);
+    super::authored_route_fixture::indoor_walk(&mut fresh, &runtime, (7, 1));
+    for _ in 0..16 {
+        if fresh.snapshot().expect("stair arrival").overworld.map_name == "MnWinonaHome1F" {
+            break;
+        }
+        press(&mut fresh, GameButton::Up);
+    }
+    at(&mut fresh, "MnWinonaHome1F", (9, 1));
+    if fresh.snapshot().expect("home scene").ui.text.is_none() {
+        super::authored_route_fixture::indoor_walk(&mut fresh, &runtime, (7, 5));
+        press(&mut fresh, GameButton::Down);
+    }
+    super::northstar_dialogue::acknowledge(
+        &mut fresh,
+        "MS_HOME",
+        "MnWHomeIntroText",
+        "EVENT_MN_HOME_INTRO",
+    );
+    super::northstar_dialogue::acknowledge(
+        &mut fresh,
+        "MS_HOME",
+        "MnWHomeGearReceivedText",
+        "EVENT_MN_HOME_INTRO",
+    );
+    finish(&mut fresh);
+    for flag in ["ENGINE_POKEGEAR", "ENGINE_PHONE_CARD", "ENGINE_MAP_CARD"] {
+        assert!(
+            fresh
+                .shell
+                .shell
+                .session()
+                .state()
+                .flags
+                .is_engine_flag_set(flag)
+                .expect("handoff flag"),
+            "missing {flag} after Mom's handoff"
+        );
+    }
+    open_pokegear(&mut fresh);
+
+    // Model an older save which completed the home scene without the gear.
+    let (root, runtime, mut legacy) = fixture("MnWinona", (7, 8), &["EVENT_MN_HOME_INTRO"]);
+    for flag in ["ENGINE_POKEGEAR", "ENGINE_PHONE_CARD", "ENGINE_MAP_CARD"] {
+        assert!(
+            !legacy
+                .shell
+                .shell
+                .session()
+                .state()
+                .flags
+                .is_engine_flag_set(flag)
+                .expect("flag")
+        );
+    }
+    continue_in_place(&mut legacy, &root, &runtime, "legacy-before-gear-recovery");
+    for _ in 0..16 {
+        if legacy.snapshot().expect("home arrival").overworld.map_name == "MnWinonaHome1F" {
+            break;
+        }
+        press(&mut legacy, GameButton::Up);
+    }
+    assert_eq!(
+        legacy.snapshot().expect("home arrival").overworld.map_name,
+        "MnWinonaHome1F"
+    );
+    for flag in ["ENGINE_POKEGEAR", "ENGINE_PHONE_CARD", "ENGINE_MAP_CARD"] {
+        assert!(
+            legacy
+                .shell
+                .shell
+                .session()
+                .state()
+                .flags
+                .is_engine_flag_set(flag)
+                .expect("recovered flag")
+        );
+    }
+    continue_in_place(&mut legacy, &root, &runtime, "legacy-after-gear-recovery");
+    open_pokegear(&mut legacy);
+}
+
 #[test]
 #[ignore = "declared approach fixture; requires revised pack and the production 2D schedule"]
-fn overhaul_mom_intercepts_continuous_and_diagonal_2d_input() {
+fn overhaul_mom_intercepts_both_door_lanes_in_2d() {
     use super::super::BevyRuntimeShell;
     use bevy::prelude::{ButtonInput, KeyCode};
 
-    for diagonal in [false, true] {
-        let (_, _, controller) = fixture("MnWinonaHome1F", (9, 0), &[]);
+    for x in [6, 7] {
+        let (_, _, controller) = fixture("MnWinonaHome1F", (x, 5), &[]);
         let mut app = super::integrated_shell_test_app(controller.shell);
         app.update();
-        if diagonal {
-            app.world_mut()
-                .resource_mut::<ButtonInput<KeyCode>>()
-                .press(KeyCode::ArrowRight);
-            app.update();
-            app.world_mut()
-                .resource_mut::<ButtonInput<KeyCode>>()
-                .clear();
-        }
         app.world_mut()
             .resource_mut::<ButtonInput<KeyCode>>()
             .press(KeyCode::ArrowDown);
@@ -105,10 +204,14 @@ fn overhaul_mom_intercepts_continuous_and_diagonal_2d_input() {
             .expect("2D shell");
         assert_eq!(shell.last_error, None);
         let mut controller = VisibleShellController { shell };
-        at(&mut controller, "MnWinonaHome1F", (9, 1));
+        at(&mut controller, "MnWinonaHome1F", (x, 6));
         let snapshot = controller.snapshot().expect("Mom intercepts held movement");
         let mom = snapshot.visible_object_runtime_tiles["MN_W_GUARDIAN"];
-        assert_eq!((mom.x, mom.y), (9, 2));
+        assert_eq!((mom.x, mom.y), (x, 5), "door lane {x}");
+        assert_eq!(
+            snapshot.visible_object_facings["MN_W_GUARDIAN"],
+            crystal_core::world::map::Direction::Down
+        );
         assert_eq!(
             snapshot.ui.text.expect("Mom's first page").label,
             "MnWHomeIntroText"
@@ -122,6 +225,98 @@ fn overhaul_mom_intercepts_continuous_and_diagonal_2d_input() {
                 .flags
                 .is_event_flag_set("EVENT_MN_HOME_INTRO")
                 .expect("unfinished conversation")
+        );
+        finish(&mut controller);
+        let mom = controller
+            .snapshot()
+            .expect("Mom returns")
+            .visible_object_runtime_tiles["MN_W_GUARDIAN"];
+        assert_eq!((mom.x, mom.y), (7, 4));
+        press(&mut controller, GameButton::Start);
+        assert!(
+            !super::super::visible_start_menu_entries(&controller.shell)
+                .expect("Start works")
+                .is_empty()
+        );
+    }
+}
+
+#[test]
+#[ignore = "requires revised CRYSTAL_WINONA_TEST_PACK"]
+fn mom_can_be_spoken_to_before_reaching_the_door() {
+    let (_, _, mut controller) = fixture("MnWinonaHome1F", (8, 4), &[]);
+    press(&mut controller, GameButton::Left);
+    press(&mut controller, GameButton::A);
+    let snapshot = controller.snapshot().expect("Mom's conversation");
+    let mom = snapshot.visible_object_runtime_tiles["MN_W_GUARDIAN"];
+    assert_eq!((mom.x, mom.y), (7, 4));
+    assert_eq!(
+        snapshot.visible_object_facings["MN_W_GUARDIAN"],
+        crystal_core::world::map::Direction::Right
+    );
+    assert_eq!(
+        snapshot.ui.text.expect("first page").label,
+        "MnWHomeIntroText"
+    );
+    finish(&mut controller);
+    at(&mut controller, "MnWinonaHome1F", (8, 4));
+    press(&mut controller, GameButton::Start);
+    assert!(
+        !super::super::visible_start_menu_entries(&controller.shell)
+            .expect("Start works")
+            .is_empty()
+    );
+}
+
+#[test]
+#[ignore = "requires revised CRYSTAL_WINONA_TEST_PACK"]
+fn mom_intercepts_sideways_entry_to_either_exit() {
+    for (start, button, x) in [(5, GameButton::Right, 6), (8, GameButton::Left, 7)] {
+        let (_, _, mut controller) = fixture("MnWinonaHome1F", (start, 7), &[]);
+        for _ in 0..4 {
+            press(&mut controller, button);
+            if controller
+                .snapshot()
+                .expect("exit approach")
+                .ui
+                .text
+                .is_some()
+            {
+                break;
+            }
+        }
+        let snapshot = controller.snapshot().expect("Mom intercepts the exit");
+        assert_eq!(
+            (snapshot.overworld.tile.x, snapshot.overworld.tile.y),
+            (x, 7)
+        );
+        let mom = snapshot.visible_object_runtime_tiles["MN_W_GUARDIAN"];
+        assert_eq!((mom.x, mom.y), (x, 6));
+        assert_eq!(
+            snapshot.ui.text.expect("first page").label,
+            "MnWHomeIntroText"
+        );
+        finish(&mut controller);
+        let mom = controller
+            .snapshot()
+            .expect("Mom returned")
+            .visible_object_runtime_tiles["MN_W_GUARDIAN"];
+        assert_eq!((mom.x, mom.y), (7, 4));
+        for _ in 0..4 {
+            press(&mut controller, GameButton::Down);
+            if controller
+                .snapshot()
+                .expect("leave home")
+                .overworld
+                .map_name
+                == "MnWinona"
+            {
+                break;
+            }
+        }
+        assert_eq!(
+            controller.snapshot().expect("outside").overworld.map_name,
+            "MnWinona"
         );
     }
 }

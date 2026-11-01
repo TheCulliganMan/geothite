@@ -26,6 +26,21 @@ mod server_clock_tests {
     }
 
     #[test]
+    fn civil_clock_replaces_existing_save_offset_and_tracks_midnight() {
+        let mut state = TimeState::new(GameDate::new(2020, 1, 1));
+        state.start_time = ClockTime::new(5, 7, 30, 0);
+        state.rtc_status_flags = RTC_RESET | RTC_DAYS_EXCEED_255;
+        state.update_server_datetime(GameDate::new(2026, 11, 1), 23, 59, 59);
+        assert_eq!(state.start_time, ClockTime::default());
+        assert_eq!(state.current_date, GameDate::new(2026, 11, 1));
+        assert_eq!((state.registers.hours, state.registers.minutes), (23, 59));
+        assert_eq!(state.day_of_week, 0);
+        state.update_server_datetime(GameDate::new(2026, 11, 2), 0, 0, 0);
+        assert_eq!((state.registers.hours, state.registers.minutes), (0, 0));
+        assert_eq!(state.day_of_week, 1);
+    }
+
+    #[test]
     fn server_clock_wraps_crystal_day_cycle_without_losing_weekday() {
         let mut state = TimeState::new(DEFAULT_RTC_ANCHOR);
         state.update_server_datetime(GameDate::new(2000, 5, 20), 23, 59, 59);

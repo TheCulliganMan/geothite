@@ -333,6 +333,24 @@ fn script_text_renderer_resolves_runtime_named_buffers() {
 }
 
 #[test]
+fn asm_text_renderer_resolves_bare_move_learning_buffers() {
+    let named_buffers = BTreeMap::from([
+        ("wMonOrItemNameBuffer".to_string(), "BIRCHIT".to_string()),
+        ("STRING_BUFFER_2".to_string(), "GROWL".to_string()),
+    ]);
+    assert_eq!(
+        render_visible_asm_text_pages(
+            "<wMonOrItemNameBuffer> wants to learn\n<STRING_BUFFER_2>!\n\n<PLAYER> must choose.",
+            &named_buffers,
+            "CHRIS",
+            "RIVAL",
+            0,
+        ),
+        vec!["BIRCHIT wants to learn\nGROWL!", "CHRIS must choose."]
+    );
+}
+
+#[test]
 fn asm_text_renderer_resolves_exact_text_ram_operand_names() {
     let named_buffers = BTreeMap::from([
         ("wSeerNickname".to_string(), "EMBER".to_string()),

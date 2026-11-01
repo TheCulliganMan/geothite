@@ -807,6 +807,7 @@ impl GameDataSet {
                 (Some(_), None, Some(_), Some(_)) => &self.field_moves.fly.move_id,
                 (None, Some(_), None, Some(_)) => &self.field_moves.dig.move_id,
                 (Some(_), None, None, Some(_)) => &self.field_moves.teleport.move_id,
+                (None, None, None, Some(_)) => &self.field_moves.teleport.move_id,
                 (None, Some(_), None, None) => &self.field_moves.escape_rope.item_id,
                 _ => anyhow::bail!("saved pending field travel has an invalid destination shape"),
             };
@@ -870,6 +871,18 @@ impl GameDataSet {
                         && runtime_spawn_expected_tile(spawn) == pending.destination_tile,
                     "saved pending {} spawn no longer matches its destination",
                     pending.move_id
+                );
+            } else if pending.destination_warp_index.is_none() {
+                let constant = state
+                    .last_spawn_map_constant
+                    .as_deref()
+                    .context("saved pending TELEPORT has no recovery map")?;
+                let (map, tile) = self
+                    .minnesota_clinic_arrival(constant)?
+                    .context("saved pending TELEPORT has no clinic destination")?;
+                anyhow::ensure!(
+                    map == pending.destination_map && tile == pending.destination_tile,
+                    "saved pending TELEPORT clinic no longer matches its destination"
                 );
             }
         }
@@ -1400,21 +1413,27 @@ impl GameDataSet {
             .last_spawn_map_constant
             .as_deref()
             .with_context(|| "TELEPORT field move has no saved spawn map")?;
-        let destination_spawn_identifier = self
-            .optional_runtime_spawn_identifier_for_map_constant(last_spawn_map_constant)?
-            .with_context(|| {
-                format!(
-                    "TELEPORT saved spawn map {last_spawn_map_constant} is not in SpawnPoints"
-                )
-            })?;
-        let destination_spawn = self.runtime_spawn_point(destination_spawn_identifier)?;
+        let destination_spawn_identifier =
+            self.optional_runtime_spawn_identifier_for_map_constant(last_spawn_map_constant)?;
+        let (destination_map, destination_tile) =
+            if let Some(identifier) = destination_spawn_identifier {
+                let spawn = self.runtime_spawn_point(identifier)?;
+                (spawn.map_name.clone(), runtime_spawn_expected_tile(spawn))
+            } else {
+                self.minnesota_clinic_arrival(last_spawn_map_constant)?
+                    .with_context(|| {
+                        format!(
+                            "TELEPORT saved spawn map {last_spawn_map_constant} is not in SpawnPoints"
+                        )
+                    })?
+            };
         Ok(TeleportFieldMoveOutcome {
             actor_party_index: teleport_rule.actor_party_index,
             actor_species: teleport_rule.actor_species,
             source_map: source_map.to_string(),
             destination_spawn_identifier,
-            destination_map: destination_spawn.map_name.clone(),
-            destination_tile: runtime_spawn_expected_tile(destination_spawn),
+            destination_map,
+            destination_tile,
         })
     }
 
@@ -1443,7 +1462,7 @@ impl GameDataSet {
             source_map: outcome.source_map.clone(),
             destination_map: outcome.destination_map.clone(),
             destination_tile: outcome.destination_tile,
-            destination_spawn_identifier: Some(outcome.destination_spawn_identifier),
+            destination_spawn_identifier: outcome.destination_spawn_identifier,
             destination_warp_index: None,
             flypoint_flag: None,
         });
@@ -1478,6 +1497,9 @@ impl GameDataSet {
         ) {
             (Some(_), None, Some(_)) | (Some(_), None, None) => SpawnMemoryUpdate::Preserve,
             (None, Some(_), None) => SpawnMemoryUpdate::Preserve,
+            (None, None, None) if pending.move_id == self.field_moves.teleport.move_id => {
+                SpawnMemoryUpdate::Preserve
+            }
             _ => anyhow::bail!("pending field travel has an invalid destination shape"),
         };
         self.transition_overworld_session(
@@ -2415,7 +2437,7 @@ impl GameDataSet {
         outcome: &CaptureOutcome,
         nickname: Option<&str>,
         divider: &mut S,
-    ) -> Result<CaptureCompletion>
+    ) -> Result<CaptureRewardOutcome>
     where
         S: DividerSource + ?Sized,
         S::Error: std::fmt::Display,
@@ -2467,6 +2489,22 @@ impl GameDataSet {
                 self.create_pokemon("DITTO", enemy.level, enemy.dvs)
                     .context("materialize DITTO for transformed capture")?,
             )
+        } else {
+            None
+        };
+        let battle_type = match &staged_state.battle {
+            BattleMemory::Wild { battle_type, .. } | BattleMemory::StaticWild { battle_type, .. } => Some(battle_type.as_str()),
+            _ => None,
+        };
+        let awards_experience = outcome.caught && !outcome.blocked
+            && battle_type.is_some_and(|kind| !matches!(kind, "BATTLETYPE_TUTORIAL" | "BATTLETYPE_CONTEST"));
+        let rewards = if awards_experience {
+            let happiness = self.level_up_happiness_context(&staged_state)?;
+            let time_of_day = staged_state.time.time_of_day;
+            Some(crystal_core::systems::battle_rewards::award_active_wild_capture_rewards(
+                &mut staged_state, &self.battle_reward_rules, &self.pokemon, &self.moves,
+                &self.learnsets, &self.growth_rates, &self.evolutions, happiness, time_of_day, divider,
+            ).map_err(|error| anyhow::anyhow!("award captured Pokemon experience: {error:?}"))?)
         } else {
             None
         };
@@ -2537,10 +2575,8 @@ impl GameDataSet {
             "successful capture ended with non-WIN battle result {:#04x}",
             staged_state.battle_result
         );
-        // ExitBattle's base-WIN branch is CheckPayDay -> EvolveAfterBattle ->
-        // GivePokerus. Capture cannot itself create a new level-evolution
-        // candidate, so the middle call is a no-op here; the other two remain
-        // authoritative and execute exactly once at this mutation boundary.
+        // The shared reward path already processed level-ups and evolution.
+        // Pay Day and Pokerus still run once at capture completion.
         self.claim_active_battle_pay_day_money(&mut staged_state, pay_day_money)?;
         staged_state
             .spread_pokerus_after_battle(divider)
@@ -2561,7 +2597,11 @@ impl GameDataSet {
             terminal.win_cleanup_applied = true;
         }
         *state = staged_state;
-        Ok(completion)
+        Ok(CaptureRewardOutcome {
+            stored: completion.stored,
+            contest_pokemon: completion.contest_pokemon,
+            rewards,
+        })
     }
 
     pub fn battle_escape_item_mode(&self, item_id: &str) -> Result<String> {

@@ -1,6 +1,7 @@
 // External-pack regressions exercise production callbacks and controller input.
 include!("kanto_pokecom_services.rs");
 include!("clinic_services.rs");
+include!("minnesota_center_services.rs");
 include!("name_rater_services.rs");
 include!("fullscreen_lifecycle.rs");
 

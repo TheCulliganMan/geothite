@@ -50,6 +50,7 @@ objc2 = { version = "0.5.2", optional = true }
 objc2-foundation = { version = "0.2.2", features = ["NSString", "NSGeometry"], optional = true }
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
+base64.workspace = true
 getrandom = { version = "0.3", features = ["wasm_js"] }
 js-sys.workspace = true
 wasm-bindgen.workspace = true

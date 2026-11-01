@@ -168,7 +168,8 @@ pub struct TeleportFieldMoveOutcome {
     pub actor_party_index: usize,
     pub actor_species: String,
     pub source_map: String,
-    pub destination_spawn_identifier: u16,
+    /// Catalog identifier, or `None` for an authored Minnesota clinic arrival.
+    pub destination_spawn_identifier: Option<u16>,
     pub destination_map: String,
     pub destination_tile: TilePosition,
 }

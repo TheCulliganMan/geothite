@@ -56,13 +56,28 @@ def main():
             if client.status()['position']['y'] == 0:
                 client.press('down')
             client.at('MnWinonaHome1F', 9, 1)
-            client.move('down', 3)
-            client.at('MnWinonaHome1F', 9, 1)
+            if client.status()['dialogue']:
+                client.move('down', 3)
+                client.at('MnWinonaHome1F', 9, 1)
+            else:
+                walk(client, pack, (7, 5))
+                client.press('down')
             mom = read(client, texts['MnWinonaHome1F']['MnWHomeIntroText'])
             gear = read(client, texts['MnWinonaHome1F']['MnWHomeGearReceivedText'])
             assert not client.status()['dialogue'], 'Mom must release input after the receipt'
             client.press('start')
-            assert 'PACK' in client.observe()['content'][0]['text']
+            for _ in range(8):
+                menu = client.observe()['structuredContent']['menu']
+                selected = [line['text'] for line in menu if line['text'].lstrip().startswith('>')]
+                if selected and 'GEAR' in selected[0].upper():
+                    break
+                client.press('down')
+            else:
+                raise AssertionError(('POKEGEAR missing from Start', menu))
+            client.press('a')
+            assert 'pokegear' in json.dumps(client.observe()['structuredContent']).lower()
+            client.press('b')
+            client.press('start')
             client.press('b')
             walk(client, pack, (6, 6))
             enter(client, 'down', 'MnWinona')
@@ -91,7 +106,7 @@ def main():
             assert process.wait(timeout=30) == 0, 'client failed to exit'
         stderr.seek(0)
         assert stderr.read() == b'', 'gameplay stderr must remain byte-empty'
-    print('PASS: New Game, staged Mom/lab, exact pages, input lock, starter decline, Start, clean stderr.')
+    print('PASS: New Game, Mom handoff, Pokégear from Start, lab, starter decline, clean stderr.')
 
 
 if __name__ == '__main__':

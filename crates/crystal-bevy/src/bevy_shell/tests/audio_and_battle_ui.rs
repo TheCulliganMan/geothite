@@ -1561,6 +1561,98 @@ fn active_pokemon_picture_renders_the_asm_window_and_grayscale_frontpic() {
 }
 
 #[test]
+#[ignore = "requires the Minnesota review pack via CRYSTAL_WINONA_TEST_PACK"]
+fn minnesota_starter_pictures_render_from_the_pack_in_2d() {
+    let (_, runtime) = winona::load();
+    let asset_root = runtime.materialize_runtime_files().expect("pack artwork");
+    let spawn_identifier = runtime
+        .title_new_game_spawn_identifier()
+        .expect("new-game spawn");
+    let mut images_seen = Vec::new();
+    for species in ["POUCHID", "KINDLIT", "BIRCHIT"] {
+        let mut shell = initialize_bevy_runtime_shell(
+            asset_root.clone(),
+            runtime.clone(),
+            BevyShellStart::NewGameAtRuntimeTile {
+                spawn_identifier,
+                map_name: "MnWinonaFieldStation".to_string(),
+                tile_x: 6,
+                tile_y: 4,
+            },
+            BevyShellConfig::default(),
+        )
+        .expect("initialize field station");
+        shell
+            .shell
+            .session_mut()
+            .state_mut()
+            .script_runtime
+            .active_pokemon_picture = Some(species.to_string());
+        let mut app = App::new();
+        app.insert_resource(shell)
+            .insert_resource(RenderedViewport::default())
+            .insert_resource(RenderedTilesetArt::default())
+            .init_resource::<Assets<Image>>()
+            .add_systems(Update, render_playfield);
+        app.update();
+        let world = app.world();
+        assert_eq!(world.resource::<BevyRuntimeShell>().last_error, None);
+        let art = world.resource::<RenderedTilesetArt>();
+        let frame = art
+            .pokepic_cache
+            .get(&species.to_ascii_lowercase())
+            .expect("starter front picture loaded");
+        let picture_handle = frame.handle.clone();
+        let pixels = world
+            .resource::<Assets<Image>>()
+            .get(&frame.handle)
+            .expect("starter picture image")
+            .data
+            .clone()
+            .expect("starter picture pixels");
+        assert!(pixels.chunks_exact(4).any(|pixel| pixel[3] != 0));
+        assert!(!images_seen.contains(&pixels), "distinct starter artwork");
+        images_seen.push(pixels);
+        let world = app.world_mut();
+        assert!(
+            world
+                .query_filtered::<Entity, With<PokemonPictureMarker>>()
+                .iter(world)
+                .count()
+                > 2,
+            "{species} picture and window rendered"
+        );
+        assert!(
+            world
+                .query_filtered::<&Sprite, With<PokemonPictureMarker>>()
+                .iter(world)
+                .any(|sprite| sprite.image == picture_handle),
+            "{species} front picture is attached to the rendered window"
+        );
+        if let Some(directory) = std::env::var_os("POKEGEAR_PC_RENDER_DIR") {
+            let sprites = world
+                .query_filtered::<(&Sprite, &Transform), With<PokemonPictureMarker>>()
+                .iter(world)
+                .map(|(sprite, transform)| (sprite.clone(), *transform))
+                .collect::<Vec<_>>();
+            let mut canvas_world = World::new();
+            for sprite in sprites {
+                canvas_world.spawn(sprite);
+            }
+            let canvas = render_pc_audit_canvas(
+                &mut canvas_world,
+                world.resource::<Assets<Image>>(),
+                species,
+            );
+            std::fs::create_dir_all(&directory).expect("picture capture directory");
+            canvas
+                .save(PathBuf::from(directory).join(format!("starter-{species}.png")))
+                .expect("capture rendered picture");
+        }
+    }
+}
+
+#[test]
 fn battle_scene_renders_real_art_and_asm_hud_without_rust_only_battler_labels() {
     let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
         .join("../../..")

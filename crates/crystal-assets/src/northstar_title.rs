@@ -8,9 +8,9 @@ const MANIFEST: &str = "minnesota-northstar-opening-v1";
 
 /// Builds the Minnesota title and welcome from the current pack's native art.
 ///
-/// Keeps all maps, gameplay, species, source-region art and audio unchanged.
-/// `tamarack_source` is the accepted native NPC pixel source. Only its portrait
-/// is installed; this does not rebind any existing field actor.
+/// Keeps gameplay, species, source-region art and audio unchanged while binding
+/// the existing field-station professor to her authored native sprite.
+/// `tamarack_source` is the accepted native NPC pixel source.
 ///
 /// # Errors
 /// Rejects a non-Minnesota or already revised pack, missing native art, invalid
@@ -45,16 +45,23 @@ pub fn build_northstar_title(
         "accepted Tamarack identity required"
     );
     let title = crate::northstar_title_art::compose(base.runtime_files())?;
-    let mut pack = base.clone();
-    for (path, bytes) in art
-        .into_iter()
-        .filter(|(path, _)| path.starts_with("gfx/trainers/"))
-    {
-        if let Some(old) = pack.runtime_files.get(&path) {
-            ensure!(*old == bytes, "preserve existing Tamarack portrait");
-        }
-        pack.runtime_files.insert(path, bytes);
-    }
+    let binding =
+        include_str!("../../../planning/minnesota/npcs/tamarack-ice/01-tamarack/binding-v1.json");
+    let pack = crate::bind_minnesota_trainer_art(base, binding, &art)?;
+    let reed_art = crate::minnesota_native_npc::compile(
+        include_str!("../../../planning/minnesota/npcs/cast/01-reed/native-pixels-v3.json"),
+        Some(include_str!(
+            "../../../planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/01-reed/native-pixels-v2.json"
+        )),
+    )?;
+    let mut pack = crate::bind_minnesota_trainer_art(
+        &pack,
+        include_str!(
+            "../../../planning/minnesota/npcs/regional-trainers-v01/story-bindings/01-reed.json"
+        ),
+        &reed_art,
+    )?;
+    let cast_maps = pack.data.maps.clone();
     pack.runtime_files
         .insert(NORTHSTAR_TITLE_IMAGE.into(), title);
     pack.data.runtime_title_screen.static_title_image = Some(NORTHSTAR_TITLE_IMAGE.into());
@@ -240,8 +247,8 @@ pub fn build_northstar_title(
         "preserve complete audio programs and PCM contracts"
     );
     ensure!(
-        pack.data.maps == base.data.maps,
-        "preserve every complete map"
+        pack.data.maps == cast_maps,
+        "preserve cast-bound maps while adding the title"
     );
     for (path, bytes) in &base.runtime_files {
         ensure!(
@@ -264,5 +271,67 @@ fn command(name: &str, text: Option<&str>) -> RuntimePresentationTextCommand {
         command: name.into(),
         args: text.map(|s| vec![format!("\"{s}\"")]).unwrap_or_default(),
         source_span: span(),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    #[test]
+    #[ignore = "requires the external Northstar title parent pack"]
+    fn title_installs_and_binds_tamarack_field_art() {
+        let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+            .join("../..")
+            .canonicalize()
+            .expect("repository root");
+        let base = crate::read_verified_compiled_game_pack(
+            root.join("content-packs/minnesota-iron-crosscut-bends-v01.crystalpack"),
+        )
+        .expect("Northstar title parent");
+        let source = include_str!(
+            "../../../planning/minnesota/npcs/tamarack-ice/01-tamarack/native-pixels-v4.json"
+        );
+        let pack = super::build_northstar_title(&base, source).expect("build Northstar title");
+        let station = &pack.data.maps["MnWinonaFieldStation"];
+        let actor = station
+            .objects
+            .iter()
+            .find(|object| object.object_identifier.as_deref() == Some("MN_W_TAMARACK"))
+            .expect("field-station professor");
+        assert_eq!(actor.sprite, "SPRITE_MN_PROF_TAMARACK");
+        assert!(actor.sprite_has_facings);
+        assert_eq!(
+            pack.data.trainers.trainers["MN_REED_WINONA"].trainer_class,
+            "MN_RIVAL_REED"
+        );
+        let reed = station
+            .objects
+            .iter()
+            .find(|object| object.script == "MN_NSE_REED")
+            .expect("field-station Reed");
+        assert_eq!(reed.sprite, "SPRITE_MN_RIVAL_REED");
+        for extension in ["png", "2bpp", "gbcpal"] {
+            assert!(
+                pack.runtime_files
+                    .contains_key(&format!("gfx/sprites/mn_prof_tamarack.{extension}"))
+            );
+        }
+        if let Some(commands) = station
+            .attributes
+            .map_events_label
+            .as_ref()
+            .and_then(|label| station.scripts.get(label))
+        {
+            assert!(
+                commands
+                    .as_array()
+                    .expect("event commands")
+                    .iter()
+                    .any(|command| {
+                        command["command"] == "object_event"
+                            && command["args"][2] == "SPRITE_MN_PROF_TAMARACK"
+                            && command["args"][11] == "MN_W_TAMARACK"
+                    })
+            );
+        }
     }
 }

@@ -1689,8 +1689,9 @@
           ],
           "facing": "south",
           "lines": [
-            "Neighbors gather",
-            "here after work."
+            "Quiet study corner",
+            "overlooking the",
+            "lake and harbor."
           ]
         }
       ],
@@ -1912,8 +1913,9 @@
           ],
           "facing": "south",
           "lines": [
-            "Neighbors gather",
-            "here after work."
+            "Travelers swap",
+            "stories over hot",
+            "tea up here."
           ]
         }
       ],
@@ -3006,8 +3008,9 @@
           ],
           "facing": "south",
           "lines": [
-            "Neighbors gather",
-            "here after work."
+            "Union delegates",
+            "meet here to plan",
+            "the dock shifts."
           ]
         }
       ],
@@ -3209,8 +3212,9 @@
           ],
           "facing": "south",
           "lines": [
-            "Neighbors gather",
-            "here after work."
+            "Tally sheets and",
+            "manifests for ore",
+            "freighters."
           ]
         }
       ],
@@ -3819,8 +3823,9 @@
           ],
           "facing": "east",
           "lines": [
-            "Neighbors gather",
-            "here after work."
+            "Herbal salves and",
+            "remedies for cold",
+            "water work."
           ],
           "service": "pokemart",
           "stock": [
@@ -3908,8 +3913,9 @@
           ],
           "facing": "south",
           "lines": [
-            "Neighbors gather",
-            "here after work."
+            "Open gym floor",
+            "for crew sparring",
+            "and conditioning."
           ]
         },
         {
@@ -4839,8 +4845,9 @@
           ],
           "facing": "south",
           "lines": [
-            "Neighbors gather",
-            "here after work."
+            "Playing cards and",
+            "listening to the",
+            "foghorns at dusk."
           ]
         }
       ],
@@ -5651,8 +5658,9 @@
           ],
           "facing": "south",
           "lines": [
-            "Neighbors gather",
-            "here after work."
+            "Skippers check",
+            "the barometers",
+            "before sailing."
           ]
         }
       ],
@@ -5923,9 +5931,9 @@
       ],
       "facing": "south",
       "lines": [
-        "The bridge is down",
-        "Stay in the middle",
-        "The rails are firm"
+        "The aerial bridge",
+        "lifts for big",
+        "lake freighters."
       ]
     },
     {
@@ -6165,8 +6173,9 @@
       "sprite": "SPRITE_FISHER",
       "facing": "south",
       "lines": [
-        "The pier is railed.",
-        "Rocks close the lake."
+        "Cast your line",
+        "past the breakers",
+        "for lake trout."
       ]
     },
     {

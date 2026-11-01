@@ -1474,6 +1474,145 @@ fn surf_anchor_retained_player_art_tracks_normal_surf_normal_with_actual_footing
 }
 
 #[test]
+fn renderer_neutral_a_on_grass_does_not_offer_cut() {
+    use crate::core::world::collision::{permissions, sample_collision};
+
+    let repository = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("../..")
+        .canonicalize()
+        .expect("repository root");
+    let asset_root = AssetRoot::new(repository);
+    let runtime = workspace_desktop_runtime(&asset_root);
+    let spawn_identifier = runtime.title_new_game_spawn_identifier().expect("spawn");
+    let mut shell = initialize_bevy_runtime_shell(
+        asset_root,
+        runtime,
+        BevyShellStart::NewGameAtRuntimeTile {
+            spawn_identifier,
+            map_name: "Route29".into(),
+            tile_x: 46,
+            tile_y: 10,
+        },
+        BevyShellConfig {
+            smoke_player_name: Some("CHRIS".into()),
+            quick_save_path: None,
+            ..default()
+        },
+    )
+    .expect("Route 29 session");
+    settle_visible_shell_smoke_until_idle(&mut shell).expect("settle fixture");
+    let (origin, facing) = {
+        let world = shell.shell.session().overworld();
+        let (width, height) = world.map.tile_bounds();
+        (0..height)
+            .flat_map(|y| (0..width).map(move |x| TilePosition::new(x as i16, y as i16)))
+            .flat_map(|origin| {
+                [
+                    Direction::Up,
+                    Direction::Right,
+                    Direction::Down,
+                    Direction::Left,
+                ]
+                .into_iter()
+                .map(move |facing| (origin, facing))
+            })
+            .find(|(origin, facing)| {
+                let target = crate::core::world::movement::checked_move_by_stride(
+                    *origin,
+                    *facing,
+                    crate::core::world::movement::StepOptions::default().stride_tiles,
+                );
+                target
+                    .and_then(|tile| sample_collision(&world.map, &world.tileset, tile))
+                    .is_some_and(|sample| {
+                        matches!(
+                            sample.permission,
+                            permissions::TALL_GRASS
+                                | permissions::LONG_GRASS
+                                | permissions::LONG_GRASS_1C
+                        )
+                    })
+                    && sample_collision(&world.map, &world.tileset, *origin)
+                        .is_some_and(|sample| sample.permission == permissions::TALL_GRASS)
+                    && {
+                        let mut candidate = world.clone();
+                        candidate.player.tile = *origin;
+                        candidate.set_player_facing(*facing);
+                        candidate
+                            .check_interaction_checked(
+                                crate::core::world::movement::StepOptions::default().stride_tiles,
+                            )
+                            .expect("inspect candidate interaction")
+                            .is_none()
+                    }
+            })
+            .expect("adjacent grass tiles")
+    };
+    // Retain a real recorded interaction from a different location. A later
+    // A press must resolve the current target, not replay this old frame.
+    let (width, height) = shell.shell.session().overworld().map.tile_bounds();
+    let mut recorded = false;
+    'search: for y in 0..height {
+        for x in 0..width {
+            for direction in [
+                Direction::Up,
+                Direction::Right,
+                Direction::Down,
+                Direction::Left,
+            ] {
+                {
+                    let (state, overworld) = shell.shell.session_mut().state_and_overworld_mut();
+                    overworld.player.tile = TilePosition::new(x as i16, y as i16);
+                    overworld.set_player_facing(direction);
+                    state.overworld =
+                        crate::core::state::OverworldMemory::from_snapshot(&overworld.snapshot());
+                }
+                if shell
+                    .shell
+                    .current_overworld_interaction_checked()
+                    .expect("find interaction")
+                    .is_some()
+                {
+                    let frame = shell.shell.tick([GameButton::A]).expect("record interaction");
+                    if frame.interaction.is_some() {
+                        recorded = true;
+                        break 'search;
+                    }
+                }
+            }
+        }
+    }
+    assert!(recorded, "Route 29 has a recorded object or sign interaction");
+    {
+        let (state, overworld) = shell.shell.session_mut().state_and_overworld_mut();
+        overworld.player.tile = origin;
+        overworld.set_player_facing(facing);
+        state.overworld = crate::core::state::OverworldMemory::from_snapshot(&overworld.snapshot());
+    }
+    reset_visible_navigation_state(&mut shell);
+    mark_runtime_snapshot_dirty(&mut shell);
+    let mut controller = VisibleShellController { shell };
+    assert!(
+        controller
+            .shell
+            .shell
+            .last_frame()
+            .is_some_and(|frame| frame.interaction.is_some())
+    );
+    assert!(
+        controller
+            .shell
+            .shell
+            .current_overworld_interaction_checked()
+            .expect("interaction")
+            .is_none()
+    );
+    controller.press(GameButton::A).expect("A on grass");
+    assert!(controller.shell.field_notice.is_none());
+    assert!(controller.shell.pending_contextual_field_move.is_none());
+}
+
+#[test]
 fn renderer_neutral_route29_cut_denial_resolves_authored_text_without_cutting() {
     let repository=PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../..").canonicalize().unwrap();
     let asset_root=AssetRoot::new(repository);

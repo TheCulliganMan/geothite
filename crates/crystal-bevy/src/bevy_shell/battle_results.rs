@@ -5986,6 +5986,16 @@ fn load_visible_runtime_save(
     arrival_reason: &str,
 ) -> Result<()> {
     runtime_shell.shell.load(path)?;
+    if startup_policy::skips_title_sequence(&runtime_shell.runtime)
+        && let Some(sample) = runtime_shell.latest_rtc_sample
+    {
+        runtime_shell.shell.update_clock_from_datetime(
+            sample.date,
+            sample.hour,
+            sample.minute,
+            sample.second,
+        )?;
+    }
     // Loading replaces the session. Old battle narration must not capture the
     // restored map's script continuation or play over its arrival dialogue.
     reset_visible_battle_presentation(runtime_shell);

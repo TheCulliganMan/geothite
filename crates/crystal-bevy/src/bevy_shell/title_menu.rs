@@ -7736,7 +7736,11 @@ fn tick_visible_gender_selection(runtime_shell: &mut BevyRuntimeShell) -> Result
         visible_gender_label(selected_gender)
     ));
     trim_event_log(&mut runtime_shell.last_audio_events);
-    open_visible_time_set_screen(runtime_shell, VisibleTimeSetNext::OakIntro)
+    if startup_policy::skips_title_sequence(&runtime_shell.runtime) {
+        open_visible_oak_intro_sequence(runtime_shell)
+    } else {
+        open_visible_time_set_screen(runtime_shell, VisibleTimeSetNext::OakIntro)
+    }
 }
 
 fn move_visible_gender_selection(runtime_shell: &mut BevyRuntimeShell, delta: isize) -> Result<()> {

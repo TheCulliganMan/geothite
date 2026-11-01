@@ -140,32 +140,12 @@ pub(crate) fn apply_home_1f_scripts(room: &mut MapModule) -> Result<()> {
         ],
     );
     put(room, "MnWHomeGearCallbackDone", vec![c("endcallback", &[])]);
-    // Some supported stair arrivals include the step onto (9,1) inside the
-    // warp animation. Dispatch that same tile scene once the arrival settles;
-    // entering through the front door never starts a remote conversation.
-    put(
-        room,
-        "MnWHomeArrival",
-        vec![
-            c("readvar", &["VAR_XCOORD"]),
-            c("ifnotequal", &["9", "MnWHomeNoop"]),
-            c("readvar", &["VAR_YCOORD"]),
-            c("ifnotequal", &["1", "MnWHomeNoop"]),
-            c("sjump", &["MnOverhaulMomScene"]),
-        ],
-    );
+    // The arrival scene stays quiet. The two tiles in front of the door stage
+    // Mom's approach, as in Crystal's coordinate-triggered home scene.
+    put(room, "MnWHomeArrival", vec![c("end", &[])]);
     movement(room, "MnOverhaulMomApproaches", &[("UP", 2), ("RIGHT", 2)]);
     movement(room, "MnOverhaulMomReturns", &[("LEFT", 2), ("DOWN", 2)]);
-    movement(
-        room,
-        "MnOverhaulMomDoorLeftApproaches",
-        &[("LEFT", 1), ("DOWN", 1)],
-    );
-    movement(
-        room,
-        "MnOverhaulMomDoorLeftReturns",
-        &[("UP", 1), ("RIGHT", 1)],
-    );
+    install_door_approaches(room);
     movement(room, "MnOverhaulMomDoorRightApproaches", &[("DOWN", 1)]);
     movement(room, "MnOverhaulMomDoorRightReturns", &[("UP", 1)]);
     authored_dialogue::install_canonical(room, "MnWHomeGearReceivedText")?;
@@ -277,10 +257,67 @@ pub(crate) fn apply_home_1f_scripts(room: &mut MapModule) -> Result<()> {
             *row = c("iffalse", &["MnOverhaulMomTalk"]);
         }
     }
-    coord(room, 9, 1, "MnOverhaulMomScene");
+    room.events.coord_events.retain(|event| {
+        !(event.x == 9 && event.y == 1 && event.script_name == "MnOverhaulMomScene")
+    });
     coord(room, 6, 6, "MnOverhaulMomDoorLeft");
     coord(room, 7, 6, "MnOverhaulMomDoorRight");
     Ok(())
+}
+
+pub(crate) fn install_door_approaches(room: &mut MapModule) {
+    movement(
+        room,
+        "MnOverhaulMomDoorLeftApproaches",
+        &[("DOWN", 1), ("LEFT", 1)],
+    );
+    movement(
+        room,
+        "MnOverhaulMomDoorLeftReturns",
+        &[("RIGHT", 1), ("UP", 1)],
+    );
+    for (x, name, approach, returns) in [
+        (
+            6,
+            "Left",
+            vec![("DOWN", 1), ("LEFT", 1), ("DOWN", 1)],
+            vec![("UP", 1), ("RIGHT", 1), ("UP", 1)],
+        ),
+        (7, "Right", vec![("DOWN", 2)], vec![("UP", 2)]),
+    ] {
+        let script = format!("MnOverhaulMomExit{name}");
+        let approach_label = format!("{script}Approaches");
+        let return_label = format!("{script}Returns");
+        movement(room, &approach_label, &approach);
+        movement(room, &return_label, &returns);
+        put(
+            room,
+            &script,
+            vec![
+                c("checkevent", &[HOME]),
+                c("iftrue", &["MnWHomeNoop"]),
+                c("showemote", &["EMOTE_SHOCK", "MN_W_GUARDIAN", "15"]),
+                c("applymovement", &["MN_W_GUARDIAN", &approach_label]),
+                c("faceobject", &["MN_W_GUARDIAN", "PLAYER"]),
+                c("turnobject", &["PLAYER", "UP"]),
+                c("scall", &["MnWGrantPokegear"]),
+                c("applymovement", &["MN_W_GUARDIAN", &return_label]),
+                c("turnobject", &["MN_W_GUARDIAN", "LEFT"]),
+                c("setevent", &[HOME]),
+                c("setscene", &["SCENE_MN_W_HOME_READY"]),
+                c("end", &[]),
+            ],
+        );
+        coord(room, x, 7, &script);
+        if let Some(event) = room
+            .events
+            .coord_events
+            .iter_mut()
+            .find(|event| event.x == x && event.y == 7 && event.script_name == script)
+        {
+            event.scene_id = "SCENE_MN_W_HOME_INTRO".into();
+        }
+    }
 }
 
 pub(crate) fn install_home_2f(pack: &mut CompiledGamePack) -> Result<()> {
@@ -391,7 +428,6 @@ pub(crate) fn install_winona_town(pack: &mut CompiledGamePack) -> Result<()> {
         vec![
             c("checkevent", &[STARTER]),
             c("iffalse", &["MnWTrailWardenCallbackDone"]),
-            c("setflag", &["ENGINE_POKEDEX"]),
             c("setevent", &[TRAIL_OPENED_FLAG]),
             c("moveobject", &["MN_W_TRAIL_WARDEN_NORTH", "5", "17"]),
             c("moveobject", &["MN_W_TRAIL_WARDEN_SOUTH", "6", "17"]),
@@ -729,7 +765,7 @@ pub(crate) fn apply_field_station_upgrades(
         room,
         "MnWStationSyncCallback",
         vec![
-            c("checkevent", &[STARTER]),
+            c("checkevent", &[PARCEL]),
             c("iffalse", &["MnWStationSyncDone"]),
             c("setflag", &["ENGINE_POKEDEX"]),
             c("endcallback", &[]),
@@ -937,6 +973,9 @@ pub(crate) fn apply_field_station_upgrades(
                 c("waitbutton", &[]),
                 c("closetext", &[]),
                 c("special", &["HealParty"]),
+                c("checkevent", &["EVENT_MN_TAMARACK_EGG_RECEIVED"]),
+                c("iftrue", &["MnNSEEnd"]),
+                c("scall", &["MnNSEEggOffer"]),
                 c("end", &[]),
             ],
         );
@@ -973,18 +1012,23 @@ pub(crate) fn apply_field_station_upgrades(
         "MnWTamarackDeliveryReturn",
         "MnWTamarackSurveyReturn",
     ] {
+        // Guidance follows the furthest completed milestone even if the player
+        // declined the optional egg or reached milestones in a different order.
+        let mut dispatch = Vec::new();
+        for (flag, _, _) in guidance_stages {
+            dispatch.push(c("checkevent", &[flag]));
+            dispatch.push(c("iftrue", &["MnNSETamarackPostEgg"]));
+        }
+        dispatch.extend([
+            c("checkevent", &["EVENT_MN_TAMARACK_EGG_RECEIVED"]),
+            c("iftrue", &["MnNSETamarackPostEgg"]),
+        ]);
         let body = room
             .scripts
             .get_mut(label)
             .and_then(Value::as_array_mut)
             .with_context(|| format!("Tamarack return branch {label}"))?;
-        body.splice(
-            0..0,
-            [
-                c("checkevent", &["EVENT_MN_TAMARACK_EGG_RECEIVED"]),
-                c("iftrue", &["MnNSETamarackPostEgg"]),
-            ],
-        );
+        body.splice(0..0, dispatch);
         changed.insert(label.into());
     }
     Ok(())

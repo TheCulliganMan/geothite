@@ -148,9 +148,9 @@
           ],
           "facing": "east",
           "lines": [
-            "The fish are gone.",
-            "The report is",
-            "wrong."
+            "Rest your team",
+            "before trekking",
+            "into lake country."
           ]
         },
         {
@@ -814,9 +814,9 @@
       ],
       "facing": "south",
       "lines": [
-        "The fish moved on.",
-        "Our report says",
-        "nothing changed."
+        "The pine canopy",
+        "keeps the summer",
+        "breeze crisp here."
       ],
       "requires": [
         "BADGE_6"

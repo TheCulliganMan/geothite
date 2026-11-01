@@ -3751,6 +3751,7 @@ impl ScriptRuntimeMemory {
                 (Some(_), None, Some(_)) => {}
                 (None, Some(_), None) => {}
                 (Some(_), None, None) => {}
+                (None, None, None) if pending.actor_party_index.is_some() => {}
                 _ => {
                     return Err(
                         "pending field travel has an invalid move/destination identifier shape"

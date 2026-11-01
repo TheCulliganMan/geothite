@@ -15,6 +15,73 @@ const GATE: &str = "MnGrandMaraisShoreGate";
 const SIGNAL: &str = "EVENT_MN_LIGHTHOUSE_SIGNAL";
 const CLINIC: &str = "MnGrandMaraisPokecenter";
 
+#[test]
+#[ignore = "requires current Minnesota pack via CRYSTAL_GYM_TEST_PACK"]
+fn brainerd_nurse_continue_and_battle_whiteout_return_to_last_heal() {
+    let (root, r, _, mut c) = fixture("MnBrainerdPokecenter1F", [3, 3], 5, true);
+    let constant = "MN_BRAINERD_POKECENTER_1F";
+    assert!(
+        r.data()
+            .runtime_spawn_point_for_map_constant(constant)
+            .is_err()
+    );
+    {
+        let state = c.shell.shell.session_mut().state_mut();
+        let mut partner = r
+            .data()
+            .create_pokemon("BIRCHIT", 5, Dv::default())
+            .expect("regional partner");
+        partner.hp = 1;
+        partner.moves = vec![LearnedMove {
+            name: "SPLASH".into(),
+            current_pp: 0,
+            pp_ups: 0,
+        }];
+        state.storage.party.pokemon[0] = Some(partner);
+        state.last_spawn_map_constant = Some("MN_WINONA_POKECENTER_1F".into());
+        state.money = 1200;
+        state.sync_party_from_storage();
+    }
+    mark_runtime_snapshot_dirty(&mut c.shell);
+    press(&mut c, GameButton::Up);
+    press(&mut c, GameButton::A);
+    finish(&mut c);
+    let state = c.shell.shell.session().state();
+    assert_eq!(state.last_spawn_map_constant.as_deref(), Some(constant));
+    let partner = state.storage.party.pokemon[0]
+        .as_ref()
+        .expect("healed partner");
+    assert_eq!(partner.hp, partner.max_hp);
+    assert_eq!(partner.moves[0].current_pp, r.data().moves["SPLASH"].pp);
+    c = continued(c, &root, &r, "brainerd-care-before-loss");
+    walk_to(&mut c, &r, (3, 6));
+    until_map(&mut c, GameButton::Down, "MnBrainerd");
+    walk_to(&mut c, &r, (12, 36));
+    travel(
+        &mut c,
+        GameButton::Up,
+        "MnBrainerdGym",
+        super::super::northstar_earned_gyms::arrival(&r, 6),
+    );
+    if c.snapshot().expect("gym entry").battle.is_none() {
+        super::interact(
+            &mut c,
+            &r,
+            super::super::northstar_earned_gyms::opponent(&r, 6, "MN_GYM_6_TRAINER_1"),
+        );
+    }
+    super::battle(&mut c, true);
+    finish(&mut c);
+    at(&mut c, "MnBrainerdPokecenter1F", (3, 5));
+    let state = c.shell.shell.session().state();
+    assert_eq!(state.money, 600);
+    let partner = state.storage.party.pokemon[0]
+        .as_ref()
+        .expect("recovered partner");
+    assert_eq!(partner.hp, partner.max_hp);
+    let _ = continued(c, &root, &r, "brainerd-care-after-loss");
+}
+
 pub(super) fn choice(c: &mut VisibleShellController, yes: bool) {
     for _ in 0..64 {
         let s = c.shell.shell.snapshot().expect("authoritative offer pages");

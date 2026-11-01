@@ -723,10 +723,10 @@
       ],
       "facing": "west",
       "lines": [
-        "The fence keeps",
-        "my feet on land.",
-        "I watch the creek",
-        "from this dock."
+        "The man inside",
+        "loves fishing.",
+        "I like watching",
+        "the creek, too."
       ]
     }
   ],
@@ -761,8 +761,9 @@
         20
       ],
       "lines": [
-        "LIMESTONE HOLLOW",
-        "PASSAGES REJOIN"
+        "LIMESTONE PASSAGE",
+        "WEST: ROCHESTER",
+        "EAST: WINONA"
       ]
     },
     {

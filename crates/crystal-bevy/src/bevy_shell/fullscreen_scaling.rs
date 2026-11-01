@@ -52,6 +52,72 @@ mod fullscreen_scaling_tests {
     use super::*;
 
     #[test]
+    fn regional_battle_transition_owns_screen_after_the_last_walk() {
+        assert!(!regional_transition_owns_screen(true, true, true));
+        assert!(regional_transition_owns_screen(true, true, false));
+        assert!(!regional_transition_owns_screen(true, false, false));
+        assert!(!regional_transition_owns_screen(false, true, false));
+        assert!(BATTLE_TRANSITION_BASE_Z > PRESENTED_FULLSCREEN_BASE_Z - 0.01);
+        assert!(BATTLE_TRANSITION_BASE_Z < 2.4);
+    }
+
+    #[test]
+    #[ignore = "requires CRYSTAL_NORTHSTAR_TITLE_PACK"]
+    fn regional_transition_hides_expanded_world_and_retains_the_lcd() {
+        let path = PathBuf::from(
+            std::env::var_os("CRYSTAL_NORTHSTAR_TITLE_PACK").expect("Northstar pack"),
+        );
+        let root = AssetRoot::new(path.parent().expect("pack parent"));
+        let loaded = crystal_assets::read_loaded_verified_compiled_game_pack(&path)
+            .expect("verified pack");
+        let runtime = CrystalRuntime::from_loaded_compiled_pack(&root, loaded).expect("runtime");
+        let spawn_identifier = runtime.title_new_game_spawn_identifier().expect("spawn");
+        let mut shell = initialize_bevy_runtime_shell(
+            root,
+            runtime,
+            BevyShellStart::Title { spawn_identifier, save_path: None },
+            BevyShellConfig::default(),
+        ).expect("shell");
+        shell.visible_battle_transition = Some(VisibleBattleTransition {
+            frame: 30,
+            stronger_enemy: false,
+            cave_environment: false,
+            trainer_battle: false,
+        });
+        let mut app = App::new();
+        app.insert_resource(shell)
+            .insert_resource(RenderedViewport::default())
+            .insert_resource(RuntimeTickTimer::new(f64::from(GAME_TICK_SECONDS)))
+            .init_resource::<Assets<Image>>()
+            .add_systems(Startup, setup_fullscreen_scene)
+            .add_systems(PostUpdate, (sync_fullscreen_scene_layout, sync_fullscreen_world_layout).chain());
+        app.world_mut().spawn((Window::default(), bevy::window::PrimaryWindow));
+        let terrain = app.world_mut().spawn((PlayfieldTile, Transform::default(), Visibility::default())).id();
+        let transition = app.world_mut().spawn((BattleCommandMarker, BattleTransitionMarker,
+            Transform::default(), Visibility::default())).id();
+        app.update();
+        app.update();
+        let world = app.world_mut();
+        let (field_root, field_visibility) = world.query_filtered::<(Entity, &Visibility), With<FullscreenWorldRoot>>()
+            .single(world).expect("field root");
+        assert_eq!(*field_visibility, Visibility::Hidden);
+        assert_eq!(world.get::<ChildOf>(terrain).map(ChildOf::parent), Some(field_root));
+        let (modal_root, modal_visibility) = world.query_filtered::<(Entity, &Visibility), With<FullscreenModalRoot>>()
+            .single(world).expect("modal root");
+        assert_eq!(*modal_visibility, Visibility::Inherited);
+        assert_eq!(world.get::<ChildOf>(transition).map(ChildOf::parent), Some(modal_root));
+        let (backdrop, visibility) = world.query_filtered::<(&Sprite, &Visibility), With<FullscreenSceneBackdrop>>()
+            .single(world).expect("outer backdrop");
+        assert_eq!(*visibility, Visibility::Visible);
+        assert_eq!(backdrop.color, Color::BLACK);
+        world.resource_mut::<BevyRuntimeShell>().visible_battle_transition = None;
+        app.update();
+        let world = app.world_mut();
+        assert_eq!(*world.query_filtered::<&Visibility, With<FullscreenWorldRoot>>()
+            .single(world).expect("restored field root"), Visibility::Inherited);
+    }
+
+    #[test]
     fn fullscreen_desktop_reveals_world_and_keeps_retro_ui_compact() {
         for dpi in [1.0, 2.0] {
             let scale = fullscreen_pixels_per_world_unit(Vec2::new(1920.0, 1080.0) * dpi, dpi);
@@ -548,19 +614,38 @@ fn fullscreen_modal_active(runtime: &BevyRuntimeShell, rendered: &RenderedViewpo
 }
 
 fn fullscreen_battle_active(runtime: &BevyRuntimeShell) -> bool {
-    runtime.visible_battle_transition.is_none()
+    fullscreen_regional_battle_transition(runtime)
+        || (runtime.visible_battle_transition.is_none()
         && (safari_visible::battle_active(runtime)
             || runtime.battle_lcd_animation_active
-            || runtime.battle_message_scene.as_ref().is_some_and(|scene| scene.battle.is_some()))
+            || runtime.battle_message_scene.as_ref().is_some_and(|scene| scene.battle.is_some())))
+}
+
+fn fullscreen_regional_battle_transition(runtime: &BevyRuntimeShell) -> bool {
+    regional_transition_owns_screen(
+        runtime.runtime.data().maps.keys().any(|id| id.starts_with("Mn")),
+        runtime.visible_battle_transition.is_some(),
+        matches!(
+            runtime.pending_overworld_step_boundary,
+            Some(PendingOverworldStepBoundary::WildBattle)
+        ),
+    )
+}
+
+fn regional_transition_owns_screen(regional: bool, transition: bool, walking: bool) -> bool {
+    regional && transition && !walking
 }
 
 fn fullscreen_field_panel_active(runtime: &BevyRuntimeShell) -> bool {
-    runtime.pc_hub_session_open
+    // A retained battle (including post-capture rewards) owns the entire LCD.
+    // A stale field panel must not reveal the world around that presentation.
+    !fullscreen_battle_active(runtime)
+        && (runtime.pc_hub_session_open
         || runtime.bill_pc_session_open
         || runtime.player_pc_action_cursor.is_some()
         // The clerk's top menu overlays the room; inventory submenus own the LCD.
         || (runtime.shell.session().state().script_runtime.pending_shop.is_some()
-            && runtime.shop_top_cursor.is_some())
+            && runtime.shop_top_cursor.is_some()))
 }
 
 fn fullscreen_modal_size(view: Vec2, pixels_per_unit: f32) -> Vec2 {

@@ -136,11 +136,19 @@ fn overhaul_story_cast_resolves_accepted_native_art_and_private_classes() {
             assert_eq!(u64::from(object.y), actor["tile"][1].as_u64().expect("y"));
         }
         for id in binding["trainer_ids"].as_array().expect("battle variants") {
-            assert_eq!(
-                runtime.data().trainers.trainers[id.as_str().expect("trainer identity")]
-                    .trainer_class,
-                class
-            );
+            let id = id.as_str().expect("trainer identity");
+            assert_eq!(runtime.data().trainers.trainers[id].trainer_class, class);
+            let battles: Vec<_> = runtime
+                .data()
+                .maps
+                .values()
+                .flat_map(|map| &map.scripted_trainer_battles)
+                .filter(|battle| battle.request.trainer_id == id)
+                .collect();
+            assert!(!battles.is_empty(), "missing scripted battle for {id}");
+            for battle in battles {
+                assert_eq!(battle.request.trainer_class, class, "battle for {id}");
+            }
         }
     }
 }
@@ -185,7 +193,8 @@ fn overhaul_actual_reed_case_continues_into_a_live_native_battle_capture() {
     }
     let before = controller.snapshot().expect("native trainer intro");
     assert!(matches!(before.battle.expect("Reed battle").kind,
-        crystal_runtime::RuntimeBattleKind::Trainer { ref trainer_id, .. } if trainer_id == "MN_REED_WINONA"));
+        crystal_runtime::RuntimeBattleKind::Trainer { ref trainer_id, ref trainer_class, .. }
+            if trainer_id == "MN_REED_WINONA" && trainer_class == "MN_RIVAL_REED"));
     let mut app = super::menu_render_test_app(controller.shell);
     app.update();
     super::save_live_battle_canvas_for_test(app.world_mut(), "reed-live-trainer-intro.png");

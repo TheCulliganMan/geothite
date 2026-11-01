@@ -96,6 +96,63 @@ fn capture_presentation_play_throw(controller: &mut VisibleShellController, hp_b
 }
 
 #[test]
+fn immersive_capture_awards_and_presents_experience_through_real_ball_flow() {
+    let mut controller =
+        immersive_battle_move_preview_controller(false, false, false, false, true, false);
+    let before = controller.shell.shell.snapshot().unwrap();
+    let experience_before = before.party.slots[0].pokemon.experience;
+    let hp_before = capture_presentation_player_hp(&before);
+    capture_fixture_throw_from_pack(&mut controller, "MASTER_BALL");
+    assert!(capture_presentation_play_throw(&mut controller, hp_before).contains("Gotcha!"));
+    let mut saw_experience = false;
+    let mut drew_experience = false;
+    for _ in 0..128 {
+        saw_experience |= controller
+            .shell
+            .battle_messages
+            .iter()
+            .any(|page| page.contains("EXP. Points!"));
+        if controller
+            .shell
+            .battle_messages
+            .front()
+            .is_some_and(|page| page.contains("EXP. Points!"))
+        {
+            let page = capture_presentation_finish_text_without_input(&mut controller.shell);
+            capture_presentation_assert_drawn_text(&controller.shell, &page);
+            drew_experience = true;
+        }
+        let snapshot = controller.shell.shell.snapshot().unwrap();
+        if snapshot.battle.is_none()
+            && controller.shell.battle_messages.is_empty()
+            && controller.shell.pending_standard_capture.is_none()
+        {
+            break;
+        }
+        let button = if controller.shell.pending_name_choice.is_some()
+            || controller.shell.pokedex_scripted_entry
+        {
+            GameButton::B
+        } else {
+            GameButton::A
+        };
+        controller
+            .press(button)
+            .expect("advance capture presentation");
+        assert!(controller.shell.last_error.is_none());
+    }
+    let after = controller.shell.shell.snapshot().unwrap();
+    assert!(after.battle.is_none());
+    assert!(controller.shell.pending_standard_capture.is_none());
+    assert!(saw_experience, "capture must narrate its reward");
+    assert!(
+        drew_experience,
+        "the reward must reach the rendered battle textbox"
+    );
+    assert!(after.party.slots[0].pokemon.experience > experience_before);
+}
+
+#[test]
 fn immersive_capture_presentation_draws_current_pages_and_retains_caught_ball_until_gotcha_dismissal() {
     for (ball, master, blocked, expected_result) in [
         ("POKE_BALL", false, false, "broke free!"),

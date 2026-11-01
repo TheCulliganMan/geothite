@@ -4161,6 +4161,7 @@ struct RenderEntityQueries<'w, 's> {
     events: Query<'w, 's, Entity, With<EventMarker>>,
     prompts: Query<'w, 's, Entity, With<FieldPromptMarker>>,
     field_commands: Query<'w, 's, Entity, With<FieldCommandMarker>>,
+    map_name_signs: Query<'w, 's, (Entity, &'static MapNameSignMarker)>,
     healing_effects: Query<'w,'s,Entity,With<HealMachineWorldSprite>>,
     scene_dialogs: Query<'w, 's, Entity, With<SceneDialogMarker>>,
     dialog_glyphs: Query<
@@ -4578,6 +4579,7 @@ fn render_playfield(
         events,
         prompts,
         field_commands,
+        map_name_signs,
         healing_effects,
         scene_dialogs,
         mut dialog_glyphs,
@@ -5383,6 +5385,25 @@ fn render_playfield(
     {
         sync_visible_map_name_sign(&mut runtime_shell, &snapshot);
     }
+    // The sign is a screen-space window. Keep its entities through ordinary
+    // field redraws so map movement does not repeatedly replace its sprites.
+    let desired_sign = runtime_shell
+        .visible_map_name_sign
+        .as_ref()
+        .filter(|sign| sign.frames_remaining <= 58 && snapshot.battle.is_none())
+        .map(|sign| MapNameSignMarker {
+            map: snapshot.overworld.map_name.clone(),
+            landmark: sign.landmark.clone(),
+            label: sign.label.clone(),
+            palette: normalize_tileset_time_of_day(snapshot.progression.time.time_of_day.as_key()),
+        });
+    let retain_map_name_sign = desired_sign.as_ref().is_some_and(|desired| {
+        let mut signs = map_name_signs.iter();
+        signs.next().is_some_and(|(_, marker)| marker == desired)
+            && signs.all(|(_, marker)| marker == desired)
+    });
+    let sign_reconciled = retain_map_name_sign
+        || (desired_sign.is_none() && map_name_signs.iter().next().is_none());
     let terminal_battle_scene = retained_battle_presentation
         .then(|| runtime_shell.battle_message_scene.clone())
         .flatten();
@@ -5501,7 +5522,7 @@ fn render_playfield(
     // layer when the world itself is unchanged.
     let stale_healing_effects=runtime_shell.visible_heal_machine.is_none()
         &&healing_effects.iter().next().is_some();
-    let dialog_only_update = !stale_healing_effects && rendered.title_active == false
+    let dialog_only_update = sign_reconciled && !stale_healing_effects && rendered.title_active == false
         // Capture notices belong to the Safari canvas above the field dialog.
         // Its retained command box must be rebuilt when that notice changes.
         && snapshot.safari_prompt.is_none()
@@ -5603,7 +5624,9 @@ fn render_playfield(
             queue_existing_entity_despawn(&mut commands, &mut queued_despawns, entity);
         }
         for entity in field_commands.iter() {
-            queue_existing_entity_despawn(&mut commands, &mut queued_despawns, entity);
+            if !retain_map_name_sign || map_name_signs.get(entity).is_err() {
+                queue_existing_entity_despawn(&mut commands, &mut queued_despawns, entity);
+            }
         }
         for entity in prompts.iter() {
             queue_existing_entity_despawn(&mut commands, &mut queued_despawns, entity);
@@ -5660,7 +5683,7 @@ fn render_playfield(
     // changing any pixels in the overworld. Retain the existing map, player,
     // and object entities in that case; rebuilding them here was the other
     // major source of frame stalls after the tile layer was composited.
-    let world_only_update = !stale_healing_effects && !rendered.title_active
+    let world_only_update = sign_reconciled && !stale_healing_effects && !rendered.title_active
         && !safari_surface_owned
         && battle_commands.iter().next().is_none()
         && visual_world_mode_unchanged
@@ -5765,7 +5788,8 @@ fn render_playfield(
         rendered.shell_render_key = Some(shell_render_key);
         return;
     }
-    if rendered.map_name.as_ref() == Some(&snapshot.overworld.map_name)
+    if sign_reconciled
+        && rendered.map_name.as_ref() == Some(&snapshot.overworld.map_name)
         && !safari_surface_missing
         && !retained_movement_needs_reconcile
         && visual_world_mode_unchanged
@@ -5847,7 +5871,9 @@ fn render_playfield(
         queue_existing_entity_despawn(&mut commands, &mut queued_despawns, entity);
     }
     for entity in field_commands.iter() {
-        queue_existing_entity_despawn(&mut commands, &mut queued_despawns, entity);
+        if !retain_map_name_sign || map_name_signs.get(entity).is_err() {
+            queue_existing_entity_despawn(&mut commands, &mut queued_despawns, entity);
+        }
     }
     for entity in scene_dialogs.iter() {
         queue_existing_entity_despawn(&mut commands, &mut queued_despawns, entity);
@@ -6104,7 +6130,7 @@ Transform::from_xyz(0.0, 0.0, 2.7),),
     // the camera by a tile.  Retain the already-created LCD sprite in both
     // cases: despawning it before a replacement GPU texture is available
     // makes macOS present the clear (black) surface for one frame.
-    let can_update_positions_in_place = !rendered.title_active
+    let can_update_positions_in_place = sign_reconciled && !rendered.title_active
         && !safari_surface_owned
         && battle_commands.iter().next().is_none()
         && rendered.map_name.as_ref() == Some(&snapshot.overworld.map_name)
@@ -8246,10 +8272,14 @@ Transform::from_xyz(
                 let wave = transition.cave_environment
                     && !transition.stronger_enemy
                     && transition.frame >= wave_start;
-                if transition_replaces_map && !wave {
-                    for (texture, z) in [(texture.clone(), 0.0), (priority.clone(), 2.4)]
+                #[cfg(feature = "fullscreen-scaling")]
+                let fullscreen_transition = fullscreen_regional_battle_transition(&runtime_shell);
+                #[cfg(not(feature = "fullscreen-scaling"))]
+                let fullscreen_transition = false;
+                if (transition_replaces_map || fullscreen_transition) && !wave {
+                    for (texture, z) in [(texture.clone(), BATTLE_TRANSITION_BASE_Z), (priority.clone(), 2.4)]
                         .into_iter()
-                        .chain(bridge.map(|texture| (texture, bridge_source_overlay::OVERLAY_DEPTH)))
+                        .chain(bridge.map(|texture| (texture, BATTLE_TRANSITION_BASE_Z + 0.01)))
                     {
                         commands.spawn((
                             (Sprite { image: texture,
@@ -8536,7 +8566,7 @@ Transform::from_xyz(0.0, 0.0, z),),
             return;
         }
     }
-    if let Err(error) = spawn_visible_map_name_sign(
+    if !retain_map_name_sign && let Err(error) = spawn_visible_map_name_sign(
         &mut commands,
         &snapshot,
         &runtime_shell,

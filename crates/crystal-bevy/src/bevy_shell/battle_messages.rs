@@ -3761,7 +3761,11 @@ fn execute_visible_contextual_field_move(runtime_shell: &mut BevyRuntimeShell) -
         )?;
         return Ok(true);
     }
-    if field_move_rule_contains_target_collision(&runtime_shell.shell, "cut", permission)? {
+    // Cut can also clear grass from the party menu. Only tree collision
+    // permissions own the automatic A-button tree interaction.
+    if matches!(permission, 0x12 | 0x1a)
+        && field_move_rule_contains_target_collision(&runtime_shell.shell, "cut", permission)?
+    {
         if snapshot_has_field_move_actor_and_badge(&snapshot, &runtime_shell.shell, "cut")? {
             open_visible_contextual_field_move_prompt(
                 runtime_shell,
@@ -4546,7 +4550,7 @@ fn use_visible_teleport(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
     record_visible_runtime_action(runtime_shell, format!("field_move:teleport:{party_index}"))?;
     let field_move = runtime_shell.shell.use_teleport_field_move(party_index)?;
     runtime_shell.last_audio_events.push(format!(
-        "field teleport party_index={} destination={} spawn={} tile=({}, {}) checksum={:?}",
+        "field teleport party_index={} destination={} spawn={:?} tile=({}, {}) checksum={:?}",
         party_index,
         field_move.destination_map,
         field_move.destination_spawn_identifier,
@@ -6026,6 +6030,19 @@ fn complete_visible_standard_capture(
     let completion = runtime_shell
         .shell
         .complete_active_wild_capture(&outcome, nickname)?;
+    if let Some(rewards) = &completion.rewards {
+        let index = battle_before_completion.battle.as_ref()
+            .and_then(|battle| battle.active_player_party_index)
+            .context("capture rewards require an active player")?;
+        let name = battle_before_completion.party.slots.iter()
+            .find(|slot| slot.index == index)
+            .map(|slot| slot.pokemon.nickname.clone())
+            .context("capture reward recipient is missing")?;
+        stage_visible_battle_exp_tween(runtime_shell, &battle_before_completion, rewards)?;
+        stage_visible_battle_level_stats(runtime_shell, &battle_before_completion, rewards)?;
+        push_visible_battle_reward_events(runtime_shell, rewards, index, &name)?;
+        retain_visible_pre_reward_battle_scene(runtime_shell, &battle_before_completion);
+    }
     let completed_snapshot = runtime_shell.shell.snapshot()?;
     if let (Some(previous), Some(candidate)) = (
         completed_snapshot.bug_contest.caught_mon.as_ref(),

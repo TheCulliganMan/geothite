@@ -11,7 +11,7 @@
   ],
   "role": "gym_4",
   "tileset": "kanto",
-  "composition": "Dense fair lanes, attached Capitol and Summit blocks, three-floor Lowertown Exchange, short shared south-bank streets, and unchanged Union Depot story interior; exact native40×34 composition.",
+  "composition": "Dense fair lanes, attached Capitol and Summit blocks, three-floor Lowertown Exchange, short shared south-bank streets, and unchanged Union Depot story interior; exact native40\u00d734 composition.",
   "ports": [
     {
       "route": "MN_R04",
@@ -503,7 +503,9 @@
           ],
           "facing": "south",
           "lines": [
-            "Drinks for the mid"
+            "Fresh cider and",
+            "sweet lefse for",
+            "the fair crowd!"
           ],
           "service": "pokemart",
           "stock": [
@@ -588,7 +590,9 @@
           ],
           "facing": "south",
           "lines": [
-            "Seeds and berry st"
+            "Heirloom tomato",
+            "seeds and hardy",
+            "berry bushes!"
           ],
           "service": "pokemart",
           "stock": [
@@ -676,7 +680,9 @@
           ],
           "facing": "south",
           "lines": [
-            "Crop and water exh"
+            "Prize pumpkins",
+            "and blue-ribbon",
+            "apples on display!"
           ],
           "service": null
         }
@@ -750,7 +756,9 @@
           ],
           "facing": "south",
           "lines": [
-            "A voluntary show m"
+            "Trainers gather",
+            "here for friendly",
+            "showcase bouts!"
           ],
           "service": null
         }
@@ -822,7 +830,9 @@
           ],
           "facing": "south",
           "lines": [
-            "Handmade seed ribb"
+            "Handwoven ribbons",
+            "and knit caps",
+            "for chilly nights!"
           ],
           "service": null
         }
@@ -1337,7 +1347,9 @@
           ],
           "facing": "south",
           "lines": [
-            "Care before compet"
+            "Gentle handling",
+            "keeps partners",
+            "calm in crowds."
           ],
           "service": null
         }
@@ -1444,7 +1456,9 @@
           ],
           "facing": "south",
           "lines": [
-            "Berries for the mi"
+            "Sweet berry snacks",
+            "fresh from the",
+            "morning harvest!"
           ],
           "service": "pokemart",
           "stock": [
@@ -1529,7 +1543,9 @@
           ],
           "facing": "south",
           "lines": [
-            "Send a fair postca"
+            "Send a fair",
+            "postcard to your",
+            "folks back home!"
           ],
           "service": "pokemart",
           "stock": [
@@ -1989,7 +2005,9 @@
           ],
           "facing": "south",
           "lines": [
-            "Reading room and f"
+            "River navigation",
+            "charts and quiet",
+            "reading desks."
           ],
           "service": null
         }
@@ -2430,7 +2448,9 @@
           ],
           "facing": "south",
           "lines": [
-            "A Headbutt field n"
+            "Hardy trees in",
+            "the bluffs yield",
+            "good HEADBUTTs."
           ],
           "service": null
         }
@@ -2515,7 +2535,9 @@
           ],
           "facing": "south",
           "lines": [
-            "An optional club m"
+            "A friendly club",
+            "match sharpens",
+            "any traveling team!"
           ],
           "service": null
         }
@@ -2697,7 +2719,9 @@
           ],
           "facing": "south",
           "lines": [
-            "Secondhand field g"
+            "Secondhand field",
+            "guides and old",
+            "river histories."
           ],
           "service": null
         }
@@ -2769,7 +2793,9 @@
           ],
           "facing": "south",
           "lines": [
-            "Picnic food for th"
+            "Fresh warm buns",
+            "and picnic rolls",
+            "for the river park!"
           ],
           "service": "pokemart",
           "stock": [
@@ -3022,7 +3048,9 @@
           ],
           "facing": "south",
           "lines": [
-            "A walking archive "
+            "Photographs of",
+            "the early river",
+            "railroad days."
           ],
           "service": null
         },
@@ -3161,7 +3189,9 @@
           ],
           "facing": "south",
           "lines": [
-            "Trade supplies and"
+            "Sturdy canvas packs",
+            "and tackle for",
+            "river anglers."
           ],
           "service": "pokemart",
           "stock": [
@@ -3362,7 +3392,9 @@
           ],
           "facing": "south",
           "lines": [
-            "An optional worksh"
+            "Sparring matches",
+            "help us stay sharp",
+            "after long shifts!"
           ],
           "service": null
         }
@@ -3693,7 +3725,9 @@
           ],
           "facing": "south",
           "lines": [
-            "Rest before the ri"
+            "Grab a hot cocoa",
+            "before walking",
+            "along the bluff!"
           ],
           "service": "pokemart",
           "stock": [
@@ -3780,7 +3814,9 @@
           ],
           "facing": "south",
           "lines": [
-            "A river fishing ch"
+            "The Mississippi",
+            "has monster BASS",
+            "near the pilings!"
           ],
           "service": null
         }
@@ -3887,7 +3923,9 @@
           ],
           "facing": "south",
           "lines": [
-            "River-walk supplie"
+            "Dry boots, warm",
+            "socks, and trail",
+            "rations for all!"
           ],
           "service": "pokemart",
           "stock": [
@@ -4050,7 +4088,9 @@
           ],
           "facing": "south",
           "lines": [
-            "A voluntary traini"
+            "Practice bouts",
+            "keep our partners",
+            "strong and agile!"
           ],
           "service": null
         }
@@ -4232,7 +4272,9 @@
           ],
           "facing": "south",
           "lines": [
-            "Native party rest."
+            "Rest your weary",
+            "party by the warm",
+            "hearth tonight."
           ],
           "service": "heal_party"
         }
@@ -4306,7 +4348,9 @@
           ],
           "facing": "south",
           "lines": [
-            "A survey team exhi"
+            "Volunteers track",
+            "water clarity and",
+            "songbird nests!"
           ],
           "service": null
         }
@@ -4524,7 +4568,7 @@
     "local story NPC"
   ],
   "door_contract": "Native source DOOR quadrants, exterior active/passive indices, reciprocal room carpets and safe passive Floor arrivals are explicit; production lowering/roundtrip proof pending.",
-  "status": "Native compact40×34 published; exact local verification referenced in recomposition provenance.",
+  "status": "Native compact40\u00d734 published; exact local verification referenced in recomposition provenance.",
   "native_constant": "MN_ST_PAUL",
   "compiled_tileset": "kanto",
   "coordinate_units": "16px core tiles unless metatile suffix",
@@ -6537,10 +6581,10 @@
     ]
   },
   "expansion_contract_file": "towns/MnStPaul.expansion.contract.json",
-  "native_status": "Published660-map compact40×34 StPaul in twin-cities-compact-v01; nine local controller cases and15native GPU captures passed. No earned progression or final user visual approval claimed.",
+  "native_status": "Published660-map compact40\u00d734 StPaul in twin-cities-compact-v01; nine local controller cases and15native GPU captures passed. No earned progression or final user visual approval claimed.",
   "recomposition_contract_file": "towns/MnStPaul.recomposition.contract.json",
   "recomposition_provenance": {
-    "status": "Native compact40×34 published and local production verification passed; this source preflight is not canonical application or user visual approval.",
+    "status": "Native compact40\u00d734 published and local production verification passed; this source preflight is not canonical application or user visual approval.",
     "native_pack": "content-packs/minnesota-twin-cities-compact-v01.crystalpack",
     "native_pack_sha256": "2fe6fc2a2c59833886b9ffa2fa04584f1f95841efaf87e865f11230cf4cdf54e",
     "base_pack": "content-packs/minnesota-minneapolis-compact-falls-v02.crystalpack",

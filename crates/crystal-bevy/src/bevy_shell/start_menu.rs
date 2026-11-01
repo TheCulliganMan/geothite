@@ -4248,6 +4248,14 @@ fn battle_substitute_frames<'a>(
 }
 
 fn spawn_visible_battle_hud_clear(commands: &mut Commands, shell: &BevyRuntimeShell) {
+    // The party picker replaces the battle HUD, so its faint/move erasure
+    // rectangles must not cover party names, levels, or HP bars.
+    if shell.battle_switch_cursor.is_some()
+        || shell.battle_pack_target_mode.is_some()
+        || shell.battle_party_summary_open
+    {
+        return;
+    }
     // BattleAnimClearHud removes the actor's HUD during actual moves.
     // FaintYourPokemon/FaintEnemyPokemon erase the same boxes after the drop
     // and keep them erased until the next send-out.
@@ -7282,7 +7290,11 @@ Transform::from_xyz(0.0, 0.0, 3.4),),
             rendered_art,
             asset_root,
             images,
-            &format!("\u{e10a}{:>2}", slot.pokemon.level.min(100)),
+            &if slot.pokemon.level >= 100 {
+                "100".to_string()
+            } else {
+                format!("\u{e10a}{:>2}", slot.pokemon.level)
+            },
             x,
             y,
             3.8,
@@ -7335,11 +7347,11 @@ Transform::from_xyz(0.0, 0.0, 3.4),),
         asset_root,
         images,
         if item_target {
-            "Use on which <PKMN>?"
+            "Use on whom?"
         } else if visible_active_battle_player_fainted(snapshot) {
-            "Which <PKMN>?"
+            "Which POKéMON?"
         } else {
-            "Choose a <PKMN>."
+            "Choose a POKéMON."
         },
         x,
         y,

@@ -76,7 +76,7 @@ pub(crate) fn rebind_actor_event_source(
 /// field actors and their art registration; it adds no battle or trainer class.
 ///
 /// # Errors
-/// Rejects missing/duplicate identities, occupied art/classes, stale actor
+/// Rejects missing/duplicate identities, conflicting art/classes, stale actor
 /// preimages, incomplete native banks and invalid resulting runtime packs.
 pub fn bind_minnesota_trainer_art(
     base: &CompiledGamePack,
@@ -121,13 +121,7 @@ pub fn bind_minnesota_trainer_art(
         old_classes.insert(id.clone(), trainer.trainer_class.clone());
         trainer.trainer_class.clone_from(class);
     }
-    for (path, bytes) in art {
-        ensure!(
-            !pack.runtime_files.contains_key(path),
-            "preserve existing art: {path}"
-        );
-        pack.runtime_files.insert(path.clone(), bytes.clone());
-    }
+    install_art(&mut pack.runtime_files, art)?;
     if !binding.field_only {
         pack.data
             .trainer_class_names
@@ -232,6 +226,20 @@ pub fn bind_minnesota_trainer_art(
     Ok(pack)
 }
 
+fn install_art(
+    destination: &mut BTreeMap<String, Vec<u8>>,
+    art: &BTreeMap<String, Vec<u8>>,
+) -> Result<()> {
+    for (path, bytes) in art {
+        if let Some(existing) = destination.get(path) {
+            ensure!(existing == bytes, "preserve existing art: {path}");
+        } else {
+            destination.insert(path.clone(), bytes.clone());
+        }
+    }
+    Ok(())
+}
+
 #[cfg(test)]
 mod tests {
     use std::collections::BTreeMap;
@@ -239,6 +247,20 @@ mod tests {
 
     use super::bind_minnesota_trainer_art;
     use crate::read_verified_compiled_game_pack;
+
+    #[test]
+    fn existing_identical_art_is_preserved_and_conflicting_art_is_rejected() {
+        let mut existing = BTreeMap::from([("portrait".to_string(), vec![1, 2])]);
+        let matching = BTreeMap::from([
+            ("portrait".to_string(), vec![1, 2]),
+            ("overworld".to_string(), vec![4, 5]),
+        ]);
+        super::install_art(&mut existing, &matching).expect("identical art is reusable");
+        assert_eq!(existing, matching, "missing overworld art is installed");
+        let conflicting = BTreeMap::from([("portrait".to_string(), vec![3])]);
+        assert!(super::install_art(&mut existing, &conflicting).is_err());
+        assert_eq!(existing, matching);
+    }
 
     #[test]
     #[ignore = "requires CRYSTAL_CAST_PARENT, BINDING and ART external fixtures"]

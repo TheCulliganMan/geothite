@@ -1,6 +1,56 @@
 use super::build_minnesota_research_access;
 
 #[test]
+#[ignore = "requires the external selected Minnesota review pack"]
+fn fossil_lab_dialogue_revision_preserves_the_existing_room() {
+    let base = crate::read_verified_compiled_game_pack(
+        std::env::var_os("CRYSTAL_FOSSIL_DIALOGUE_PACK").expect("selected pack"),
+    )
+    .expect("verified selected pack");
+    let child = super::revise_minnesota_fossil_lab_dialogue(&base).expect("revise lab dialogue");
+    let before = &base.data.maps["MnRochesterFossilLab"];
+    let after = &child.data.maps["MnRochesterFossilLab"];
+    assert_eq!(before.blocks, after.blocks);
+    assert_eq!(before.objects, after.objects);
+    let labels = [
+        "MnRochesterFossilLabAssistantText",
+        "MnLabFossilNeedSpecimenText",
+        "MnLabSecondThanksText",
+    ];
+    for label in labels {
+        let body = after.scripts[label].to_string();
+        assert!(
+            !body.contains("DRIFTLESS") && !body.contains("Route 3"),
+            "{label}"
+        );
+    }
+    for (label, script) in &before.scripts {
+        if !labels.contains(&label.as_str()) {
+            assert_eq!(after.scripts.get(label), Some(script), "script {label}");
+        }
+    }
+    assert_eq!(before.scripts.len(), after.scripts.len());
+    for (name, original) in &base.data.maps {
+        if name != "MnRochesterFossilLab" {
+            assert_eq!(&child.data.maps[name], original, "map {name}");
+        }
+    }
+    let original = serde_json::to_value(base.data()).expect("original game data");
+    let mut revised = serde_json::to_value(child.data()).expect("revised game data");
+    for label in labels {
+        for field in ["scripts", "script_text_bodies"] {
+            revised["maps"]["MnRochesterFossilLab"][field][label] =
+                original["maps"]["MnRochesterFossilLab"][field][label].clone();
+        }
+        revised["map_scripts"][label] = original["map_scripts"][label].clone();
+    }
+    assert_eq!(original, revised, "only the three lab texts may change");
+    assert_eq!(base.runtime_files(), child.runtime_files());
+    assert!(base.compiled_audio() == child.compiled_audio());
+    assert!(super::revise_minnesota_fossil_lab_dialogue(&child).is_err());
+}
+
+#[test]
 #[ignore = "requires CRYSTAL_RESEARCH_PARENT with installed fossil lab and late starter aide"]
 fn early_research_preserves_unrelated_content_and_rejects_stale_scripts() {
     let base = crate::read_verified_compiled_game_pack(
@@ -8,6 +58,22 @@ fn early_research_preserves_unrelated_content_and_rejects_stale_scripts() {
     )
     .expect("verified parent");
     let child = build_minnesota_research_access(&base).expect("complete early access");
+    let lab = &child.data.maps["MnRochesterFossilLab"];
+    for label in [
+        "MnRochesterFossilLabAssistantText",
+        "MnLabFossilNeedSpecimenText",
+        "MnLabSecondThanksText",
+    ] {
+        let dialogue = lab.scripts[label].to_string();
+        assert!(
+            !dialogue.contains("DRIFTLESS"),
+            "{label} assumes a trail discovery"
+        );
+        assert!(
+            !dialogue.contains("Route 3"),
+            "{label} spoils a later route"
+        );
+    }
     let before = serde_json::to_value(base.data()).expect("parent data");
     let mut after = serde_json::to_value(child.data()).expect("child data");
     after["maps"] = before["maps"].clone();
@@ -82,6 +148,7 @@ fn early_research_preserves_unrelated_content_and_rejects_stale_scripts() {
                     | "MnFossilDirectionsText"
                     | "MnRochesterFossilLabAssistant"
                     | "MnRochesterFossilLabAssistantText"
+                    | "MnLabFossilNeedSpecimenText"
                     | "MnLabFossilRestoredText"
             ) {
                 continue;

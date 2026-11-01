@@ -1,5 +1,6 @@
 //! Played rival opening and real egg rewards; capacity cases are explicit fixtures.
 use std::path::PathBuf;
+use std::sync::atomic::{AtomicUsize, Ordering};
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use crystal_core::input::GameButton;
@@ -18,6 +19,43 @@ const LAB: &str = "MnWinonaFieldStation";
 const MET: &str = "EVENT_MN_REED_FIRST_MET";
 const WON: &str = "EVENT_MN_REED_WINONA_DEFEATED";
 const EGG: &str = "EVENT_MN_TAMARACK_EGG_RECEIVED";
+static REED_ARRIVALS: AtomicUsize = AtomicUsize::new(0);
+
+pub(super) fn observe_reed_arrival(s: &crystal_runtime::RuntimeShellSnapshot) {
+    if !s
+        .ui
+        .text
+        .as_ref()
+        .is_some_and(|text| text.label == "MnNSEReedArrivalText")
+    {
+        return;
+    }
+    let reed = s.visible_object_runtime_tiles["MN_NSE_REED"];
+    let player = s.overworld.tile;
+    assert_eq!((player.x, player.y), (4, 2));
+    assert_eq!((reed.x, reed.y), (4, 3), "Reed must arrive before speaking");
+    assert_eq!(
+        s.visible_object_facings["MN_NSE_REED"],
+        crystal_core::world::map::Direction::Up
+    );
+    assert_eq!(
+        s.overworld.facing,
+        crystal_core::world::map::Direction::Down
+    );
+    REED_ARRIVALS.fetch_add(1, Ordering::Relaxed);
+}
+
+#[test]
+#[ignore = "requires the story review pack via CRYSTAL_WINONA_TEST_PACK"]
+fn reed_approaches_before_speaking_and_opening_progresses() {
+    let before = REED_ARRIVALS.load(Ordering::Relaxed);
+    let (_, _, c) = super::dialogue_overhaul::opening(0);
+    assert!(
+        REED_ARRIVALS.load(Ordering::Relaxed) > before,
+        "arrival dialogue was observed"
+    );
+    assert!(event(&c, MET) && event(&c, WON));
+}
 
 fn event(c: &VisibleShellController, name: &str) -> bool {
     c.shell

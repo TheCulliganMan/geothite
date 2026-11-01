@@ -1578,23 +1578,15 @@ fn press_visible_a_button(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
     if runtime_shell.active_script_cursor.is_some() {
         return execute_visible_active_script_step(runtime_shell);
     }
-    if execute_visible_contextual_field_move(runtime_shell)? {
-        return Ok(());
-    }
-    if runtime_shell
-        .shell
-        .last_frame()
-        .and_then(|frame| frame.interaction.as_ref())
-        .is_some()
-    {
-        return execute_last_interaction_script(runtime_shell);
-    }
     if runtime_shell
         .shell
         .current_overworld_interaction_checked()?
         .is_some()
     {
         return execute_current_overworld_interaction_script(runtime_shell);
+    }
+    if execute_visible_contextual_field_move(runtime_shell)? {
+        return Ok(());
     }
     Ok(())
 }

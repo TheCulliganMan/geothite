@@ -21,6 +21,46 @@ fn checkpoint(controller: &mut VisibleShellController, name: &str) {
 }
 
 #[test]
+#[ignore = "requires CRYSTAL_WINONA_TEST_PACK with the revised fossil lab"]
+fn fossil_lab_staff_dialogue_respects_player_discovery() {
+    let (root, runtime) = load();
+    let mut controller = fixture(&root, &runtime, "MnRochesterFossilLab", (7, 7));
+    let assistant = read_text(&mut controller, (7, 6));
+    assert!(assistant.contains("We study fossils"), "{assistant}");
+    assert!(!assistant.contains("DRIFTLESS"), "{assistant}");
+
+    indoor_walk(&mut controller, &runtime, (3, 5));
+    controller
+        .shell
+        .shell
+        .session_mut()
+        .state_mut()
+        .flags
+        .set_engine_flag("ENGINE_ZEPHYRBADGE", true)
+        .expect("declared Care Badge fixture");
+    mark_runtime_snapshot_dirty(&mut controller.shell);
+    let scientist = read_text(&mut controller, (3, 4));
+    assert!(scientist.contains("If you find a"), "{scientist}");
+    assert!(!scientist.contains("DRIFTLESS"), "{scientist}");
+
+    indoor_walk(&mut controller, &runtime, (7, 7));
+    controller
+        .shell
+        .shell
+        .session_mut()
+        .state_mut()
+        .flags
+        .set_event_flag("EVENT_MN_FOSSIL_EXCHANGED", true)
+        .expect("completed exchange fixture");
+    mark_runtime_snapshot_dirty(&mut controller.shell);
+    let followup = read_text(&mut controller, (7, 6));
+    assert!(followup.contains("Take good care of"), "{followup}");
+    assert!(!followup.contains("Route 3"), "{followup}");
+    press(&mut controller, GameButton::Start);
+    press(&mut controller, GameButton::B);
+}
+
+#[test]
 #[ignore = "requires CRYSTAL_WINONA_TEST_PACK with the actual Rochester fossil lab"]
 fn fossil_lab_controller_streets_sign_bench_restoration_both_returns_and_continue() {
     let (root, runtime) = load();

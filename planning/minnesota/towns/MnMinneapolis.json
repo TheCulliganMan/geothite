@@ -5,8 +5,30 @@
     "plan": "../revisions/minneapolis-waterfront-v01/README.md",
     "native_contract": "../revisions/minneapolis-waterfront-v01/source-v06/native.contract.json",
     "compiled_tileset": "mn_minneapolis_city",
-    "frontages": ["BoatHouse", "AnglerHome", "DispatcherHouse", "LakeCabin"],
-    "door_core_tiles": [[9,29], [19,29], [23,41], [7,45]],
+    "frontages": [
+      "BoatHouse",
+      "AnglerHome",
+      "DispatcherHouse",
+      "LakeCabin"
+    ],
+    "door_core_tiles": [
+      [
+        9,
+        29
+      ],
+      [
+        19,
+        29
+      ],
+      [
+        23,
+        41
+      ],
+      [
+        7,
+        45
+      ]
+    ],
     "scope": "Native-art overlay after the city-wide wall-join repair. Original rooms, door quadrants, collision, actors and story remain exact. Publish through the reviewed overlay rather than rebuilding the older base layout alone."
   },
   "name": "MINNEAPOLIS",
@@ -573,8 +595,9 @@
           ],
           "facing": "south",
           "lines": [
-            "The river connects",
-            "our neighborhoods."
+            "Milling flour was",
+            "the heartbeat of",
+            "our river town."
           ]
         }
       ],
@@ -703,8 +726,9 @@
           ],
           "facing": "south",
           "lines": [
-            "The river connects",
-            "our neighborhoods."
+            "Hand-set type",
+            "and daily news",
+            "inked fresh daily."
           ]
         }
       ],
@@ -767,8 +791,9 @@
           ],
           "facing": "south",
           "lines": [
-            "The river connects",
-            "our neighborhoods."
+            "Old waterwheels",
+            "powered the big",
+            "grinding stones."
           ]
         }
       ],
@@ -1377,8 +1402,8 @@
           "lines": [
             "The lake piers",
             "are open to all.",
-            "The rock line",
-            "closes the river."
+            "Take a boat out",
+            "on calm days."
           ]
         }
       ],
@@ -3839,8 +3864,8 @@
         46
       ],
       "lines": [
-        "LAKE COMMUNITY CAB",
-        "IN"
+        "LAKE COMMUNITY",
+        "CABIN"
       ]
     },
     {
@@ -3870,8 +3895,8 @@
         36
       ],
       "lines": [
-        "MINNEAPOLIS DEPT S",
-        "TORE"
+        "MINNEAPOLIS",
+        "DEPT STORE 1F"
       ]
     },
     {
@@ -3881,8 +3906,8 @@
         46
       ],
       "lines": [
-        "RIVERFRONT BATTLE ",
-        "CLUB"
+        "RIVERFRONT",
+        "BATTLE CLUB"
       ]
     },
     {

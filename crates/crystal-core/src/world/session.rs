@@ -1454,7 +1454,14 @@ impl OverworldSession {
             }
             let in_initial_viewport = self
                 .object_runtime_tile_checked(candidate_index, object)
-                .map(|tile| object_struct_tile_is_in_loaded_viewport(self.player.tile, tile))
+                .map(|tile| {
+                    regional_or_native_object_viewport(
+                        &self.map.name,
+                        object,
+                        self.player.tile,
+                        tile,
+                    )
+                })
                 // Keep malformed visible objects in the candidate roster so
                 // checked queries surface their coordinate error instead of
                 // silently treating invalid pack data as unloaded.
@@ -1776,19 +1783,23 @@ impl OverworldSession {
                         .strength_moving_object_identifiers
                         .contains(object.object_identifier.as_deref().unwrap_or_default())
                     || (advance_autonomous
-                        && matches!(
-                            object.spritemovedata.as_str(),
-                            "SPRITEMOVEDATA_PATROL_CLOCKWISE"
-                                | "SPRITEMOVEDATA_PATROL_CLOCKWISE_SLOW"
-                                | "SPRITEMOVEDATA_WALK_LEFT_RIGHT"
-                                | "SPRITEMOVEDATA_WALK_UP_DOWN"
-                                | "SPRITEMOVEDATA_WANDER"
-                                | "SPRITEMOVEDATA_SWIM_WANDER"
-                                | "SPRITEMOVEDATA_SPINCLOCKWISE"
-                                | "SPRITEMOVEDATA_SPINCOUNTERCLOCKWISE"
-                                | "SPRITEMOVEDATA_SPINRANDOM_SLOW"
-                                | "SPRITEMOVEDATA_SPINRANDOM_FAST"
-                        ))
+                        && ((regional_active_trainer(&self.map.name, object)
+                            && object
+                                .spritemovedata
+                                .starts_with("SPRITEMOVEDATA_STANDING_"))
+                            || matches!(
+                                object.spritemovedata.as_str(),
+                                "SPRITEMOVEDATA_PATROL_CLOCKWISE"
+                                    | "SPRITEMOVEDATA_PATROL_CLOCKWISE_SLOW"
+                                    | "SPRITEMOVEDATA_WALK_LEFT_RIGHT"
+                                    | "SPRITEMOVEDATA_WALK_UP_DOWN"
+                                    | "SPRITEMOVEDATA_WANDER"
+                                    | "SPRITEMOVEDATA_SWIM_WANDER"
+                                    | "SPRITEMOVEDATA_SPINCLOCKWISE"
+                                    | "SPRITEMOVEDATA_SPINCOUNTERCLOCKWISE"
+                                    | "SPRITEMOVEDATA_SPINRANDOM_SLOW"
+                                    | "SPRITEMOVEDATA_SPINRANDOM_FAST"
+                            )))
             })
             .collect();
         // Runtime object coordinates commit atomically here, but Crystal keeps
@@ -1864,7 +1875,16 @@ impl OverworldSession {
             // player.  METATILE_WIDTH is the map-art block size, not the
             // gameplay movement stride.
             let stride = DEFAULT_RUNTIME_TILE_STRIDE;
-            let movement = object.spritemovedata.as_str();
+            let movement = if regional_active_trainer(&self.map.name, object)
+                && (object
+                    .spritemovedata
+                    .starts_with("SPRITEMOVEDATA_STANDING_")
+                    || object.spritemovedata == "SPRITEMOVEDATA_SPINRANDOM_SLOW")
+            {
+                "SPRITEMOVEDATA_SPINRANDOM_FAST"
+            } else {
+                object.spritemovedata.as_str()
+            };
             if let Some(direction) = self
                 .strength_boulder_push_directions
                 .get(object_id)
@@ -2228,9 +2248,17 @@ impl OverworldSession {
                 .get(&index)
                 .copied()
                 .unwrap_or(current);
-            if !object_struct_tile_is_in_loaded_viewport(self.player.tile, current)
-                && !object_struct_tile_is_in_loaded_viewport(self.player.tile, initial)
-                && !object_event_starts_wont_delete(&object.spritemovedata)
+            if !regional_or_native_object_viewport(
+                &self.map.name,
+                object,
+                self.player.tile,
+                current,
+            ) && !regional_or_native_object_viewport(
+                &self.map.name,
+                object,
+                self.player.tile,
+                initial,
+            ) && !object_event_starts_wont_delete(&object.spritemovedata)
             {
                 if let Some(id) = object.object_identifier.as_ref() {
                     if let Some(facing) = self.object_facings.get(id).copied() {
@@ -2260,8 +2288,13 @@ impl OverworldSession {
                 continue;
             }
             let current = self.object_runtime_tile_checked(index, object)?;
-            let enters_roster = if initialize {
-                object_struct_tile_is_in_loaded_viewport(self.player.tile, current)
+            let enters_roster = if initialize || regional_active_trainer(&self.map.name, object) {
+                regional_or_native_object_viewport(
+                    &self.map.name,
+                    object,
+                    self.player.tile,
+                    current,
+                )
             } else {
                 entering_direction.is_some_and(|direction| {
                     object_struct_tile_is_on_entering_edge(self.player.tile, current, direction)
@@ -2756,7 +2789,14 @@ impl OverworldSession {
                 continue;
             }
             match self.object_runtime_tile_checked(index, object) {
-                Ok(tile) if object_struct_tile_is_in_loaded_viewport(self.player.tile, tile) => {
+                Ok(tile)
+                    if regional_or_native_object_viewport(
+                        &self.map.name,
+                        object,
+                        self.player.tile,
+                        tile,
+                    ) =>
+                {
                     let slot = self
                         .next_available_object_struct_slot()
                         .expect("loaded object count guarantees an available struct slot");
@@ -3061,7 +3101,16 @@ impl OverworldSession {
                 let Some(direction) = direction else {
                     return Ok(None);
                 };
-                if !tile_is_in_sightline(object_tile, direction, self.player.tile, object.radius) {
+                let regional = regional_active_trainer(&self.map.name, object);
+                let radius = if regional {
+                    object.radius.max(8)
+                } else {
+                    object.radius
+                };
+                if !tile_is_in_sightline(object_tile, direction, self.player.tile, radius) {
+                    return Ok(None);
+                }
+                if regional && !self.regional_trainer_path_clear(object_tile, direction)? {
                     return Ok(None);
                 }
                 Ok(Some(self.object_interaction(
@@ -3070,6 +3119,48 @@ impl OverworldSession {
                     object_tile,
                 )))
             })
+    }
+
+    fn regional_trainer_path_clear(
+        &self,
+        from: TilePosition,
+        direction: Direction,
+    ) -> Result<bool, OverworldCoordinateError> {
+        let mut current = from;
+        while current != self.player.tile {
+            let Some(next) = checked_move_by_stride(current, direction, 1) else {
+                return Ok(false);
+            };
+            let Some(source) = sample_collision(&self.map, &self.tileset, current) else {
+                return Ok(false);
+            };
+            let Some(target) = sample_collision(&self.map, &self.tileset, next) else {
+                return Ok(false);
+            };
+            if is_direction_blocked_leaving(source.permission, direction)
+                || is_direction_blocked(target.permission, direction)
+                || describe_collision(target.permission).terrain != Terrain::Land
+                || is_warp_permission(target.permission)
+            {
+                return Ok(false);
+            }
+            if next != self.player.tile {
+                for (index, object) in self.objects.iter().enumerate() {
+                    if !self.is_object_visible(object)
+                        || object_event_starts_as_emote_object(&object.spritemovedata)
+                        || !self.object_shares_player_layer(object, next)
+                    {
+                        continue;
+                    }
+                    let tile = self.object_runtime_tile_checked(index, object)?;
+                    if object_current_occupied_tiles_checked(index, object, tile)?.contains(&next) {
+                        return Ok(false);
+                    }
+                }
+            }
+            current = next;
+        }
+        Ok(true)
     }
 
     fn visible_object_on_player_layer_at_checked(
@@ -4138,6 +4229,32 @@ fn direction_from_object_token(value: &str) -> Option<Direction> {
         "LEFT" | "SPRITEMOVEDATA_STANDING_LEFT" => Some(Direction::Left),
         "RIGHT" | "SPRITEMOVEDATA_STANDING_RIGHT" => Some(Direction::Right),
         _ => None,
+    }
+}
+
+// Regional ordinary trainers use longer sightlines and turn more often. Keep
+// explicitly authored direction overrides and other regions on native rules.
+fn regional_active_trainer(map: &str, object: &ObjectEvent) -> bool {
+    map.starts_with("Mn")
+        && object.object_type == "OBJECTTYPE_TRAINER"
+        && object.radius > 0
+        && object.sightline_direction_override.is_none()
+}
+
+fn regional_or_native_object_viewport(
+    map: &str,
+    object: &ObjectEvent,
+    player: TilePosition,
+    tile: TilePosition,
+) -> bool {
+    if regional_active_trainer(map, object) {
+        let dx = (i32::from(tile.x) - i32::from(player.x)).abs();
+        let dy = (i32::from(tile.y) - i32::from(player.y)).abs();
+        object_struct_tile_is_in_loaded_viewport(player, tile)
+            || (dx == 0 && dy <= 8)
+            || (dy == 0 && dx <= 8)
+    } else {
+        object_struct_tile_is_in_loaded_viewport(player, tile)
     }
 }
 
@@ -7403,6 +7520,106 @@ mod tests {
             )
         );
         assert_eq!(session.frame, 0);
+    }
+
+    #[test]
+    fn minnesota_standing_trainer_turns_like_a_fast_spinner() {
+        let mut trainer = object("TRAINER", 1, 1, "-1");
+        trainer.object_type = "OBJECTTYPE_TRAINER".to_string();
+        trainer.spritemovedata = "SPRITEMOVEDATA_STANDING_DOWN".to_string();
+        trainer.radius = 2;
+        let mut map = map_with_blocks(4, 4, vec![0; 16]);
+        map.name = "MnR01C00R00".to_string();
+        let mut session = OverworldSession::with_events_and_objects(
+            map,
+            MapEvents::default(),
+            vec![trainer],
+            tileset(),
+            TilePosition::new(6, 6),
+        );
+        session
+            .object_facings
+            .insert("TRAINER".into(), Direction::Right);
+        let mut divider = crate::random::ReplayDivider::new([0, 0, 247, 0]);
+        let mut rng = CrystalRandom::new(CrystalRandomState { add: 8, sub: 0 }, &mut divider);
+        session
+            .advance_autonomous_objects_exact(&mut rng)
+            .expect("trainer turns");
+        assert_eq!(
+            session.object_facings.get("TRAINER"),
+            Some(&Direction::Left)
+        );
+        assert!(session.object_step_durations["TRAINER"] <= 31);
+    }
+
+    #[test]
+    fn minnesota_trainers_see_farther_without_looking_through_objects() {
+        let mut trainer = object("TRAINER", 2, 0, "-1");
+        trainer.object_type = "OBJECTTYPE_TRAINER".to_string();
+        trainer.spritemovedata = "SPRITEMOVEDATA_STANDING_DOWN".to_string();
+        trainer.radius = 2;
+        let mut map = map_with_blocks(3, 5, vec![0; 15]);
+        map.name = "MnR01C00R00".to_string();
+        let session = OverworldSession::with_events_and_objects(
+            map.clone(),
+            MapEvents::default(),
+            vec![trainer.clone()],
+            tileset(),
+            TilePosition::new(2, 8),
+        );
+        assert!(
+            session
+                .check_trainer_sight_checked()
+                .expect("sight check")
+                .is_some()
+        );
+
+        let out_of_range = OverworldSession::with_events_and_objects(
+            map.clone(),
+            MapEvents::default(),
+            vec![trainer.clone()],
+            tileset(),
+            TilePosition::new(2, 9),
+        );
+        assert!(
+            out_of_range
+                .check_trainer_sight_checked()
+                .expect("range check")
+                .is_none()
+        );
+
+        let blocker = object("BLOCKER", 2, 3, "-1");
+        let blocked = OverworldSession::with_events_and_objects(
+            map.clone(),
+            MapEvents::default(),
+            vec![trainer.clone(), blocker],
+            tileset(),
+            TilePosition::new(2, 8),
+        );
+        assert!(
+            blocked
+                .check_trainer_sight_checked()
+                .expect("sight check")
+                .is_none()
+        );
+        map.metatile_ids[4] = 1;
+        let mut collision = tileset();
+        collision.metatiles.push(MetatileCollision {
+            collision: [permissions::WALL; 4],
+        });
+        let behind_wall = OverworldSession::with_events_and_objects(
+            map,
+            MapEvents::default(),
+            vec![trainer],
+            collision,
+            TilePosition::new(2, 8),
+        );
+        assert!(
+            behind_wall
+                .check_trainer_sight_checked()
+                .expect("wall sight check")
+                .is_none()
+        );
     }
 
     #[test]

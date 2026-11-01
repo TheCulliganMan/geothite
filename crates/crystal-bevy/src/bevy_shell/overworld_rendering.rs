@@ -129,6 +129,12 @@ fn spawn_visible_map_name_sign(
                 .cloned()
                 .unwrap_or_else(|| format!("map-name sign art is unavailable for {palette_key}"))
         })?;
+    let marker = MapNameSignMarker {
+        map: snapshot.overworld.map_name.clone(),
+        landmark: sign.landmark.clone(),
+        label: sign.label.clone(),
+        palette: palette_key,
+    };
     let tile_index = |row: usize, col: usize| -> usize {
         match (row, col) {
             (0, 0) => 1,
@@ -168,7 +174,7 @@ fn spawn_visible_map_name_sign(
                         ..default()
                     },
 Transform::from_xyz(x, y, 3.2),),
-                MapNameSignMarker,
+                marker.clone(),
                 FieldCommandMarker,
             ));
         }
@@ -183,7 +189,7 @@ Transform::from_xyz(x, y, 3.2),),
                     ..default()
                 },
 Transform::from_xyz(x, y, 3.3),),
-            MapNameSignMarker,
+            marker.clone(),
             FieldCommandMarker,
         ));
     }

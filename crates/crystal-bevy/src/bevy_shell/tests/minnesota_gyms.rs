@@ -1829,7 +1829,7 @@ fn minnesota_mankato_controller_first_badge_is_required_for_torven() {
 }
 
 #[test]
-#[ignore = "requires the published external Minnesota gym pack"]
+#[ignore = "requires an external Minnesota pack with the Rochester progress repair"]
 fn minnesota_rochester_controller_planter_maze_requires_both_trainers_and_persists() {
     let (root, runtime, design) = load();
     let gym = &design["gyms"][0];
@@ -1840,9 +1840,27 @@ fn minnesota_rochester_controller_planter_maze_requires_both_trainers_and_persis
     let terrain = module(&mut c, &runtime).blocks;
     // A static maze has an open court, but neither battle can be skipped.
     interact(&mut c, &runtime, elvik);
+    assert_eq!(
+        c.snapshot()
+            .expect("Elvik refusal")
+            .ui
+            .text
+            .expect("guidance")
+            .label,
+        "MnRochesterGymBeatTavelText"
+    );
     finish(&mut c);
     assert!(!event(&c, "EVENT_MN_GYM_1_TRAINER_2_DEFEATED"));
     interact(&mut c, &runtime, varel);
+    assert_eq!(
+        c.snapshot()
+            .expect("leader refusal")
+            .ui
+            .text
+            .expect("guidance")
+            .label,
+        "MnRochesterGymBeatTavelText"
+    );
     finish(&mut c);
     assert!(!event(&c, "EVENT_MN_GYM_1_DEFEATED"));
     assert!(!c.shell.shell.session().state().badges.johto[0]);
@@ -1853,6 +1871,15 @@ fn minnesota_rochester_controller_planter_maze_requires_both_trainers_and_persis
     assert!(!event(&c, "EVENT_MN_GYM_1_COURT_OPEN"));
     c = continue_save(&mut c, &root, &runtime);
     interact(&mut c, &runtime, varel);
+    assert_eq!(
+        c.snapshot()
+            .expect("leader refusal")
+            .ui
+            .text
+            .expect("guidance")
+            .label,
+        "MnRochesterGymBeatElvikText"
+    );
     finish(&mut c);
     assert!(!event(&c, "EVENT_MN_GYM_1_DEFEATED"));
     exit_and_reenter(&mut c, &runtime, gym, point(&gym["exit_tiles_core"][0]));
@@ -1861,6 +1888,14 @@ fn minnesota_rochester_controller_planter_maze_requires_both_trainers_and_persis
     finish(&mut c);
     assert!(event(&c, "EVENT_MN_GYM_1_COURT_OPEN"));
     c = continue_save(&mut c, &root, &runtime);
+    // A stale derived court flag must not override the two earned victories.
+    c.shell
+        .shell
+        .session_mut()
+        .state_mut()
+        .flags
+        .set_event_flag("EVENT_MN_GYM_1_COURT_OPEN", false)
+        .expect("clear derived court flag");
     interact(&mut c, &runtime, varel);
     battle(&mut c, false);
     finish(&mut c);
@@ -1882,6 +1917,19 @@ fn minnesota_rochester_controller_planter_maze_requires_both_trainers_and_persis
     }
     c = continue_save(&mut c, &root, &runtime);
     assert!(event(&c, "EVENT_MN_GYM_1_DEFEATED"));
+}
+
+#[test]
+#[ignore = "requires the Northstar canonical-room review pack"]
+fn northstar_gyms_controller_city_doors_and_both_carpets_persist() {
+    let (root, runtime, design) = load();
+    for gym in design["gyms"].as_array().expect("eight gyms") {
+        let mut c = controller(&root, &runtime, gym, false);
+        for carpet in gym["exit_tiles_core"].as_array().expect("paired carpets") {
+            exit_and_reenter(&mut c, &runtime, gym, point(carpet));
+            c = continue_save(&mut c, &root, &runtime);
+        }
+    }
 }
 
 fn exit_and_reenter(
@@ -4121,9 +4169,9 @@ fn minnesota_rochester_city_controller_canonical_trainers_badge_tm_and_returns()
     let gym = &design["gyms"][0];
     let mut initial = gym.clone();
     initial["id"] = serde_json::json!("MnRochester");
-    initial["arrival_core"] = serde_json::json!([30, 24]);
+    initial["arrival_core"] = serde_json::json!([26, 18]);
     let mut c = controller(&root, &r, &initial, false); // Explicit legal party and completed delivery fixture.
-    city_enter_from_north(&mut c, &r, (30, 24), "MnRochesterGym", (6, 17));
+    city_enter_from_north(&mut c, &r, (26, 18), "MnRochesterGym", (6, 17));
     interact(&mut c, &r, point(&gym["trainers"][1]["at"]));
     finish(&mut c);
     assert!(!event(&c, "EVENT_MN_GYM_1_TRAINER_2_DEFEATED"));
@@ -4135,7 +4183,7 @@ fn minnesota_rochester_city_controller_canonical_trainers_badge_tm_and_returns()
     let tm = &r.data().items["TM_HEADBUTT"];
     assert_eq!(c.shell.shell.session().state().bag.quantity(tm), 1);
     c = continue_save(&mut c, &root, &r);
-    real_city_gym_returns(&mut c, &r, gym, "MnRochester", (30, 24));
+    real_city_gym_returns(&mut c, &r, gym, "MnRochester", (26, 18));
     interact(&mut c, &r, point(&gym["leader_at"]));
     finish(&mut c);
     assert_eq!(c.shell.shell.session().state().bag.quantity(tm), 1);

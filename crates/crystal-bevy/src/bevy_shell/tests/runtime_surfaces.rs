@@ -3648,6 +3648,135 @@ fn party_raster_matches_asm_egg_level_hp_and_submenu_coordinates() {
 }
 
 #[test]
+fn fainted_battle_hud_does_not_cover_full_party_picker() {
+    let mut shell = route36_overworld_shell_for_battle_render_regression();
+    for _ in 0..5 {
+        shell
+            .shell
+            .add_party_pokemon(
+                "CYNDAQUIL",
+                5,
+                None,
+                None,
+                "CHRIS",
+                1,
+                Dv::from_non_hp(9, 9, 9, 9),
+            )
+            .expect("add party member");
+    }
+    shell
+        .shell
+        .start_scripted_wild_battle("Route36", "WateredWeirdTreeScript", 12)
+        .expect("start battle");
+    prepare_visible_battle_entry(&mut shell).expect("prepare battle");
+    {
+        let state = shell.shell.session_mut().state_mut();
+        for (index, pokemon) in state.storage.party.pokemon.iter_mut().flatten().enumerate() {
+            pokemon.nickname =
+                ["AAA", "PINIT", "TESSLARV", "HUSHIS", "DRIPTI", "LONGNAME10"][index].into();
+            pokemon.hp = match index {
+                0 | 1 | 3 => 0,
+                2 => 1,
+                _ => pokemon.max_hp,
+            };
+            if index == 5 {
+                pokemon.level = 100;
+            }
+        }
+        state.sync_party_from_storage();
+    }
+    mark_runtime_snapshot_dirty(&mut shell);
+    shell.visible_battle_transition = None;
+    shell.visible_battle_sliding_intro = None;
+    shell.battle_entry_messages_remaining = 0;
+    shell.battle_player_send_out_pending = false;
+    shell.battle_enemy_send_out_pending = false;
+    shell.battle_messages.clear();
+    shell.battle_message_scenes.clear();
+    shell.battle_text_reveal = None;
+    shell.battle_fainted_hud = [true, true];
+    sync_visible_battle_action_cursor(&mut shell);
+    open_visible_battle_switch_target(&mut shell).expect("open party picker");
+    let mut app = battle_render_regression_app(shell);
+    app.update();
+    let world = app.world_mut();
+    assert!(world.resource::<BevyRuntimeShell>().last_error.is_none());
+    let mut hud = world.query_filtered::<&Transform, With<BattleHudMarker>>();
+    let rows = hud
+        .iter(world)
+        .map(|transform| transform.translation.y)
+        .collect::<Vec<_>>();
+    for row in 0..6 {
+        let y = battle_hud_tile_origin(11.0, 2.0 + row as f32 * 2.0).1;
+        assert_eq!(rows.iter().filter(|&&value| value == y).count(), 9);
+    }
+    assert_eq!(rows.len(), 54, "faint HUD erasers must not cover the party");
+    let snapshot = world
+        .resource::<BevyRuntimeShell>()
+        .shell
+        .snapshot()
+        .expect("party snapshot");
+    let mut labels = vec![(1.0, 15.0, "Which POKéMON?".to_string(), 4.1)];
+    for (row, slot) in snapshot.party.slots.iter().enumerate() {
+        let y = 1.0 + row as f32 * 2.0;
+        labels.push((3.0, y, slot.pokemon.nickname.clone(), 3.8));
+        labels.push((
+            13.0,
+            y,
+            format!("{:>3}/{:>3}", slot.pokemon.hp, slot.pokemon.max_hp),
+            3.8,
+        ));
+    }
+    labels.push((8.0, 12.0, "100".to_string(), 3.8));
+    let font = world
+        .resource::<RenderedTilesetArt>()
+        .font_cache
+        .as_ref()
+        .expect("party font");
+    let expected = labels
+        .iter()
+        .flat_map(|(column, row, label, depth)| {
+            let (x, y) = battle_hud_tile_origin(*column, *row);
+            normalize_bitmap_font_text(label)
+                .chars()
+                .enumerate()
+                .map(|(index, ch)| {
+                    (
+                        font.glyphs[&ch].handle.clone(),
+                        Vec3::new(x + index as f32 * TILE_SIZE, y, *depth),
+                    )
+                })
+                .collect::<Vec<_>>()
+        })
+        .collect::<Vec<_>>();
+    let mut sprites = world.query::<(&Sprite, &Transform)>();
+    for (glyph, position) in expected {
+        assert!(
+            sprites.iter(world).any(|(sprite, transform)| {
+                sprite.image == glyph && transform.translation == position
+            }),
+            "missing party glyph at {position:?}"
+        );
+    }
+    save_live_battle_canvas_for_test(world, "battle-fainted-full-party.png");
+    {
+        let mut shell = world.resource_mut::<BevyRuntimeShell>();
+        shell.battle_switch_cursor = None;
+        mark_runtime_presentation_dirty(&mut shell);
+    }
+    app.update();
+    let world = app.world_mut();
+    let mut hud = world.query_filtered::<&Transform, With<BattleHudMarker>>();
+    assert_eq!(
+        hud.iter(world)
+            .filter(|transform| transform.translation.z == BATTLE_HUD_CLEAR_Z)
+            .count(),
+        2,
+        "faint HUD erasers must return after the party picker closes"
+    );
+}
+
+#[test]
 fn party_stats_joypad_is_edge_only_and_uses_asm_button_priority() {
     let mut shell = initialized_mail_reader_shell("FLOWER_MAIL");
     open_visible_party_menu(&mut shell).unwrap();

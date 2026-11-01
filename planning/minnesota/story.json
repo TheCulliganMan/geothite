@@ -2391,6 +2391,12 @@
             "Bring your team",
             "home for a rest."
           ]
+        ],
+        "MN_W_GUARDIANText": [
+          [
+            "The field station",
+            "has a job for you."
+          ]
         ]
       },
       "MnWinonaFieldStation": {
@@ -2933,6 +2939,18 @@
             "Read it at the",
             "ST PAUL depot."
           ]
+        ],
+        "MN_W_TAMARACKText": [
+          [
+            "Our meters measure",
+            "changes over time."
+          ]
+        ],
+        "MN_W_AIDEText": [
+          [
+            "ROCHESTER needs",
+            "the originals."
+          ]
         ]
       },
       "MnRochesterPokecenter1F": {
@@ -3273,36 +3291,31 @@
             "Please bring the",
             "sealed envelope."
           ]
+        ],
+        "MN_RC_NURSEText": [
+          [
+            "We can rest your",
+            "POKEMON here."
+          ]
+        ],
+        "MN_RC_PATIENTText": [
+          [
+            "The doctors here",
+            "care for humans"
+          ],
+          [
+            "and POKEMON alike."
+          ]
         ]
       },
       "MnMinneapolisDispatcherHouse": {
         "MN_MP_DISPATCHER_PARTNERText": [
           [
-            "JO: IVY sent you?",
-            "I am JO."
+            "My partner never",
+            "came home."
           ],
           [
-            "ELLIS is",
-            "my partner."
-          ],
-          [
-            "He asked about our",
-            "missing gear."
-          ],
-          [
-            "ICE took him away."
-          ],
-          [
-            "He is in the",
-            "dispatch office."
-          ],
-          [
-            "They will not let",
-            "me see him."
-          ],
-          [
-            "Please find out if",
-            "he is safe."
+            "ICE came for them."
           ]
         ],
         "MN_MP_DISPATCHER_PARTNERAfterText": [
@@ -3317,16 +3330,8 @@
         ],
         "MN_MP_RESCUED_DISPATCHERText": [
           [
-            "ELLIS: Good to see",
-            "you again."
-          ],
-          [
-            "JO has been",
-            "looking after me."
-          ],
-          [
-            "My copy leads to",
-            "ST PAUL depot."
+            "The office copy",
+            "names ST PAUL."
           ]
         ],
         "MnArcEllisAfterText": [
@@ -4050,28 +4055,11 @@
       "MnBrainerd": {
         "MN_BRAINERD_RANGERText": [
           [
-            "RANGER: The fish",
-            "left this landing."
+            "The pine canopy",
+            "keeps the summer"
           ],
           [
-            "Look at the green",
-            "stain in the mud."
-          ],
-          [
-            "LODE's reports say",
-            "nothing changed."
-          ],
-          [
-            "We need an older",
-            "record to check."
-          ],
-          [
-            "BEMIDJI has a",
-            "field officer."
-          ],
-          [
-            "He can compare",
-            "the logs."
+            "breeze crisp here."
           ]
         ],
         "MnBrainerdRangerBeforeText": [
@@ -4168,28 +4156,121 @@
             "Stay in touch with",
             "the field crews."
           ]
+        ],
+        "MN_BRAINERD_FISHERText": [
+          [
+            "Used to catch fish",
+            "off this old pier."
+          ],
+          [
+            "Now the net is",
+            "bare."
+          ]
+        ],
+        "MN_BRAINERD_CAMPERText": [
+          [
+            "The pines block",
+            "the worst wind."
+          ],
+          [
+            "Leave no fire."
+          ]
+        ],
+        "MN_BRAINERD_OUTFITTERText": [
+          [
+            "The west road goes",
+            "to DETROIT LAKES."
+          ],
+          [
+            "No train stops",
+            "here."
+          ]
+        ],
+        "MN_BRAINERD_WALKERText": [
+          [
+            "East: MILLE LACS.",
+            "North: LEECH LAKE."
+          ],
+          [
+            "South: ST CLOUD."
+          ]
+        ],
+        "MN_BRAINERD_GYM_SPECTATORText": [
+          [
+            "SIVREN builds",
+            "teams"
+          ],
+          [
+            "that weather",
+            "storms."
+          ]
+        ],
+        "MN_BRAINERD_CLINICText": [
+          [
+            "POKEMON CENTER",
+            "Rest before the"
+          ],
+          [
+            "lake-country",
+            "roads."
+          ]
+        ],
+        "MN_BRAINERD_GYM_SIGNText": [
+          [
+            "BRAINERD GYM",
+            "SIVREN - Water"
+          ],
+          [
+            "The patient",
+            "current"
+          ]
+        ],
+        "MN_BRAINERD_LAKEText": [
+          [
+            "PUBLIC FISHING",
+            "Keep the pier"
+          ],
+          [
+            "clear.",
+            "Launch at the gap."
+          ]
+        ],
+        "MN_BRAINERD_RANGER_SIGNText": [
+          [
+            "RANGER STATION",
+            "Habitat reports"
+          ],
+          [
+            "and lake safety"
+          ]
+        ],
+        "MN_BRAINERD_CAMP_SIGNText": [
+          [
+            "PINE CAMP",
+            "Leave the shore"
+          ],
+          [
+            "better than found."
+          ]
+        ],
+        "MN_BRAINERD_SOUTH_SIGNText": [
+          [
+            "ST CLOUD - south",
+            "GYM - ramp west"
+          ]
+        ],
+        "MN_BRAINERD_EAST_SIGNText": [
+          [
+            "MILLE LACS - east",
+            "Supplies - south"
+          ]
         ]
       },
       "MnLakeItasca": {
         "MN_ITASCA_MARKERText": [
           [
-            "ITASCA FIELD LOG"
-          ],
-          [
-            "A public record of",
-            "water levels."
-          ],
-          [
-            "The dates predate",
-            "LODE's pump tests."
-          ],
-          [
-            "You copied the",
-            "dated readings."
-          ],
-          [
-            "Take the copy to",
-            "BEMIDJI's officer."
+            "HEADWATERS MARKER",
+            "Reading recorded."
           ]
         ],
         "MnItascaMarkerAfterText": [
@@ -4219,6 +4300,40 @@
           [
             "Your copy exposed",
             "the false surveys."
+          ]
+        ],
+        "MN_ITASCA_OBSERVERText": [
+          [
+            "Write the place,",
+            "date, and value."
+          ],
+          [
+            "A clean copy keeps",
+            "all three."
+          ]
+        ],
+        "MN_ITASCA_TRAIL_WALKERText": [
+          [
+            "One bridge back.",
+            "BEMIDJI is east."
+          ]
+        ],
+        "MN_ITASCA_ENTRYText": [
+          [
+            "LAKE ITASCA",
+            "HEADWATERS MARKER"
+          ],
+          [
+            "Cross on foot."
+          ]
+        ],
+        "MN_ITASCA_WEST_CLOSEDText": [
+          [
+            "DETROIT LAKES",
+            "Trail closed here."
+          ],
+          [
+            "Return east."
           ]
         ]
       },
@@ -4316,20 +4431,11 @@
         ],
         "MN_BEMIDJI_OFFICERText": [
           [
-            "OFFICER: I heard",
-            "from BRAINERD."
+            "Northwoods trails",
+            "can get rugged."
           ],
           [
-            "Their landing is",
-            "damaged."
-          ],
-          [
-            "LODE says",
-            "nothing changed."
-          ],
-          [
-            "I want to check",
-            "those reports."
+            "Travel prepared."
           ]
         ],
         "MnBemidjiNeedPineText": [
@@ -4451,6 +4557,69 @@
             "Take it to GRAND",
             "RAPIDS' depot."
           ]
+        ],
+        "MN_BEMIDJI_PIER_FISHERText": [
+          [
+            "Lakes need clean",
+            "water and banks."
+          ]
+        ],
+        "MN_BEMIDJI_HERITAGE_HOSTText": [
+          [
+            "PAUL AND BABE!",
+            "Big stories from"
+          ],
+          [
+            "the lumber camps."
+          ]
+        ],
+        "MN_BEMIDJI_LAKE_WALKERText": [
+          [
+            "The rail ends at",
+            "the low launch."
+          ]
+        ],
+        "MN_BEMIDJI_NORTH_WALKERText": [
+          [
+            "The north trail",
+            "leaves the pines."
+          ]
+        ],
+        "MN_BEMIDJI_TOWNText": [
+          [
+            "BEMIDJI",
+            "Pines meet water."
+          ]
+        ],
+        "MN_BEMIDJI_GYMText": [
+          [
+            "ORLIS GYM",
+            "The Pine Badge."
+          ]
+        ],
+        "MN_BEMIDJI_LAKEText": [
+          [
+            "LAKE BEMIDJI",
+            "Pier and launch."
+          ]
+        ],
+        "MN_BEMIDJI_HERITAGEText": [
+          [
+            "PAUL AND BABE",
+            "Lumber heritage."
+          ]
+        ],
+        "MN_BEMIDJI_NORTHText": [
+          [
+            "BORDER COUNTRY",
+            "North trail."
+          ]
+        ],
+        "MN_BEMIDJI_DOCKText": [
+          [
+            "LOW LAUNCH",
+            "SURF from here."
+          ]
         ]
       },
       "MnMankato": {
@@ -4484,6 +4653,55 @@
           [
             "TORVEN trains",
             "teams at our GYM."
+          ]
+        ],
+        "MN_MK_COACHText": [
+          [
+            "TORVEN trains on",
+            "the upper bank."
+          ],
+          [
+            "The east path",
+            "leads"
+          ],
+          [
+            "back up the slope."
+          ]
+        ],
+        "MN_MK_GARDENERText": [
+          [
+            "Deep roots hold",
+            "this prairie soil."
+          ],
+          [
+            "Try the garden",
+            "path"
+          ],
+          [
+            "on your way back."
+          ]
+        ],
+        "MnMKGymSignText": [
+          [
+            "MANKATO GYM",
+            "TORVEN - GROUND"
+          ]
+        ],
+        "MnMKClinicSignText": [
+          [
+            "POKEMON CENTER",
+            "Care and a PC."
+          ]
+        ],
+        "MnMKMartSignText": [
+          [
+            "MANKATO MART"
+          ]
+        ],
+        "MnMKGardenSignText": [
+          [
+            "UNIVERSITY GARDEN",
+            "Prairie flowers."
           ]
         ]
       },
@@ -4755,21 +4973,20 @@
         ],
         "MN_GR_REPAIRERText": [
           [
-            "Meters record the",
-            "test as it runs."
+            "I repair meters.",
+            "This one was sound"
           ],
           [
-            "Paper reports are",
-            "easier to change."
+            "LODE changed the",
+            "numbers afterward."
           ]
         ],
         "MN_GR_ARCHIVEText": [
           [
-            "SURVEY ARCHIVE",
-            "Original logs."
+            "Independent copies",
+            "are kept here."
           ],
           [
-            "Separate copies.",
             "No entries erased."
           ]
         ]
@@ -4777,16 +4994,11 @@
       "MnDuluthHarborWorkshop": {
         "MN_HARBOR_RECEIVERText": [
           [
-            "ENGINEER: This log",
-            "shows drain tests."
+            "The instrument is",
+            "ready for a test."
           ],
           [
-            "LODE sent us these",
-            "pump plans."
-          ],
-          [
-            "They want to mine",
-            "beneath the lakes."
+            "Let us tune it."
           ]
         ],
         "MnOverhaulHarborEvidenceText": [
@@ -4926,6 +5138,15 @@
           [
             "Bring that copy",
             "back here."
+          ]
+        ],
+        "MN_DULUTH_WORKSHOP_KEEPERText": [
+          [
+            "Our receiver can",
+            "listen, then send"
+          ],
+          [
+            "the harbor signal."
           ]
         ]
       },
@@ -5089,21 +5310,20 @@
         ],
         "MN_BOUNDARY_SURVEY_ASSISTANTText": [
           [
-            "The radio links",
-            "the shore crews."
+            "The receiver links",
+            "the shore stations"
           ],
           [
-            "The chief guards",
+            "The chief blocks",
             "its control panel."
           ]
         ],
         "MN_BOUNDARY_SURVEY_MEDICText": [
           [
-            "MEDIC: Long trip?",
-            "Let me help."
+            "Long portage?",
+            "I will treat your"
           ],
           [
-            "I will treat your",
             "team for free."
           ]
         ],
@@ -5145,6 +5365,18 @@
           [
             "You have cost me",
             "enough already."
+          ]
+        ],
+        "MN_SURVEY_CHIEFText": [
+          [
+            "This receiver is",
+            "LODE property."
+          ]
+        ],
+        "MN_BOUNDARY_SURVEY_RECEIVERText": [
+          [
+            "SURVEY RECEIVER",
+            "The panel is dark."
           ]
         ]
       },
@@ -6080,50 +6312,113 @@
             "Earn the WIND",
             "BADGE to go north."
           ]
+        ],
+        "MN_ST_CLOUD_STONECUTTERText": [
+          [
+            "The granite banks",
+            "hold the bridge."
+          ],
+          [
+            "Take a look below."
+          ]
+        ],
+        "MN_ST_CLOUD_DEPOT_GUIDEText": [
+          [
+            "GLACIER LINE runs",
+            "to six old stops."
+          ],
+          [
+            "Visit each first."
+          ]
+        ],
+        "MN_ST_CLOUD_RIVER_WATCHERText": [
+          [
+            "Steep granite",
+            "banks"
+          ],
+          [
+            "frame the river",
+            "all through town."
+          ]
+        ],
+        "MN_ST_CLOUD_OVERLOOK_ARTISTText": [
+          [
+            "Up on the granite,",
+            "the river fills"
+          ],
+          [
+            "my sketchbook."
+          ]
+        ],
+        "MN_ST_CLOUD_GYM_STUDENTText": [
+          [
+            "SAVEN trains",
+            "birds."
+          ],
+          [
+            "Four badges first.",
+            "Earn your badge."
+          ]
+        ],
+        "MN_ST_CLOUD_CLINICText": [
+          [
+            "POKEMON CENTER",
+            "Rest and use a PC."
+          ]
+        ],
+        "MN_ST_CLOUD_GYMText": [
+          [
+            "ST CLOUD GYM",
+            "SAVEN - Flying."
+          ]
+        ],
+        "MN_ST_CLOUD_STATIONText": [
+          [
+            "GLACIER LINE",
+            "Return to visited"
+          ],
+          [
+            "stations."
+          ]
+        ],
+        "MN_ST_CLOUD_RIVERText": [
+          [
+            "MISSISSIPPI",
+            "Protected landing."
+          ]
+        ],
+        "MN_ST_CLOUD_OVERLOOKText": [
+          [
+            "GRANITE OVERLOOK",
+            "Stay on the path."
+          ]
+        ],
+        "MN_ST_CLOUD_NORTHText": [
+          [
+            "North: PINE ROAD",
+            "South: RIVER ROAD"
+          ]
         ]
       },
       "MnLeechLake": {
         "MN_LEECH_SHORE_FISHERText": [
           [
-            "FISHER: LODE lists",
+            "The report lists",
             "last year's catch."
           ],
           [
             "My nets came up",
             "empty this week."
-          ],
-          [
-            "The pine island's",
-            "landing is west."
-          ],
-          [
-            "WHIRLPOOL opens",
-            "the eastern cove."
-          ],
-          [
-            "Try ITEMFINDER at",
-            "the eastern rocks."
           ]
         ],
         "MN_LEECH_SHORE_WALKERText": [
           [
-            "WALKER: ICE tried",
-            "to shut the shore."
+            "Roads are public.",
+            "So is this shore."
           ],
           [
-            "This is public",
-            "land and water."
-          ],
-          [
-            "We can fish here",
-            "without their say."
-          ],
-          [
-            "The pine path",
-            "joins both cabins."
-          ],
-          [
-            "Watch the grass."
+            "A badge does not",
+            "make it theirs."
           ]
         ],
         "MnLeechLakeCheckBadgesText": [
@@ -6135,28 +6430,46 @@
             "Then follow this",
             "shore to BEMIDJI."
           ]
+        ],
+        "MN_LEECH_SHORE_WELCOMEText": [
+          [
+            "LEECH LAKE",
+            "BRAINERD - south"
+          ],
+          [
+            "BEMIDJI - north"
+          ]
+        ],
+        "MN_LEECH_SHORE_CARE_SIGNText": [
+          [
+            "SHORE CARE CABIN",
+            "Free shore care."
+          ]
+        ],
+        "MN_LEECH_SHORE_PIER_SIGNText": [
+          [
+            "PUBLIC FISHING",
+            "Keep a lane clear."
+          ]
+        ],
+        "MN_LEECH_SHORE_LAUNCH_SIGNText": [
+          [
+            "LAKE LAUNCH",
+            "Walk north for"
+          ],
+          [
+            "BEMIDJI."
+          ]
         ]
       },
       "MnLeechLakeFisherHouse": {
         "MN_LEECH_SHORE_DIARISTText": [
           [
-            "FISHER: I record",
-            "each day's catch."
+            "I kept the dates.",
+            "ICE asked me to"
           ],
           [
-            "ICE told me to",
-            "omit the dates."
-          ],
-          [
-            "Who could check",
-            "the log then?"
-          ],
-          [
-            "I kept writing."
-          ],
-          [
-            "BEMIDJI has my",
-            "copy."
+            "stop writing."
           ]
         ]
       },
@@ -6868,12 +7181,126 @@
         ],
         "MN_BOUNDARY_SOUTH_TRAILText": [
           [
-            "LEAGUE TRAIL",
-            "ELY lies south."
+            "LEAGUE APPROACH",
+            "Restore the survey"
           ],
           [
-            "Ask the officers",
-            "for safe passage."
+            "signal opens R13."
+          ]
+        ],
+        "MN_BOUNDARY_BORDER_RANGERText": [
+          [
+            "VOYAGEURS is west.",
+            "The survey shelter"
+          ],
+          [
+            "stands northeast.",
+            "This camp is free."
+          ]
+        ],
+        "MN_BOUNDARY_DOCKHANDText": [
+          [
+            "PUBLIC LANDING",
+            "Use Surf at the"
+          ],
+          [
+            "north end. Keep",
+            "off the rails."
+          ]
+        ],
+        "MN_BOUNDARY_ADMISSION_RANGERText": [
+          [
+            "EXPEDITIONS CLOSED",
+            "Safari permits are"
+          ],
+          [
+            "not available yet.",
+            "No fee is charged."
+          ]
+        ],
+        "MN_BOUNDARY_PENDING_GATE_WESTText": [
+          [
+            "EXPEDITIONS CLOSED",
+            "Safari permits are"
+          ],
+          [
+            "not available yet.",
+            "No fee is charged."
+          ]
+        ],
+        "MN_BOUNDARY_PENDING_GATE_EASTText": [
+          [
+            "EXPEDITIONS CLOSED",
+            "Safari permits are"
+          ],
+          [
+            "not available yet.",
+            "No fee is charged."
+          ]
+        ],
+        "MN_BOUNDARY_PORTAGE_GUIDEText": [
+          [
+            "The shelter medic",
+            "treats your team."
+          ],
+          [
+            "GUNFLINT is north",
+            "then east of here."
+          ]
+        ],
+        "MN_BOUNDARY_WEST_TRAILSText": [
+          [
+            "VOYAGEURS: west",
+            "GUNFLINT: east"
+          ],
+          [
+            "LEAGUE: south"
+          ]
+        ],
+        "MN_BOUNDARY_EAST_TRAILSText": [
+          [
+            "PUBLIC DOCK: west",
+            "SURVEY: east"
+          ],
+          [
+            "EXPEDITIONS: north"
+          ]
+        ],
+        "MN_BOUNDARY_SURVEY_SIGNText": [
+          [
+            "SURVEY SHELTER",
+            "Free team care."
+          ],
+          [
+            "Receiver station."
+          ]
+        ],
+        "MN_BOUNDARY_LANDING_SIGNText": [
+          [
+            "PUBLIC CANOE DOCK",
+            "Walk the boards."
+          ],
+          [
+            "Launch at the tip."
+          ]
+        ],
+        "MN_BOUNDARY_GATE_NOTICEText": [
+          [
+            "EXPEDITIONS CLOSED",
+            "No fee is charged."
+          ],
+          [
+            "The survey shelter",
+            "is open to all."
+          ]
+        ],
+        "MN_BOUNDARY_PORTAGE_BOARDText": [
+          [
+            "PORTAGE REST",
+            "Shelter medic: NW"
+          ],
+          [
+            "LEAGUE: southwest"
           ]
         ]
       },
@@ -6960,6 +7387,271 @@
             "EIGHT BADGES",
             "CREW ALERT NEEDED"
           ]
+        ],
+        "MN_DULUTH_HILL_WALKERText": [
+          [
+            "The gym is uphill.",
+            "Hop down to town."
+          ],
+          [
+            "The ramp leads up."
+          ]
+        ],
+        "MN_DULUTH_HARBOR_WORKERText": [
+          [
+            "Ore ships tied up",
+            "beside this walk."
+          ],
+          [
+            "The lake is deep."
+          ]
+        ],
+        "MN_DULUTH_BRIDGE_KEEPERText": [
+          [
+            "The aerial bridge",
+            "lifts for big"
+          ],
+          [
+            "lake freighters."
+          ]
+        ],
+        "MN_DULUTH_ISLAND_ARTISTText": [
+          [
+            "Lake SUPERIOR has",
+            "so many blues."
+          ],
+          [
+            "Each wave differs."
+          ]
+        ],
+        "MN_DULUTH_PIER_FISHERText": [
+          [
+            "I fish right here.",
+            "The low launch is"
+          ],
+          [
+            "east of our homes."
+          ]
+        ],
+        "MN_DULUTH_NORTH_GUARDText": [
+          [
+            "The North Shore",
+            "needs eight badges"
+          ],
+          [
+            "and the signal."
+          ]
+        ],
+        "MN_DULUTH_CLINIC_VISITORText": [
+          [
+            "The harbor signal",
+            "guides us north."
+          ]
+        ],
+        "MN_DULUTH_GARDEN_HOSTText": [
+          [
+            "Our hardy flowers",
+            "like the cool air."
+          ]
+        ],
+        "MN_DULUTH_X_OBSERVATION_VIEWText": [
+          [
+            "Our streets follow",
+            "the old stone"
+          ],
+          [
+            "bluff."
+          ]
+        ],
+        "MN_DULUTH_X_LINCOLN_LOADERText": [
+          [
+            "The narrow street",
+            "keeps our yards"
+          ],
+          [
+            "safe."
+          ]
+        ],
+        "MN_DULUTH_X_POINT_WALKERText": [
+          [
+            "The point bends",
+            "around the harbor."
+          ]
+        ],
+        "MN_DULUTH_X_LAKEWALK_FISHERText": [
+          [
+            "Cast your line",
+            "past the breakers"
+          ],
+          [
+            "for lake trout."
+          ]
+        ],
+        "MN_DULUTH_X_UNION_READERText": [
+          [
+            "Meeting upstairs,",
+            "practice"
+          ],
+          [
+            "downstairs."
+          ]
+        ],
+        "MN_DULUTH_X_DOCK_HANDText": [
+          [
+            "Our tool request",
+            "is at cargo"
+          ],
+          [
+            "office."
+          ]
+        ],
+        "DULUTH_SIGNText": [
+          [
+            "DULUTH",
+            "Bluff and harbor."
+          ]
+        ],
+        "GYM_SIGNText": [
+          [
+            "DULUTH GYM",
+            "NOREK: Harbor Ice"
+          ]
+        ],
+        "HILL_HOP_SIGNText": [
+          [
+            "Downhill shortcut.",
+            "Use the east ramp"
+          ],
+          [
+            "to walk back up."
+          ]
+        ],
+        "NORTH_GATE_SIGNText": [
+          [
+            "NORTH SHORE PATH",
+            "All badges and the"
+          ],
+          [
+            "harbor signal."
+          ]
+        ],
+        "CANAL_SIGNText": [
+          [
+            "CANAL PARK BRIDGE",
+            "Receiver workshop"
+          ],
+          [
+            "across the water."
+          ]
+        ],
+        "LAUNCH_SIGNText": [
+          [
+            "LOW HARBOR LAUNCH",
+            "SURF at the bank."
+          ],
+          [
+            "Stay inside rocks."
+          ]
+        ],
+        "DOCK_SIGNText": [
+          [
+            "PUBLIC LAKE PIER",
+            "Rails close ahead."
+          ]
+        ],
+        "HISTORY_SIGNText": [
+          [
+            "ORE HISTORY HOUSE",
+            "Ask about the lake"
+          ],
+          [
+            "and the Iron Range"
+          ]
+        ],
+        "CLINIC_SIGNText": [
+          [
+            "POKEMON CENTER",
+            "Healing and PC."
+          ]
+        ],
+        "MART_SIGNText": [
+          [
+            "POKEMON MART",
+            "Harbor provisions."
+          ]
+        ],
+        "RECEIVER_SIGNText": [
+          [
+            "HARBOR WORKSHOP",
+            "Receiver service."
+          ]
+        ],
+        "SUPERIOR_LOOKOUT_SIGNText": [
+          [
+            "LAKE SUPERIOR",
+            "The water is vast."
+          ],
+          [
+            "Keep behind rails."
+          ]
+        ],
+        "MN_DULUTH_X_SIGN_OBSERVATIONText": [
+          [
+            "OBSERVATION HILL",
+            "Lodge and hill"
+          ],
+          [
+            "loop"
+          ]
+        ],
+        "MN_DULUTH_X_SIGN_HILLSIDEText": [
+          [
+            "HILLSIDE",
+            "Reading hall west"
+          ],
+          [
+            "Co-op southeast"
+          ]
+        ],
+        "MN_DULUTH_X_SIGN_LINCOLNText": [
+          [
+            "LINCOLN PARK",
+            "Union hall north"
+          ],
+          [
+            "Practice annex",
+            "south"
+          ]
+        ],
+        "MN_DULUTH_X_SIGN_LAKEWALKText": [
+          [
+            "LAKEWALK",
+            "Co-op training3F"
+          ]
+        ],
+        "MN_DULUTH_X_SIGN_BAYFRONTText": [
+          [
+            "BAYFRONT",
+            "Cargo office north"
+          ]
+        ],
+        "MN_DULUTH_X_SIGN_POINTText": [
+          [
+            "PARK POINT",
+            "Return to the"
+          ],
+          [
+            "canal"
+          ]
+        ],
+        "MN_DULUTH_X_SIGN_COOPText": [
+          [
+            "MARITIME CO-OP",
+            "1F GEAR 2F HEALTH"
+          ],
+          [
+            "3F TRAINING"
+          ]
         ]
       },
       "MnGrandRapids": {
@@ -7018,6 +7710,48 @@
             "The officer will",
             "clear this road."
           ]
+        ],
+        "MN_GR_WORKERText": [
+          [
+            "I work the mine.",
+            "I want it safe."
+          ],
+          [
+            "LODE took the",
+            "warning sheets."
+          ]
+        ],
+        "MN_GR_RIVER_WATCHERText": [
+          [
+            "I came for a quiet",
+            "morning by the"
+          ],
+          [
+            "water. The ducks",
+            "had other plans!"
+          ]
+        ],
+        "MN_GR_WEST_SIGNText": [
+          [
+            "IRON RANGE WEST",
+            "BEMIDJI"
+          ]
+        ],
+        "MN_GR_EAST_SIGNText": [
+          [
+            "IRON RANGE DESCENT",
+            "DULUTH"
+          ]
+        ],
+        "MN_GR_DEPOT_SIGNText": [
+          [
+            "FIELD SURVEY DEPOT",
+            "Public records"
+          ],
+          [
+            "and instrument",
+            "repairs."
+          ]
         ]
       },
       "MnMinneapolis": {
@@ -7048,6 +7782,349 @@
             "Train in ST PAUL",
             "before crossing."
           ]
+        ],
+        "MN_MP_ARRIVAL_GUIDEText": [
+          [
+            "Clinic: northeast.",
+            "along this street."
+          ],
+          [
+            "ICE took the clerk",
+            "at the rail depot."
+          ]
+        ],
+        "MN_MP_PARK_WITNESSText": [
+          [
+            "Those are fake",
+            "police badges."
+          ],
+          [
+            "They took a worker",
+            "who spoke up."
+          ]
+        ],
+        "MN_MP_NORTH_GUIDEText": [
+          [
+            "The north road:",
+            "Current and"
+          ],
+          [
+            "Capitol BADGES.",
+            "ST PAUL is east."
+          ]
+        ],
+        "MN_MP_UPPER_BRIDGE_GUIDEText": [
+          [
+            "The co-op and mill",
+            "hall are west."
+          ],
+          [
+            "Arts and books",
+            "are east."
+          ]
+        ],
+        "MN_MP_CEDAR_GUIDEText": [
+          [
+            "Five shop floors,",
+            "one stair at a"
+          ],
+          [
+            "time.",
+            "The battle club"
+          ],
+          [
+            "is just east."
+          ]
+        ],
+        "MN_MP_SOUTH_PARK_GUIDEText": [
+          [
+            "The south bridge",
+            "meets the GYM"
+          ],
+          [
+            "road.",
+            "The lake path is"
+          ],
+          [
+            "the longer walk."
+          ]
+        ],
+        "MN_MP_LAKE_FISHERText": [
+          [
+            "This pier is",
+            "quiet."
+          ],
+          [
+            "The river is busy."
+          ]
+        ],
+        "MN_MP_NORTH_LOOP_VENDORText": [
+          [
+            "The co-op sells",
+            "travel supplies."
+          ],
+          [
+            "The exchange has",
+            "a print order."
+          ]
+        ],
+        "MN_MP_LIBRARY_READERText": [
+          [
+            "Five shop floors",
+            "are downriver."
+          ],
+          [
+            "This library is",
+            "a quieter stop."
+          ]
+        ],
+        "MN_MP_MUSEUM_VISITORText": [
+          [
+            "The three plaques",
+            "tell one story."
+          ],
+          [
+            "The hall keeps",
+            "the old mill"
+          ],
+          [
+            "model."
+          ]
+        ],
+        "MN_MP_BATTLE_CLUB_FANText": [
+          [
+            "No badge at stake.",
+            "Just four friendly"
+          ],
+          [
+            "practice trainers",
+            "in the club."
+          ]
+        ],
+        "MN_MP_LAKE_GARDENERText": [
+          [
+            "The greenhouse",
+            "faces the lake."
+          ],
+          [
+            "Try the west walk",
+            "on the way home."
+          ]
+        ],
+        "MN_MP_NORTH_ARTISTText": [
+          [
+            "Art and printing",
+            "share this street."
+          ],
+          [
+            "The old print shop",
+            "takes mill orders."
+          ]
+        ],
+        "MN_MP_MARKET_SNACKText": [
+          [
+            "May I help you?"
+          ]
+        ],
+        "MN_MP_MARKET_BERRYText": [
+          [
+            "May I help you?"
+          ]
+        ],
+        "MN_MP_MARKET_TRAILText": [
+          [
+            "May I help you?"
+          ]
+        ],
+        "MN_MP_TOWN_SIGNText": [
+          [
+            "MINNEAPOLIS",
+            "River and current."
+          ]
+        ],
+        "MN_MP_DISPATCH_SIGNText": [
+          [
+            "RAIL DISPATCH",
+            "Closed by TEAM ICE"
+          ]
+        ],
+        "MN_MP_GYM_SIGNText": [
+          [
+            "MINNEAPOLIS GYM",
+            "Leader: ADA"
+          ]
+        ],
+        "MN_MP_EAST_SIGNText": [
+          [
+            "ST PAUL",
+            "Follow the park."
+          ]
+        ],
+        "MN_MP_SUPPLYCOOP_SIGNText": [
+          [
+            "NORTH LOOP CO-OP"
+          ]
+        ],
+        "MN_MP_GRAINEXCHANGE_SIGNText": [
+          [
+            "GRAIN EXCHANGE"
+          ]
+        ],
+        "MN_MP_TOOLWORKSHOP_SIGNText": [
+          [
+            "MILL TOOL WORKSHOP"
+          ]
+        ],
+        "MN_MP_PRINTSHOP_SIGNText": [
+          [
+            "RIVER PRINT SHOP"
+          ]
+        ],
+        "MN_MP_FOUNDRYMUSEUM_SIGNText": [
+          [
+            "MILL HISTORY HALL"
+          ]
+        ],
+        "MN_MP_ARTSSTUDIO_SIGNText": [
+          [
+            "NORTHEAST STUDIO"
+          ]
+        ],
+        "MN_MP_MUSICROOM_SIGNText": [
+          [
+            "RIVER MUSIC ROOM"
+          ]
+        ],
+        "MN_MP_COMMUNITYLIBRARY_SIGNText": [
+          [
+            "CENTRAL LIBRARY"
+          ]
+        ],
+        "MN_MP_NORTHEASTHOME_SIGNText": [
+          [
+            "NORTHEAST HOME"
+          ]
+        ],
+        "MN_MP_GARDENSHOP_SIGNText": [
+          [
+            "GARDEN CO-OP"
+          ]
+        ],
+        "MN_MP_RIVERNATURALIST_SIGNText": [
+          [
+            "RIVER FIELD ROOM"
+          ]
+        ],
+        "MN_MP_BOATHOUSE_SIGNText": [
+          [
+            "LAKE BOATHOUSE"
+          ]
+        ],
+        "MN_MP_ANGLERHOME_SIGNText": [
+          [
+            "ANGLER HOME"
+          ]
+        ],
+        "MN_MP_LAKECABIN_SIGNText": [
+          [
+            "LAKE COMMUNITY",
+            "CABIN"
+          ]
+        ],
+        "MN_MP_GREENHOUSE_SIGNText": [
+          [
+            "LAKE GREENHOUSE"
+          ]
+        ],
+        "MN_MP_BRIDGEHOME_SIGNText": [
+          [
+            "BRIDGE KEEPER HOME"
+          ]
+        ],
+        "MN_MP_DEPARTMENTSTORE1F_SIGNText": [
+          [
+            "MINNEAPOLIS",
+            "DEPT STORE 1F"
+          ]
+        ],
+        "MN_MP_BATTLECLUB_SIGNText": [
+          [
+            "RIVERFRONT",
+            "BATTLE CLUB"
+          ]
+        ],
+        "MN_MP_CEDARHOME_SIGNText": [
+          [
+            "CEDAR FAMILY HOME"
+          ]
+        ],
+        "MN_MP_COMMUNITYKITCHEN_SIGNText": [
+          [
+            "COMMUNITY KITCHEN"
+          ]
+        ],
+        "MN_MP_COURIERSDESK_SIGNText": [
+          [
+            "RIVER COURIER DESK"
+          ]
+        ],
+        "MN_MP_FIELDCLUB_SIGNText": [
+          [
+            "PARK FIELD CLUB"
+          ]
+        ],
+        "MN_MP_GARDENERSHOME_SIGNText": [
+          [
+            "GARDENER HOME"
+          ]
+        ],
+        "MN_MP_ARRIVALINFO_SIGNText": [
+          [
+            "SOUTH ARRIVAL DESK"
+          ]
+        ],
+        "MN_MP_RIVERINN_SIGNText": [
+          [
+            "MILL WORKERS INN"
+          ]
+        ],
+        "MN_MP_SOUTHMARKET_SIGNText": [
+          [
+            "SOUTH CITY MARKET"
+          ]
+        ],
+        "MN_MP_MILLWORKERSHOUSE_SIGNText": [
+          [
+            "MILL FAMILY HOUSE"
+          ]
+        ],
+        "MN_MP_MILL_WATER_PLAQUEText": [
+          [
+            "RIVER POWER",
+            "The current drove"
+          ],
+          [
+            "the mill wheels."
+          ]
+        ],
+        "MN_MP_MILL_GRAIN_PLAQUEText": [
+          [
+            "GRAIN AND RAIL",
+            "Flour left the"
+          ],
+          [
+            "city",
+            "by the rail yards."
+          ]
+        ],
+        "MN_MP_MILL_WORKERS_PLAQUEText": [
+          [
+            "MILL WORKERS",
+            "Many hands built"
+          ],
+          [
+            "this river city."
+          ]
         ]
       },
       "MnRochester": {
@@ -7063,6 +8140,64 @@
           [
             "Then take the",
             "road to MANKATO."
+          ]
+        ],
+        "MN_RC_CITY_GUIDEText": [
+          [
+            "VAREL trains here.",
+            "Their partners are"
+          ],
+          [
+            "as tough as they",
+            "are well cared"
+          ],
+          [
+            "for."
+          ]
+        ],
+        "MN_RC_GARDENERText": [
+          [
+            "The courtyard",
+            "stays"
+          ],
+          [
+            "open to everyone."
+          ]
+        ],
+        "MnRCClinicSignText": [
+          [
+            "ROCHESTER CLINIC",
+            "HEALING & ADVICE"
+          ]
+        ],
+        "MnRCMartSignText": [
+          [
+            "POKEMON MART",
+            "Supplies for"
+          ],
+          [
+            "trails."
+          ]
+        ],
+        "MnRCGymSignText": [
+          [
+            "ROCHESTER GYM",
+            "VAREL / CARE BADGE"
+          ]
+        ],
+        "MnRCCitySignText": [
+          [
+            "ROCHESTER",
+            "A CITY OF CARE"
+          ]
+        ],
+        "MnRochesterFossilLabSignText": [
+          [
+            "FOSSIL LAB",
+            "Ancient partners"
+          ],
+          [
+            "restored here."
           ]
         ]
       },
@@ -7098,6 +8233,57 @@
           ],
           [
             "your team tires."
+          ]
+        ],
+        "MN_W_RIVER_WATCHERText": [
+          [
+            "Watching barges",
+            "drift downriver"
+          ],
+          [
+            "is how I relax."
+          ]
+        ],
+        "MN_W_TRAIL_GUIDEText": [
+          [
+            "West lies the",
+            "driftless prairie"
+          ],
+          [
+            "and ROCHESTER."
+          ]
+        ],
+        "MnWHomeSignText": [
+          [
+            "Your home.",
+            "The field season"
+          ],
+          [
+            "begins."
+          ]
+        ],
+        "MnWClinicSignText": [
+          [
+            "WINONA CLINIC",
+            "Care is always"
+          ],
+          [
+            "free."
+          ]
+        ],
+        "MnWStationSignText": [
+          [
+            "FIELD STATION",
+            "PROF. TAMARACK"
+          ]
+        ],
+        "MnWTownSignText": [
+          [
+            "WINONA",
+            "A town on the"
+          ],
+          [
+            "river."
           ]
         ]
       },
@@ -7301,43 +8487,29 @@
       "MnBrainerdRangerStation": {
         "MN_BRAINERD_ARCHIVISTText": [
           [
-            "BEMIDJI keeps",
-            "copies of logs."
+            "The same number",
+            "on three reports?"
           ],
           [
-            "Take your notes",
-            "to the officer."
-          ],
-          [
-            "He can compare",
-            "the dates."
+            "That is no survey."
           ]
         ],
         "MN_BRAINERD_HABITAT_LOGText": [
           [
-            "HABITAT LOG"
+            "HABITAT LOG",
+            "Copies all read:"
           ],
           [
-            "Every recent entry",
-            "reads NO CHANGE."
+            "NO CHANGE."
           ]
         ],
         "MN_BRAINERD_VOLUNTEERText": [
           [
-            "The ranger takes",
-            "reports outside."
+            "The ranger outside",
+            "can take your"
           ],
           [
-            "Keep a copy of",
-            "your observations."
-          ],
-          [
-            "The whole log",
-            "reads NO CHANGE."
-          ],
-          [
-            "That seems odd.",
-            "The pumps ran."
+            "report."
           ]
         ]
       },
@@ -7366,6 +8538,24 @@
           [
             "The engineer can",
             "tell you the plan."
+          ]
+        ],
+        "MN_DULUTH_NURSEText": [
+          [
+            "Welcome! We can",
+            "rest your POKEMON."
+          ]
+        ],
+        "MN_DULUTH_CLINIC_PATIENTText": [
+          [
+            "The hillside walk",
+            "makes me hungry."
+          ]
+        ],
+        "MN_DULUTH_CLINIC_VISITORText": [
+          [
+            "The harbor signal",
+            "guides us north."
           ]
         ]
       },
@@ -8371,7 +9561,2286 @@
             "revive the fossil."
           ]
         ]
-      }
+      },
+      "MnWinonaPokecenter1F": {
+        "MN_W_NURSEText": [
+          [
+            "A fresh start is",
+            "worth a rest."
+          ]
+        ],
+        "MN_W_PATIENTText": [
+          [
+            "The bluff trails",
+            "can tire anyone."
+          ],
+          [
+            "Take regular",
+            "rests."
+          ]
+        ]
+      },
+      "MnWinonaMart": {
+        "MN_W_CUSTOMERText": [
+          [
+            "An ANTIDOTE helps",
+            "on Driftless"
+          ],
+          [
+            "Trail."
+          ]
+        ]
+      },
+      "MnRochesterMart": {
+        "MN_RC_SHOPPERText": [
+          [
+            "A few POTIONS help",
+            "on the prairie."
+          ]
+        ]
+      },
+      "MnRochesterGym": {},
+      "MnRochesterClerkHouse": {
+        "MN_RC_CLERK_NEIGHBORText": [
+          [
+            "My sister sorts",
+            "clinic medicine"
+          ],
+          [
+            "fresh off the",
+            "train."
+          ]
+        ]
+      },
+      "MnRochesterPatientHouse": {
+        "MN_RC_RESTING_TRAINERText": [
+          [
+            "VAREL watches how",
+            "you use your team."
+          ],
+          [
+            "Rest before a",
+            "match."
+          ],
+          [
+            "The clinic is",
+            "free."
+          ]
+        ]
+      },
+      "MnRochesterFossilLab": {
+        "MnRochesterFossilLabAssistantText": [
+          [
+            "Bring a LENS or",
+            "SPIRE FOSSIL from"
+          ],
+          [
+            "DRIFTLESS TRAIL.",
+            "Our scientist can"
+          ],
+          [
+            "restore it."
+          ]
+        ],
+        "MnLabFossilBenchText": [
+          [
+            "RESTORATION BENCH",
+            "LENS: TRILUME"
+          ],
+          [
+            "SPIRE: SIPHLET"
+          ]
+        ]
+      },
+      "MnMankatoPokecenter1F": {
+        "MN_MK_NURSEText": [
+          [
+            "We can rest your",
+            "POKEMON here."
+          ]
+        ],
+        "MN_MK_PATIENTText": [
+          [
+            "A quick rest makes",
+            "the next climb"
+          ],
+          [
+            "easy."
+          ]
+        ]
+      },
+      "MnMankatoMart": {
+        "MN_MK_SHOPPERText": [
+          [
+            "A few POTIONS help",
+            "on the prairie."
+          ]
+        ]
+      },
+      "MnMankatoGym": {},
+      "MnMinneapolisPokecenter1F": {
+        "MN_MP_NURSEText": [
+          [
+            "Welcome! We can",
+            "rest your POKEMON."
+          ]
+        ],
+        "MN_MP_CLINIC_PATIENTText": [
+          [
+            "I am hiding here.",
+            "ICE asked my name."
+          ]
+        ],
+        "MN_MP_CLINIC_VISITORText": [
+          [
+            "You can always",
+            "use this clinic."
+          ]
+        ]
+      },
+      "MnMinneapolisGym": {},
+      "MnMinneapolisMart": {
+        "MN_MP_MART_CLERKText": [
+          [
+            "May I help you?"
+          ]
+        ],
+        "MN_MP_MART_CUSTOMERText": [
+          [
+            "A spare POTION",
+            "helps on the road."
+          ]
+        ]
+      },
+      "MnMinneapolisSupplyCoop": {
+        "MN_MP_SUPPLYCOOP_CLERKText": [
+          [
+            "May I help you?"
+          ]
+        ]
+      },
+      "MnMinneapolisGrainExchange": {
+        "MN_MP_GRAINEXCHANGE_HOSTText": [
+          [
+            "Milling flour was",
+            "the heartbeat of"
+          ],
+          [
+            "our river town."
+          ]
+        ]
+      },
+      "MnMinneapolisToolWorkshop": {
+        "MN_MP_TOOLWORKSHOP_HOSTText": [
+          [
+            "These mills used",
+            "river power."
+          ],
+          [
+            "The wheel could",
+            "turn all night."
+          ]
+        ]
+      },
+      "MnMinneapolisPrintShop": {
+        "MN_MP_PRINTSHOP_HOSTText": [
+          [
+            "Hand-set type",
+            "and daily news"
+          ],
+          [
+            "inked fresh daily."
+          ]
+        ]
+      },
+      "MnMinneapolisFoundryMuseum": {
+        "MN_MP_FOUNDRYMUSEUM_HOSTText": [
+          [
+            "Old waterwheels",
+            "powered the big"
+          ],
+          [
+            "grinding stones."
+          ]
+        ],
+        "MN_MP_MUSEUM_WHEEL_DISPLAYText": [
+          [
+            "MILL WHEEL MODEL",
+            "Current turns a"
+          ],
+          [
+            "wheel, which turns",
+            "the grinding"
+          ],
+          [
+            "stones."
+          ]
+        ],
+        "MN_MP_MUSEUM_GRAIN_DISPLAYText": [
+          [
+            "FLOUR SACK MODEL",
+            "Grain became flour"
+          ],
+          [
+            "beside this river."
+          ]
+        ],
+        "MN_MP_MUSEUM_ARCHIVEText": [
+          [
+            "WORKER ARCHIVE",
+            "Families from many"
+          ],
+          [
+            "places built the",
+            "mill"
+          ],
+          [
+            "neighborhoods."
+          ]
+        ]
+      },
+      "MnMinneapolisArtsStudio": {
+        "MN_MP_ARTSSTUDIO_HOSTText": [
+          [
+            "The river turns",
+            "copper at dusk."
+          ],
+          [
+            "I keep painting",
+            "the same bend."
+          ]
+        ]
+      },
+      "MnMinneapolisMusicRoom": {
+        "MN_MP_MUSICROOM_HOSTText": [
+          [
+            "The river keeps",
+            "its own rhythm."
+          ],
+          [
+            "Our little stage",
+            "borrows the beat."
+          ]
+        ],
+        "MN_MP_MUSIC_AUDIENCE_1Text": [
+          [
+            "The stage brings",
+            "neighbors"
+          ],
+          [
+            "together."
+          ]
+        ],
+        "MN_MP_MUSIC_AUDIENCE_2Text": [
+          [
+            "My grandchild",
+            "practices here."
+          ]
+        ],
+        "MN_MP_MUSIC_AUDIENCE_3Text": [
+          [
+            "A quiet break",
+            "between battles."
+          ]
+        ]
+      },
+      "MnMinneapolisCommunityLibrary": {
+        "MN_MP_COMMUNITYLIBRARY_HOSTText": [
+          [
+            "Three mill plaques",
+            "stand by the"
+          ],
+          [
+            "river.",
+            "Read them in any"
+          ],
+          [
+            "order, then visit",
+            "the history hall."
+          ]
+        ],
+        "MN_MP_LIBRARY_QUIET_READERText": [
+          [
+            "I like the stories",
+            "behind each"
+          ],
+          [
+            "street."
+          ]
+        ],
+        "MN_MP_LIBRARY_RIVER_BOOKText": [
+          [
+            "RIVER HISTORY",
+            "Visit the mill"
+          ],
+          [
+            "hall",
+            "and three plaques"
+          ],
+          [
+            "along the banks."
+          ]
+        ],
+        "MN_MP_LIBRARY_CITY_BOOKText": [
+          [
+            "CITY DIRECTORY",
+            "Five department"
+          ],
+          [
+            "floors and a club",
+            "stand downriver."
+          ]
+        ],
+        "MN_MP_LIBRARY_FIELD_BOOKText": [
+          [
+            "PARTNER CARE",
+            "The clinic has a"
+          ],
+          [
+            "PC.",
+            "The kitchen offers"
+          ],
+          [
+            "a place to rest."
+          ]
+        ]
+      },
+      "MnMinneapolisNortheastHome": {
+        "MN_MP_NORTHEASTHOME_HOSTText": [
+          [
+            "The north gate",
+            "leads to ST CLOUD."
+          ],
+          [
+            "Our family walks",
+            "the upper bridge."
+          ]
+        ]
+      },
+      "MnMinneapolisGardenShop": {
+        "MN_MP_GARDENSHOP_CLERKText": [
+          [
+            "May I help you?"
+          ]
+        ]
+      },
+      "MnMinneapolisRiverNaturalist": {
+        "MN_MP_RIVERNATURALIST_HOSTText": [
+          [
+            "The river joins",
+            "several habitats."
+          ],
+          [
+            "WOOPER favors",
+            "the quiet banks."
+          ]
+        ]
+      },
+      "MnMinneapolisBoatHouse": {
+        "MN_MP_BOATHOUSE_HOSTText": [
+          [
+            "The lake piers",
+            "are open to all."
+          ],
+          [
+            "Take a boat out",
+            "on calm days."
+          ]
+        ]
+      },
+      "MnMinneapolisAnglerHome": {
+        "MN_MP_ANGLERHOME_HOSTText": [
+          [
+            "Cast from a clear",
+            "bank or a pier."
+          ],
+          [
+            "Never climb over",
+            "the bridge rails."
+          ]
+        ]
+      },
+      "MnMinneapolisLakeCabin": {
+        "MN_MP_LAKECABIN_HOSTText": [
+          [
+            "A short walk can",
+            "clear your head."
+          ],
+          [
+            "The east pier is",
+            "our meeting spot."
+          ]
+        ]
+      },
+      "MnMinneapolisGreenhouse": {
+        "MN_MP_GREENHOUSE_HOSTText": [
+          [
+            "City gardens help",
+            "bugs and birds."
+          ],
+          [
+            "Please leave room",
+            "for both to rest."
+          ]
+        ]
+      },
+      "MnMinneapolisBridgeHome": {
+        "MN_MP_BRIDGEHOME_HOSTText": [
+          [
+            "Three bridges make",
+            "one connected"
+          ],
+          [
+            "city.",
+            "The middle bridge"
+          ],
+          [
+            "meets the GYM",
+            "road."
+          ]
+        ]
+      },
+      "MnMinneapolisDepartmentStore1F": {
+        "MN_MP_DEPT_1_CLERKText": [
+          [
+            "May I help you?"
+          ]
+        ]
+      },
+      "MnMinneapolisBattleClub": {
+        "MN_MP_CLUB_RIVETText": [
+          [
+            "Care for a",
+            "friendly"
+          ],
+          [
+            "practice battle?"
+          ]
+        ],
+        "MN_MP_CLUB_BANKSText": [
+          [
+            "Care for a",
+            "friendly"
+          ],
+          [
+            "practice battle?"
+          ]
+        ],
+        "MN_MP_CLUB_CEDARText": [
+          [
+            "Care for a",
+            "friendly"
+          ],
+          [
+            "practice battle?"
+          ]
+        ],
+        "MN_MP_CLUB_COACH_INEZText": [
+          [
+            "Care for a",
+            "friendly"
+          ],
+          [
+            "practice battle?"
+          ]
+        ]
+      },
+      "MnMinneapolisCedarHome": {
+        "MN_MP_CEDARHOME_HOSTText": [
+          [
+            "Our neighbors cook",
+            "at the kitchen."
+          ],
+          [
+            "It is a safe place",
+            "to rest a partner."
+          ]
+        ]
+      },
+      "MnMinneapolisCommunityKitchen": {
+        "MN_MP_COMMUNITYKITCHEN_HOSTText": [
+          [
+            "Warm food and a",
+            "rest for partners."
+          ]
+        ],
+        "MN_MP_KITCHEN_DINERText": [
+          [
+            "The kitchen looks",
+            "after everyone."
+          ],
+          [
+            "My partners needed",
+            "a rest as much as"
+          ],
+          [
+            "I."
+          ]
+        ]
+      },
+      "MnMinneapolisCouriersDesk": {
+        "MN_MP_COURIERSDESK_HOSTText": [
+          [
+            "The print shop is",
+            "across the river."
+          ],
+          [
+            "Take the upper",
+            "bridge for a view."
+          ]
+        ]
+      },
+      "MnMinneapolisFieldClub": {
+        "MN_MP_FIELDCLUB_HOSTText": [
+          [
+            "We count the birds",
+            "around the lake."
+          ],
+          [
+            "MURKROW visits",
+            "after sunset."
+          ]
+        ]
+      },
+      "MnMinneapolisGardenersHome": {
+        "MN_MP_GARDENERSHOME_HOSTText": [
+          [
+            "The pond was here",
+            "before our street."
+          ],
+          [
+            "A garden can fit",
+            "around a shore."
+          ]
+        ]
+      },
+      "MnMinneapolisArrivalInfo": {
+        "MN_MP_ARRIVALINFO_HOSTText": [
+          [
+            "Welcome to the",
+            "city."
+          ],
+          [
+            "The clinic is",
+            "north"
+          ],
+          [
+            "of the powerhouse",
+            "GYM in the center."
+          ]
+        ]
+      },
+      "MnMinneapolisRiverInn": {
+        "MN_MP_RIVERINN_HOSTText": [
+          [
+            "Workers once came",
+            "for the flour"
+          ],
+          [
+            "mills.",
+            "Now friends come"
+          ],
+          [
+            "for the river",
+            "walk."
+          ]
+        ]
+      },
+      "MnMinneapolisSouthMarket": {
+        "MN_MP_SOUTHMARKET_CLERKText": [
+          [
+            "May I help you?"
+          ]
+        ]
+      },
+      "MnMinneapolisMillWorkersHouse": {
+        "MN_MP_MILLWORKERSHOUSE_HOSTText": [
+          [
+            "My family worked",
+            "beside the river."
+          ],
+          [
+            "The city changed;",
+            "the current stays."
+          ]
+        ]
+      },
+      "MnMinneapolisDepartmentStore2F": {
+        "MN_MP_DEPT_2_CLERKText": [
+          [
+            "May I help you?"
+          ]
+        ]
+      },
+      "MnMinneapolisDepartmentStore3F": {
+        "MN_MP_DEPT_3_CLERKText": [
+          [
+            "May I help you?"
+          ]
+        ]
+      },
+      "MnMinneapolisDepartmentStore4F": {
+        "MN_MP_DEPT_4_CLERKText": [
+          [
+            "May I help you?"
+          ]
+        ]
+      },
+      "MnMinneapolisDepartmentStore5F": {
+        "MN_MP_DEPT_5_CLERKText": [
+          [
+            "May I help you?"
+          ]
+        ]
+      },
+      "MnMinneapolisBookbinder": {
+        "MN_MP_BOOKBINDER_HOSTText": [
+          [
+            "The history hall",
+            "keeps our mill"
+          ],
+          [
+            "map.",
+            "Read the three"
+          ],
+          [
+            "river plaques."
+          ]
+        ]
+      },
+      "MnMinneapolisCooperativeFlat": {
+        "MN_MP_COOPERATIVEFLAT_HOSTText": [
+          [
+            "Neighbors share",
+            "this quiet room."
+          ],
+          [
+            "Your partners can",
+            "rest here too."
+          ]
+        ]
+      },
+      "MnMinneapolisToolFlat": {
+        "MN_MP_TOOLFLAT_HOSTText": [
+          [
+            "A POKE DOLL can",
+            "help on the road."
+          ],
+          [
+            "Keep one for a",
+            "safe retreat."
+          ]
+        ]
+      },
+      "MnMinneapolisCornerHome": {
+        "MN_MP_CORNERHOME_HOSTText": [
+          [
+            "The market sells",
+            "drinks and"
+          ],
+          [
+            "BERRIES.",
+            "The clinic is"
+          ],
+          [
+            "north of the GYM."
+          ]
+        ]
+      },
+      "MnMinneapolisRiverFamilyHome": {
+        "MN_MP_RIVERFAMILYHOME_HOSTText": [
+          [
+            "We found this on",
+            "the quiet bank."
+          ],
+          [
+            "A water partner",
+            "can hold it."
+          ]
+        ]
+      },
+      "MnMinneapolisGardenFlat": {
+        "MN_MP_GARDENFLAT_HOSTText": [
+          [
+            "A little garden",
+            "feeds our"
+          ],
+          [
+            "partners.",
+            "Take some BERRIES"
+          ],
+          [
+            "for your trip."
+          ]
+        ]
+      },
+      "MnMinneapolisPatternStudio": {
+        "MN_MP_PATTERNSTUDIO_HOSTText": [
+          [
+            "We print designs",
+            "one line at a"
+          ],
+          [
+            "time.",
+            "Move with care in"
+          ],
+          [
+            "the narrow alleys."
+          ]
+        ]
+      },
+      "MnMinneapolisMillForemanHome": {
+        "MN_MP_MILLFOREMANHOME_HOSTText": [
+          [
+            "The office is on",
+            "the central bank."
+          ],
+          [
+            "Workers gather at",
+            "the kitchen later."
+          ]
+        ]
+      },
+      "MnStPaul": {
+        "MN_ST_PAUL_CIVIC_GUIDEText": [
+          [
+            "CAPITOL HALL.",
+            "The bluff road"
+          ],
+          [
+            "runs to the depot."
+          ]
+        ],
+        "MN_ST_PAUL_FAIR_STEWARDText": [
+          [
+            "The public fair",
+            "is down this road."
+          ],
+          [
+            "North annex shut."
+          ]
+        ],
+        "MN_ST_PAUL_GARDENERText": [
+          [
+            "A quiet garden",
+            "beside the clinic."
+          ]
+        ],
+        "MN_ST_PAUL_DEPOT_PASSENGERText": [
+          [
+            "UNION DEPOT.",
+            "The GLACIER LINE"
+          ],
+          [
+            "links the towns."
+          ]
+        ],
+        "MN_ST_PAUL_BLUFF_WALKERText": [
+          [
+            "Hop down the bank,",
+            "take the brick"
+          ],
+          [
+            "path back uphill."
+          ]
+        ],
+        "MN_ST_PAUL_RIVER_FISHERText": [
+          [
+            "Watch the river",
+            "from this bank."
+          ]
+        ],
+        "MN_ST_PAUL_STREET_READERText": [
+          [
+            "BRANNIC trains",
+            "STEEL types at"
+          ],
+          [
+            "the city GYM."
+          ]
+        ],
+        "MN_ST_PAUL_FAIR_GUARD_WESTText": [
+          [
+            "North annex shut.",
+            "Public fair opens"
+          ],
+          [
+            "south of this",
+            "gate."
+          ]
+        ],
+        "MN_ST_PAUL_FAIR_GUARD_EASTText": [
+          [
+            "North annex shut.",
+            "Public fair opens"
+          ],
+          [
+            "south of this",
+            "gate."
+          ]
+        ],
+        "MN_ST_PAUL_SIGN_CLINICText": [
+          [
+            "POKEMON CENTER",
+            "Free care and PC."
+          ]
+        ],
+        "MN_ST_PAUL_SIGN_MARTText": [
+          [
+            "MART",
+            "Supplies here."
+          ]
+        ],
+        "MN_ST_PAUL_SIGN_CAPITOLText": [
+          [
+            "CAPITOL HALL",
+            "Public records."
+          ]
+        ],
+        "MN_ST_PAUL_SIGN_GYMText": [
+          [
+            "ST PAUL GYM",
+            "BRANNIC - STEEL"
+          ]
+        ],
+        "MN_ST_PAUL_SIGN_DEPOTText": [
+          [
+            "UNION DEPOT",
+            "GLACIER LINE"
+          ]
+        ],
+        "MN_ST_PAUL_SIGN_FAIRText": [
+          [
+            "STATE FAIR CAMPUS",
+            "Public shows"
+          ],
+          [
+            "south.",
+            "North annex shut."
+          ]
+        ],
+        "MN_ST_PAUL_SIGN_RIVERText": [
+          [
+            "RIVER PARK",
+            "Stay on the bank."
+          ]
+        ],
+        "MN_ST_PAUL_SIGN_WAYFINDINGText": [
+          [
+            "West: CITY CROSS",
+            "North: CAPITOL"
+          ],
+          [
+            "South: UNION DEPOT"
+          ]
+        ]
+      },
+      "MnStPaulPokecenter1F": {
+        "MN_ST_PAUL_NURSEText": [
+          [
+            "Welcome! Rest your",
+            "POKEMON here."
+          ]
+        ],
+        "MN_ST_PAUL_CLINIC_FISHERText": [
+          [
+            "The PC is on the",
+            "right-hand wall."
+          ]
+        ],
+        "MN_ST_PAUL_CLINIC_TEACHERText": [
+          [
+            "The depot is south",
+            "of the bluff."
+          ]
+        ],
+        "MN_ST_PAUL_CLINIC_GENTLEMANText": [
+          [
+            "Take your time.",
+            "The care is free."
+          ]
+        ]
+      },
+      "MnStPaulMart": {
+        "MN_ST_PAUL_MART_CLERKText": [
+          [
+            "Supplies for the",
+            "next journey."
+          ]
+        ],
+        "MN_ST_PAUL_MART_CUSTOMERText": [
+          [
+            "STEEL can stand",
+            "up to most hits."
+          ]
+        ],
+        "MN_ST_PAUL_MART_YOUNGSTERText": [
+          [
+            "Bring medicine",
+            "for the road."
+          ]
+        ]
+      },
+      "MnStPaulCapitolHall": {
+        "MN_ST_PAUL_RECORDS_CLERKText": [
+          [
+            "Public records.",
+            "The fair road is"
+          ],
+          [
+            "north of town."
+          ]
+        ],
+        "MN_ST_PAUL_RECORDS_OFFICERText": [
+          [
+            "The depot courier",
+            "is indoors today."
+          ],
+          [
+            "Try UNION DEPOT."
+          ]
+        ]
+      },
+      "MnStPaulGym": {},
+      "MnStPaulFairFoodHall": {
+        "MN_SPX_FAIRFOODHALL_HOSTText": [
+          [
+            "Fresh cider and",
+            "sweet lefse for"
+          ],
+          [
+            "the fair crowd!"
+          ]
+        ]
+      },
+      "MnStPaulFairGardenStand": {
+        "MN_SPX_FAIRGARDENSTAND_HOSTText": [
+          [
+            "Heirloom tomato",
+            "seeds and hardy"
+          ],
+          [
+            "berry bushes!"
+          ]
+        ]
+      },
+      "MnStPaulFairAgricultureHall": {
+        "MN_SPX_FAIRAGRICULTUREHALL_HOSTText": [
+          [
+            "Prize pumpkins",
+            "and blue-ribbon"
+          ],
+          [
+            "apples on display!"
+          ]
+        ]
+      },
+      "MnStPaulFairExhibitionHall": {
+        "MN_SPX_FAIREXHIBITIONHALL_HOSTText": [
+          [
+            "Trainers gather",
+            "here for friendly"
+          ],
+          [
+            "showcase bouts!"
+          ]
+        ]
+      },
+      "MnStPaulFairCraftHouse": {
+        "MN_SPX_FAIRCRAFTHOUSE_HOSTText": [
+          [
+            "Handwoven ribbons",
+            "and knit caps"
+          ],
+          [
+            "for chilly nights!"
+          ]
+        ]
+      },
+      "MnStPaulFairQuizPavilion": {
+        "MN_SPX_QUIZ_HOSTText": [
+          [
+            "Find three records",
+            "then return here."
+          ]
+        ]
+      },
+      "MnStPaulFairInfoHouse": {
+        "MN_SPX_FAIRINFOHOUSE_HOSTText": [
+          [
+            "Public shows open.",
+            "The north annex"
+          ],
+          [
+            "is still closed."
+          ]
+        ]
+      },
+      "MnStPaulFairBreederBarn": {
+        "MN_SPX_FAIRBREEDERBARN_HOSTText": [
+          [
+            "Gentle handling",
+            "keeps partners"
+          ],
+          [
+            "calm in crowds."
+          ]
+        ]
+      },
+      "MnStPaulFairBerrySnack": {
+        "MN_SPX_FAIRBERRYSNACK_HOSTText": [
+          [
+            "Sweet berry snacks",
+            "fresh from the"
+          ],
+          [
+            "morning harvest!"
+          ]
+        ]
+      },
+      "MnStPaulFairFestivalMail": {
+        "MN_SPX_FAIRFESTIVALMAIL_HOSTText": [
+          [
+            "Send a fair",
+            "postcard to your"
+          ],
+          [
+            "folks back home!"
+          ]
+        ]
+      },
+      "MnStPaulCapitolArchive": {
+        "MN_SPX_ARCHIVE_HOSTText": [
+          [
+            "Find three records",
+            "then return here."
+          ]
+        ],
+        "MN_SPX_ARCHIVE_RECORD_1Text": [
+          [
+            "Early rail roads",
+            "ran by the river."
+          ]
+        ]
+      },
+      "MnStPaulCapitolLibrary": {
+        "MN_SPX_CAPITOLLIBRARY_HOSTText": [
+          [
+            "River navigation",
+            "charts and quiet"
+          ],
+          [
+            "reading desks."
+          ]
+        ]
+      },
+      "MnStPaulCivicMuseum": {
+        "MN_SPX_RIVER_HOSTText": [
+          [
+            "Find three records",
+            "then return here."
+          ]
+        ],
+        "MN_SPX_ARCHIVE_RECORD_2Text": [
+          [
+            "The CAPITOL stands",
+            "on the high bluff."
+          ]
+        ]
+      },
+      "MnStPaulSummitMoveStudyHouse": {
+        "MN_SPX_SUMMITMOVESTUDYHOUSE_HOSTText": [
+          [
+            "Hardy trees in",
+            "the bluffs yield"
+          ],
+          [
+            "good HEADBUTTs."
+          ]
+        ]
+      },
+      "MnStPaulSummitExhibitionClub": {
+        "MN_SPX_SUMMITEXHIBITIONCLUB_HOSTText": [
+          [
+            "A friendly club",
+            "match sharpens"
+          ],
+          [
+            "any traveling",
+            "team!"
+          ]
+        ]
+      },
+      "MnStPaulSummitPressHouse": {
+        "MN_SPX_SUMMITPRESSHOUSE_HOSTText": [
+          [
+            "Two bridges link",
+            "the river streets."
+          ]
+        ]
+      },
+      "MnStPaulWestSeventhBooks": {
+        "MN_SPX_WESTSEVENTHBOOKS_HOSTText": [
+          [
+            "Secondhand field",
+            "guides and old"
+          ],
+          [
+            "river histories."
+          ]
+        ]
+      },
+      "MnStPaulWestSeventhBakery": {
+        "MN_SPX_WESTSEVENTHBAKERY_HOSTText": [
+          [
+            "Fresh warm buns",
+            "and picnic rolls"
+          ],
+          [
+            "for the river",
+            "park!"
+          ]
+        ]
+      },
+      "MnStPaulStreetGardenHouse": {
+        "MN_SPX_STREETGARDENHOUSE_HOSTText": [
+          [
+            "Small gardens fit",
+            "between city"
+          ],
+          [
+            "homes."
+          ]
+        ]
+      },
+      "MnStPaulLowertownExchange": {
+        "MN_SPX_EXCHANGE_RECEPTIONText": [
+          [
+            "Supplies upstairs.",
+            "Club matches on"
+          ],
+          [
+            "3F."
+          ]
+        ]
+      },
+      "MnStPaulArchiveAnnex": {
+        "MN_SPX_ARCHIVEANNEX_HOSTText": [
+          [
+            "Photographs of",
+            "the early river"
+          ],
+          [
+            "railroad days."
+          ]
+        ],
+        "MN_SPX_ARCHIVE_RECORD_3Text": [
+          [
+            "Two banks share",
+            "one public city."
+          ]
+        ]
+      },
+      "MnStPaulLowertownCrafts": {
+        "MN_SPX_LOWERTOWNCRAFTS_HOSTText": [
+          [
+            "Sturdy canvas",
+            "packs"
+          ],
+          [
+            "and tackle for",
+            "river anglers."
+          ]
+        ]
+      },
+      "MnStPaulEastAidClinic": {
+        "MN_SPX_EAST_AID_NURSEText": [
+          [
+            "Welcome! Rest your",
+            "POKEMON here."
+          ]
+        ],
+        "MN_SPX_EAST_AID_PCText": [
+          [
+            "A public PC."
+          ]
+        ]
+      },
+      "MnStPaulEastWorkshop": {
+        "MN_SPX_EASTWORKSHOP_HOSTText": [
+          [
+            "Sparring matches",
+            "help us stay sharp"
+          ],
+          [
+            "after long shifts!"
+          ]
+        ]
+      },
+      "MnStPaulCommunityHall": {
+        "MN_SPX_COMMUNITYHALL_HOSTText": [
+          [
+            "Our neighborhood",
+            "meets by the"
+          ],
+          [
+            "river."
+          ]
+        ]
+      },
+      "MnStPaulTransitHeritageHouse": {
+        "MN_SPX_TRANSITHERITAGEHOUSE_HOSTText": [
+          [
+            "The depot is east.",
+            "Read its notices"
+          ],
+          [
+            "for real services."
+          ]
+        ]
+      },
+      "MnStPaulFreightOffice": {
+        "MN_SPX_FREIGHTOFFICE_HOSTText": [
+          [
+            "The manifest stays",
+            "inside UNION"
+          ],
+          [
+            "DEPOT."
+          ]
+        ]
+      },
+      "MnStPaulLowertownCafe": {
+        "MN_SPX_LOWERTOWNCAFE_HOSTText": [
+          [
+            "Grab a hot cocoa",
+            "before walking"
+          ],
+          [
+            "along the bluff!"
+          ]
+        ]
+      },
+      "MnStPaulAnglerHouse": {
+        "MN_SPX_ANGLERHOUSE_HOSTText": [
+          [
+            "The Mississippi",
+            "has monster BASS"
+          ],
+          [
+            "near the pilings!"
+          ]
+        ]
+      },
+      "MnStPaulRiversideSupplies": {
+        "MN_SPX_RIVERSIDESUPPLIES_HOSTText": [
+          [
+            "Dry boots, warm",
+            "socks, and trail"
+          ],
+          [
+            "rations for all!"
+          ]
+        ]
+      },
+      "MnStPaulWestsideCommunity": {
+        "MN_SPX_WESTSIDECOMMUNITY_HOSTText": [
+          [
+            "A home for walkers",
+            "on the west bank."
+          ]
+        ]
+      },
+      "MnStPaulWestsideArena": {
+        "MN_SPX_WESTSIDEARENA_HOSTText": [
+          [
+            "Practice bouts",
+            "keep our partners"
+          ],
+          [
+            "strong and agile!"
+          ]
+        ]
+      },
+      "MnStPaulBoatCoop": {
+        "MN_SPX_BOATCOOP_HOSTText": [
+          [
+            "These are working",
+            "boats, not a"
+          ],
+          [
+            "ferry."
+          ]
+        ]
+      },
+      "MnStPaulSouthLandingInn": {
+        "MN_SPX_SOUTHLANDINGINN_HOSTText": [
+          [
+            "Rest your weary",
+            "party by the warm"
+          ],
+          [
+            "hearth tonight."
+          ]
+        ]
+      },
+      "MnStPaulSouthLandingSurvey": {
+        "MN_SPX_SOUTHLANDINGSURVEY_HOSTText": [
+          [
+            "Volunteers track",
+            "water clarity and"
+          ],
+          [
+            "songbird nests!"
+          ]
+        ]
+      },
+      "MnStPaulLowertownExchange2F": {},
+      "MnStPaulLowertownExchange3F": {},
+      "MnStCloudPokecenter1F": {
+        "MN_ST_CLOUD_NURSEText": [
+          [
+            "Welcome! Your team",
+            "can rest here."
+          ]
+        ],
+        "MN_ST_CLOUD_CLINIC_WALKERText": [
+          [
+            "The granite path",
+            "gives a fine view."
+          ]
+        ],
+        "MN_ST_CLOUD_CLINIC_READERText": [
+          [
+            "I record my team",
+            "before the train."
+          ]
+        ]
+      },
+      "MnStCloudMart": {
+        "MN_ST_CLOUD_MART_CLERKText": [
+          [
+            "May I help you?"
+          ]
+        ],
+        "MN_ST_CLOUD_MART_CUSTOMERText": [
+          [
+            "REPELs are useful",
+            "on the pine roads."
+          ]
+        ]
+      },
+      "MnStCloudGym": {},
+      "MnBrainerdPokecenter1F": {
+        "MN_BRAINERD_NURSEText": [
+          [
+            "Welcome! Your team",
+            "can rest here."
+          ]
+        ],
+        "MN_BRAINERD_CLINIC_WALKERText": [
+          [
+            "Rest your team",
+            "before trekking"
+          ],
+          [
+            "into lake country."
+          ]
+        ],
+        "MN_BRAINERD_CLINIC_READERText": [
+          [
+            "SIVREN waits above",
+            "the southern ramp."
+          ]
+        ]
+      },
+      "MnBrainerdMart": {
+        "MN_BRAINERD_MART_CLERKText": [
+          [
+            "May I help you?"
+          ]
+        ],
+        "MN_BRAINERD_MART_CUSTOMERText": [
+          [
+            "REPELs for roads.",
+            "BALLs for the"
+          ],
+          [
+            "shore."
+          ]
+        ]
+      },
+      "MnBrainerdGym": {},
+      "MnBrainerdOutfitter": {
+        "MN_BRAINERD_GEAR_KEEPERText": [
+          [
+            "Check your gear",
+            "before the lakes."
+          ]
+        ],
+        "MN_BRAINERD_CAMP_HELPERText": [
+          [
+            "Stay on dry roads",
+            "until you can"
+          ],
+          [
+            "SURF."
+          ]
+        ],
+        "MN_BRAINERD_CAMP_GUIDEText": [
+          [
+            "CAMP CHECKLIST",
+            "Food, light,"
+          ],
+          [
+            "REPEL.",
+            "Pack out the rest."
+          ]
+        ]
+      },
+      "MnDetroitLakes": {
+        "MN_DETROIT_STATION_STEWARDText": [
+          [
+            "GLACIER LINE",
+            "The station hall"
+          ],
+          [
+            "faces the lake.",
+            "Rides are closed."
+          ]
+        ],
+        "MN_DETROIT_CLINIC_GARDENERText": [
+          [
+            "The clinic garden",
+            "leaves a clear"
+          ],
+          [
+            "path to the door."
+          ]
+        ],
+        "MN_DETROIT_BEACH_WARDENText": [
+          [
+            "Enjoy the sandy",
+            "shore! The lake is"
+          ],
+          [
+            "warm this week."
+          ]
+        ],
+        "MN_DETROIT_DOCK_ANGLERText": [
+          [
+            "The public pier",
+            "is a quiet place"
+          ],
+          [
+            "to cast a line."
+          ]
+        ],
+        "MN_DETROIT_CABIN_NEIGHBORText": [
+          [
+            "Cabins face the",
+            "old lake path."
+          ],
+          [
+            "Please keep the",
+            "porches clear."
+          ]
+        ],
+        "MN_DETROIT_TOWN_SIGNText": [
+          [
+            "DETROIT LAKES",
+            "PUBLIC BEACH SOUTH"
+          ]
+        ],
+        "MN_DETROIT_STATION_SIGNText": [
+          [
+            "GLACIER LINE",
+            "PASSENGER HALL"
+          ],
+          [
+            "SERVICE CLOSED"
+          ]
+        ],
+        "MN_DETROIT_NORTH_SIGNText": [
+          [
+            "WOODLAND EDGE",
+            "Leave the young"
+          ],
+          [
+            "pines standing."
+          ]
+        ],
+        "MN_DETROIT_CLINIC_SIGNText": [
+          [
+            "POKEMON CENTER",
+            "HEALING AND PC"
+          ]
+        ],
+        "MN_DETROIT_MART_SIGNText": [
+          [
+            "MART",
+            "TRAIL SUPPLIES"
+          ]
+        ],
+        "MN_DETROIT_BEACH_SIGNText": [
+          [
+            "PUBLIC BEACH",
+            "LAUNCH AT LOW BANK"
+          ]
+        ],
+        "MN_DETROIT_RANGER_SIGNText": [
+          [
+            "LAKE RANGER",
+            "OBSERVATION DESK"
+          ]
+        ]
+      },
+      "MnDetroitLakesPokecenter1F": {
+        "MN_DETROIT_NURSEText": [
+          [
+            "Welcome! We can",
+            "rest your POKEMON."
+          ]
+        ],
+        "MN_DETROIT_CLINIC_PATIENTText": [
+          [
+            "The beach is calm.",
+            "The forest roads"
+          ],
+          [
+            "still take care."
+          ]
+        ],
+        "MN_DETROIT_CLINIC_VISITORText": [
+          [
+            "I check my party",
+            "before boarding."
+          ]
+        ]
+      },
+      "MnDetroitLakesMart": {
+        "MN_DETROIT_MART_CLERKText": [
+          [
+            "May I help you?"
+          ]
+        ],
+        "MN_DETROIT_MART_CUSTOMERText": [
+          [
+            "I stock up before",
+            "the prairie road."
+          ]
+        ]
+      },
+      "MnDetroitLakesStation": {},
+      "MnDetroitLakesCanoeCabin": {
+        "MN_DETROIT_CANOE_HOSTText": [
+          [
+            "Dad called that",
+            "patched paddle"
+          ],
+          [
+            "his lake calendar.",
+            "Each mark was one"
+          ],
+          [
+            "trip he took time",
+            "to make with me."
+          ],
+          [
+            "Use the low beach.",
+            "Leave reeds alone."
+          ]
+        ],
+        "MN_DETROIT_CANOE_APPRENTICEText": [
+          [
+            "The blue paddle",
+            "is my first"
+          ],
+          [
+            "repair.",
+            "I sanded it twice."
+          ],
+          [
+            "Grandpa says that",
+            "makes it a deluxe"
+          ],
+          [
+            "Minnesota paddle."
+          ]
+        ]
+      },
+      "MnDetroitLakesRangerCabin": {
+        "MN_DETROIT_LAKE_RANGERText": [
+          [
+            "Three lake notes",
+            "show how our shore"
+          ],
+          [
+            "habitats connect.",
+            "Keep all three."
+          ]
+        ]
+      },
+      "MnLeechLakeCareCabin": {
+        "MN_LEECH_SHORE_NURSEText": [
+          [
+            "Rest here a while.",
+            "No forms needed."
+          ]
+        ]
+      },
+      "MnBemidjiPokecenter1F": {
+        "MN_BEMIDJI_NURSEText": [
+          [
+            "Welcome! Your team",
+            "can rest here."
+          ]
+        ],
+        "MN_BEMIDJI_CLINIC_WALKERText": [
+          [
+            "ORLIS studies",
+            "roots and leaves."
+          ]
+        ],
+        "MN_BEMIDJI_CLINIC_READERText": [
+          [
+            "Itasca holds the",
+            "independent mark."
+          ]
+        ]
+      },
+      "MnBemidjiMart": {
+        "MN_BEMIDJI_CLERKText": [
+          [
+            "May I help you?"
+          ]
+        ],
+        "MN_BEMIDJI_CUSTOMERText": [
+          [
+            "Supply up before",
+            "the Itasca trail."
+          ]
+        ]
+      },
+      "MnBemidjiGym": {
+        "MnBemidjiGymLeaderText": [
+          [
+            "Nothing here grew",
+            "in a single day."
+          ],
+          [
+            "Show me what you",
+            "have tended."
+          ]
+        ],
+        "MN_GYM_7_TRAINER_1Text": [
+          [
+            "Can your team",
+            "handle new growth?"
+          ]
+        ],
+        "MN_GYM_7_TRAINER_2Text": [
+          [
+            "Careful pruning",
+            "lets flowers grow."
+          ]
+        ],
+        "MN_GYM_7_TRAINER_3Text": [
+          [
+            "An old seed still",
+            "has life in it."
+          ]
+        ],
+        "MnBemidjiGymGuideText": [
+          [
+            "CUT opens gaps",
+            "in the hedges."
+          ],
+          [
+            "Battle MOSLEN.",
+            "Find ELVREN past"
+          ],
+          [
+            "the west hedge.",
+            "Then cut east"
+          ],
+          [
+            "to reach ORLIS."
+          ]
+        ]
+      },
+      "MnBemidjiShelfHouse": {
+        "MN_BEMIDJI_SHELF_RESIDENTText": [
+          [
+            "The shelf trail",
+            "drops to the road."
+          ],
+          [
+            "Climb at the east."
+          ]
+        ]
+      },
+      "MnBemidjiNorthHouse": {
+        "MN_BEMIDJI_NORTH_RESIDENTText": [
+          [
+            "Our stories cross",
+            "borders. Our lakes"
+          ],
+          [
+            "need clean water."
+          ]
+        ]
+      },
+      "MnBemidjiHeritageHouse": {
+        "MN_BEMIDJI_ARCHIVISTText": [
+          [
+            "Lumber camps spun",
+            "PAUL AND BABE"
+          ],
+          [
+            "became legends."
+          ]
+        ],
+        "MN_BEMIDJI_LOGGERText": [
+          [
+            "Big timber needs",
+            "new trees planted."
+          ]
+        ]
+      },
+      "MnItascaGatehouse": {
+        "MN_ITASCA_GATE_ATTENDANTText": [
+          [
+            "LAKE ITASCA: west.",
+            "BEMIDJI: east."
+          ],
+          [
+            "The survey marker",
+            "is past the brook."
+          ]
+        ],
+        "MN_ITASCA_GATE_WALKERText": [
+          [
+            "They asked who had",
+            "copied the logs."
+          ],
+          [
+            "I kept my copy.",
+            "So did my sister."
+          ]
+        ]
+      },
+      "MnGrandRapidsPokecenter1F": {
+        "MN_GR_NURSEText": [
+          [
+            "Welcome! We can",
+            "rest your POKEMON."
+          ]
+        ],
+        "MN_GR_CLINIC_PATIENTText": [
+          [
+            "They kept my shift",
+            "running overnight."
+          ]
+        ],
+        "MN_GR_CLINIC_VISITORText": [
+          [
+            "The depot keeps",
+            "its own copies."
+          ]
+        ]
+      },
+      "MnGrandRapidsMart": {
+        "MN_GR_MART_CLERKText": [
+          [
+            "May I help you?"
+          ]
+        ],
+        "MN_GR_MART_CUSTOMERText": [
+          [
+            "The road descends.",
+            "Pack for the cold."
+          ]
+        ]
+      },
+      "MnDuluthMart": {
+        "MN_DULUTH_MART_CLERKText": [
+          [
+            "May I help you?"
+          ]
+        ],
+        "MN_DULUTH_MART_CUSTOMERText": [
+          [
+            "I wear warm gear.",
+            "I pack medicine."
+          ]
+        ]
+      },
+      "MnDuluthGym": {},
+      "MnDuluthHillHouse": {
+        "MN_DULUTH_HILL_HOSTText": [
+          [
+            "My knees prefer",
+            "the east ramp."
+          ],
+          [
+            "One hop gets me",
+            "down to the docks."
+          ]
+        ]
+      },
+      "MnDuluthHarborHouse": {
+        "MN_DULUTH_HARBOR_HOSTText": [
+          [
+            "The wind can turn.",
+            "Our pier has rails"
+          ],
+          [
+            "and a closed end.",
+            "Fish with care."
+          ]
+        ]
+      },
+      "MnDuluthHistoryHouse": {
+        "MN_DULUTH_HISTORY_HOSTText": [
+          [
+            "Ore came from the",
+            "rocky Iron Range."
+          ],
+          [
+            "Ships carried it",
+            "across this lake."
+          ]
+        ],
+        "MN_DULUTH_ORE_SAMPLEText": [
+          [
+            "TACONITE SAMPLE",
+            "A hard ore from"
+          ],
+          [
+            "the Iron Range."
+          ]
+        ]
+      },
+      "MnDuluthLookoutLodge1F": {
+        "MN_DULUTH_X_LOOKOUTLODGE_F1_HOSTText": [
+          [
+            "The ore docks are",
+            "below this ridge."
+          ],
+          [
+            "Upstairs has maps."
+          ]
+        ]
+      },
+      "MnDuluthLookoutLodge2F": {
+        "MN_DULUTH_X_LOOKOUTLODGE_F2_HOSTText": [
+          [
+            "The upper floor",
+            "is a quiet place."
+          ],
+          [
+            "Watch the wind."
+          ]
+        ]
+      },
+      "MnDuluthPotteryHouse": {
+        "MN_DULUTH_X_POTTERYHOUSE_F1_HOSTText": [
+          [
+            "Lake clay changes",
+            "color in the kiln."
+          ],
+          [
+            "Cool air helps."
+          ]
+        ]
+      },
+      "MnDuluthQuarryPractice": {
+        "MN_DULUTH_X_QUARRYPRACTICE_F1_HOSTText": [
+          [
+            "Our practice court",
+            "has no badge prize"
+          ],
+          [
+            "Ask VESKA to duel."
+          ]
+        ]
+      },
+      "MnDuluthHillGardenHouse": {
+        "MN_DULUTH_X_HILLGARDENHOUSE_F1_HOSTText": [
+          [
+            "These windbreaks",
+            "hold the soil here"
+          ],
+          [
+            "Please use paths."
+          ]
+        ]
+      },
+      "MnDuluthTerraceHome": {
+        "MN_DULUTH_X_TERRACEHOME_F1_HOSTText": [
+          [
+            "We walk uphill to",
+            "buy our supplies."
+          ],
+          [
+            "An easy trip home!"
+          ]
+        ]
+      },
+      "MnDuluthHillRanger": {
+        "MN_DULUTH_X_HILLRANGER_F1_HOSTText": [
+          [
+            "Stone steps climb",
+            "the stone wall."
+          ],
+          [
+            "Hop down to return"
+          ]
+        ]
+      },
+      "MnDuluthReadingHall1F": {
+        "MN_DULUTH_X_READINGHALL_F1_HOSTText": [
+          [
+            "Local charts are",
+            "on the upper floor"
+          ],
+          [
+            "Buy gear at co-op."
+          ]
+        ]
+      },
+      "MnDuluthReadingHall2F": {
+        "MN_DULUTH_X_READINGHALL_F2_HOSTText": [
+          [
+            "Quiet study corner",
+            "overlooking the"
+          ],
+          [
+            "lake and harbor."
+          ]
+        ]
+      },
+      "MnDuluthHillsideHostel1F": {
+        "MN_DULUTH_X_HILLSIDEHOSTEL_F1_HOSTText": [
+          [
+            "Rest your partners",
+            "before hill walks."
+          ]
+        ]
+      },
+      "MnDuluthHillsideHostel2F": {
+        "MN_DULUTH_X_HILLSIDEHOSTEL_F2_HOSTText": [
+          [
+            "Travelers swap",
+            "stories over hot"
+          ],
+          [
+            "tea up here."
+          ]
+        ]
+      },
+      "MnDuluthHillSupplies": {
+        "MN_DULUTH_X_HILLSUPPLIES_F1_HOSTText": [
+          [
+            "Hillside supplies!",
+            "For lake and hill."
+          ]
+        ]
+      },
+      "MnDuluthCommunityKitchen": {
+        "MN_DULUTH_X_COMMUNITYKITCHEN_F1_HOSTText": [
+          [
+            "Cold wind calls",
+            "for a warm drink."
+          ]
+        ]
+      },
+      "MnDuluthWeatherStudy1F": {
+        "MN_DULUTH_X_WEATHERSTUDY_F1_HOSTText": [
+          [
+            "The lake turns a",
+            "calm day windy."
+          ],
+          [
+            "Charts upstairs."
+          ]
+        ]
+      },
+      "MnDuluthWeatherStudy2F": {
+        "MN_DULUTH_X_WEATHERSTUDY_F2_HOSTText": [
+          [
+            "The upper floor",
+            "is a quiet place."
+          ],
+          [
+            "Watch the wind."
+          ]
+        ]
+      },
+      "MnDuluthLakesideHome": {
+        "MN_DULUTH_X_LAKESIDEHOME_F1_HOSTText": [
+          [
+            "Our home faces",
+            "Lake SUPERIOR."
+          ],
+          [
+            "The pier has rails"
+          ]
+        ]
+      },
+      "MnDuluthLakeOutfitter": {
+        "MN_DULUTH_X_LAKEOUTFITTER_F1_HOSTText": [
+          [
+            "Pack a REPEL for",
+            "your next portage."
+          ]
+        ]
+      },
+      "MnDuluthFieldClinic": {
+        "MN_DULUTH_X_FIELDCLINIC_F1_HOSTText": [
+          [
+            "Partners need rest",
+            "after long walks."
+          ]
+        ]
+      },
+      "MnDuluthBoatBuilder": {
+        "MN_DULUTH_X_BOATBUILDER_F1_HOSTText": [
+          [
+            "The slips belong",
+            "to working crews."
+          ],
+          [
+            "Use our safe pier."
+          ]
+        ]
+      },
+      "MnDuluthUnionHall1F": {
+        "MN_DULUTH_X_UNIONHALL_F1_HOSTText": [
+          [
+            "Meetings are held",
+            "upstairs tonight."
+          ],
+          [
+            "The yard is open."
+          ]
+        ]
+      },
+      "MnDuluthUnionHall2F": {
+        "MN_DULUTH_X_UNIONHALL_F2_HOSTText": [
+          [
+            "Union delegates",
+            "meet here to plan"
+          ],
+          [
+            "the dock shifts."
+          ]
+        ]
+      },
+      "MnDuluthOreWarehouse1F": {
+        "MN_DULUTH_X_OREWAREHOUSE_F1_HOSTText": [
+          [
+            "Our tool counter",
+            "faces a work lane."
+          ],
+          [
+            "No rail stop here."
+          ]
+        ]
+      },
+      "MnDuluthOreWarehouse2F": {
+        "MN_DULUTH_X_OREWAREHOUSE_F2_HOSTText": [
+          [
+            "Tally sheets and",
+            "manifests for ore"
+          ],
+          [
+            "freighters."
+          ]
+        ]
+      },
+      "MnDuluthToolExchange": {
+        "MN_DULUTH_X_TOOLEXCHANGE_F1_HOSTText": [
+          [
+            "Training supplies",
+            "for a fair battle."
+          ]
+        ]
+      },
+      "MnDuluthTrainingAnnex": {
+        "MN_DULUTH_X_TRAININGANNEX_F1_HOSTText": [
+          [
+            "Ask TERA for a",
+            "practice battle."
+          ],
+          [
+            "No entry fee here."
+          ]
+        ]
+      },
+      "MnDuluthForemanHome": {
+        "MN_DULUTH_X_FOREMANHOME_F1_HOSTText": [
+          [
+            "The harbor takes",
+            "many hands to run."
+          ],
+          [
+            "Ask cargo staff."
+          ]
+        ]
+      },
+      "MnDuluthMaritimeCoop1F": {
+        "MN_DULUTH_X_MARITIMECOOP_F1_HOSTText": [
+          [
+            "Outdoor gear1F,",
+            "health goods2F,"
+          ],
+          [
+            "training on3F."
+          ]
+        ]
+      },
+      "MnDuluthMaritimeCoop2F": {
+        "MN_DULUTH_X_MARITIMECOOP_F2_HOSTText": [
+          [
+            "Herbal salves and",
+            "remedies for cold"
+          ],
+          [
+            "water work."
+          ]
+        ]
+      },
+      "MnDuluthMaritimeCoop3F": {
+        "MN_DULUTH_X_MARITIMECOOP_F3_HOSTText": [
+          [
+            "Open gym floor",
+            "for crew sparring"
+          ],
+          [
+            "and conditioning."
+          ]
+        ]
+      },
+      "MnDuluthCargoOffice": {
+        "MN_DULUTH_X_CARGOOFFICE_F1_HOSTText": [
+          [
+            "The crew needs one",
+            "X DEFEND. I can"
+          ],
+          [
+            "offer an HP UP."
+          ]
+        ]
+      },
+      "MnDuluthSailorClub1F": {
+        "MN_DULUTH_X_SAILORCLUB_F1_HOSTText": [
+          [
+            "The pier practice",
+            "is just for fun."
+          ],
+          [
+            "Our lounge is up."
+          ]
+        ]
+      },
+      "MnDuluthSailorClub2F": {
+        "MN_DULUTH_X_SAILORCLUB_F2_HOSTText": [
+          [
+            "Playing cards and",
+            "listening to the"
+          ],
+          [
+            "foghorns at dusk."
+          ]
+        ]
+      },
+      "MnDuluthDockSupplies": {
+        "MN_DULUTH_X_DOCKSUPPLIES_F1_HOSTText": [
+          [
+            "The right gear",
+            "is on your list."
+          ]
+        ]
+      },
+      "MnDuluthSlipHouse": {
+        "MN_DULUTH_X_SLIPHOUSE_F1_HOSTText": [
+          [
+            "Please keep the",
+            "work pier clear."
+          ],
+          [
+            "Fishing is fine."
+          ]
+        ]
+      },
+      "MnDuluthBeachShelter": {
+        "MN_DULUTH_X_BEACHSHELTER_F1_HOSTText": [
+          [
+            "The point is long.",
+            "Rest your partners"
+          ],
+          [
+            "before going back."
+          ]
+        ]
+      },
+      "MnDuluthPointOutfitter": {
+        "MN_DULUTH_X_POINTOUTFITTER_F1_HOSTText": [
+          [
+            "Supplies for the",
+            "far point walks."
+          ]
+        ]
+      },
+      "MnDuluthSandHouse": {
+        "MN_DULUTH_X_SANDHOUSE_F1_HOSTText": [
+          [
+            "The sand shifts,",
+            "so our path bends."
+          ]
+        ]
+      },
+      "MnDuluthBoatClub1F": {
+        "MN_DULUTH_X_BOATCLUB_F1_HOSTText": [
+          [
+            "SULO trains here.",
+            "Try a fair match."
+          ]
+        ]
+      },
+      "MnDuluthBoatClub2F": {
+        "MN_DULUTH_X_BOATCLUB_F2_HOSTText": [
+          [
+            "Skippers check",
+            "the barometers"
+          ],
+          [
+            "before sailing."
+          ]
+        ]
+      },
+      "MnDuluthFisherCottage": {
+        "MN_DULUTH_X_FISHERCOTTAGE_F1_HOSTText": [
+          [
+            "Far from hills,",
+            "near the waves."
+          ]
+        ]
+      },
+      "MnDuluthPointGardenHome": {
+        "MN_DULUTH_X_POINTGARDENHOME_F1_HOSTText": [
+          [
+            "Pines block wind",
+            "from our garden."
+          ]
+        ]
+      },
+      "MnGrandMaraisPokecenter": {},
+      "MnGrandMaraisMart": {},
+      "MnGrandMaraisArtistHouse": {},
+      "MnGrandMaraisFisherHouse": {}
     }
   }
 }

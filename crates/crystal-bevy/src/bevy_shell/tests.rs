@@ -25,6 +25,8 @@ mod minnesota_fossils;
 mod minnesota_research_access;
 #[path = "tests/minnesota_starter_return.rs"]
 mod minnesota_starter_return;
+#[path = "tests/minnesota_store_dialogue.rs"]
+mod minnesota_store_dialogue;
 #[path = "tests/native_city_ports.rs"]
 mod native_city_ports;
 
@@ -665,3 +667,9 @@ mod r05_wooded_terraces;
 
 #[path = "tests/r06_pine_fork.rs"]
 mod r06_pine_fork;
+
+#[path = "tests/minnesota_ambient_dialogue.rs"]
+mod minnesota_ambient_dialogue;
+
+#[path = "tests/northstar_driftless_passage.rs"]
+mod northstar_driftless_passage;

@@ -505,7 +505,7 @@ fn select_visible_title_menu_option(runtime_shell: &mut BevyRuntimeShell) -> Res
     if let Some(continue_screen) = runtime_shell.visible_continue_screen.take() {
         let save_path = continue_screen.save_path;
         let saved = runtime_shell.shell.runtime().load_save(&save_path)?;
-        if saved.time.rtc_status_flags & (crate::core::systems::time::RTC_RESET | crate::core::systems::time::RTC_DAYS_EXCEED_255) != 0 {
+        if !runtime_shell.runtime.data().uses_host_clock() && saved.time.rtc_status_flags & (crate::core::systems::time::RTC_RESET | crate::core::systems::time::RTC_DAYS_EXCEED_255) != 0 {
             return open_visible_restart_clock(runtime_shell, save_path);
         }
         record_visible_runtime_action(

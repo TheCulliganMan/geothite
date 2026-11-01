@@ -1,4 +1,14 @@
 impl GameDataSet {
+    /// Whether the pack contains the Minnesota region.
+    pub fn is_minnesota(&self) -> bool {
+        self.maps.keys().any(|id| id.starts_with("Mn"))
+    }
+
+    /// Whether the game clock follows the supplied civil time without an offset.
+    pub fn uses_host_clock(&self) -> bool {
+        self.server_clock || self.is_minnesota()
+    }
+
     pub fn owned_decoration_categories(
         &self,
         state: &GameState,
@@ -927,12 +937,20 @@ impl GameDataSet {
     {
         let mut next = state.clone();
         let previous_day = next.time.current_day;
-        if self.server_clock {
+        let previous_date = next.time.current_date;
+        if self.uses_host_clock() {
             next.time.update_server_datetime(date, hour, minute, second);
         } else {
             next.time.update_from_datetime(date, hour, minute, second);
         }
-        let elapsed_days = crystal_days_since(previous_day, next.time.current_day);
+        // Old saves may have an arbitrary manually chosen weekday. Comparing
+        // that day counter to the new civil weekday would invent elapsed days
+        // and expire daily events on the first sample.
+        let elapsed_days = if self.is_minnesota() {
+            crystal_core::systems::time::compute_day_count(previous_date, date).min(139) as u8
+        } else {
+            crystal_days_since(previous_day, next.time.current_day)
+        };
         apply_elapsed_daily_time_events(
             &mut next,
             elapsed_days,
@@ -957,7 +975,7 @@ impl GameDataSet {
         S: DividerSource + ?Sized,
         S::Error: std::fmt::Display,
     {
-        if self.server_clock {
+        if self.uses_host_clock() {
             return self.update_clock_from_datetime(
                 state, now_date, now_hour, now_minute, now_second, divider,
             );
@@ -1523,7 +1541,7 @@ impl GameDataSet {
                 })?
         };
         if !catch_tutorial {
-            self.equip_wild_challenge_moves(&mut start.enemy_pokemon)?;
+            self.equip_wild_challenge_moves(&mut start.enemy_pokemon, map_name)?;
             start.enemy_party = vec![start.enemy_pokemon.clone()];
         }
         let resume_command_index = startbattle_command_index
@@ -4865,7 +4883,14 @@ impl GameDataSet {
                 )
             })?;
             self.map_name_for_constant(map_constant)?;
-            next_state.last_spawn_map_constant = Some(map_constant.clone());
+            let preserve_clinic = current_map.starts_with("Mn")
+                && (self.minnesota_clinic_for_constant(map_constant).is_some()
+                    || next_state.last_spawn_map_constant.as_deref().is_some_and(|previous| {
+                        self.minnesota_clinic_for_constant(previous).is_some()
+                    }));
+            if !preserve_clinic {
+                next_state.last_spawn_map_constant = Some(map_constant.clone());
+            }
         }
         if command.command == "changemapblocks" {
             let blocks_label = command.args.first().with_context(|| {

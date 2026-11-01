@@ -195,8 +195,9 @@
           ],
           "facing": "west",
           "lines": [
-            "Every station keeps",
-            "its own readings."
+            "The bluff trails",
+            "can tire anyone.",
+            "Take regular rests."
           ],
           "service": null
         }
@@ -402,8 +403,9 @@
       ],
       "facing": "east",
       "lines": [
-        "The river changes.",
-        "We keep a record."
+        "Watching barges",
+        "drift downriver",
+        "is how I relax."
       ],
       "service": null
     },
@@ -416,8 +418,9 @@
       ],
       "facing": "west",
       "lines": [
-        "The trail west",
-        "leads to ROCHESTER."
+        "West lies the",
+        "driftless prairie",
+        "and ROCHESTER."
       ],
       "service": null
     }
@@ -453,7 +456,7 @@
       ],
       "lines": [
         "FIELD STATION",
-        "Keep original records."
+        "PROF. TAMARACK"
       ]
     },
     {

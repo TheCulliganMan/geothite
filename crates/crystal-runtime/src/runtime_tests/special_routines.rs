@@ -3892,7 +3892,7 @@
         assert_eq!(teleport.actor_party_index, 0);
         assert_eq!(teleport.actor_species, "CHIKORITA");
         assert_eq!(teleport.source_map, "RuntimeMap");
-        assert_eq!(teleport.destination_spawn_identifier, 21);
+        assert_eq!(teleport.destination_spawn_identifier, Some(21));
         assert_eq!(teleport.destination_map, "TeleportMap");
         assert_eq!(teleport.destination_tile, TilePosition::new(1, 1));
         assert_eq!(session.overworld.snapshot(), source_snapshot);

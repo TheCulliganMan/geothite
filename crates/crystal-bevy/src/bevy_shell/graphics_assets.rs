@@ -1922,6 +1922,12 @@ fn render_visible_asm_text_pages(
             if let Some(value) = visible_named_text_buffer(named_buffers, buffer_id) {
                 resolved.push_str(value);
             }
+        } else if token_body.starts_with('w')
+            && let Some(value) = visible_named_text_buffer(named_buffers, buffer_id)
+        {
+            // Some compiled text uses the bare WRAM operand as a placeholder
+            // instead of the explicit RAM: form (for example move learning).
+            resolved.push_str(value);
         } else {
             resolved.push_str(&token[..=end]);
         }

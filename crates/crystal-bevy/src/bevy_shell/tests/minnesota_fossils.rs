@@ -78,17 +78,84 @@ fn restoration_fixture(root: &AssetRoot, runtime: &CrystalRuntime) -> VisibleShe
     }
 }
 
+fn hunter_approach(runtime: &CrystalRuntime) -> ((i16, i16), GameButton) {
+    let hunter = runtime.data().maps["MnR01C00R00"]
+        .objects
+        .iter()
+        .find(|actor| actor.script == "MnFossilBluff")
+        .expect("fossil hunter");
+    match (hunter.x, hunter.y) {
+        (26, 14) => ((26, 15), GameButton::Up),
+        (39, 21) => ((40, 21), GameButton::Left),
+        position => panic!("unreviewed fossil hunter position {position:?}"),
+    }
+}
+
+#[test]
+#[ignore = "requires CRYSTAL_WINONA_TEST_PACK with the cliff fossil hunter"]
+fn fossil_hunter_cliff_conversation_and_route_remain_accessible() {
+    let (root, runtime) = load();
+    let map = &runtime.data().maps["MnR01C00R00"];
+    let hunter = map
+        .objects
+        .iter()
+        .find(|actor| actor.script == "MnFossilBluff")
+        .expect("fossil hunter");
+    assert_eq!((hunter.x, hunter.y), (26, 14));
+
+    // The starting position and escort are fixtures; all subsequent travel,
+    // dialogue, and fossil choices use the production controller.
+    let mut c = fixture(&root, &runtime, "MnR01C00R00", (25, 15));
+    let mut partner = runtime
+        .data()
+        .create_pokemon("POUCHID", 10, Dv::default())
+        .expect("Minnesota escort");
+    partner.item = Some("SMOKE_BALL".into());
+    let state = c.shell.shell.session_mut().state_mut();
+    assert!(state.storage.party.add_pokemon(partner));
+    state.sync_party_from_storage();
+    mark_runtime_snapshot_dirty(&mut c.shell);
+
+    super::rochester::trail(&mut c, &runtime, (26, 15));
+    press(&mut c, GameButton::Up);
+    press(&mut c, GameButton::A);
+    for expected in [
+        "Look, a shell!\nRight in the rock.",
+        "This cliff used to\nlie under a sea.",
+        "Two fossils came\nout. Want one?",
+    ] {
+        c.wait_frames(64).expect("fossil page presentation");
+        let page = c.snapshot().expect("hunter dialogue");
+        let text = page.ui.text.expect("hunter's visible page");
+        assert_eq!(text.label, "MnFossilSlabText");
+        assert_eq!(text.asm_text.as_deref(), Some(expected));
+        press(&mut c, GameButton::A);
+    }
+    choice(&mut c, false);
+    finish(&mut c);
+    assert!(!event(&c, "EVENT_MN_FOSSIL_CHOSEN"));
+
+    talk(&mut c, GameButton::Up, &[true, true, true]);
+    assert!(event(&c, "EVENT_MN_FOSSIL_CHOSEN"));
+    assert_eq!(quantity(&c, "LENS_FOSSIL"), 1);
+    super::rochester::trail(&mut c, &runtime, (0, 24));
+    super::rochester::trail(&mut c, &runtime, (63, 24));
+    press(&mut c, GameButton::Start);
+    assert!(c.snapshot().expect("Start after route").ui.menu.is_some());
+}
+
 #[test]
 #[ignore = "requires CRYSTAL_WINONA_TEST_PACK with Minnesota fossil research"]
 fn fossils_controller_both_choices_decline_persist_and_post_league_exchange() {
     let (root, r) = load();
+    let (approach, facing) = hunter_approach(&r);
     for lens in [true, false] {
-        let mut c = fixture(&root, &r, "MnR01C00R00", (40, 21));
-        talk(&mut c, GameButton::Left, &[false]);
+        let mut c = fixture(&root, &r, "MnR01C00R00", approach);
+        talk(&mut c, facing, &[false]);
         assert!(!event(&c, "EVENT_MN_FOSSIL_CHOSEN"));
-        talk(&mut c, GameButton::Left, &[true, lens, false]);
+        talk(&mut c, facing, &[true, lens, false]);
         assert!(!event(&c, "EVENT_MN_FOSSIL_CHOSEN"));
-        talk(&mut c, GameButton::Left, &[true, lens, true]);
+        talk(&mut c, facing, &[true, lens, true]);
         let (selected, other) = if lens {
             ("LENS_FOSSIL", "SPIRE_FOSSIL")
         } else {
@@ -99,13 +166,13 @@ fn fossils_controller_both_choices_decline_persist_and_post_league_exchange() {
         assert_eq!(quantity(&c, selected), 1);
         assert_eq!(quantity(&c, other), 0);
         c = continue_save(root.clone(), r.clone(), &mut c);
-        talk(&mut c, GameButton::Left, &[]);
+        talk(&mut c, facing, &[]);
         assert_eq!(quantity(&c, selected), 1);
         assert_eq!(quantity(&c, other), 0);
     }
     // Separate declared post-League fixtures, not an earned Champion claim.
     for lens in [true, false] {
-        let mut c = fixture(&root, &r, "MnR01C00R00", (40, 21));
+        let mut c = fixture(&root, &r, "MnR01C00R00", approach);
         {
             let state = c.shell.shell.session_mut().state_mut();
             for flag in ["EVENT_MN_FOSSIL_CHOSEN", "EVENT_MN_LEAGUE_CHAMPION"] {
@@ -121,13 +188,13 @@ fn fossils_controller_both_choices_decline_persist_and_post_league_exchange() {
         }
         mark_runtime_snapshot_dirty(&mut c.shell);
         let other = if lens { "SPIRE_FOSSIL" } else { "LENS_FOSSIL" };
-        talk(&mut c, GameButton::Left, &[false]);
+        talk(&mut c, facing, &[false]);
         assert!(!event(&c, "EVENT_MN_FOSSIL_EXCHANGED"));
-        talk(&mut c, GameButton::Left, &[true]);
+        talk(&mut c, facing, &[true]);
         assert!(event(&c, "EVENT_MN_FOSSIL_EXCHANGED"));
         assert_eq!(quantity(&c, other), 1);
         c = continue_save(root.clone(), r.clone(), &mut c);
-        talk(&mut c, GameButton::Left, &[]);
+        talk(&mut c, facing, &[]);
         assert_eq!(quantity(&c, other), 1);
     }
 }

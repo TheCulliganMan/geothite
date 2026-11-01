@@ -486,7 +486,10 @@ fn bemidji_addon_recovery_runs_native_teleport_blackout_and_preserves_source_fly
         let prepared = data
             .use_teleport_field_move_in_session(&mut state, &mut session, 0, &music)
             .expect("prepare actual native Teleport");
-        assert_eq!(prepared.destination_spawn_identifier, spawn.identifier);
+        assert_eq!(
+            prepared.destination_spawn_identifier,
+            Some(spawn.identifier)
+        );
         assert_eq!(prepared.destination_map, name);
         assert_eq!(prepared.destination_tile, expected_tile);
         assert_eq!(

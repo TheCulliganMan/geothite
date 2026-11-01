@@ -552,10 +552,10 @@
       ],
       "facing": "south",
       "lines": [
-        "The clinic needs",
-        "the survey records.",
-        "VAREL is waiting",
-        "in the south gym."
+        "VAREL trains here.",
+        "Their partners are",
+        "strong, and they",
+        "look happy, too."
       ],
       "service": null
     },
@@ -616,7 +616,7 @@
       ],
       "lines": [
         "ROCHESTER",
-        "Please keep a copy."
+        "A CITY OF CARE"
       ]
     }
   ],

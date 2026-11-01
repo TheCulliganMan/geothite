@@ -2952,8 +2952,13 @@ fn sync_runtime_battle_music(mut runtime_shell: ResMut<BevyRuntimeShell>) {
     if snapshot.script_events.pending_music_fade.is_some() {
         return;
     }
-    let Some(music_id) = battle_music_id(&snapshot) else {
-        return;
+    let music_id = match battle_music_id(&runtime_shell, &snapshot) {
+        Ok(Some(music_id)) => music_id,
+        Ok(None) => return,
+        Err(error) => {
+            record_visible_runtime_system_error(&mut runtime_shell, error);
+            return;
+        }
     };
     if runtime_shell.active_music.as_deref() == Some(music_id.as_str()) {
         return;
@@ -3022,8 +3027,105 @@ fn sync_runtime_battle_music(mut runtime_shell: ResMut<BevyRuntimeShell>) {
     trim_event_log(&mut runtime_shell.last_audio_events);
 }
 
-fn battle_music_id(snapshot: &RuntimeShellSnapshot) -> Option<String> {
-    Some(snapshot.battle.as_ref()?.battle_music.clone())
+fn battle_music_id(
+    runtime_shell: &BevyRuntimeShell,
+    snapshot: &RuntimeShellSnapshot,
+) -> anyhow::Result<Option<String>> {
+    let Some(battle) = snapshot.battle.as_ref() else {
+        return Ok(None);
+    };
+    let RuntimeBattleKind::Trainer {
+        trainer_class,
+        trainer_id,
+        ..
+    } = &battle.kind
+    else {
+        return Ok(Some(battle.battle_music.clone()));
+    };
+    if matches!(
+        battle.battle_type.as_str(),
+        "BATTLETYPE_SUICUNE" | "BATTLETYPE_ROAMING"
+    ) {
+        return Ok(Some("MUSIC_SUICUNE_BATTLE".to_owned()));
+    }
+    let johto_music = trainer_battle_music(trainer_class, trainer_id, false);
+    if johto_music == trainer_battle_music(trainer_class, trainer_id, true) {
+        return Ok(Some(johto_music.to_owned()));
+    }
+    let map = &runtime_shell.shell.session().overworld().map.name;
+    let kanto = if map.starts_with("Mn")
+        || runtime_shell.shell.session().state().link_session.link_mode != 0
+    {
+        false
+    } else {
+        runtime_shell
+            .shell
+            .runtime()
+            .data()
+            .pokegear_landmark_for_map(map)?
+            .region
+            == "KANTO"
+    };
+    Ok(Some(
+        trainer_battle_music(trainer_class, trainer_id, kanto).to_owned(),
+    ))
+}
+
+// Crystal's PlayBattleMusic selects a battle theme independently of the
+// encounter theme. Northstar's private trainer classes retain their roles.
+fn trainer_battle_music(class: &str, id: &str, kanto: bool) -> &'static str {
+    match (class, id) {
+        ("CHAMPION" | "RED", _) | (_, "MN_CHAMPION") => "MUSIC_CHAMPION_BATTLE",
+        ("GRUNTM" | "GRUNTF", _) => "MUSIC_ROCKET_BATTLE",
+        (
+            "BROCK" | "MISTY" | "LT_SURGE" | "ERIKA" | "JANINE" | "SABRINA" | "BLAINE" | "BLUE",
+            _,
+        ) => "MUSIC_KANTO_GYM_LEADER_BATTLE",
+        ("RIVAL2", id) if id.starts_with("RIVAL2_2_") => "MUSIC_CHAMPION_BATTLE",
+        ("RIVAL1" | "RIVAL2" | "MN_RIVAL_REED", _) => "MUSIC_RIVAL_BATTLE",
+        (class, _) if crystal_assets::is_gym_leader_class(class) => "MUSIC_JOHTO_GYM_LEADER_BATTLE",
+        _ if kanto => "MUSIC_KANTO_TRAINER_BATTLE",
+        _ => "MUSIC_JOHTO_TRAINER_BATTLE",
+    }
+}
+
+#[test]
+fn trainer_battle_themes_follow_crystal_and_northstar_roles() {
+    for (class, id, kanto, expected) in [
+        ("YOUNGSTER", "JOEY1", false, "MUSIC_JOHTO_TRAINER_BATTLE"),
+        ("YOUNGSTER", "JOEY1", true, "MUSIC_KANTO_TRAINER_BATTLE"),
+        ("GRUNTM", "GRUNTM_1", true, "MUSIC_ROCKET_BATTLE"),
+        ("BROCK", "BROCK1", false, "MUSIC_KANTO_GYM_LEADER_BATTLE"),
+        ("WILL", "WILL1", true, "MUSIC_JOHTO_GYM_LEADER_BATTLE"),
+        (
+            "MN_LEADER_VAREL",
+            "MN_GYM_1",
+            false,
+            "MUSIC_JOHTO_GYM_LEADER_BATTLE",
+        ),
+        ("RIVAL1", "RIVAL1_1_CHIKORITA", false, "MUSIC_RIVAL_BATTLE"),
+        (
+            "MN_RIVAL_REED",
+            "MN_REED_WINONA",
+            false,
+            "MUSIC_RIVAL_BATTLE",
+        ),
+        ("RIVAL2", "RIVAL2_1_CHIKORITA", false, "MUSIC_RIVAL_BATTLE"),
+        (
+            "RIVAL2",
+            "RIVAL2_2_CHIKORITA",
+            false,
+            "MUSIC_CHAMPION_BATTLE",
+        ),
+        ("CHAMPION", "LANCE", false, "MUSIC_CHAMPION_BATTLE"),
+        ("FALKNER", "MN_CHAMPION", false, "MUSIC_CHAMPION_BATTLE"),
+    ] {
+        assert_eq!(
+            trainer_battle_music(class, id, kanto),
+            expected,
+            "{class} {id}"
+        );
+    }
 }
 
 fn visible_victory_music_id(

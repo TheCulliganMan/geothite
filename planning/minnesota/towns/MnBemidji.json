@@ -944,9 +944,9 @@
       ],
       "facing": "south",
       "lines": [
-        "A reading is just",
-        "one observation.",
-        "Compare the logs."
+        "Northwoods trails",
+        "can get rugged.",
+        "Travel prepared."
       ],
       "requires": [
         "BADGE_7",

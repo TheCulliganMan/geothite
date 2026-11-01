@@ -9,6 +9,67 @@ use crate::{CompiledGamePack, MapModule};
 const MANIFEST: &str = "minnesota-early-research-access-v1";
 const DELIVERED: &str = "EVENT_MN_DELIVERED_ROCHESTER_PARCEL";
 const EXCHANGED: &str = "EVENT_MN_FOSSIL_EXCHANGED";
+const LAB_ASSISTANT: &[&str] = &[
+    "We study fossils",
+    "and restore the",
+    "life inside them.",
+    "If you bring one,",
+    "our scientist can",
+    "explain the work.",
+];
+const LAB_NEED_SPECIMEN: &[&str] = &[
+    "If you find a",
+    "fossil, bring it",
+    "here. I'd love to",
+    "take a look.",
+];
+const LAB_SECOND_THANKS: &[&str] = &[
+    "Take good care of",
+    "that fossil. Our",
+    "scientist can help",
+    "restore it, too.",
+    "Leave room in your",
+    "party first.",
+];
+
+/// Rewrites the existing Rochester lab conversations on a completed pack.
+///
+/// # Errors
+/// Rejects invalid packs, a missing lab or dialogue, and invalid revised content.
+pub fn revise_minnesota_fossil_lab_dialogue(base: &CompiledGamePack) -> Result<CompiledGamePack> {
+    crate::verify_compiled_game_pack_for_runtime(base)?;
+    ensure!(
+        !base
+            .report
+            .manifests
+            .iter()
+            .any(|entry| entry == "minnesota-fossil-lab-dialogue-v1"),
+        "fossil lab dialogue already revised"
+    );
+    let mut pack = base.clone();
+    let mut lab = map(&pack, "MnRochesterFossilLab")?;
+    for (label, lines) in [
+        ("MnRochesterFossilLabAssistantText", LAB_ASSISTANT),
+        ("MnLabFossilNeedSpecimenText", LAB_NEED_SPECIMEN),
+        ("MnLabSecondThanksText", LAB_SECOND_THANKS),
+    ] {
+        ensure!(lab.scripts.contains_key(label), "missing lab text {label}");
+        text(&mut lab, label, lines)?;
+    }
+    publish(&mut pack, lab)?;
+    pack.report
+        .manifests
+        .push("minnesota-fossil-lab-dialogue-v1".into());
+    pack.identity = crate::derive_compiled_game_pack_identity_from_manifest(
+        pack.format_version,
+        &pack.data,
+        &pack.audio_manifest,
+        &pack.runtime_files,
+        &pack.report,
+    )?;
+    crate::verify_compiled_game_pack_for_runtime(&pack)?;
+    Ok(pack)
+}
 
 /// Makes the two unchosen starters free after the first Rochester delivery.
 ///
@@ -288,8 +349,8 @@ fn fossils(pack: &mut CompiledGamePack) -> Result<()> {
             "ROCHESTER clinic.",
             "Earn the CARE",
             "BADGE first.",
-            "Leave a party slot",
-            "Restore one. Then",
+            "Leave room in your",
+            "party for it. Then",
             "ask the assistant",
             "for the other free",
             "fossil specimen.",
@@ -385,21 +446,8 @@ fn fossils(pack: &mut CompiledGamePack) -> Result<()> {
         "MnLabSecondDirections",
         vec![c("jumptext", &["MnLabSecondThanksText"])],
     );
-    text(
-        &mut lab,
-        "MnRochesterFossilLabAssistantText",
-        &[
-            "Pick a free LENS",
-            "or SPIRE FOSSIL on",
-            "DRIFTLESS TRAIL.",
-            "Earn the CARE",
-            "BADGE first.",
-            "restore it here.",
-            "Then I'll give you",
-            "the other fossil",
-            "at no charge.",
-        ],
-    )?;
+    text(&mut lab, "MnRochesterFossilLabAssistantText", LAB_ASSISTANT)?;
+    text(&mut lab, "MnLabFossilNeedSpecimenText", LAB_NEED_SPECIMEN)?;
     text(
         &mut lab,
         "MnLabSecondOfferText",
@@ -411,23 +459,7 @@ fn fossils(pack: &mut CompiledGamePack) -> Result<()> {
             "Take it for free?",
         ],
     )?;
-    text(
-        &mut lab,
-        "MnLabSecondThanksText",
-        &[
-            "Our scientist can",
-            "restore both lines",
-            "Leave a party slot",
-            "for each friend.",
-            "TRILUME evolves",
-            "at level 34, as",
-            "does SIPHLET.",
-            "CASTOROCK lives in",
-            "the Route 3 cave.",
-            "Bring STRENGTH and",
-            "read the jaw clues",
-        ],
-    )?;
+    text(&mut lab, "MnLabSecondThanksText", LAB_SECOND_THANKS)?;
     text(
         &mut lab,
         "MnLabSecondFullText",

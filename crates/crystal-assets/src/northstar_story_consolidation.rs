@@ -15,6 +15,74 @@ const COMMON: &str = "a7f6270ac5c7cdc83fe0f7484fd8485990ceb9749a0fde803dc43cbd22
 const DONOR: &str = "ccf84221d047e958736a4ca5cbecc917713a4496e03ffe89527e72e2d2593914";
 const MARKER: &str = "northstar-current-v27-consolidation-v1";
 const SCENE_FIXES_MARKER: &str = "northstar-story-scene-fixes-v1";
+const MOM_DOOR_MARKER: &str = "northstar-mom-door-approach-v1";
+
+/// Moves the opening interception to the home door and both exit approaches.
+///
+/// # Errors
+/// Rejects incompatible or previously repaired packs and invalid output.
+pub fn repair_northstar_mom_door(base: &CompiledGamePack) -> Result<CompiledGamePack> {
+    crate::verify_compiled_game_pack_for_runtime(base)?;
+    ensure!(
+        !base.report.manifests.iter().any(|m| m == MOM_DOOR_MARKER),
+        "Mom door repair already installed"
+    );
+    let mut pack = base.clone();
+    let mut home = pack
+        .data
+        .maps
+        .get("MnWinonaHome1F")
+        .context("Winona home")?
+        .clone();
+    ensure!(
+        [
+            "MnWHomeArrival",
+            "MnWGrantPokegear",
+            "MnOverhaulMomDoorLeft",
+            "MnOverhaulMomDoorRight",
+        ]
+        .iter()
+        .all(|label| home.scripts.contains_key(*label)),
+        "expected reviewed Mom scene"
+    );
+    for (x, script) in [(6, "MnOverhaulMomDoorLeft"), (7, "MnOverhaulMomDoorRight")] {
+        ensure!(
+            home.events
+                .coord_events
+                .iter()
+                .any(|event| event.x == x && event.y == 6 && event.script_name == script),
+            "missing Mom door trigger at ({x}, 6)"
+        );
+    }
+    let blocks_label = home.attributes.blocks_label.clone();
+    home.scripts.insert(
+        "MnWHomeArrival".into(),
+        serde_json::json!([crate::grand_marais_modpack::authoring::command("end", &[])]),
+    );
+    crate::northstar_opening_revision::install_door_approaches(&mut home);
+    home.events.coord_events.retain(|event| {
+        !(event.x == 9 && event.y == 1 && event.script_name == "MnOverhaulMomScene")
+    });
+    crate::northstar_story_revision::publish(&mut pack, home)?;
+    restore_split_entry(
+        &mut pack.data.map_attributes,
+        &base.data.map_attributes,
+        "MnWinonaHome1F",
+    );
+    if let Some(label) = blocks_label.as_ref() {
+        restore_split_entry(&mut pack.data.map_blocks, &base.data.map_blocks, label);
+    }
+    pack.report.manifests.push(MOM_DOOR_MARKER.into());
+    pack.identity = crate::derive_compiled_game_pack_identity_from_manifest(
+        pack.format_version,
+        &pack.data,
+        &pack.audio_manifest,
+        &pack.runtime_files,
+        &pack.report,
+    )?;
+    crate::verify_compiled_game_pack_for_runtime(&pack)?;
+    Ok(pack)
+}
 
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -729,7 +797,21 @@ pub fn apply_minnesota_story_and_scene_fixes(
         "story scene fixes already installed"
     );
     let story_root: Value = serde_json::from_str(story_json)?;
-    let mut pack = base.clone();
+
+    // Chain open_northstar_public_roads if not already opened so all 44 checkpoint
+    // officers across all 22 gates are hidden via callbacks and coordinates removed.
+    let base_pack = if !base
+        .report
+        .manifests
+        .iter()
+        .any(|m| m == "northstar-open-public-roads-v1")
+    {
+        crate::open_northstar_public_roads(base)?
+    } else {
+        base.clone()
+    };
+
+    let mut pack = base_pack.clone();
 
     // 1. MnWinonaHome1F: Mom's stair/door approach + Pokégear handoff
     {
@@ -831,6 +913,47 @@ pub fn apply_minnesota_story_and_scene_fixes(
         &base.data.map_attributes,
         "MnRochesterPokecenter1F",
     );
+
+    // 7. Overhaul town and interior dialogue across Minnesota to replace truncated,
+    // repetitive, robotic or boundary-checking lines with natural NPC dialogue.
+    if let Some(texts) = story_root["dialogue_overhaul"]["texts"].as_object() {
+        for map_name in texts.keys() {
+            if map_name == "MnWinonaHome1F" || map_name == "MnWinonaFieldStation" {
+                continue; // Handled by opening revisions above
+            }
+            if let Some(original) = pack.data.maps.get(map_name).cloned() {
+                let mut room = original.clone();
+                let mut changed = BTreeSet::new();
+                crate::northstar_opening_revision::compile_story_map_texts(
+                    &mut room,
+                    &story_root,
+                    map_name,
+                    &mut changed,
+                )?;
+                if !changed.is_empty() {
+                    let script_rows = room.map_script_section_commands.clone();
+                    crate::ely_league_rooms::finish(&pack, &mut room)?;
+                    room.script_audio_commands =
+                        crate::parse_script_audio_commands(map_name, &room.scripts)?;
+                    room.map_script_section_commands = script_rows;
+                    room = preserve_unmodified_caches(&original, room, &changed)?;
+                    crate::authored_town_publication::replace(&mut pack, room)?;
+                    restore_split_entry(
+                        &mut pack.data.map_attributes,
+                        &base.data.map_attributes,
+                        map_name,
+                    );
+                    if let Some(label) = original.attributes.blocks_label.as_ref() {
+                        restore_split_entry(
+                            &mut pack.data.map_blocks,
+                            &base.data.map_blocks,
+                            label,
+                        );
+                    }
+                }
+            }
+        }
+    }
 
     pack.report.manifests.push(SCENE_FIXES_MARKER.into());
     pack.identity = crate::derive_compiled_game_pack_identity_from_manifest(
@@ -1048,6 +1171,44 @@ mod tests {
             fixed.data.maps["MnWinonaFieldStation"]
                 .scripts
                 .contains_key("MnWTamarackGuideChampion")
+        );
+        let lab = &fixed.data.maps["MnWinonaFieldStation"];
+        let command = crate::grand_marais_modpack::authoring::command;
+        assert_eq!(
+            lab.scripts["MnWStationSyncCallback"][0],
+            command("checkevent", &["EVENT_MN_R01_PARCEL_RECEIVED"])
+        );
+        for label in [
+            "MnWReminder",
+            "MnWTamarackDeliveryReturn",
+            "MnWTamarackSurveyReturn",
+        ] {
+            let rows = lab.scripts[label].as_array().expect("Tamarack return");
+            for flag in [
+                "EVENT_MN_ICE_CAPTIVE_RESCUED",
+                "EVENT_MN_COURIER_DEFEATED",
+                "EVENT_MN_LEAGUE_CHAMPION",
+                "EVENT_MN_TAMARACK_EGG_RECEIVED",
+            ] {
+                assert!(
+                    rows.windows(2).any(|pair| pair
+                        == [
+                            command("checkevent", &[flag]),
+                            command("iftrue", &["MnNSETamarackPostEgg"]),
+                        ]),
+                    "{label} must route {flag} to current guidance"
+                );
+            }
+        }
+        let guide = lab.scripts["MnWTamarackGuideStPaul"]
+            .as_array()
+            .expect("guidance commands");
+        assert!(guide.contains(&command("scall", &["MnNSEEggOffer"])));
+        assert!(
+            !fixed.data.maps["MnWinona"].scripts["MnWTrailWardenCheckStarter"]
+                .as_array()
+                .expect("warden callback")
+                .contains(&command("setflag", &["ENGINE_POKEDEX"]))
         );
         let approach_columns = fixed.data.maps["MnRochesterPokecenter1F"]
             .events

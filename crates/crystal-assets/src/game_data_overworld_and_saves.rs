@@ -1614,12 +1614,18 @@ impl GameDataSet {
 
         if (!overworld_input_locked || staged_session.has_required_object_steps())
             && wild_battle.is_none()
+            && trainer_sight.is_none()
             && phone_call.is_none()
             && warp.is_none()
             && connection.is_none()
         {
             let has_autonomous_object = staged_session.objects.iter().any(|object| {
-                matches!(
+                (staged_session.map.name.starts_with("Mn")
+                    && object.object_type == "OBJECTTYPE_TRAINER"
+                    && object.radius > 0
+                    && object.sightline_direction_override.is_none()
+                    && object.spritemovedata.starts_with("SPRITEMOVEDATA_STANDING_"))
+                    || matches!(
                     object.spritemovedata.as_str(),
                     "SPRITEMOVEDATA_PATROL_CLOCKWISE"
                         | "SPRITEMOVEDATA_PATROL_CLOCKWISE_SLOW"
@@ -1661,6 +1667,20 @@ impl GameDataSet {
         let autonomous_objects_changed = session.object_runtime_tiles
             != staged_session.object_runtime_tiles
             || session.object_facings != staged_session.object_facings;
+        if staged_session.map.name.starts_with("Mn")
+            && autonomous_objects_changed
+            && !overworld_input_locked
+            && trainer_sight.is_none()
+            && interaction.is_none()
+            && coord_event.is_none()
+            && step_events.is_none()
+            && wild_battle.is_none()
+            && phone_call.is_none()
+            && warp.is_none()
+            && connection.is_none()
+        {
+            trainer_sight = self.check_trainer_sight_after_step(&staged_state, &staged_session)?;
+        }
         if warp.is_some() || connection.is_some() {
             grass_rustle = None;
         }
@@ -1804,6 +1824,13 @@ impl GameDataSet {
         let context = self.special_routine_context(&cry_by_species);
         let mut outcome = apply_special_routine_with_context(state, context, routine)
             .map_err(|error| anyhow::anyhow!("apply special routine {routine}: {error}"))?;
+        if routine == "HealParty"
+            && let crystal_core::state::OverworldMemory::Active { map_name, .. } = &state.overworld
+            && let Some(clinic) = self.minnesota_clinic(map_name)
+            && let Some(constant) = &clinic.attributes.map_constant
+        {
+            state.last_spawn_map_constant = Some(constant.clone());
+        }
         if !fainted_slots.is_empty() {
             for party_index in &fainted_slots {
                 if let Some(Some(pokemon)) = state.storage.party.pokemon.get_mut(*party_index) {

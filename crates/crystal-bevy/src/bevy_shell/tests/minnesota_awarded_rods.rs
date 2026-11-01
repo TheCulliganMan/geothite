@@ -75,11 +75,11 @@ fn shore(c: &mut VisibleShellController, r: &CrystalRuntime) -> ((i16, i16), Gam
 
 fn walk_to_shore(c: &mut VisibleShellController, r: &CrystalRuntime, at: (i16, i16)) {
     for _ in 0..512 {
-        if c.snapshot()
-            .expect("ordinary bank approach")
-            .battle
-            .is_some()
-        {
+        if let Some(battle) = c.snapshot().expect("ordinary bank approach").battle {
+            if matches!(battle.kind, crystal_runtime::RuntimeBattleKind::Wild { .. }) {
+                super::rochester::flee(c);
+                continue;
+            }
             assert!(super::rochester_earned::try_battle(
                 c,
                 r,
@@ -151,9 +151,14 @@ fn minnesota_awarded_rods_native_gifts_pack_casts_encounters_and_continue() {
         ("MnPineCountryFishingGuruHouse", "SUPER_ROD"),
     ] {
         let mut c = fixture(&root, &runtime, room, (5, 4));
+        let (species, level) = if rod == "OLD_ROD" {
+            ("POUCHID", 5)
+        } else {
+            ("BOREALYNX", 40)
+        };
         let mut partner = runtime
             .data()
-            .create_pokemon("BOREALYNX", 40, Dv::default())
+            .create_pokemon(species, level, Dv::default())
             .expect("declared regional bank companion");
         partner.item = Some("SMOKE_BALL".into());
         let state = c.shell.shell.session_mut().state_mut();
@@ -187,6 +192,14 @@ fn minnesota_awarded_rods_native_gifts_pack_casts_encounters_and_continue() {
         walk_to_shore(&mut c, &runtime, bank);
         press(&mut c, facing);
         early_access(&mut c);
+        if rod == "OLD_ROD" {
+            assert_eq!(
+                c.snapshot().expect("starter at bank").party.slots[0]
+                    .pokemon
+                    .level,
+                5
+            );
+        }
         checkpoint(&mut c, &format!("{rod}-awarded-bank"));
         let mut encountered = false;
         for _ in 0..64 {
@@ -216,6 +229,29 @@ fn minnesota_awarded_rods_native_gifts_pack_casts_encounters_and_continue() {
             }
             if let Some(battle) = c.snapshot().expect("native rod result").battle {
                 let species = &battle.enemy_pokemon.species.id;
+                if rod == "OLD_ROD" {
+                    let wild = &battle.enemy_pokemon;
+                    assert!(
+                        wild.level <= 6,
+                        "opening fish {species} level {}",
+                        wild.level
+                    );
+                    let natural = runtime
+                        .data()
+                        .create_pokemon(species, wild.level, Dv::default())
+                        .expect("level-up moves for opening fish");
+                    assert!(
+                        wild.moves
+                            .iter()
+                            .all(|m| natural.moves.iter().any(|n| n.name == m.name))
+                    );
+                    let map = c.snapshot().expect("fishing map").overworld.map_name;
+                    assert!(
+                        runtime
+                            .data()
+                            .saved_wild_encounter_exists(&map, species, wild.level)
+                    );
+                }
                 assert!(
                     runtime
                         .data()

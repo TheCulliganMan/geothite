@@ -351,7 +351,7 @@ fn apply_keyboard_input(
     }
     let mut rtc_changed = runtime_shell.latest_rtc_sample != Some(rtc_sample);
     runtime_shell.latest_rtc_sample = Some(rtc_sample);
-    if *rtc_source == NativeRtcSource::Server {
+    if runtime_shell.runtime.data().uses_host_clock() {
         let clock = &runtime_shell.shell.session().state().time;
         if rtc_changed || clock.current_date != rtc_sample.date
             || clock.registers.hours != rtc_sample.hour

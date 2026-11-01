@@ -277,11 +277,10 @@ pub fn build_minnesota_fossils(base: &CompiledGamePack) -> Result<CompiledGamePa
         (
             "MnFossilNeedSpecimenText",
             vec![
-                "A researcher on",
-                "DRIFTLESS TRAIL",
-                "studies a paired",
-                "fossil slab. Bring",
-                "one specimen here.",
+                "If you find a",
+                "fossil, bring it",
+                "here. I'd love to",
+                "take a look.",
             ],
         ),
         (

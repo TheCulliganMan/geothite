@@ -5086,9 +5086,35 @@ fn roaming_escape_item_records_the_exact_route_update_rng() {
     assert_eq!(state.roaming_map_history.current_map_number, 1);
 }
 
+fn add_capture_reward_test_data(data: &mut GameDataSet) {
+    add_runtime_species_and_move(data);
+    data.battle_reward_rules = test_battle_reward_rules();
+    data.pokegear_landmarks = map_name_sign_landmarks_for_tests(["Route29"]);
+    data.happiness_data = Some(HappinessData {
+        changes: [
+            (1, "HAPPINESS_GAINLEVEL"),
+            (19, "HAPPINESS_GAINLEVELATHOME"),
+        ]
+        .into_iter()
+        .map(|(id, code)| {
+            (
+                id,
+                crystal_core::systems::special_routines::HappinessChangeEntry {
+                    code: code.to_string(),
+                    low: 5,
+                    mid: 3,
+                    high: 2,
+                },
+            )
+        })
+        .collect(),
+        services: BTreeMap::new(),
+    });
+}
+
 #[test]
 fn captured_roamer_is_cleared_without_route_rng() {
-    let data = GameDataSet {
+    let mut data = GameDataSet {
         roaming_pokemon: roaming_catalog_for_tests("NEW_MON", "NEW_MON"),
         runtime_map_metadata: [(
             "ROUTE_29".to_string(),
@@ -5098,6 +5124,7 @@ fn captured_roamer_is_cleared_without_route_rng() {
         .collect(),
         ..GameDataSet::default()
     };
+    add_capture_reward_test_data(&mut data);
     let enemy = Pokemon::new_for_tests(species(), 40, Dv::default());
     let inactive = crystal_core::state::RoamingPokemonState {
         map_group: data.roaming_pokemon.inactive_map.map_group,
@@ -5564,7 +5591,8 @@ fn active_wild_capture_rejects_full_current_box_without_routing_to_an_empty_box(
 
 #[test]
 fn active_wild_capture_completion_is_atomic_when_pay_day_claim_rejects() {
-    let data = GameDataSet::default();
+    let mut data = GameDataSet::default();
+    add_capture_reward_test_data(&mut data);
     let player = crystal_core::models::Pokemon::new_for_tests(
         species(),
         20,
@@ -5620,6 +5648,7 @@ fn active_wild_capture_completion_is_atomic_when_pay_day_claim_rejects() {
 #[test]
 fn active_wild_capture_applies_chosen_nickname_to_party_and_pc_destinations() {
     let mut data = GameDataSet::default();
+    add_capture_reward_test_data(&mut data);
     data.roaming_pokemon = roaming_catalog_for_tests("NEW_MON", "NEW_MON");
     data.runtime_map_metadata.insert(
         "ROUTE_29".to_string(),
@@ -5700,8 +5729,105 @@ fn active_wild_capture_applies_chosen_nickname_to_party_and_pc_destinations() {
 }
 
 #[test]
+fn capture_move_choice_resolves_deferred_evolution_after_battle_exit() {
+    let mut data = GameDataSet::default();
+    add_capture_reward_test_data(&mut data);
+    data.roaming_pokemon = roaming_catalog_for_tests("NEW_MON", "NEW_MON");
+    data.runtime_map_metadata.insert(
+        "ROUTE_29".to_string(),
+        test_runtime_map_metadata("ROUTE_29", "Route29"),
+    );
+    let mut evolved = species();
+    evolved.id = "EVOLVED_MON".to_string();
+    evolved.int_id = 253;
+    data.pokemon.insert(evolved.id.clone(), evolved.clone());
+    data.learnsets.insert(evolved.id.clone(), Vec::new());
+    data.evolutions.0.insert(evolved.id.clone(), Vec::new());
+    data.evolutions.0.insert(
+        "NEW_MON".to_string(),
+        vec![EvolutionEntry::level("EVOLVED_MON", 16)],
+    );
+    data.moves
+        .insert("NEW_MOVE".to_string(), test_move("NEW_MOVE"));
+    data.learnsets.insert(
+        "NEW_MON".to_string(),
+        vec![LearnsetEntry(16, "NEW_MOVE".to_string())],
+    );
+    let mut player = Pokemon::new_for_tests(species(), 15, Dv::default());
+    player.experience = crystal_core::systems::experience::calculate_experience(
+        &data.growth_rates,
+        "GROWTH_MEDIUM_FAST",
+        16,
+    )
+    .unwrap()
+        - 1;
+    player.moves = ["TACKLE", "GROWL", "LEER", "SWIFT"]
+        .into_iter()
+        .map(|name| crystal_core::models::LearnedMove {
+            name: name.to_string(),
+            current_pp: 10,
+            pp_ups: 0,
+        })
+        .collect();
+    let enemy = Pokemon::new_for_tests(species(), 5, Dv::default());
+    let mut state = GameState {
+        battle: BattleMemory::Wild {
+            battle_type: "BATTLETYPE_NORMAL".to_string(),
+            battle_music: "MUSIC_JOHTO_WILD_BATTLE".to_string(),
+            map_name: "Route29".to_string(),
+            roaming_slot: None,
+            enemy_pokemon: enemy.clone(),
+            enemy_party: vec![enemy],
+        },
+        battle_active_party_index: Some(0),
+        battle_active_enemy_party_index: Some(0),
+        ..GameState::default()
+    };
+    state.storage.party.pokemon[0] = Some(player);
+    let outcome = CaptureOutcome {
+        caught: true,
+        blocked: false,
+        storage_full: false,
+        wobble_count: 4,
+        animation_shakes: 4,
+        final_catch_rate: u8::MAX,
+        ball_id: Some("MASTER_BALL".to_string()),
+    };
+    let completion = data
+        .complete_active_wild_capture(
+            &mut state,
+            &outcome,
+            None,
+            &mut ReplayDivider::new([0, 255]),
+        )
+        .expect("capture awards level and stores opponent");
+    assert!(completion.rewards.is_some());
+    assert!(matches!(state.battle, BattleMemory::Inactive));
+    assert!(
+        state
+            .pending_move_learn
+            .as_ref()
+            .is_some_and(|pending| pending.defer_level_evolution)
+    );
+    let result = data
+        .decline_pending_move_learn(&mut state)
+        .expect("resolve choice after capture");
+    assert_eq!(
+        result
+            .deferred_evolution
+            .and_then(|report| report.target_species),
+        Some("EVOLVED_MON".to_string())
+    );
+    assert_eq!(
+        state.storage.party.pokemon[0].as_ref().unwrap().species.id,
+        "EVOLVED_MON"
+    );
+}
+
+#[test]
 fn catching_a_transformed_wild_pokemon_materializes_ditto() {
     let mut data = GameDataSet::default();
+    add_capture_reward_test_data(&mut data);
     data.roaming_pokemon = roaming_catalog_for_tests("NEW_MON", "NEW_MON");
     data.runtime_map_metadata.insert(
         "ROUTE_29".to_string(),

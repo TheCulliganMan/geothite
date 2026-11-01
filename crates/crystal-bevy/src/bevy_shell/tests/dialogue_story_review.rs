@@ -3,7 +3,9 @@ use bevy::prelude::{ButtonInput, KeyCode};
 use crystal_core::input::GameButton;
 use crystal_core::world::map::Direction;
 
-use super::super::super::{BevyRuntimeShell, VisibleShellController};
+use super::super::super::{
+    BevyRuntimeShell, VisibleShellController, visible_field_dialogue_is_entirely_consumed,
+};
 use super::super::integrated_shell_test_app;
 use super::super::northstar_dialogue::canonical_pages;
 use super::super::winona::{continue_in_place, finish, press};
@@ -33,6 +35,53 @@ fn read(c: &mut VisibleShellController, label: &str) {
         press(c, GameButton::A);
     }
     assert!(c.snapshot().expect("dialogue completed").ui.text.is_none());
+}
+
+#[test]
+#[ignore = "requires the rewritten external pack in CRYSTAL_WINONA_TEST_PACK"]
+fn story_review_cousin_fresh_game_greeting_preserves_progress() {
+    use super::super::authored_route_fixture::indoor_walk;
+    use super::super::winona::{at, load};
+
+    let (root, runtime) = load();
+    let mut c = VisibleShellController::new_game(root, runtime.clone(), "CHRIS", None)
+        .expect("production New Game");
+    c.set_runtime_journal_enabled(false);
+    indoor_walk(&mut c, &runtime, (2, 3));
+    let before = c.shell.shell.session().state().clone();
+    assert!(before.storage.party.pokemon.iter().all(Option::is_none));
+    assert!(
+        !before
+            .flags
+            .is_event_flag_set("EVENT_MN_STARTER_RECEIVED")
+            .expect("starter flag")
+    );
+    press(&mut c, GameButton::Left);
+    press(&mut c, GameButton::A);
+    for expected in [
+        "COUSIN: One more\ngame? Just one?",
+        "Your mom's waiting\ndownstairs.",
+    ] {
+        let page = c
+            .snapshot()
+            .expect("cousin greeting")
+            .ui
+            .text
+            .expect("page");
+        assert_eq!(page.label, "MN_SMALL_INTERIOR_WINONA_COUSINInteriorText");
+        assert_eq!(page.asm_text.as_deref(), Some(expected));
+        press(&mut c, GameButton::A);
+    }
+    assert!(c.snapshot().expect("greeting finished").ui.text.is_none());
+    let after = c.shell.shell.session().state();
+    assert_eq!(after.flags, before.flags);
+    assert_eq!(after.bag, before.bag);
+    assert_eq!(after.badges, before.badges);
+    assert_eq!(after.storage.party, before.storage.party);
+    indoor_walk(&mut c, &runtime, (3, 3));
+    at(&mut c, "MnWinonaHome2F", (3, 3));
+    press(&mut c, GameButton::Start);
+    assert!(c.snapshot().expect("Start released").ui.menu.is_some());
 }
 
 #[test]
@@ -163,6 +212,66 @@ fn story_review_tamarack_returns_show_the_current_lead_after_continue() {
 }
 
 #[test]
+#[ignore = "requires revised external pack in CRYSTAL_WINONA_TEST_PACK"]
+fn story_review_tamarack_guides_before_reoffering_a_declined_egg() {
+    let (_, _, mut c) = fixture(
+        "MnWinonaFieldStation",
+        (4, 2),
+        &[
+            "EVENT_MN_HOME_INTRO",
+            "EVENT_MN_TAMARACK_INTRO",
+            "EVENT_MN_STARTER_RECEIVED",
+            "EVENT_MN_R01_PARCEL_RECEIVED",
+            "EVENT_MN_DELIVERED_ROCHESTER_PARCEL",
+            "EVENT_MN_REED_FIRST_MET",
+            "EVENT_MN_COURIER_DEFEATED",
+        ],
+    );
+    press(&mut c, GameButton::Right);
+    press(&mut c, GameButton::A);
+    for expected in canonical_pages("", "MnWTamarackGuideManifestText") {
+        let text = c.snapshot().expect("guidance").ui.text.expect("page");
+        assert_eq!(text.label, "MnWTamarackGuideManifestText");
+        assert_eq!(text.asm_text, Some(expected));
+        press(&mut c, GameButton::A);
+    }
+    let offer_pages = canonical_pages("", "MnNSEEggOfferText");
+    for (index, expected) in offer_pages.iter().enumerate() {
+        let text = c.snapshot().expect("egg offer").ui.text.expect("page");
+        assert_eq!(text.label, "MnNSEEggOfferText");
+        assert_eq!(text.asm_text.as_ref(), Some(expected));
+        if index + 1 < offer_pages.len() {
+            press(&mut c, GameButton::A);
+        }
+    }
+    for _ in 0..8 {
+        let snapshot = c.shell.shell.snapshot().expect("offer choice");
+        if snapshot.ui.pending_yes_no.is_some()
+            && visible_field_dialogue_is_entirely_consumed(&c.shell, &snapshot)
+        {
+            break;
+        }
+        press(&mut c, GameButton::A);
+    }
+    let snapshot = c.shell.shell.snapshot().expect("offer choice");
+    assert!(snapshot.ui.pending_yes_no.is_some());
+    assert!(visible_field_dialogue_is_entirely_consumed(
+        &c.shell, &snapshot
+    ));
+    press(&mut c, GameButton::Down);
+    press(&mut c, GameButton::A);
+    read(&mut c, "MnNSEEggDeclineText");
+    press(&mut c, GameButton::Start);
+    assert!(
+        c.snapshot()
+            .expect("Start after declining")
+            .ui
+            .menu
+            .is_some()
+    );
+}
+
+#[test]
 #[ignore = "declared delivery fixture; requires revised external pack and native 2D schedule"]
 fn story_review_reed_reaches_each_column_before_his_first_page() {
     for (column, from_south) in [
@@ -188,6 +297,7 @@ fn story_review_reed_reaches_each_column_before_his_first_page() {
         let mut app = integrated_shell_test_app(c.shell);
         let mut approached = false;
         let mut speaking = false;
+        let mut rendered_reed_tiles = std::collections::BTreeSet::new();
         for frame in 0..512 {
             let mut keys = app.world_mut().resource_mut::<ButtonInput<KeyCode>>();
             keys.reset_all();
@@ -202,12 +312,27 @@ fn story_review_reed_reaches_each_column_before_his_first_page() {
             let shell = app.world().resource::<BevyRuntimeShell>();
             assert_eq!(shell.last_error, None);
             approached |= shell.visible_script_movement.is_some();
+            // The field renderer uses this retained scene during movement,
+            // not the already-mutated authoritative runtime snapshot.
+            if let Some(scene) = shell.visible_script_movement_scene.as_ref() {
+                assert!(
+                    !scene.ui.text_window_open && scene.ui.text.is_none(),
+                    "dialogue appeared in the rendered scene during Reed's approach"
+                );
+                if let Some(reed) = scene.visible_object_runtime_tiles.get("MN_ARC_RC_REED") {
+                    rendered_reed_tiles.insert((reed.x, reed.y));
+                }
+            }
             let snapshot = shell
                 .shell
                 .presentation_snapshot()
                 .expect("native scene frame");
             if snapshot.ui.text_window_open {
                 assert!(approached, "Reed must visibly approach");
+                assert!(
+                    rendered_reed_tiles.len() > 1,
+                    "Reed's retained scene must show movement before dialogue: {rendered_reed_tiles:?}"
+                );
                 assert!(
                     shell.visible_script_movement.is_none(),
                     "speech must wait for movement"

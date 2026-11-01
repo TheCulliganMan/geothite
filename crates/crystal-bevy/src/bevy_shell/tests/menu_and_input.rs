@@ -5100,6 +5100,165 @@ fn tmhm_forget_menu_renders_the_source_cancel_row() {
 }
 
 #[test]
+#[ignore = "requires an external Northstar pack in CRYSTAL_WINONA_TEST_PACK"]
+fn northstar_move_learning_uses_readable_text_and_real_inputs() {
+    let (root, runtime) = winona::load();
+    for replace in [true, false] {
+        let mut controller = interior_life::fixture(&root, &runtime, "MnR02C00R00", (40, 8));
+        controller
+            .shell
+            .shell
+            .add_party_pokemon(
+                "BIRCHIT",
+                8,
+                None,
+                None,
+                "MOVE_LEARN_REVIEW",
+                1,
+                Dv::from_non_hp(10, 11, 12, 13),
+            )
+            .expect("add Northstar starter");
+        let original = ["TACKLE", "LEER", "GROWL", "QUICK_ATTACK"];
+        {
+            let state = controller.shell.shell.session_mut().state_mut();
+            state.storage.party.pokemon[0]
+                .as_mut()
+                .expect("starter")
+                .moves = original
+                .iter()
+                .map(|name| crate::core::models::LearnedMove {
+                    name: (*name).to_owned(),
+                    current_pp: 10,
+                    pp_ups: 0,
+                })
+                .collect();
+            state.pending_move_learn = Some(crate::core::state::PendingMoveLearn {
+                party_index: 0,
+                species_id: "BIRCHIT".into(),
+                level: 8,
+                learned_move: crate::core::models::LearnedMove {
+                    name: "HEADBUTT".into(),
+                    current_pp: 15,
+                    pp_ups: 0,
+                },
+                defer_level_evolution: false,
+            });
+            state.sync_party_from_storage();
+        }
+        let pages = visible_move_learning_text_pages(
+            &controller.shell,
+            "_AskForgetMoveText",
+            "BIRCHIT",
+            "BIRCHIT",
+            "HEADBUTT",
+        )
+        .expect("Northstar source prompt");
+        let text = pages.join(" ");
+        assert!(
+            text.contains("BIRCHIT") && text.contains("HEADBUTT"),
+            "{text}"
+        );
+        assert!(!text.contains('<'), "unresolved prompt token: {text}");
+        winona::press(&mut controller, GameButton::A);
+        if replace {
+            winona::press(&mut controller, GameButton::A);
+            assert!(controller.shell.move_learn_forget_menu_open);
+            winona::press(&mut controller, GameButton::A);
+        } else {
+            winona::press(&mut controller, GameButton::B);
+            winona::press(&mut controller, GameButton::A);
+        }
+        let state = controller.shell.shell.session().state();
+        assert!(state.pending_move_learn.is_none());
+        let moves = &state.storage.party.pokemon[0]
+            .as_ref()
+            .expect("starter")
+            .moves;
+        assert_eq!(moves[0].name, if replace { "HEADBUTT" } else { "TACKLE" });
+        assert_eq!(moves.len(), 4);
+    }
+}
+
+#[test]
+fn pending_battle_move_learning_decline_and_return_preserve_moves() {
+    let mut shell = core_modular_title_shell_for_test();
+    shell
+        .shell
+        .add_party_pokemon(
+            "CYNDAQUIL",
+            20,
+            None,
+            None,
+            "MOVE_DECLINE_TEST",
+            1,
+            Dv::from_non_hp(10, 11, 12, 13),
+        )
+        .expect("add party Pokemon");
+    let original = ["TACKLE", "LEER", "SMOKESCREEN", "EMBER"];
+    {
+        let state = shell.shell.session_mut().state_mut();
+        state.storage.party.pokemon[0]
+            .as_mut()
+            .expect("party Pokemon")
+            .moves = original
+            .iter()
+            .map(|name| crate::core::models::LearnedMove {
+                name: (*name).to_string(),
+                current_pp: 10,
+                pp_ups: 0,
+            })
+            .collect();
+        state.pending_move_learn = Some(crate::core::state::PendingMoveLearn {
+            party_index: 0,
+            species_id: "CYNDAQUIL".to_string(),
+            level: 20,
+            learned_move: crate::core::models::LearnedMove {
+                name: "HEADBUTT".to_string(),
+                current_pp: 15,
+                pp_ups: 0,
+            },
+            defer_level_evolution: false,
+        });
+        state.sync_party_from_storage();
+    }
+    confirm_visible_pending_move_learn(&mut shell).expect("open forget question");
+    cancel_visible_pending_move_learn(&mut shell).expect("choose not to forget");
+    assert_eq!(
+        shell.move_learn_decision,
+        Some(VisibleTmHmDecision::StopLearning)
+    );
+    cancel_visible_pending_move_learn(&mut shell).expect("continue learning instead");
+    assert!(shell.move_learn_forget_menu_open);
+    cancel_visible_pending_move_learn(&mut shell).expect("cancel move selection");
+    assert_eq!(
+        shell.move_learn_decision,
+        Some(VisibleTmHmDecision::StopLearning)
+    );
+    confirm_visible_pending_move_learn(&mut shell).expect("confirm stop learning");
+    let state = shell.shell.session().state();
+    assert!(state.pending_move_learn.is_none());
+    let moves = &state.storage.party.pokemon[0]
+        .as_ref()
+        .expect("party Pokemon")
+        .moves;
+    assert_eq!(
+        moves.iter().map(|m| m.name.as_str()).collect::<Vec<_>>(),
+        original
+    );
+    let text = shell
+        .battle_messages
+        .iter()
+        .cloned()
+        .collect::<Vec<_>>()
+        .join(" ");
+    assert!(
+        text.contains("CYNDAQUIL") && text.contains("HEADBUTT"),
+        "{text}"
+    );
+    assert!(!text.contains('<'), "unresolved text token: {text}");
+}
+
+#[test]
 fn tmhm_refusal_and_full_moves_decision_use_exported_source_text() {
     fn configured_tm_shell(item_id: &str) -> BevyRuntimeShell {
         let mut runtime_shell = initialized_mail_reader_shell("FLOWER_MAIL");

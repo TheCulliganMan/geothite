@@ -400,6 +400,13 @@ impl PaintedRenderer {
         let cy = controls.saturating_sub(height + 1);
         if s.battle.is_some() {
             self.battle(&mut b, s, Rect::new(2, 3, cols - 4, cy.saturating_sub(4)));
+        } else if let Some(species) = s.ui.active_pokemon_picture.as_deref() {
+            self.portrait(
+                &mut b,
+                species,
+                false,
+                Rect::new(2, 3, cols - 4, cy.saturating_sub(4)),
+            );
         } else {
             self.world(&mut b, s, cy.saturating_sub(3));
         }
@@ -850,6 +857,9 @@ impl PaintedRenderer {
                     paint_effect(&mut scene, bounds, piece);
                 }
             }
+        } else if let Some(species) = s.ui.active_pokemon_picture.as_deref() {
+            let area = Rect::new(0, 3, scene.area.width, controls.saturating_sub(3));
+            self.portrait(&mut scene, species, false, area);
         } else {
             self.world(&mut scene, s, controls.saturating_sub(4));
         }
@@ -1323,6 +1333,56 @@ fn parse_palettes(text: &str, group: &str) -> Vec<Palette> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn northstar_starter_pictures_use_pack_front_art_in_painted_views() {
+        let Some(path) = std::env::var_os("CRYSTAL_RENDER_TEST_PACK") else {
+            return;
+        };
+        let path = std::path::PathBuf::from(path)
+            .canonicalize()
+            .expect("pack path");
+        let root = crystal_assets::AssetRoot::new(path.parent().expect("pack parent"));
+        let loaded = crystal_assets::read_loaded_verified_compiled_game_pack(path)
+            .expect("verified Northstar pack");
+        let mut painter = PaintedRenderer::from_pack_assets(loaded.pack().runtime_files());
+        let runtime = crystal_runtime::CrystalRuntime::from_loaded_compiled_pack(&root, loaded)
+            .expect("pack runtime");
+        let mut controller =
+            crystal_bevy::VisibleShellController::new_game(root, runtime, "CHRIS", None)
+                .expect("new game");
+        let mut source = controller.presentation_snapshot().expect("snapshot");
+        for species in ["POUCHID", "KINDLIT", "BIRCHIT"] {
+            source.ui.active_pokemon_picture = Some(species.to_owned());
+            let text = crate::RuntimeTextRenderer::default().render(&source);
+            for (cols, rows, touch) in [(80, 26, false), (45, 49, true), (80, 30, true)] {
+                let buffer = painter.draw(&source, &text, cols, rows, None, false, touch);
+                let visible: String = buffer.content.iter().map(|cell| cell.symbol()).collect();
+                assert!(visible.contains(species));
+                assert!(!visible.contains("frontsprite unavailable"));
+                assert!(painter.sprites[&(species.to_ascii_lowercase(), false)].is_some());
+                assert!(
+                    buffer
+                        .content
+                        .iter()
+                        .any(|cell| matches!(cell.symbol(), "@" | "#" | "+"))
+                );
+                assert!(
+                    painter.scene.is_none(),
+                    "world canvas must not cover the picture"
+                );
+            }
+            let native = painter.draw_native_surface(&source, &text, 80, 26, None, false, true);
+            assert!(
+                native
+                    .content
+                    .iter()
+                    .any(|cell| matches!(cell.symbol(), "@" | "#" | "+"))
+            );
+            #[cfg(not(target_arch = "wasm32"))]
+            assert!(painter.circle_image(320, 200).is_none());
+        }
+    }
     #[test]
     fn portrait_motion_uses_actual_art_bounds_not_empty_slot_margins() {
         let area = Rect::new(2, 3, 124, 28);

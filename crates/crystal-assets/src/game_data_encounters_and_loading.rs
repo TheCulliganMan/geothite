@@ -1605,7 +1605,9 @@ impl GameDataSet {
             .map_err(|error| anyhow::anyhow!("materialize wild battle: {error}"))?;
             (enemy, battle_type)
         };
-        if battle_type != "BATTLETYPE_CONTEST" { self.equip_wild_challenge_moves(&mut enemy_pokemon)?; }
+        if battle_type != "BATTLETYPE_CONTEST" || encounter.map_name.starts_with("Mn") {
+            self.equip_wild_challenge_moves(&mut enemy_pokemon, &encounter.map_name)?;
+        }
         let battle_music =
             self.wild_battle_music_for_map_time(&encounter.map_name, encounter.time)?;
         let battle = WildBattleStart {
@@ -1643,6 +1645,16 @@ impl GameDataSet {
             && level == crystal_core::systems::fair_food::SURPRISE_LEVEL
             && matches!(species, "CURDLET" | "DOUGHLIN" | "PIPCORN" | "TOTLIT")
             && self.pokemon.contains_key(species)
+        {
+            return true;
+        }
+        // The zero-badge Minnesota opening can lower an ordinary encounter
+        // whose authored level is at most ten. Validate its original habitat
+        // without admitting unrelated species or higher-level origins.
+        if map_name.starts_with("Mn")
+            && (2..=10).contains(&level)
+            && (level..=10)
+                .any(|authored| self.authored_wild_encounter_exists(map_name, species, authored))
         {
             return true;
         }
@@ -3090,7 +3102,7 @@ impl GameDataSet {
             rng,
         )
         .map_err(|error| anyhow::anyhow!("materialize exact fishing battle: {error}"))?;
-        self.equip_wild_challenge_moves(&mut enemy_pokemon)?;
+        self.equip_wild_challenge_moves(&mut enemy_pokemon, map_name)?;
         let battle = WildBattleStart {
             battle_type: "BATTLETYPE_FISH".to_string(),
             battle_music: self.wild_battle_music_for_map_time(map_name, time)?,
@@ -3543,7 +3555,8 @@ impl GameDataSet {
         let destination_environment =
             self.map_environment(&transition.destination.map_name)?;
         let destination_tileset = self.map_tileset_name(&transition.destination.map_name)?;
-        if matches!(source_environment, "ROUTE" | "TOWN")
+        if !trigger.map_name.starts_with("Mn")
+            && matches!(source_environment, "ROUTE" | "TOWN")
             && matches!(
                 destination_environment,
                 "INDOOR" | "CAVE" | "DUNGEON" | "GATE"
