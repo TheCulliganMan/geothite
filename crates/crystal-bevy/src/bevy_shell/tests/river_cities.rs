@@ -29,7 +29,7 @@ pub(super) fn try_road_with(
     mut encounter: impl FnMut(&mut VisibleShellController),
 ) -> bool {
     let from = position(c);
-    let grid = RouteGrid::new_with_grass(
+    let mut grid = RouteGrid::new_with_grass(
         r,
         RouteSpec {
             prefix: "MnR03",
@@ -40,37 +40,87 @@ pub(super) fn try_road_with(
             doors: std::collections::BTreeMap::from([((8, 37), "MnR03Cave1F")]),
         },
     );
-    for button in grid.path(from, to) {
-        let old = position(c);
-        for _ in 0..8 {
-            press(c, button);
-            if c.snapshot().expect("route encounter").battle.is_some() {
+    let original_blocked = grid.blocked.clone();
+    let mut blocked_attempts = 0;
+    for _ in 0..4096 {
+        let snapshot = c.snapshot().expect("live R03 position");
+        let here = position(c);
+        if here == to {
+            return true;
+        }
+        if let Some(battle) = snapshot.battle {
+            if let crystal_runtime::RuntimeBattleKind::Trainer { trainer_id, .. } = battle.kind {
+                let map = &r.data().maps[&snapshot.overworld.map_name];
+                let script = map
+                    .trainer_scripts
+                    .values()
+                    .find(|t| t.trainer_id == trainer_id)
+                    .expect("actual route trainer");
+                if !super::super::rochester_earned::try_battle(
+                    c,
+                    r,
+                    &trainer_id,
+                    &script.event_flag,
+                ) {
+                    return false;
+                }
+            } else {
                 encounter(c);
             }
-            if !c
-                .snapshot()
-                .expect("road outcome")
-                .overworld
-                .map_name
-                .starts_with("MnR03C00R")
-            {
+            continue;
+        }
+        if snapshot.ui.text_window_open || c.has_pending_script_work() {
+            press(c, GameButton::A);
+            continue;
+        }
+        grid.blocked.clone_from(&original_blocked);
+        let (ox, oy) = super::super::authored_route_fixture::origin(&snapshot.overworld.map_name);
+        for object in &snapshot.visible_objects {
+            let id = object
+                .object_identifier
+                .as_deref()
+                .expect("visible actor id");
+            let tile = c
+                .shell
+                .shell
+                .session()
+                .overworld()
+                .object_runtime_tile_by_id(id)
+                .expect("live route actor");
+            grid.blocked.insert((ox + tile.x, oy + tile.y));
+        }
+        let Some(path) = grid.try_path(here, to) else {
+            blocked_attempts += 1;
+            assert!(
+                blocked_attempts < 32,
+                "R03 route remains blocked at {here:?}"
+            );
+            c.wait_frames(24).expect("wait for route actor");
+            continue;
+        };
+        let button = *path.first().expect("remaining R03 step");
+        for _ in 0..8 {
+            press(c, button);
+            let next = c.snapshot().expect("route step");
+            if !next.overworld.map_name.starts_with("MnR03C00R") {
                 return false;
             }
-            if position(c) != old {
+            if next.battle.is_some() || next.ui.text_window_open || position(c) != here {
                 break;
             }
         }
-        assert_ne!(position(c), old, "real route step must finish");
-        assert!(
-            c.snapshot()
-                .expect("road module")
-                .overworld
-                .map_name
-                .starts_with("MnR03C00R")
-        );
+        if position(c) == here {
+            blocked_attempts += 1;
+            assert!(
+                blocked_attempts < 32,
+                "R03 step remains blocked at {here:?}"
+            );
+            c.wait_frames(24).expect("wait for route actor");
+        } else {
+            blocked_attempts = 0;
+        }
     }
-    assert_eq!(position(c), to);
-    true
+    panic!("bounded R03 route to {to:?}")
 }
 
 fn refusal(c: &mut VisibleShellController, x: u16) {

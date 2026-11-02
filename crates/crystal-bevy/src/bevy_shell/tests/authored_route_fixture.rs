@@ -563,11 +563,39 @@ pub(super) fn indoor_walk(
 // step around moving cyclists can alternate forever between two detours.
 fn walk_live_city(c: &mut VisibleShellController, r: &CrystalRuntime, to: Point) {
     for _ in 0..128 {
-        let start = c.snapshot().expect("live city route").overworld;
+        let snapshot = c.snapshot().expect("live city route");
+        let start = snapshot.overworld;
         assert_eq!(
             start.map_name, "MnMinneapolis",
             "city path entered a building"
         );
+        if let Some(battle) = snapshot.battle {
+            let crystal_runtime::RuntimeBattleKind::Trainer { trainer_id, .. } = battle.kind else {
+                panic!("unexpected wild battle in city");
+            };
+            let trainer = r.data().maps[&start.map_name]
+                .trainer_scripts
+                .values()
+                .find(|script| script.trainer_id == trainer_id)
+                .expect("actual city trainer");
+            if !super::rochester_earned::try_battle(c, r, &trainer_id, &trainer.event_flag) {
+                assert_eq!(
+                    c.snapshot()
+                        .expect("city battle recovery")
+                        .overworld
+                        .map_name,
+                    "MnMinneapolisPokecenter1F"
+                );
+                super::minnesota_gyms::northstar_campaign_ice::care(c, r);
+            }
+            continue;
+        }
+        if snapshot.ui.text_window_open || c.has_pending_script_work() {
+            c.press(GameButton::A)
+                .expect("advance actual city encounter");
+            c.wait_frames(1).expect("release city input");
+            continue;
+        }
         if (start.tile.x, start.tile.y) == to {
             return;
         }
@@ -603,8 +631,11 @@ fn walk_live_city(c: &mut VisibleShellController, r: &CrystalRuntime, to: Point)
             }
         }
     }
-    let actual = c.snapshot().expect("blocked city diagnostic").overworld;
-    panic!("bounded city route to {to:?}: actual {actual:?}");
+    let snapshot = c.snapshot().expect("blocked city diagnostic");
+    panic!(
+        "bounded city route to {to:?}: actual {:?}, ui {:?}, actors {:?}",
+        snapshot.overworld, snapshot.ui, snapshot.visible_objects
+    );
 }
 
 #[test]

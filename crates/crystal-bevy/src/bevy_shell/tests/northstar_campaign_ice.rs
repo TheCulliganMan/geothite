@@ -161,7 +161,7 @@ fn road_trainers(c: &mut VisibleShellController, r: &CrystalRuntime, root: &Asse
             care(c, r);
             indoor_walk(c, r, (40, 62));
             travel(c, GameButton::Down, "MnR03C00R00", (20, 0));
-            if try_road_with(c, r, tile, flee) {
+            if try_road_with(c, r, tile, flee) && !event(c, flag) {
                 press(c, facing);
                 press(c, GameButton::A);
                 let _ = try_battle(c, r, id, flag);
