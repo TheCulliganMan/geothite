@@ -10,12 +10,11 @@ const MANIFEST: &str = "minnesota-early-research-access-v1";
 const DELIVERED: &str = "EVENT_MN_DELIVERED_ROCHESTER_PARCEL";
 const EXCHANGED: &str = "EVENT_MN_FOSSIL_EXCHANGED";
 const LAB_ASSISTANT: &[&str] = &[
-    "We study fossils",
-    "and restore the",
-    "life inside them.",
-    "If you bring one,",
-    "our scientist can",
-    "explain the work.",
+    "We study fossils.",
+    "Bring one if you",
+    "find a specimen.",
+    "Our researcher can",
+    "try to restore it.",
 ];
 const LAB_NEED_SPECIMEN: &[&str] = &[
     "If you find a",
@@ -335,10 +334,11 @@ fn fossils(pack: &mut CompiledGamePack) -> Result<()> {
         &mut bluff,
         "MnFossilExchangeText",
         &[
-            "Your first fossil",
-            "is alive! Take the",
-            "other specimen for",
-            "free research?",
+            "We found two",
+            "fossils here.",
+            "The other is",
+            "still here.",
+            "Would you like it?",
         ],
     )?;
     text(

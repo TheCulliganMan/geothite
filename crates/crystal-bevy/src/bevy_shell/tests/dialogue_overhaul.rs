@@ -73,29 +73,23 @@ pub(super) fn opening(index: usize) -> (AssetRoot, CrystalRuntime, VisibleShellC
         .expect("production New Game");
     c.set_runtime_journal_enabled(false);
     indoor_walk(&mut c, &r, (7, 1));
-    // The stair arrival remains quiet; Mom intercepts at the door.
+    // Mom intercepts the player at the stair arrival before giving the Gear.
     enter(&mut c, GameButton::Up, "MnWinonaHome1F");
     at(&mut c, "MnWinonaHome1F", (9, 1));
-    assert!(c.snapshot().expect("quiet arrival").ui.text.is_none());
-    indoor_walk(&mut c, &r, (7, 6));
-    at(&mut c, "MnWinonaHome1F", (7, 6));
-    let speaking = c.snapshot().expect("Mom has approached before speaking");
-    let mom = speaking.visible_object_runtime_tiles["MN_W_GUARDIAN"];
-    assert_eq!((mom.x, mom.y), (7, 5));
-    assert_eq!(
-        speaking.visible_object_facings["MN_W_GUARDIAN"],
-        crystal_core::world::map::Direction::Down
-    );
     c.wait_frames(128).expect("Mom's approach animation");
     let snapshot = c.snapshot().expect("Mom approaches");
     let mom = snapshot
         .visible_object_runtime_tiles
         .get("MN_W_GUARDIAN")
         .expect("visible Mom");
-    assert_eq!((mom.x, mom.y), (7, 5));
+    assert_eq!((mom.x, mom.y), (9, 2));
+    assert_eq!(
+        snapshot.visible_object_facings["MN_W_GUARDIAN"],
+        crystal_core::world::map::Direction::Up
+    );
     assert!(!event(&c, "EVENT_MN_HOME_INTRO"));
     press(&mut c, GameButton::Down);
-    at(&mut c, "MnWinonaHome1F", (7, 6));
+    at(&mut c, "MnWinonaHome1F", (9, 1));
     continue_in_place(&mut c, &root, &r, "overhaul-mom-speaking");
     super::northstar_dialogue::acknowledge(
         &mut c,
@@ -302,9 +296,8 @@ pub(super) fn delivery(index: usize) -> (AssetRoot, CrystalRuntime, VisibleShell
     super::rochester::trail(&mut c, &r, (0, 24));
     travel(&mut c, GameButton::Left, "MnRochester", (39, 18));
     indoor_walk(&mut c, &r, (15, 8));
-    travel(&mut c, GameButton::Up, "MnRochesterPokecenter1F", (10, 13));
-    indoor_walk(&mut c, &r, (11, 9));
-    press(&mut c, GameButton::Up);
+    travel(&mut c, GameButton::Up, "MnRochesterPokecenter1F", (3, 3));
+    press(&mut c, GameButton::Left);
     press(&mut c, GameButton::A);
     assert!(!event(&c, "EVENT_MN_DELIVERED_ROCHESTER_PARCEL"));
     let pages = super::northstar_dialogue::canonical_pages("MS01", "MnRCDeliveryText");

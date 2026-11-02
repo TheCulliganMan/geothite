@@ -495,6 +495,8 @@ mod duluth_connections;
 mod duluth_story;
 #[path = "tests/minneapolis.rs"]
 mod minneapolis;
+#[path = "tests/northstar_coherence.rs"]
+mod northstar_coherence;
 #[path = "tests/northstar_dialogue.rs"]
 mod northstar_dialogue;
 #[path = "tests/northstar_drill_lair.rs"]

@@ -1,0 +1,866 @@
+{
+  "schema_version": 1,
+  "replacements": [
+    {
+      "map": "MnMinneapolis",
+      "interaction": "MN_MP_ARRIVAL_GUIDE",
+      "label": "MN_MP_ARRIVAL_GUIDEText",
+      "expected_lines": [
+        "Clinic: northeast.",
+        "along this street.",
+        "ICE took the clerk",
+        "at the rail depot."
+      ],
+      "pages": [
+        [
+          "The clinic is",
+          "northeast."
+        ],
+        [
+          "Rail dispatch is",
+          "northwest."
+        ]
+      ]
+    },
+    {
+      "map": "MnMinneapolis",
+      "interaction": "MN_MP_DISPATCH_SIGN",
+      "label": "MN_MP_DISPATCH_SIGNText",
+      "expected_lines": [
+        "RAIL DISPATCH",
+        "Closed by TEAM ICE"
+      ],
+      "pages": [
+        [
+          "RAIL DISPATCH",
+          "CITY OFFICE"
+        ]
+      ]
+    },
+    {
+      "map": "MnBoundaryIntake",
+      "label": "MnArcIntakeDoneText",
+      "expected_lines": [
+        "IVY: The survey",
+        "crews are safe.",
+        "We can assess the",
+        "damage now.",
+        "Thank you for",
+        "getting us here."
+      ],
+      "pages": [
+        [
+          "IVY: Our crew is",
+          "safe."
+        ],
+        [
+          "We can assess the",
+          "damage now."
+        ],
+        [
+          "Thank you for",
+          "getting us here."
+        ]
+      ]
+    },
+    {
+      "map": "MnWinonaFieldStation",
+      "label": "MnWReadingsText",
+      "expected_lines": [
+        "TAMARACK: You two",
+        "make a great team!",
+        "Take my original",
+        "river logs to IVY.",
+        "She's at the",
+        "ROCHESTER clinic."
+      ],
+      "pages": [
+        [
+          "TAMARACK: You two",
+          "make a great team!"
+        ],
+        [
+          "IVY works with me",
+          "on river surveys."
+        ],
+        [
+          "Please take my",
+          "original logs to"
+        ],
+        [
+          "her at the",
+          "ROCHESTER clinic."
+        ],
+        [
+          "She needs them to",
+          "check river nests."
+        ]
+      ]
+    },
+    {
+      "map": "MnRochesterPokecenter1F",
+      "label": "MnRCDeliveryText",
+      "expected_lines": [
+        "IVY: You must be",
+        "TAMARACK's helper!",
+        "You handed IVY the",
+        "sealed envelope.",
+        "IVY: Her original",
+        "river notes!",
+        "I will keep them",
+        "safe here.",
+        "We check river",
+        "nests with these.",
+        "ELLIS was bringing",
+        "our survey meters.",
+        "He should have",
+        "been home by now.",
+        "JO, his partner,",
+        "is in MINNEAPOLIS.",
+        "Ask JO if ELLIS",
+        "has come home.",
+        "I will check the",
+        "river landings."
+      ],
+      "pages": [
+        [
+          "Hello, I'm IVY.",
+          "Is that for me?"
+        ],
+        [
+          "You handed IVY the",
+          "sealed envelope."
+        ],
+        [
+          "IVY: Her original",
+          "river notes!"
+        ],
+        [
+          "I will keep them",
+          "safe here."
+        ],
+        [
+          "We check river",
+          "nests with these."
+        ],
+        [
+          "ELLIS was bringing",
+          "our survey meters."
+        ],
+        [
+          "He should have",
+          "been home by now."
+        ],
+        [
+          "JO, his partner,",
+          "is in MINNEAPOLIS."
+        ],
+        [
+          "Her home is south",
+          "of rail dispatch."
+        ],
+        [
+          "Ask JO if ELLIS",
+          "has come home."
+        ],
+        [
+          "I will check the",
+          "river landings."
+        ]
+      ]
+    },
+    {
+      "map": "MnBrainerdRangerStation",
+      "interaction": "MN_BRAINERD_VOLUNTEER",
+      "label": "MN_BRAINERD_VOLUNTEERText",
+      "expected_lines": [
+        "The ranger outside",
+        "can take your",
+        "report."
+      ],
+      "pages": [
+        [
+          "Have a field",
+          "report?"
+        ],
+        [
+          "The ranger outside",
+          "can take it."
+        ]
+      ]
+    },
+    {
+      "map": "MnR01C00R00",
+      "label": "MnFossilExchangeText",
+      "expected_lines": [
+        "Your first fossil",
+        "is alive! Take the",
+        "other specimen for",
+        "free research?"
+      ],
+      "pages": [
+        [
+          "We found two",
+          "fossils here."
+        ],
+        [
+          "The other is",
+          "still here."
+        ],
+        [
+          "Would you like it?"
+        ]
+      ]
+    },
+    {
+      "map": "MnRochesterGym",
+      "label": "MnRochesterGymGuideText",
+      "expected_lines": [
+        "Follow the gaps",
+        "between planters.",
+        "Beat TAVEL, then",
+        "ELVIK. VAREL waits",
+        "at the far end.",
+        "For HM FLASH, ask",
+        "the hollow guide",
+        "on DRIFTLESS",
+        "TRAIL.",
+        "The CARE BADGE",
+        "allows field use."
+      ],
+      "pages": [
+        [
+          "Follow the gaps",
+          "between planters."
+        ],
+        [
+          "Beat TAVEL, then",
+          "ELVIK. VAREL waits"
+        ],
+        [
+          "at the far end."
+        ]
+      ]
+    },
+    {
+      "map": "MnRochesterGym",
+      "label": "MnRochesterGymLeaderWonText",
+      "expected_lines": [
+        "You noticed when",
+        "the battle turned.",
+        "You earned this!",
+        "For HM FLASH, ask",
+        "the hollow guide",
+        "on DRIFTLESS",
+        "TRAIL.",
+        "The CARE BADGE",
+        "allows field use."
+      ],
+      "pages": [
+        [
+          "You noticed when",
+          "the battle turned."
+        ],
+        [
+          "You earned this!"
+        ]
+      ]
+    },
+    {
+      "map": "MnRochesterGym",
+      "label": "MnRochesterGymLeaderGiftText",
+      "expected_lines": [
+        "You earned a BADGE",
+        "and this TM!",
+        "Ask the city guide",
+        "where to go next.",
+        "For HM FLASH, ask",
+        "the hollow guide",
+        "on DRIFTLESS",
+        "TRAIL.",
+        "The CARE BADGE",
+        "allows field use."
+      ],
+      "pages": [
+        [
+          "You earned a BADGE",
+          "and this TM!"
+        ],
+        [
+          "For HM FLASH, ask",
+          "the hollow guide"
+        ],
+        [
+          "on DRIFTLESS",
+          "TRAIL."
+        ],
+        [
+          "The CARE BADGE",
+          "allows field use."
+        ]
+      ]
+    },
+    {
+      "map": "MnRochesterFossilLab",
+      "label": "MnRochesterFossilLabAssistantText",
+      "expected_lines": [
+        "We study fossils",
+        "and restore the",
+        "life inside them.",
+        "If you bring one,",
+        "our scientist can",
+        "explain the work."
+      ],
+      "pages": [
+        [
+          "We study fossils."
+        ],
+        [
+          "Bring one if you",
+          "find a specimen."
+        ],
+        [
+          "Our researcher can",
+          "try to restore it."
+        ]
+      ]
+    },
+    {
+      "map": "MnMinneapolis",
+      "interaction": "MN_MP_PARK_WITNESS",
+      "label": "MN_MP_PARK_WITNESSText",
+      "expected_lines": [
+        "Those are fake",
+        "police badges.",
+        "They took a worker",
+        "who spoke up."
+      ],
+      "pages": [
+        [
+          "I saw people in",
+          "police uniforms"
+        ],
+        [
+          "take a worker who",
+          "spoke up."
+        ],
+        [
+          "Their badges",
+          "looked odd to me."
+        ]
+      ]
+    },
+    {
+      "map": "MnWinonaHome2F",
+      "label": "MnWinonaCousinStarterText",
+      "expected_lines": [
+        "COUSIN: Can I pet",
+        "your new partner?",
+        "Come back soon.",
+        "Tell me the news."
+      ],
+      "pages": [
+        [
+          "COUSIN: Hi! How's",
+          "your day going?"
+        ],
+        [
+          "Tell me all",
+          "about it!"
+        ]
+      ]
+    },
+    {
+      "map": "MnWinonaHome2F",
+      "label": "MnWinonaCousinRochesterText",
+      "expected_lines": [
+        "COUSIN: ROCHESTER!",
+        "How was the walk?",
+        "My legs hurt just",
+        "thinking about it."
+      ],
+      "pages": [
+        [
+          "COUSIN: You're",
+          "home! Any stories?"
+        ],
+        [
+          "Tell me what",
+          "you've been up to."
+        ]
+      ]
+    },
+    {
+      "map": "MnGrandMarais",
+      "label": "MnGrandMaraisBirdWatcherText",
+      "expected_lines": [
+        "The pine grove is",
+        "full of POKEMON.",
+        "Bring your partner",
+        "when you step in."
+      ],
+      "pages": [
+        [
+          "I walk softly."
+        ],
+        [
+          "One quick step and",
+          "birds take off."
+        ]
+      ]
+    },
+    {
+      "map": "MnGrandRapidsPokecenter1F",
+      "label": "MN_GR_CLINIC_VISITORText",
+      "expected_lines": [
+        "The depot keeps",
+        "its own copies."
+      ],
+      "pages": [
+        [
+          "I came in for",
+          "a little rest."
+        ],
+        [
+          "My POKEMON had",
+          "the same idea!"
+        ]
+      ]
+    },
+    {
+      "map": "MnR02C00R00",
+      "label": "MnR02GardenOfferText",
+      "expected_lines": [
+        "The shelterbelt",
+        "berries are ripe!",
+        "Take one for the",
+        "walk to Mankato."
+      ],
+      "pages": [
+        [
+          "The shelterbelt",
+          "berries are ripe!"
+        ],
+        [
+          "Take one for the",
+          "road ahead."
+        ]
+      ]
+    },
+    {
+      "map": "MnMinneapolisDispatcherHouse",
+      "interaction": "MN_MP_DISPATCHER_PARTNER",
+      "label": "MN_MP_DISPATCHER_PARTNERText",
+      "expected_lines": [
+        "My partner never",
+        "came home.",
+        "ICE came for them."
+      ],
+      "pages": [
+        [
+          "JO: ELLIS never",
+          "came home."
+        ],
+        [
+          "People with ICE",
+          "badges took him."
+        ]
+      ]
+    },
+    {
+      "map": "MnGrandRapidsSurveyDepot",
+      "interaction": "MN_GR_REPAIRER",
+      "label": "MN_GR_REPAIRERText",
+      "expected_lines": [
+        "I repair meters.",
+        "This one was sound",
+        "LODE changed the",
+        "numbers afterward."
+      ],
+      "pages": [
+        [
+          "I repair meters."
+        ],
+        [
+          "Bring one in and",
+          "I'll take a look."
+        ]
+      ]
+    },
+    {
+      "map": "MnDuluthPokecenter1F",
+      "label": "MnDuluthPokecenter1F_MN_DULUTH_CLINIC_VISITORText",
+      "expected_lines": [
+        "The harbor crew",
+        "heads north.",
+        "The engineer can",
+        "tell you the plan."
+      ],
+      "pages": [
+        [
+          "The lake wind",
+          "gets everywhere."
+        ],
+        [
+          "I needed a warm",
+          "place for a bit."
+        ]
+      ]
+    },
+    {
+      "map": "MnMinneapolisDispatcherHouse",
+      "label": "MnNICEEllisQuestText",
+      "expected_lines": [
+        "ELLIS: I hid a",
+        "dispatch copy.",
+        "It is under",
+        "the office desk.",
+        "Copy the shipment",
+        "details there.",
+        "It names ST PAUL",
+        "UNION DEPOT.",
+        "Ask MINA about",
+        "LODE's cargo."
+      ],
+      "pages": [
+        [
+          "ELLIS: I hid a",
+          "dispatch copy."
+        ],
+        [
+          "It is under",
+          "the office desk."
+        ],
+        [
+          "Copy the shipment",
+          "details there."
+        ],
+        [
+          "It names ST PAUL",
+          "UNION DEPOT."
+        ],
+        [
+          "MINA handles the",
+          "depot records."
+        ],
+        [
+          "Ask her about",
+          "LODE's cargo."
+        ]
+      ]
+    },
+    {
+      "map": "MnR09Cave1F",
+      "label": "MnNDrillScoutQuestText",
+      "expected_lines": [
+        "NELL: FINN is",
+        "still down there.",
+        "The drill cut",
+        "green copper ore.",
+        "Runoff reached the",
+        "lower pools.",
+        "LODE kept the",
+        "drill running.",
+        "His crew is",
+        "trapped below it.",
+        "Please help them",
+        "get out!"
+      ],
+      "pages": [
+        [
+          "NELL: FINN and his",
+          "crew are trapped"
+        ],
+        [
+          "below the drill."
+        ],
+        [
+          "It cut green",
+          "copper ore."
+        ],
+        [
+          "Runoff reached the",
+          "lower pools."
+        ],
+        [
+          "LODE kept the",
+          "drill running."
+        ],
+        [
+          "Please help them",
+          "get out!"
+        ]
+      ]
+    },
+    {
+      "map": "MnMinneapolisDispatchOffice",
+      "label": "MnMPCellReleaseText",
+      "expected_lines": [
+        "ELLIS: Thank you.",
+        "I asked where our",
+        "equipment went.",
+        "They locked me up",
+        "for asking.",
+        "I am ELLIS. JO is",
+        "my partner.",
+        "Please tell JO I",
+        "am coming home.",
+        "I hid a copy under",
+        "the desk.",
+        "It shows where the",
+        "equipment went."
+      ],
+      "pages": [
+        [
+          "ELLIS: Thank you."
+        ],
+        [
+          "I asked where our",
+          "equipment went."
+        ],
+        [
+          "They locked me up",
+          "for asking."
+        ],
+        [
+          "I am ELLIS. I was",
+          "bringing meters"
+        ],
+        [
+          "for the river",
+          "survey."
+        ],
+        [
+          "JO is my partner."
+        ],
+        [
+          "Please tell JO I",
+          "am coming home."
+        ],
+        [
+          "I hid a copy under",
+          "the desk."
+        ],
+        [
+          "It shows where the",
+          "equipment went."
+        ]
+      ]
+    },
+    {
+      "map": "MnR09Cave1F",
+      "label": "MnIronRangeForemanSeenText",
+      "expected_lines": [
+        "FOREMAN: Put that",
+        "log down.",
+        "The meter spiked",
+        "in our pump test.",
+        "I saw it. The",
+        "workers saw it.",
+        "The next test is",
+        "already ordered.",
+        "You are not taking",
+        "that meter."
+      ],
+      "pages": [
+        [
+          "FOREMAN: You want",
+          "the survey meter?"
+        ],
+        [
+          "The meter spiked",
+          "in our pump test."
+        ],
+        [
+          "I saw it. The",
+          "workers saw it."
+        ],
+        [
+          "The next test is",
+          "already ordered."
+        ],
+        [
+          "You are not taking",
+          "that meter."
+        ]
+      ]
+    },
+    {
+      "map": "MnGrandRapidsSurveyDepot",
+      "label": "MnGrandRapidsDepotMissingText",
+      "expected_lines": [
+        "TECH: Our survey",
+        "meter is missing.",
+        "The R09 mine crew",
+        "had it last.",
+        "Bring it here if",
+        "you find it."
+      ],
+      "pages": [
+        [
+          "TECH: I work on",
+          "survey meters."
+        ],
+        [
+          "Ours is missing."
+        ],
+        [
+          "The R09 mine crew",
+          "had it last."
+        ],
+        [
+          "Bring it here if",
+          "you find it."
+        ]
+      ]
+    },
+    {
+      "map": "MnBoundaryIntake",
+      "label": "MnArcIntakeFinnText",
+      "expected_lines": [
+        "FINN: Stop the",
+        "drill first.",
+        "Seal the dirty",
+        "outlet in the",
+        "lower bay. Then",
+        "open the clean",
+        "bypass beside the",
+        "west drive.",
+        "We can get the",
+        "crew clear then."
+      ],
+      "pages": [
+        [
+          "FINN: I'm FINN.",
+          "I know the pumps."
+        ],
+        [
+          "FINN: Stop the",
+          "drill first."
+        ],
+        [
+          "Seal the dirty",
+          "outlet in the"
+        ],
+        [
+          "lower bay. Then",
+          "open the clean"
+        ],
+        [
+          "bypass beside the",
+          "west drive."
+        ],
+        [
+          "We can get the",
+          "crew clear then."
+        ]
+      ]
+    },
+    {
+      "map": "MnBoundaryWatersSurveyShelter",
+      "label": "MnBoundarySurveyChiefSeenText",
+      "expected_lines": [
+        "CHIEF: You have",
+        "the real test log.",
+        "I signed those",
+        "false surveys.",
+        "I paid ICE to keep",
+        "people out.",
+        "LODE needs the ore",
+        "under the lakes.",
+        "Dry lakes make",
+        "that easy.",
+        "Your copies will",
+        "not stop my pumps."
+      ],
+      "pages": [
+        [
+          "CHIEF: I run",
+          "LODE's pumps here."
+        ],
+        [
+          "CHIEF: You have",
+          "the real test log."
+        ],
+        [
+          "I signed those",
+          "false surveys."
+        ],
+        [
+          "I paid ICE to keep",
+          "people out."
+        ],
+        [
+          "LODE needs the ore",
+          "under the lakes."
+        ],
+        [
+          "Dry lakes make",
+          "that easy."
+        ],
+        [
+          "Your copies will",
+          "not stop my pumps."
+        ]
+      ]
+    },
+    {
+      "map": "MnMinneapolisDispatchOffice",
+      "label": "MnMPICESeenText",
+      "expected_lines": [
+        "ICE: Bag on the",
+        "desk. Now.",
+        "You asked about",
+        "our cargo.",
+        "Nobody leaves",
+        "until we say so."
+      ],
+      "pages": [
+        [
+          "ICE: Bag on the",
+          "desk. Now."
+        ],
+        [
+          "You're not cleared",
+          "to be here."
+        ],
+        [
+          "Nobody leaves",
+          "until we say so."
+        ]
+      ]
+    },
+    {
+      "map": "MnRochesterPokecenter1F",
+      "label": "MnRCDeliveryAfterText",
+      "expected_lines": [
+        "IVY: TAMARACK's",
+        "notes are safe.",
+        "Please check on JO",
+        "in MINNEAPOLIS.",
+        "Ask if ELLIS has",
+        "come home.",
+        "Your team can rest",
+        "here first."
+      ],
+      "pages": [
+        [
+          "IVY: TAMARACK's",
+          "notes are safe."
+        ],
+        [
+          "In MINNEAPOLIS,",
+          "JO's home is just"
+        ],
+        [
+          "south of the",
+          "rail dispatch."
+        ],
+        [
+          "Your team can rest",
+          "here first."
+        ]
+      ]
+    }
+  ]
+}

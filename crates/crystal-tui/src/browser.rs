@@ -82,10 +82,21 @@ mod wasm {
     use crystal_assets::{AssetRoot, load_verified_compiled_game_pack_bytes};
     use crystal_bevy::VisibleShellController;
     use crystal_core::input::GameButton;
+    use crystal_core::save::{SaveModpackIdentity, read_save_game_bytes_for_modpack};
     use crystal_runtime::CrystalRuntime;
     use ratatui::{Terminal, backend::TestBackend};
+    use sha2::{Digest, Sha256};
     use std::path::PathBuf;
     use wasm_bindgen::prelude::*;
+
+    const NORTHSTAR_LIVE_ID_HASH: &str =
+        "fe99707f044eb9151c7233be54eda89f4ca0cd48431231ccfa9ed7c449a8dc0c";
+    const NORTHSTAR_LIVE_PACK_HASH: &str =
+        "03ad92a98538f810809e3b547fffe4642c3fadbc82a9c778da91870258486aef";
+    const NORTHSTAR_LIVE_CONTENT_HASH: &str =
+        "5af966587a79756df727318397522135b6db8c241aac1afe7d186fbb7895ffcf";
+    const NORTHSTAR_TARGET_CONTENT_HASH: &str =
+        "ab6783c50c3f20e4314d11d3214eafee3785e6dcead3aead823907305dc4b22b";
 
     fn js_error(error: impl std::fmt::Display) -> JsValue {
         JsValue::from_str(&error.to_string())
@@ -123,6 +134,7 @@ mod wasm {
                 .ok_or_else(|| js_error("No browser window"))?
                 .local_storage()?
                 .ok_or_else(|| js_error("Browser save storage unavailable"))?;
+            let migrated = migrate_northstar_session_save(&runtime, session, &storage)?;
             let resume = storage
                 .get_item(&format!("crystal.save.v1.{}", path.display()))?
                 .is_some()
@@ -130,7 +142,9 @@ mod wasm {
                     .get_item(&format!("crystal.save.v1.{}.bak", path.display()))?
                     .is_some();
             let mut tui = Self::from_runtime(root, runtime, path, "CHRIS", resume)?;
-            tui.checkpoint()?;
+            if !migrated {
+                tui.checkpoint()?;
+            }
             Ok(tui)
         }
         #[wasm_bindgen(constructor)]
@@ -153,6 +167,116 @@ mod wasm {
         pub fn session_path(&self) -> String {
             self.save_path.display().to_string()
         }
+    }
+
+    /// Migrates only the requested TUI slot from the pinned live Northstar save.
+    /// The old primary remains intact, backups are never read, and the new
+    /// primary is written without creating a backup generation.
+    fn migrate_northstar_session_save(
+        runtime: &CrystalRuntime,
+        session: &str,
+        storage: &web_sys::Storage,
+    ) -> Result<bool, JsValue> {
+        if runtime.pack_identity().content_hash != NORTHSTAR_TARGET_CONTENT_HASH
+            || !runtime
+                .modpack()
+                .id()
+                .split('+')
+                .any(|part| part == "minnesota-native-center-restoration-v1")
+        {
+            return Ok(false);
+        }
+
+        let destination =
+            super::session_save_path(runtime.modpack().id(), session).map_err(js_error)?;
+        let destination_key = format!("crystal.save.v1.{}", destination.display());
+        if storage.get_item(&destination_key)?.is_some() {
+            return Ok(false);
+        }
+        if storage
+            .get_item(&format!("{destination_key}.bak"))?
+            .is_some()
+        {
+            return Err(js_error(
+                "Candidate Northstar TUI backup exists without its primary save",
+            ));
+        }
+
+        let suffix = if session.is_empty() {
+            "-tui-local.crystalsave".to_owned()
+        } else {
+            format!("-tui-session-{session}.crystalsave")
+        };
+        let mut has_minnesota_save = false;
+        let mut previous_id = None;
+        for index in 0..storage.length()? {
+            let Some(key) = storage.key(index)? else {
+                continue;
+            };
+            let Some(filename) = key.strip_prefix("crystal.save.v1.saves/") else {
+                continue;
+            };
+            let filename = filename.strip_suffix(".bak").unwrap_or(filename);
+            if !filename.ends_with(&suffix) {
+                continue;
+            }
+            let Some(candidate_id) = filename.strip_suffix(&suffix) else {
+                continue;
+            };
+            if candidate_id.contains("+minnesota-") {
+                has_minnesota_save = true;
+                if format!("{:x}", Sha256::digest(candidate_id.as_bytes()))
+                    == NORTHSTAR_LIVE_ID_HASH
+                {
+                    previous_id = Some(candidate_id.to_owned());
+                }
+            }
+        }
+        let Some(previous_id) = previous_id else {
+            if has_minnesota_save {
+                return Err(js_error(
+                    "This Minnesota TUI session has a save from an unsupported Northstar release",
+                ));
+            }
+            return Ok(false);
+        };
+        let previous_key = format!("crystal.save.v1.saves/{previous_id}{suffix}");
+        let encoded = storage
+            .get_item(&previous_key)?
+            .ok_or_else(|| js_error("Live Northstar TUI primary save is missing"))?;
+        use base64::Engine as _;
+        let bytes = base64::engine::general_purpose::STANDARD
+            .decode(encoded)
+            .map_err(js_error)?;
+        let previous_identity =
+            SaveModpackIdentity::new(previous_id, NORTHSTAR_LIVE_PACK_HASH).map_err(js_error)?;
+        let state = read_save_game_bytes_for_modpack(
+            &bytes,
+            previous_key,
+            &previous_identity,
+            NORTHSTAR_LIVE_CONTENT_HASH,
+        )
+        .map_err(js_error)?
+        .into_state();
+        runtime
+            .validate_save_state_for_runtime_pack(&state)
+            .map_err(js_error)?;
+
+        if storage.get_item(&destination_key)?.is_some()
+            || storage
+                .get_item(&format!("{destination_key}.bak"))?
+                .is_some()
+        {
+            return Err(js_error("TUI destination save appeared during migration"));
+        }
+        crystal_core::save::write_migrated_save_without_backup(
+            &destination,
+            state,
+            runtime.modpack(),
+            &runtime.pack_identity().content_hash,
+        )
+        .map_err(js_error)?;
+        Ok(true)
     }
 
     impl BrowserTui {

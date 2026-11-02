@@ -6,7 +6,7 @@ use crystal_core::world::movement::MovementMode;
 
 use crate::CrystalRuntime;
 
-const TARGET_HOSTED_HASH: &str = "5af966587a79756df727318397522135b6db8c241aac1afe7d186fbb7895ffcf";
+const TARGET_HOSTED_HASH: &str = "ab6783c50c3f20e4314d11d3214eafee3785e6dcead3aead823907305dc4b22b";
 const RESTORED_CENTERS_MARKER: &str = "minnesota-native-center-restoration-v1";
 const RESIZED_CENTERS: &[&str] = &[
     "MnBemidjiPokecenter1F",
@@ -155,6 +155,64 @@ mod tests {
 
     use super::RESIZED_CENTERS;
     use crate::{CrystalRuntime, RuntimeGameShell, migrate_northstar_reviewed_save};
+
+    #[test]
+    #[ignore = "requires the live hosted pack and the story revision"]
+    fn live_story_save_retains_progress_under_the_revised_identity() {
+        let live_path =
+            PathBuf::from(std::env::var_os("CRYSTAL_NORTHSTAR_LIVE_PACK").expect("live pack"));
+        let target_path = PathBuf::from(
+            std::env::var_os("CRYSTAL_NORTHSTAR_HOSTED_PACK").expect("hosted candidate"),
+        );
+        let root = AssetRoot::new(live_path.parent().expect("pack directory"));
+        let live = CrystalRuntime::from_loaded_compiled_pack(
+            &root,
+            read_loaded_verified_compiled_game_pack(live_path).expect("live pack verified"),
+        )
+        .expect("live runtime");
+        let target = CrystalRuntime::from_loaded_compiled_pack(
+            &root,
+            read_loaded_verified_compiled_game_pack(target_path).expect("target pack verified"),
+        )
+        .expect("target runtime");
+        assert_eq!(
+            live.pack_identity().content_hash,
+            "5af966587a79756df727318397522135b6db8c241aac1afe7d186fbb7895ffcf"
+        );
+        assert_eq!(
+            live.modpack().hash(),
+            "03ad92a98538f810809e3b547fffe4642c3fadbc82a9c778da91870258486aef"
+        );
+        assert_eq!(
+            format!("{:x}", Sha256::digest(live.modpack().id().as_bytes())),
+            "fe99707f044eb9151c7233be54eda89f4ca0cd48431231ccfa9ed7c449a8dc0c"
+        );
+        assert_eq!(
+            target.pack_identity().content_hash,
+            super::TARGET_HOSTED_HASH
+        );
+        for (map, x, y) in [
+            ("MnRochesterPokecenter1F", 3, 5),
+            ("MnR01C00R00", 0, 24),
+            ("MnWinonaHome1F", 9, 1),
+        ] {
+            let mut game = RuntimeGameShell::new_game_at_runtime_tile(
+                root.clone(),
+                live.clone(),
+                live.title_new_game_spawn_identifier().expect("spawn"),
+                map,
+                x,
+                y,
+            )
+            .expect("live save fixture");
+            game.session_mut().state_mut().money = 4321;
+            let state = game.session().state();
+            target
+                .validate_save_state_for_runtime_pack(state)
+                .expect("state compatible with revised pack");
+            assert_eq!(state.money, 4321);
+        }
+    }
 
     #[test]
     #[ignore = "requires the live parent and next hosted packs"]

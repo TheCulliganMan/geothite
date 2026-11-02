@@ -3845,6 +3845,7 @@ dependencies = [
  "ratatui",
  "serde",
  "serde_json",
+ "sha2",
  "wasm-bindgen",
  "web-sys",
 ]

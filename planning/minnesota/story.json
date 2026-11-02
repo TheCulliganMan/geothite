@@ -2438,12 +2438,20 @@
             "make a great team!"
           ],
           [
-            "Take my original",
-            "river logs to IVY."
+            "IVY works with me",
+            "on river surveys."
           ],
           [
-            "She's at the",
+            "Please take my",
+            "original logs to"
+          ],
+          [
+            "her at the",
             "ROCHESTER clinic."
+          ],
+          [
+            "She needs them to",
+            "check river nests."
           ]
         ],
         "MnOverhaulStarterReceivedText": [
@@ -2956,8 +2964,8 @@
       "MnRochesterPokecenter1F": {
         "MnRCDeliveryText": [
           [
-            "IVY: You must be",
-            "TAMARACK's helper!"
+            "Hello, I'm IVY.",
+            "Is that for me?"
           ],
           [
             "You handed IVY the",
@@ -2988,6 +2996,10 @@
             "is in MINNEAPOLIS."
           ],
           [
+            "Her home is south",
+            "of rail dispatch."
+          ],
+          [
             "Ask JO if ELLIS",
             "has come home."
           ],
@@ -3002,12 +3014,12 @@
             "notes are safe."
           ],
           [
-            "Please check on JO",
-            "in MINNEAPOLIS."
+            "In MINNEAPOLIS,",
+            "JO's home is just"
           ],
           [
-            "Ask if ELLIS has",
-            "come home."
+            "south of the",
+            "rail dispatch."
           ],
           [
             "Your team can rest",
@@ -3311,11 +3323,12 @@
       "MnMinneapolisDispatcherHouse": {
         "MN_MP_DISPATCHER_PARTNERText": [
           [
-            "My partner never",
+            "JO: ELLIS never",
             "came home."
           ],
           [
-            "ICE came for them."
+            "People with ICE",
+            "badges took him."
           ]
         ],
         "MN_MP_DISPATCHER_PARTNERAfterText": [
@@ -3380,7 +3393,11 @@
             "UNION DEPOT."
           ],
           [
-            "Ask MINA about",
+            "MINA handles the",
+            "depot records."
+          ],
+          [
+            "Ask her about",
             "LODE's cargo."
           ]
         ],
@@ -3436,8 +3453,8 @@
             "desk. Now."
           ],
           [
-            "You asked about",
-            "our cargo."
+            "You're not cleared",
+            "to be here."
           ],
           [
             "Nobody leaves",
@@ -3486,8 +3503,15 @@
             "for asking."
           ],
           [
-            "I am ELLIS. JO is",
-            "my partner."
+            "I am ELLIS. I was",
+            "bringing meters"
+          ],
+          [
+            "for the river",
+            "survey."
+          ],
+          [
+            "JO is my partner."
           ],
           [
             "Please tell JO I",
@@ -4708,8 +4732,8 @@
       "MnR09Cave1F": {
         "MnIronRangeForemanSeenText": [
           [
-            "FOREMAN: Put that",
-            "log down."
+            "FOREMAN: You want",
+            "the survey meter?"
           ],
           [
             "The meter spiked",
@@ -4793,12 +4817,15 @@
         ],
         "MnNDrillScoutQuestText": [
           [
-            "NELL: FINN is",
-            "still down there."
+            "NELL: FINN and his",
+            "crew are trapped"
           ],
           [
-            "The drill cut",
-            "green copper ore."
+            "below the drill."
+          ],
+          [
+            "It cut green",
+            "copper ore."
           ],
           [
             "Runoff reached the",
@@ -4807,10 +4834,6 @@
           [
             "LODE kept the",
             "drill running."
-          ],
-          [
-            "His crew is",
-            "trapped below it."
           ],
           [
             "Please help them",
@@ -4854,8 +4877,11 @@
       "MnGrandRapidsSurveyDepot": {
         "MnGrandRapidsDepotMissingText": [
           [
-            "TECH: Our survey",
-            "meter is missing."
+            "TECH: I work on",
+            "survey meters."
+          ],
+          [
+            "Ours is missing."
           ],
           [
             "The R09 mine crew",
@@ -4973,12 +4999,11 @@
         ],
         "MN_GR_REPAIRERText": [
           [
-            "I repair meters.",
-            "This one was sound"
+            "I repair meters."
           ],
           [
-            "LODE changed the",
-            "numbers afterward."
+            "Bring one in and",
+            "I'll take a look."
           ]
         ],
         "MN_GR_ARCHIVEText": [
@@ -5152,6 +5177,10 @@
       },
       "MnBoundaryWatersSurveyShelter": {
         "MnBoundarySurveyChiefSeenText": [
+          [
+            "CHIEF: I run",
+            "LODE's pumps here."
+          ],
           [
             "CHIEF: You have",
             "the real test log."
@@ -5490,8 +5519,8 @@
         ],
         "MnArcIntakeDoneText": [
           [
-            "IVY: The survey",
-            "crews are safe."
+            "IVY: Our crew is",
+            "safe."
           ],
           [
             "We can assess the",
@@ -5571,6 +5600,10 @@
           ]
         ],
         "MnArcIntakeFinnText": [
+          [
+            "FINN: I'm FINN.",
+            "I know the pumps."
+          ],
           [
             "FINN: Stop the",
             "drill first."
@@ -7785,22 +7818,26 @@
         ],
         "MN_MP_ARRIVAL_GUIDEText": [
           [
-            "Clinic: northeast.",
-            "along this street."
+            "The clinic is",
+            "northeast."
           ],
           [
-            "ICE took the clerk",
-            "at the rail depot."
+            "Rail dispatch is",
+            "northwest."
           ]
         ],
         "MN_MP_PARK_WITNESSText": [
           [
-            "Those are fake",
-            "police badges."
+            "I saw people in",
+            "police uniforms"
           ],
           [
-            "They took a worker",
-            "who spoke up."
+            "take a worker who",
+            "spoke up."
+          ],
+          [
+            "Their badges",
+            "looked odd to me."
           ]
         ],
         "MN_MP_NORTH_GUIDEText": [
@@ -7945,7 +7982,7 @@
         "MN_MP_DISPATCH_SIGNText": [
           [
             "RAIL DISPATCH",
-            "Closed by TEAM ICE"
+            "CITY OFFICE"
           ]
         ],
         "MN_MP_GYM_SIGNText": [
@@ -8505,11 +8542,12 @@
         ],
         "MN_BRAINERD_VOLUNTEERText": [
           [
-            "The ranger outside",
-            "can take your"
+            "Have a field",
+            "report?"
           ],
           [
-            "report."
+            "The ranger outside",
+            "can take it."
           ]
         ]
       },
@@ -8532,12 +8570,12 @@
       "MnDuluthPokecenter1F": {
         "MnDuluthPokecenter1F_MN_DULUTH_CLINIC_VISITORText": [
           [
-            "The harbor crew",
-            "heads north."
+            "The lake wind",
+            "gets everywhere."
           ],
           [
-            "The engineer can",
-            "tell you the plan."
+            "I needed a warm",
+            "place for a bit."
           ]
         ],
         "MN_DULUTH_NURSEText": [
@@ -9429,22 +9467,22 @@
         ],
         "MnWinonaCousinStarterText": [
           [
-            "COUSIN: Can I pet",
-            "your new partner?"
+            "COUSIN: Hi! How's",
+            "your day going?"
           ],
           [
-            "Come back soon.",
-            "Tell me the news."
+            "Tell me all",
+            "about it!"
           ]
         ],
         "MnWinonaCousinRochesterText": [
           [
-            "COUSIN: ROCHESTER!",
-            "How was the walk?"
+            "COUSIN: You're",
+            "home! Any stories?"
           ],
           [
-            "My legs hurt just",
-            "thinking about it."
+            "Tell me what",
+            "you've been up to."
           ]
         ],
         "MnWinonaCousinMinneapolisText": [
@@ -9639,15 +9677,15 @@
       "MnRochesterFossilLab": {
         "MnRochesterFossilLabAssistantText": [
           [
-            "Bring a LENS or",
-            "SPIRE FOSSIL from"
+            "We study fossils."
           ],
           [
-            "DRIFTLESS TRAIL.",
-            "Our scientist can"
+            "Bring one if you",
+            "find a specimen."
           ],
           [
-            "restore it."
+            "Our researcher can",
+            "try to restore it."
           ]
         ],
         "MnLabFossilBenchText": [
@@ -11378,8 +11416,12 @@
         ],
         "MN_GR_CLINIC_VISITORText": [
           [
-            "The depot keeps",
-            "its own copies."
+            "I came in for",
+            "a little rest."
+          ],
+          [
+            "My POKEMON had",
+            "the same idea!"
           ]
         ]
       },
