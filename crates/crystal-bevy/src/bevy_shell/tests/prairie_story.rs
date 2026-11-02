@@ -75,7 +75,7 @@ pub(super) fn try_road_with(
 ) -> bool {
     let s = c.snapshot().expect("R02 start");
     let start = (s.overworld.tile.x, s.overworld.tile.y);
-    let grid = RouteGrid::new_with_grass(
+    let mut grid = RouteGrid::new_with_grass(
         r,
         RouteSpec {
             prefix: "MnR02",
@@ -86,24 +86,65 @@ pub(super) fn try_road_with(
             doors: BTreeMap::from([((11, 11), "MnR02Farmhouse"), ((52, 33), "MnR02ToolShed")]),
         },
     );
-    for button in grid.path(start, target) {
-        let old = c.snapshot().expect("road tile").overworld.tile;
+    let original_blocked = grid.blocked.clone();
+    let mut blocked_attempts = 0;
+    for _ in 0..4096 {
+        let snapshot = c.snapshot().expect("live R02 position");
+        let here = (snapshot.overworld.tile.x, snapshot.overworld.tile.y);
+        if here == target {
+            return true;
+        }
+        grid.blocked.clone_from(&original_blocked);
+        for object in &snapshot.visible_objects {
+            let id = object
+                .object_identifier
+                .as_deref()
+                .expect("visible actor id");
+            let position = c
+                .shell
+                .shell
+                .session()
+                .overworld()
+                .object_runtime_tile_by_id(id)
+                .expect("live actor position");
+            grid.blocked.insert((position.x, position.y));
+        }
+        let Some(path) = grid.try_path(here, target) else {
+            blocked_attempts += 1;
+            assert!(
+                blocked_attempts < 32,
+                "R02 route remains blocked at {here:?}"
+            );
+            c.wait_frames(24).expect("wait for route actor");
+            continue;
+        };
+        let button = *path.first().expect("remaining R02 step");
+        let old = snapshot.overworld.tile;
         for _ in 0..8 {
             press(c, button);
             if c.snapshot().expect("road encounter").battle.is_some() {
                 encounter(c);
             }
-            let s = c.snapshot().expect("road movement");
-            if s.overworld.map_name != "MnR02C00R00" {
+            let state = c.snapshot().expect("road movement");
+            if state.overworld.map_name != "MnR02C00R00" {
                 return false;
             }
-            if s.overworld.tile != old {
+            if state.overworld.tile != old {
                 break;
             }
         }
+        if c.snapshot().expect("R02 step outcome").overworld.tile == old {
+            blocked_attempts += 1;
+            assert!(
+                blocked_attempts < 32,
+                "R02 step remains blocked at {here:?}"
+            );
+            c.wait_frames(24).expect("wait for moving route actor");
+        } else {
+            blocked_attempts = 0;
+        }
     }
-    at(c, "MnR02C00R00", target);
-    true
+    panic!("bounded R02 route to {target:?}")
 }
 
 fn read_notebook(c: &mut VisibleShellController, r: &CrystalRuntime) {
