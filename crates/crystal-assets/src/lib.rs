@@ -765,7 +765,9 @@ mod minnesota_center_restoration;
 mod minnesota_fishing_hints;
 mod minnesota_fishing_houses;
 mod minnesota_fishing_rods;
-pub use minnesota_center_restoration::restore_minnesota_center_nurses;
+pub use minnesota_center_restoration::{
+    repair_minnesota_center_rival_movements, restore_minnesota_center_nurses,
+};
 pub use minnesota_fishing_rods::build_minnesota_fishing_rods;
 
 mod minnesota_fly_destinations;

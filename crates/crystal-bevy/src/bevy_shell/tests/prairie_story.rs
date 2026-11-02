@@ -188,7 +188,7 @@ fn prairie_story_local_care_gate_refuses_both_lanes_and_inbound_return_is_free()
         travel(&mut c, GameButton::Right, "MnRochester", (0, y));
         travel(&mut c, GameButton::Right, "MnRochester", (4, y));
         indoor_walk(&mut c, &r, (15, 8));
-        travel(&mut c, GameButton::Up, "MnRochesterPokecenter1F", (10, 13));
+        travel(&mut c, GameButton::Up, "MnRochesterPokecenter1F", (3, 3));
         assert!(!c.shell.shell.session().state().badges.johto[0]);
         assert!(!event(&c, NOTE));
     }
@@ -274,21 +274,9 @@ fn prairie_story_earned_new_game_care_r02_notebook_and_return() {
 pub(super) fn mankato_arrival() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
     let (root, r, mut c) = super::rochester_earned::care_badge();
     indoor_walk(&mut c, &r, (15, 8));
-    travel(&mut c, GameButton::Up, "MnRochesterPokecenter1F", (10, 13));
-    indoor_walk(&mut c, &r, (7, 5));
-    press(&mut c, GameButton::Up);
-    press(&mut c, GameButton::A);
-    finish(&mut c);
-    assert!(
-        c.snapshot()
-            .expect("care")
-            .party
-            .slots
-            .iter()
-            .all(|s| s.pokemon.hp == s.pokemon.max_hp)
-    );
-    indoor_walk(&mut c, &r, (10, 14));
-    travel(&mut c, GameButton::Down, "MnRochester", (15, 8));
+    travel(&mut c, GameButton::Up, "MnRochesterPokecenter1F", (3, 3));
+    super::rochester_earned::heal_party(&mut c, &r);
+    super::rochester_earned::clinic_exit(&mut c, &r);
     super::earned_rod_visits::old_rod(&mut c, &r, &root);
     indoor_walk(&mut c, &r, (4, 18));
     travel(&mut c, GameButton::Left, "MnR02C00R00", (59, 14));

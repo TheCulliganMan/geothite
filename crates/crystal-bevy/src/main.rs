@@ -536,6 +536,7 @@ fn select_browser_save(
     let mut previous_id = None;
     let mut current_release_id = None;
     let mut live_release_id = None;
+    let mut story_release_id = None;
     for index in 0..storage
         .length()
         .map_err(|error| anyhow::anyhow!("inspect save storage: {error:?}"))?
@@ -556,6 +557,10 @@ fn select_browser_save(
             }
             has_regional_save = true;
             if format!("{:x}", sha2::Sha256::digest(id.as_bytes()))
+                == "a21253e2ab29e6e736e66684d879b6dd7b29845f87c550ad11f5a380ce74228b"
+            {
+                story_release_id = Some(id.to_owned());
+            } else if format!("{:x}", sha2::Sha256::digest(id.as_bytes()))
                 == "d70761f0a31858f579c7f67f41deeb46b03e6e63152fea4cede8eaba47c67447"
             {
                 previous_id = Some(id.to_owned());
@@ -575,12 +580,14 @@ fn select_browser_save(
     }
     anyhow::ensure!(
         runtime.pack_identity().content_hash
-            == "ab6783c50c3f20e4314d11d3214eafee3785e6dcead3aead823907305dc4b22b",
+            == "d13645cf90952b8be4211918093acb7cb158afd0082226227caed1602a6e5878",
         "unexpected Northstar migration target"
     );
+    let migrating_story_release = story_release_id.is_some();
     let migrating_live_release = live_release_id.is_some();
     let migrating_current_release = current_release_id.is_some();
-    let previous_id = live_release_id
+    let previous_id = story_release_id
+        .or(live_release_id)
         .or(current_release_id)
         .or(previous_id)
         .context("existing Minnesota save is not from the expected Northstar release")?;
@@ -593,7 +600,12 @@ fn select_browser_save(
     let bytes = base64::engine::general_purpose::STANDARD
         .decode(encoded)
         .context("decode previous Northstar save")?;
-    let (previous_pack_hash, previous_content_hash) = if migrating_live_release {
+    let (previous_pack_hash, previous_content_hash) = if migrating_story_release {
+        (
+            "a5d9dd33b8cee59552917ef3607d801b8283602e5a3ee507e879a49aa0c10de6",
+            "ab6783c50c3f20e4314d11d3214eafee3785e6dcead3aead823907305dc4b22b",
+        )
+    } else if migrating_live_release {
         (
             "03ad92a98538f810809e3b547fffe4642c3fadbc82a9c778da91870258486aef",
             "5af966587a79756df727318397522135b6db8c241aac1afe7d186fbb7895ffcf",
@@ -619,7 +631,8 @@ fn select_browser_save(
     )
     .context("validate previous Northstar save")?
     .into_state();
-    let migrated = if migrating_live_release || migrating_current_release {
+    let migrated = if migrating_story_release || migrating_live_release || migrating_current_release
+    {
         runtime
             .validate_save_state_for_runtime_pack(&state)
             .context("validate current Northstar state for the new pack")?;

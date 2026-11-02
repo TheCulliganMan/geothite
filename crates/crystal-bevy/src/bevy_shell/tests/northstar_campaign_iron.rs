@@ -106,7 +106,7 @@ fn mine(c: &mut VisibleShellController, r: &CrystalRuntime, root: &AssetRoot) {
         .map_name
         == "MnBemidjiPokecenter1F"
     {
-        walk_to(c, r, (10, 14));
+        walk_to(c, r, (3, 4));
         travel(c, GameButton::Down, "MnBemidji", (31, 10));
     }
     if c.snapshot()

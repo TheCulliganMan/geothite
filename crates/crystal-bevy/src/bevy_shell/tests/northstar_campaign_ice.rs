@@ -38,7 +38,7 @@ fn arrival() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
         .as_str()
     {
         "MnMinneapolis" => location(&mut c, "MnMinneapolis", (40, 62)),
-        "MnMinneapolisPokecenter1F" => location(&mut c, "MnMinneapolisPokecenter1F", (10, 13)),
+        "MnMinneapolisPokecenter1F" => location(&mut c, "MnMinneapolisPokecenter1F", (3, 5)),
         road if road.starts_with("MnR03") => return_to_city(&mut c, &r),
         _ => panic!("expected an earned Minneapolis arrival or native blackout recovery"),
     }
@@ -65,10 +65,7 @@ pub(in crate::bevy_shell::tests) fn care(c: &mut VisibleShellController, r: &Cry
         indoor_walk(c, r, door);
         travel(c, GameButton::Up, "MnMinneapolisPokecenter1F", arrival);
     }
-    indoor_walk(c, r, (7, 5));
-    press(c, GameButton::Up);
-    press(c, GameButton::A);
-    finish(c);
+    super::super::rochester_earned::heal_party(c, r);
     assert!(
         c.snapshot()
             .expect("free care")
@@ -93,7 +90,7 @@ pub(in crate::bevy_shell::tests) fn care(c: &mut VisibleShellController, r: &Cry
             .as_deref(),
         Some("MN_MINNEAPOLIS_POKECENTER_1F")
     );
-    indoor_walk(c, r, (10, 14));
+    indoor_walk(c, r, (3, 4));
     travel(c, GameButton::Down, "MnMinneapolis", door);
 }
 
@@ -126,7 +123,7 @@ fn return_to_city(c: &mut VisibleShellController, r: &CrystalRuntime) {
     {
         super::northstar_campaign::enter_minneapolis(c, r);
     } else {
-        location(c, "MnMinneapolisPokecenter1F", (10, 13));
+        location(c, "MnMinneapolisPokecenter1F", (3, 5));
     }
 }
 
@@ -351,7 +348,7 @@ pub(super) fn ice() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
             assert!(c.shell.shell.session().state().money > money);
             break;
         }
-        location(&mut c, "MnMinneapolisPokecenter1F", (10, 13));
+        location(&mut c, "MnMinneapolisPokecenter1F", (3, 5));
         for flag in [WON, RESCUED, NOTE] {
             assert!(!event(&c, flag));
         }

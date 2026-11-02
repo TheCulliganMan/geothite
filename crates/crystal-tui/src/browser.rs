@@ -95,8 +95,14 @@ mod wasm {
         "03ad92a98538f810809e3b547fffe4642c3fadbc82a9c778da91870258486aef";
     const NORTHSTAR_LIVE_CONTENT_HASH: &str =
         "5af966587a79756df727318397522135b6db8c241aac1afe7d186fbb7895ffcf";
-    const NORTHSTAR_TARGET_CONTENT_HASH: &str =
+    const NORTHSTAR_STORY_ID_HASH: &str =
+        "a21253e2ab29e6e736e66684d879b6dd7b29845f87c550ad11f5a380ce74228b";
+    const NORTHSTAR_STORY_PACK_HASH: &str =
+        "a5d9dd33b8cee59552917ef3607d801b8283602e5a3ee507e879a49aa0c10de6";
+    const NORTHSTAR_STORY_CONTENT_HASH: &str =
         "ab6783c50c3f20e4314d11d3214eafee3785e6dcead3aead823907305dc4b22b";
+    const NORTHSTAR_TARGET_CONTENT_HASH: &str =
+        "d13645cf90952b8be4211918093acb7cb158afd0082226227caed1602a6e5878";
 
     fn js_error(error: impl std::fmt::Display) -> JsValue {
         JsValue::from_str(&error.to_string())
@@ -209,6 +215,7 @@ mod wasm {
         };
         let mut has_minnesota_save = false;
         let mut previous_id = None;
+        let mut story_id = None;
         for index in 0..storage.length()? {
             let Some(key) = storage.key(index)? else {
                 continue;
@@ -225,14 +232,16 @@ mod wasm {
             };
             if candidate_id.contains("+minnesota-") {
                 has_minnesota_save = true;
-                if format!("{:x}", Sha256::digest(candidate_id.as_bytes()))
-                    == NORTHSTAR_LIVE_ID_HASH
-                {
+                let id_hash = format!("{:x}", Sha256::digest(candidate_id.as_bytes()));
+                if id_hash == NORTHSTAR_STORY_ID_HASH {
+                    story_id = Some(candidate_id.to_owned());
+                } else if id_hash == NORTHSTAR_LIVE_ID_HASH {
                     previous_id = Some(candidate_id.to_owned());
                 }
             }
         }
-        let Some(previous_id) = previous_id else {
+        let is_story = story_id.is_some();
+        let Some(previous_id) = story_id.or(previous_id) else {
             if has_minnesota_save {
                 return Err(js_error(
                     "This Minnesota TUI session has a save from an unsupported Northstar release",
@@ -248,13 +257,18 @@ mod wasm {
         let bytes = base64::engine::general_purpose::STANDARD
             .decode(encoded)
             .map_err(js_error)?;
+        let (pack_hash, content_hash) = if is_story {
+            (NORTHSTAR_STORY_PACK_HASH, NORTHSTAR_STORY_CONTENT_HASH)
+        } else {
+            (NORTHSTAR_LIVE_PACK_HASH, NORTHSTAR_LIVE_CONTENT_HASH)
+        };
         let previous_identity =
-            SaveModpackIdentity::new(previous_id, NORTHSTAR_LIVE_PACK_HASH).map_err(js_error)?;
+            SaveModpackIdentity::new(previous_id, pack_hash).map_err(js_error)?;
         let state = read_save_game_bytes_for_modpack(
             &bytes,
             previous_key,
             &previous_identity,
-            NORTHSTAR_LIVE_CONTENT_HASH,
+            content_hash,
         )
         .map_err(js_error)?
         .into_state();

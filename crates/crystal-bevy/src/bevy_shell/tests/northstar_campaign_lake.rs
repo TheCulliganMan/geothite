@@ -57,7 +57,7 @@ fn arrival() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
                 at(&mut c, CITY, (32, 46));
             }
         }
-        CLINIC => at(&mut c, CLINIC, (10, 13)),
+        CLINIC => at(&mut c, CLINIC, (3, 5)),
         _ => panic!("expected a real Brainerd arrival, gym return or native recovery"),
     }
     for flag in [
@@ -111,11 +111,8 @@ fn care(c: &mut VisibleShellController, r: &CrystalRuntime) {
         }
     }
     at(c, CLINIC, arrival);
-    indoor_walk(c, r, (7, 5));
     let money = c.shell.shell.session().state().money;
-    press(c, GameButton::Up);
-    press(c, GameButton::A);
-    finish(c);
+    super::super::rochester_earned::heal_party(c, r);
     assert_eq!(c.shell.shell.session().state().money, money);
     assert!(
         c.snapshot()
@@ -132,7 +129,7 @@ fn care(c: &mut VisibleShellController, r: &CrystalRuntime) {
                         .all(|m| m.current_pp == r.data().moves[&m.name].pp)
             })
     );
-    indoor_walk(c, r, (10, 14));
+    indoor_walk(c, r, (3, 4));
     travel(c, GameButton::Down, CITY, door);
 }
 

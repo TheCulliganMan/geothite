@@ -146,7 +146,7 @@ pub(super) fn try_trail_with(
 ) -> bool {
     let s = c.snapshot().expect("route start");
     let start = (s.overworld.tile.x, s.overworld.tile.y);
-    let grid = RouteGrid::new_with_grass(
+    let mut grid = RouteGrid::new_with_grass(
         r,
         RouteSpec {
             prefix: "MnR01",
@@ -157,6 +157,8 @@ pub(super) fn try_trail_with(
             doors: BTreeMap::from([((18, 17), "MnR01Cave1F"), ((49, 15), "MnR01Farmhouse")]),
         },
     );
+    let original_blocked = grid.blocked.clone();
+    let mut blocked_attempts = 0;
     for _ in 0..4096 {
         let snapshot = c.snapshot().expect("live trail position");
         let tile = snapshot.overworld.tile;
@@ -167,7 +169,31 @@ pub(super) fn try_trail_with(
         // A native hop or encounter can finish beyond the originally planned
         // quadrant. Replan from the actual position rather than replaying a
         // stale suffix of the route's input list.
-        let button = *grid.path(here, to).first().expect("remaining R01 step");
+        grid.blocked.clone_from(&original_blocked);
+        for object in &snapshot.visible_objects {
+            let id = object
+                .object_identifier
+                .as_deref()
+                .expect("visible actor id");
+            let position = c
+                .shell
+                .shell
+                .session()
+                .overworld()
+                .object_runtime_tile_by_id(id)
+                .expect("live actor position");
+            grid.blocked.insert((position.x, position.y));
+        }
+        let Some(path) = grid.try_path(here, to) else {
+            c.wait_frames(24).expect("wait for route actor");
+            blocked_attempts += 1;
+            assert!(
+                blocked_attempts < 32,
+                "R01 route remains blocked at {here:?}"
+            );
+            continue;
+        };
+        let button = *path.first().expect("remaining R01 step");
         let old = c.snapshot().expect("before trail tile").overworld.tile;
         for _ in 0..8 {
             press(c, button);
@@ -212,6 +238,11 @@ pub(super) fn try_trail_with(
                 ));
                 continue;
             }
+            blocked_attempts += 1;
+            if blocked_attempts < 32 {
+                c.wait_frames(24).expect("wait for moving route actor");
+                continue;
+            }
             if after.ui.text.as_ref().is_some_and(|text| {
                 text.label == "visible-shell:field-notice"
                     && text
@@ -242,6 +273,7 @@ pub(super) fn try_trail_with(
                 c.has_pending_script_work()
             );
         }
+        blocked_attempts = 0;
     }
     panic!("bounded native R01 walk did not reach {to:?}");
 }

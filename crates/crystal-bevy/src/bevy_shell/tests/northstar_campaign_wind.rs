@@ -41,7 +41,7 @@ fn arrival() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
                 assert!(event(&c, "EVENT_MN_GYM_5_TRAINER_1_DEFEATED"));
             }
         }
-        CLINIC => location(&mut c, CLINIC, (10, 13)),
+        CLINIC => location(&mut c, CLINIC, (3, 5)),
         _ => panic!("expected an actual four-badge return or earned R05 checkpoint"),
     }
     assert_eq!(
@@ -81,12 +81,9 @@ pub(super) fn care(c: &mut VisibleShellController, r: &CrystalRuntime) {
         indoor_walk(c, r, door);
         travel(c, GameButton::Up, CLINIC, arrival);
     }
-    location(c, CLINIC, (10, 13));
-    indoor_walk(c, r, (7, 5));
+    location(c, CLINIC, (3, 5));
     let money = c.shell.shell.session().state().money;
-    press(c, GameButton::Up);
-    press(c, GameButton::A);
-    finish(c);
+    super::super::rochester_earned::heal_party(c, r);
     assert!(
         c.snapshot()
             .expect("free native care")
@@ -112,7 +109,7 @@ pub(super) fn care(c: &mut VisibleShellController, r: &CrystalRuntime) {
             .as_deref(),
         Some("MN_ST_CLOUD_POKECENTER_1F")
     );
-    indoor_walk(c, r, (10, 14));
+    indoor_walk(c, r, (3, 4));
     travel(c, GameButton::Down, CITY, door);
 }
 
@@ -136,7 +133,7 @@ pub(super) fn return_to_city(c: &mut VisibleShellController, r: &CrystalRuntime)
         travel(c, GameButton::Up, CITY, (24, 35));
         travel(c, GameButton::Up, CITY, (24, 34));
     } else {
-        location(c, CLINIC, (10, 13));
+        location(c, CLINIC, (3, 5));
     }
 }
 
@@ -409,7 +406,7 @@ pub(super) fn wind() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
                 continue_in_place(&mut c, &root, &r, &format!("campaign-{id}-win"));
                 break;
             }
-            location(&mut c, CLINIC, (10, 13));
+            location(&mut c, CLINIC, (3, 5));
             assert!(!c.shell.shell.session().state().badges.johto[4]);
             continue_in_place(&mut c, &root, &r, &format!("campaign-{id}-loss-{attempt}"));
             let level = c.snapshot().expect("prepared party").party.slots[0]

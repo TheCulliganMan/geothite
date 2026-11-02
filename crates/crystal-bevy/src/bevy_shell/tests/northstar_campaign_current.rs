@@ -139,7 +139,7 @@ pub(super) fn current() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
                 continue_in_place(&mut c, &root, &r, &format!("campaign-{id}-win"));
                 break;
             }
-            location(&mut c, "MnMinneapolisPokecenter1F", (10, 13));
+            location(&mut c, "MnMinneapolisPokecenter1F", (3, 5));
             assert!(!c.shell.shell.session().state().badges.johto[2]);
             continue_in_place(&mut c, &root, &r, &format!("campaign-{id}-loss-{attempt}"));
             if attempt < 3 {
@@ -196,7 +196,7 @@ fn depart(
             travel(&mut c, GameButton::Right, "MnStPaul", arrival);
             break;
         }
-        location(&mut c, "MnMinneapolisPokecenter1F", (10, 13));
+        location(&mut c, "MnMinneapolisPokecenter1F", (3, 5));
         continue_in_place(&mut c, &root, &r, &format!("campaign-r04-loss-{attempt}"));
     }
     location(&mut c, "MnStPaul", st_paul_arrival(&r));

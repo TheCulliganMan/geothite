@@ -1,6 +1,7 @@
 //! Restore the original nurse program and native compact Center interiors.
 
 use anyhow::{Context, Result, ensure};
+use std::collections::BTreeMap;
 
 use crate::grand_marais_modpack::authoring;
 use crate::{CompiledGamePack, MapModule};
@@ -118,6 +119,9 @@ pub fn restore_minnesota_center_nurses(base: &CompiledGamePack) -> Result<Compil
             compact_count += 1;
         }
         authoring::finish(&pack, &mut room)?;
+        if room.id == "MnRochesterPokecenter1F" {
+            refresh_reed_entry_movements(&mut room)?;
+        }
         let map_names = pack.data.map_name_by_constant_from_attributes()?;
         room.script_map_commands =
             crate::parse_script_map_commands(&room.id, &room.scripts, &map_names)?;
@@ -153,6 +157,83 @@ pub fn restore_minnesota_center_nurses(base: &CompiledGamePack) -> Result<Compil
         pack.compiled_audio == base.compiled_audio && pack.audio_manifest == base.audio_manifest,
         "preserve audio programs and PCM contracts"
     );
+    Ok(pack)
+}
+
+fn refresh_reed_entry_movements(room: &mut MapModule) -> Result<usize> {
+    let scripts: BTreeMap<_, _> = room
+        .scripts
+        .iter()
+        .filter(|(label, _)| {
+            label.starts_with("MnNativeCenterReedEntry")
+                || label.starts_with("MnNativeCenterReedApproach")
+        })
+        .map(|(label, value)| (label.clone(), value.clone()))
+        .collect();
+    ensure!(
+        scripts.contains_key("MnNativeCenterReedEntry3"),
+        "native Reed entry missing"
+    );
+    let commands = crate::parse_script_object_commands(&room.id, &scripts)?;
+    let movements = crate::parse_script_movements(&room.id, &scripts, &commands)?;
+    let mut added = 0;
+    for command in commands {
+        if let Some(existing) = room.script_object_commands.iter().find(|existing| {
+            existing.source_script == command.source_script
+                && existing.command_index == command.command_index
+        }) {
+            ensure!(*existing == command, "conflicting Reed object command");
+        } else {
+            room.script_object_commands.push(command);
+            added += 1;
+        }
+    }
+    for movement in movements {
+        if let Some(existing) = room.script_movements.iter().find(|existing| {
+            existing.label == movement.label && existing.source_script == movement.source_script
+        }) {
+            ensure!(*existing == movement, "conflicting Reed movement");
+        } else {
+            room.script_movements.push(movement);
+            added += 1;
+        }
+    }
+    Ok(added)
+}
+
+/// Repair the native Rochester Center's Reed entrance metadata in an existing pack.
+///
+/// # Errors
+/// Rejects invalid packs, missing native entrance scripts, conflicting metadata,
+/// and an invalid resulting identity.
+pub fn repair_minnesota_center_rival_movements(
+    base: &CompiledGamePack,
+) -> Result<CompiledGamePack> {
+    crate::verify_compiled_game_pack_for_runtime(base)?;
+    ensure!(
+        base.report.manifests.iter().any(|item| item == MANIFEST),
+        "native Center restoration is missing"
+    );
+    let mut pack = base.clone();
+    let room = pack
+        .data
+        .maps
+        .get_mut("MnRochesterPokecenter1F")
+        .context("Rochester Center missing")?;
+    if refresh_reed_entry_movements(room)? == 0 {
+        return Ok(pack);
+    }
+    pack.report
+        .manifests
+        .push("minnesota-center-reed-movement-repair-v1".into());
+    pack.identity = crate::derive_compiled_game_pack_identity_from_manifest(
+        pack.format_version,
+        &pack.data,
+        &pack.audio_manifest,
+        &pack.runtime_files,
+        &pack.report,
+    )?;
+    crate::verify_compiled_game_pack_for_runtime(&pack)?;
     Ok(pack)
 }
 
@@ -287,6 +368,42 @@ fn relocate_rochester_rival(room: &mut MapModule) -> Result<()> {
 #[cfg(test)]
 mod tests {
     #[test]
+    #[ignore = "requires CRYSTAL_CENTER_LIVE_PACK from the deployed release"]
+    fn reed_native_center_movement_metadata_is_restored_without_other_changes() {
+        let path = std::env::var_os("CRYSTAL_CENTER_LIVE_PACK").expect("live pack path");
+        let base = crate::read_verified_compiled_game_pack(path).expect("verified live pack");
+        let fixed = super::repair_minnesota_center_rival_movements(&base).expect("repair");
+        let name = "MnRochesterPokecenter1F";
+        let room = &fixed.data.maps[name];
+        for x in (0..=9).filter(|x| *x != 5) {
+            let script = format!("MnNativeCenterReedEntry{x}");
+            let movement = format!("MnNativeCenterReedApproach{x}");
+            assert!(room.script_object_commands.iter().any(|command| {
+                command.source_script == script
+                    && command.command_index == 4
+                    && command.command == "applymovement"
+                    && command.movement.as_deref() == Some(&movement)
+            }));
+            assert!(
+                room.script_movements
+                    .iter()
+                    .any(|item| item.label == movement)
+            );
+        }
+        let mut restored = fixed.clone();
+        let restored_room = restored.data.maps.get_mut(name).expect("center");
+        restored_room.script_object_commands = base.data.maps[name].script_object_commands.clone();
+        restored_room.script_movements = base.data.maps[name].script_movements.clone();
+        restored.report = base.report.clone();
+        restored.identity = base.identity.clone();
+        assert_eq!(restored, base, "only Reed movement metadata may change");
+        assert_eq!(
+            super::repair_minnesota_center_rival_movements(&fixed).expect("repeat"),
+            fixed
+        );
+    }
+
+    #[test]
     #[ignore = "requires the selected external Minnesota review pack"]
     fn native_nurses_and_compact_center_layouts_are_restored() {
         let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
@@ -327,6 +444,12 @@ mod tests {
             &base.data.maps["MnLeechLakeCareCabin"]
         ));
         assert!(count >= 19, "all regional nurses");
+        let mut rochester = output.data.maps["MnRochesterPokecenter1F"].clone();
+        assert_eq!(
+            super::refresh_reed_entry_movements(&mut rochester).expect("compiled Reed entrance"),
+            0,
+            "Center publication must include the entrance's runtime movement metadata"
+        );
         assert_eq!(output.compiled_audio, base.compiled_audio);
         assert_eq!(output.audio_manifest, base.audio_manifest);
         for (name, before) in &base.data.maps {

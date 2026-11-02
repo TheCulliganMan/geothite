@@ -210,6 +210,11 @@ impl RouteGrid {
     }
 
     pub fn path(&self, from: Point, to: Point) -> Vec<GameButton> {
+        self.try_path(from, to)
+            .unwrap_or_else(|| panic!("no safe route {from:?} -> {to:?}"))
+    }
+
+    pub fn try_path(&self, from: Point, to: Point) -> Option<Vec<GameButton>> {
         let mut parents = BTreeMap::from([(from, (from, GameButton::A))]);
         let mut queue = VecDeque::from([from]);
         while let Some(p) = queue.pop_front() {
@@ -232,10 +237,9 @@ impl RouteGrid {
                 queue.push_back(q);
             }
         }
-        assert!(
-            parents.contains_key(&to),
-            "no safe route {from:?} -> {to:?}"
-        );
+        if !parents.contains_key(&to) {
+            return None;
+        }
         let mut buttons = Vec::new();
         let mut cursor = to;
         while cursor != from {
@@ -244,7 +248,7 @@ impl RouteGrid {
             cursor = prior;
         }
         buttons.reverse();
-        buttons
+        Some(buttons)
     }
 
     pub fn walk(&self, controller: &mut VisibleShellController, to: Point) {
@@ -473,7 +477,13 @@ pub(super) fn indoor_walk(
                 return;
             }
             let button = *super::northstar_ice_lair::path(controller, runtime, to)
-                .expect("native arc route")
+                .unwrap_or_else(|| {
+                    let snapshot = controller.snapshot().expect("blocked arc location");
+                    panic!(
+                        "no native arc route on {} from {:?} to {:?}; objects: {:?}",
+                        snapshot.overworld.map_name, tile, to, snapshot.visible_objects
+                    )
+                })
                 .first()
                 .expect("remaining step");
             for _ in 0..8 {
@@ -631,6 +641,7 @@ fn authored_route_planner_preserves_dry_steps_and_skips_uncontrollable_ice_posit
     );
     let mut occupied = grid;
     occupied.blocked.insert((3, 0));
+    assert_eq!(occupied.try_path((0, 0), (6, 0)), None);
     assert!(
         !occupied
             .destinations((1, 0))

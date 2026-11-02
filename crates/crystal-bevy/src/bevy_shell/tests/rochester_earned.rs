@@ -948,11 +948,59 @@ pub(super) fn learning_button(
     Some(GameButton::A)
 }
 
-pub(super) fn heal(c: &mut VisibleShellController, r: &CrystalRuntime) {
-    indoor_walk(c, r, (7, 5));
+pub(super) fn heal_party(c: &mut VisibleShellController, r: &CrystalRuntime) {
+    indoor_walk(c, r, (3, 3));
     press(c, GameButton::Up);
     press(c, GameButton::A);
-    finish(c);
+    for _ in 0..48 {
+        if c.snapshot()
+            .expect("nurse question")
+            .ui
+            .pending_yes_no
+            .is_some()
+        {
+            if c.shell
+                .yes_no_cursor
+                .as_ref()
+                .expect("nurse cursor")
+                .option_index
+                != 0
+            {
+                press(c, GameButton::Up);
+            }
+            break;
+        }
+        press(c, GameButton::A);
+    }
+    assert!(
+        c.snapshot()
+            .expect("nurse choice")
+            .ui
+            .pending_yes_no
+            .is_some()
+    );
+    let mut released = false;
+    for _ in 0..256 {
+        let snapshot = c.snapshot().expect("nurse recovery");
+        if snapshot.phase == crystal_runtime::RuntimeShellPhase::Overworld
+            && !snapshot.ui.text_window_open
+            && !c.has_pending_script_work()
+        {
+            released = true;
+            break;
+        }
+        if snapshot.ui.pending_yes_no.is_some()
+            && c.shell
+                .yes_no_cursor
+                .as_ref()
+                .is_some_and(|cursor| cursor.option_index != 0)
+        {
+            press(c, GameButton::Up);
+        } else {
+            press(c, GameButton::A);
+        }
+    }
+    assert!(released, "nurse recovery did not release input");
     let s = c.snapshot().expect("earned clinic recovery");
     assert!(s.party.slots.iter().all(|slot| {
         let p = &slot.pokemon;
@@ -962,6 +1010,10 @@ pub(super) fn heal(c: &mut VisibleShellController, r: &CrystalRuntime) {
                 .iter()
                 .all(|m| m.current_pp == r.data().moves[&m.name].pp)
     }));
+}
+
+pub(super) fn heal(c: &mut VisibleShellController, r: &CrystalRuntime) {
+    heal_party(c, r);
     assert_eq!(
         c.shell
             .shell
@@ -974,7 +1026,7 @@ pub(super) fn heal(c: &mut VisibleShellController, r: &CrystalRuntime) {
 }
 
 pub(super) fn clinic_exit(c: &mut VisibleShellController, r: &CrystalRuntime) {
-    indoor_walk(c, r, (10, 14));
+    indoor_walk(c, r, (3, 4));
     travel(c, GameButton::Down, "MnRochester", (15, 8));
 }
 
@@ -1093,7 +1145,7 @@ pub(super) fn checkout(
 
 fn recruit(c: &mut VisibleShellController, r: &CrystalRuntime, root: &crystal_assets::AssetRoot) {
     indoor_walk(c, r, (15, 8));
-    travel(c, GameButton::Up, "MnRochesterPokecenter1F", (10, 13));
+    travel(c, GameButton::Up, "MnRochesterPokecenter1F", (3, 3));
     heal(c, r);
     clinic_exit(c, r);
     indoor_walk(c, r, (38, 18));
@@ -1118,7 +1170,7 @@ fn recruit(c: &mut VisibleShellController, r: &CrystalRuntime, root: &crystal_as
             }
         });
         if !arrived {
-            at(c, "MnRochesterPokecenter1F", (10, 13));
+            at(c, "MnRochesterPokecenter1F", (3, 5));
             continue_in_place(c, root, r, "fresh-recruit-blackout");
             heal(c, r);
             clinic_exit(c, r);
@@ -1167,7 +1219,7 @@ fn train_for_care(
         if c.snapshot().expect("training recovery").overworld.map_name != "MnRochesterPokecenter1F"
         {
             indoor_walk(c, r, (15, 8));
-            travel(c, GameButton::Up, "MnRochesterPokecenter1F", (10, 13));
+            travel(c, GameButton::Up, "MnRochesterPokecenter1F", (3, 3));
         }
         heal(c, r);
         clinic_exit(c, r);
@@ -1241,10 +1293,15 @@ pub(super) fn care_badge() -> (
             "EVENT_MN_R01_TRAINER_03",
         ),
     ] {
+        if event(&c, win) {
+            continue;
+        }
         trail(&mut c, &r, tile);
-        press(&mut c, facing);
-        press(&mut c, GameButton::A);
-        battle(&mut c, &r, id, win);
+        if !event(&c, win) {
+            press(&mut c, facing);
+            press(&mut c, GameButton::A);
+            battle(&mut c, &r, id, win);
+        }
         assert!(!c.shell.shell.session().state().badges.johto[0]);
     }
     trail(&mut c, &r, (19, 12));
@@ -1311,10 +1368,10 @@ pub(super) fn care_badge() -> (
                     != "MnRochesterPokecenter1F"
                 {
                     indoor_walk(&mut c, &r, (15, 8));
-                    travel(&mut c, GameButton::Up, "MnRochesterPokecenter1F", (10, 13));
+                    travel(&mut c, GameButton::Up, "MnRochesterPokecenter1F", (3, 3));
                 }
                 heal(&mut c, &r);
-                indoor_walk(&mut c, &r, (8, 10));
+                indoor_walk(&mut c, &r, (4, 4));
                 super::northstar_ice_lair::talk(&mut c, GameButton::Right);
                 super::northstar_ice_lair::choice(&mut c, true);
                 assert!(try_battle(
@@ -1356,7 +1413,7 @@ pub(super) fn care_badge() -> (
                 != "MnRochesterPokecenter1F"
             {
                 indoor_walk(&mut c, &r, (15, 8));
-                travel(&mut c, GameButton::Up, "MnRochesterPokecenter1F", (10, 13));
+                travel(&mut c, GameButton::Up, "MnRochesterPokecenter1F", (3, 3));
             }
             heal(&mut c, &r);
             clinic_exit(&mut c, &r);
@@ -1378,7 +1435,7 @@ pub(super) fn care_badge() -> (
             if try_battle(&mut c, &r, id, win) {
                 break;
             }
-            at(&mut c, "MnRochesterPokecenter1F", (10, 13));
+            at(&mut c, "MnRochesterPokecenter1F", (3, 5));
             c = continued(c, &root, &r, &format!("fresh-{id}-loss-{attempt}"));
             if id == "MN_GYM_1" && attempt < 3 {
                 train_for_care(&mut c, &r, &root, 13 + attempt);

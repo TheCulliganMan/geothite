@@ -69,7 +69,7 @@ fn arrival() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
         }
         CITY if won => at(&mut c, CITY, (10, 10)),
         CITY => at(&mut c, CITY, (24, 46)),
-        CLINIC => at(&mut c, CLINIC, (10, 13)),
+        CLINIC => at(&mut c, CLINIC, (3, 5)),
         PARK if event(&c, READING)
             && (won || super::super::northstar_dialogue::timely_evidence(&r)) =>
         {
@@ -149,11 +149,8 @@ fn care(c: &mut VisibleShellController, r: &CrystalRuntime) {
         indoor_walk(c, r, door);
         travel(c, GameButton::Up, CLINIC, arrival);
     }
-    indoor_walk(c, r, (7, 5));
     let money = c.shell.shell.session().state().money;
-    press(c, GameButton::Up);
-    press(c, GameButton::A);
-    finish(c);
+    super::super::rochester_earned::heal_party(c, r);
     assert_eq!(c.shell.shell.session().state().money, money);
     assert!(
         c.snapshot()
@@ -170,7 +167,7 @@ fn care(c: &mut VisibleShellController, r: &CrystalRuntime) {
                         .all(|m| m.current_pp == r.data().moves[&m.name].pp)
             })
     );
-    indoor_walk(c, r, (10, 14));
+    indoor_walk(c, r, (3, 4));
     travel(c, GameButton::Down, CITY, door);
 }
 

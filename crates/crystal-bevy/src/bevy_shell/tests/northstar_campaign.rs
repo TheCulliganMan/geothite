@@ -94,12 +94,9 @@ fn depart_prairie(c: &mut VisibleShellController, r: &CrystalRuntime, root: &Ass
 fn care(c: &mut VisibleShellController, r: &CrystalRuntime) {
     if c.snapshot().expect("care approach").overworld.map_name == "MnMankato" {
         indoor_walk(c, r, (31, 14));
-        travel(c, GameButton::Up, "MnMankatoPokecenter1F", (10, 13));
+        travel(c, GameButton::Up, "MnMankatoPokecenter1F", (3, 5));
     }
-    indoor_walk(c, r, (7, 5));
-    press(c, GameButton::Up);
-    press(c, GameButton::A);
-    finish(c);
+    super::super::rochester_earned::heal_party(c, r);
     assert!(
         c.snapshot()
             .expect("ordinary care")
@@ -124,7 +121,7 @@ fn care(c: &mut VisibleShellController, r: &CrystalRuntime) {
             .as_deref(),
         Some("MN_MANKATO_POKECENTER_1F")
     );
-    indoor_walk(c, r, (10, 14));
+    indoor_walk(c, r, (3, 4));
     travel(c, GameButton::Down, "MnMankato", (31, 14));
 }
 
@@ -382,7 +379,7 @@ fn leave_road(c: &mut VisibleShellController, r: &CrystalRuntime) {
         travel(c, GameButton::Left, "MnMankato", (47, 18));
         travel(c, GameButton::Left, "MnMankato", (46, 18));
     } else {
-        location(c, "MnMankatoPokecenter1F", (10, 13));
+        location(c, "MnMankatoPokecenter1F", (3, 5));
     }
 }
 
@@ -541,7 +538,7 @@ pub(super) fn prairie() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
                 continue_in_place(&mut c, &root, &r, &format!("campaign-{id}-win"));
                 break;
             }
-            location(&mut c, "MnMankatoPokecenter1F", (10, 13));
+            location(&mut c, "MnMankatoPokecenter1F", (3, 5));
             assert!(
                 !c.shell.shell.session().state().badges.johto[1],
                 "a loss cannot award Prairie"

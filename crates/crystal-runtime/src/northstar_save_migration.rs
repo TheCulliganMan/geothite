@@ -6,7 +6,7 @@ use crystal_core::world::movement::MovementMode;
 
 use crate::CrystalRuntime;
 
-const TARGET_HOSTED_HASH: &str = "ab6783c50c3f20e4314d11d3214eafee3785e6dcead3aead823907305dc4b22b";
+const TARGET_HOSTED_HASH: &str = "d13645cf90952b8be4211918093acb7cb158afd0082226227caed1602a6e5878";
 const RESTORED_CENTERS_MARKER: &str = "minnesota-native-center-restoration-v1";
 const RESIZED_CENTERS: &[&str] = &[
     "MnBemidjiPokecenter1F",
@@ -186,6 +186,64 @@ mod tests {
         assert_eq!(
             format!("{:x}", Sha256::digest(live.modpack().id().as_bytes())),
             "fe99707f044eb9151c7233be54eda89f4ca0cd48431231ccfa9ed7c449a8dc0c"
+        );
+        assert_eq!(
+            target.pack_identity().content_hash,
+            super::TARGET_HOSTED_HASH
+        );
+        for (map, x, y) in [
+            ("MnRochesterPokecenter1F", 3, 5),
+            ("MnR01C00R00", 0, 24),
+            ("MnWinonaHome1F", 9, 1),
+        ] {
+            let mut game = RuntimeGameShell::new_game_at_runtime_tile(
+                root.clone(),
+                live.clone(),
+                live.title_new_game_spawn_identifier().expect("spawn"),
+                map,
+                x,
+                y,
+            )
+            .expect("live save fixture");
+            game.session_mut().state_mut().money = 4321;
+            let state = game.session().state();
+            target
+                .validate_save_state_for_runtime_pack(state)
+                .expect("state compatible with revised pack");
+            assert_eq!(state.money, 4321);
+        }
+    }
+
+    #[test]
+    #[ignore = "requires the live hosted pack and the story revision"]
+    fn published_story_save_remains_valid_after_reed_scene_repair() {
+        let live_path =
+            PathBuf::from(std::env::var_os("CRYSTAL_NORTHSTAR_LIVE_PACK").expect("live pack"));
+        let target_path = PathBuf::from(
+            std::env::var_os("CRYSTAL_NORTHSTAR_HOSTED_PACK").expect("hosted candidate"),
+        );
+        let root = AssetRoot::new(live_path.parent().expect("pack directory"));
+        let live = CrystalRuntime::from_loaded_compiled_pack(
+            &root,
+            read_loaded_verified_compiled_game_pack(live_path).expect("live pack verified"),
+        )
+        .expect("live runtime");
+        let target = CrystalRuntime::from_loaded_compiled_pack(
+            &root,
+            read_loaded_verified_compiled_game_pack(target_path).expect("target pack verified"),
+        )
+        .expect("target runtime");
+        assert_eq!(
+            live.pack_identity().content_hash,
+            "ab6783c50c3f20e4314d11d3214eafee3785e6dcead3aead823907305dc4b22b"
+        );
+        assert_eq!(
+            live.modpack().hash(),
+            "a5d9dd33b8cee59552917ef3607d801b8283602e5a3ee507e879a49aa0c10de6"
+        );
+        assert_eq!(
+            format!("{:x}", Sha256::digest(live.modpack().id().as_bytes())),
+            "a21253e2ab29e6e736e66684d879b6dd7b29845f87c550ad11f5a380ce74228b"
         );
         assert_eq!(
             target.pack_identity().content_hash,

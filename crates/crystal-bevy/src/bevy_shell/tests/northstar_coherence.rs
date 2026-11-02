@@ -6,6 +6,34 @@ use super::interior_life::{collision, fixture};
 use super::winona::{load, press};
 
 #[test]
+#[ignore = "requires the repaired external pack via CRYSTAL_WINONA_TEST_PACK"]
+fn reed_approaches_on_the_native_center_exit_after_an_earned_delivery() {
+    let (_, _, mut controller) = super::dialogue_overhaul::delivery(1);
+    for _ in 0..16 {
+        let snapshot = controller.snapshot().expect("center scene");
+        if snapshot
+            .ui
+            .text
+            .as_ref()
+            .is_some_and(|text| text.label == "MnArcRCPathsText")
+        {
+            let reed = snapshot
+                .visible_object_runtime_tiles
+                .get("MN_ARC_RC_REED")
+                .expect("visible Reed");
+            assert_eq!((reed.x, reed.y), (4, 4));
+            assert_eq!(
+                (snapshot.overworld.tile.x, snapshot.overworld.tile.y),
+                (3, 4)
+            );
+            return;
+        }
+        press(&mut controller, GameButton::Down);
+    }
+    panic!("Reed did not approach and introduce the Rochester scene");
+}
+
+#[test]
 #[ignore = "requires CRYSTAL_WINONA_TEST_PACK with the coherence candidate"]
 fn coherence_ambient_conversations_show_reviewed_pages_and_release_input() {
     let (root, runtime) = load();
