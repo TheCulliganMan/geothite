@@ -133,6 +133,7 @@
     <dialog id="startup-error" aria-label="Unable to start game">
       <p id="startup-error-message"></p>
       <button id="retry-start" type="button">Reload</button>
+      <button id="reset-local-saves" type="button">Delete local saves and restart</button>
     </dialog>
     <button id="mute" type="button" aria-label="Enable sound" aria-pressed="false" title="Enable sound"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path class="sound-waves" d="M15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/><path class="sound-slash" d="m16 9 5 6m0-6-5 6"/></svg></button>
     <details id="player-options">
@@ -304,6 +305,17 @@
         if (!dialog.open) dialog.showModal();
       };
       document.querySelector('#retry-start').addEventListener('click', () => location.reload());
+      document.querySelector('#reset-local-saves').addEventListener('click', () => {
+        try {
+          const keys = Array.from({ length: localStorage.length }, (_, index) => localStorage.key(index));
+          for (const key of keys) {
+            if (key?.startsWith('crystal.save.v1.saves/')) localStorage.removeItem(key);
+          }
+          location.reload();
+        } catch (error) {
+          document.querySelector('#startup-error-message').textContent = `Could not delete local saves: ${error.message}`;
+        }
+      });
       const handleGlobalError = error => {
         // Safari extensions can reject their own messaging promises in the
         // page. Geothite does not use runtime.sendMessage; this specific error
