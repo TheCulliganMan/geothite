@@ -98,3 +98,115 @@ pub(super) fn verify_full_bench_award(c: &mut VisibleShellController, r: &Crysta
     );
     assert_eq!(after.slots[1].pokemon.item.as_deref(), Some("EXP_SHARE"));
 }
+
+#[test]
+#[ignore = "requires an external Northstar pack in CRYSTAL_WINONA_TEST_PACK"]
+fn northstar_exp_share_recipient_learns_from_a_wild_victory() {
+    use crystal_core::models::Dv;
+    use crystal_core::systems::experience::calculate_experience;
+
+    let (root, runtime) = super::super::winona::load();
+    let mut controller =
+        super::super::interior_life::fixture(&root, &runtime, "MnR01C00R00", (63, 24));
+    let crystal_core::systems::learnsets::LearnsetEntry(learn_level, learned_move) =
+        runtime.data().learnsets["BIRCHIT"]
+            .iter()
+            .find(|entry| {
+                entry.0 > 5
+                    && entry.0 < 16
+                    && !["TACKLE", "LEER", "GROWL", "QUICK_ATTACK"].contains(&entry.1.as_str())
+            })
+            .expect("early native Birchit move");
+    let mut lead = runtime
+        .data()
+        .create_pokemon("CINDORE", 40, Dv::default())
+        .expect("native lead");
+    let mut recipient = runtime
+        .data()
+        .create_pokemon("BIRCHIT", *learn_level - 1, Dv::default())
+        .expect("native EXP Share recipient");
+    recipient.experience = calculate_experience(
+        runtime.growth_rates(),
+        &recipient.species.growth_rate,
+        *learn_level,
+    )
+    .expect("next level")
+        - 1;
+    recipient.item = Some("EXP_SHARE".into());
+    recipient.moves = ["TACKLE", "LEER", "GROWL", "QUICK_ATTACK"]
+        .into_iter()
+        .map(|id| crystal_core::models::LearnedMove {
+            name: id.into(),
+            current_pp: runtime.data().moves[id].pp,
+            pp_ups: 0,
+        })
+        .collect();
+    {
+        let state = controller.shell.shell.session_mut().state_mut();
+        for pokemon in [&mut lead, &mut recipient] {
+            pokemon.original_trainer_id = state.player_id;
+            pokemon.original_trainer_name = state.player_name.clone();
+            assert!(state.storage.party.add_pokemon(pokemon.clone()));
+        }
+        state.sync_party_from_storage();
+    }
+    super::super::mark_runtime_snapshot_dirty(&mut controller.shell);
+    let map = &runtime.data().maps["MnR01C00R00"];
+    let mut grass = Vec::new();
+    for y in 0..i16::try_from(map.attributes.height * 2).expect("height") {
+        for x in 0..i16::try_from(map.attributes.width * 2).expect("width") {
+            if collision(&runtime, map, (x, y)) == Some("TALL_GRASS") {
+                grass.push(((63 - x).abs() + (24 - y).abs(), (x, y)));
+            }
+        }
+    }
+    grass.sort_by_key(|entry| entry.0);
+    let target = grass
+        .into_iter()
+        .find_map(|(_, point)| grass_walk::path(&mut controller, &runtime, point).map(|_| point))
+        .expect("reachable grass");
+    let mut destination = target;
+    let mut neighbor = None;
+    for _ in 0..1024 {
+        if controller.snapshot().expect("encounter").battle.is_some() {
+            break;
+        }
+        let path = grass_walk::path(&mut controller, &runtime, destination).expect("grass path");
+        if let Some(button) = path.first() {
+            press(&mut controller, *button);
+        } else if destination == target {
+            let point = *neighbor.get_or_insert_with(|| {
+                [
+                    (target.0 + 1, target.1),
+                    (target.0 - 1, target.1),
+                    (target.0, target.1 + 1),
+                    (target.0, target.1 - 1),
+                ]
+                .into_iter()
+                .find(|&point| {
+                    grass_walk::path(&mut controller, &runtime, point)
+                        .is_some_and(|path| path.len() == 1)
+                })
+                .expect("grass patrol")
+            });
+            destination = point;
+        } else {
+            destination = target;
+        }
+    }
+    assert!(controller.snapshot().expect("encounter").battle.is_some());
+    assert!(super::super::rochester_earned::train_wild_with_lead(
+        &mut controller,
+        &runtime
+    ));
+    let result = controller.snapshot().expect("earned reward");
+    assert!(result.party.slots[1].pokemon.level >= *learn_level);
+    assert!(
+        result.party.slots[1]
+            .pokemon
+            .moves
+            .iter()
+            .any(|mov| mov.name == *learned_move),
+        "the EXP Share recipient must learn its earned move"
+    );
+}

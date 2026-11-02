@@ -3723,6 +3723,174 @@ fn pending_move_replacement_uses_source_text_pause_and_sound_boundaries() {
     );
 }
 
+#[test]
+fn shared_experience_groups_equal_awards_without_losing_progression() {
+    use crate::core::systems::battle_rewards::{BattleRewardOutcome, BattleRewardRecipientOutcome};
+
+    let recipient = |party_index, nickname: &str, experience_awarded, level_after| {
+        BattleRewardRecipientOutcome {
+            party_index,
+            nickname: nickname.to_string(),
+            experience_awarded,
+            level_before: 5,
+            level_after,
+            learned_moves: Vec::new(),
+            pending_move_learns: Vec::new(),
+            evolution: Default::default(),
+        }
+    };
+    let mut recipients = vec![
+        recipient(1, "BENCH", 20, 6),
+        recipient(0, "LEAD", 40, 5),
+        recipient(2, "OTHER", 20, 7),
+        recipient(3, "THIRD", 30, 5),
+    ];
+    recipients[2].learned_moves.push("HEADBUTT".to_string());
+    assert_eq!(
+        grouped_battle_experience_messages(&recipients, 0).expect("shared awards"),
+        [
+            "LEAD gained\n40 EXP. Points!",
+            "THIRD gained\n30 EXP. Points!",
+            "Others gained\n20 EXP. Points!"
+        ]
+    );
+    assert!(grouped_battle_experience_messages(&recipients[..2], 0).is_none());
+    assert_eq!(
+        grouped_battle_experience_messages(
+            &[recipient(1, "BENCH", 20, 5), recipient(0, "LEAD", 20, 5)],
+            0,
+        )
+        .expect("active member still owns its bar"),
+        [
+            "LEAD gained\n20 EXP. Points!",
+            "Others gained\n20 EXP. Points!"
+        ]
+    );
+    let mut repeated_pass = recipients.clone();
+    repeated_pass.push(recipient(0, "LEAD", 20, 5));
+    assert!(grouped_battle_experience_messages(&repeated_pass, 0).is_none());
+
+    let mut shell = core_modular_title_shell_for_test();
+    let outcome = BattleRewardOutcome {
+        defeated_species: "PIDGEY".to_string(),
+        experience_awarded: 40,
+        level_before: 5,
+        level_after: 5,
+        learned_moves: Vec::new(),
+        pending_move_learns: Vec::new(),
+        deferred_level_evolution: false,
+        evolution: Default::default(),
+        recipient_outcomes: recipients,
+        post_battle_evolutions: Vec::new(),
+    };
+    push_visible_battle_reward_events(&mut shell, &outcome, 0, "LEAD")
+        .expect("present shared reward");
+    let messages = shell.battle_messages.iter().cloned().collect::<Vec<_>>();
+    assert!(messages.contains(&"BENCH grew to\nlevel 6!".to_string()));
+    assert!(messages.contains(&"OTHER grew to\nlevel 6!".to_string()));
+    assert!(messages.contains(&"OTHER grew to\nlevel 7!".to_string()));
+    assert!(messages.contains(&"OTHER learned\nHEADBUTT!".to_string()));
+    assert_eq!(
+        messages
+            .iter()
+            .filter(|message| message.contains("EXP. Points!"))
+            .count(),
+        3
+    );
+}
+
+#[test]
+fn post_battle_move_learning_renders_full_choice_and_move_list() {
+    let mut shell = route36_overworld_shell_for_battle_render_regression();
+    {
+        let state = shell.shell.session_mut().state_mut();
+        let pokemon = state.storage.party.pokemon[0].as_mut().expect("learner");
+        pokemon.moves = ["TACKLE", "LEER", "SMOKESCREEN", "EMBER"]
+            .into_iter()
+            .map(|name| crate::core::models::LearnedMove {
+                name: name.to_string(),
+                current_pp: 10,
+                pp_ups: 0,
+            })
+            .collect();
+        state.pending_move_learn = Some(crate::core::state::PendingMoveLearn {
+            party_index: 0,
+            species_id: "CYNDAQUIL".to_string(),
+            level: 10,
+            learned_move: crate::core::models::LearnedMove {
+                name: "HEADBUTT".to_string(),
+                current_pp: 15,
+                pp_ups: 0,
+            },
+            defer_level_evolution: false,
+        });
+        state.sync_party_from_storage();
+    }
+    mark_runtime_snapshot_dirty(&mut shell);
+    confirm_visible_pending_move_learn(&mut shell).expect("open decision");
+    let mut app = menu_render_test_app(shell);
+    app.update();
+    app.update();
+    save_live_battle_canvas_for_test(app.world_mut(), "move-learn-decision.png");
+    let command_count = app
+        .world_mut()
+        .query_filtered::<Entity, With<BattleCommandMarker>>()
+        .iter(app.world())
+        .count();
+    assert!(
+        command_count > 20,
+        "the question and both choices need a rendered chooser"
+    );
+    press_key_for_runtime_hotkey_app(&mut app, KeyCode::KeyZ);
+    assert!(
+        app.world()
+            .resource::<BevyRuntimeShell>()
+            .move_learn_forget_menu_open
+    );
+    app.update();
+    assert!(
+        app.world()
+            .resource::<BevyRuntimeShell>()
+            .last_error
+            .is_none(),
+        "render error: {:?}",
+        app.world().resource::<BevyRuntimeShell>().last_error
+    );
+    save_live_battle_canvas_for_test(app.world_mut(), "move-learn-list.png");
+    let command_count = app
+        .world_mut()
+        .query_filtered::<Entity, With<BattleCommandMarker>>()
+        .iter(app.world())
+        .count();
+    assert!(
+        command_count > 40,
+        "all moves and CANCEL need a rendered list"
+    );
+    press_key_for_runtime_hotkey_app(&mut app, KeyCode::KeyX);
+    assert_eq!(
+        app.world().resource::<BevyRuntimeShell>().move_learn_decision,
+        Some(VisibleTmHmDecision::StopLearning)
+    );
+    press_key_for_runtime_hotkey_app(&mut app, KeyCode::KeyX);
+    assert!(
+        app.world()
+            .resource::<BevyRuntimeShell>()
+            .move_learn_forget_menu_open
+    );
+    press_key_for_runtime_hotkey_app(&mut app, KeyCode::KeyZ);
+    let shell = app.world().resource::<BevyRuntimeShell>();
+    let state = shell.shell.session().state();
+    assert!(state.pending_move_learn.is_none());
+    assert_eq!(
+        state.storage.party.pokemon[0]
+            .as_ref()
+            .expect("learner")
+            .moves[0]
+            .name,
+        "HEADBUTT"
+    );
+}
+
 fn capture_ball_sprite_count(world: &mut World) -> usize {
     let mut commands = world.query_filtered::<&Transform, With<BattleCommandMarker>>();
     commands

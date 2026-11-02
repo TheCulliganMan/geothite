@@ -2353,7 +2353,11 @@ fn sync_visible_battle_action_cursor(runtime_shell: &mut BevyRuntimeShell) {
         runtime_shell.battle_party_action_cursor = None;
         runtime_shell.battle_party_summary_open = false;
         runtime_shell.pending_battle_move_switch_slot = None;
-        runtime_shell.party_move_cursor = None;
+        if !runtime_shell.move_learn_forget_menu_open
+            || runtime_shell.shell.session().state().pending_move_learn.is_none()
+        {
+            runtime_shell.party_move_cursor = None;
+        }
         runtime_shell.battle_pack_target_mode = None;
         if runtime_shell
             .bag_cursor
@@ -2382,7 +2386,11 @@ fn sync_visible_battle_action_cursor(runtime_shell: &mut BevyRuntimeShell) {
         runtime_shell.battle_party_action_cursor = None;
         runtime_shell.battle_party_summary_open = false;
         runtime_shell.pending_battle_move_switch_slot = None;
-        runtime_shell.party_move_cursor = None;
+        if !runtime_shell.move_learn_forget_menu_open
+            || runtime_shell.shell.session().state().pending_move_learn.is_none()
+        {
+            runtime_shell.party_move_cursor = None;
+        }
         runtime_shell.battle_pack_target_mode = None;
         if runtime_shell
             .bag_cursor
@@ -2411,7 +2419,6 @@ fn sync_visible_battle_action_cursor(runtime_shell: &mut BevyRuntimeShell) {
         reset_visible_battle_item_cursors(runtime_shell);
         runtime_shell.battle_move_cursor = None;
         runtime_shell.battle_move_swap_origin = None;
-        runtime_shell.party_move_cursor = None;
         if battle.commands.switch_party_indices.is_empty() {
             runtime_shell.battle_action_cursor = None;
             runtime_shell.battle_switch_cursor = None;

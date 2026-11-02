@@ -56,15 +56,20 @@ def main():
             if client.status()['position']['y'] == 0:
                 client.press('down')
             client.at('MnWinonaHome1F', 9, 1)
-            if client.status()['dialogue']:
-                client.move('down', 3)
-                client.at('MnWinonaHome1F', 9, 1)
-            else:
-                walk(client, pack, (7, 5))
-                client.press('down')
+            assert client.status()['dialogue'], 'Mom must approach on the stair arrival'
+            actors = client.call('map_info')['structuredContent']['visible_objects']
+            assert any(actor['id'] == 'MN_W_GUARDIAN' and
+                       (actor['offset_x'], actor['offset_y']) == (0, 1)
+                       for actor in actors), actors
+            client.move('down', 3)
+            client.at('MnWinonaHome1F', 9, 1)
             mom = read(client, texts['MnWinonaHome1F']['MnWHomeIntroText'])
             gear = read(client, texts['MnWinonaHome1F']['MnWHomeGearReceivedText'])
             assert not client.status()['dialogue'], 'Mom must release input after the receipt'
+            actors = client.call('map_info')['structuredContent']['visible_objects']
+            assert any(actor['id'] == 'MN_W_GUARDIAN' and
+                       (actor['offset_x'], actor['offset_y']) == (-2, 3)
+                       for actor in actors), actors
             client.press('start')
             for _ in range(8):
                 menu = client.observe()['structuredContent']['menu']

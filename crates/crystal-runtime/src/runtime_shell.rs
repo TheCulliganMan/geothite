@@ -1146,8 +1146,28 @@ impl RuntimeGameShell {
                 source_script: next_script.script.clone(),
                 command_index: 0,
             })
-        } else if ended || command_index + 1 >= command_count {
+        } else if ended {
             None
+        } else if command_index + 1 >= command_count {
+            // Older external packs split the nurse's source labels without
+            // recording their implicit fallthroughs. Preserve the authored
+            // sequence for those packs; explicit jumps in newer packs take
+            // the ordinary path above.
+            let fallthrough = match (source_script, command.as_str()) {
+                (".ok@PokecenterNurseScript", "iftrue") => Some(".no@PokecenterNurseScript"),
+                (".no@PokecenterNurseScript", "pause") => Some(".done@PokecenterNurseScript"),
+                (".pokerus_comcenter@PokecenterNurseScript", "closetext") => {
+                    Some(".pokerus_done@PokecenterNurseScript")
+                }
+                _ => None,
+            };
+            fallthrough
+                .filter(|target| self.runtime.has_script_label(target))
+                .map(|target| RuntimeCompiledScriptCursor {
+                    origin_map_name: origin_map_name.to_string(),
+                    source_script: target.to_string(),
+                    command_index: 0,
+                })
         } else {
             Some(RuntimeCompiledScriptCursor {
                 origin_map_name: origin_map_name.to_string(),

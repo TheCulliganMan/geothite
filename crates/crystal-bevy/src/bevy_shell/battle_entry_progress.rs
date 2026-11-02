@@ -4251,14 +4251,16 @@ impl VisibleMapCatalogEntry for std::sync::Arc<crate::RuntimeMapCatalogSnapshot>
     }
 }
 
-/// Two connection hops complete landmarks whose source drawing straddles a
-/// neighboring map (for example Lavender's tower roof on Route10South).
+/// Connected maps complete landmarks and scenery around the visible map.
+/// Minnesota's compact connected maps need four hops to retain the same
+/// neighborhood from either side of a boundary; other regions use two.
 /// Keep distant maps below direct neighbors in overlap precedence, and stop
 /// reciprocal connections from repeating the same map placement.
 fn connected_render_map_placements<'a, M: VisibleMapCatalogEntry>(
     active_map_name: &str, maps: &'a [M],
 ) -> Result<Vec<(&'a crate::RuntimeMapCatalogSnapshot, i32, i32)>> {
-    connected_render_map_placements_to_depth(active_map_name, maps, Some(2))
+    let depth = if active_map_name.starts_with("Mn") { 4 } else { 2 };
+    connected_render_map_placements_to_depth(active_map_name, maps, Some(depth))
 }
 
 /// The summit consumes the complete connected outdoor component. Ordinary
@@ -4373,6 +4375,63 @@ fn visible_map_block_identity_from_catalog<M: VisibleMapCatalogEntry>(
 #[cfg(test)]
 mod visible_map_block_identity_tests {
     use super::*;
+
+    #[test]
+    fn minnesota_border_scenery_keeps_the_same_owner_across_a_connection() {
+        let north = map_snapshot("MnNorth", vec![1], vec![]);
+        let south = map_snapshot("MnSouth", vec![2], vec![]);
+        let tileset = crate::RuntimeTilesetCatalogSnapshot {
+            tileset_id: "test".into(),
+            collision: Default::default(),
+            palette_map: vec![],
+        };
+        let art_key = TilesetArtKey {
+            tileset_id: "test".into(),
+            time_of_day: "day".into(),
+            palette_map: vec![],
+        };
+        let source = |map, origin_y| ResolvedRenderSource {
+            map,
+            tileset: &tileset,
+            art_key: art_key.clone(),
+            origin_x: 0,
+            origin_y,
+            width: 4,
+            height: 4,
+        };
+        let before = [source(&north, 0), source(&south, 4)];
+        let after = [source(&south, 0), source(&north, -4)];
+        for y in -4..12 {
+            let (left, left_x, left_y) = resolved_render_source_at(&before, -4, y);
+            let (right, right_x, right_y) = resolved_render_source_at(&after, -4, y - 4);
+            assert_eq!(left.map.map_name, right.map.map_name, "border row {y}");
+            assert_eq!((left_x, left_y), (right_x, right_y), "border row {y}");
+        }
+        assert_eq!(resolved_render_source_at(&before, 0, 0).0.map.map_name, "MnNorth");
+        assert_eq!(resolved_render_source_at(&after, 0, 0).0.map.map_name, "MnSouth");
+    }
+
+    #[test]
+    fn minnesota_scenery_includes_four_connected_maps() {
+        let maps: Vec<_> = (0..5)
+            .map(|index| {
+                let connections = if index < 4 {
+                    vec![crystal_core::map::MapConnection {
+                        direction: "east".into(),
+                        target_map: format!("MnChain{}", index + 1),
+                        offset: 0,
+                    }]
+                } else {
+                    vec![]
+                };
+                map_snapshot(&format!("MnChain{index}"), vec![1], connections)
+            })
+            .collect();
+        let placements = connected_render_map_placements("MnChain0", &maps).unwrap();
+        assert!(placements.iter().any(|(map, x, y)| {
+            map.map_name == "MnChain4" && (*x, *y) == (16, 0)
+        }));
+    }
 
     fn map_snapshot(
         map_name: &str,
@@ -5004,9 +5063,24 @@ fn resolved_render_source_at<'a>(
             return (source, x - source.origin_x, y - source.origin_y);
         }
     }
-    // The ASM border block belongs to the active map. Coordinates outside
-    // every connected rectangle deliberately remain in the base coordinate
-    // space so its repeating sub-tile phase is preserved.
+    // Minnesota maps can expose border scenery from both sides of a connection.
+    // Choose its owner by position rather than the currently active map so a
+    // tree does not change when the player crosses the connection. Select one
+    // owner for the whole metatile, and use its own coordinate space for phase.
+    if base.map.map_name.starts_with("Mn") && sources.len() > 1 {
+        let sample_x = x.div_euclid(4) * 4 + 2;
+        let sample_y = y.div_euclid(4) * 4 + 2;
+        if let Some(source) = sources.iter().min_by_key(|source| {
+            let dx = (source.origin_x - sample_x).max(0)
+                + (sample_x - (source.origin_x + source.width - 1)).max(0);
+            let dy = (source.origin_y - sample_y).max(0)
+                + (sample_y - (source.origin_y + source.height - 1)).max(0);
+            (dx + dy, source.map.map_name.as_str())
+        }) {
+            return (source, x - source.origin_x, y - source.origin_y);
+        }
+    }
+    // Other maps retain their original border and repeating sub-tile phase.
     (base, x, y)
 }
 

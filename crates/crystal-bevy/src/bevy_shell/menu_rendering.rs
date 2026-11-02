@@ -5543,6 +5543,9 @@ fn render_playfield(
         && snapshot.pending_shop.is_none()
         && snapshot.ui.active_pokemon_picture.is_none()
         && snapshot.pending_move_learn.is_none()
+        // The move-learning chooser uses battle-command sprites even after
+        // returning to the field. Remove them in a full pass when it closes.
+        && battle_commands.iter().next().is_none()
         && runtime_shell.kurt_apricorn_cursor.is_none()
         && runtime_shell.pending_name_input.is_none()
         && runtime_shell.pending_mail_input.is_none()

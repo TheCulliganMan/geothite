@@ -6534,7 +6534,10 @@ fn spawn_battle_pending_move_learn_screen(
             &party_move_cursor_surface_id(pending.party_index),
             option_count,
         )
-        .context("battle move-forget screen has no valid cursor")?;
+        .with_context(|| format!(
+            "battle move-forget screen has no valid cursor: party={}, moves={}, cursor={:?}",
+            pending.party_index, slot.pokemon.moves.len(), runtime_shell.party_move_cursor,
+        ))?;
         commands.spawn((
             (Sprite {
                     color: Color::srgb(1.0, 1.0, 1.0),
@@ -6608,17 +6611,16 @@ Transform::from_xyz(0.0, 0.0, 3.4),),
             y,
             3.8,
         );
-        let (x, y) = battle_hud_tile_origin(1.0, 15.0);
-        spawn_battle_command_bitmap_text(
-            commands,
-            rendered_art,
-            asset_root,
-            images,
+        for (index, line) in wrap_boot_text_for_box(
             &format!("Trying to learn {move_name}."),
-            x,
-            y,
-            3.8,
-        );
+            18,
+            2,
+        ).iter().enumerate() {
+            let (x, y) = battle_hud_tile_origin(1.0, 15.0 + index as f32);
+            spawn_battle_command_bitmap_text(
+                commands, rendered_art, asset_root, images, line, x, y, 3.8,
+            );
+        }
         return Ok(());
     }
 

@@ -6020,6 +6020,32 @@ fn spawn_scene_dialog(
         )?;
         return Ok(());
     }
+    // Level-up choices can remain pending after the battle has left the
+    // core state. The ordinary field textbox has only two rows, so it cannot
+    // display the question, both answers, or the five-row move list. Use the
+    // same complete chooser as the battle presentation on this path too.
+    if snapshot.battle.is_none()
+        && snapshot.pending_move_learn.is_some()
+        && runtime_shell.battle_messages.is_empty()
+    {
+        commands.spawn((
+            Sprite {
+                color: Color::WHITE,
+                custom_size: Some(Vec2::new(PLAYFIELD_WIDTH, PLAYFIELD_HEIGHT)),
+                ..default()
+            },
+            Transform::from_xyz(0.0, 0.0, 3.3),
+            BattleCommandMarker,
+        ));
+        return spawn_battle_pending_move_learn_screen(
+            commands,
+            snapshot,
+            runtime_shell,
+            rendered_art,
+            asset_root,
+            images,
+        );
+    }
     if let Some(menu) = snapshot.ui.menu.as_ref()
         && menu.menu_2d_requested
         && spawn_runtime_2d_menu(

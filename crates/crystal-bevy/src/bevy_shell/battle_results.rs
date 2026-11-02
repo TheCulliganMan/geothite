@@ -764,6 +764,13 @@ fn arm_visible_script_cursor_after_step(
 ) {
     if matches!(
         &step.mutation.result,
+        RuntimeMutationResult::ScriptControlApplied(ScriptControlAction::Continue { .. })
+    ) && step.next_cursor.as_ref().is_some_and(|cursor| cursor.source_script != step.source_script)
+    {
+        // A non-taken branch can fall through into another source label.
+        arm_visible_active_script_cursor_from_run(runtime_shell, step.next_cursor.clone());
+    } else if matches!(
+        &step.mutation.result,
         RuntimeMutationResult::ScriptControlApplied(_)
     ) {
         arm_visible_script_cursor_after_outcome(

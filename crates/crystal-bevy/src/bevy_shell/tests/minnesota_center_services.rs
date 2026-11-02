@@ -368,6 +368,14 @@ fn minnesota_restored_centers_render_the_native_healing_machine() {
                 Dv::from_non_hp(10, 10, 10, 10),
             )
             .expect("partner");
+        let max_hp = {
+            let state = shell.shell.session_mut().state_mut();
+            let pokemon = state.storage.party.pokemon[0].as_mut().expect("partner");
+            pokemon.hp = 1;
+            let max_hp = pokemon.max_hp;
+            state.sync_party_from_storage();
+            max_hp
+        };
         let mut app = integrated_shell_test_app(shell);
         app.update();
         app.update();
@@ -376,11 +384,13 @@ fn minnesota_restored_centers_render_the_native_healing_machine() {
             .press(KeyCode::ArrowUp);
         app.update();
         let mut saw_animation = false;
-        for frame in 0..1024 {
+        let mut saw_return = false;
+        let mut saw_goodbye = false;
+        for frame in 0..1600 {
             app.world_mut()
                 .resource_mut::<ButtonInput<KeyCode>>()
                 .reset_all();
-            if frame % 16 == 0 {
+            if frame % 16 == 0 && (!saw_animation || saw_return) {
                 app.world_mut()
                     .resource_mut::<ButtonInput<KeyCode>>()
                     .press(KeyCode::KeyZ);
@@ -404,15 +414,99 @@ fn minnesota_restored_centers_render_the_native_healing_machine() {
                         world.query_filtered::<&Sprite, With<HealMachineWorldSprite>>();
                     if sprites.iter(world).count() >= 3 {
                         saw_animation = true;
-                        break;
                     }
                 }
             }
+            let shell = app.world().resource::<BevyRuntimeShell>();
+            let snapshot = shell.shell.snapshot().expect("nurse snapshot");
+            saw_return |= snapshot
+                .ui
+                .text
+                .as_ref()
+                .is_some_and(|text| text.label == "NurseReturnPokemonText");
+            saw_goodbye |= snapshot
+                .ui
+                .text
+                .as_ref()
+                .is_some_and(|text| text.label == "NurseGoodbyeText");
+            if saw_animation && !snapshot.ui.text_window_open {
+                break;
+            }
         }
+        let shell = app.world().resource::<BevyRuntimeShell>();
         assert!(
             saw_animation,
             "{map}: actual nurse flow did not render the native ball and lamps; error={:?}",
-            app.world().resource::<BevyRuntimeShell>().last_error
+            shell.last_error
+        );
+        assert_eq!(
+            shell.shell.session().state().storage.party.pokemon[0]
+                .as_ref()
+                .expect("partner")
+                .hp,
+            max_hp,
+            "{map}: party was not healed"
+        );
+        assert!(saw_return, "{map}: nurse return message missing");
+        assert!(
+            saw_goodbye,
+            "{map}: nurse goodbye missing: animation={:?}, cursor={:?}, ui={:?}, error={:?}",
+            shell
+                .visible_heal_machine
+                .as_ref()
+                .map(|a| (a.kind, a.frame)),
+            shell
+                .active_script_cursor
+                .as_ref()
+                .map(|c| (&c.source_script, c.next_command_index)),
+            shell.shell.snapshot().unwrap().ui,
+            shell.last_error
+        );
+        assert!(
+            !shell.shell.snapshot().unwrap().ui.text_window_open,
+            "{map}: dialogue did not close"
+        );
+        app.world_mut()
+            .resource_mut::<ButtonInput<KeyCode>>()
+            .reset_all();
+        app.world_mut()
+            .resource_mut::<ButtonInput<KeyCode>>()
+            .press(KeyCode::Enter);
+        app.update();
+        assert!(
+            app.world()
+                .resource::<BevyRuntimeShell>()
+                .start_menu_cursor
+                .is_some(),
+            "{map}: Start did not return to the player"
+        );
+        app.world_mut()
+            .resource_mut::<ButtonInput<KeyCode>>()
+            .reset_all();
+        app.world_mut()
+            .resource_mut::<ButtonInput<KeyCode>>()
+            .press(KeyCode::KeyX);
+        app.update();
+        app.world_mut()
+            .resource_mut::<ButtonInput<KeyCode>>()
+            .reset_all();
+        app.world_mut()
+            .resource_mut::<ButtonInput<KeyCode>>()
+            .press(KeyCode::ArrowDown);
+        for _ in 0..20 {
+            app.update();
+        }
+        assert!(
+            app.world()
+                .resource::<BevyRuntimeShell>()
+                .shell
+                .snapshot()
+                .unwrap()
+                .overworld
+                .tile
+                .y
+                > 3,
+            "{map}: walking did not return to the player"
         );
     }
 }

@@ -23,6 +23,7 @@ fn main() -> Result<()> {
     pack = crystal_assets::repair_northstar_mom_door(&pack).context("Mom's door scene")?;
     pack = crystal_assets::repair_rochester_gym_progress(&pack).context("Rochester gym")?;
     pack = crystal_assets::correct_minnesota_mart_arrivals(&pack).context("Mart arrivals")?;
+    pack = crystal_assets::correct_minnesota_house_arrivals(&pack).context("house arrivals")?;
     pack = crystal_assets::revise_minnesota_fossil_lab_dialogue(&pack)
         .context("fossil lab dialogue")?;
     pack = crystal_assets::repair_rochester_dialogue(&pack).context("Rochester dialogue")?;

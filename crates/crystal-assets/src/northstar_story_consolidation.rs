@@ -15,9 +15,9 @@ const COMMON: &str = "a7f6270ac5c7cdc83fe0f7484fd8485990ceb9749a0fde803dc43cbd22
 const DONOR: &str = "ccf84221d047e958736a4ca5cbecc917713a4496e03ffe89527e72e2d2593914";
 const MARKER: &str = "northstar-current-v27-consolidation-v1";
 const SCENE_FIXES_MARKER: &str = "northstar-story-scene-fixes-v1";
-const MOM_DOOR_MARKER: &str = "northstar-mom-door-approach-v1";
+const MOM_DOOR_MARKER: &str = "northstar-mom-stair-and-door-approach-v2";
 
-/// Moves the opening interception to the home door and both exit approaches.
+/// Restores the opening stair interception and the home door approaches.
 ///
 /// # Errors
 /// Rejects incompatible or previously repaired packs and invalid output.
@@ -55,14 +55,8 @@ pub fn repair_northstar_mom_door(base: &CompiledGamePack) -> Result<CompiledGame
         );
     }
     let blocks_label = home.attributes.blocks_label.clone();
-    home.scripts.insert(
-        "MnWHomeArrival".into(),
-        serde_json::json!([crate::grand_marais_modpack::authoring::command("end", &[])]),
-    );
+    crate::northstar_opening_revision::install_stair_approach(&mut home);
     crate::northstar_opening_revision::install_door_approaches(&mut home);
-    home.events.coord_events.retain(|event| {
-        !(event.x == 9 && event.y == 1 && event.script_name == "MnOverhaulMomScene")
-    });
     crate::northstar_story_revision::publish(&mut pack, home)?;
     restore_split_entry(
         &mut pack.data.map_attributes,

@@ -140,9 +140,7 @@ pub(crate) fn apply_home_1f_scripts(room: &mut MapModule) -> Result<()> {
         ],
     );
     put(room, "MnWHomeGearCallbackDone", vec![c("endcallback", &[])]);
-    // The arrival scene stays quiet. The two tiles in front of the door stage
-    // Mom's approach, as in Crystal's coordinate-triggered home scene.
-    put(room, "MnWHomeArrival", vec![c("end", &[])]);
+    install_stair_approach(room);
     movement(room, "MnOverhaulMomApproaches", &[("UP", 2), ("RIGHT", 2)]);
     movement(room, "MnOverhaulMomReturns", &[("LEFT", 2), ("DOWN", 2)]);
     install_door_approaches(room);
@@ -257,12 +255,26 @@ pub(crate) fn apply_home_1f_scripts(room: &mut MapModule) -> Result<()> {
             *row = c("iffalse", &["MnOverhaulMomTalk"]);
         }
     }
-    room.events.coord_events.retain(|event| {
-        !(event.x == 9 && event.y == 1 && event.script_name == "MnOverhaulMomScene")
-    });
     coord(room, 6, 6, "MnOverhaulMomDoorLeft");
     coord(room, 7, 6, "MnOverhaulMomDoorRight");
     Ok(())
+}
+
+pub(crate) fn install_stair_approach(room: &mut MapModule) {
+    // A stair warp may land directly on the trigger, so dispatch the same
+    // scene after arrival as well as when the player steps onto the tile.
+    put(
+        room,
+        "MnWHomeArrival",
+        vec![
+            c("readvar", &["VAR_XCOORD"]),
+            c("ifnotequal", &["9", "MnWHomeNoop"]),
+            c("readvar", &["VAR_YCOORD"]),
+            c("ifnotequal", &["1", "MnWHomeNoop"]),
+            c("sjump", &["MnOverhaulMomScene"]),
+        ],
+    );
+    coord(room, 9, 1, "MnOverhaulMomScene");
 }
 
 pub(crate) fn install_door_approaches(room: &mut MapModule) {

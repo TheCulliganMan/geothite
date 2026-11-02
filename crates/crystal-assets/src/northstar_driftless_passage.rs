@@ -139,7 +139,20 @@ pub fn add_northstar_driftless_passage(
             }
         }
     }
+    // The eastern mouth occupies the old uphill stair. Move the same native
+    // stair one metatile west so the fossil terrace still has a two-way climb.
+    ensure!(
+        route.blocks[9 * 32 + 19] == 0x72 && route.blocks[9 * 32 + 20] == 0x80,
+        "expected the native stair and adjacent cliff face"
+    );
+    route.blocks[9 * 32 + 19] = 0x80;
     route.blocks[9 * 32 + 20] = 0x73;
+    ensure!(
+        authored_town_geometry::kind(base, &route, [39, 19])? == "FLOOR"
+            && authored_town_geometry::kind(base, &route, [39, 18])? == "FLOOR"
+            && authored_town_geometry::kind(base, &route, [39, 20])? == "TALL_GRASS",
+        "relocated stair must join the road and terrace"
+    );
     ensure!(
         authored_town_geometry::kind(base, &route, [40, 19])? == "CAVE",
         "new exterior mouth must use native cave collision"
@@ -246,6 +259,7 @@ mod tests {
             }
         }
         let route = &pack.data.maps["MnR01C00R00"];
+        assert_eq!(route.blocks[9 * 32 + 19], 0x80);
         let cave = &pack.data.maps["MnR01Cave1F"];
         assert_eq!((route.events.warps[6].x, route.events.warps[6].y), (40, 19));
         assert_eq!(route.events.warps[6].target_warp_id, 4);

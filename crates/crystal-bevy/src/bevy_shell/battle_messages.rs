@@ -6523,6 +6523,63 @@ fn stage_visible_battle_level_stats(
     Ok(())
 }
 
+fn grouped_battle_experience_messages(
+    recipients: &[crate::core::systems::battle_rewards::BattleRewardRecipientOutcome],
+    active_party_index: usize,
+) -> Option<Vec<String>> {
+    // A participant can receive more than one reward pass. Keep those passes
+    // separate: each can own an EXP bar animation and a level boundary.
+    for (index, recipient) in recipients.iter().enumerate() {
+        if recipients[..index]
+            .iter()
+            .any(|other| other.party_index == recipient.party_index)
+        {
+            return None;
+        }
+    }
+    let mut ordered = recipients
+        .iter()
+        .filter(|recipient| recipient.experience_awarded > 0)
+        .collect::<Vec<_>>();
+    if let Some(index) = ordered
+        .iter()
+        .position(|recipient| recipient.party_index == active_party_index)
+    {
+        ordered.swap(0, index);
+    }
+    let mut groups: Vec<(i32, &str, usize, bool)> = Vec::new();
+    for recipient in ordered {
+        if let Some(group) = groups
+            .iter_mut()
+            .find(|group| group.0 == recipient.experience_awarded)
+        {
+            group.2 += 1;
+        } else {
+            groups.push((
+                recipient.experience_awarded,
+                &recipient.nickname,
+                1,
+                recipient.party_index == active_party_index,
+            ));
+        }
+    }
+    if !groups.iter().any(|group| group.2 > 1) {
+        return None;
+    }
+    let mut messages = groups
+        .iter()
+        .filter(|group| group.2 == 1 || group.3)
+        .map(|(amount, nickname, _, _)| format!("{nickname} gained\n{amount} EXP. Points!"))
+        .collect::<Vec<_>>();
+    messages.extend(
+        groups
+            .iter()
+            .filter(|group| group.2 > 1)
+            .map(|(amount, _, _, _)| format!("Others gained\n{amount} EXP. Points!")),
+    );
+    Some(messages)
+}
+
 fn push_visible_battle_reward_events(
     runtime_shell: &mut BevyRuntimeShell,
     outcome: &crate::core::systems::battle_rewards::BattleRewardOutcome,
@@ -6530,10 +6587,14 @@ fn push_visible_battle_reward_events(
     recipient_name: &str,
 ) -> Result<()> {
     if !outcome.recipient_outcomes.is_empty() {
+        let grouped_messages = grouped_battle_experience_messages(&outcome.recipient_outcomes, party_index);
+        if let Some(messages) = &grouped_messages {
+            runtime_shell.battle_messages.extend(messages.iter().cloned());
+        }
         for recipient in &outcome.recipient_outcomes {
             let projected = crate::core::systems::battle_rewards::BattleRewardOutcome {
                 defeated_species: outcome.defeated_species.clone(),
-                experience_awarded: recipient.experience_awarded,
+                experience_awarded: if grouped_messages.is_some() { 0 } else { recipient.experience_awarded },
                 level_before: recipient.level_before,
                 level_after: recipient.level_after,
                 learned_moves: recipient.learned_moves.clone(),

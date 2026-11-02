@@ -197,6 +197,21 @@ pub(super) fn try_trail_with(
         }
         let after = c.snapshot().expect("native trail step outcome");
         if after.overworld.tile == old {
+            if after.ui.text.as_ref().is_some_and(|text| {
+                text.label == "visible-shell:field-notice"
+                    && text
+                        .asm_text
+                        .as_deref()
+                        .is_some_and(|body| body.contains("We climbed up"))
+            }) {
+                assert!(super::rochester_earned::try_battle(
+                    c,
+                    r,
+                    "MN_R01_T03",
+                    "EVENT_MN_R01_TRAINER_03"
+                ));
+                continue;
+            }
             if let Some(directory) = std::env::var_os("CRYSTAL_WINONA_SAVE_DIR") {
                 let path = std::path::PathBuf::from(directory).join(format!(
                     "r01-blocked-{}-{}-{}.crystalsave",

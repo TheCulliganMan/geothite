@@ -1579,6 +1579,8 @@ pub use r06_pine_fork::revise_r06_pine_fork;
 mod minnesota_ambient_dialogue;
 pub use minnesota_ambient_dialogue::revise_minnesota_ambient_dialogue;
 
+mod minnesota_house_arrivals;
+pub use minnesota_house_arrivals::correct_minnesota_house_arrivals;
 mod minnesota_mart_arrivals;
 pub use minnesota_mart_arrivals::correct_minnesota_mart_arrivals;
 

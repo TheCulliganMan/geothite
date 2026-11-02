@@ -105,7 +105,7 @@ fn fossil_hunter_cliff_conversation_and_route_remain_accessible() {
 
     // The starting position and escort are fixtures; all subsequent travel,
     // dialogue, and fossil choices use the production controller.
-    let mut c = fixture(&root, &runtime, "MnR01C00R00", (25, 15));
+    let mut c = fixture(&root, &runtime, "MnR01C00R00", (40, 21));
     let mut partner = runtime
         .data()
         .create_pokemon("POUCHID", 10, Dv::default())
@@ -116,20 +116,35 @@ fn fossil_hunter_cliff_conversation_and_route_remain_accessible() {
     state.sync_party_from_storage();
     mark_runtime_snapshot_dirty(&mut c.shell);
 
+    // Climb from the lower road via the relocated stair, beside the new cave
+    // mouth. This must not warp into the cave or require a field move.
+    super::rochester::trail(&mut c, &runtime, (39, 20));
+    super::rochester::trail(&mut c, &runtime, (39, 18));
+    let climbed = c.snapshot().expect("climbed fossil terrace");
+    assert_eq!(climbed.overworld.map_name, "MnR01C00R00");
+    assert_eq!(
+        (climbed.overworld.tile.x, climbed.overworld.tile.y),
+        (39, 18)
+    );
     super::rochester::trail(&mut c, &runtime, (26, 15));
     press(&mut c, GameButton::Up);
     press(&mut c, GameButton::A);
-    for expected in [
+    for (index, expected) in [
         "Look, a shell!\nRight in the rock.",
         "This cliff used to\nlie under a sea.",
         "Two fossils came\nout. Want one?",
-    ] {
+    ]
+    .into_iter()
+    .enumerate()
+    {
         c.wait_frames(64).expect("fossil page presentation");
         let page = c.snapshot().expect("hunter dialogue");
         let text = page.ui.text.expect("hunter's visible page");
         assert_eq!(text.label, "MnFossilSlabText");
         assert_eq!(text.asm_text.as_deref(), Some(expected));
-        press(&mut c, GameButton::A);
+        if index < 2 {
+            press(&mut c, GameButton::A);
+        }
     }
     choice(&mut c, false);
     finish(&mut c);
@@ -146,7 +161,7 @@ fn fossil_hunter_cliff_conversation_and_route_remain_accessible() {
 
 #[test]
 #[ignore = "requires CRYSTAL_WINONA_TEST_PACK with Minnesota fossil research"]
-fn fossils_controller_both_choices_decline_persist_and_post_league_exchange() {
+fn fossils_controller_both_choices_decline_persist_and_restored_exchange() {
     let (root, r) = load();
     let (approach, facing) = hunter_approach(&r);
     for lens in [true, false] {
@@ -170,16 +185,23 @@ fn fossils_controller_both_choices_decline_persist_and_post_league_exchange() {
         assert_eq!(quantity(&c, selected), 1);
         assert_eq!(quantity(&c, other), 0);
     }
-    // Separate declared post-League fixtures, not an earned Champion claim.
+    // Separate declared restoration fixtures, not an earned restoration claim.
     for lens in [true, false] {
         let mut c = fixture(&root, &r, "MnR01C00R00", approach);
         {
             let state = c.shell.shell.session_mut().state_mut();
-            for flag in ["EVENT_MN_FOSSIL_CHOSEN", "EVENT_MN_LEAGUE_CHAMPION"] {
+            for flag in [
+                "EVENT_MN_FOSSIL_CHOSEN",
+                if lens {
+                    "EVENT_MN_TRILUME_RESTORED"
+                } else {
+                    "EVENT_MN_SIPHLET_RESTORED"
+                },
+            ] {
                 state
                     .flags
                     .set_event_flag(flag, true)
-                    .expect("post-League fixture");
+                    .expect("restored fossil fixture");
             }
             state
                 .flags
