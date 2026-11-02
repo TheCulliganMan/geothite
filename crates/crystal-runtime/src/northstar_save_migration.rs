@@ -6,7 +6,7 @@ use crystal_core::world::movement::MovementMode;
 
 use crate::CrystalRuntime;
 
-const TARGET_HOSTED_HASH: &str = "e5c8e750080d98eceb3779ab058e5bb1b8a8679260e27cdeaf971b89b702693f";
+const TARGET_HOSTED_HASH: &str = "5af966587a79756df727318397522135b6db8c241aac1afe7d186fbb7895ffcf";
 const RESTORED_CENTERS_MARKER: &str = "minnesota-native-center-restoration-v1";
 const RESIZED_CENTERS: &[&str] = &[
     "MnBemidjiPokecenter1F",
@@ -155,6 +155,57 @@ mod tests {
 
     use super::RESIZED_CENTERS;
     use crate::{CrystalRuntime, RuntimeGameShell, migrate_northstar_reviewed_save};
+
+    #[test]
+    #[ignore = "requires the live parent and next hosted packs"]
+    fn current_release_saves_remain_valid_for_the_next_pack() {
+        let parent_path = PathBuf::from(
+            std::env::var_os("CRYSTAL_NORTHSTAR_CURRENT_PACK").expect("current pack"),
+        );
+        let target_path = PathBuf::from(
+            std::env::var_os("CRYSTAL_NORTHSTAR_HOSTED_PACK").expect("next hosted pack"),
+        );
+        let root = AssetRoot::new(parent_path.parent().expect("pack directory"));
+        let parent = CrystalRuntime::from_loaded_compiled_pack(
+            &root,
+            read_loaded_verified_compiled_game_pack(parent_path).expect("current pack verified"),
+        )
+        .expect("current runtime");
+        let target = CrystalRuntime::from_loaded_compiled_pack(
+            &root,
+            read_loaded_verified_compiled_game_pack(target_path).expect("next pack verified"),
+        )
+        .expect("next runtime");
+        assert_eq!(
+            parent.pack_identity().content_hash,
+            "e5c8e750080d98eceb3779ab058e5bb1b8a8679260e27cdeaf971b89b702693f"
+        );
+        assert_eq!(
+            target.pack_identity().content_hash,
+            super::TARGET_HOSTED_HASH
+        );
+        for (map, x, y) in [
+            ("MnRochesterPokecenter1F", 3, 5),
+            ("MnR01C00R00", 0, 24),
+            ("MnWinonaHome1F", 9, 1),
+        ] {
+            let mut game = RuntimeGameShell::new_game_at_runtime_tile(
+                root.clone(),
+                parent.clone(),
+                parent.title_new_game_spawn_identifier().expect("spawn"),
+                map,
+                x,
+                y,
+            )
+            .expect("current save fixture");
+            game.session_mut().state_mut().money = 4321;
+            let state = game.session().state();
+            target
+                .validate_save_state_for_runtime_pack(state)
+                .expect("current save remains compatible");
+            assert_eq!(state.money, 4321);
+        }
+    }
 
     #[test]
     #[ignore = "requires the verified previous and hosted candidate packs"]

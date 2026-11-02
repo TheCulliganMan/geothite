@@ -534,6 +534,7 @@ fn select_browser_save(
         .unwrap_or_else(|| "-local.crystalsave".into());
     let mut has_regional_save = false;
     let mut previous_id = None;
+    let mut current_release_id = None;
     for index in 0..storage
         .length()
         .map_err(|error| anyhow::anyhow!("inspect save storage: {error:?}"))?
@@ -557,13 +558,24 @@ fn select_browser_save(
                 == "d70761f0a31858f579c7f67f41deeb46b03e6e63152fea4cede8eaba47c67447"
             {
                 previous_id = Some(id.to_owned());
+            } else if format!("{:x}", sha2::Sha256::digest(id.as_bytes()))
+                == "3178815e796ab334e02e6677b35174fe921cc8a8bdac300f4fd02dc95d04a7f7"
+            {
+                current_release_id = Some(id.to_owned());
             }
         }
     }
     if !has_regional_save {
         return Ok(None);
     }
-    let previous_id = previous_id
+    anyhow::ensure!(
+        runtime.pack_identity().content_hash
+            == "5af966587a79756df727318397522135b6db8c241aac1afe7d186fbb7895ffcf",
+        "unexpected Northstar migration target"
+    );
+    let migrating_current_release = current_release_id.is_some();
+    let previous_id = current_release_id
+        .or(previous_id)
         .context("existing Minnesota save is not from the expected Northstar release")?;
     let previous_path = browser_save_path_for_identity(&previous_id, player_id);
     let previous_key = format!("crystal.save.v1.{}", previous_path.display());
@@ -574,20 +586,36 @@ fn select_browser_save(
     let bytes = base64::engine::general_purpose::STANDARD
         .decode(encoded)
         .context("decode previous Northstar save")?;
-    let previous_identity = crystal_core::save::SaveModpackIdentity::new(
-        previous_id,
-        "a129f66ca806cd4c9f5ed0030c622a600da86c0e748f844001898a890b9f6c91",
-    )?;
+    let (previous_pack_hash, previous_content_hash) = if migrating_current_release {
+        (
+            "a772fb29c9cad1da648181d5efe265012ff9e8714238452868e6614c915d4cc1",
+            "e5c8e750080d98eceb3779ab058e5bb1b8a8679260e27cdeaf971b89b702693f",
+        )
+    } else {
+        (
+            "a129f66ca806cd4c9f5ed0030c622a600da86c0e748f844001898a890b9f6c91",
+            "17bbf71fd2fa731036b93863bd4dceac0a1b6f18e2568d30cb1f187112ff1341",
+        )
+    };
+    let previous_identity =
+        crystal_core::save::SaveModpackIdentity::new(previous_id, previous_pack_hash)?;
     let state = crystal_core::save::read_save_game_bytes_for_modpack(
         &bytes,
         previous_path.display().to_string(),
         &previous_identity,
-        "17bbf71fd2fa731036b93863bd4dceac0a1b6f18e2568d30cb1f187112ff1341",
+        previous_content_hash,
     )
     .context("validate previous Northstar save")?
     .into_state();
-    let migrated = crystal_runtime::migrate_northstar_reviewed_save(runtime, &state)
-        .context("migrate Northstar save")?;
+    let migrated = if migrating_current_release {
+        runtime
+            .validate_save_state_for_runtime_pack(&state)
+            .context("validate current Northstar state for the new pack")?;
+        state
+    } else {
+        crystal_runtime::migrate_northstar_reviewed_save(runtime, &state)
+            .context("migrate Northstar save")?
+    };
     anyhow::ensure!(
         storage
             .get_item(&key)
