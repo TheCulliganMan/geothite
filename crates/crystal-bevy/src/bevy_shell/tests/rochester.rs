@@ -202,6 +202,21 @@ pub(super) fn try_trail_with(
                     && text
                         .asm_text
                         .as_deref()
+                        .is_some_and(|body| body.contains("My partners like"))
+            }) {
+                assert!(super::rochester_earned::try_battle(
+                    c,
+                    r,
+                    "MN_R01_T02",
+                    "EVENT_MN_R01_TRAINER_02"
+                ));
+                continue;
+            }
+            if after.ui.text.as_ref().is_some_and(|text| {
+                text.label == "visible-shell:field-notice"
+                    && text
+                        .asm_text
+                        .as_deref()
                         .is_some_and(|body| body.contains("We climbed up"))
             }) {
                 assert!(super::rochester_earned::try_battle(
