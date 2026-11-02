@@ -468,7 +468,7 @@ pub(super) fn indoor_walk(
     if runtime.data().maps.contains_key("MnBoundaryIntake")
         && matches!(
             before.overworld.map_name.as_str(),
-            "MnRochesterPokecenter1F" | "MnStCloud"
+            "MnRochesterPokecenter1F" | "MnStCloud" | "MnMankato"
         )
     {
         for _ in 0..1024 {

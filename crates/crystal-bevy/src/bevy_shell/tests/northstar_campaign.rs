@@ -93,7 +93,7 @@ fn depart_prairie(c: &mut VisibleShellController, r: &CrystalRuntime, root: &Ass
 
 fn care(c: &mut VisibleShellController, r: &CrystalRuntime) {
     if c.snapshot().expect("care approach").overworld.map_name == "MnMankato" {
-        indoor_walk(c, r, (31, 14));
+        indoor_walk(c, r, (21, 12));
         travel(c, GameButton::Up, "MnMankatoPokecenter1F", (3, 5));
     }
     super::super::rochester_earned::heal_party(c, r);
@@ -122,7 +122,7 @@ fn care(c: &mut VisibleShellController, r: &CrystalRuntime) {
         Some("MN_MANKATO_POKECENTER_1F")
     );
     indoor_walk(c, r, (3, 4));
-    travel(c, GameButton::Down, "MnMankato", (31, 14));
+    travel(c, GameButton::Down, "MnMankato", (21, 12));
 }
 
 fn supplies(c: &mut VisibleShellController, r: &CrystalRuntime) {
@@ -139,14 +139,14 @@ fn supplies(c: &mut VisibleShellController, r: &CrystalRuntime) {
     if quantity == 0 {
         return;
     }
-    indoor_walk(c, r, (37, 28));
+    indoor_walk(c, r, (33, 22));
     travel(c, GameButton::Up, "MnMankatoMart", (6, 5));
     indoor_walk(c, r, (3, 3));
     press(c, GameButton::Left);
     press(c, GameButton::A);
     checkout(c, r, id, quantity);
     indoor_walk(c, r, (6, 6));
-    travel(c, GameButton::Down, "MnMankato", (37, 28));
+    travel(c, GameButton::Down, "MnMankato", (33, 22));
 }
 
 pub(super) fn learn_tm(
