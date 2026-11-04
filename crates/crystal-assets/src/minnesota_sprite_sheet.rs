@@ -62,6 +62,9 @@ pub enum SpriteSampling {
     /// Keep point-sampled contours and facial ink, but recover fractional body
     /// shading with ordered native-pixel dithering between adjacent palette inks.
     AreaDither,
+    /// Represent intermediate source colors with ordered mixtures of two palette
+    /// inks, retaining point-sampled faces and source-backed outer contours.
+    ToneDither,
     /// Resample palette coverage with bounded spatial error diffusion. Unlike
     /// point sampling or priority votes, fractional highlights and dark details
     /// contribute to neighboring pixels that actually contain the same ink.
@@ -562,6 +565,7 @@ impl MinnesotaSheet {
                 let mut enclosed_white_ink = 0;
                 let mut ink_coverage = 0;
                 let mut black_evidence = 0;
+                let mut color_sum = [0_u32; 3];
                 // A 16x16 grid captures thin diagonal source contours. Public
                 // white-detail settings remain expressed in 64-sample units.
                 for dy in 0..16 {
@@ -586,6 +590,11 @@ impl MinnesotaSheet {
                         votes[nearest] += 1;
                         let source_index = (sy - bounds[1]) * source_width + sx - bounds[0];
                         ink_coverage += u16::from(!exterior_paper[source_index]);
+                        if !exterior_paper[source_index] {
+                            for (sum, channel) in color_sum.iter_mut().zip(pixel) {
+                                *sum += u32::from(channel);
+                            }
+                        }
                         let maximum_channel = pixel[0].max(pixel[1]).max(pixel[2]);
                         let minimum_channel = pixel[0].min(pixel[1]).min(pixel[2]);
                         if nearest == 3
@@ -606,7 +615,9 @@ impl MinnesotaSheet {
                 }
                 let nearest = if matches!(
                     sampling,
-                    SpriteSampling::SourceCenter | SpriteSampling::AreaDither
+                    SpriteSampling::SourceCenter
+                        | SpriteSampling::AreaDither
+                        | SpriteSampling::ToneDither
                 ) {
                     let sx = bounds[0]
                         + ((2 * x + 1) * source_width / (2 * width)).min(source_width - 1);
@@ -623,7 +634,10 @@ impl MinnesotaSheet {
                         })
                         .context("four palette colors")?
                         .0;
-                    if sampling == SpriteSampling::AreaDither && matches!(center, 1 | 2) {
+                    if sampling == SpriteSampling::ToneDither && matches!(center, 1 | 2) {
+                        dither_source_tone(color_sum, ink_coverage, votes, &rgb, x, y)
+                            .map_or(center, usize::from)
+                    } else if sampling == SpriteSampling::AreaDither && matches!(center, 1 | 2) {
                         dither_body_inks(votes, x, y).map_or(center, usize::from)
                     } else {
                         center
@@ -751,6 +765,53 @@ impl MinnesotaSheet {
             indices,
         })
     }
+}
+
+fn dither_source_tone(
+    color_sum: [u32; 3],
+    coverage: u16,
+    votes: [u16; 4],
+    palette: &[[u8; 3]],
+    x: usize,
+    y: usize,
+) -> Option<u8> {
+    // Keep paper boundaries and eye whites/pupils out of body-tone synthesis.
+    if coverage < 240 || (votes[0] >= 16 && votes[3] >= 16) {
+        return None;
+    }
+    let mean = color_sum.map(|sum| f64::from(sum) / f64::from(coverage));
+    let mut best = None;
+    let mut best_error = f64::INFINITY;
+    for (a, b) in [(0, 1), (0, 2), (1, 2), (1, 3), (2, 3)] {
+        let start = palette[a].map(f64::from);
+        let delta: [f64; 3] = std::array::from_fn(|i| f64::from(palette[b][i]) - start[i]);
+        let length = delta.iter().map(|value| value * value).sum::<f64>();
+        if length == 0.0 {
+            continue;
+        }
+        let fraction = (0..3).map(|i| (mean[i] - start[i]) * delta[i]).sum::<f64>() / length;
+        if !(1.0 / 32.0..31.0 / 32.0).contains(&fraction) {
+            continue;
+        }
+        let error = (0..3)
+            .map(|i| (mean[i] - start[i] - fraction * delta[i]).powi(2))
+            .sum::<f64>();
+        if error < best_error {
+            best_error = error;
+            best = Some((a, b, fraction));
+        }
+    }
+    if best_error > 1200.0 {
+        return None;
+    }
+    let (a, b, fraction) = best?;
+    const BAYER: [[u8; 4]; 4] = [[0, 8, 2, 10], [12, 4, 14, 6], [3, 11, 1, 9], [15, 7, 13, 5]];
+    let ink = if f64::from(BAYER[y % 4][x % 4]) + 0.5 < fraction * 16.0 {
+        b
+    } else {
+        a
+    };
+    Some(u8::try_from(ink).expect("four palette inks"))
 }
 
 fn dither_body_inks(votes: [u16; 4], x: usize, y: usize) -> Option<u8> {
@@ -961,6 +1022,36 @@ mod tests {
         SpriteView,
     };
     use crate::minnesota_pokemon_pixel_art::colored;
+
+    #[test]
+    fn tone_dither_preserves_unrepresented_shading_and_excludes_faces_and_paper() {
+        let palette = [[255; 3], [255, 100, 20], [64; 3], [0; 3]];
+        for light in [64_u32, 128, 192] {
+            let sum = [255 * light + 64 * (256 - light); 3];
+            let white = (0..4)
+                .flat_map(|y| (0..4).map(move |x| (x, y)))
+                .filter(|&(x, y)| {
+                    super::dither_source_tone(sum, 256, [0, 0, 256, 0], &palette, x, y) == Some(0)
+                })
+                .count();
+            assert_eq!(white, usize::try_from(light / 16).expect("native coverage"));
+        }
+        assert_eq!(
+            super::dither_source_tone([128 * 256; 3], 256, [128, 0, 0, 128], &palette, 0, 0),
+            None,
+            "eye whites and pupils must not become body dither"
+        );
+        assert_eq!(
+            super::dither_source_tone([128 * 128; 3], 128, [0, 0, 128, 128], &palette, 0, 0),
+            None,
+            "paper edges must not acquire a bright halo"
+        );
+        assert_eq!(
+            super::dither_source_tone([64 * 256; 3], 256, [0, 0, 256, 0], &palette, 0, 0),
+            None,
+            "solid source colors must remain solid"
+        );
+    }
 
     #[test]
     fn native_dither_retains_quarter_half_and_three_quarter_body_tones() {

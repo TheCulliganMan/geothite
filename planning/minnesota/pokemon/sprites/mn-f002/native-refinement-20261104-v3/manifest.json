@@ -1,0 +1,394 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F002",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_004": {
+      "species_id": "MN_004",
+      "name": "Cindore",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          31,
+          13,
+          3
+        ],
+        [
+          8,
+          7,
+          8
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        3519,
+        8424,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          107,
+          24
+        ],
+        [
+          66,
+          57,
+          66
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#FF6B18",
+        "#423942",
+        "#000000"
+      ]
+    },
+    "MN_005": {
+      "species_id": "MN_005",
+      "name": "Pelletor",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          31,
+          21,
+          5
+        ],
+        [
+          12,
+          8,
+          7
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        5823,
+        7436,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          173,
+          41
+        ],
+        [
+          99,
+          66,
+          57
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#FFAD29",
+        "#634239",
+        "#000000"
+      ]
+    },
+    "MN_006": {
+      "species_id": "MN_006",
+      "name": "Mesablast",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          31,
+          9,
+          5
+        ],
+        [
+          5,
+          10,
+          16
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        5439,
+        16709,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          74,
+          41
+        ],
+        [
+          41,
+          82,
+          132
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#FF4A29",
+        "#295284",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f002/native-refinement-20261104-v3/prompt.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-004-refinement-20261104-v3",
+      "species_id": "MN_004",
+      "view": "front",
+      "source": "sprites/mn-f002/native-refinement-20261104-v3/front-back.imagegen.png",
+      "crop": [
+        0,
+        0,
+        512,
+        512
+      ],
+      "fit": [
+        36,
+        35
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        3519,
+        8424,
+        0
+      ],
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 8,
+      "interior_black_min_samples": 24,
+      "sampling": "tone_dither",
+      "source_palette_rgb555": [
+        32767,
+        3519,
+        13676,
+        0
+      ]
+    },
+    {
+      "id": "mn-004-refinement-20261104-v3",
+      "species_id": "MN_004",
+      "view": "back",
+      "source": "sprites/mn-f002/native-refinement-20261104-v3/front-back.imagegen.png",
+      "crop": [
+        0,
+        512,
+        512,
+        512
+      ],
+      "fit": [
+        46,
+        46
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        3519,
+        8424,
+        0
+      ],
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 8,
+      "interior_black_min_samples": 24,
+      "sampling": "tone_dither",
+      "source_palette_rgb555": [
+        32767,
+        3519,
+        13676,
+        0
+      ]
+    },
+    {
+      "id": "mn-005-refinement-20261104-v3",
+      "species_id": "MN_005",
+      "view": "front",
+      "source": "sprites/mn-f002/native-refinement-20261104-v3/front-back.imagegen.png",
+      "crop": [
+        512,
+        0,
+        512,
+        512
+      ],
+      "fit": [
+        44,
+        43
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        5823,
+        7436,
+        0
+      ],
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 8,
+      "interior_black_min_samples": 24,
+      "sampling": "tone_dither",
+      "source_palette_rgb555": [
+        32767,
+        5823,
+        9584,
+        0
+      ]
+    },
+    {
+      "id": "mn-005-refinement-20261104-v3",
+      "species_id": "MN_005",
+      "view": "back",
+      "source": "sprites/mn-f002/native-refinement-20261104-v3/front-back.imagegen.png",
+      "crop": [
+        512,
+        512,
+        512,
+        512
+      ],
+      "fit": [
+        46,
+        46
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        5823,
+        7436,
+        0
+      ],
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 8,
+      "interior_black_min_samples": 24,
+      "sampling": "tone_dither",
+      "source_palette_rgb555": [
+        32767,
+        5823,
+        9584,
+        0
+      ]
+    },
+    {
+      "id": "mn-006-refinement-20261104-v3",
+      "species_id": "MN_006",
+      "view": "front",
+      "source": "sprites/mn-f002/native-refinement-20261104-v3/front-back.imagegen.png",
+      "crop": [
+        1024,
+        0,
+        512,
+        512
+      ],
+      "fit": [
+        51,
+        49
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        5439,
+        16709,
+        0
+      ],
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 8,
+      "interior_black_min_samples": 24,
+      "sampling": "tone_dither",
+      "source_palette_rgb555": [
+        32767,
+        5439,
+        20936,
+        0
+      ]
+    },
+    {
+      "id": "mn-006-refinement-20261104-v3",
+      "species_id": "MN_006",
+      "view": "back",
+      "source": "sprites/mn-f002/native-refinement-20261104-v3/front-back.imagegen.png",
+      "crop": [
+        1024,
+        512,
+        512,
+        512
+      ],
+      "fit": [
+        46,
+        46
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        5439,
+        16709,
+        0
+      ],
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 8,
+      "interior_black_min_samples": 24,
+      "sampling": "tone_dither",
+      "source_palette_rgb555": [
+        32767,
+        5439,
+        20936,
+        0
+      ]
+    }
+  ],
+  "conversion_revision": "Opt-in source-tone dithering retains intermediate source colors as mixtures of the existing four inks. White/black facial marks and paper-edge footprints retain point sampling; previous selected conversions stay unchanged.",
+  "back_prompt_file": "sprites/mn-f002/native-refinement-20261104-v3/prompt.txt",
+  "source_sha256": "e06cbf4e0b768747f00fd692e4bc546c6a82bfcf350676d76e4088baba2c4d67",
+  "previous_manifest": "sprites/mn-f002/manifest.json",
+  "visual_review": {
+    "status": "reviewed",
+    "outline_profile": "source-contour-v1",
+    "notes": "Same approved Cindore/Pelletor/Mesablast designs, proportions, four-color output palettes and furnace details. Source-tone conversion retains dark-side transitions on ore facets, round pellets and shoulder/fist plates rather than collapsing intermediate source colors into flat fills. Fronts gaze down-left with two bounded white eye shapes and dark pupils/masks; close rear portraits show ore fissure, two exhaust slots and a slatted metal back vent. Sparse body highlights remain outside the sockets. Source, 1x native, integer zoom and equal-scale before/after inspected.",
+    "sheet_sha256": "2491180025e904e45d72858b7bc70e7a4e2dde7b568ac502cb6b065162e2b5b4"
+  }
+}

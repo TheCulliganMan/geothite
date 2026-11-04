@@ -1,6 +1,6 @@
 # Native art and media — 2026-11-04
 
-Published [Pokédex](https://geothite.ryanculligan.com/pokedex/) release `20261104-native-225-43`:225 active species across99 families,121 archived designs,225 walking thumbnails and225 original cries. This is a static Pokédex publication. The game container, start time, configuration and selected campaign pack are unchanged.
+Published [Pokédex](https://geothite.ryanculligan.com/pokedex/) release `20261104-rerender-181-186-45`:225 active species across99 families,121 archived designs,225 walking thumbnails and225 original cries. This is a static Pokédex publication. The game container, start time, configuration and selected campaign pack are unchanged.
 
 The selected thematic-refinement manifests for MN_F070, MN_F080, MN_F088, MN_F091 and MN_F132 replace eight requested front/back pairs. Pothollow retains its prairie-pothole living-filter theme and Water/Poison typing; the new art has layered filter folds, a separate sludge chamber, dithered rounded flippers and two stalk eyes. Guarded native edits retain the pupils. Mudnip and Bankmaw gain stronger warm-gold/teal and jade/teal palettes. Loomlet, Pipulse/Cadenset and all other battle sprites retain their selected sources.868 other active normal/shiny battle PNGs are byte-identical to release42. Casserogre is unchanged.
 
@@ -18,3 +18,9 @@ Verification completed:
 - All225 public WAVs decode to non-silent audio; the actual Pothollow Cry button plays to completion. Cry assets reuse the preserved release42 media directory.
 
 Retained local evidence: `target/overworld-225-20261104/`. Selected native field provenance is recorded in `overworld/20261027-v1/accepted.json`; battle source provenance is recorded in `sprite-generation.json` and the selected family manifests.
+
+## Releases44–45: native conversion and bounded crop
+
+Release44 refines all six Cindore/Pelletor/Mesablast views, preserving designs and output palettes, and restores Cascavolt’s clipped front forelimb with a wider source crop. Release45 re-renders current public #181–186: Knotlet, Lasserp, Knotitan, Taconib, Pelletank and Taconarch. Existing sources, types and size budgets are preserved. The opt-in source-tone converter represents intermediate source colors using ordered mixtures of the four existing inks, protecting facial white/black marks and paper boundaries. Pelletank uses calibrated source light to avoid excessive white checker highlights.
+
+Ten conversion tests, two provenance tests, crystal-assets clippy and formatting pass. Independent native verification passes for24 views across all four touched families. Release45 changes exactly24 battle PNGs from44; HTML changes only immutable release URLs, and catalog/media bytes are retained. Mobile browser checks decode all24 normal/shiny front/back images and walking sheets without overflow. Originals remain selected-history inputs. These static publications do not update the game pack.

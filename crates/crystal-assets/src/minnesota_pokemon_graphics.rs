@@ -437,6 +437,7 @@ mod tests {
             SpriteSampling::AreaVote,
             SpriteSampling::SourceCenter,
             SpriteSampling::AreaDither,
+            SpriteSampling::ToneDither,
             SpriteSampling::CoveragePreserving,
         ] {
             let mut frame = MinnesotaSheet::from_png(&source)?.candidate_with_conversion(
@@ -478,6 +479,7 @@ mod tests {
                 SpriteSampling::AreaVote => SpriteSampling::SourceCenter,
                 SpriteSampling::SourceCenter => SpriteSampling::AreaVote,
                 SpriteSampling::AreaDither => SpriteSampling::AreaVote,
+                SpriteSampling::ToneDither => SpriteSampling::AreaVote,
                 SpriteSampling::CoveragePreserving => SpriteSampling::AreaVote,
             };
             assert!(verify_source_conversion(&source, &import, &metadata).is_err());

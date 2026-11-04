@@ -4,7 +4,7 @@
   "review_date": "2026-11-02",
   "numbering_basis": "225-species active authoring lineup before applying these requests; stable species IDs are pinned per task. Do not reinterpret these numbers after roster changes. Live website numbering has not been independently checked.",
   "implementation_scope": "Active roster, front/back art, species data, typing, evolution, moves and original cries; public Pokedex publication. No game-server deployment.",
-  "latest_decision": "Published release43:225 active Pokemon,99 families,121 preserved archives,225 six-pose normal/shiny walking sprites and225 working original cries. Eight requested battle pairs refined, including Pothollow with its original Water/Poison living-filter theme. Game server and selected campaign pack unchanged.",
+  "latest_decision": "Published release45: current public #181\u2013186 re-rendered with source-tone dithering. Includes release44 Cindore refinement and Cascavolt crop repair.225 active species,99 families,121 archives,225 walking sets and225 cries retained. Static Pokedex only; game server and campaign selection unchanged.",
   "tasks": [
     {
       "id": "DEX-20261102-01",
@@ -2143,6 +2143,47 @@
       "theme_change": false,
       "completed_in": "20261104-native-225-43",
       "verification": "NATIVE-ART-20261104.md"
+    },
+    {
+      "id": "DEX-20261104-CINDORE-REFINE",
+      "status": "complete-published",
+      "targets": [
+        "MN_004",
+        "MN_005",
+        "MN_006"
+      ],
+      "title": "Refine Cindore/Pelletor/Mesablast front/back sprites; preserve approved designs and furnace/ore theme.",
+      "preserve_originals": true,
+      "notes": "Strengthen faceted ore/pellet/metal volume, controlled native dithering and bounded expressive eyes; retain names/types/silhouettes, cries and field sprites.",
+      "publication": "20261104-cindore-44",
+      "verification": "Six native views reviewed; independent native verifier, conversion tests, clippy and formatting pass; public front/back/shiny and mobile checks pass."
+    },
+    {
+      "id": "DEX-20261104-CASCAVOLT-CROP",
+      "status": "complete-published",
+      "title": "Restore Cascavolt front forelimb clipped by source-column crop.",
+      "species_ids": [
+        "MN_191"
+      ],
+      "publication": "20261104-cindore-44",
+      "preserve_originals": true,
+      "notes": "Wider bounded source crop restores full left forelimb; rear and other family stages unchanged."
+    },
+    {
+      "id": "DEX-20261104-RERENDER-181-186",
+      "status": "complete-published",
+      "title": "Re-render current public #181\u2013186 with new native conversion methods.",
+      "species_ids": [
+        "MN_137",
+        "MN_138",
+        "MN_270",
+        "MN_101",
+        "MN_102",
+        "MN_103"
+      ],
+      "publication": "20261104-rerender-181-186-45",
+      "preserve_originals": true,
+      "notes": "Knotlet/Lasserp/Knotitan and Taconib/Pelletank/Taconarch retain original sources, designs, types, crop and fit budgets. Source-tone four-color dithering, source-backed contours and protected facial ink. Twelve native views verified;24 normal/shiny PNGs updated. All225 roster/media entries retained."
     }
   ],
   "projected_count_with_preferred_additions": 210,
@@ -2193,5 +2234,5 @@
     "evidence": "NATIVE-ART-20261103.md",
     "content_hash": "c4d477b7e6d42aef37dba84914316f13c9d8599a9da0bc37d98d33eefe76ce45"
   },
-  "current_live_sprite_review": "20261104-native-225-43"
+  "current_live_sprite_review": "20261104-rerender-181-186-45"
 }

@@ -1,6 +1,6 @@
 # Northwoods Pokédex web app
 
-Current publication: `20261104-native-225-43` —225 active species,99 families,121 archives,225 normal/shiny walking thumbnails and225 original cries. Eight requested front/back pairs were refined, including Pothollow. [Art and media verification](../planning/minnesota/pokemon/NATIVE-ART-20261104.md). Static publication preserves the running game server.
+Current publication: `20261104-rerender-181-186-45` —225 active species,99 families,121 archives,225 normal/shiny walking thumbnails and225 original cries. Current #181–186 have re-rendered front/back art using source-tone dithering. Includes Cindore-line refinement and Cascavolt crop repair from release44. [Art and media verification](../planning/minnesota/pokemon/NATIVE-ART-20261104.md). Static publication preserves the running game server.
 
 ## Evolution typing revision (2026-11-04)
 
