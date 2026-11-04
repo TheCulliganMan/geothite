@@ -1,5 +1,8 @@
 # Minnesota Pokédex
 
+Current authoring: **201 active species**. See the [corrected recount](RECOUNT-20261102.md) and [revision queue](REVISION-TASKS.md) (27 open tasks). Earlier counts below are historical.
+
+
 The new [Verdigrim entry](#mn_319-verdigrim--steelpoison) is appended below;
 the historical catalog totals in this guide predate the current roster.
 
@@ -83,7 +86,7 @@ Egg moves: COUNTER, ROLLOUT, CRUNCH.
 
 Catch rate 45; base EXP 70; GROWTH_MEDIUM_SLOW; egg groups EGG_MINERAL/EGG_MONSTER; hatch cycles 20.
 
-### MN_005 Pelletor — FIRE/ROCK
+### MN_005 Pelletor — FIRE
 
 Ore Pellet Pokémon. 3′2″; 94 lb. Stats: 65 / 87 / 76 / 49 / 72 / 56 (total 405).
 
@@ -187,7 +190,7 @@ Egg moves: COUNTER, ENDURE, AMNESIA.
 
 Catch rate 45; base EXP 59; GROWTH_MEDIUM_SLOW; egg groups EGG_GROUND/EGG_WATER_1; hatch cycles 20.
 
-### MN_011 Portabeau — WATER/NORMAL
+### MN_011 Portabeau — WATER
 
 Portage Pokémon. 2′10″; 62 lb. Stats: 69 / 88 / 69 / 64 / 45 / 70 (total 405).
 
@@ -499,7 +502,7 @@ Egg moves: none.
 
 Catch rate 190; base EXP 58; GROWTH_MEDIUM_FAST; egg groups EGG_INDETERMINATE/EGG_MINERAL; hatch cycles 20.
 
-### MN_029 Millimp — NORMAL/GROUND
+### MN_029 Millimp — NORMAL
 
 Millstone Pokémon. 2′2″; 31 lb. Stats: 53 / 46 / 49 / 72 / 87 / 65 (total 372).
 
@@ -867,7 +870,7 @@ Giant beaver fossil: petrified incisors and ribbed stone armor become a prehisto
 
 Habitat: river bluffs.
 
-### MN_049 Castorock — ROCK/NORMAL
+### MN_049 Castorock — ROCK
 
 Stone Gnaw Pokémon. 2′0″; 78 lb. Stats: 56 / 56 / 64 / 25 / 31 / 48 (total 280).
 
@@ -1739,7 +1742,7 @@ Taconite and magnetic assembly: a banded ore dragon gathers pellets into armor, 
 
 Habitat: iron range.
 
-### MN_101 Taconib — ROCK/DRAGON
+### MN_101 Taconib — STEEL/DRAGON
 
 Ore Whelp Pokémon. 1′3″; 36 lb. Stats: 54 / 62 / 70 / 19 / 38 / 54 (total 297).
 
@@ -1859,7 +1862,7 @@ Egg moves: MEGA_DRAIN, ENDURE, PURSUIT.
 
 Catch rate 190; base EXP 56; GROWTH_FAST; egg groups EGG_BUG/EGG_BUG; hatch cycles 20.
 
-### MN_108 Silksod — BUG/GROUND
+### MN_108 Silksod — BUG
 
 Sod Stitch Pokémon. 1′0″; 7.5 lb. Stats: 49 / 53 / 46 / 87 / 65 / 61 (total 361).
 
@@ -1911,7 +1914,7 @@ Egg moves: COUNTER, PURSUIT, REVERSAL.
 
 Catch rate 190; base EXP 59; GROWTH_MEDIUM_FAST; egg groups EGG_GROUND/EGG_GROUND; hatch cycles 20.
 
-### MN_111 Cacheek — DARK/GROUND
+### MN_111 Cacheek — NORMAL/DARK
 
 Cache Thief Pokémon. 1′10″; 26 lb. Stats: 65 / 80 / 72 / 68 / 30 / 61 (total 376).
 
@@ -1927,7 +1930,7 @@ Egg moves: COUNTER, PURSUIT, REVERSAL.
 
 Catch rate 90; base EXP 83; GROWTH_MEDIUM_FAST; egg groups EGG_GROUND/EGG_GROUND; hatch cycles 20.
 
-### MN_112 Furrowbank — DARK/GROUND
+### MN_112 Furrowbank — NORMAL/DARK
 
 Seed Vault Pokémon. 3′10″; 110 lb. Stats: 85 / 105 / 95 / 90 / 40 / 80 (total 495).
 
@@ -1979,7 +1982,7 @@ Egg moves: AGILITY, ENCORE, SING.
 
 Catch rate 90; base EXP 85; GROWTH_MEDIUM_FAST; egg groups EGG_FLYING/EGG_GROUND; hatch cycles 20.
 
-### MN_115 Prairondo — GROUND/FLYING
+### MN_115 Prairondo — NORMAL/FLYING
 
 Drum Fan Pokémon. 3′6″; 43 lb. Stats: 85 / 105 / 80 / 90 / 60 / 85 (total 505).
 
@@ -2419,7 +2422,7 @@ Prairie wetland choruses and hypnotic toads: one resonating throat balloon becom
 
 Habitat: prairie.
 
-### MN_139 Chorip — WATER/PSYCHIC
+### MN_139 Chorip — WATER
 
 Chorus Pokémon. 0′10″; 5.5 lb. Stats: 50 / 28 / 42 / 31 / 67 / 59 (total 277).
 
@@ -2435,7 +2438,7 @@ Egg moves: SING, HAZE, FUTURE_SIGHT.
 
 Catch rate 190; base EXP 61; GROWTH_MEDIUM_FAST; egg groups EGG_WATER_1/EGG_INDETERMINATE; hatch cycles 20.
 
-### MN_140 Choirbog — POISON/PSYCHIC
+### MN_140 Choirbog — WATER/POISON
 
 Bog Choir Pokémon. 3′0″; 54 lb. Stats: 90 / 50 / 75 / 55 / 120 / 105 (total 495).
 
@@ -2527,7 +2530,7 @@ Abandoned ore carts, mine fumes and ghost lights: a rattling cart collects ficti
 
 Habitat: iron range.
 
-### MN_145 Cartick — STEEL/POISON
+### MN_145 Cartick — STEEL
 
 Fume Cart Pokémon. 1′4″; 46 lb. Stats: 50 / 39 / 39 / 36 / 62 / 53 (total 279).
 
@@ -2543,7 +2546,7 @@ Egg moves: none.
 
 Catch rate 190; base EXP 61; GROWTH_MEDIUM_FAST; egg groups EGG_MINERAL/EGG_INDETERMINATE; hatch cycles 20.
 
-### MN_146 Haulgeist — POISON/GHOST
+### MN_146 Haulgeist — STEEL/GHOST
 
 Ghost Load Pokémon. 4′2″; 18 lb. Stats: 90 / 70 / 70 / 65 / 110 / 95 (total 500).
 
@@ -2799,7 +2802,7 @@ Lost mismatched winter clothes find one another. One mitten becomes a floating p
 
 Habitat: Windy clearings and old winter logging-camp margins in the North Shore forest; encounter placement remains a proposal..
 
-### MN_163 Mitwist — GHOST
+### MN_163 Mitwist — GHOST/FAIRY
 
 Lost Mitten Pokémon. 0′10″; 0.8 lb. Stats: 45 / 50 / 45 / 60 / 55 / 45 (total 300).
 
@@ -2815,7 +2818,7 @@ Egg moves: HYPNOSIS, DISABLE, HAZE.
 
 Catch rate 190; base EXP 62; GROWTH_MEDIUM_FAST; egg groups EGG_INDETERMINATE/EGG_INDETERMINATE; hatch cycles 25.
 
-### MN_164 Mispair — GHOST
+### MN_164 Mispair — GHOST/FAIRY
 
 Lost Pair Pokémon. 3′2″; 4 lb. Stats: 65 / 65 / 60 / 80 / 75 / 60 (total 405).
 
@@ -2831,7 +2834,7 @@ Egg moves: HYPNOSIS, DISABLE, HAZE.
 
 Catch rate 90; base EXP 125; GROWTH_MEDIUM_FAST; egg groups EGG_INDETERMINATE/EGG_INDETERMINATE; hatch cycles 25.
 
-### MN_165 Shawlter — GHOST/FLYING
+### MN_165 Shawlter — GHOST/FAIRY
 
 Shawl Set Pokémon. 6′8″; 14 lb. Stats: 80 / 90 / 75 / 100 / 95 / 75 (total 515).
 
@@ -3723,7 +3726,7 @@ Minnesota caddisfly silk cases and mosaic assembly: a pebble-case larva learns t
 
 Habitat: Clean rocky creeks and riparian shade on the Driftless Trail; case-building is a general caddisfly inspiration, not a claim that a particular rare species lives on the authored route..
 
-### MN_215 Tesslarv — BUG/ROCK
+### MN_215 Tesslarv — BUG
 
 Tile Case Pokémon. 0′7″; 5.5 lb. Stats: 39 / 28 / 50 / 50 / 62 / 50 (total 279).
 
@@ -3847,7 +3850,7 @@ Egg moves: CURSE, HAZE, DESTINY_BOND.
 
 Catch rate 190; base EXP 60; GROWTH_MEDIUM_SLOW; egg groups EGG_INDETERMINATE/EGG_PLANT; hatch cycles 20.
 
-### MN_222 Smoulden — FIRE/POISON
+### MN_222 Smoulden — FIRE
 
 Smolder Pokémon. 2′0″; 30 lb. Stats: 68 / 42 / 61 / 46 / 91 / 76 (total 384).
 
@@ -4559,7 +4562,7 @@ Egg moves: FLAIL, AGILITY, SKULL_BASH.
 
 Catch rate 190; base EXP 65; GROWTH_MEDIUM_SLOW; egg groups EGG_WATER_2/EGG_WATER_2; hatch cycles 20.
 
-### MN_264 Pikeman — WATER/FIGHTING
+### MN_264 Pikeman — WATER
 
 Lance Jaw Pokémon. 3′6″; 62 lb. Stats: 68 / 80 / 61 / 72 / 84 / 49 (total 414).
 

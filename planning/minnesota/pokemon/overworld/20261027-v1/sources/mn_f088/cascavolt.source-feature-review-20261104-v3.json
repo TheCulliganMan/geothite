@@ -1,0 +1,122 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_191",
+  "result": "pass",
+  "manifest_sha256": "fe012eab0ba27ded9a28a5eef4a23fde6afdd04a4b940f6a71d49d9672bfc54b",
+  "bank_sha256": "006f71306dd2217ba0d60dc9dd9549420670ffd53efe6f733ff06a8a5f2a27c2",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f088/cascavolt.overworld.imagegen-20261104-v3.png": "c04b543db00bb1ef5834027d8faee4391f9589c9044e014b6dbcbfcae48735fe"
+  },
+  "canonical_eye_form": "Downward facing scoop/wrist-runner/crest anatomy and curled paddle tail; side view keeps the snout and profile mark; back shows the dorsal crest and tail.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "source": "cascavolt.overworld.imagegen-20261104-v3.png",
+          "source_sha256": "c04b543db00bb1ef5834027d8faee4391f9589c9044e014b6dbcbfcae48735fe",
+          "source_alpha_bounds": [
+            104,
+            66,
+            335,
+            389
+          ],
+          "native_bounds": [
+            3,
+            2,
+            11,
+            13
+          ],
+          "native_pixel_sha256": "ed083f7fff8b3b51512a4f13289177d08950e65fd2d54cf0b3db872e21bf878a",
+          "conversion": "Source-backed enclosed dark component preservation; no hand-painted field pixels. Actual source and normal/shiny native six-pose boards visually compared.",
+          "anatomy": "Downward facing scoop/wrist-runner/crest anatomy and curled paddle tail; side view keeps the snout and profile mark; back shows the dorsal crest and tail."
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "source": "cascavolt.overworld.imagegen-20261104-v3.png",
+          "source_sha256": "c04b543db00bb1ef5834027d8faee4391f9589c9044e014b6dbcbfcae48735fe",
+          "source_alpha_bounds": [
+            65,
+            89,
+            350,
+            366
+          ],
+          "native_bounds": [
+            1,
+            3,
+            12,
+            12
+          ],
+          "native_pixel_sha256": "962bc04e4fdf431cb0da5e23545ea261196027e98efdcc9604b0c17b90dd3722",
+          "conversion": "Source-backed enclosed dark component preservation; no hand-painted field pixels. Actual source and normal/shiny native six-pose boards visually compared.",
+          "anatomy": "Downward facing scoop/wrist-runner/crest anatomy and curled paddle tail; side view keeps the snout and profile mark; back shows the dorsal crest and tail."
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "source": "cascavolt.overworld.imagegen-20261104-v3.png",
+          "source_sha256": "c04b543db00bb1ef5834027d8faee4391f9589c9044e014b6dbcbfcae48735fe",
+          "source_alpha_bounds": [
+            103,
+            43,
+            341,
+            400
+          ],
+          "native_bounds": [
+            3,
+            1,
+            11,
+            14
+          ],
+          "native_pixel_sha256": "31be5de000d25cf8663444a19185ff01169da078f4a51e2830ab1ef3289f8d8b",
+          "conversion": "Source-backed enclosed dark component preservation; no hand-painted field pixels. Actual source and normal/shiny native six-pose boards visually compared.",
+          "anatomy": "Downward facing scoop/wrist-runner/crest anatomy and curled paddle tail; side view keeps the snout and profile mark; back shows the dorsal crest and tail."
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "source": "cascavolt.overworld.imagegen-20261104-v3.png",
+          "source_sha256": "c04b543db00bb1ef5834027d8faee4391f9589c9044e014b6dbcbfcae48735fe",
+          "source_alpha_bounds": [
+            58,
+            71,
+            363,
+            379
+          ],
+          "native_bounds": [
+            1,
+            2,
+            12,
+            13
+          ],
+          "native_pixel_sha256": "ac455f951b89ed32f95980e077e1a7d1b96e991d8e886731cd0f4f16b5075ab3",
+          "conversion": "Source-backed enclosed dark component preservation; no hand-painted field pixels. Actual source and normal/shiny native six-pose boards visually compared.",
+          "anatomy": "Downward facing scoop/wrist-runner/crest anatomy and curled paddle tail; side view keeps the snout and profile mark; back shows the dorsal crest and tail."
+        }
+      ]
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "poses": [
+      "up_idle",
+      "up_step"
+    ],
+    "notes": "Downward facing scoop/wrist-runner/crest anatomy and curled paddle tail; side view keeps the snout and profile mark; back shows the dorsal crest and tail."
+  },
+  "native_and_shiny_visual_review": "All six poses compared at native scale and integer zoom with selected source; ordinary field-icon simplification retains species silhouette. Transparent edge, genuine stepping changes, matched normal/shiny index geometry and actual production terrain reviewed."
+}

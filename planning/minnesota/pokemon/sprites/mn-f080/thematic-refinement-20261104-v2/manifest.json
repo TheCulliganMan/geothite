@@ -1,0 +1,242 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F080",
+  "status": "native-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_174": {
+      "species_id": "MN_174",
+      "name": "Loomlet",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          21,
+          21,
+          27
+        ],
+        [
+          8,
+          9,
+          18
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        28341,
+        18728,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          173,
+          173,
+          222
+        ],
+        [
+          66,
+          74,
+          148
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#ADADDE",
+        "#424A94",
+        "#000000"
+      ]
+    },
+    "MN_175": {
+      "species_id": "MN_175",
+      "name": "Inverveil",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          21,
+          24,
+          31
+        ],
+        [
+          9,
+          7,
+          18
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        32533,
+        18665,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          173,
+          198,
+          255
+        ],
+        [
+          74,
+          57,
+          148
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#ADC6FF",
+        "#4A3994",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f080/thematic-refinement-20261104-v2/prompt.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-174-loomlet-v4",
+      "species_id": "MN_174",
+      "view": "front",
+      "source": "sprites/mn-f080/redesign-v4/front-back.imagegen-v4.png",
+      "crop": [
+        0,
+        0,
+        590,
+        633
+      ],
+      "fit": [
+        36,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        28341,
+        18728,
+        0
+      ],
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 12,
+      "exterior_contour": "source_backed"
+    },
+    {
+      "id": "mn-174-loomlet-v4",
+      "species_id": "MN_174",
+      "view": "back",
+      "source": "sprites/mn-f080/redesign-v4/front-back.imagegen-v4.png",
+      "crop": [
+        0,
+        633,
+        590,
+        566
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        28341,
+        18728,
+        0
+      ],
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 12,
+      "exterior_contour": "source_backed"
+    },
+    {
+      "id": "mn-175-thematic-20261104-v2",
+      "species_id": "MN_175",
+      "view": "front",
+      "source": "sprites/mn-f080/thematic-refinement-20261104-v2/front-back.imagegen.png",
+      "crop": [
+        0,
+        0,
+        627,
+        1254
+      ],
+      "fit": [
+        45,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        32533,
+        18665,
+        0
+      ],
+      "sampling": "area_dither",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 8,
+      "interior_black_min_samples": 24
+    },
+    {
+      "id": "mn-175-thematic-20261104-v2",
+      "species_id": "MN_175",
+      "view": "back",
+      "source": "sprites/mn-f080/thematic-refinement-20261104-v2/front-back.imagegen.png",
+      "crop": [
+        627,
+        0,
+        627,
+        1254
+      ],
+      "fit": [
+        46,
+        46
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        32533,
+        18665,
+        0
+      ],
+      "sampling": "area_dither",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 8,
+      "interior_black_min_samples": 24
+    }
+  ],
+  "conversion_revision": "Compare bounded coverage-preserving source resampling at native resolution; not accepted until visual review.",
+  "previous_manifest": "sprites/mn-f080/manifest.json",
+  "visual_review": {
+    "status": "reviewed",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "2f300cd322a74c088233e99196224546284bb469e75dfa5efb00862de7db7ec0",
+    "notes": "Preserve Loomlet. Inverveil uses a broad stepped mirage crown above the smaller true body, separated by an air gap. Purple underplanes and native dither show refraction tiers; close rear has no painted frontal face."
+  }
+}

@@ -1,0 +1,272 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F155",
+  "tool": "built-in image_gen",
+  "prompt_file": "sprites/mn-f155/replacement-20261104-v1/prompt.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "status": "native-vibrant-candidate-reviewed-awaiting-user-feedback",
+  "sprites": [
+    {
+      "id": "mn-342-skimnymph-v1",
+      "species_id": "MN_342",
+      "view": "front",
+      "source": "sprites/mn-f155/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        0,
+        0,
+        580,
+        627
+      ],
+      "fit": [
+        38,
+        32
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        25546,
+        24869,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "source_palette_rgb555": [
+        32767,
+        29587,
+        22985,
+        0
+      ]
+    },
+    {
+      "id": "mn-342-skimnymph-v1",
+      "species_id": "MN_342",
+      "view": "back",
+      "source": "sprites/mn-f155/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        0,
+        627,
+        580,
+        627
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        25546,
+        24869,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "source_palette_rgb555": [
+        32767,
+        29587,
+        22985,
+        0
+      ]
+    },
+    {
+      "id": "mn-343-rimefoil-v1",
+      "species_id": "MN_343",
+      "view": "front",
+      "source": "sprites/mn-f155/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        580,
+        0,
+        674,
+        627
+      ],
+      "fit": [
+        52,
+        48
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        32647,
+        25834,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "source_palette_rgb555": [
+        32767,
+        31604,
+        23976,
+        0
+      ]
+    },
+    {
+      "id": "mn-343-rimefoil-v1",
+      "species_id": "MN_343",
+      "view": "back",
+      "source": "sprites/mn-f155/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        580,
+        627,
+        674,
+        627
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        32647,
+        25834,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "source_palette_rgb555": [
+        32767,
+        31604,
+        23976,
+        0
+      ]
+    }
+  ],
+  "pokemon_palettes": {
+    "MN_342": {
+      "species_id": "MN_342",
+      "name": "Skimnymph",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          10,
+          30,
+          24
+        ],
+        [
+          5,
+          9,
+          24
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        25546,
+        24869,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          82,
+          247,
+          198
+        ],
+        [
+          41,
+          74,
+          198
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#52F7C6",
+        "#294AC6",
+        "#000000"
+      ]
+    },
+    "MN_343": {
+      "species_id": "MN_343",
+      "name": "Rimefoil",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          7,
+          28,
+          31
+        ],
+        [
+          10,
+          7,
+          25
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        32647,
+        25834,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          57,
+          231,
+          255
+        ],
+        [
+          82,
+          57,
+          206
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#39E7FF",
+        "#5239CE",
+        "#000000"
+      ]
+    }
+  },
+  "color_revision": {
+    "authority": "User: Make candidates more vibrant; not just current work, all the wolves and stuff are beige.",
+    "study": "sprites/vibrant-color-study-20261104/palette-study.imagegen.png",
+    "method": "Native palette remapping through existing Rust converter. Source quantization palette retained; indexed geometry, eyes, outlines and dither unchanged."
+  },
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "0c0f223df611d1b5105f61dc20e7075c2ee7c1cdc98afdeb002d896c7e8e0291",
+    "notes": "Reviewed native front/back color pass: stronger Pokemon-like palettes, neutral white eyes/black pupils preserved, saturated body and shadow inks distinct. Indexed geometry proven identical before/after palette remap, including dither. Original sheets and prior palettes retained. User feedback pending."
+  }
+}

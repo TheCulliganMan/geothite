@@ -1,0 +1,248 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F142",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_314": {
+      "species_id": "MN_314",
+      "name": "Dewbit",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          18,
+          25,
+          7
+        ],
+        [
+          20,
+          5,
+          12
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        7986,
+        12468,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          148,
+          206,
+          57
+        ],
+        [
+          165,
+          41,
+          99
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#94CE39",
+        "#A52963",
+        "#000000"
+      ]
+    },
+    "MN_315": {
+      "species_id": "MN_315",
+      "name": "Glisnare",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          29,
+          17,
+          6
+        ],
+        [
+          4,
+          13,
+          9
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        6717,
+        9636,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          239,
+          140,
+          49
+        ],
+        [
+          33,
+          107,
+          74
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#EF8C31",
+        "#216B4A",
+        "#000000"
+      ]
+    }
+  },
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-314-dewbit-v2",
+      "species_id": "MN_314",
+      "view": "front",
+      "source": "sprites/mn-f142/native-refinement-20261103-r15/front-back.imagegen.png",
+      "crop": [
+        0,
+        0,
+        627,
+        627
+      ],
+      "fit": [
+        42,
+        40
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        7986,
+        12468,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-314-dewbit-v2",
+      "species_id": "MN_314",
+      "view": "back",
+      "source": "sprites/mn-f142/native-refinement-20261103-r15/front-back.imagegen.png",
+      "crop": [
+        0,
+        627,
+        627,
+        627
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        7986,
+        12468,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-315-glisnare-v2",
+      "species_id": "MN_315",
+      "view": "front",
+      "source": "sprites/mn-f142/native-refinement-20261103-r15/front-back.imagegen.png",
+      "crop": [
+        627,
+        0,
+        627,
+        627
+      ],
+      "fit": [
+        52,
+        48
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        6717,
+        9636,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-315-glisnare-v2",
+      "species_id": "MN_315",
+      "view": "back",
+      "source": "sprites/mn-f142/native-refinement-20261103-r15/front-back.imagegen.png",
+      "crop": [
+        627,
+        627,
+        627,
+        627
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        6717,
+        9636,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    }
+  ],
+  "status": "native-front-back-reviewed",
+  "original_manifest": "sprites/mn-f142/manifest.json",
+  "prompt_file": "sprites/mn-f142/native-refinement-20261103-r15/prompt.txt",
+  "visual_review": {
+    "status": "reviewed",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "06e55520c8a5556cf1a8062267802deaf4064dfd9623522ad022bc5f1259ca9a",
+    "notes": "Regenerated sundew rosette fronts/back portraits retain curled leaf/gland anatomy without animal or human body. Dewbit three-leaf hood and two side cups develop into overlapping broad Glisnare leaves with amber tipped margins and sheltered face. Actual native checker bands round leaf cups/undersides and backs rather than flat fills. Both front eye white fields have separate dark vertical pupils and sockets, confirmed native PNGs and index rows; no extra pupil edits needed. Fronts down-left, close backs upper-right. Originals retained; pack integration pending."
+  },
+  "shiny_review": {
+    "status": "reviewed",
+    "views": 4,
+    "notes": "Native normal/shiny fronts and backs inspected, eye pupils/socket distinction retained; exact profile palette/index swaps and canonical normal byte equality verified."
+  }
+}

@@ -1,0 +1,892 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F156",
+  "tool": "built-in image_gen",
+  "prompt_file": "sprites/mn-f156/native-redesign-20261104-v4/prompt.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "status": "native-reviewed-for-promotion",
+  "sprites": [
+    {
+      "id": "mn-344-native-redesign-v4",
+      "species_id": "MN_344",
+      "view": "front",
+      "source": "sprites/mn-f156/native-redesign-20261104-v4/front-back.imagegen.png",
+      "crop": [
+        0,
+        0,
+        887,
+        887
+      ],
+      "fit": [
+        46,
+        40
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        3775,
+        25870,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "pixel_edits": [
+        {
+          "x": 14,
+          "y": 39,
+          "from": 2,
+          "to": 0
+        },
+        {
+          "x": 15,
+          "y": 39,
+          "from": 2,
+          "to": 0
+        },
+        {
+          "x": 16,
+          "y": 39,
+          "from": 2,
+          "to": 3
+        },
+        {
+          "x": 19,
+          "y": 39,
+          "from": 1,
+          "to": 0
+        },
+        {
+          "x": 20,
+          "y": 39,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 21,
+          "y": 39,
+          "from": 2,
+          "to": 0
+        },
+        {
+          "x": 22,
+          "y": 39,
+          "from": 2,
+          "to": 0
+        },
+        {
+          "x": 14,
+          "y": 40,
+          "from": 2,
+          "to": 0
+        },
+        {
+          "x": 15,
+          "y": 40,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 17,
+          "y": 40,
+          "from": 3,
+          "to": 1
+        },
+        {
+          "x": 19,
+          "y": 40,
+          "from": 1,
+          "to": 3
+        },
+        {
+          "x": 20,
+          "y": 40,
+          "from": 1,
+          "to": 0
+        },
+        {
+          "x": 21,
+          "y": 40,
+          "from": 2,
+          "to": 0
+        },
+        {
+          "x": 22,
+          "y": 40,
+          "from": 2,
+          "to": 0
+        },
+        {
+          "x": 15,
+          "y": 41,
+          "from": 1,
+          "to": 3
+        },
+        {
+          "x": 16,
+          "y": 41,
+          "from": 1,
+          "to": 3
+        },
+        {
+          "x": 17,
+          "y": 41,
+          "from": 3,
+          "to": 1
+        },
+        {
+          "x": 19,
+          "y": 41,
+          "from": 1,
+          "to": 3
+        },
+        {
+          "x": 20,
+          "y": 41,
+          "from": 1,
+          "to": 3
+        },
+        {
+          "x": 21,
+          "y": 41,
+          "from": 2,
+          "to": 3
+        },
+        {
+          "x": 22,
+          "y": 41,
+          "from": 2,
+          "to": 3
+        },
+        {
+          "x": 20,
+          "y": 42,
+          "from": 3,
+          "to": 1
+        },
+        {
+          "x": 21,
+          "y": 42,
+          "from": 3,
+          "to": 1
+        },
+        {
+          "x": 14,
+          "y": 43,
+          "from": 2,
+          "to": 3
+        },
+        {
+          "x": 15,
+          "y": 43,
+          "from": 3,
+          "to": 1
+        },
+        {
+          "x": 17,
+          "y": 43,
+          "from": 1,
+          "to": 3
+        },
+        {
+          "x": 22,
+          "y": 43,
+          "from": 1,
+          "to": 3
+        },
+        {
+          "x": 14,
+          "y": 44,
+          "from": 2,
+          "to": 3
+        },
+        {
+          "x": 16,
+          "y": 44,
+          "from": 1,
+          "to": 3
+        },
+        {
+          "x": 18,
+          "y": 44,
+          "from": 3,
+          "to": 1
+        },
+        {
+          "x": 19,
+          "y": 44,
+          "from": 3,
+          "to": 1
+        },
+        {
+          "x": 20,
+          "y": 44,
+          "from": 1,
+          "to": 3
+        },
+        {
+          "x": 21,
+          "y": 44,
+          "from": 1,
+          "to": 3
+        },
+        {
+          "x": 22,
+          "y": 44,
+          "from": 1,
+          "to": 3
+        },
+        {
+          "x": 14,
+          "y": 45,
+          "from": 2,
+          "to": 0
+        },
+        {
+          "x": 15,
+          "y": 45,
+          "from": 1,
+          "to": 0
+        },
+        {
+          "x": 16,
+          "y": 45,
+          "from": 1,
+          "to": 3
+        },
+        {
+          "x": 21,
+          "y": 45,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 22,
+          "y": 45,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 14,
+          "y": 46,
+          "from": 2,
+          "to": 0
+        },
+        {
+          "x": 16,
+          "y": 46,
+          "from": 3,
+          "to": 1
+        },
+        {
+          "x": 17,
+          "y": 46,
+          "from": 3,
+          "to": 1
+        },
+        {
+          "x": 18,
+          "y": 46,
+          "from": 1,
+          "to": 3
+        },
+        {
+          "x": 21,
+          "y": 46,
+          "from": 0,
+          "to": 3
+        },
+        {
+          "x": 22,
+          "y": 46,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 14,
+          "y": 47,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 15,
+          "y": 47,
+          "from": 2,
+          "to": 3
+        },
+        {
+          "x": 16,
+          "y": 47,
+          "from": 2,
+          "to": 3
+        },
+        {
+          "x": 17,
+          "y": 47,
+          "from": 2,
+          "to": 3
+        },
+        {
+          "x": 19,
+          "y": 47,
+          "from": 1,
+          "to": 3
+        },
+        {
+          "x": 21,
+          "y": 47,
+          "from": 0,
+          "to": 3
+        },
+        {
+          "x": 26,
+          "y": 34,
+          "from": 2,
+          "to": 3
+        },
+        {
+          "x": 25,
+          "y": 35,
+          "from": 2,
+          "to": 3
+        },
+        {
+          "x": 29,
+          "y": 35,
+          "from": 2,
+          "to": 3
+        },
+        {
+          "x": 24,
+          "y": 36,
+          "from": 2,
+          "to": 3
+        },
+        {
+          "x": 26,
+          "y": 36,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 25,
+          "y": 37,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 28,
+          "y": 37,
+          "from": 0,
+          "to": 3
+        },
+        {
+          "x": 25,
+          "y": 38,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 27,
+          "y": 38,
+          "from": 0,
+          "to": 3
+        },
+        {
+          "x": 29,
+          "y": 38,
+          "from": 2,
+          "to": 3
+        },
+        {
+          "x": 24,
+          "y": 39,
+          "from": 2,
+          "to": 3
+        },
+        {
+          "x": 25,
+          "y": 39,
+          "from": 0,
+          "to": 3
+        },
+        {
+          "x": 26,
+          "y": 39,
+          "from": 0,
+          "to": 3
+        },
+        {
+          "x": 28,
+          "y": 39,
+          "from": 2,
+          "to": 3
+        },
+        {
+          "x": 19,
+          "y": 35,
+          "from": 2,
+          "to": 3
+        },
+        {
+          "x": 20,
+          "y": 35,
+          "from": 2,
+          "to": 3
+        },
+        {
+          "x": 19,
+          "y": 36,
+          "from": 2,
+          "to": 0
+        },
+        {
+          "x": 20,
+          "y": 36,
+          "from": 2,
+          "to": 3
+        },
+        {
+          "x": 18,
+          "y": 37,
+          "from": 2,
+          "to": 3
+        },
+        {
+          "x": 19,
+          "y": 37,
+          "from": 2,
+          "to": 0
+        },
+        {
+          "x": 20,
+          "y": 37,
+          "from": 2,
+          "to": 3
+        },
+        {
+          "x": 19,
+          "y": 38,
+          "from": 2,
+          "to": 3
+        },
+        {
+          "x": 20,
+          "y": 38,
+          "from": 2,
+          "to": 3
+        },
+        {
+          "x": 11,
+          "y": 40,
+          "from": 2,
+          "to": 1
+        },
+        {
+          "x": 13,
+          "y": 40,
+          "from": 2,
+          "to": 1
+        },
+        {
+          "x": 10,
+          "y": 41,
+          "from": 2,
+          "to": 1
+        },
+        {
+          "x": 12,
+          "y": 41,
+          "from": 2,
+          "to": 1
+        },
+        {
+          "x": 9,
+          "y": 42,
+          "from": 2,
+          "to": 1
+        },
+        {
+          "x": 11,
+          "y": 42,
+          "from": 2,
+          "to": 1
+        },
+        {
+          "x": 10,
+          "y": 43,
+          "from": 2,
+          "to": 1
+        },
+        {
+          "x": 12,
+          "y": 43,
+          "from": 2,
+          "to": 1
+        },
+        {
+          "x": 40,
+          "y": 39,
+          "from": 2,
+          "to": 1
+        },
+        {
+          "x": 42,
+          "y": 39,
+          "from": 2,
+          "to": 1
+        },
+        {
+          "x": 39,
+          "y": 40,
+          "from": 2,
+          "to": 1
+        },
+        {
+          "x": 41,
+          "y": 40,
+          "from": 2,
+          "to": 1
+        },
+        {
+          "x": 43,
+          "y": 40,
+          "from": 2,
+          "to": 1
+        },
+        {
+          "x": 38,
+          "y": 41,
+          "from": 2,
+          "to": 1
+        },
+        {
+          "x": 40,
+          "y": 41,
+          "from": 2,
+          "to": 1
+        },
+        {
+          "x": 42,
+          "y": 41,
+          "from": 2,
+          "to": 1
+        },
+        {
+          "x": 44,
+          "y": 41,
+          "from": 2,
+          "to": 1
+        },
+        {
+          "x": 39,
+          "y": 42,
+          "from": 2,
+          "to": 1
+        },
+        {
+          "x": 41,
+          "y": 42,
+          "from": 2,
+          "to": 1
+        },
+        {
+          "x": 43,
+          "y": 42,
+          "from": 2,
+          "to": 1
+        },
+        {
+          "x": 45,
+          "y": 42,
+          "from": 2,
+          "to": 1
+        },
+        {
+          "x": 40,
+          "y": 43,
+          "from": 2,
+          "to": 1
+        },
+        {
+          "x": 42,
+          "y": 43,
+          "from": 2,
+          "to": 1
+        },
+        {
+          "x": 44,
+          "y": 43,
+          "from": 2,
+          "to": 1
+        },
+        {
+          "x": 41,
+          "y": 44,
+          "from": 2,
+          "to": 1
+        },
+        {
+          "x": 43,
+          "y": 44,
+          "from": 2,
+          "to": 1
+        },
+        {
+          "x": 45,
+          "y": 44,
+          "from": 2,
+          "to": 1
+        },
+        {
+          "x": 43,
+          "y": 45,
+          "from": 2,
+          "to": 1
+        },
+        {
+          "x": 45,
+          "y": 45,
+          "from": 2,
+          "to": 1
+        }
+      ]
+    },
+    {
+      "id": "mn-344-native-redesign-v4",
+      "species_id": "MN_344",
+      "view": "back",
+      "source": "sprites/mn-f156/native-redesign-20261104-v4/front-back.imagegen.png",
+      "crop": [
+        887,
+        0,
+        887,
+        887
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        3775,
+        25870,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "pixel_edits": [
+        {
+          "x": 26,
+          "y": 35,
+          "from": 2,
+          "to": 1
+        },
+        {
+          "x": 28,
+          "y": 35,
+          "from": 2,
+          "to": 1
+        },
+        {
+          "x": 25,
+          "y": 36,
+          "from": 2,
+          "to": 1
+        },
+        {
+          "x": 27,
+          "y": 36,
+          "from": 2,
+          "to": 1
+        },
+        {
+          "x": 29,
+          "y": 36,
+          "from": 2,
+          "to": 1
+        },
+        {
+          "x": 26,
+          "y": 37,
+          "from": 2,
+          "to": 1
+        },
+        {
+          "x": 28,
+          "y": 37,
+          "from": 2,
+          "to": 1
+        },
+        {
+          "x": 30,
+          "y": 37,
+          "from": 2,
+          "to": 1
+        },
+        {
+          "x": 27,
+          "y": 38,
+          "from": 2,
+          "to": 1
+        },
+        {
+          "x": 29,
+          "y": 38,
+          "from": 2,
+          "to": 1
+        },
+        {
+          "x": 31,
+          "y": 38,
+          "from": 2,
+          "to": 1
+        },
+        {
+          "x": 28,
+          "y": 39,
+          "from": 2,
+          "to": 1
+        },
+        {
+          "x": 30,
+          "y": 39,
+          "from": 2,
+          "to": 1
+        },
+        {
+          "x": 32,
+          "y": 39,
+          "from": 2,
+          "to": 1
+        },
+        {
+          "x": 29,
+          "y": 40,
+          "from": 2,
+          "to": 1
+        },
+        {
+          "x": 31,
+          "y": 40,
+          "from": 2,
+          "to": 1
+        },
+        {
+          "x": 33,
+          "y": 40,
+          "from": 2,
+          "to": 1
+        },
+        {
+          "x": 31,
+          "y": 41,
+          "from": 2,
+          "to": 1
+        },
+        {
+          "x": 33,
+          "y": 41,
+          "from": 2,
+          "to": 1
+        },
+        {
+          "x": 35,
+          "y": 41,
+          "from": 2,
+          "to": 1
+        },
+        {
+          "x": 33,
+          "y": 42,
+          "from": 2,
+          "to": 1
+        },
+        {
+          "x": 35,
+          "y": 42,
+          "from": 2,
+          "to": 1
+        },
+        {
+          "x": 37,
+          "y": 42,
+          "from": 2,
+          "to": 1
+        }
+      ]
+    }
+  ],
+  "pokemon_palettes": {
+    "MN_344": {
+      "species_id": "MN_344",
+      "name": "Tactunnel",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          31,
+          21,
+          3
+        ],
+        [
+          14,
+          8,
+          25
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        3775,
+        25870,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          173,
+          24
+        ],
+        [
+          115,
+          66,
+          206
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#FFAD18",
+        "#7342CE",
+        "#000000"
+      ]
+    }
+  },
+  "native_refinement": "Hand-authored guarded native correction: bounded nose pad with five tactile lobes/black nostril; closed near eye socket, visible far eye; curved native gold/violet dither bands on broad forepaws and rear shoulder. No source/anatomy changes to other species.",
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "af9aea8108a14ede05d78eb386cd23f2616eba94cc3352f03da2145d642f7db4",
+    "notes": "Native redesign: compact violet body, separate violet fan digging paws/white claws, large bounded marigold tactile nose, closed near eye socket/separate pupil and visible far eye. Guarded native corrections preserve nose lobes and eye bounds after reduction; curved paw/shoulder dither restores volume. Front down-left, close rear up-right. Originals preserved."
+  }
+}

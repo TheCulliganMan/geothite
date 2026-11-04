@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F070",
+  "species": [
+    {
+      "species_id": "MN_149",
+      "runtime_token": "POTHOLLOW",
+      "palette_rgb555": [
+        32767,
+        24333,
+        17676,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        25015,
+        8593,
+        0
+      ],
+      "fit": [
+        14,
+        14
+      ],
+      "alpha_threshold": 200,
+      "sampling": "feature_preserving",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 32,
+      "interior_black_samples": 32,
+      "opaque_interior_minimum_samples": 60,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "pothollow.overworld.imagegen-20261104-v3.png",
+          "crop": [
+            0,
+            0,
+            512,
+            512
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "pothollow.overworld.imagegen-20261104-v3.png",
+          "crop": [
+            512,
+            0,
+            512,
+            512
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "pothollow.overworld.imagegen-20261104-v3.png",
+          "crop": [
+            1024,
+            0,
+            512,
+            512
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "pothollow.overworld.imagegen-20261104-v3.png",
+          "crop": [
+            0,
+            512,
+            512,
+            512
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "pothollow.overworld.imagegen-20261104-v3.png",
+          "crop": [
+            512,
+            512,
+            512,
+            512
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "pothollow.overworld.imagegen-20261104-v3.png",
+          "crop": [
+            1024,
+            512,
+            512,
+            512
+          ]
+        }
+      ]
+    }
+  ]
+}

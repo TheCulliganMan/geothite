@@ -1,0 +1,356 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F088",
+  "status": "native-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_189": {
+      "species_id": "MN_189",
+      "name": "Riffbit",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          29,
+          24,
+          9
+        ],
+        [
+          4,
+          11,
+          21
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        10013,
+        21860,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          239,
+          198,
+          74
+        ],
+        [
+          33,
+          90,
+          173
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#EFC64A",
+        "#215AAD",
+        "#000000"
+      ]
+    },
+    "MN_190": {
+      "species_id": "MN_190",
+      "name": "Dynarill",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          28,
+          22,
+          7
+        ],
+        [
+          5,
+          14,
+          23
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        7900,
+        24005,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          231,
+          181,
+          57
+        ],
+        [
+          41,
+          115,
+          189
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#E7B539",
+        "#2973BD",
+        "#000000"
+      ]
+    },
+    "MN_191": {
+      "species_id": "MN_191",
+      "name": "Cascavolt",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          26,
+          24,
+          12
+        ],
+        [
+          3,
+          9,
+          20
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        13082,
+        20771,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          214,
+          198,
+          99
+        ],
+        [
+          24,
+          74,
+          165
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#D6C663",
+        "#184AA5",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f088/thematic-refinement-20261104-v2/prompt.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-189-thematic-20261104-v2",
+      "species_id": "MN_189",
+      "view": "front",
+      "source": "sprites/mn-f088/thematic-refinement-20261104-v2/front-back.imagegen.png",
+      "crop": [
+        0,
+        0,
+        512,
+        512
+      ],
+      "fit": [
+        39,
+        36
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        10013,
+        21860,
+        0
+      ],
+      "sampling": "area_dither",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 8,
+      "interior_black_min_samples": 24
+    },
+    {
+      "id": "mn-189-thematic-20261104-v2",
+      "species_id": "MN_189",
+      "view": "back",
+      "source": "sprites/mn-f088/thematic-refinement-20261104-v2/front-back.imagegen.png",
+      "crop": [
+        0,
+        512,
+        512,
+        512
+      ],
+      "fit": [
+        46,
+        46
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        10013,
+        21860,
+        0
+      ],
+      "sampling": "area_dither",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 8,
+      "interior_black_min_samples": 24
+    },
+    {
+      "id": "mn-190-thematic-20261104-v2",
+      "species_id": "MN_190",
+      "view": "front",
+      "source": "sprites/mn-f088/thematic-refinement-20261104-v2/front-back.imagegen.png",
+      "crop": [
+        512,
+        0,
+        512,
+        512
+      ],
+      "fit": [
+        45,
+        43
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        7900,
+        24005,
+        0
+      ],
+      "sampling": "area_dither",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 8,
+      "interior_black_min_samples": 24
+    },
+    {
+      "id": "mn-190-thematic-20261104-v2",
+      "species_id": "MN_190",
+      "view": "back",
+      "source": "sprites/mn-f088/thematic-refinement-20261104-v2/front-back.imagegen.png",
+      "crop": [
+        512,
+        512,
+        512,
+        512
+      ],
+      "fit": [
+        46,
+        46
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        7900,
+        24005,
+        0
+      ],
+      "sampling": "area_dither",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 8,
+      "interior_black_min_samples": 24
+    },
+    {
+      "id": "mn-191-thematic-20261104-v2",
+      "species_id": "MN_191",
+      "view": "front",
+      "source": "sprites/mn-f088/thematic-refinement-20261104-v2/front-back.imagegen.png",
+      "crop": [
+        1024,
+        0,
+        512,
+        512
+      ],
+      "fit": [
+        50,
+        46
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13082,
+        20771,
+        0
+      ],
+      "sampling": "area_dither",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 8,
+      "interior_black_min_samples": 24
+    },
+    {
+      "id": "mn-191-thematic-20261104-v2",
+      "species_id": "MN_191",
+      "view": "back",
+      "source": "sprites/mn-f088/thematic-refinement-20261104-v2/front-back.imagegen.png",
+      "crop": [
+        1024,
+        512,
+        512,
+        512
+      ],
+      "fit": [
+        46,
+        46
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13082,
+        20771,
+        0
+      ],
+      "sampling": "area_dither",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 8,
+      "interior_black_min_samples": 24
+    }
+  ],
+  "conversion_revision": "Compare bounded coverage-preserving source resampling at native resolution; not accepted until visual review.",
+  "previous_manifest": "sprites/mn-f088/manifest.json",
+  "visual_review": {
+    "status": "reviewed",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "26025d4dd2fd936476bd5dc91adfb472bd2f015c8ce92efbc1bd4220d92e71f3",
+    "notes": "Three stages have distinct crouched scoop-paw, upright wrist-runner and heavy flume-crest anatomy. C-curled paddle tails, separated limbs and native shade transitions preserve the hydroelectric theme; fronts face down-left and close rears face away."
+  }
+}

@@ -1,0 +1,366 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F073",
+  "status": "native-vibrant-candidate-reviewed-awaiting-user-feedback",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_154": {
+      "species_id": "MN_154",
+      "name": "Hissip",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          31,
+          21,
+          9
+        ],
+        [
+          12,
+          7,
+          6
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        9919,
+        6380,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          173,
+          74
+        ],
+        [
+          99,
+          57,
+          49
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#FFAD4A",
+        "#633931",
+        "#000000"
+      ]
+    },
+    "MN_155": {
+      "species_id": "MN_155",
+      "name": "Crosspout",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          30,
+          15,
+          6
+        ],
+        [
+          9,
+          6,
+          8
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        6654,
+        8393,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          247,
+          123,
+          49
+        ],
+        [
+          74,
+          49,
+          66
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#F77B31",
+        "#4A3142",
+        "#000000"
+      ]
+    },
+    "MN_156": {
+      "species_id": "MN_156",
+      "name": "Contrakett",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          31,
+          13,
+          5
+        ],
+        [
+          13,
+          5,
+          19
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        5567,
+        19629,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          107,
+          41
+        ],
+        [
+          107,
+          41,
+          156
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#FF6B29",
+        "#6B299C",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f073/softshell-third-20261104-v3/prompt.txt",
+  "reference_mapping": "sprites/mn-f073/mn-156-final-alternate-v2.json",
+  "back_framing": "gen2-close-rear-portrait",
+  "style_reference": {
+    "reference": "Original Hissip/Crosspout native artwork retained; Choirbog native shading style only."
+  },
+  "sprites": [
+    {
+      "id": "mn-154-hissip-v1",
+      "species_id": "MN_154",
+      "view": "front",
+      "source": "sprites/mn-f073/mn-154-156.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        440,
+        530
+      ],
+      "fit": [
+        36,
+        36
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        9919,
+        6380,
+        0
+      ]
+    },
+    {
+      "id": "mn-154-hissip-v1",
+      "species_id": "MN_154",
+      "view": "back",
+      "source": "sprites/mn-f073/mn-154-156.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        530,
+        440,
+        494
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        9919,
+        6380,
+        0
+      ]
+    },
+    {
+      "id": "mn-155-crosspout-v1",
+      "species_id": "MN_155",
+      "view": "front",
+      "source": "sprites/mn-f073/mn-154-156.front-back.imagegen-v1.png",
+      "crop": [
+        440,
+        0,
+        520,
+        530
+      ],
+      "fit": [
+        44,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        6654,
+        8393,
+        0
+      ]
+    },
+    {
+      "id": "mn-155-crosspout-v1",
+      "species_id": "MN_155",
+      "view": "back",
+      "source": "sprites/mn-f073/mn-154-156.front-back.imagegen-v1.png",
+      "crop": [
+        440,
+        530,
+        520,
+        494
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        6654,
+        8393,
+        0
+      ]
+    },
+    {
+      "id": "mn-156-softshell-v3",
+      "species_id": "MN_156",
+      "view": "front",
+      "source": "sprites/mn-f073/softshell-third-20261104-v3/front-back.imagegen.png",
+      "crop": [
+        0,
+        0,
+        950,
+        887
+      ],
+      "fit": [
+        53,
+        35
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        5567,
+        19629,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "source_palette_rgb555": [
+        32767,
+        7581,
+        10440,
+        0
+      ]
+    },
+    {
+      "id": "mn-156-softshell-v3",
+      "species_id": "MN_156",
+      "view": "back",
+      "source": "sprites/mn-f073/softshell-third-20261104-v3/front-back.imagegen.png",
+      "crop": [
+        950,
+        0,
+        824,
+        887
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        5567,
+        19629,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "source_palette_rgb555": [
+        32767,
+        7581,
+        10440,
+        0
+      ]
+    }
+  ],
+  "back_prompt_file": "sprites/mn-f073/prompt-mn-156-final-alternate-v2.txt",
+  "source_prompt_files": {
+    "sprites/mn-f073/mn-154-156.front-back.imagegen-v1.png": "sprites/mn-f073/prompt-v1.txt",
+    "sprites/mn-f073/mn-156-contrakett.final-alternate-v2.imagegen.png": "sprites/mn-f073/prompt-mn-156-final-alternate-v2.txt"
+  },
+  "source_sha256": "984edb1aaa7319a8fe755c24bad02fc1157d2155f5359486b77d807200956cf5",
+  "color_revision": {
+    "authority": "User: Make candidates more vibrant; not just current work, all the wolves and stuff are beige.",
+    "study": "sprites/vibrant-color-study-20261104/palette-study.imagegen.png",
+    "method": "Native palette remapping through existing Rust converter. Source quantization palette retained; indexed geometry, eyes, outlines and dither unchanged."
+  },
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "f28a4613d1f36ce7921cf0d566419cade8d072a3b198748c5d35f173b5a7683c",
+    "notes": "Reviewed native front/back color pass: stronger Pokemon-like palettes, neutral white eyes/black pupils preserved, saturated body and shadow inks distinct. Indexed geometry proven identical before/after palette remap, including dither. Original sheets and prior palettes retained. User feedback pending."
+  }
+}

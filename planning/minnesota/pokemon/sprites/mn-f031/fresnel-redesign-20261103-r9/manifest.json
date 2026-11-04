@@ -1,0 +1,254 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F031",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_075": {
+      "species_id": "MN_075",
+      "name": "Wickit",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          31,
+          22,
+          6
+        ],
+        [
+          18,
+          5,
+          3
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        6879,
+        3250,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          181,
+          49
+        ],
+        [
+          148,
+          41,
+          24
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#FFB531",
+        "#942918",
+        "#000000"
+      ]
+    },
+    "MN_076": {
+      "species_id": "MN_076",
+      "name": "Splitbeam",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          31,
+          28,
+          10
+        ],
+        [
+          8,
+          10,
+          21
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        11167,
+        21832,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          231,
+          82
+        ],
+        [
+          66,
+          82,
+          173
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#FFE752",
+        "#4252AD",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f031/fresnel-redesign-20261103-r9/prompt.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-075-wickit-v1",
+      "species_id": "MN_075",
+      "view": "front",
+      "source": "sprites/mn-f031/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        652,
+        603
+      ],
+      "fit": [
+        44,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        6879,
+        3250,
+        0
+      ],
+      "prompt_file": "sprites/mn-f031/prompt-v1.txt"
+    },
+    {
+      "id": "mn-075-wickit-v1",
+      "species_id": "MN_075",
+      "view": "back",
+      "source": "sprites/mn-f031/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        603,
+        652,
+        604
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        6879,
+        3250,
+        0
+      ],
+      "prompt_file": "sprites/mn-f031/prompt-v1.txt"
+    },
+    {
+      "id": "mn-076-fresnel-redesign-20261103-r9",
+      "species_id": "MN_076",
+      "view": "front",
+      "source": "sprites/mn-f031/fresnel-redesign-20261103-r9/front-back.imagegen.png",
+      "crop": [
+        67,
+        33,
+        744,
+        787
+      ],
+      "fit": [
+        52,
+        52
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        11167,
+        21832,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "prompt_file": "sprites/mn-f031/fresnel-redesign-20261103-r9/prompt.txt"
+    },
+    {
+      "id": "mn-076-fresnel-redesign-20261103-r9",
+      "species_id": "MN_076",
+      "view": "back",
+      "source": "sprites/mn-f031/fresnel-redesign-20261103-r9/front-back.imagegen.png",
+      "crop": [
+        934,
+        89,
+        791,
+        719
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        11167,
+        21832,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "prompt_file": "sprites/mn-f031/fresnel-redesign-20261103-r9/prompt.txt"
+    }
+  ],
+  "original_manifest": "sprites/mn-f031/manifest.json",
+  "original_style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "generator": "crates/crystal-assets/examples/minnesota_gen2_reference.rs",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png",
+      "target/minnesota-pokemon/gen2-reference/bugs.png"
+    ]
+  },
+  "crop_notes": "Explicit isolated source rectangles inspected from returned sheet; no uniform cell crop or neighboring fragments. All returned source art retained.",
+  "geometry_reference": {
+    "url": "https://www.nps.gov/articles/fresnellens.htm",
+    "use": "Fresnel optical identity: concentric stepped lens/prism segments around central bullseye; original creature design, no copied image."
+  },
+  "visual_review": {
+    "status": "reviewed",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "f6a4eb786ea941a8b7a5531aa51a506df4f6badfc463052cadd641faf98e3004",
+    "notes": "Reviewed actual56x56 fronts/48x48 backs and integer zoom, not source beauty. Splitbeam redesigned as compact living Fresnel optic: central bullseye, three broad annular stepped rings, stacked curved prism tiers, flank lens-eyes and short angular supports. Ring/step silhouette survives actual52px fit; gold/blue light-shadow planes and limited white glass reflections remain separate from small side eyes. Back shows matching curved lens tiers. Wickit not regenerated. Original selected manifest/source remains preserved; runtime/shiny review separate."
+  },
+  "shiny_review": {
+    "status": "reviewed",
+    "profile_source": "species-profiles.json",
+    "renderer": "Rust publish_pokedex_sprite_revision, same native index rows",
+    "notes": "All requested shiny fronts/backs inspected at native size. Feather/sac/fan progression, compound-eye windows/shell seams, and Fresnel bullseye/stepped tiers remain readable. Independent PNG checks preserve exact profile palettes and original native indices. Wickit art unchanged; only default-setting provenance fields newly serialized."
+  }
+}

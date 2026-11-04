@@ -131,6 +131,75 @@ impl MinnesotaPokemonCatalog {
             .collect()
     }
 
+    /// Refresh reviewed graphics for families already installed in a verified pack.
+    ///
+    /// Preserves game data, audio, unrelated runtime files and the installation
+    /// report. Recomputes the pack identity from the replacement artwork without
+    /// reinstalling species or changing their numbers. This method writes no files.
+    /// Returns an error for empty/duplicate/unknown family selections, missing or
+    /// mismatched installed species, missing destination assets, or an invalid pack.
+    pub fn refresh_graphics(
+        &self,
+        base: &CompiledGamePack,
+        families: &[&str],
+    ) -> Result<CompiledGamePack> {
+        crate::verify_compiled_game_pack_for_runtime(base)?;
+        ensure!(!families.is_empty(), "select at least one graphics family");
+        let mut selected = BTreeSet::new();
+        for &id in families {
+            ensure!(selected.insert(id), "duplicate graphics family {id}");
+            let family = self
+                .roster
+                .families
+                .iter()
+                .find(|family| family.id == id)
+                .with_context(|| format!("unknown Minnesota graphics family {id}"))?;
+            for member in &family.members {
+                let token = member.name.to_ascii_uppercase();
+                let installed = base
+                    .data
+                    .pokemon
+                    .get(&token)
+                    .with_context(|| format!("graphics species is not installed: {token}"))?;
+                ensure!(
+                    installed.int_id == runtime_number(member)?,
+                    "installed species number differs for {token}"
+                );
+            }
+            for key in self.graphics[id].keys() {
+                ensure!(
+                    base.runtime_files.contains_key(key),
+                    "graphics destination is missing: {key}"
+                );
+            }
+        }
+        let mut pack = base.clone();
+        for id in selected {
+            for (key, bytes) in &self.graphics[id] {
+                pack.runtime_files.insert(key.clone(), bytes.clone());
+            }
+        }
+        pack.identity = if pack.audio_compression.is_some() {
+            crate::derive_compiled_game_pack_identity_from_manifest(
+                pack.format_version,
+                &pack.data,
+                &pack.audio_manifest,
+                &pack.runtime_files,
+                &pack.report,
+            )?
+        } else {
+            crate::derive_compiled_game_pack_identity(
+                pack.format_version,
+                &pack.data,
+                &pack.compiled_audio,
+                &pack.runtime_files,
+                &pack.report,
+            )?
+        };
+        crate::verify_compiled_game_pack_for_runtime(&pack)?;
+        Ok(pack)
+    }
+
     /// Build an aggregate extension or one complete evolutionary family in memory.
     ///
     /// `family` selects a canonical family ID; `None` includes the entire catalog.

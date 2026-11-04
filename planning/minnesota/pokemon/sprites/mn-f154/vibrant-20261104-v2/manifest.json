@@ -1,0 +1,396 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F154",
+  "tool": "built-in image_gen",
+  "prompt_file": "sprites/mn-f154/replacement-20261104-v1/prompt.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "status": "native-vibrant-candidate-reviewed-awaiting-user-feedback",
+  "sprites": [
+    {
+      "id": "mn-339-snowpip-v1",
+      "species_id": "MN_339",
+      "view": "front",
+      "source": "sprites/mn-f154/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        0,
+        0,
+        340,
+        627
+      ],
+      "fit": [
+        30,
+        32
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        32619,
+        25957,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "source_palette_rgb555": [
+        32767,
+        32632,
+        24074,
+        0
+      ]
+    },
+    {
+      "id": "mn-339-snowpip-v1",
+      "species_id": "MN_339",
+      "view": "back",
+      "source": "sprites/mn-f154/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        0,
+        627,
+        340,
+        627
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        32619,
+        25957,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "source_palette_rgb555": [
+        32767,
+        32632,
+        24074,
+        0
+      ]
+    },
+    {
+      "id": "mn-340-squallfin-v1",
+      "species_id": "MN_340",
+      "view": "front",
+      "source": "sprites/mn-f154/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        340,
+        0,
+        430,
+        627
+      ],
+      "fit": [
+        44,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        29575,
+        25925,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "source_palette_rgb555": [
+        32767,
+        32631,
+        24009,
+        0
+      ]
+    },
+    {
+      "id": "mn-340-squallfin-v1",
+      "species_id": "MN_340",
+      "view": "back",
+      "source": "sprites/mn-f154/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        340,
+        627,
+        430,
+        627
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        29575,
+        25925,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "source_palette_rgb555": [
+        32767,
+        32631,
+        24009,
+        0
+      ]
+    },
+    {
+      "id": "mn-341-whitewhirl-v1",
+      "species_id": "MN_341",
+      "view": "front",
+      "source": "sprites/mn-f154/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        770,
+        0,
+        484,
+        627
+      ],
+      "fit": [
+        52,
+        48
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        32616,
+        24838,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "source_palette_rgb555": [
+        32767,
+        32630,
+        22952,
+        0
+      ]
+    },
+    {
+      "id": "mn-341-whitewhirl-v1",
+      "species_id": "MN_341",
+      "view": "back",
+      "source": "sprites/mn-f154/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        770,
+        627,
+        484,
+        627
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        32616,
+        24838,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "source_palette_rgb555": [
+        32767,
+        32630,
+        22952,
+        0
+      ]
+    }
+  ],
+  "pokemon_palettes": {
+    "MN_339": {
+      "species_id": "MN_339",
+      "name": "Snowpip",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          11,
+          27,
+          31
+        ],
+        [
+          5,
+          11,
+          25
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        32619,
+        25957,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          90,
+          222,
+          255
+        ],
+        [
+          41,
+          90,
+          206
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#5ADEFF",
+        "#295ACE",
+        "#000000"
+      ]
+    },
+    "MN_340": {
+      "species_id": "MN_340",
+      "name": "Squallfin",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          7,
+          28,
+          28
+        ],
+        [
+          5,
+          10,
+          25
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        29575,
+        25925,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          57,
+          231,
+          231
+        ],
+        [
+          41,
+          82,
+          206
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#39E7E7",
+        "#2952CE",
+        "#000000"
+      ]
+    },
+    "MN_341": {
+      "species_id": "MN_341",
+      "name": "Whitewhirl",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          8,
+          27,
+          31
+        ],
+        [
+          6,
+          8,
+          24
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        32616,
+        24838,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          66,
+          222,
+          255
+        ],
+        [
+          49,
+          66,
+          198
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#42DEFF",
+        "#3142C6",
+        "#000000"
+      ]
+    }
+  },
+  "color_revision": {
+    "authority": "User: Make candidates more vibrant; not just current work, all the wolves and stuff are beige.",
+    "study": "sprites/vibrant-color-study-20261104/palette-study.imagegen.png",
+    "method": "Native palette remapping through existing Rust converter. Source quantization palette retained; indexed geometry, eyes, outlines and dither unchanged."
+  },
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "34dd3415afb5d0c74da2070865887feb6721603a0ff497c23386ff21e2e20d8b",
+    "notes": "Reviewed native front/back color pass: stronger Pokemon-like palettes, neutral white eyes/black pupils preserved, saturated body and shadow inks distinct. Indexed geometry proven identical before/after palette remap, including dither. Original sheets and prior palettes retained. User feedback pending."
+  }
+}

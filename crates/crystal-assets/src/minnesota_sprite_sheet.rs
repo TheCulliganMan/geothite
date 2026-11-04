@@ -59,6 +59,13 @@ pub enum SpriteSampling {
     /// Intended for enlarged pixel art whose ink clusters already match the
     /// native grid. Exterior contours still follow `ExteriorContour`.
     SourceCenter,
+    /// Keep point-sampled contours and facial ink, but recover fractional body
+    /// shading with ordered native-pixel dithering between adjacent palette inks.
+    AreaDither,
+    /// Resample palette coverage with bounded spatial error diffusion. Unlike
+    /// point sampling or priority votes, fractional highlights and dark details
+    /// contribute to neighboring pixels that actually contain the same ink.
+    CoveragePreserving,
 }
 
 /// Explicit conversion settings; existing callers retain the area-vote default.
@@ -382,6 +389,9 @@ impl MinnesotaSheet {
     /// `SourceCenter` reads the center of each native footprint, with integer
     /// floor rounding and no highlight override. It does not paint or relocate
     /// features. The contour pass still uses source coverage and black evidence.
+    /// `CoveragePreserving` diffuses fractional palette coverage only between
+    /// footprints containing the same source ink, then retains the native area
+    /// and dark center of small enclosed light features such as eyes.
     /// Returns errors for invalid crops, palettes, fits or thresholds outside
     /// 1..=64, including thresholds unused by source-center sampling.
     pub fn candidate_with_conversion(
@@ -496,7 +506,10 @@ impl MinnesotaSheet {
         // Only small enclosed whites (eyes/highlights) take priority over black.
         // Large white wings still need black edge votes to keep their contours.
         let mut small_white_ink = vec![false; paper.len()];
-        let protected_white_pixels = if exterior_contour == ExteriorContour::Solid {
+        let mut enclosed_details = Vec::new();
+        let protected_white_pixels = if sampling == SpriteSampling::CoveragePreserving {
+            16
+        } else if exterior_contour == ExteriorContour::Solid {
             4
         } else {
             16
@@ -529,9 +542,10 @@ impl MinnesotaSheet {
                 }
             }
             if component.len() <= maximum {
-                for index in component {
+                for &index in &component {
                     small_white_ink[index] = true;
                 }
+                enclosed_details.push(component);
             }
         }
         let left = (canvas - width) / 2;
@@ -540,6 +554,7 @@ impl MinnesotaSheet {
         let mut indices = vec![0_u8; canvas * canvas];
         let mut foreground = vec![false; canvas * canvas];
         let mut edge_black = vec![0_u16; canvas * canvas];
+        let mut coverage = vec![[0_u16; 4]; canvas * canvas];
         for y in 0..height {
             for x in 0..width {
                 let mut votes = [0_u16; 4];
@@ -589,13 +604,17 @@ impl MinnesotaSheet {
                         }
                     }
                 }
-                let nearest = if sampling == SpriteSampling::SourceCenter {
+                let nearest = if matches!(
+                    sampling,
+                    SpriteSampling::SourceCenter | SpriteSampling::AreaDither
+                ) {
                     let sx = bounds[0]
                         + ((2 * x + 1) * source_width / (2 * width)).min(source_width - 1);
                     let sy = bounds[1]
                         + ((2 * y + 1) * source_height / (2 * height)).min(source_height - 1);
                     let pixel = self.pixels[sy * self.width + sx];
-                    rgb.iter()
+                    let center = rgb
+                        .iter()
                         .enumerate()
                         .min_by_key(|(_, color)| {
                             (0..3)
@@ -603,7 +622,16 @@ impl MinnesotaSheet {
                                 .sum::<i32>()
                         })
                         .context("four palette colors")?
-                        .0
+                        .0;
+                    if sampling == SpriteSampling::AreaDither && matches!(center, 1 | 2) {
+                        dither_body_inks(votes, x, y).map_or(center, usize::from)
+                    } else {
+                        center
+                    }
+                } else if sampling == SpriteSampling::CoveragePreserving {
+                    (0..4)
+                        .max_by_key(|i| votes[*i])
+                        .context("four palette votes")?
                 } else if white_ink >= minimum_white_samples * 4
                     || (exterior_contour == ExteriorContour::Solid
                         && enclosed_white_ink >= 128
@@ -621,9 +649,13 @@ impl MinnesotaSheet {
                 };
                 let index = (top + y) * canvas + left + x;
                 indices[index] = u8::try_from(nearest)?;
+                coverage[index] = votes;
                 foreground[index] = ink_coverage >= 64 || black_evidence >= 32;
                 edge_black[index] = black_evidence;
             }
+        }
+        if sampling == SpriteSampling::CoveragePreserving {
+            preserve_palette_coverage(&mut indices, &coverage, canvas, [left, top, width, height]);
         }
         // Keep source-backed exterior rims with weaker evidence than interior
         // shading. White foreground inside a source outline remains part of the
@@ -640,6 +672,62 @@ impl MinnesotaSheet {
                     && (exterior_contour == ExteriorContour::Solid || edge_black[index] >= 8)
                 {
                     indices[index] = 3;
+                }
+            }
+        }
+        if sampling == SpriteSampling::CoveragePreserving {
+            // Preserve the area and local dark center of enclosed source ink.
+            // A ring-shaped eye can straddle several footprints: independently
+            // choosing the dominant color either erases the ring or its pupil.
+            // Reserve source-backed pixels for both, without enlarging the art.
+            for component in enclosed_details {
+                let source_area = source_width * source_height;
+                let native_area = component.len() * width * height;
+                if native_area * 2 < source_area {
+                    continue;
+                }
+                let mut wanted = native_area.div_ceil(source_area);
+                let mut evidence = vec![0_usize; indices.len()];
+                let mut detail_bounds = [source_width, source_height, 0, 0];
+                for index in component {
+                    let sx = index % source_width;
+                    let sy = index / source_width;
+                    detail_bounds[0] = detail_bounds[0].min(sx);
+                    detail_bounds[1] = detail_bounds[1].min(sy);
+                    detail_bounds[2] = detail_bounds[2].max(sx);
+                    detail_bounds[3] = detail_bounds[3].max(sy);
+                    let x = left + sx * width / source_width;
+                    let y = top + sy * height / source_height;
+                    evidence[y * canvas + x] += 1;
+                }
+                let cx = (detail_bounds[0] + detail_bounds[2]) / 2;
+                let cy = (detail_bounds[1] + detail_bounds[3]) / 2;
+                let center = self.pixels[(bounds[1] + cy) * self.width + bounds[0] + cx];
+                let pupil = center.iter().all(|channel| *channel <= 48).then(|| {
+                    (top + cy * height / source_height) * canvas + left + cx * width / source_width
+                });
+                if let Some(index) = pupil {
+                    indices[index] = 3;
+                    // Quantize the bounded eye as a shape, not disconnected
+                    // bright samples. Its enclosing native rectangle must have
+                    // room for both the pupil and the surrounding light ink.
+                    let detail_width =
+                        ((detail_bounds[2] - detail_bounds[0] + 1) * width).div_ceil(source_width);
+                    let detail_height = ((detail_bounds[3] - detail_bounds[1] + 1) * height)
+                        .div_ceil(source_height);
+                    wanted = wanted.max((detail_width * detail_height).saturating_sub(1));
+                }
+                let mut candidates: Vec<usize> = evidence
+                    .iter()
+                    .enumerate()
+                    .filter(|(index, count)| {
+                        **count * width * height * 8 >= source_area && Some(*index) != pupil
+                    })
+                    .map(|(index, _)| index)
+                    .collect();
+                candidates.sort_by_key(|index| std::cmp::Reverse(evidence[*index]));
+                for index in candidates.into_iter().take(wanted) {
+                    indices[index] = 0;
                 }
             }
         }
@@ -662,6 +750,72 @@ impl MinnesotaSheet {
             rows,
             indices,
         })
+    }
+}
+
+fn dither_body_inks(votes: [u16; 4], x: usize, y: usize) -> Option<u8> {
+    // Adjacent palette tones form a volume transition. White/black eye
+    // mixtures are deliberately excluded, and solid source inks stay solid.
+    let pair = (0..3).max_by_key(|&ink| votes[ink] + votes[ink + 1])?;
+    let body = votes[pair] + votes[pair + 1];
+    if body <= 224 || votes[pair] < 8 || votes[pair + 1] < 8 {
+        return None;
+    }
+    const BAYER: [[u16; 4]; 4] = [[0, 8, 2, 10], [12, 4, 14, 6], [3, 11, 1, 9], [15, 7, 13, 5]];
+    Some(
+        if (BAYER[y % 4][x % 4] * 2 + 1) * body < votes[pair + 1] * 32 {
+            u8::try_from(pair + 1).expect("four palette inks")
+        } else {
+            u8::try_from(pair).expect("four palette inks")
+        },
+    )
+}
+
+// Diffuse palette coverage, never carrying ink into a pixel without evidence.
+fn preserve_palette_coverage(
+    indices: &mut [u8],
+    coverage: &[[u16; 4]],
+    stride: usize,
+    bounds: [usize; 4],
+) {
+    let [left, top, width, height] = bounds;
+    let mut errors = vec![[0_i32; 4]; indices.len()];
+    for row in 0..height {
+        let forward = row % 2 == 0;
+        for column in 0..width {
+            let x = left + if forward { column } else { width - column - 1 };
+            let y = top + row;
+            let index = y * stride + x;
+            let mut scores = [i32::MIN; 4];
+            for ink in 0..4 {
+                if coverage[index][ink] > 0 {
+                    scores[ink] =
+                        i32::from(coverage[index][ink]) + errors[index][ink].clamp(-128, 128);
+                }
+            }
+            let ink = (0..4).max_by_key(|ink| scores[*ink]).expect("four inks");
+            indices[index] = ink as u8;
+            let direction = if forward { 1_isize } else { -1 };
+            for (dx, dy, weight) in [
+                (direction, 0, 7),
+                (-direction, 1, 3),
+                (0, 1, 5),
+                (direction, 1, 1),
+            ] {
+                let nx = x as isize + dx;
+                let ny = y + dy;
+                if nx < left as isize || nx >= (left + width) as isize || ny >= top + height {
+                    continue;
+                }
+                let neighbor = ny * stride + nx as usize;
+                for color in 0..4 {
+                    if coverage[index][color] > 0 && coverage[neighbor][color] > 0 {
+                        let residual = scores[color] - if color == ink { 256 } else { 0 };
+                        errors[neighbor][color] += residual * weight / 16;
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -807,6 +961,91 @@ mod tests {
         SpriteView,
     };
     use crate::minnesota_pokemon_pixel_art::colored;
+
+    #[test]
+    fn native_dither_retains_quarter_half_and_three_quarter_body_tones() {
+        for shadow in [64, 128, 192] {
+            let dark = (0..4)
+                .flat_map(|y| (0..4).map(move |x| (x, y)))
+                .filter(|&(x, y)| {
+                    super::dither_body_inks([0, 256 - shadow, shadow, 0], x, y) == Some(2)
+                })
+                .count();
+            assert_eq!(dark, usize::from(shadow / 16));
+        }
+        for votes in [
+            [256, 0, 0, 0],
+            [0, 0, 0, 256],
+            [0, 256, 0, 0],
+            [80, 100, 60, 16],
+        ] {
+            assert_eq!(
+                super::dither_body_inks(votes, 0, 0),
+                None,
+                "facial or unmixed ink must retain source sampling"
+            );
+        }
+    }
+
+    #[test]
+    fn coverage_sampling_keeps_white_and_pupil_without_inventing_ink() {
+        let mut indices = vec![3; 16];
+        let mut coverage = vec![[256, 0, 0, 0]; 16];
+        // A narrow eye lands between pixel centers. Independent mode voting
+        // would turn both pixels black; coverage must retain both eye inks.
+        coverage[5] = [120, 0, 0, 136];
+        coverage[6] = [120, 0, 0, 136];
+        super::preserve_palette_coverage(&mut indices, &coverage, 4, [0, 0, 4, 4]);
+        assert!(indices[5..7].contains(&0), "eye white disappeared");
+        assert!(indices[5..7].contains(&3), "pupil disappeared");
+        for (index, ink) in indices.iter().enumerate() {
+            assert!(coverage[index][usize::from(*ink)] > 0, "invented ink");
+        }
+        assert!(indices[..4].iter().all(|ink| *ink == 0));
+        assert!(indices[8..].iter().all(|ink| *ink == 0));
+    }
+
+    #[test]
+    fn original_wreckquiem_retains_eye_white_and_dark_center() -> Result<()> {
+        let source = std::fs::read(concat!(
+            env!("CARGO_MANIFEST_DIR"),
+            "/../../planning/minnesota/pokemon/sprites/mn-f043/front-back.imagegen-v1.png"
+        ))?;
+        let sheet = MinnesotaSheet::from_png(&source)?;
+        let crop = SpriteCrop {
+            x: 0,
+            y: 0,
+            width: 1226,
+            height: 700,
+            fit_width: 54,
+            fit_height: 54,
+        };
+        let frame = sheet.candidate_with_conversion(
+            crop,
+            [32767, 26389, 7436, 0],
+            SpriteView::Front,
+            SpriteConversionOptions {
+                minimum_white_samples: 16,
+                minimum_black_samples: 32,
+                exterior_contour: ExteriorContour::SourceBacked,
+                sampling: SpriteSampling::CoveragePreserving,
+            },
+        )?;
+        assert_eq!(frame.indices()[21 * 56 + 22], 3, "pupil was overwritten");
+        for (x, y) in [(21, 21), (21, 22), (22, 22)] {
+            assert_eq!(
+                frame.indices()[y * 56 + x],
+                0,
+                "the original eye must retain one connected light shape"
+            );
+        }
+        let white = (21..24)
+            .flat_map(|y| (21..24).map(move |x| y * 56 + x))
+            .filter(|index| frame.indices()[*index] == 0)
+            .count();
+        assert!(white >= 3, "eye ring disappeared: {white} white pixels");
+        Ok(())
+    }
 
     fn unoutlined_sheet() -> MinnesotaSheet {
         let mut pixels = vec![[255; 3]; 28 * 28];

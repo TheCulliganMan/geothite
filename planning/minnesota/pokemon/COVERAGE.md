@@ -1,5 +1,7 @@
 # Type coverage
 
+Current coverage is in the [November 2 recount](RECOUNT-20261102.md): **201 active**, **210 proposed**, with 15 further species needed for 225. Tables below predate the latest archives/restorations.
+
 Historical Fairy baseline `20261027-northwoods-10` is published and verified: thirteen regional Fairies, all 220 active species, five Fairy attacks plus Poison Jab, and all 1,926 public exact-byte checks passed. [The verified rules and build](../../../docs/northwoods-fairy.md) describe the local v2 pack and completed battle/animation checks.
 
 ## Current curated catalog: 223 active species

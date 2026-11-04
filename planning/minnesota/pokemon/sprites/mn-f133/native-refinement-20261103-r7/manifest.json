@@ -1,0 +1,261 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F133",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "prompt_file": "sprites/mn-f133/native-refinement-20261103-r7/prompt-front.txt",
+  "pokemon_palettes": {
+    "MN_293": {
+      "species_id": "MN_293",
+      "name": "Burrbud",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          25,
+          21,
+          12
+        ],
+        [
+          10,
+          17,
+          8
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        12985,
+        8746,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          206,
+          173,
+          99
+        ],
+        [
+          82,
+          140,
+          66
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#CEAD63",
+        "#528C42",
+        "#000000"
+      ]
+    },
+    "MN_294": {
+      "species_id": "MN_294",
+      "name": "Burroot",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          22,
+          18,
+          10
+        ],
+        [
+          7,
+          14,
+          8
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        10838,
+        8647,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          181,
+          148,
+          82
+        ],
+        [
+          57,
+          115,
+          66
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#B59452",
+        "#397342",
+        "#000000"
+      ]
+    }
+  },
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-293-burrbud-v1",
+      "species_id": "MN_293",
+      "view": "front",
+      "source": "sprites/mn-f133/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        659,
+        513
+      ],
+      "fit": [
+        32,
+        36
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        12985,
+        8746,
+        0
+      ],
+      "exterior_contour": "solid",
+      "interior_black_min_samples": 8,
+      "white_detail_min_samples": 4
+    },
+    {
+      "id": "mn-294-burroot-native-refinement-20261103-r7",
+      "species_id": "MN_294",
+      "view": "front",
+      "source": "sprites/mn-f133/native-refinement-20261103-r7/mn-294.front.imagegen.png",
+      "crop": [
+        0,
+        0,
+        1329,
+        1183
+      ],
+      "fit": [
+        54,
+        50
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        10838,
+        8647,
+        0
+      ],
+      "exterior_contour": "source_backed",
+      "interior_black_min_samples": 8,
+      "white_detail_min_samples": 4,
+      "sampling": "source_center",
+      "prompt_file": "sprites/mn-f133/native-refinement-20261103-r7/prompt-front.txt"
+    },
+    {
+      "id": "mn-293-burrbud-v1",
+      "species_id": "MN_293",
+      "view": "back",
+      "source": "sprites/mn-f133/front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        513,
+        708,
+        511
+      ],
+      "fit": [
+        38,
+        40
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        12985,
+        8746,
+        0
+      ],
+      "exterior_contour": "solid",
+      "interior_black_min_samples": 8,
+      "white_detail_min_samples": 4
+    },
+    {
+      "id": "mn-294-burroot-native-refinement-20261103-r7",
+      "species_id": "MN_294",
+      "view": "back",
+      "source": "sprites/mn-f133/native-refinement-20261103-r7/mn-294.back.imagegen.png",
+      "crop": [
+        0,
+        0,
+        1254,
+        1254
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        10838,
+        8647,
+        0
+      ],
+      "exterior_contour": "source_backed",
+      "interior_black_min_samples": 8,
+      "white_detail_min_samples": 4,
+      "sampling": "source_center",
+      "prompt_file": "sprites/mn-f133/native-refinement-20261103-r7/prompt-back.txt"
+    }
+  ],
+  "original_manifest": "sprites/mn-f133/manifest.json",
+  "original_style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png"
+    ]
+  },
+  "native_review": {
+    "status": "user-approved",
+    "feedback": "This is actually good, readjust your standard, you are aiming for too big and not unique",
+    "native_review_sheet_sha256": "62dc62332f6fca6ff68637a5434330ae20e4b73c7a81bbf606a3d7cbb23b91aa",
+    "correction": "Supersedes agent rejection. Preserve low spreading roots, smaller sheltered acorn face and large three-fan oak canopy. Do not enlarge face/body or reduce canopy as a generic readability fix.",
+    "remaining": "Runtime/shiny integration checks."
+  },
+  "visual_review": {
+    "status": "reviewed",
+    "outline_profile": "mixed-source-solid-v1",
+    "sheet_sha256": "62dc62332f6fca6ff68637a5434330ae20e4b73c7a81bbf606a3d7cbb23b91aa",
+    "notes": "User approved exact native r7 family board. Burroot uses source-backed conversion; unchanged Burrbud retains its original solid contour. Preserve low four-root silhouette, sheltered acorn face and three large lobed oak fans. Do not replace with oversized face/body."
+  },
+  "shiny_review": {
+    "status": "reviewed",
+    "views": 4,
+    "notes": "Inspected actual native shiny front/back images. Shiny PNGs exactly match profile palette swaps of native indices; normal PNG bytes match canonical native files. Eye contrast and silhouette retained. No deployment."
+  }
+}

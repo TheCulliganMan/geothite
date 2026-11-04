@@ -1,0 +1,396 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F151",
+  "tool": "built-in image_gen",
+  "prompt_file": "sprites/mn-f151/replacement-20261104-v1/prompt.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "status": "native-vibrant-candidate-reviewed-awaiting-user-feedback",
+  "sprites": [
+    {
+      "id": "mn-331-trailpup-v1",
+      "species_id": "MN_331",
+      "view": "front",
+      "source": "sprites/mn-f151/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        0,
+        0,
+        430,
+        512
+      ],
+      "fit": [
+        34,
+        33
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        32525,
+        22701,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "source_palette_rgb555": [
+        32767,
+        18135,
+        15819,
+        0
+      ]
+    },
+    {
+      "id": "mn-331-trailpup-v1",
+      "species_id": "MN_331",
+      "view": "back",
+      "source": "sprites/mn-f151/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        0,
+        512,
+        430,
+        512
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        32525,
+        22701,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "source_palette_rgb555": [
+        32767,
+        18135,
+        15819,
+        0
+      ]
+    },
+    {
+      "id": "mn-332-pathfang-v1",
+      "species_id": "MN_332",
+      "view": "front",
+      "source": "sprites/mn-f151/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        430,
+        0,
+        500,
+        512
+      ],
+      "fit": [
+        44,
+        38
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        31561,
+        23722,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "source_palette_rgb555": [
+        32767,
+        19158,
+        15818,
+        0
+      ]
+    },
+    {
+      "id": "mn-332-pathfang-v1",
+      "species_id": "MN_332",
+      "view": "back",
+      "source": "sprites/mn-f151/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        430,
+        512,
+        500,
+        512
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        31561,
+        23722,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "source_palette_rgb555": [
+        32767,
+        19158,
+        15818,
+        0
+      ]
+    },
+    {
+      "id": "mn-333-waywolf-v1",
+      "species_id": "MN_333",
+      "view": "front",
+      "source": "sprites/mn-f151/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        930,
+        0,
+        606,
+        512
+      ],
+      "fit": [
+        52,
+        42
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        32619,
+        24715,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "source_palette_rgb555": [
+        32767,
+        19189,
+        15817,
+        0
+      ]
+    },
+    {
+      "id": "mn-333-waywolf-v1",
+      "species_id": "MN_333",
+      "view": "back",
+      "source": "sprites/mn-f151/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        930,
+        512,
+        606,
+        512
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        32619,
+        24715,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "source_palette_rgb555": [
+        32767,
+        19189,
+        15817,
+        0
+      ]
+    }
+  ],
+  "pokemon_palettes": {
+    "MN_331": {
+      "species_id": "MN_331",
+      "name": "Trailpup",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          13,
+          24,
+          31
+        ],
+        [
+          13,
+          5,
+          22
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        32525,
+        22701,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          107,
+          198,
+          255
+        ],
+        [
+          107,
+          41,
+          181
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#6BC6FF",
+        "#6B29B5",
+        "#000000"
+      ]
+    },
+    "MN_332": {
+      "species_id": "MN_332",
+      "name": "Pathfang",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          9,
+          26,
+          30
+        ],
+        [
+          10,
+          5,
+          23
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        31561,
+        23722,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          74,
+          214,
+          247
+        ],
+        [
+          82,
+          41,
+          189
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#4AD6F7",
+        "#5229BD",
+        "#000000"
+      ]
+    },
+    "MN_333": {
+      "species_id": "MN_333",
+      "name": "Waywolf",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          11,
+          27,
+          31
+        ],
+        [
+          11,
+          4,
+          24
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        32619,
+        24715,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          90,
+          222,
+          255
+        ],
+        [
+          90,
+          33,
+          198
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#5ADEFF",
+        "#5A21C6",
+        "#000000"
+      ]
+    }
+  },
+  "color_revision": {
+    "authority": "User: Make candidates more vibrant; not just current work, all the wolves and stuff are beige.",
+    "study": "sprites/vibrant-color-study-20261104/palette-study.imagegen.png",
+    "method": "Native palette remapping through existing Rust converter. Source quantization palette retained; indexed geometry, eyes, outlines and dither unchanged."
+  },
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "77ee451a6f5cc734fb8556a739b74e21901a13b298becb16de2381b40f0c171d",
+    "notes": "Reviewed native front/back color pass: stronger Pokemon-like palettes, neutral white eyes/black pupils preserved, saturated body and shadow inks distinct. Indexed geometry proven identical before/after palette remap, including dither. Original sheets and prior palettes retained. User feedback pending."
+  }
+}

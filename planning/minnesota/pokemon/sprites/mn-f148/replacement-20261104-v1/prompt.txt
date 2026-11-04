@@ -1,0 +1,16 @@
+Use case: stylized-concept. Asset type: native Game Boy Color creature battle-sprite sheet for Geothite Northstar, NOT concept illustration.
+REFERENCE ROLES: supplied native Choirbog and Burroot sheets are accepted PIXEL RENDERING references only, never copy their anatomy. Original starter line is progression/pose reference only.
+Create ONE sheet with 3 columns and TWO rows. Top row: FRONT full creature of each evolution in order. Bottom row: corresponding BACK close rear shoulder/head portrait, cropped at lower body as original Crystal battle backs. Same species anatomy in both views. Pure WHITE empty paper, no text, labels, shadows, ground, UI or dividers. Each isolated view has ample gutters and owns its entire cell.
+CRITICAL NATIVE PIXEL BUDGET: design every front as actual56x56 logical pixels (small stages occupy32-38px; middle42-46px; adult48-52px), and every back as actual48x48 logical pixels, then enlarge with strictly nearest-neighbor square pixel blocks. DO NOT draw a detailed high-res illustration and shrink it. Faces and eye boundaries must exist as intentional native pixels. Logical pixel blocks of uniform scale across the sheet. Hard square steps, no smooth outline, antialias, vector curves, gradients or painted texture.
+MANDATORY FACING: FRONT head, gaze, muzzle and body all face diagonally DOWN-LEFT toward the opponent in the lower-left of a battle. BACK head/gaze face UP-RIGHT toward enemy at upper-right, close rear view. Not horizontally left and not front art mirrored.
+FOUR COLORS PER SPECIES ONLY, shared front/back. Palettes:
+Owletch: #FFFFFF, #9C94BD, #4A4A73, #000000
+Hollowl: #FFFFFF, #9494BD, #424A73, #000000
+Gloamowl: #FFFFFF, #8C94B5, #394A6B, #000000
+USE DITHERING to model round volume using these 3-4 colors: broad lit/midtone/shadow planes joined by curved bands of25% paired pixels,50% checker and75% shadow. Dark contact seams under overlapping parts, meaningful volume, not flat color masses with glints. Sparse white highlights confined to body forms away from eye sockets. TWO distinct eye whites, dark pupils and continuous BLACK boundaries; two-pixel dark buffer where needed. Keep dithering OUT of eye whites/socket boundaries. No giant generic faces. Creature anatomy and characteristic proportions, NO human limbs/hands, furry people, uniforms, clothes or carried props.
+Family theme: Barred owl + Negative space between forest branches.
+Stage designs:
+Owletch: small barrel-bodied barred owlet with TWO round black-bounded eye disks, short hooked beak, two feathered legs, broad torn-looking feather markings that reveal small white gaps below the wings.
+Hollowl: round broad owl poised on TWO bird feet, wings folded into strong crescent outlines, two deep facial disks over a clear tiny beak; TWO open white notches between body and wings suggest missing plumage.
+Gloamowl: broad low owl gliding down-left; two rounded hornless ear contours, strong dark face with TWO distinct white-ringed eyes and central beak. Deep WHITE negative-space scallops penetrate both wing contours like gaps between branches; one coherent ghost-owl body, no branch props.
+Make each evolution change silhouette, posture and anatomical proportions; don't merely enlarge the first. Preserve the SAME base and theme throughout. Final output is a clean compact PIXEL-ART production sheet.

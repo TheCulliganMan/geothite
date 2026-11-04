@@ -1,0 +1,434 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F004",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "prompt_file": "sprites/mn-f004/starter-beaver-20261103-r8/prompt.txt",
+  "sprites": [
+    {
+      "id": "mn-010-starter-beaver-20261103-r8",
+      "species_id": "MN_010",
+      "view": "front",
+      "source": "sprites/mn-f004/starter-beaver-20261103-r8/front-back.imagegen.png",
+      "prompt_file": "sprites/mn-f004/native-refinement/prompt-birchit-v2.txt",
+      "crop": [
+        81,
+        227,
+        334,
+        283
+      ],
+      "fit": [
+        38,
+        38
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13053,
+        4331,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-010-starter-beaver-20261103-r8",
+      "species_id": "MN_010",
+      "view": "back",
+      "source": "sprites/mn-f004/starter-beaver-20261103-r8/front-back.imagegen.png",
+      "prompt_file": "sprites/mn-f004/native-refinement/close-backs-v1/prompt-v1.txt",
+      "crop": [
+        43,
+        620,
+        397,
+        375
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13053,
+        4331,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-011-starter-beaver-20261103-r8",
+      "species_id": "MN_011",
+      "view": "front",
+      "source": "sprites/mn-f004/starter-beaver-20261103-r8/front-back.imagegen.png",
+      "crop": [
+        547,
+        93,
+        406,
+        422
+      ],
+      "fit": [
+        46,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        7639,
+        15686,
+        0
+      ],
+      "prompt_file": "sprites/mn-f004/sash-v4/prompt-portabeau-native-v11.txt",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "exterior_contour": "source_backed",
+      "sampling": "source_center"
+    },
+    {
+      "id": "mn-011-starter-beaver-20261103-r8",
+      "species_id": "MN_011",
+      "view": "back",
+      "source": "sprites/mn-f004/starter-beaver-20261103-r8/front-back.imagegen.png",
+      "crop": [
+        545,
+        632,
+        408,
+        363
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        7639,
+        15686,
+        0
+      ],
+      "prompt_file": "sprites/mn-f004/native-refinement/close-backs-v1/prompt-v1.txt",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "exterior_contour": "source_backed",
+      "sampling": "source_center"
+    },
+    {
+      "id": "mn-012-starter-beaver-20261103-r8",
+      "species_id": "MN_012",
+      "view": "front",
+      "source": "sprites/mn-f004/starter-beaver-20261103-r8/front-back.imagegen.png",
+      "prompt_file": "sprites/mn-f004/native-refinement/prompt-voyagear-ferocity-v4.txt",
+      "crop": [
+        1014,
+        54,
+        486,
+        461
+      ],
+      "fit": [
+        54,
+        52
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        5428,
+        17668,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-012-starter-beaver-20261103-r8",
+      "species_id": "MN_012",
+      "view": "back",
+      "source": "sprites/mn-f004/starter-beaver-20261103-r8/front-back.imagegen.png",
+      "prompt_file": "sprites/mn-f004/native-refinement/close-backs-v1/prompt-voyagear-v2.txt",
+      "crop": [
+        1036,
+        600,
+        467,
+        395
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        5428,
+        17668,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    }
+  ],
+  "pokemon_palettes": {
+    "MN_010": {
+      "species_id": "MN_010",
+      "name": "Birchit",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          29,
+          23,
+          12
+        ],
+        [
+          11,
+          7,
+          4
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        13053,
+        4331,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          239,
+          189,
+          99
+        ],
+        [
+          90,
+          57,
+          33
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#EFBD63",
+        "#5A3921",
+        "#000000"
+      ]
+    },
+    "MN_011": {
+      "species_id": "MN_011",
+      "name": "Portabeau",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          23,
+          14,
+          7
+        ],
+        [
+          6,
+          10,
+          15
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        7639,
+        15686,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          189,
+          115,
+          57
+        ],
+        [
+          49,
+          82,
+          123
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#BD7339",
+        "#31527B",
+        "#000000"
+      ]
+    },
+    "MN_012": {
+      "species_id": "MN_012",
+      "name": "Voyagear",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          20,
+          9,
+          5
+        ],
+        [
+          4,
+          8,
+          17
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        5428,
+        17668,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          165,
+          74,
+          41
+        ],
+        [
+          33,
+          66,
+          140
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#A54A29",
+        "#21428C",
+        "#000000"
+      ]
+    }
+  },
+  "back_framing": "gen2-close-rear-portrait",
+  "original_manifest": "sprites/mn-f004/manifest.json",
+  "original_style_reference": {},
+  "generation_reference_files": [
+    "target/minnesota-pokemon/native/MN_F004/line.review.png"
+  ],
+  "authoring_note": "All three stages and both views regenerated together. Original selected art retained. Stage-specific native fits, canonical species palettes and no inherited pixel patches; inspect actual converted eyes and material.",
+  "crop_notes": "Explicit isolated per-view source rectangles, inspected against the returned sheet. Front feet extend beyond the nominal half-height; uniform grid crops were rejected for clipping and neighboring fragments.",
+  "visual_review": {
+    "status": "reviewed",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "dfacbe77ebe85364c5d2dafd48e5b783a7cb412dd0cd8df824dd72e21df12f5b",
+    "notes": "Inspected all six views at actual56x56/48x48 and integer zoom after isolated source crops corrected front feet/neighbor fragments. Birchit retains rounded kit, two teeth and birch-marked attached paddle tail. Portabeau has squat body, compact pack/straps, no hat/paddle. Voyagear has broader low hindquarters, short paws, tuque, sash and straight paddle. Connected eye whites remain separate from forehead blaze and nose; curved shadows/dither model cheeks, bodies, packs and tails. Original sources and manifests preserved. Coverage-preserving comparison was not selected; source-center result retained. Runtime/shiny review separate."
+  },
+  "shiny_review": {
+    "status": "reviewed",
+    "profile_source": "species-profiles.json",
+    "renderer": "Rust publish_pokedex_sprite_revision using the same native index rows",
+    "notes": "Inspected each native shiny front/back. Connected eye and muzzle/petal detail, folds, quadrupedal animal shapes and species-specific material remain legible. All18shiny PNGs independently match authored shiny RGB5 palettes and unchanged native indices; normal exports byte-match reviewed native PNGs."
+  },
+  "previous_manifest_metadata": {
+    "conversion_revision": "Six separately generated native-grid views with source_center sampling. Proper cropped rear battle portraits, same actual paddle hand from opposite camera side, fierce final brow retained. All prior source and native renders remain archived.",
+    "original_source_palette": {
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          27,
+          21,
+          11
+        ],
+        [
+          4,
+          7,
+          12
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        11963,
+        12516,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          222,
+          173,
+          90
+        ],
+        [
+          33,
+          57,
+          99
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#DEAD5A",
+        "#213963",
+        "#000000"
+      ]
+    }
+  }
+}

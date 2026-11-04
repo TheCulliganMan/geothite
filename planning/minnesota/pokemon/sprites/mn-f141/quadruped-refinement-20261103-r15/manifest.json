@@ -1,0 +1,248 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F141",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_312": {
+      "species_id": "MN_312",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          25,
+          19,
+          11
+        ],
+        [
+          9,
+          16,
+          7
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        11897,
+        7689,
+        0
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#CE9C5A",
+        "#4A8439",
+        "#000000"
+      ],
+      "name": "Velvawn",
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          206,
+          156,
+          90
+        ],
+        [
+          74,
+          132,
+          57
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    "MN_313": {
+      "species_id": "MN_313",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          15,
+          20,
+          17
+        ],
+        [
+          10,
+          8,
+          15
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        18063,
+        15626,
+        0
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#7BA58C",
+        "#52427B",
+        "#000000"
+      ],
+      "name": "Shedstag",
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          123,
+          165,
+          140
+        ],
+        [
+          82,
+          66,
+          123
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ]
+    }
+  },
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-312-velvawn-v1",
+      "species_id": "MN_312",
+      "view": "front",
+      "source": "sprites/mn-f141/quadruped-refinement-20261103-r15/front-back.imagegen.png",
+      "crop": [
+        0,
+        0,
+        535,
+        650
+      ],
+      "fit": [
+        40,
+        40
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        11897,
+        7689,
+        0
+      ],
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "sampling": "source_center",
+      "exterior_contour": "source_backed"
+    },
+    {
+      "id": "mn-313-shedstag-v1",
+      "species_id": "MN_313",
+      "view": "front",
+      "source": "sprites/mn-f141/quadruped-refinement-20261103-r15/front-back.imagegen.png",
+      "crop": [
+        540,
+        0,
+        714,
+        650
+      ],
+      "fit": [
+        54,
+        50
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        18063,
+        15626,
+        0
+      ],
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "sampling": "source_center",
+      "exterior_contour": "source_backed"
+    },
+    {
+      "id": "mn-312-velvawn-v1",
+      "species_id": "MN_312",
+      "view": "back",
+      "source": "sprites/mn-f141/quadruped-refinement-20261103-r15/front-back.imagegen.png",
+      "crop": [
+        0,
+        690,
+        560,
+        564
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        11897,
+        7689,
+        0
+      ],
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "sampling": "source_center",
+      "exterior_contour": "source_backed"
+    },
+    {
+      "id": "mn-313-shedstag-v1",
+      "species_id": "MN_313",
+      "view": "back",
+      "source": "sprites/mn-f141/quadruped-refinement-20261103-r15/front-back.imagegen.png",
+      "crop": [
+        565,
+        690,
+        689,
+        564
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        18063,
+        15626,
+        0
+      ],
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "sampling": "source_center",
+      "exterior_contour": "source_backed"
+    }
+  ],
+  "status": "native-front-back-reviewed",
+  "original_manifest": "sprites/mn-f141/manifest.json",
+  "prompt_file": "sprites/mn-f141/quadruped-refinement-20261103-r15/prompt.txt",
+  "visual_review": {
+    "status": "reviewed",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "7c0cd55a574f695c5a272fe954c1a1db4a80a9c14da9e1f808ebafb911c056df",
+    "notes": "Redesigned formerly upright deer as natural quadrupeds: four attached hoofed legs, horizontal backs, deer necks/muzzles and no human arms/hands. Velvawn keeps velvet buds, moss cuffs and three white flank spots. Shedstag has empty antler bases, two separate hovering three-tined guardian antlers and attached white warning tail. Shading/dither follows neck/haunch and bone-underside curves, with coherent sage/violet lowlights; close rear napes fill48px, fronts face down-left. Native56/48 and integer zoom inspected, including source-dependent face/eye boundaries. Originals retained; gameplay pack integration pending."
+  },
+  "shiny_review": {
+    "status": "reviewed",
+    "views": 4,
+    "notes": "Native shiny front/back pair for each quadruped deer inspected. All PNGs match exact profile palette/index swaps and canonical normal bytes. Four attached legs remain separate from floating guardian antlers."
+  }
+}

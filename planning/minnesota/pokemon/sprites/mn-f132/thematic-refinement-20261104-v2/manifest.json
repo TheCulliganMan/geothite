@@ -1,0 +1,245 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F132",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_291": {
+      "species_id": "MN_291",
+      "name": "Mudnip",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          26,
+          23,
+          12
+        ],
+        [
+          4,
+          11,
+          12
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        13050,
+        12644,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          214,
+          189,
+          99
+        ],
+        [
+          33,
+          90,
+          99
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#D6BD63",
+        "#215A63",
+        "#000000"
+      ]
+    },
+    "MN_292": {
+      "species_id": "MN_292",
+      "name": "Bankmaw",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          12,
+          23,
+          17
+        ],
+        [
+          3,
+          9,
+          12
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        18156,
+        12579,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          99,
+          189,
+          140
+        ],
+        [
+          24,
+          74,
+          99
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#63BD8C",
+        "#184A63",
+        "#000000"
+      ]
+    }
+  },
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-291-thematic-20261104-v2",
+      "species_id": "MN_291",
+      "view": "front",
+      "source": "sprites/mn-f132/thematic-refinement-20261104-v2/front-back.imagegen.png",
+      "crop": [
+        0,
+        0,
+        627,
+        627
+      ],
+      "fit": [
+        41,
+        36
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13050,
+        12644,
+        0
+      ],
+      "sampling": "area_dither",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 8,
+      "interior_black_min_samples": 24
+    },
+    {
+      "id": "mn-291-thematic-20261104-v2",
+      "species_id": "MN_291",
+      "view": "back",
+      "source": "sprites/mn-f132/thematic-refinement-20261104-v2/front-back.imagegen.png",
+      "crop": [
+        0,
+        627,
+        627,
+        627
+      ],
+      "fit": [
+        46,
+        46
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13050,
+        12644,
+        0
+      ],
+      "sampling": "area_dither",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 8,
+      "interior_black_min_samples": 24
+    },
+    {
+      "id": "mn-292-thematic-20261104-v2",
+      "species_id": "MN_292",
+      "view": "front",
+      "source": "sprites/mn-f132/thematic-refinement-20261104-v2/front-back.imagegen.png",
+      "crop": [
+        627,
+        0,
+        627,
+        627
+      ],
+      "fit": [
+        50,
+        42
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        18156,
+        12579,
+        0
+      ],
+      "sampling": "area_dither",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 8,
+      "interior_black_min_samples": 24
+    },
+    {
+      "id": "mn-292-thematic-20261104-v2",
+      "species_id": "MN_292",
+      "view": "back",
+      "source": "sprites/mn-f132/thematic-refinement-20261104-v2/front-back.imagegen.png",
+      "crop": [
+        627,
+        627,
+        627,
+        627
+      ],
+      "fit": [
+        46,
+        46
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        18156,
+        12579,
+        0
+      ],
+      "sampling": "area_dither",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 8,
+      "interior_black_min_samples": 24
+    }
+  ],
+  "prompt_file": "sprites/mn-f132/thematic-refinement-20261104-v2/prompt.txt",
+  "original_manifest": "sprites/mn-f132/manifest.json",
+  "status": "native-reviewed",
+  "conversion_revision": "Compare bounded coverage-preserving source resampling at native resolution; not accepted until visual review.",
+  "previous_manifest": "sprites/mn-f132/native-refinement-20261103-r14/manifest.json",
+  "visual_review": {
+    "status": "reviewed",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "6f17cd85d9436dd3a9e89ece69d7f82c536832a63b9a8d3e84435ab805e93cfa",
+    "notes": "Both snapping turtles retain hooked beaks and terraced, undercut keratin shells. Mudnip warm gold and teal, Bankmaw jade and deep teal. Native shell highlights and dither articulate shell terraces, muddy overhangs and contacts; the close rears retain shell anatomy."
+  }
+}

@@ -1,0 +1,272 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F153",
+  "tool": "built-in image_gen",
+  "prompt_file": "sprites/mn-f153/replacement-20261104-v2/prompt.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "status": "native-vibrant-candidate-reviewed-awaiting-user-feedback",
+  "sprites": [
+    {
+      "id": "mn-337-burrowbill-v1",
+      "species_id": "MN_337",
+      "view": "front",
+      "source": "sprites/mn-f153/replacement-20261104-v2/front-back.imagegen.png",
+      "crop": [
+        0,
+        0,
+        510,
+        627
+      ],
+      "fit": [
+        34,
+        35
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        8703,
+        22852,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "source_palette_rgb555": [
+        32767,
+        16056,
+        18891,
+        0
+      ]
+    },
+    {
+      "id": "mn-337-burrowbill-v1",
+      "species_id": "MN_337",
+      "view": "back",
+      "source": "sprites/mn-f153/replacement-20261104-v2/front-back.imagegen.png",
+      "crop": [
+        0,
+        627,
+        510,
+        627
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        8703,
+        22852,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "source_palette_rgb555": [
+        32767,
+        16056,
+        18891,
+        0
+      ]
+    },
+    {
+      "id": "mn-338-bankwing-v1",
+      "species_id": "MN_338",
+      "view": "front",
+      "source": "sprites/mn-f153/replacement-20261104-v2/front-back.imagegen.png",
+      "crop": [
+        510,
+        0,
+        744,
+        627
+      ],
+      "fit": [
+        52,
+        43
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        4735,
+        23843,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "source_palette_rgb555": [
+        32767,
+        17079,
+        18857,
+        0
+      ]
+    },
+    {
+      "id": "mn-338-bankwing-v1",
+      "species_id": "MN_338",
+      "view": "back",
+      "source": "sprites/mn-f153/replacement-20261104-v2/front-back.imagegen.png",
+      "crop": [
+        510,
+        627,
+        744,
+        627
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        4735,
+        23843,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "source_palette_rgb555": [
+        32767,
+        17079,
+        18857,
+        0
+      ]
+    }
+  ],
+  "pokemon_palettes": {
+    "MN_337": {
+      "species_id": "MN_337",
+      "name": "Burrowbill",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          31,
+          15,
+          8
+        ],
+        [
+          4,
+          10,
+          22
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        8703,
+        22852,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          123,
+          66
+        ],
+        [
+          33,
+          82,
+          181
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#FF7B42",
+        "#2152B5",
+        "#000000"
+      ]
+    },
+    "MN_338": {
+      "species_id": "MN_338",
+      "name": "Bankwing",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          31,
+          19,
+          4
+        ],
+        [
+          3,
+          9,
+          23
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        4735,
+        23843,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          156,
+          33
+        ],
+        [
+          24,
+          74,
+          189
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#FF9C21",
+        "#184ABD",
+        "#000000"
+      ]
+    }
+  },
+  "color_revision": {
+    "authority": "User: Make candidates more vibrant; not just current work, all the wolves and stuff are beige.",
+    "study": "sprites/vibrant-color-study-20261104/palette-study.imagegen.png",
+    "method": "Native palette remapping through existing Rust converter. Source quantization palette retained; indexed geometry, eyes, outlines and dither unchanged."
+  },
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "cd2e59da8ca9dad8e3b1698f8bebb650b568d1a25914b5f55fc182d164902f70",
+    "notes": "Reviewed native front/back color pass: stronger Pokemon-like palettes, neutral white eyes/black pupils preserved, saturated body and shadow inks distinct. Indexed geometry proven identical before/after palette remap, including dither. Original sheets and prior palettes retained. User feedback pending."
+  }
+}

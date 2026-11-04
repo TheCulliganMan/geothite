@@ -1,0 +1,396 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F159",
+  "tool": "built-in image_gen",
+  "prompt_file": "sprites/mn-f159/replacement-20261104-v1/prompt.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "status": "native-vibrant-candidate-reviewed-awaiting-user-feedback",
+  "sprites": [
+    {
+      "id": "mn-348-settkit-v1",
+      "species_id": "MN_348",
+      "view": "front",
+      "source": "sprites/mn-f159/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        0,
+        0,
+        420,
+        518
+      ],
+      "fit": [
+        37,
+        32
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        4895,
+        22821,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "source_palette_rgb555": [
+        32767,
+        13978,
+        6377,
+        0
+      ]
+    },
+    {
+      "id": "mn-348-settkit-v1",
+      "species_id": "MN_348",
+      "view": "back",
+      "source": "sprites/mn-f159/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        0,
+        518,
+        420,
+        518
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        4895,
+        22821,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "source_palette_rgb555": [
+        32767,
+        13978,
+        6377,
+        0
+      ]
+    },
+    {
+      "id": "mn-349-braclaw-v1",
+      "species_id": "MN_349",
+      "view": "front",
+      "source": "sprites/mn-f159/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        420,
+        0,
+        500,
+        518
+      ],
+      "fit": [
+        46,
+        38
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        5631,
+        23723,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "source_palette_rgb555": [
+        32767,
+        12956,
+        6344,
+        0
+      ]
+    },
+    {
+      "id": "mn-349-braclaw-v1",
+      "species_id": "MN_349",
+      "view": "back",
+      "source": "sprites/mn-f159/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        420,
+        518,
+        500,
+        518
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        5631,
+        23723,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "source_palette_rgb555": [
+        32767,
+        12956,
+        6344,
+        0
+      ]
+    },
+    {
+      "id": "mn-350-riftmaul-v1",
+      "species_id": "MN_350",
+      "view": "front",
+      "source": "sprites/mn-f159/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        920,
+        0,
+        598,
+        518
+      ],
+      "fit": [
+        53,
+        42
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        8575,
+        22697,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "source_palette_rgb555": [
+        32767,
+        10811,
+        5288,
+        0
+      ]
+    },
+    {
+      "id": "mn-350-riftmaul-v1",
+      "species_id": "MN_350",
+      "view": "back",
+      "source": "sprites/mn-f159/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        920,
+        518,
+        598,
+        518
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        8575,
+        22697,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "source_palette_rgb555": [
+        32767,
+        10811,
+        5288,
+        0
+      ]
+    }
+  ],
+  "pokemon_palettes": {
+    "MN_348": {
+      "species_id": "MN_348",
+      "name": "Settkit",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          31,
+          24,
+          4
+        ],
+        [
+          5,
+          9,
+          22
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        4895,
+        22821,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          198,
+          33
+        ],
+        [
+          41,
+          74,
+          181
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#FFC621",
+        "#294AB5",
+        "#000000"
+      ]
+    },
+    "MN_349": {
+      "species_id": "MN_349",
+      "name": "Braclaw",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          31,
+          15,
+          5
+        ],
+        [
+          11,
+          5,
+          23
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        5631,
+        23723,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          123,
+          41
+        ],
+        [
+          90,
+          41,
+          189
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#FF7B29",
+        "#5A29BD",
+        "#000000"
+      ]
+    },
+    "MN_350": {
+      "species_id": "MN_350",
+      "name": "Riftmaul",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          31,
+          11,
+          8
+        ],
+        [
+          9,
+          5,
+          22
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        8575,
+        22697,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          90,
+          66
+        ],
+        [
+          74,
+          41,
+          181
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#FF5A42",
+        "#4A29B5",
+        "#000000"
+      ]
+    }
+  },
+  "color_revision": {
+    "authority": "User: Make candidates more vibrant; not just current work, all the wolves and stuff are beige.",
+    "study": "sprites/vibrant-color-study-20261104/palette-study.imagegen.png",
+    "method": "Native palette remapping through existing Rust converter. Source quantization palette retained; indexed geometry, eyes, outlines and dither unchanged."
+  },
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "db565c130c6759de77db36155eb5d5114b6b46ae9fbb83b84dbf0267ca1a9275",
+    "notes": "Reviewed native front/back color pass: stronger Pokemon-like palettes, neutral white eyes/black pupils preserved, saturated body and shadow inks distinct. Indexed geometry proven identical before/after palette remap, including dither. Original sheets and prior palettes retained. User feedback pending."
+  }
+}

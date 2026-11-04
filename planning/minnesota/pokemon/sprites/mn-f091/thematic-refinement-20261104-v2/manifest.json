@@ -1,0 +1,344 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F091",
+  "status": "native-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_198": {
+      "species_id": "MN_198",
+      "name": "Pipulse",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          30,
+          25,
+          15
+        ],
+        [
+          6,
+          13,
+          21
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        16190,
+        21926,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          247,
+          206,
+          123
+        ],
+        [
+          49,
+          107,
+          173
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#F7CE7B",
+        "#316BAD",
+        "#000000"
+      ]
+    },
+    "MN_199": {
+      "species_id": "MN_199",
+      "name": "Cadenset",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          29,
+          21,
+          9
+        ],
+        [
+          5,
+          11,
+          20
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        9917,
+        20837,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          239,
+          173,
+          74
+        ],
+        [
+          41,
+          90,
+          165
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#EFAD4A",
+        "#295AA5",
+        "#000000"
+      ]
+    },
+    "MN_200": {
+      "species_id": "MN_200",
+      "name": "Valorythm",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          30,
+          23,
+          12
+        ],
+        [
+          4,
+          9,
+          18
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        13054,
+        18724,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          247,
+          189,
+          99
+        ],
+        [
+          33,
+          74,
+          148
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#F7BD63",
+        "#214A94",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f091/thematic-refinement-20261104-v2/prompt.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-198-pipulse-v3",
+      "species_id": "MN_198",
+      "view": "front",
+      "source": "sprites/mn-f091/front-back.imagegen-v3.png",
+      "crop": [
+        0,
+        0,
+        450,
+        555
+      ],
+      "fit": [
+        36,
+        36
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        16190,
+        21926,
+        0
+      ],
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-198-pipulse-v3",
+      "species_id": "MN_198",
+      "view": "back",
+      "source": "sprites/mn-f091/front-back.imagegen-v3.png",
+      "crop": [
+        0,
+        555,
+        465,
+        469
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        16190,
+        21926,
+        0
+      ],
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-199-cadenset-v3",
+      "species_id": "MN_199",
+      "view": "front",
+      "source": "sprites/mn-f091/front-back.imagegen-v3.png",
+      "crop": [
+        450,
+        0,
+        518,
+        555
+      ],
+      "fit": [
+        44,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        9917,
+        20837,
+        0
+      ],
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-199-cadenset-v3",
+      "species_id": "MN_199",
+      "view": "back",
+      "source": "sprites/mn-f091/front-back.imagegen-v3.png",
+      "crop": [
+        465,
+        555,
+        515,
+        469
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        9917,
+        20837,
+        0
+      ],
+      "interior_black_min_samples": 16
+    },
+    {
+      "id": "mn-200-thematic-20261104-v2",
+      "species_id": "MN_200",
+      "view": "front",
+      "source": "sprites/mn-f091/thematic-refinement-20261104-v2/front-back.imagegen.png",
+      "crop": [
+        0,
+        0,
+        887,
+        887
+      ],
+      "fit": [
+        49,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13054,
+        18724,
+        0
+      ],
+      "sampling": "area_dither",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 8,
+      "interior_black_min_samples": 24
+    },
+    {
+      "id": "mn-200-thematic-20261104-v2",
+      "species_id": "MN_200",
+      "view": "back",
+      "source": "sprites/mn-f091/thematic-refinement-20261104-v2/front-back.imagegen.png",
+      "crop": [
+        887,
+        0,
+        887,
+        887
+      ],
+      "fit": [
+        46,
+        46
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13054,
+        18724,
+        0
+      ],
+      "sampling": "area_dither",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 8,
+      "interior_black_min_samples": 24
+    }
+  ],
+  "conversion_revision": "Compare bounded coverage-preserving source resampling at native resolution; not accepted until visual review.",
+  "previous_manifest": "sprites/mn-f091/manifest.json",
+  "visual_review": {
+    "status": "reviewed",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "c69a13d50f238c462720639d55a0540ee44918283b06403c53e65ccb7506d6fe",
+    "notes": "Preserve Pipulse and Cadenset. Valorythm has paired rib bands and pulse pads, four distinct arms and two legs with a sweeping conductor crest and counterweight-tail anatomy. Warm lit pads contrast with blue shadow planes; front down-left, close rear up-right."
+  }
+}

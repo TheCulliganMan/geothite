@@ -303,6 +303,82 @@ fn species_overlay_preserves_real_base_and_rejects_unknown_moves() {
 }
 
 #[test]
+#[ignore = "requires the user-supplied verified local TUI content pack"]
+fn graphics_refresh_preserves_installed_game_and_rejects_reinstallation() {
+    let fixture = Fixture::new();
+    let path = std::env::var_os("CRYSTAL_RENDER_TEST_PACK")
+        .map(PathBuf::from)
+        .expect("set external CRYSTAL_RENDER_TEST_PACK");
+    let base = crate::read_verified_compiled_game_pack(path).expect("verified external base");
+    let catalog = fixture.load().expect("reviewed replacement graphics");
+    let mut previous = fixture.load().expect("previous reviewed fixture");
+    let palette = [32767, 26319, 12517, 0];
+    let mut pixels = vec![0; 56 * 56];
+    for y in 10..46 {
+        for x in 10..46 {
+            pixels[y * 56 + x] = 1;
+        }
+    }
+    pixels[16 * 56 + 15] = 3;
+    let files = previous
+        .graphics
+        .get_mut("MN_F001")
+        .expect("fixture family");
+    files.insert(
+        "gfx/pokemon/newleaf/front.png".to_string(),
+        minnesota_pokemon_pixel_art::png_rgb(
+            56,
+            56,
+            &minnesota_pokemon_pixel_art::colored(&pixels, palette),
+        )
+        .expect("previous native PNG"),
+    );
+    files.insert(
+        "gfx/pokemon/newleaf/front.2bpp".to_string(),
+        minnesota_pokemon_pixel_art::bitplanes(&pixels, 56, 56),
+    );
+    let installed = previous.build(&base, None).expect("installed previous art");
+    let refreshed = catalog
+        .refresh_graphics(&installed, &["MN_F001"])
+        .expect("refresh existing species artwork");
+    assert_eq!(refreshed.data, installed.data, "all game data preserved");
+    assert_eq!(refreshed.report, installed.report);
+    assert_eq!(refreshed.compiled_audio, installed.compiled_audio);
+    assert_eq!(refreshed.audio_manifest, installed.audio_manifest);
+    assert_eq!(refreshed.audio_compression, installed.audio_compression);
+    assert_eq!(refreshed.runtime_files.len(), installed.runtime_files.len());
+    let changed: Vec<_> = refreshed
+        .runtime_files
+        .iter()
+        .filter(|(key, bytes)| installed.runtime_files.get(*key) != Some(*bytes))
+        .map(|(key, _)| key.as_str())
+        .collect();
+    assert_eq!(
+        changed,
+        [
+            "gfx/pokemon/newleaf/front.2bpp",
+            "gfx/pokemon/newleaf/front.png"
+        ]
+    );
+    assert_ne!(refreshed.identity, installed.identity);
+    assert_eq!(
+        catalog
+            .refresh_graphics(&refreshed, &["MN_F001"])
+            .expect("identical refresh is idempotent")
+            .identity,
+        refreshed.identity
+    );
+    for selection in [vec![], vec!["MN_F001", "MN_F001"], vec!["MN_UNKNOWN"]] {
+        assert!(catalog.refresh_graphics(&installed, &selection).is_err());
+    }
+    assert!(
+        catalog.refresh_graphics(&base, &["MN_F001"]).is_err(),
+        "refresh cannot add an absent species"
+    );
+    assert!(catalog.build(&refreshed, None).is_err());
+}
+
+#[test]
 fn catalog_rejects_conflicting_ids_names_types_and_evolution_targets() {
     for change in ["id", "name", "type", "target"] {
         let fixture = Fixture::new();

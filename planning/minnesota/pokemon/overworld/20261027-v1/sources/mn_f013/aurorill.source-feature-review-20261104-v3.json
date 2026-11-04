@@ -1,0 +1,122 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_038",
+  "result": "pass",
+  "manifest_sha256": "1b0e48d8a70fddd6d03010dbc94a496a628e305d65c795f82a54605a24256024",
+  "bank_sha256": "a7e5b454a678d5e2ea9ae9f6247e3ce4fb76b4724e91cfa0a9704524f5561b7a",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f013/aurorill.overworld.imagegen-20261104-v3.png": "f3e110370e502be0be2653da4aa6ed0a37f867fb7dca95815d59119c190b8463"
+  },
+  "canonical_eye_form": "Star mask, separately sampled dark facial marks, two curtain fins and floating tail; rear crown and fin backs have no frontal face.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "source": "aurorill.overworld.imagegen-20261104-v3.png",
+          "source_sha256": "f3e110370e502be0be2653da4aa6ed0a37f867fb7dca95815d59119c190b8463",
+          "source_alpha_bounds": [
+            111,
+            76,
+            317,
+            359
+          ],
+          "native_bounds": [
+            3,
+            2,
+            11,
+            13
+          ],
+          "native_pixel_sha256": "32202a208ddd830f735b6a7119de5080f4c6cc27f0399efe16a65d96a2f80576",
+          "conversion": "Source-backed enclosed dark component preservation; no hand-painted field pixels. Actual source and normal/shiny native six-pose boards visually compared.",
+          "anatomy": "Star mask, separately sampled dark facial marks, two curtain fins and floating tail; rear crown and fin backs have no frontal face."
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "source": "aurorill.overworld.imagegen-20261104-v3.png",
+          "source_sha256": "f3e110370e502be0be2653da4aa6ed0a37f867fb7dca95815d59119c190b8463",
+          "source_alpha_bounds": [
+            105,
+            89,
+            319,
+            344
+          ],
+          "native_bounds": [
+            2,
+            2,
+            12,
+            13
+          ],
+          "native_pixel_sha256": "856e0cba5d67a6a191091c498b8ca284fab89670f10e741fad82c3d496511c08",
+          "conversion": "Source-backed enclosed dark component preservation; no hand-painted field pixels. Actual source and normal/shiny native six-pose boards visually compared.",
+          "anatomy": "Star mask, separately sampled dark facial marks, two curtain fins and floating tail; rear crown and fin backs have no frontal face."
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "source": "aurorill.overworld.imagegen-20261104-v3.png",
+          "source_sha256": "f3e110370e502be0be2653da4aa6ed0a37f867fb7dca95815d59119c190b8463",
+          "source_alpha_bounds": [
+            93,
+            53,
+            331,
+            367
+          ],
+          "native_bounds": [
+            2,
+            1,
+            12,
+            13
+          ],
+          "native_pixel_sha256": "c018b2299f975721a4bb02022f6ed3ad6dccb446b2ffbf55a25eac531a8c44eb",
+          "conversion": "Source-backed enclosed dark component preservation; no hand-painted field pixels. Actual source and normal/shiny native six-pose boards visually compared.",
+          "anatomy": "Star mask, separately sampled dark facial marks, two curtain fins and floating tail; rear crown and fin backs have no frontal face."
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "source": "aurorill.overworld.imagegen-20261104-v3.png",
+          "source_sha256": "f3e110370e502be0be2653da4aa6ed0a37f867fb7dca95815d59119c190b8463",
+          "source_alpha_bounds": [
+            105,
+            73,
+            320,
+            351
+          ],
+          "native_bounds": [
+            2,
+            2,
+            12,
+            12
+          ],
+          "native_pixel_sha256": "8c192980a8c7d9e2e650f03c5bde9a9a11796747d52dd3401572baf3ebfdf4d8",
+          "conversion": "Source-backed enclosed dark component preservation; no hand-painted field pixels. Actual source and normal/shiny native six-pose boards visually compared.",
+          "anatomy": "Star mask, separately sampled dark facial marks, two curtain fins and floating tail; rear crown and fin backs have no frontal face."
+        }
+      ]
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "poses": [
+      "up_idle",
+      "up_step"
+    ],
+    "notes": "Star mask, separately sampled dark facial marks, two curtain fins and floating tail; rear crown and fin backs have no frontal face."
+  },
+  "native_and_shiny_visual_review": "All six poses compared at native scale and integer zoom with selected source; ordinary field-icon simplification retains species silhouette. Transparent edge, genuine stepping changes, matched normal/shiny index geometry and actual production terrain reviewed."
+}

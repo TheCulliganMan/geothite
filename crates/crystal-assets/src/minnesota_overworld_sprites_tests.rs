@@ -13,6 +13,59 @@ use super::{
 
 static NEXT_DIRECTORY: AtomicU64 = AtomicU64::new(0);
 
+#[test]
+fn field_sampling_retains_actual_enclosed_marks_between_native_centers() {
+    let mut rgba = [0, 255, 0, 255].repeat(80 * 80);
+    let plain = MinnesotaSheet::from_png(&png_rgba(80, 80, &rgba).expect("plain source"))
+        .expect("decode plain source");
+    // Both marks fall between point samples. They must survive from source
+    // coverage, while a true rear with no such marks must remain unmodified.
+    for left in [33, 56] {
+        for y in 33..35 {
+            for x in left..left + 2 {
+                rgba[(y * 80 + x) * 4..(y * 80 + x) * 4 + 3].fill(0);
+            }
+        }
+    }
+    let sheet = MinnesotaSheet::from_png(&png_rgba(80, 80, &rgba).expect("marked source"))
+        .expect("decode marked source");
+    let (_directory, manifest) = fixture();
+    let mut source = manifest
+        .species
+        .into_iter()
+        .next()
+        .expect("fixture species");
+    let frame = OverworldFrameSource {
+        pose: OverworldPose::DownIdle,
+        source: "source.png".into(),
+        crop: [0, 0, 80, 80],
+    };
+    let transform = Transform::new([0, 0, 80, 80], [14, 14]);
+    let palette = source.palette_rgb555.map(rgb555);
+    source.sampling = OverworldSampling::SourceCenter;
+    let before = sample_frame(&sheet, &frame, &source, &transform, &palette);
+    let rear = sample_frame(&plain, &frame, &source, &transform, &palette);
+    assert!(
+        !before.contains(&3),
+        "fixture must expose point-sampling loss"
+    );
+    source.sampling = OverworldSampling::FeaturePreserving;
+    let after = sample_frame(&sheet, &frame, &source, &transform, &palette);
+    assert_eq!(after.iter().filter(|&&ink| ink == 3).count(), 2);
+    assert!(
+        before
+            .iter()
+            .zip(&after)
+            .all(|(&a, &b)| (a == 0) == (b == 0)),
+        "sampling must not add silhouette pixels"
+    );
+    assert_eq!(
+        sample_frame(&plain, &frame, &source, &transform, &palette),
+        rear,
+        "never invent eyes on a rear without source marks"
+    );
+}
+
 struct SourceDirectory(PathBuf);
 impl SourceDirectory {
     fn new() -> Self {

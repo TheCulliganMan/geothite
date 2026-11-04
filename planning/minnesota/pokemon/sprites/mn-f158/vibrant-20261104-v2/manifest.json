@@ -1,0 +1,148 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F158",
+  "tool": "built-in image_gen",
+  "prompt_file": "sprites/mn-f158/replacement-20261104-v1/prompt.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "status": "native-vibrant-candidate-reviewed-awaiting-user-feedback",
+  "sprites": [
+    {
+      "id": "mn-347-pendulop-v1",
+      "species_id": "MN_347",
+      "view": "front",
+      "source": "sprites/mn-f158/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        0,
+        0,
+        960,
+        873
+      ],
+      "fit": [
+        45,
+        43
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        3935,
+        24870,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "source_palette_rgb555": [
+        32767,
+        15133,
+        17768,
+        0
+      ]
+    },
+    {
+      "id": "mn-347-pendulop-v1",
+      "species_id": "MN_347",
+      "view": "back",
+      "source": "sprites/mn-f158/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        960,
+        0,
+        841,
+        873
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        3935,
+        24870,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "source_palette_rgb555": [
+        32767,
+        15133,
+        17768,
+        0
+      ]
+    }
+  ],
+  "pokemon_palettes": {
+    "MN_347": {
+      "species_id": "MN_347",
+      "name": "Pendulop",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          31,
+          26,
+          3
+        ],
+        [
+          6,
+          9,
+          24
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        3935,
+        24870,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          214,
+          24
+        ],
+        [
+          49,
+          74,
+          198
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#FFD618",
+        "#314AC6",
+        "#000000"
+      ]
+    }
+  },
+  "color_revision": {
+    "authority": "User: Make candidates more vibrant; not just current work, all the wolves and stuff are beige.",
+    "study": "sprites/vibrant-color-study-20261104/palette-study.imagegen.png",
+    "method": "Native palette remapping through existing Rust converter. Source quantization palette retained; indexed geometry, eyes, outlines and dither unchanged."
+  },
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "c1fc836d0464e332b920abd2989659b711d162c0504c0e79d0056369d3eb0d66",
+    "notes": "Reviewed native front/back color pass: stronger Pokemon-like palettes, neutral white eyes/black pupils preserved, saturated body and shadow inks distinct. Indexed geometry proven identical before/after palette remap, including dither. Original sheets and prior palettes retained. User feedback pending."
+  }
+}

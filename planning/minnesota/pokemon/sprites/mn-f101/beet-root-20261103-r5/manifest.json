@@ -1,0 +1,484 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F101",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_218": {
+      "species_id": "MN_218",
+      "name": "Zapsap",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          28,
+          28,
+          15
+        ],
+        [
+          8,
+          14,
+          7
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        16284,
+        7624,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          231,
+          231,
+          123
+        ],
+        [
+          66,
+          115,
+          57
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#E7E77B",
+        "#427339",
+        "#000000"
+      ]
+    },
+    "MN_219": {
+      "species_id": "MN_219",
+      "name": "Tapacitor",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          30,
+          26,
+          13
+        ],
+        [
+          6,
+          12,
+          9
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        14174,
+        9606,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          247,
+          214,
+          107
+        ],
+        [
+          49,
+          99,
+          74
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#F7D66B",
+        "#31634A",
+        "#000000"
+      ]
+    },
+    "MN_220": {
+      "species_id": "MN_220",
+      "name": "Beetynamo",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          25,
+          27,
+          12
+        ],
+        [
+          10,
+          6,
+          14
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        13177,
+        14538,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          206,
+          222,
+          99
+        ],
+        [
+          82,
+          49,
+          115
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#CEDE63",
+        "#523173",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f101/beet-root-20261103-r5/prompt-mn-220-front.txt",
+  "reference_mapping": "sprites/mn-f101/reference-mapping-v1.json",
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-218-native-refinement-20261103-r3",
+      "species_id": "MN_218",
+      "view": "front",
+      "source": "sprites/mn-f101/native-refinement-20261103-r3/mn-218.front.imagegen.png",
+      "crop": [
+        0,
+        0,
+        1254,
+        1254
+      ],
+      "fit": [
+        40,
+        40
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        16284,
+        7624,
+        0
+      ],
+      "white_detail_min_samples": 32,
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "pixel_edits": [
+        {
+          "x": 19,
+          "y": 37,
+          "from": 1,
+          "to": 3
+        },
+        {
+          "x": 26,
+          "y": 37,
+          "from": 1,
+          "to": 3
+        },
+        {
+          "x": 27,
+          "y": 37,
+          "from": 1,
+          "to": 3
+        },
+        {
+          "x": 17,
+          "y": 38,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 18,
+          "y": 39,
+          "from": 0,
+          "to": 3
+        },
+        {
+          "x": 25,
+          "y": 39,
+          "from": 2,
+          "to": 3
+        },
+        {
+          "x": 18,
+          "y": 40,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 25,
+          "y": 40,
+          "from": 2,
+          "to": 3
+        },
+        {
+          "x": 17,
+          "y": 41,
+          "from": 0,
+          "to": 3
+        },
+        {
+          "x": 18,
+          "y": 41,
+          "from": 1,
+          "to": 3
+        },
+        {
+          "x": 19,
+          "y": 41,
+          "from": 1,
+          "to": 3
+        },
+        {
+          "x": 26,
+          "y": 41,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 27,
+          "y": 41,
+          "from": 1,
+          "to": 3
+        },
+        {
+          "x": 24,
+          "y": 42,
+          "from": 1,
+          "to": 3
+        },
+        {
+          "x": 26,
+          "y": 42,
+          "from": 1,
+          "to": 3
+        },
+        {
+          "x": 27,
+          "y": 42,
+          "from": 1,
+          "to": 3
+        }
+      ]
+    },
+    {
+      "id": "mn-218-zapsap-beet-root-20261103-r5",
+      "species_id": "MN_218",
+      "view": "back",
+      "source": "sprites/mn-f101/beet-root-20261103-r5/mn-218.back.imagegen.png",
+      "crop": [
+        0,
+        0,
+        1254,
+        1254
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        16284,
+        7624,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "prompt_file": "sprites/mn-f101/beet-root-20261103-r5/prompt-mn-218-back.txt"
+    },
+    {
+      "id": "mn-219-tapacitor-restart-20261103-r4",
+      "species_id": "MN_219",
+      "view": "front",
+      "source": "sprites/mn-f101/restart-20261103-r4/mn-219.front.imagegen.png",
+      "crop": [
+        0,
+        0,
+        1254,
+        1254
+      ],
+      "fit": [
+        48,
+        48
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        14174,
+        9606,
+        0
+      ],
+      "white_detail_min_samples": 8,
+      "sampling": "source_center",
+      "exterior_contour": "source_backed"
+    },
+    {
+      "id": "mn-219-tapacitor-beet-root-20261103-r5",
+      "species_id": "MN_219",
+      "view": "back",
+      "source": "sprites/mn-f101/beet-root-20261103-r5/mn-219.back.imagegen.png",
+      "crop": [
+        0,
+        310,
+        1254,
+        740
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        14174,
+        9606,
+        0
+      ],
+      "white_detail_min_samples": 8,
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "prompt_file": "sprites/mn-f101/beet-root-20261103-r5/prompt-mn-219-back.txt"
+    },
+    {
+      "id": "mn-220-beetynamo-beet-root-20261103-r5",
+      "species_id": "MN_220",
+      "view": "front",
+      "source": "sprites/mn-f101/beet-root-20261103-r5/mn-220.front.imagegen.png",
+      "crop": [
+        0,
+        0,
+        1254,
+        1254
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13177,
+        14538,
+        0
+      ],
+      "white_detail_min_samples": 8,
+      "sampling": "source_center",
+      "exterior_contour": "source_backed"
+    },
+    {
+      "id": "mn-220-beetynamo-beet-root-20261103-r5",
+      "species_id": "MN_220",
+      "view": "back",
+      "source": "sprites/mn-f101/beet-root-20261103-r5/mn-220.back.imagegen.png",
+      "crop": [
+        0,
+        0,
+        1254,
+        1254
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13177,
+        14538,
+        0
+      ],
+      "white_detail_min_samples": 8,
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "prompt_file": "sprites/mn-f101/beet-root-20261103-r5/prompt-mn-220-back.txt"
+    }
+  ],
+  "conversion_note": "Front white-detail threshold32 chosen for large eye whites to preserve pupil contrast; earlier default16 native render retained in versions. Target palettes and source anatomy unchanged.",
+  "original_manifest": "sprites/mn-f101/manifest.json",
+  "original_style_reference": {
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png"
+    ]
+  },
+  "front_prompt_files": [
+    "sprites/mn-f101/native-refinement-20261103-r3/prompt-mn-218-front.txt",
+    "sprites/mn-f101/restart-20261103-r4/prompt-mn-219-front.txt",
+    "sprites/mn-f101/beet-root-20261103-r5/prompt-mn-220-front.txt"
+  ],
+  "native_authoring_note": "Fresh Beetynamo regenerated from user supplied native style: bigger sugarbeet-root body/head, down-left pose and larger double-black-bounded eye requested. No inherited eye patch on either regenerated later evolution. Zapsap preserved.",
+  "user_review": {
+    "MN_219": "that stage2 is good; preserve",
+    "MN_220": "redo third stage using supplied native style, stronger sugarbeet anatomy, larger eyes and double black eye boundaries"
+  },
+  "user_native_style_reference": "/var/folders/g4/4th4w0q15ll2y75rjfv993tw0000gn/T/codex-clipboard-2c72b52b-4f3d-4fc6-8947-adc3e3f5f8c9.png",
+  "user_front_acceptance": {
+    "MN_220": {
+      "feedback": "Next series, great",
+      "native_png_sha256": "33f46ca99c3985d95ab6212e22e80ca6e40987ec335fc5850fad40d6e6a4fcb4",
+      "date": "2026-11-03"
+    },
+    "MN_219": {
+      "feedback": "that stage2 is good",
+      "date": "2026-11-03"
+    }
+  },
+  "back_framing_notes": "Tapacitor source includes lower limbs; portrait crop trims them to retain close upper bulb/leaf framing. All original front sources and native edits preserved.",
+  "visual_review": {
+    "status": "reviewed",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "6aa958f161f311d767cf724dd79cd61e4e859262fbaa02115bc6454abc9630a3",
+    "notes": "Reviewed actual56x56 fronts and48x48 rear portraits at1x and integer zoom. User-approved Tapacitor/Beetynamo front sources unchanged. New backs replace flat legacy silhouettes with bulb curvature, folded leaf shoulders, broad root napes and native dither transitions. Tapacitor close crop removes feet; Beetynamo shows upper ring without lower contacts. Runtime/shiny review remains separate."
+  },
+  "shiny_review": {
+    "status": "reviewed",
+    "views": 6,
+    "notes": "Inspected actual native shiny front/back images. Shiny PNGs exactly match profile palette swaps of native indices; normal PNG bytes match canonical native files. Eye contrast and silhouette retained. No deployment."
+  }
+}

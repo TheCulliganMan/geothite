@@ -21,6 +21,9 @@ use crate::minnesota_sprite_sheet::MinnesotaSheet;
 #[path = "minnesota_sprite_archive.rs"]
 mod archive;
 
+#[path = "minnesota_overworld_features.rs"]
+mod features;
+
 const SIZE: usize = 16;
 const FRAMES: usize = 6;
 const PIXELS: usize = SIZE * SIZE;
@@ -53,6 +56,9 @@ pub enum OverworldSampling {
     #[default]
     AreaVote,
     SourceCenter,
+    /// Preserve enclosed source-black details that fall between native centers.
+    /// Transparent pixels and exterior outlines retain point sampling.
+    FeaturePreserving,
 }
 
 /// One explicitly isolated source window; all six windows share dimensions.
@@ -544,7 +550,10 @@ fn sample_frame(
     for y in 0..t.size[1] {
         for x in 0..t.size[0] {
             let mut counts = [0_u8; 4];
-            let samples = if matches!(source.sampling, OverworldSampling::SourceCenter) {
+            let samples = if matches!(
+                source.sampling,
+                OverworldSampling::SourceCenter | OverworldSampling::FeaturePreserving
+            ) {
                 1
             } else {
                 8
@@ -592,6 +601,14 @@ fn sample_frame(
                 (1..=3).max_by_key(|&i| counts[i]).expect("three inks") as u8
             };
             output[(y + t.origin[1]) * 16 + x + t.origin[0]] = ink;
+        }
+    }
+    if matches!(source.sampling, OverworldSampling::FeaturePreserving) {
+        let protected = features::enclosed_black_coverage(sheet, frame, source, t, &output);
+        for (ink, preserve) in output.iter_mut().zip(protected) {
+            if preserve && *ink != 0 {
+                *ink = 3;
+            }
         }
     }
     output

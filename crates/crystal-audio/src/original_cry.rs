@@ -55,6 +55,9 @@ pub struct NoisePart {
 pub struct CryDesignBook {
     pub schema_version: u16,
     pub families: BTreeMap<String, CryFamilyDesign>,
+    /// Retired authoring designs, preserved here but excluded from compilation.
+    #[serde(default)]
+    pub archived_families: BTreeMap<String, CryFamilyDesign>,
 }
 
 /// Shared vocal ancestry, with optional complete replacements for metamorphosis.
@@ -287,8 +290,30 @@ fn finish(commands: &mut Vec<AudioCommand>, name: &str) {
 
 #[cfg(test)]
 mod tests {
-    use super::{CryScore, NoisePart, PulsePart};
+    use super::{CryDesignBook, CryScore, NoisePart, PulsePart};
     use crate::synth::{self, SourceAudioClock, SynthContext};
+
+    #[test]
+    fn archived_designs_are_preserved_but_never_compiled() {
+        let family = serde_json::json!({
+            "intent": "A short questioning peep.",
+            "score": {"pulse1": {"delay": 0, "duty": [2, 2, 2, 2],
+                "notes": [[8, 900, 10, 2]]}, "pulse2": null, "noise": null},
+            "species": {"MN_TEST": {"pitch": 0, "length": 256,
+                "character": "A single clear peep."}}
+        });
+        let legacy = serde_json::json!({"schema_version": 1,
+            "families": {"active": family.clone()}});
+        let book: CryDesignBook = serde_json::from_value(legacy.clone()).expect("legacy book");
+        assert!(book.archived_families.is_empty());
+        let expected = book.programs().expect("active program");
+        let mut archived = legacy;
+        // Even a duplicate species in the retained archive must not enter output.
+        archived["archived_families"] = serde_json::json!({"retired": family});
+        let book: CryDesignBook = serde_json::from_value(archived).expect("book with archive");
+        assert_eq!(book.archived_families.len(), 1);
+        assert_eq!(book.programs().expect("active programs only"), expected);
+    }
 
     #[test]
     fn independent_parts_keep_their_timing_and_runtime_registers() {

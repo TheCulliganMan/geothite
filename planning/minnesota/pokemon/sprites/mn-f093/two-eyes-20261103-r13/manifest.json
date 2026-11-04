@@ -1,0 +1,277 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F093",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_203": {
+      "species_id": "MN_203",
+      "name": "Siphlet",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          25,
+          22,
+          17
+        ],
+        [
+          9,
+          11,
+          16
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        18137,
+        16745,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          206,
+          181,
+          140
+        ],
+        [
+          74,
+          90,
+          132
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#CEB58C",
+        "#4A5A84",
+        "#000000"
+      ]
+    },
+    "MN_204": {
+      "species_id": "MN_204",
+      "name": "Obelurk",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          23,
+          25,
+          27
+        ],
+        [
+          9,
+          6,
+          14
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        28471,
+        14537,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          189,
+          206,
+          222
+        ],
+        [
+          74,
+          49,
+          115
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#BDCEDE",
+        "#4A3173",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f093/two-eyes-20261103-r13/prompt.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-203-siphlet-v1",
+      "species_id": "MN_203",
+      "view": "front",
+      "source": "sprites/mn-f093/two-eyes-20261103-r13/front-back.imagegen.png",
+      "crop": [
+        0,
+        0,
+        627,
+        627
+      ],
+      "fit": [
+        42,
+        42
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        18137,
+        16745,
+        0
+      ],
+      "interior_black_min_samples": 32,
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16
+    },
+    {
+      "id": "mn-203-siphlet-v1",
+      "species_id": "MN_203",
+      "view": "back",
+      "source": "sprites/mn-f093/two-eyes-20261103-r13/front-back.imagegen.png",
+      "crop": [
+        0,
+        627,
+        627,
+        627
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        18137,
+        16745,
+        0
+      ],
+      "interior_black_min_samples": 32,
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16
+    },
+    {
+      "id": "mn-204-obelurk-v1",
+      "species_id": "MN_204",
+      "view": "front",
+      "source": "sprites/mn-f093/two-eyes-20261103-r13/front-back.imagegen.png",
+      "crop": [
+        627,
+        0,
+        627,
+        627
+      ],
+      "fit": [
+        50,
+        52
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        28471,
+        14537,
+        0
+      ],
+      "interior_black_min_samples": 32,
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "pixel_edits": [
+        {
+          "x": 25,
+          "y": 31,
+          "from": 1,
+          "to": 0
+        },
+        {
+          "x": 25,
+          "y": 32,
+          "from": 1,
+          "to": 0
+        }
+      ]
+    },
+    {
+      "id": "mn-204-obelurk-v1",
+      "species_id": "MN_204",
+      "view": "back",
+      "source": "sprites/mn-f093/two-eyes-20261103-r13/front-back.imagegen.png",
+      "crop": [
+        627,
+        627,
+        627,
+        627
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        28471,
+        14537,
+        0
+      ],
+      "interior_black_min_samples": 32,
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "pixel_edits": [
+        {
+          "x": 26,
+          "y": 35,
+          "from": 1,
+          "to": 0
+        },
+        {
+          "x": 30,
+          "y": 33,
+          "from": 1,
+          "to": 0
+        }
+      ]
+    }
+  ],
+  "original_manifest": "sprites/mn-f093/manifest.json",
+  "status": "native-front-back-reviewed",
+  "native_eye_note": "Two guarded source-backed white restorations per Obelurk view retain the antialiased eye interiors that sampled to the pale shell color. Source samples front(25,31)182/182/184 and(25,32)210/223/235; rear(26,35)213/214/214 and(30,33)199/200/198. Pupils and dark sockets unchanged; no eye enlarged beyond source construction. Siphlet needs no guarded edits.",
+  "visual_review": {
+    "status": "reviewed",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "0bb7776f30aabaac51766f87ea06a3283928500fa796b7b02801ed5024f51d64",
+    "notes": "Latest user correction implemented on BOTH stages: two distinct white eyes and dark pupils under each shell rim, separated by dark ink. Verified actual56x56 fronts,48x48 close rears and integer zoom. Siphlet retains small cone/mantle anatomy with added shell dither; Obelurk retains psychic paddle, floating stone and three tendrils. Source-backed guarded pale-eye restorations retain boundaries without enlarging anatomy. Fronts face down-left; close rears upper-right. Original and prior revisions retained. Gameplay pack/battle integration and Rock/Psychic type update remain separate."
+  },
+  "shiny_review": {
+    "status": "reviewed",
+    "views": 4,
+    "notes": "Both species normal/shiny fronts and backs inspected at native size; both front eye pairs remain distinct. Exact profile palette/index swaps and canonical normal bytes verified."
+  }
+}

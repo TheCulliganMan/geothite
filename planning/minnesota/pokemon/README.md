@@ -1,18 +1,25 @@
 # Minnesota Pokémon
 
+## Current publication — 2026-11-04
+
+[Northwoods Pokédex](https://geothite.ryanculligan.com/pokedex/), release `20261104-promoted-225-42`: **225 active species /99 families**, with full profiles, moves and evolution rules.31 replacement candidates are promoted; requested removals remain archived.121 archived website records preserve historical designs, including the removed Agropummel final stage. Tactunnel selects `sprites/mn-f156/native-redesign-20261104-v4/manifest.json`; original sources are preserved.
+
+All225 public cries are original Rust-synthesized performances decoded from the verified local pack;182 genuine existing walking previews are retained. New overworld art and live encounter placement are not claimed by this Pokédex publication. The game-server container and selected hosted pack are unchanged. See [the current revision checkpoint](REVISION-TASKS.md) and [promotion record](replacement-225-20261104.json).
+
+Verified: roster/archive/evolution audit; installed local species, typing, native art and moves;225 public non-silent cry decodes; real mobile front/back/shiny controls and cry playback; existing182 voice programs and420 unaffected audio assets unchanged. Audio taste/listening approval is separate from those mechanical checks.
+
 [Verdigrim](sprites/mn-f145/DESIGN.md) is the new copper **Steel/Poison
 legendary**, inspired by Minnesota timber wolves, native float copper and the
 Ojibwe wolf-as-companion tradition. Its massive wolf form has rounded copper
-masses, green weathering crust and exposed copper high points. The source
-catalog now contains **315 species / 225
-active species / 102 active families**. Stats, learnsets, palettes, battle art,
+masses, green weathering crust and exposed copper high points. The current source
+catalog contains **345 species including archives /225 active species /99 active families**. Stats, learnsets, palettes, battle art,
 [six-pose overworld art and the original runtime cry](sprites/mn-f145/STORY-HANDOFF.md)
 and the [Team Lode excavation and green-water story contract](verdigrim-story.json)
 are authored. The playable reveal and water-state scripts remain to be installed;
-the published release below remains its recorded 224-species snapshot.
+the older224-species release below is retained as historical publication evidence.
 
-Current publication: **224 active species / 101 families / 90 cut proposals**.
-Release `20261027-overworld-224-18` is live in the
+Historical publication: **224 active species /101 families /90 cut proposals**.
+Release `20261027-overworld-224-18` was published in the
 [Northwoods Pokédex](https://geothite.ryanculligan.com/pokedex/), with animated
 normal/shiny walking thumbnails and cry buttons for every active species.
 The [complete overworld overlay](overworld/20261027-v1/README.md) contains all
@@ -100,7 +107,7 @@ resolves every move, item, icon, cry and footprint against the selected base.
 The new fish families are Winkfin → Glaciris → Tipulord (Water/Ice, living
 ice-fishing tip-up), Rillbow → Torrout (Water/Fighting, current recoil),
 Keypout → Latchusk (Water/Ghost, key barbel and shutter fins), and
-Pikeling → Pikeman → Musketunge (Water → Water/Fighting → Water/Steel,
+Pikeling → Pikeman → Musketunge (Water → Water → Water/Steel,
 spear jaw to compressed-water muzzle). Murkib → Barbastion, Whirlnut →
 Samurrel and Hushiss → Castanake complete the sixteen additions.
 
@@ -137,3 +144,14 @@ The `source-contour-v1` conversion uses 16×16 area sampling per destination pix
 The completed250-species artwork catalog follows the [expansion plan](expansion/PLAN.md): preserve the existing153 and add97 research-backed designs. The [fossil choice](fossil-choice.json) offers LENS FOSSIL → Trilume → Panoplite (Rock/Bug) and SPIRE FOSSIL → Siphlet → Obelurk (Rock/Dark) within those97 additions. Both now evolve at level34 following the campaign balance pass. Distinct two-stage body growth accompanies a proposed Driftless Trail choice, Rochester revival after badge1 and post-League access to the other line. These new gameplay services remain authoring proposals. New artwork receives completion credit only after native conversion and explicit visual review.
 
 An optional per-view `interior_black_min_samples` setting (default32 of64) preserves thin structural seams when required, independently of the exterior contour pass. Changing it invalidates stale exported provenance. The original153 use the unchanged default. The two fossil lines use8 to retain their shell divisions; their current native candidates have explicit root visual reviews.
+
+Active evolution lines retain every existing type through evolution and may gain a second type once. Run `python3 planning/minnesota/tools/audit_evolution_typing.py` after editing the roster. The public Pokédex and a separate local game-pack child include these changes; see `docs/pokedex-web.md` and `docs/game-content.md` for their verified status.
+
+## November 3 reviewed artwork refresh
+
+The [verified native-art checkpoint](NATIVE-ART-20261103.md) records the executed
+local restoration and graphics-only refresh commands, all 52 requested species,
+normal/shiny battle fixtures and native battle captures. `--refresh-graphics`
+updates only explicitly selected, already-installed families and rejects missing
+species. It preserves game data, audio and unrelated assets. The candidate stays
+under ignored `target/`; the world selection and deployed game are unchanged.

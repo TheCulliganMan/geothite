@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "family_id": "MN_F080",
+  "species": [
+    {
+      "species_id": "MN_175",
+      "runtime_token": "INVERVEIL",
+      "palette_rgb555": [
+        32767,
+        32533,
+        18665,
+        0
+      ],
+      "shiny_palette_rgb555": [
+        32767,
+        25279,
+        7474,
+        0
+      ],
+      "fit": [
+        14,
+        14
+      ],
+      "alpha_threshold": 200,
+      "sampling": "feature_preserving",
+      "minimum_foreground_samples": 16,
+      "black_priority_samples": 32,
+      "interior_black_samples": 32,
+      "opaque_interior_minimum_samples": 60,
+      "frames": [
+        {
+          "pose": "down_idle",
+          "source": "inverveil.overworld.imagegen-20261104-v3.png",
+          "crop": [
+            0,
+            0,
+            512,
+            512
+          ]
+        },
+        {
+          "pose": "up_idle",
+          "source": "inverveil.overworld.imagegen-20261104-v3.png",
+          "crop": [
+            512,
+            0,
+            512,
+            512
+          ]
+        },
+        {
+          "pose": "left_idle",
+          "source": "inverveil.overworld.imagegen-20261104-v3.png",
+          "crop": [
+            1024,
+            0,
+            512,
+            512
+          ]
+        },
+        {
+          "pose": "down_step",
+          "source": "inverveil.overworld.imagegen-20261104-v3.png",
+          "crop": [
+            0,
+            512,
+            512,
+            512
+          ]
+        },
+        {
+          "pose": "up_step",
+          "source": "inverveil.overworld.imagegen-20261104-v3.png",
+          "crop": [
+            512,
+            512,
+            512,
+            512
+          ]
+        },
+        {
+          "pose": "left_step",
+          "source": "inverveil.overworld.imagegen-20261104-v3.png",
+          "crop": [
+            1024,
+            512,
+            512,
+            512
+          ]
+        }
+      ]
+    }
+  ]
+}

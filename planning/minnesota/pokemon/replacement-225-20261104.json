@@ -1,0 +1,1892 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-04",
+  "authority": "User Go after the named 24-species replacement plan and explicit goal to implement 225 active species.",
+  "status": "complete-active225-and-published-pokedex",
+  "current_active_species": 225,
+  "target_active_species": 225,
+  "preserve_archived_originals": true,
+  "families": [
+    {
+      "proposal_id": "P01",
+      "status": "active-and-published",
+      "working_names": [
+        "Snugslug",
+        "Mantlsnail",
+        "Cloisterra"
+      ],
+      "types": [
+        "ROCK",
+        "FAIRY"
+      ],
+      "stage_count": 3,
+      "base": "Woodland snail",
+      "secondary_theme": "Living sanctuary",
+      "evolution_design": "A small sheltering shell develops protected chambers and a broad enclosing lip. Preserve obvious snail anatomy; do not repeat agate crystals or fortress shields.",
+      "family_id": "MN_F146",
+      "members": [
+        {
+          "id": "MN_320",
+          "name": "Snugslug",
+          "stage": 1,
+          "types": [
+            "ROCK",
+            "FAIRY"
+          ],
+          "normal_rgb5": [
+            [
+              31,
+              31,
+              31
+            ],
+            [
+              31,
+              16,
+              13
+            ],
+            [
+              15,
+              5,
+              21
+            ],
+            [
+              0,
+              0,
+              0
+            ]
+          ],
+          "shiny_rgb5": [
+            [
+              11,
+              31,
+              13
+            ],
+            [
+              21,
+              14,
+              5
+            ]
+          ],
+          "status": "active-and-published"
+        },
+        {
+          "id": "MN_321",
+          "name": "Mantlsnail",
+          "stage": 2,
+          "types": [
+            "ROCK",
+            "FAIRY"
+          ],
+          "normal_rgb5": [
+            [
+              31,
+              31,
+              31
+            ],
+            [
+              31,
+              14,
+              17
+            ],
+            [
+              13,
+              4,
+              22
+            ],
+            [
+              0,
+              0,
+              0
+            ]
+          ],
+          "shiny_rgb5": [
+            [
+              16,
+              31,
+              11
+            ],
+            [
+              22,
+              12,
+              4
+            ]
+          ],
+          "status": "active-and-published",
+          "prior_working_name": "Mantlesnail",
+          "name_note": "Shortened to fit the existing 10-character native species-name limit."
+        },
+        {
+          "id": "MN_322",
+          "name": "Cloisterra",
+          "stage": 3,
+          "types": [
+            "ROCK",
+            "FAIRY"
+          ],
+          "normal_rgb5": [
+            [
+              31,
+              31,
+              31
+            ],
+            [
+              30,
+              12,
+              20
+            ],
+            [
+              10,
+              5,
+              23
+            ],
+            [
+              0,
+              0,
+              0
+            ]
+          ],
+          "shiny_rgb5": [
+            [
+              21,
+              30,
+              10
+            ],
+            [
+              23,
+              9,
+              5
+            ]
+          ],
+          "status": "active-and-published"
+        }
+      ],
+      "prompt_file": "sprites/mn-f146/replacement-20261104-v1/prompt.txt",
+      "design_briefs": [
+        "Snugslug: tiny soft woodland snail with TWO short rounded eye-stalks, squat folded foot and a low oval limestone shell, whose thick forward-curled lip shelters the head like a small alcove. One bold curl seam; no castle.",
+        "Mantlsnail: longer slug head and forward foot, crescent-curled shell opening around an empty dark side alcove, a thick scalloped mantle skirt and two separate short eye stalks. Shell grows in horizontal depth, not stacked towers.",
+        "Cloisterra: broad low adult snail with a swept hood shell, two deep separated shelter recesses formed by its own shell lip and a trailing curled foot; shy small face reaches from under the hood. Shell is a living rounded sanctuary, NOT Fortigard-like agate/shields/castle."
+      ],
+      "front_back_art": {
+        "status": "native-reviewed-selected",
+        "manifest": "sprites/mn-f146/vibrant-20261104-v2/manifest.json",
+        "normal_views": 6,
+        "review_sheet_sha256": "11add2edbf4e1728ac873a40b3285eae1df337bb82520013dda1e61dc9273676",
+        "notes": "Native review: two separate eye stalks and readable shell curl on juveniles; adult low shelter hood and dark recesses remain distinct. Close backs retain shell volume; sparse white shell light and tan/blue-grey dither. Candidate, not user approval or roster activation."
+      }
+    },
+    {
+      "proposal_id": "P02",
+      "status": "active-and-published",
+      "working_names": [
+        "Flurrit",
+        "Hareskift"
+      ],
+      "types": [
+        "ICE",
+        "FAIRY"
+      ],
+      "stage_count": 2,
+      "base": "Snowshoe hare",
+      "secondary_theme": "Disappearing winter tracks",
+      "evolution_design": "Broad sweeping paws erase its trail; layered fur develops into a shifting drift-shaped outline. Keep the two-stage arrangement provisional.",
+      "family_id": "MN_F147",
+      "members": [
+        {
+          "id": "MN_323",
+          "name": "Flurrit",
+          "stage": 1,
+          "types": [
+            "ICE",
+            "FAIRY"
+          ],
+          "normal_rgb5": [
+            [
+              31,
+              31,
+              31
+            ],
+            [
+              31,
+              20,
+              26
+            ],
+            [
+              9,
+              9,
+              25
+            ],
+            [
+              0,
+              0,
+              0
+            ]
+          ],
+          "shiny_rgb5": [
+            [
+              23,
+              31,
+              11
+            ],
+            [
+              25,
+              9,
+              10
+            ]
+          ],
+          "status": "active-and-published"
+        },
+        {
+          "id": "MN_324",
+          "name": "Hareskift",
+          "stage": 2,
+          "types": [
+            "ICE",
+            "FAIRY"
+          ],
+          "normal_rgb5": [
+            [
+              31,
+              31,
+              31
+            ],
+            [
+              16,
+              30,
+              28
+            ],
+            [
+              13,
+              7,
+              25
+            ],
+            [
+              0,
+              0,
+              0
+            ]
+          ],
+          "shiny_rgb5": [
+            [
+              26,
+              10,
+              30
+            ],
+            [
+              25,
+              12,
+              7
+            ]
+          ],
+          "status": "active-and-published"
+        }
+      ],
+      "prompt_file": "sprites/mn-f147/replacement-20261104-v1/prompt.txt",
+      "design_briefs": [
+        "Flurrit: small four-pawed snowshoe hare with long outward-tilted ears, dark ear tips, short round tail, white cheek and absurdly broad soft hind feet shaped like two sweeping snow brushes. Natural rabbit muzzle and two bounded eyes.",
+        "Hareskift: low bounding adult hare, exactly FOUR attached rabbit paws, one broad rear paw sweeping a little attached fur plume across its wake. Long parallel ears lean backwards; coat has wind-curved fur panels; rabbit-sized face, not human."
+      ],
+      "front_back_art": {
+        "status": "native-reviewed-selected",
+        "manifest": "sprites/mn-f147/vibrant-20261104-v2/manifest.json",
+        "normal_views": 4,
+        "review_sheet_sha256": "dbc3b48f3ce08978bc8d91ce76fdb1ed316d790e58da1d11297000dd3a640864",
+        "notes": "Native review: long ears and broad sweeping hind feet retain natural quadruped hare anatomy; small face and eye ink remain separate from white muzzle. Juvenile/adult proportions differ. Close rear portraits retain ear, nape and shoulder shadows. Candidate for user feedback."
+      }
+    },
+    {
+      "proposal_id": "P03",
+      "status": "active-and-published",
+      "working_names": [
+        "Owletch",
+        "Hollowl",
+        "Gloamowl"
+      ],
+      "types": [
+        "GHOST",
+        "FLYING"
+      ],
+      "stage_count": 3,
+      "base": "Barred owl",
+      "secondary_theme": "Negative space between forest branches",
+      "evolution_design": "Broken plumage patterns become openings in an owl silhouette; the final stage resembles a bird-shaped absence in northern woods.",
+      "family_id": "MN_F148",
+      "members": [
+        {
+          "id": "MN_325",
+          "name": "Owletch",
+          "stage": 1,
+          "types": [
+            "GHOST",
+            "FLYING"
+          ],
+          "normal_rgb5": [
+            [
+              31,
+              31,
+              31
+            ],
+            [
+              25,
+              14,
+              31
+            ],
+            [
+              6,
+              7,
+              18
+            ],
+            [
+              0,
+              0,
+              0
+            ]
+          ],
+          "shiny_rgb5": [
+            [
+              31,
+              22,
+              11
+            ],
+            [
+              18,
+              6,
+              8
+            ]
+          ],
+          "status": "active-and-published"
+        },
+        {
+          "id": "MN_326",
+          "name": "Hollowl",
+          "stage": 2,
+          "types": [
+            "GHOST",
+            "FLYING"
+          ],
+          "normal_rgb5": [
+            [
+              31,
+              31,
+              31
+            ],
+            [
+              22,
+              11,
+              30
+            ],
+            [
+              4,
+              8,
+              20
+            ],
+            [
+              0,
+              0,
+              0
+            ]
+          ],
+          "shiny_rgb5": [
+            [
+              30,
+              20,
+              10
+            ],
+            [
+              20,
+              4,
+              9
+            ]
+          ],
+          "status": "active-and-published"
+        },
+        {
+          "id": "MN_327",
+          "name": "Gloamowl",
+          "stage": 3,
+          "types": [
+            "GHOST",
+            "FLYING"
+          ],
+          "normal_rgb5": [
+            [
+              31,
+              31,
+              31
+            ],
+            [
+              19,
+              9,
+              29
+            ],
+            [
+              2,
+              9,
+              19
+            ],
+            [
+              0,
+              0,
+              0
+            ]
+          ],
+          "shiny_rgb5": [
+            [
+              29,
+              17,
+              9
+            ],
+            [
+              19,
+              2,
+              10
+            ]
+          ],
+          "status": "active-and-published"
+        }
+      ],
+      "prompt_file": "sprites/mn-f148/replacement-20261104-v1/prompt.txt",
+      "design_briefs": [
+        "Owletch: small barrel-bodied barred owlet with TWO round black-bounded eye disks, short hooked beak, two feathered legs, broad torn-looking feather markings that reveal small white gaps below the wings.",
+        "Hollowl: round broad owl poised on TWO bird feet, wings folded into strong crescent outlines, two deep facial disks over a clear tiny beak; TWO open white notches between body and wings suggest missing plumage.",
+        "Gloamowl: broad low owl gliding down-left; two rounded hornless ear contours, strong dark face with TWO distinct white-ringed eyes and central beak. Deep WHITE negative-space scallops penetrate both wing contours like gaps between branches; one coherent ghost-owl body, no branch props."
+      ],
+      "front_back_art": {
+        "status": "native-reviewed-selected",
+        "manifest": "sprites/mn-f148/vibrant-20261104-v2/manifest.json",
+        "normal_views": 6,
+        "review_sheet_sha256": "f4460f6009edd6cd728cad600d132f97a7ea68a69cd4439e5eebd2d08d102d7c",
+        "notes": "Native review: owl stages grow from round owlet to broad hovering negative-space wings. Eye disks, beak and two feet remain separate; adult wing gaps survive reduction. Close rear portraits retain wing/root folds and face profile. Candidate for user feedback."
+      }
+    },
+    {
+      "proposal_id": "P04",
+      "status": "active-and-published",
+      "working_names": [
+        "Bitterry"
+      ],
+      "types": [
+        "DARK",
+        "POISON"
+      ],
+      "stage_count": 1,
+      "base": "Forest berry shrub",
+      "secondary_theme": "Deceptive warning berries",
+      "evolution_design": "A small woody berry-cluster creature displays bright decoy berries around a concealed stern face. Fictional poisonous lure powers; a living plant, with no dough, baking or food-container anatomy.",
+      "family_id": "MN_F149",
+      "members": [
+        {
+          "id": "MN_328",
+          "name": "Bitterry",
+          "stage": 1,
+          "types": [
+            "DARK",
+            "POISON"
+          ],
+          "normal_rgb5": [
+            [
+              31,
+              31,
+              31
+            ],
+            [
+              31,
+              9,
+              23
+            ],
+            [
+              3,
+              13,
+              6
+            ],
+            [
+              0,
+              0,
+              0
+            ]
+          ],
+          "shiny_rgb5": [
+            [
+              25,
+              31,
+              9
+            ],
+            [
+              5,
+              3,
+              13
+            ]
+          ],
+          "status": "active-and-published"
+        }
+      ],
+      "prompt_file": "sprites/mn-f149/replacement-20261104-v1/prompt.txt",
+      "design_briefs": [
+        "Bitterry: a squat living woodland berry shrub, four short crooked ROOT feet, a dark thorny twig body and a crown of exactly FIVE round purple warning berries with black calyxes. Small stern face sits LOW in an unmistakable dark leaf socket below berries. Two bounded white eyes and a small bite-shaped mouth, no muffin or pastry. Broad leaf folds and berry spheres have curved graded checker dither, not scattered white spots."
+      ],
+      "front_back_art": {
+        "status": "native-reviewed-selected",
+        "manifest": "sprites/mn-f149/vibrant-20261104-v2/manifest.json",
+        "normal_views": 2,
+        "review_sheet_sha256": "f089912dc003b09217d2a01d11cf50cb740e9a0fb68a01e9e26c0679b3fd8d6c",
+        "notes": "Native review: regenerated two-view source preserves magenta/black berry underside dither rather than green berry shadows. Five black-calyxed berries, sheltered eye pair and four root feet read as plant anatomy; rear leaves retain broad black fold shadows. Original source and palette study preserved. Candidate for user feedback."
+      }
+    },
+    {
+      "proposal_id": "P05",
+      "status": "active-and-published",
+      "working_names": [
+        "Cubluff",
+        "Talursa"
+      ],
+      "types": [
+        "ROCK",
+        "GROUND"
+      ],
+      "stage_count": 2,
+      "base": "American black bear",
+      "secondary_theme": "North Shore basalt cliffs and talus",
+      "evolution_design": "A black cub with blunt basalt claws becomes a broad four-legged bear whose interlocking shoulder columns and fallen-rock back plates embody a moving shoreline cliff.",
+      "family_id": "MN_F150",
+      "members": [
+        {
+          "id": "MN_329",
+          "name": "Cubluff",
+          "stage": 1,
+          "types": [
+            "ROCK",
+            "GROUND"
+          ],
+          "normal_rgb5": [
+            [
+              31,
+              31,
+              31
+            ],
+            [
+              31,
+              17,
+              4
+            ],
+            [
+              3,
+              11,
+              7
+            ],
+            [
+              0,
+              0,
+              0
+            ]
+          ],
+          "shiny_rgb5": [
+            [
+              4,
+              31,
+              15
+            ],
+            [
+              6,
+              3,
+              11
+            ]
+          ],
+          "status": "active-and-published"
+        },
+        {
+          "id": "MN_330",
+          "name": "Talursa",
+          "stage": 2,
+          "types": [
+            "ROCK",
+            "GROUND"
+          ],
+          "normal_rgb5": [
+            [
+              31,
+              31,
+              31
+            ],
+            [
+              29,
+              13,
+              3
+            ],
+            [
+              3,
+              10,
+              10
+            ],
+            [
+              0,
+              0,
+              0
+            ]
+          ],
+          "shiny_rgb5": [
+            [
+              3,
+              29,
+              11
+            ],
+            [
+              9,
+              3,
+              10
+            ]
+          ],
+          "status": "active-and-published"
+        }
+      ],
+      "prompt_file": "sprites/mn-f150/replacement-20261104-v1/prompt.txt",
+      "design_briefs": [
+        "Cubluff: small stocky black-bear cub on exactly FOUR paws, round ears, short broad snout, large head relative to short body. Blunt basalt claws and THREE flat shoulder stones grow out of real bear anatomy. Horizontal back, little round tail, not bipedal.",
+        "Talursa: massive low four-legged American black bear, exactly FOUR thick paws and naturally short round ears/tail. Broad bear snout and compact separated eyes under an overhanging brow. Interlocking HEXAGONAL basalt shoulder columns and irregular tilted talus plates on back are integrated into skin; heavy neck/hindquarters, not armor costume or a generic stone dragon."
+      ],
+      "front_back_art": {
+        "status": "native-reviewed-selected",
+        "manifest": "sprites/mn-f150/vibrant-20261104-v2/manifest.json",
+        "normal_views": 4,
+        "review_sheet_sha256": "2a28053ea6f9288b15a958e34e74203816c02e076a97843467d9f907cfa96579",
+        "notes": "Native review: natural four-pawed bear silhouettes, round ears, blunt snouts and integrated basalt shoulder columns. Native eyes retain white and dark centers. Column planes and shoulder dither differ from both archived bear lines. Close backs preserve neck/shoulder bulk. Candidate for user feedback."
+      }
+    },
+    {
+      "proposal_id": "P06",
+      "status": "active-and-published",
+      "working_names": [
+        "Trailpup",
+        "Pathfang",
+        "Waywolf"
+      ],
+      "types": [
+        "GROUND",
+        "FAIRY"
+      ],
+      "stage_count": 3,
+      "base": "Gray wolf",
+      "secondary_theme": "Northwoods winter trails and pack wayfinding",
+      "evolution_design": "Small forked paw markings develop into interlocking trail bands around legs and shoulders. The adult leaves temporary luminous paths its pack can follow. Invented path magic; avoid copper anatomy, aurora curtains and borrowed cultural teachings.",
+      "family_id": "MN_F151",
+      "members": [
+        {
+          "id": "MN_331",
+          "name": "Trailpup",
+          "stage": 1,
+          "types": [
+            "GROUND",
+            "FAIRY"
+          ],
+          "normal_rgb5": [
+            [
+              31,
+              31,
+              31
+            ],
+            [
+              13,
+              24,
+              31
+            ],
+            [
+              13,
+              5,
+              22
+            ],
+            [
+              0,
+              0,
+              0
+            ]
+          ],
+          "shiny_rgb5": [
+            [
+              31,
+              11,
+              25
+            ],
+            [
+              22,
+              12,
+              5
+            ]
+          ],
+          "status": "active-and-published"
+        },
+        {
+          "id": "MN_332",
+          "name": "Pathfang",
+          "stage": 2,
+          "types": [
+            "GROUND",
+            "FAIRY"
+          ],
+          "normal_rgb5": [
+            [
+              31,
+              31,
+              31
+            ],
+            [
+              9,
+              26,
+              30
+            ],
+            [
+              10,
+              5,
+              23
+            ],
+            [
+              0,
+              0,
+              0
+            ]
+          ],
+          "shiny_rgb5": [
+            [
+              30,
+              9,
+              28
+            ],
+            [
+              23,
+              9,
+              5
+            ]
+          ],
+          "status": "active-and-published"
+        },
+        {
+          "id": "MN_333",
+          "name": "Waywolf",
+          "stage": 3,
+          "types": [
+            "GROUND",
+            "FAIRY"
+          ],
+          "normal_rgb5": [
+            [
+              31,
+              31,
+              31
+            ],
+            [
+              11,
+              27,
+              31
+            ],
+            [
+              11,
+              4,
+              24
+            ],
+            [
+              0,
+              0,
+              0
+            ]
+          ],
+          "shiny_rgb5": [
+            [
+              31,
+              11,
+              29
+            ],
+            [
+              24,
+              9,
+              4
+            ]
+          ],
+          "status": "active-and-published"
+        }
+      ],
+      "prompt_file": "sprites/mn-f151/replacement-20261104-v1/prompt.txt",
+      "design_briefs": [
+        "Trailpup: small four-legged gray-wolf pup, triangular ears, short muzzle, curled natural tail. ONE fork-shaped pale trail marking on each hind ankle, broad dark saddle, no star or glowing props.",
+        "Pathfang: lean low trotting wolf adolescent with exactly FOUR paws, long muzzle and bushy tail balancing backward. Pale broken trail bands wrap the LEG anatomy and split at joints; two white bounded eyes, paws offset mid-stride.",
+        "Waywolf: mature long-bodied four-legged wolf in a confident low stalking stride, broad chest, lean abdomen and long level bushy tail. Three pale FORKING PATH bands curve over shoulders and rear ankles; raised fur ridges imply a path through snow. Natural wolf ears/muzzle, no cape, mane, antlers, copper or star core."
+      ],
+      "front_back_art": {
+        "status": "native-reviewed-selected",
+        "manifest": "sprites/mn-f151/vibrant-20261104-v2/manifest.json",
+        "normal_views": 6,
+        "review_sheet_sha256": "77ee451a6f5cc734fb8556a739b74e21901a13b298becb16de2381b40f0c171d",
+        "notes": "Native review: real four-legged wolves with progressively longer limbs/muzzles, natural tails and pale forked trail bands. Near eyes retain bounded white and dark pupils; far eyes follow source occlusion. Backs retain shoulder/trail pattern progression and body shadows. Candidate for user feedback."
+      }
+    },
+    {
+      "proposal_id": "P07",
+      "status": "active-and-published",
+      "working_names": [
+        "Hushbat",
+        "Deepulse",
+        "Noctector"
+      ],
+      "types": [
+        "PSYCHIC",
+        "FLYING"
+      ],
+      "stage_count": 3,
+      "base": "Little brown bat",
+      "secondary_theme": "Winter hibernation and fictional suspended time",
+      "evolution_design": "Sleepy round juvenile with tucked wings develops a layered insulating chest ruff, then broad heavy shoulders and rounded real wings poised motionlessly before a sudden burst.",
+      "family_id": "MN_F152",
+      "members": [
+        {
+          "id": "MN_334",
+          "name": "Hushbat",
+          "stage": 1,
+          "types": [
+            "PSYCHIC",
+            "FLYING"
+          ],
+          "normal_rgb5": [
+            [
+              31,
+              31,
+              31
+            ],
+            [
+              25,
+              15,
+              30
+            ],
+            [
+              8,
+              6,
+              20
+            ],
+            [
+              0,
+              0,
+              0
+            ]
+          ],
+          "shiny_rgb5": [
+            [
+              30,
+              22,
+              10
+            ],
+            [
+              20,
+              7,
+              6
+            ]
+          ],
+          "status": "active-and-published"
+        },
+        {
+          "id": "MN_335",
+          "name": "Deepulse",
+          "stage": 2,
+          "types": [
+            "PSYCHIC",
+            "FLYING"
+          ],
+          "normal_rgb5": [
+            [
+              31,
+              31,
+              31
+            ],
+            [
+              28,
+              12,
+              27
+            ],
+            [
+              9,
+              4,
+              22
+            ],
+            [
+              0,
+              0,
+              0
+            ]
+          ],
+          "shiny_rgb5": [
+            [
+              28,
+              28,
+              10
+            ],
+            [
+              22,
+              8,
+              4
+            ]
+          ],
+          "status": "active-and-published"
+        },
+        {
+          "id": "MN_336",
+          "name": "Noctector",
+          "stage": 3,
+          "types": [
+            "PSYCHIC",
+            "FLYING"
+          ],
+          "normal_rgb5": [
+            [
+              31,
+              31,
+              31
+            ],
+            [
+              23,
+              10,
+              30
+            ],
+            [
+              5,
+              7,
+              21
+            ],
+            [
+              0,
+              0,
+              0
+            ]
+          ],
+          "shiny_rgb5": [
+            [
+              30,
+              21,
+              10
+            ],
+            [
+              21,
+              5,
+              8
+            ]
+          ],
+          "status": "active-and-published"
+        }
+      ],
+      "prompt_file": "sprites/mn-f152/replacement-20261104-v3/prompt.txt",
+      "design_briefs": [
+        "Hushbat: tiny little-brown bat with a short round muzzle, TWO long leaf-shaped ears and TWO small black-bounded white eyes, hanging wings half-open into one scoop. TWO tiny hind claws. Not human, not vampiric costume.",
+        "Deepulse: a broad-eared bat with wing-root membranes folding into TWO deeply concave sensing cups; two short hind feet and long thin natural bat tail. Wings extended obliquely, real finger-struts, one dark central muzzle with two eyes.",
+        "Noctector: adult bat flying diagonally downward, broad crescent wings with nested curved membrane bands forming dark sensing chambers at roots, tall double-layered ears and a tiny separate face. Its own folded ear/wing anatomy evokes a detector chamber; no mechanical sensors, carried instrument or human body."
+      ],
+      "rejected_candidates": [
+        {
+          "source": "sprites/mn-f152/replacement-20261104-v1/front-back.rejected-similar-to-existing.png",
+          "reason": "User: Bat is too similar to existing Pokemon; rethink concept. Large vertical ears and conventional spread wings rejected.",
+          "date": "2026-11-04"
+        },
+        {
+          "source": "sprites/mn-f152/replacement-20261104-v2/front-back.rejected-ring-body.png",
+          "reason": "User explicitly rejected forced ring/frame bat body. Preserve but never select.",
+          "date": "2026-11-04"
+        }
+      ],
+      "replacement_concept": {
+        "status": "user-confirmed",
+        "base": "Natural little brown bat",
+        "secondary_theme": "Winter hibernation and fictional suspended time",
+        "constraints": [
+          "Tiny ears, short natural muzzle and real wings",
+          "No ring/frame body, oversized ear disks, clocks or detector structures",
+          "Native56x56 fronts/48x48 close rears; eye separation and volume/dither required"
+        ]
+      },
+      "concept_confirmation": {
+        "date": "2026-11-04",
+        "user_answer": "Use hibernation and suspended time, Psychic/Flying."
+      },
+      "front_back_art": {
+        "status": "native-reviewed-selected",
+        "manifest": "sprites/mn-f152/vibrant-20261104-v2/manifest.json",
+        "normal_views": 6,
+        "review_sheet_sha256": "16371c02520f4bcbefa7ae55826e83c14674a282f5352b65b30a481f731b6bfa",
+        "notes": "Native review: user-confirmed hibernation/suspended-time concept; tiny natural ears, tucked juvenile wings, deeper adolescent chest ruff and broad real adult membranes. Sleepy first front has deliberately closed eyes; later fronts retain focused slits, backs clear bounded near eyes. No ring/frame anatomy. Prior two rejected sheets preserved and excluded. Candidate for user feedback."
+      }
+    },
+    {
+      "proposal_id": "P08",
+      "status": "active-and-published",
+      "working_names": [
+        "Burrowbill",
+        "Bankwing"
+      ],
+      "types": [
+        "GROUND",
+        "FLYING"
+      ],
+      "stage_count": 2,
+      "base": "Bank swallow",
+      "secondary_theme": "Mississippi bluff nesting tunnels",
+      "evolution_design": "A small earth-dusted bird develops broad excavating claws, a reinforced beak and curved wing-root channels resembling tunnel arches. Aerial burrow construction rather than a carried nest or building.",
+      "family_id": "MN_F153",
+      "members": [
+        {
+          "id": "MN_337",
+          "name": "Burrowbill",
+          "stage": 1,
+          "types": [
+            "GROUND",
+            "FLYING"
+          ],
+          "normal_rgb5": [
+            [
+              31,
+              31,
+              31
+            ],
+            [
+              31,
+              15,
+              8
+            ],
+            [
+              4,
+              10,
+              22
+            ],
+            [
+              0,
+              0,
+              0
+            ]
+          ],
+          "shiny_rgb5": [
+            [
+              8,
+              31,
+              13
+            ],
+            [
+              22,
+              4,
+              11
+            ]
+          ],
+          "status": "active-and-published"
+        },
+        {
+          "id": "MN_338",
+          "name": "Bankwing",
+          "stage": 2,
+          "types": [
+            "GROUND",
+            "FLYING"
+          ],
+          "normal_rgb5": [
+            [
+              31,
+              31,
+              31
+            ],
+            [
+              31,
+              19,
+              4
+            ],
+            [
+              3,
+              9,
+              23
+            ],
+            [
+              0,
+              0,
+              0
+            ]
+          ],
+          "shiny_rgb5": [
+            [
+              4,
+              31,
+              17
+            ],
+            [
+              23,
+              3,
+              11
+            ]
+          ],
+          "status": "active-and-published"
+        }
+      ],
+      "prompt_file": "sprites/mn-f153/replacement-20261104-v2/prompt.txt",
+      "design_briefs": [
+        "Burrowbill: compact bank swallow with two strong little bird feet, a short triangular beak, buff face, dark bib and two tucked rounded wings. Its own wing roots curl into one small arch each; broad digging toes, no tools.",
+        "Bankwing: sleek bank swallow banking down-left, exactly TWO bird legs with broad hooked digging toes; stout short beak. Broad crescent wings have deep dark tunnel-shaped folds where they join its shoulders. Forked tail, aerodynamic head, integrated bluff-excavation anatomy, no carried nest or shovel."
+      ],
+      "front_back_art": {
+        "status": "native-reviewed-selected",
+        "manifest": "sprites/mn-f153/vibrant-20261104-v2/manifest.json",
+        "normal_views": 4,
+        "review_sheet_sha256": "cd2e59da8ca9dad8e3b1698f8bebb650b568d1a25914b5f55fc182d164902f70",
+        "notes": "Native review: short strong beaks, two digging bird feet, forked tails and dark root-wing folds. Juvenile tucked pose and adult banking wings differ; close rears preserve wing-root depth and bounded eye. Body dither survives palette conversion. Candidate for user feedback."
+      }
+    },
+    {
+      "proposal_id": "P09",
+      "status": "active-and-published",
+      "working_names": [
+        "Snowpip",
+        "Squallfin",
+        "Whitewhirl"
+      ],
+      "types": [
+        "ICE",
+        "FLYING"
+      ],
+      "stage_count": 3,
+      "base": "Snow bunting",
+      "secondary_theme": "Prairie blowing snow and flock formations",
+      "evolution_design": "Small dark-and-white wing marks become broad curving snow-streamer feather vanes. The adult gathers windblown snow into a moving spiral around its flock. Keep this airborne weather silhouette distinct from the hare and stationary snow-fence line.",
+      "family_id": "MN_F154",
+      "members": [
+        {
+          "id": "MN_339",
+          "name": "Snowpip",
+          "stage": 1,
+          "types": [
+            "ICE",
+            "FLYING"
+          ],
+          "normal_rgb5": [
+            [
+              31,
+              31,
+              31
+            ],
+            [
+              11,
+              27,
+              31
+            ],
+            [
+              5,
+              11,
+              25
+            ],
+            [
+              0,
+              0,
+              0
+            ]
+          ],
+          "shiny_rgb5": [
+            [
+              31,
+              11,
+              29
+            ],
+            [
+              25,
+              5,
+              13
+            ]
+          ],
+          "status": "active-and-published"
+        },
+        {
+          "id": "MN_340",
+          "name": "Squallfin",
+          "stage": 2,
+          "types": [
+            "ICE",
+            "FLYING"
+          ],
+          "normal_rgb5": [
+            [
+              31,
+              31,
+              31
+            ],
+            [
+              7,
+              28,
+              28
+            ],
+            [
+              5,
+              10,
+              25
+            ],
+            [
+              0,
+              0,
+              0
+            ]
+          ],
+          "shiny_rgb5": [
+            [
+              26,
+              7,
+              28
+            ],
+            [
+              25,
+              5,
+              12
+            ]
+          ],
+          "status": "active-and-published",
+          "prior_working_name": "Squallfinch",
+          "name_note": "Shortened to fit the existing 10-character native species-name limit."
+        },
+        {
+          "id": "MN_341",
+          "name": "Whitewhirl",
+          "stage": 3,
+          "types": [
+            "ICE",
+            "FLYING"
+          ],
+          "normal_rgb5": [
+            [
+              31,
+              31,
+              31
+            ],
+            [
+              8,
+              27,
+              31
+            ],
+            [
+              6,
+              8,
+              24
+            ],
+            [
+              0,
+              0,
+              0
+            ]
+          ],
+          "shiny_rgb5": [
+            [
+              31,
+              8,
+              29
+            ],
+            [
+              24,
+              6,
+              9
+            ]
+          ],
+          "status": "active-and-published"
+        }
+      ],
+      "prompt_file": "sprites/mn-f154/replacement-20261104-v1/prompt.txt",
+      "design_briefs": [
+        "Snowpip: tiny round snow bunting with short triangular beak, TWO little bird feet, white cheek, dark ear patch and two folded wings tipped by broad pale snow-feather fans.",
+        "Squallfin: medium snow bunting lifting from two bird feet, broad swept wings with dark leading edges and curved pale feather vanes; stout rounded body and short compact head with two clearly bounded eyes.",
+        "Whitewhirl: broad-winged adult snow bunting in a tight BANKING C-SHAPED silhouette. Two swept feather fans curve around its small central body, one long ribbon-like tail made of THREE attached FEATHERS, not loose snow effects. Real short beak and two eyes, airborne compact bird, no generic eagle or ice phoenix."
+      ],
+      "front_back_art": {
+        "status": "native-reviewed-selected",
+        "manifest": "sprites/mn-f154/vibrant-20261104-v2/manifest.json",
+        "normal_views": 6,
+        "review_sheet_sha256": "34dd3415afb5d0c74da2070865887feb6721603a0ff497c23386ff21e2e20d8b",
+        "notes": "Native review: round first snow bunting, lifting adolescent and C-shaped banking adult retain different silhouettes. Dark eye ink separates from pale cheek; three attached tail feathers survive. Native close rear portraits retain broad wing shadows and dither. Candidate for user feedback."
+      }
+    },
+    {
+      "proposal_id": "P10",
+      "status": "active-and-published",
+      "working_names": [
+        "Skimnymph",
+        "Rimefoil"
+      ],
+      "types": [
+        "ICE",
+        "DRAGON"
+      ],
+      "stage_count": 2,
+      "base": "Dragonfly",
+      "secondary_theme": "Wind-powered travel over Minnesota lake ice",
+      "evolution_design": "A low long-bodied youngster grows six blade-edged ice-running legs; the adult unfolds four taut sail-like wings and steers over ice using its own abdomen as a boom. No separate boat, hockey equipment or fishing flag. Both stages share Ice/Dragon; maintain recognizable insect-derived anatomy.",
+      "family_id": "MN_F155",
+      "members": [
+        {
+          "id": "MN_342",
+          "name": "Skimnymph",
+          "stage": 1,
+          "types": [
+            "ICE",
+            "DRAGON"
+          ],
+          "normal_rgb5": [
+            [
+              31,
+              31,
+              31
+            ],
+            [
+              10,
+              30,
+              24
+            ],
+            [
+              5,
+              9,
+              24
+            ],
+            [
+              0,
+              0,
+              0
+            ]
+          ],
+          "shiny_rgb5": [
+            [
+              22,
+              10,
+              30
+            ],
+            [
+              24,
+              5,
+              11
+            ]
+          ],
+          "status": "active-and-published"
+        },
+        {
+          "id": "MN_343",
+          "name": "Rimefoil",
+          "stage": 2,
+          "types": [
+            "ICE",
+            "DRAGON"
+          ],
+          "normal_rgb5": [
+            [
+              31,
+              31,
+              31
+            ],
+            [
+              7,
+              28,
+              31
+            ],
+            [
+              10,
+              7,
+              25
+            ],
+            [
+              0,
+              0,
+              0
+            ]
+          ],
+          "shiny_rgb5": [
+            [
+              31,
+              7,
+              30
+            ],
+            [
+              25,
+              9,
+              7
+            ]
+          ],
+          "status": "active-and-published"
+        }
+      ],
+      "prompt_file": "sprites/mn-f155/replacement-20261104-v1/prompt.txt",
+      "design_briefs": [
+        "Skimnymph: juvenile dragonfly nymph low on exactly SIX short blade-edged skating legs, elongated abdomen, broad low head with two large separated compound eyes, short folded wing buds. Body pointed diagonally down-left, not a caterpillar or arachnid.",
+        "Rimefoil: elegant adult dragonfly, exactly SIX jointed legs and FOUR broad transparent-look pale sail wings with solid dark leading edges. A long slightly curved segmented abdomen is its own steering boom. Two clear compound eyes, tiny muzzle plate, crystalline wing-root ridges; no boat, rods, handheld props or human anatomy."
+      ],
+      "front_back_art": {
+        "status": "native-reviewed-selected",
+        "manifest": "sprites/mn-f155/vibrant-20261104-v2/manifest.json",
+        "normal_views": 4,
+        "review_sheet_sha256": "0c0f223df611d1b5105f61dc20e7075c2ee7c1cdc98afdeb002d896c7e8e0291",
+        "notes": "Native review: six-legged low dragonfly nymph develops four pale sail wings and long abdomen. Native compound eyes remain distinct; dark wing leading edges separate all four wings and six legs. Rear shoulders/head and wing roots retained. Candidate for user feedback."
+      }
+    },
+    {
+      "proposal_id": "P11",
+      "status": "active-and-published",
+      "working_names": [
+        "Tactunnel"
+      ],
+      "types": [
+        "GROUND",
+        "PSYCHIC"
+      ],
+      "stage_count": 1,
+      "base": "Minnesota star-nosed mole",
+      "secondary_theme": "Tactile underground pathfinding",
+      "family_id": "MN_F156",
+      "members": [
+        {
+          "id": "MN_344",
+          "name": "Tactunnel",
+          "stage": 1,
+          "types": [
+            "GROUND",
+            "PSYCHIC"
+          ],
+          "normal_rgb5": [
+            [
+              31,
+              31,
+              31
+            ],
+            [
+              31,
+              21,
+              3
+            ],
+            [
+              14,
+              8,
+              25
+            ],
+            [
+              0,
+              0,
+              0
+            ]
+          ],
+          "shiny_rgb5": [
+            [
+              3,
+              31,
+              19
+            ],
+            [
+              25,
+              13,
+              8
+            ]
+          ],
+          "status": "active-and-published"
+        }
+      ],
+      "front_back_art": {
+        "status": "native-reviewed-selected",
+        "manifest": "sprites/mn-f156/native-redesign-20261104-v4/manifest.json",
+        "normal_views": 2,
+        "review_sheet_sha256": "af9aea8108a14ede05d78eb386cd23f2616eba94cc3352f03da2145d642f7db4",
+        "notes": "Native redesign: compact violet body, separate violet fan digging paws/white claws, large bounded marigold tactile nose, closed near eye socket/separate pupil and visible far eye. Guarded native corrections preserve nose lobes and eye bounds after reduction; curved paw/shoulder dither restores volume. Front down-left, close rear up-right. Originals preserved."
+      }
+    },
+    {
+      "proposal_id": "P12",
+      "status": "active-and-published",
+      "working_names": [
+        "Rekink",
+        "Revertail"
+      ],
+      "types": [
+        "DRAGON",
+        "FAIRY"
+      ],
+      "stage_count": 2,
+      "base": "Minnesota prairie skink",
+      "secondary_theme": "Regeneration and living decoy tails",
+      "family_id": "MN_F157",
+      "members": [
+        {
+          "id": "MN_345",
+          "name": "Rekink",
+          "stage": 1,
+          "types": [
+            "DRAGON",
+            "FAIRY"
+          ],
+          "normal_rgb5": [
+            [
+              31,
+              31,
+              31
+            ],
+            [
+              31,
+              24,
+              4
+            ],
+            [
+              0,
+              15,
+              11
+            ],
+            [
+              0,
+              0,
+              0
+            ]
+          ],
+          "shiny_rgb5": [
+            [
+              4,
+              31,
+              22
+            ],
+            [
+              10,
+              0,
+              15
+            ]
+          ],
+          "status": "active-and-published"
+        },
+        {
+          "id": "MN_346",
+          "name": "Revertail",
+          "stage": 2,
+          "types": [
+            "DRAGON",
+            "FAIRY"
+          ],
+          "normal_rgb5": [
+            [
+              31,
+              31,
+              31
+            ],
+            [
+              18,
+              30,
+              8
+            ],
+            [
+              0,
+              12,
+              14
+            ],
+            [
+              0,
+              0,
+              0
+            ]
+          ],
+          "shiny_rgb5": [
+            [
+              8,
+              20,
+              30
+            ],
+            [
+              14,
+              0,
+              13
+            ]
+          ],
+          "status": "active-and-published"
+        }
+      ],
+      "replaces_archived_species": [
+        "MN_314",
+        "MN_315"
+      ],
+      "regional_inspiration_source": "https://files.dnr.state.mn.us/natural_resources/animals/reptiles_amphibians/lizards/prairieskink_fs.pdf",
+      "type_balance_reason": "Current review roster has11Dragon,16Fairy,17Psychic and18Rock before these three additions. Avoid adding Water35, Grass27 or Fire26.",
+      "front_back_art": {
+        "status": "native-reviewed-selected",
+        "manifest": "sprites/mn-f157/vibrant-20261104-v2/manifest.json",
+        "normal_views": 4,
+        "review_sheet_sha256": "ac77475ea059f092d4222113e83078ea5016754ccb4975464226dd27d25ad54d",
+        "notes": "Native front/back candidate inspected for connected anatomy, battle orientation, eye boundaries and four-color dithered volume. Preserved owned original and conversion provenance. Awaiting user review."
+      }
+    },
+    {
+      "proposal_id": "P13",
+      "status": "active-and-published",
+      "working_names": [
+        "Pendulop"
+      ],
+      "types": [
+        "ROCK",
+        "PSYCHIC"
+      ],
+      "stage_count": 1,
+      "base": "Minnesota meadow jumping mouse",
+      "secondary_theme": "Living pendulum and vibration-sensitive stone balance",
+      "family_id": "MN_F158",
+      "members": [
+        {
+          "id": "MN_347",
+          "name": "Pendulop",
+          "stage": 1,
+          "types": [
+            "ROCK",
+            "PSYCHIC"
+          ],
+          "normal_rgb5": [
+            [
+              31,
+              31,
+              31
+            ],
+            [
+              31,
+              26,
+              3
+            ],
+            [
+              6,
+              9,
+              24
+            ],
+            [
+              0,
+              0,
+              0
+            ]
+          ],
+          "shiny_rgb5": [
+            [
+              3,
+              31,
+              24
+            ],
+            [
+              24,
+              6,
+              10
+            ]
+          ],
+          "status": "active-and-published"
+        }
+      ],
+      "replaces_archived_species": [
+        "MN_317"
+      ],
+      "regional_inspiration_source": "https://www.dnr.state.mn.us/mammals/mice_voles_rats.html",
+      "type_balance_reason": "Current review roster has11Dragon,16Fairy,17Psychic and18Rock before these three additions. Avoid adding Water35, Grass27 or Fire26.",
+      "front_back_art": {
+        "status": "native-reviewed-selected",
+        "manifest": "sprites/mn-f158/vibrant-20261104-v2/manifest.json",
+        "normal_views": 2,
+        "review_sheet_sha256": "c1fc836d0464e332b920abd2989659b711d162c0504c0e79d0056369d3eb0d66",
+        "notes": "Native front/back candidate inspected for connected anatomy, battle orientation, eye boundaries and four-color dithered volume. Preserved owned original and conversion provenance. Awaiting user review."
+      }
+    },
+    {
+      "proposal_id": "P14",
+      "status": "active-and-published",
+      "working_names": [
+        "Settkit",
+        "Braclaw",
+        "Riftmaul"
+      ],
+      "types": [
+        "GROUND",
+        "FIGHTING"
+      ],
+      "stage_count": 3,
+      "base": "Minnesota American badger",
+      "secondary_theme": "Earth shear and body leverage",
+      "family_id": "MN_F159",
+      "regional_inspiration_source": "https://www.dnr.state.mn.us/mammals/badger.html",
+      "members": [
+        {
+          "id": "MN_348",
+          "name": "Settkit",
+          "stage": 1,
+          "types": [
+            "GROUND",
+            "FIGHTING"
+          ],
+          "normal_rgb5": [
+            [
+              31,
+              31,
+              31
+            ],
+            [
+              31,
+              24,
+              4
+            ],
+            [
+              5,
+              9,
+              22
+            ],
+            [
+              0,
+              0,
+              0
+            ]
+          ],
+          "shiny_rgb5": [
+            [
+              4,
+              31,
+              22
+            ],
+            [
+              22,
+              5,
+              10
+            ]
+          ],
+          "status": "active-and-published"
+        },
+        {
+          "id": "MN_349",
+          "name": "Braclaw",
+          "stage": 2,
+          "types": [
+            "GROUND",
+            "FIGHTING"
+          ],
+          "normal_rgb5": [
+            [
+              31,
+              31,
+              31
+            ],
+            [
+              31,
+              15,
+              5
+            ],
+            [
+              11,
+              5,
+              23
+            ],
+            [
+              0,
+              0,
+              0
+            ]
+          ],
+          "shiny_rgb5": [
+            [
+              5,
+              31,
+              13
+            ],
+            [
+              23,
+              10,
+              5
+            ]
+          ],
+          "status": "active-and-published"
+        },
+        {
+          "id": "MN_350",
+          "name": "Riftmaul",
+          "stage": 3,
+          "types": [
+            "GROUND",
+            "FIGHTING"
+          ],
+          "normal_rgb5": [
+            [
+              31,
+              31,
+              31
+            ],
+            [
+              31,
+              11,
+              8
+            ],
+            [
+              9,
+              5,
+              22
+            ],
+            [
+              0,
+              0,
+              0
+            ]
+          ],
+          "shiny_rgb5": [
+            [
+              8,
+              31,
+              9
+            ],
+            [
+              22,
+              8,
+              5
+            ]
+          ],
+          "status": "active-and-published"
+        }
+      ],
+      "front_back_art": {
+        "status": "native-reviewed-selected",
+        "manifest": "sprites/mn-f159/vibrant-20261104-v2/manifest.json",
+        "normal_views": 6,
+        "notes": "Three sprite candidates fill net3slots after archiving the two non-turtle families and restoring Contrakett. Natural four-legged badgers with force-directing forelimbs; no held tools or clothes. User feedback pending.",
+        "review_sheet_sha256": "db565c130c6759de77db36155eb5d5114b6b46ae9fbb83b84dbf0267ca1a9275"
+      }
+    }
+  ],
+  "execution_scope": {
+    "status": "completed-authoring-compiled-data-and-pokedex",
+    "authority": "2026-11-04 user: Tactunnel needs work. It is not a good sprite. Fix and then promote candidates.",
+    "order": [
+      "Finish Tactunnel native front/back fix",
+      "Complete species data and promote31 candidates into225active roster",
+      "Verify native art, species/evolution/move closure and publish corrected Pokedex"
+    ],
+    "gameplay_server_deployment": "Not changed; this release updates the Pokedex."
+  },
+  "front_back_progress": {
+    "candidate_species": 0,
+    "native_views": 62,
+    "independent_pixel_palette_provenance_checks": "passed for62candidate views plus12retained turtle/pike views",
+    "active_registry_changed": true,
+    "user_feedback": "Promotion explicitly authorized after Tactunnel revision.",
+    "other_stages": "Full species data and original cries completed; encounter placement and game-server deployment are outside this publication.",
+    "promoted_species": 31
+  },
+  "turtle_feedback": {
+    "status": "identification-withdrawn-no-edits",
+    "user_correction": "No, not that one. I meant Contra Cut, but I do not think that is in there anymore.",
+    "action": "Leave both turtle families unchanged. Contrakett remains archived; identify later through the published art review."
+  },
+  "additional_removal_note": "Whole non-turtle F078/F082 families archived, including their earlier stages. F073 turtle line retained with Contrakett restored and redesigned.194retained +31sprite candidates =225review designs.",
+  "website_review_publication": {
+    "release": "20261104-promoted-225-42",
+    "url": "https://geothite.ryanculligan.com/pokedex/",
+    "active_species": 225,
+    "active_families": 99,
+    "promoted_species": 31,
+    "candidate_count": 0,
+    "preserved_archived_species": 121,
+    "cry_species_count": 225,
+    "walking_thumbnail_count": 182,
+    "verified": "Roster/evolution audit; compiled species, native graphics, typing and moves;225 runtime-decoded cries; public mobile front/back/shiny controls; archive filtering. Existing182voices and420unaffected audio assets preserved. Only Tactunnel normal front/back artwork changed from prior release.",
+    "gameplay_server_changed": false
+  },
+  "vibrant_color_pass": {
+    "scope": "All31 new art candidates plus3pike stages and restored third turtle; first2turtle sprites unchanged.",
+    "species_count": 35,
+    "native_geometry_preserved": true,
+    "study": "sprites/vibrant-color-study-20261104/palette-study.imagegen.png",
+    "verification": "Indexed rows identical in74native views; first2turtle normal PNGs byte-identical.35species recolored,31of them replacement candidates."
+  },
+  "promotion_authority": "2026-11-04 user: Tactunnel needs work. It is not a good sprite. Fix and then promote candidates.",
+  "promotion_counts": {
+    "previous_active_species": 194,
+    "promoted_species": 31,
+    "active_species": 225,
+    "active_families": 99,
+    "source_species_including_archives": 345
+  },
+  "tactunnel_revision": {
+    "manifest": "sprites/mn-f156/native-redesign-20261104-v4/manifest.json",
+    "status": "native-reviewed-and-published",
+    "notes": "Separated gold tactile nose from violet forepaws; white claws, bounded eyes and curved native dither. Original versions retained."
+  }
+}

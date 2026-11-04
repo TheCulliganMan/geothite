@@ -1,11 +1,11 @@
 {
   "schema_version": 2,
   "status": "canonical_original_species_authoring",
-  "species_count": 315,
+  "species_count": 345,
   "evolution_mix": {
-    "three_stage_families": 53,
-    "two_stage_families": 65,
-    "single_stage_species": 26,
+    "three_stage_families": 58,
+    "two_stage_families": 71,
+    "single_stage_species": 29,
     "legendary_species": 8,
     "mythical_species": 2
   },
@@ -15,7 +15,7 @@
     "maximum_species_per_type": 44,
     "minimum_ordinary_families_per_type": 5
   },
-  "preservation": "All source identities and earlier art remain archived, including retired families and the withdrawn Oreviathan evolution. Active roster follows roster-curation.json; app LINE labels are stable family IDs. The duck-duck-grey-duck family is Tapduck, Dartduck and Greytag. Tugget/Lakernaut remains a two-stage line; Knotlet/Lasserp gains Knotitan. Birchit/Portabeau/Voyagear is the Water starter. Source IDs remain stable; display numbers are repacked in family order with pseudo-legendaries, legendaries and mythicals last. Kindlit/Rimepelt/Borealynx (MN_F125) is the Fire starter; Cindore/Pelletor/Mesablast remains active as the ordinary Iron Range furnace family. MN_271..MN_273 and MN_F124 remain reserved for the archived water proposal. Kensigard (MN_277/MN_F126), a user-chosen pure Ground Kensington runestone singleton, brings the active dex to220; rejected Vanesail and Sodger art remain unregistered and archived. Wildlife revision: keep Bobcast/Buoyostic, retire eight other weather families plus Torchcap, add seventeen species in seven woodland/wetland families, and retype Stackajack to pure Normal. Exactly220 active species remain.",
+  "preservation": "All source identities and earlier art remain archived, including retired families and the withdrawn Oreviathan evolution. Active roster follows roster-curation.json; app LINE labels are stable family IDs. The duck-duck-grey-duck family is Tapduck, Dartduck and Greytag. Tugget/Lakernaut remains a two-stage line; Knotlet/Lasserp gains Knotitan. Birchit/Portabeau/Voyagear is the Water starter. Source IDs remain stable; display numbers are repacked in family order with pseudo-legendaries, legendaries and mythicals last. Kindlit/Rimepelt/Borealynx (MN_F125) is the Fire starter; Cindore/Pelletor/Mesablast remains active as the ordinary Iron Range furnace family. MN_271..MN_273 and MN_F124 remain reserved for the archived water proposal. Kensigard (MN_277/MN_F126), a user-chosen pure Ground Kensington runestone singleton, brings the active dex to220; rejected Vanesail and Sodger art remain unregistered and archived. Wildlife revision: keep Bobcast/Buoyostic, retire eight other weather families plus Torchcap, add seventeen species in seven woodland/wetland families, and retype Stackajack to pure Normal. Exactly220 active species remain. Review 2026-11-02: drop/redo/redesign means archive; refinement stays active. Requested restorations applied before the new archives. Latest2026-11-04correction: Contrakett restored as the third turtle stage; whole Knothuck/Boughlash/Agropummel and Augrub/Heliknock families retired. Current active identities194;31replacement front/back candidates remain separate, for225art-review designs.",
   "implementation_boundary": "Canonical identities, themes, relationships and proposed habitats. Individual GBC sprite palettes and reviewed native art are indexed separately. Complete species-profiles.json contains Pok\u00e9dex entries, stats, evolution methods and full learnsets for the Rust pack compiler. New Minnesota encounter placement, fossil-choice/revival services and multi-frame animation still require separate authoring; these source files do not register map events.",
   "sources": [
     {
@@ -428,8 +428,7 @@
           "id": "MN_005",
           "name": "Pelletor",
           "types": [
-            "FIRE",
-            "ROCK"
+            "FIRE"
           ],
           "stage": 2,
           "evolves_to": "MN_006"
@@ -499,8 +498,7 @@
           "id": "MN_011",
           "name": "Portabeau",
           "types": [
-            "WATER",
-            "NORMAL"
+            "WATER"
           ],
           "stage": 2,
           "evolves_to": "MN_012"
@@ -717,8 +715,7 @@
           "id": "MN_029",
           "name": "Millimp",
           "types": [
-            "NORMAL",
-            "GROUND"
+            "NORMAL"
           ],
           "stage": 2,
           "evolves_to": "MN_030"
@@ -976,8 +973,7 @@
           "id": "MN_049",
           "name": "Castorock",
           "types": [
-            "ROCK",
-            "NORMAL"
+            "ROCK"
           ],
           "stage": 1,
           "evolves_to": "MN_050"
@@ -1629,7 +1625,7 @@
           "id": "MN_101",
           "name": "Taconib",
           "types": [
-            "ROCK",
+            "STEEL",
             "DRAGON"
           ],
           "stage": 1,
@@ -1710,8 +1706,7 @@
           "id": "MN_108",
           "name": "Silksod",
           "types": [
-            "BUG",
-            "GROUND"
+            "BUG"
           ],
           "stage": 2,
           "evolves_to": "MN_109"
@@ -1746,8 +1741,8 @@
           "id": "MN_111",
           "name": "Cacheek",
           "types": [
-            "DARK",
-            "GROUND"
+            "NORMAL",
+            "DARK"
           ],
           "stage": 2,
           "evolves_to": "MN_112"
@@ -1756,8 +1751,8 @@
           "id": "MN_112",
           "name": "Furrowbank",
           "types": [
-            "DARK",
-            "GROUND"
+            "NORMAL",
+            "DARK"
           ],
           "stage": 3,
           "evolves_to": null
@@ -1792,7 +1787,7 @@
           "id": "MN_115",
           "name": "Prairondo",
           "types": [
-            "GROUND",
+            "NORMAL",
             "FLYING"
           ],
           "stage": 3,
@@ -2118,8 +2113,7 @@
           "id": "MN_139",
           "name": "Chorip",
           "types": [
-            "WATER",
-            "PSYCHIC"
+            "WATER"
           ],
           "stage": 1,
           "evolves_to": "MN_140"
@@ -2128,14 +2122,14 @@
           "id": "MN_140",
           "name": "Choirbog",
           "types": [
-            "POISON",
-            "FAIRY"
+            "WATER",
+            "POISON"
           ],
           "stage": 2,
           "evolves_to": null
         }
       ],
-      "theme": "Prairie wetland choruses and hypnotic toads: one resonating throat balloon becomes three differently sized poison-filled sacs; their chords make opponents drowsy. Chorip senses the chorus with Water/Psychic traits; mature Choirbog combines Poison sacs with a Fairy lullaby.",
+      "theme": "Prairie wetland choruses and hypnotic toads: one resonating throat balloon becomes three differently sized poison-filled sacs; their chords make opponents drowsy. Chorip senses its watery chorus; mature Choirbog retains its Water nature and develops Poison sacs.",
       "region": "prairie"
     },
     {
@@ -2196,8 +2190,7 @@
           "id": "MN_145",
           "name": "Cartick",
           "types": [
-            "STEEL",
-            "POISON"
+            "STEEL"
           ],
           "stage": 1,
           "evolves_to": "MN_146"
@@ -2206,7 +2199,7 @@
           "id": "MN_146",
           "name": "Haulgeist",
           "types": [
-            "POISON",
+            "STEEL",
             "GHOST"
           ],
           "stage": 2,
@@ -2287,13 +2280,14 @@
     {
       "id": "MN_F073",
       "region": "north_shore",
-      "theme": "Wild teakettle logging-camp folklore and misleading opposite snowshoe tracks: a warm spout-mouthed creature grows a pressure chest and oversized feet pointing in opposite directions.",
+      "theme": "Minnesota softshell turtles and living steam pressure: warm snorkel-snouted hatchling develops a pressure chest and opposed paddling feet, then a low wide leathery-shelled adult with four webbed limbs, long flexible snorkel neck and paired shell-edge steam vents. Heat and river water are biological fantasy; no held kettle, metal boiler or manufactured shell.",
       "members": [
         {
           "id": "MN_154",
           "name": "Hissip",
           "types": [
-            "FIRE"
+            "FIRE",
+            "WATER"
           ],
           "stage": 1,
           "evolves_to": "MN_155"
@@ -2303,25 +2297,29 @@
           "name": "Crosspout",
           "types": [
             "FIRE",
-            "DARK"
+            "WATER"
           ],
           "stage": 2,
-          "evolves_to": "MN_156"
+          "evolves_to": "MN_156",
+          "evolution_condition": {
+            "method": "LEVEL",
+            "level": 40
+          }
         },
         {
           "id": "MN_156",
           "name": "Contrakett",
           "types": [
             "FIRE",
-            "DARK"
+            "WATER"
           ],
           "stage": 3,
           "evolves_to": null
         }
       ],
       "evolution_design": {
-        "regional_evidence": "A North Shore tall tale describes a hissing spout-mouth creature whose odd feet leave snowshoe tracks pointing in opposite directions.",
-        "original_invention": "Kettle-like chest, pressure anatomy and the precise three-stage shapes below are original design inventions, not a claimed historical illustration.",
+        "regional_evidence": "Minnesota DNR lists the spiny softshell turtle. Leathery flattened shell, tubular snout and webbed feet inform the new third-stage anatomy; steam pressure is an original fantasy.",
+        "original_invention": "Living warmth, pressure-vent shell folds and opposed paddling feet combine retained first two identities with a clear softshell adult; no manufactured kettle or metal boiler.",
         "body_growth": [
           {
             "species_id": "MN_154",
@@ -2335,8 +2333,8 @@
           },
           {
             "species_id": "MN_156",
-            "body": "Very low horizontal pressure beast: long continuous arched spine, longer forward spout head, two folded short forearms beneath its chest, and enormous opposed snowshoe feet at opposite ends. Three vent slits remain on the chest.",
-            "silhouette": "Long low arch nearly twice as wide as tall, broad foot ovals at the two ends with one wide dark opening each; crouched pivoting anatomy changes the upright middle-stage silhouette."
+            "body": "Low wide adult softshell turtle: broad flat leathery disc shell, long flexible snorkel neck, four splayed webbed legs, short tapered tail and two shell-rim pressure folds. Small bounded expressive eye and layered skin folds.",
+            "silhouette": "Broad low softshell disc over four webbed paddles, long down-left snorkel neck and two folded shell-edge vents; no tall blob or snapping-turtle armor."
           }
         ]
       },
@@ -2355,12 +2353,18 @@
           "url": "https://storage.googleapis.com/mnhs-org-support/mn_history_articles/21/v21i04p353-356.pdf",
           "supports": "North Shore wild-teakettle tale, spout mouth, hissing steam and opposite-direction snowshoe tracks; PDF pages1\u20133.",
           "source_kind": "primary historical field recollection"
+        },
+        {
+          "title": "Minnesota DNR: Spiny Softshell Turtle",
+          "url": "https://www.dnr.state.mn.us/reptiles_amphibians/turtles/spiny_softshell.html",
+          "supports": "Regional softshell base; steam and pressure-fold anatomy are original fantasy."
         }
       ],
       "nonduplication": "Existing Tugget/Lakernaut is ore-freighter boiler anatomy; this line is an opposite-footed forest trickster. Existing Kettlurk is a water-feature legendary and has no kettle-body or footprint theme.",
       "classification": "ordinary",
       "design_lock": "locked by root; first153identities fixed",
-      "design_status": "root-reviewed-locked-for-art"
+      "design_status": "final-stage-archived-by-user",
+      "user_correction": "2026-11-04: Keep the turtle line, restore Contrakett as third stage, redo and retype its art. First two sprites preserved. Fire/Water consistently across the family; no unrelated non-turtle predecessors remain active."
     },
     {
       "id": "MN_F074",
@@ -2531,7 +2535,7 @@
       "id": "MN_F076",
       "region": "north_shore",
       "classification": "ordinary",
-      "theme": "Lost mismatched winter clothes find one another. One mitten becomes a floating pair of two visibly mismatched mittens; the same two mittens then gather one mismatched triangular shawl, whose billowing cloth grants flight. A collective ghost wardrobe with no hidden body, animal anatomy, hood or hat. The first two stages remain lost Ghost/Fairy objects; completing the shawl releases the lost-object haunting into a reunited Fairy/Flying wardrobe.",
+      "theme": "Lost mismatched winter clothes find one another. One mitten becomes a floating pair of two visibly mismatched mittens; the same two mittens then gather one mismatched triangular shawl, whose billowing cloth grants flight. A collective ghost wardrobe with no hidden body, animal anatomy, hood or hat. The complete family remains Ghost/Fairy as the lost garments reunite.",
       "members": [
         {
           "id": "MN_163",
@@ -2557,8 +2561,8 @@
           "id": "MN_165",
           "name": "Shawlter",
           "types": [
-            "FAIRY",
-            "FLYING"
+            "GHOST",
+            "FAIRY"
           ],
           "stage": 3,
           "evolves_to": null
@@ -2566,7 +2570,7 @@
       ],
       "evolution_design": {
         "regional_evidence": "Minnesota DNR describes wool clothing, including hand coverings, and difficulty drying wet wool overnight in logging camps. MNHS describes garments suspended overhead in bunkhouses.",
-        "original_invention": "Original fantasy collective: mismatched lost wool items find each other and form one ghost species. The third-stage shawl provides actual wind-catching flight; earlier mitten stages are Ghost/Fairy, and the completed shawl becomes Fairy/Flying.",
+        "original_invention": "Original fantasy collective: mismatched lost wool items find each other and form one ghost species. The third-stage shawl provides actual wind-catching flight while the entire family remains Ghost/Fairy.",
         "body_growth": [
           {
             "species_id": "MN_163",
@@ -2722,16 +2726,6 @@
             "FIGHTING"
           ],
           "stage": 2,
-          "evolves_to": "MN_171"
-        },
-        {
-          "id": "MN_171",
-          "name": "Agropummel",
-          "types": [
-            "DARK",
-            "FIGHTING"
-          ],
-          "stage": 3,
           "evolves_to": null
         }
       ],
@@ -4132,8 +4126,7 @@
           "id": "MN_215",
           "name": "Tesslarv",
           "types": [
-            "BUG",
-            "ROCK"
+            "BUG"
           ],
           "stage": 1,
           "evolves_to": "MN_216",
@@ -4293,8 +4286,7 @@
           "id": "MN_222",
           "name": "Smoulden",
           "types": [
-            "FIRE",
-            "POISON"
+            "FIRE"
           ],
           "stage": 2,
           "evolves_to": "MN_223"
@@ -4354,7 +4346,7 @@
       "design_lock": "locked by root; first153identities fixed",
       "root_review": {
         "status": "design-locked",
-        "note": "Middle stage Fire/Poison reflects its embodied vented irritant-fume defense; final Fire/Ghost preserves the buried-memory spirit."
+        "note": "The middle stage remains Fire; the final stage gains Ghost to reflect its buried-memory spirit."
       },
       "design_status": "root-reviewed-locked-for-art"
     },
@@ -5457,8 +5449,7 @@
           "id": "MN_264",
           "name": "Pikeman",
           "types": [
-            "WATER",
-            "FIGHTING"
+            "WATER"
           ],
           "stage": 2,
           "evolves_to": "MN_265",
@@ -6396,7 +6387,7 @@
           "id": "MN_307",
           "name": "Gougecrest",
           "types": [
-            "FIGHTING",
+            "NORMAL",
             "FLYING"
           ],
           "stage": 3,
@@ -6427,6 +6418,7 @@
           "id": "MN_309",
           "name": "Crookveil",
           "types": [
+            "NORMAL",
             "DARK"
           ],
           "stage": 2,
@@ -6617,6 +6609,552 @@
         }
       ],
       "inspiration_boundary": "Original fictional wolf species. The Ojibwe wolf tradition informs its companion/guardian character; copper anatomy, poison powers, Team Lode excavation and the Kettlurk rivalry are game inventions, not an attributed traditional story. Use its original species name without fabricated Indigenous translations or copied ceremonial imagery."
+    },
+    {
+      "id": "MN_F146",
+      "region": "northwoods",
+      "classification": "ordinary",
+      "theme": "Woodland snail and Living sanctuary. A small sheltering shell develops protected chambers and a broad enclosing lip. Preserve obvious snail anatomy; do not repeat agate crystals or fortress shields.",
+      "members": [
+        {
+          "id": "MN_320",
+          "name": "Snugslug",
+          "types": [
+            "ROCK",
+            "FAIRY"
+          ],
+          "stage": 1,
+          "evolves_to": "MN_321",
+          "evolution_condition": {
+            "method": "LEVEL",
+            "level": 18
+          }
+        },
+        {
+          "id": "MN_321",
+          "name": "Mantlsnail",
+          "types": [
+            "ROCK",
+            "FAIRY"
+          ],
+          "stage": 2,
+          "evolves_to": "MN_322",
+          "evolution_condition": {
+            "method": "LEVEL",
+            "level": 36
+          }
+        },
+        {
+          "id": "MN_322",
+          "name": "Cloisterra",
+          "types": [
+            "ROCK",
+            "FAIRY"
+          ],
+          "stage": 3,
+          "evolves_to": null,
+          "evolution_condition": null
+        }
+      ],
+      "design_status": "promoted-after-native-front-back-review",
+      "promotion_authority": "2026-11-04 user: Tactunnel needs work. It is not a good sprite. Fix and then promote candidates.",
+      "source_art_manifest": "sprites/mn-f146/vibrant-20261104-v2/manifest.json"
+    },
+    {
+      "id": "MN_F147",
+      "region": "northwoods",
+      "classification": "ordinary",
+      "theme": "Snowshoe hare and Disappearing winter tracks. Broad sweeping paws erase its trail; layered fur develops into a shifting drift-shaped outline. Keep the two-stage arrangement provisional.",
+      "members": [
+        {
+          "id": "MN_323",
+          "name": "Flurrit",
+          "types": [
+            "ICE",
+            "FAIRY"
+          ],
+          "stage": 1,
+          "evolves_to": "MN_324",
+          "evolution_condition": {
+            "method": "LEVEL",
+            "level": 28
+          }
+        },
+        {
+          "id": "MN_324",
+          "name": "Hareskift",
+          "types": [
+            "ICE",
+            "FAIRY"
+          ],
+          "stage": 2,
+          "evolves_to": null,
+          "evolution_condition": null
+        }
+      ],
+      "design_status": "promoted-after-native-front-back-review",
+      "promotion_authority": "2026-11-04 user: Tactunnel needs work. It is not a good sprite. Fix and then promote candidates.",
+      "source_art_manifest": "sprites/mn-f147/vibrant-20261104-v2/manifest.json"
+    },
+    {
+      "id": "MN_F148",
+      "region": "northwoods",
+      "classification": "ordinary",
+      "theme": "Barred owl and Negative space between forest branches. Broken plumage patterns become openings in an owl silhouette; the final stage resembles a bird-shaped absence in northern woods.",
+      "members": [
+        {
+          "id": "MN_325",
+          "name": "Owletch",
+          "types": [
+            "GHOST",
+            "FLYING"
+          ],
+          "stage": 1,
+          "evolves_to": "MN_326",
+          "evolution_condition": {
+            "method": "LEVEL",
+            "level": 18
+          }
+        },
+        {
+          "id": "MN_326",
+          "name": "Hollowl",
+          "types": [
+            "GHOST",
+            "FLYING"
+          ],
+          "stage": 2,
+          "evolves_to": "MN_327",
+          "evolution_condition": {
+            "method": "LEVEL",
+            "level": 36
+          }
+        },
+        {
+          "id": "MN_327",
+          "name": "Gloamowl",
+          "types": [
+            "GHOST",
+            "FLYING"
+          ],
+          "stage": 3,
+          "evolves_to": null,
+          "evolution_condition": null
+        }
+      ],
+      "design_status": "promoted-after-native-front-back-review",
+      "promotion_authority": "2026-11-04 user: Tactunnel needs work. It is not a good sprite. Fix and then promote candidates.",
+      "source_art_manifest": "sprites/mn-f148/vibrant-20261104-v2/manifest.json"
+    },
+    {
+      "id": "MN_F149",
+      "region": "northwoods",
+      "classification": "ordinary",
+      "theme": "Forest berry shrub and Deceptive warning berries. A small woody berry-cluster creature displays bright decoy berries around a concealed stern face. Fictional poisonous lure powers; a living plant, with no dough, baking or food-container anatomy.",
+      "members": [
+        {
+          "id": "MN_328",
+          "name": "Bitterry",
+          "types": [
+            "DARK",
+            "POISON"
+          ],
+          "stage": 1,
+          "evolves_to": null,
+          "evolution_condition": null
+        }
+      ],
+      "design_status": "promoted-after-native-front-back-review",
+      "promotion_authority": "2026-11-04 user: Tactunnel needs work. It is not a good sprite. Fix and then promote candidates.",
+      "source_art_manifest": "sprites/mn-f149/vibrant-20261104-v2/manifest.json"
+    },
+    {
+      "id": "MN_F150",
+      "region": "north_shore",
+      "classification": "ordinary",
+      "theme": "American black bear and North Shore basalt cliffs and talus. A black cub with blunt basalt claws becomes a broad four-legged bear whose interlocking shoulder columns and fallen-rock back plates embody a moving shoreline cliff.",
+      "members": [
+        {
+          "id": "MN_329",
+          "name": "Cubluff",
+          "types": [
+            "ROCK",
+            "GROUND"
+          ],
+          "stage": 1,
+          "evolves_to": "MN_330",
+          "evolution_condition": {
+            "method": "LEVEL",
+            "level": 28
+          }
+        },
+        {
+          "id": "MN_330",
+          "name": "Talursa",
+          "types": [
+            "ROCK",
+            "GROUND"
+          ],
+          "stage": 2,
+          "evolves_to": null,
+          "evolution_condition": null
+        }
+      ],
+      "design_status": "promoted-after-native-front-back-review",
+      "promotion_authority": "2026-11-04 user: Tactunnel needs work. It is not a good sprite. Fix and then promote candidates.",
+      "source_art_manifest": "sprites/mn-f150/vibrant-20261104-v2/manifest.json"
+    },
+    {
+      "id": "MN_F151",
+      "region": "northwoods",
+      "classification": "ordinary",
+      "theme": "Gray wolf and Northwoods winter trails and pack wayfinding. Small forked paw markings develop into interlocking trail bands around legs and shoulders. The adult leaves temporary luminous paths its pack can follow. Invented path magic; avoid copper anatomy, aurora curtains and borrowed cultural teachings.",
+      "members": [
+        {
+          "id": "MN_331",
+          "name": "Trailpup",
+          "types": [
+            "GROUND",
+            "FAIRY"
+          ],
+          "stage": 1,
+          "evolves_to": "MN_332",
+          "evolution_condition": {
+            "method": "LEVEL",
+            "level": 18
+          }
+        },
+        {
+          "id": "MN_332",
+          "name": "Pathfang",
+          "types": [
+            "GROUND",
+            "FAIRY"
+          ],
+          "stage": 2,
+          "evolves_to": "MN_333",
+          "evolution_condition": {
+            "method": "LEVEL",
+            "level": 36
+          }
+        },
+        {
+          "id": "MN_333",
+          "name": "Waywolf",
+          "types": [
+            "GROUND",
+            "FAIRY"
+          ],
+          "stage": 3,
+          "evolves_to": null,
+          "evolution_condition": null
+        }
+      ],
+      "design_status": "promoted-after-native-front-back-review",
+      "promotion_authority": "2026-11-04 user: Tactunnel needs work. It is not a good sprite. Fix and then promote candidates.",
+      "source_art_manifest": "sprites/mn-f151/vibrant-20261104-v2/manifest.json"
+    },
+    {
+      "id": "MN_F152",
+      "region": "iron_range",
+      "classification": "ordinary",
+      "theme": "Little brown bat and Winter hibernation and fictional suspended time. Sleepy round juvenile with tucked wings develops a layered insulating chest ruff, then broad heavy shoulders and rounded real wings poised motionlessly before a sudden burst.",
+      "members": [
+        {
+          "id": "MN_334",
+          "name": "Hushbat",
+          "types": [
+            "PSYCHIC",
+            "FLYING"
+          ],
+          "stage": 1,
+          "evolves_to": "MN_335",
+          "evolution_condition": {
+            "method": "LEVEL",
+            "level": 18
+          }
+        },
+        {
+          "id": "MN_335",
+          "name": "Deepulse",
+          "types": [
+            "PSYCHIC",
+            "FLYING"
+          ],
+          "stage": 2,
+          "evolves_to": "MN_336",
+          "evolution_condition": {
+            "method": "LEVEL",
+            "level": 36
+          }
+        },
+        {
+          "id": "MN_336",
+          "name": "Noctector",
+          "types": [
+            "PSYCHIC",
+            "FLYING"
+          ],
+          "stage": 3,
+          "evolves_to": null,
+          "evolution_condition": null
+        }
+      ],
+      "design_status": "promoted-after-native-front-back-review",
+      "promotion_authority": "2026-11-04 user: Tactunnel needs work. It is not a good sprite. Fix and then promote candidates.",
+      "source_art_manifest": "sprites/mn-f152/vibrant-20261104-v2/manifest.json"
+    },
+    {
+      "id": "MN_F153",
+      "region": "river_bluffs",
+      "classification": "ordinary",
+      "theme": "Bank swallow and Mississippi bluff nesting tunnels. A small earth-dusted bird develops broad excavating claws, a reinforced beak and curved wing-root channels resembling tunnel arches. Aerial burrow construction rather than a carried nest or building.",
+      "members": [
+        {
+          "id": "MN_337",
+          "name": "Burrowbill",
+          "types": [
+            "GROUND",
+            "FLYING"
+          ],
+          "stage": 1,
+          "evolves_to": "MN_338",
+          "evolution_condition": {
+            "method": "LEVEL",
+            "level": 28
+          }
+        },
+        {
+          "id": "MN_338",
+          "name": "Bankwing",
+          "types": [
+            "GROUND",
+            "FLYING"
+          ],
+          "stage": 2,
+          "evolves_to": null,
+          "evolution_condition": null
+        }
+      ],
+      "design_status": "promoted-after-native-front-back-review",
+      "promotion_authority": "2026-11-04 user: Tactunnel needs work. It is not a good sprite. Fix and then promote candidates.",
+      "source_art_manifest": "sprites/mn-f153/vibrant-20261104-v2/manifest.json"
+    },
+    {
+      "id": "MN_F154",
+      "region": "prairie",
+      "classification": "ordinary",
+      "theme": "Snow bunting and Prairie blowing snow and flock formations. Small dark-and-white wing marks become broad curving snow-streamer feather vanes. The adult gathers windblown snow into a moving spiral around its flock. Keep this airborne weather silhouette distinct from the hare and stationary snow-fence line.",
+      "members": [
+        {
+          "id": "MN_339",
+          "name": "Snowpip",
+          "types": [
+            "ICE",
+            "FLYING"
+          ],
+          "stage": 1,
+          "evolves_to": "MN_340",
+          "evolution_condition": {
+            "method": "LEVEL",
+            "level": 18
+          }
+        },
+        {
+          "id": "MN_340",
+          "name": "Squallfin",
+          "types": [
+            "ICE",
+            "FLYING"
+          ],
+          "stage": 2,
+          "evolves_to": "MN_341",
+          "evolution_condition": {
+            "method": "LEVEL",
+            "level": 36
+          }
+        },
+        {
+          "id": "MN_341",
+          "name": "Whitewhirl",
+          "types": [
+            "ICE",
+            "FLYING"
+          ],
+          "stage": 3,
+          "evolves_to": null,
+          "evolution_condition": null
+        }
+      ],
+      "design_status": "promoted-after-native-front-back-review",
+      "promotion_authority": "2026-11-04 user: Tactunnel needs work. It is not a good sprite. Fix and then promote candidates.",
+      "source_art_manifest": "sprites/mn-f154/vibrant-20261104-v2/manifest.json"
+    },
+    {
+      "id": "MN_F155",
+      "region": "northern_lakes",
+      "classification": "ordinary",
+      "theme": "Dragonfly and Wind-powered travel over Minnesota lake ice. A low long-bodied youngster grows six blade-edged ice-running legs; the adult unfolds four taut sail-like wings and steers over ice using its own abdomen as a boom. No separate boat, hockey equipment or fishing flag. Both stages share Ice/Dragon; maintain recognizable insect-derived anatomy.",
+      "members": [
+        {
+          "id": "MN_342",
+          "name": "Skimnymph",
+          "types": [
+            "ICE",
+            "DRAGON"
+          ],
+          "stage": 1,
+          "evolves_to": "MN_343",
+          "evolution_condition": {
+            "method": "LEVEL",
+            "level": 28
+          }
+        },
+        {
+          "id": "MN_343",
+          "name": "Rimefoil",
+          "types": [
+            "ICE",
+            "DRAGON"
+          ],
+          "stage": 2,
+          "evolves_to": null,
+          "evolution_condition": null
+        }
+      ],
+      "design_status": "promoted-after-native-front-back-review",
+      "promotion_authority": "2026-11-04 user: Tactunnel needs work. It is not a good sprite. Fix and then promote candidates.",
+      "source_art_manifest": "sprites/mn-f155/vibrant-20261104-v2/manifest.json"
+    },
+    {
+      "id": "MN_F156",
+      "region": "peatlands",
+      "classification": "ordinary",
+      "theme": "Minnesota star-nosed mole and Tactile underground pathfinding. ",
+      "members": [
+        {
+          "id": "MN_344",
+          "name": "Tactunnel",
+          "types": [
+            "GROUND",
+            "PSYCHIC"
+          ],
+          "stage": 1,
+          "evolves_to": null,
+          "evolution_condition": null
+        }
+      ],
+      "design_status": "promoted-after-native-front-back-review",
+      "promotion_authority": "2026-11-04 user: Tactunnel needs work. It is not a good sprite. Fix and then promote candidates.",
+      "source_art_manifest": "sprites/mn-f156/native-redesign-20261104-v4/manifest.json"
+    },
+    {
+      "id": "MN_F157",
+      "region": "prairie",
+      "classification": "ordinary",
+      "theme": "Minnesota prairie skink and Regeneration and living decoy tails. ",
+      "members": [
+        {
+          "id": "MN_345",
+          "name": "Rekink",
+          "types": [
+            "DRAGON",
+            "FAIRY"
+          ],
+          "stage": 1,
+          "evolves_to": "MN_346",
+          "evolution_condition": {
+            "method": "LEVEL",
+            "level": 32
+          }
+        },
+        {
+          "id": "MN_346",
+          "name": "Revertail",
+          "types": [
+            "DRAGON",
+            "FAIRY"
+          ],
+          "stage": 2,
+          "evolves_to": null,
+          "evolution_condition": null
+        }
+      ],
+      "design_status": "promoted-after-native-front-back-review",
+      "promotion_authority": "2026-11-04 user: Tactunnel needs work. It is not a good sprite. Fix and then promote candidates.",
+      "source_art_manifest": "sprites/mn-f157/vibrant-20261104-v2/manifest.json"
+    },
+    {
+      "id": "MN_F158",
+      "region": "prairie",
+      "classification": "ordinary",
+      "theme": "Minnesota meadow jumping mouse and Living pendulum and vibration-sensitive stone balance. ",
+      "members": [
+        {
+          "id": "MN_347",
+          "name": "Pendulop",
+          "types": [
+            "ROCK",
+            "PSYCHIC"
+          ],
+          "stage": 1,
+          "evolves_to": null,
+          "evolution_condition": null
+        }
+      ],
+      "design_status": "promoted-after-native-front-back-review",
+      "promotion_authority": "2026-11-04 user: Tactunnel needs work. It is not a good sprite. Fix and then promote candidates.",
+      "source_art_manifest": "sprites/mn-f158/vibrant-20261104-v2/manifest.json"
+    },
+    {
+      "id": "MN_F159",
+      "region": "prairie",
+      "classification": "ordinary",
+      "theme": "Minnesota American badger and Earth shear and body leverage. ",
+      "members": [
+        {
+          "id": "MN_348",
+          "name": "Settkit",
+          "types": [
+            "GROUND",
+            "FIGHTING"
+          ],
+          "stage": 1,
+          "evolves_to": "MN_349",
+          "evolution_condition": {
+            "method": "LEVEL",
+            "level": 18
+          }
+        },
+        {
+          "id": "MN_349",
+          "name": "Braclaw",
+          "types": [
+            "GROUND",
+            "FIGHTING"
+          ],
+          "stage": 2,
+          "evolves_to": "MN_350",
+          "evolution_condition": {
+            "method": "LEVEL",
+            "level": 36
+          }
+        },
+        {
+          "id": "MN_350",
+          "name": "Riftmaul",
+          "types": [
+            "GROUND",
+            "FIGHTING"
+          ],
+          "stage": 3,
+          "evolves_to": null,
+          "evolution_condition": null
+        }
+      ],
+      "design_status": "promoted-after-native-front-back-review",
+      "promotion_authority": "2026-11-04 user: Tactunnel needs work. It is not a good sprite. Fix and then promote candidates.",
+      "source_art_manifest": "sprites/mn-f159/vibrant-20261104-v2/manifest.json"
     }
   ],
   "expansion_request_date": "2026-10-26",

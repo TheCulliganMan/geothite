@@ -1,0 +1,267 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F064",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_139": {
+      "species_id": "MN_139",
+      "name": "Chorip",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          15,
+          24,
+          22
+        ],
+        [
+          8,
+          9,
+          17
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        23311,
+        17704,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          123,
+          198,
+          181
+        ],
+        [
+          66,
+          74,
+          140
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#7BC6B5",
+        "#424A8C",
+        "#000000"
+      ]
+    },
+    "MN_140": {
+      "species_id": "MN_140",
+      "name": "Choirbog",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          23,
+          16,
+          26
+        ],
+        [
+          10,
+          7,
+          16
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        27159,
+        16618,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          189,
+          132,
+          214
+        ],
+        [
+          82,
+          57,
+          132
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#BD84D6",
+        "#523984",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f064/native-refinement-20261103-r3/prompt-mn-140-front.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-139-chorip-native-refinement-20261103-r2",
+      "species_id": "MN_139",
+      "view": "front",
+      "source": "sprites/mn-f064/native-refinement-20261103-r2/mn-139.front.imagegen.png",
+      "crop": [
+        0,
+        0,
+        1254,
+        1254
+      ],
+      "fit": [
+        42,
+        42
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        23311,
+        17704,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed"
+    },
+    {
+      "id": "mn-139-chorip-native-refinement-20261103-r2",
+      "species_id": "MN_139",
+      "view": "back",
+      "source": "sprites/mn-f064/native-refinement-20261103-r2/mn-139.back.imagegen.png",
+      "crop": [
+        0,
+        0,
+        1254,
+        1254
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        23311,
+        17704,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed"
+    },
+    {
+      "id": "mn-140-choirbog-native-refinement-20261103-r3",
+      "species_id": "MN_140",
+      "view": "front",
+      "source": "sprites/mn-f064/native-refinement-20261103-r3/mn-140.front.imagegen.png",
+      "crop": [
+        0,
+        0,
+        1254,
+        1254
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        27159,
+        16618,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed"
+    },
+    {
+      "id": "mn-140-choirbog-native-refinement-20261103-r3",
+      "species_id": "MN_140",
+      "view": "back",
+      "source": "sprites/mn-f064/native-refinement-20261103-r3/mn-140.back.imagegen.png",
+      "crop": [
+        0,
+        0,
+        1254,
+        1254
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        27159,
+        16618,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed"
+    }
+  ],
+  "original_manifest": "sprites/mn-f064/manifest.json",
+  "original_style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png",
+      "target/minnesota-pokemon/gen2-reference/bugs.png"
+    ]
+  },
+  "back_prompt_file": "sprites/mn-f064/native-refinement-20261103-r3/prompt-mn-140-back.txt",
+  "review_reason": "User rejected weak shading in r2. Require explicit graduated dithering and solid modeled shadow planes in the downsize.",
+  "user_native_front_review": {
+    "species_id": "MN_140",
+    "status": "accepted-direction",
+    "feedback": "much better",
+    "date": "2026-11-03",
+    "native_png_sha256": "16074631311ac30c4c2b07e16914ff8a93935e4f648c0c7425fbd23379a5dff6",
+    "sampling": "source_center",
+    "note": "User responded to the actual56x56 front and its integer zoom. Preserve this front while matching the back."
+  },
+  "native_review_notes": "Chorip regenerated front/back: rounded throat/head/back planes and cyan-blue dither transitions; natural frog anatomy. Choirbog native front user-reviewed much better; regenerated close back now has corresponding deep purple planes, white/pale-purple lights and visible dithered transitions on head/back/sacs. Eyes and sac silhouette remain legible in native views.",
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root; user approved Choirbog front direction",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "c1789efa0f021dc6b55832ae80709a1ea1d2ef1f38c0d24faae1c3974935e2ff",
+    "notes": "Chorip regenerated front/back: rounded throat/head/back planes and cyan-blue dither transitions; natural frog anatomy. Choirbog native front user-reviewed much better; regenerated close back now has corresponding deep purple planes, white/pale-purple lights and visible dithered transitions on head/back/sacs. Eyes and sac silhouette remain legible in native views."
+  },
+  "user_native_pair_review": {
+    "species_id": "MN_140",
+    "feedback": "its very good! move on",
+    "date": "2026-11-03",
+    "sheet_sha256": "c1789efa0f021dc6b55832ae80709a1ea1d2ef1f38c0d24faae1c3974935e2ff",
+    "note": "User approved the displayed downsized family board after the dithered Choirbog back was added."
+  },
+  "shiny_review": {
+    "status": "reviewed",
+    "views": 4,
+    "notes": "Inspected actual native shiny front/back images. Shiny PNGs exactly match profile palette swaps of native indices; normal PNG bytes match canonical native files. Eye contrast and silhouette retained. No deployment."
+  }
+}

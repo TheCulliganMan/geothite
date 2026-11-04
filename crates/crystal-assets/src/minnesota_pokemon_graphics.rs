@@ -220,7 +220,7 @@ pub(crate) fn load_family_graphics(
                 "stale native source {} {view}",
                 member.id
             );
-            if import.sampling == SpriteSampling::SourceCenter || !import.pixel_edits.is_empty() {
+            if import.sampling != SpriteSampling::AreaVote || !import.pixel_edits.is_empty() {
                 verify_source_conversion(&source, import, &metadata)?;
             }
             let indices = parse_rows(&metadata.rows, size)?;
@@ -433,7 +433,12 @@ mod tests {
             fit_width: 10,
             fit_height: 10,
         };
-        for sampling in [SpriteSampling::AreaVote, SpriteSampling::SourceCenter] {
+        for sampling in [
+            SpriteSampling::AreaVote,
+            SpriteSampling::SourceCenter,
+            SpriteSampling::AreaDither,
+            SpriteSampling::CoveragePreserving,
+        ] {
             let mut frame = MinnesotaSheet::from_png(&source)?.candidate_with_conversion(
                 crop,
                 palette,
@@ -472,6 +477,8 @@ mod tests {
             metadata.sampling = match sampling {
                 SpriteSampling::AreaVote => SpriteSampling::SourceCenter,
                 SpriteSampling::SourceCenter => SpriteSampling::AreaVote,
+                SpriteSampling::AreaDither => SpriteSampling::AreaVote,
+                SpriteSampling::CoveragePreserving => SpriteSampling::AreaVote,
             };
             assert!(verify_source_conversion(&source, &import, &metadata).is_err());
             metadata.sampling = sampling;

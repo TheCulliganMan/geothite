@@ -1,0 +1,122 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_291",
+  "result": "pass",
+  "manifest_sha256": "5cc932d6384917b3ffd580c1f8f61d7417edafb664d20f88ece1570cde682467",
+  "bank_sha256": "9d956899e9b6ccca05969abfa47dbcdf9b913976e2e79a2b23ec75c0b18fd82f",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f132/mudnip.overworld.imagegen-20261104-v3.png": "863971a81e4c40ddce0bcbd0caa86d41c6bbff5a49584a5787d1aea57b93f900"
+  },
+  "canonical_eye_form": "Low snapping-turtle face beneath a terraced shell overhang, splayed forefeet and distinct true rear shell; side has hooked beak and saw tail.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "source": "mudnip.overworld.imagegen-20261104-v3.png",
+          "source_sha256": "863971a81e4c40ddce0bcbd0caa86d41c6bbff5a49584a5787d1aea57b93f900",
+          "source_alpha_bounds": [
+            115,
+            117,
+            312,
+            316
+          ],
+          "native_bounds": [
+            3,
+            4,
+            12,
+            11
+          ],
+          "native_pixel_sha256": "f3cabeaf3967fe21450b410abfe8ab23c4f7b29e35e14f2e016c5fc51e136b4e",
+          "conversion": "Source-backed enclosed dark component preservation; no hand-painted field pixels. Actual source and normal/shiny native six-pose boards visually compared.",
+          "anatomy": "Low snapping-turtle face beneath a terraced shell overhang, splayed forefeet and distinct true rear shell; side has hooked beak and saw tail."
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "source": "mudnip.overworld.imagegen-20261104-v3.png",
+          "source_sha256": "863971a81e4c40ddce0bcbd0caa86d41c6bbff5a49584a5787d1aea57b93f900",
+          "source_alpha_bounds": [
+            54,
+            138,
+            353,
+            293
+          ],
+          "native_bounds": [
+            1,
+            5,
+            13,
+            10
+          ],
+          "native_pixel_sha256": "1f68c2767848ee883a32ad0ace4ce31f1bbc2841d596f6f841159d736c7de1d1",
+          "conversion": "Source-backed enclosed dark component preservation; no hand-painted field pixels. Actual source and normal/shiny native six-pose boards visually compared.",
+          "anatomy": "Low snapping-turtle face beneath a terraced shell overhang, splayed forefeet and distinct true rear shell; side has hooked beak and saw tail."
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "source": "mudnip.overworld.imagegen-20261104-v3.png",
+          "source_sha256": "863971a81e4c40ddce0bcbd0caa86d41c6bbff5a49584a5787d1aea57b93f900",
+          "source_alpha_bounds": [
+            117,
+            85,
+            311,
+            332
+          ],
+          "native_bounds": [
+            3,
+            3,
+            12,
+            11
+          ],
+          "native_pixel_sha256": "17b1d72f3ceff8134ec95e8cf2e3a213a3e4d9591c542a1915ae923f399b88a5",
+          "conversion": "Source-backed enclosed dark component preservation; no hand-painted field pixels. Actual source and normal/shiny native six-pose boards visually compared.",
+          "anatomy": "Low snapping-turtle face beneath a terraced shell overhang, splayed forefeet and distinct true rear shell; side has hooked beak and saw tail."
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "source": "mudnip.overworld.imagegen-20261104-v3.png",
+          "source_sha256": "863971a81e4c40ddce0bcbd0caa86d41c6bbff5a49584a5787d1aea57b93f900",
+          "source_alpha_bounds": [
+            52,
+            109,
+            362,
+            297
+          ],
+          "native_bounds": [
+            1,
+            4,
+            13,
+            10
+          ],
+          "native_pixel_sha256": "10a98f15ad7a05ef2dd56e4938ee5c1b5ca5bc685eb7e64ba6345103367bfc80",
+          "conversion": "Source-backed enclosed dark component preservation; no hand-painted field pixels. Actual source and normal/shiny native six-pose boards visually compared.",
+          "anatomy": "Low snapping-turtle face beneath a terraced shell overhang, splayed forefeet and distinct true rear shell; side has hooked beak and saw tail."
+        }
+      ]
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "poses": [
+      "up_idle",
+      "up_step"
+    ],
+    "notes": "Low snapping-turtle face beneath a terraced shell overhang, splayed forefeet and distinct true rear shell; side has hooked beak and saw tail."
+  },
+  "native_and_shiny_visual_review": "All six poses compared at native scale and integer zoom with selected source; ordinary field-icon simplification retains species silhouette. Transparent edge, genuine stepping changes, matched normal/shiny index geometry and actual production terrain reviewed."
+}

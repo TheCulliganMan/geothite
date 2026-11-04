@@ -1,0 +1,376 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F125",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "prompt_file": "sprites/mn-f125/starter-lynx-20261103-r8/prompt.txt",
+  "pokemon_palettes": {
+    "MN_274": {
+      "species_id": "MN_274",
+      "name": "Kindlit",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          29,
+          21,
+          12
+        ],
+        [
+          8,
+          7,
+          8
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        12989,
+        8424,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          239,
+          173,
+          99
+        ],
+        [
+          66,
+          57,
+          66
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#EFAD63",
+        "#423942",
+        "#000000"
+      ]
+    },
+    "MN_275": {
+      "species_id": "MN_275",
+      "name": "Rimepelt",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          29,
+          16,
+          7
+        ],
+        [
+          9,
+          10,
+          13
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        7709,
+        13641,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          239,
+          132,
+          57
+        ],
+        [
+          74,
+          82,
+          107
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#EF8439",
+        "#4A526B",
+        "#000000"
+      ]
+    },
+    "MN_276": {
+      "species_id": "MN_276",
+      "name": "Borealynx",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          30,
+          15,
+          6
+        ],
+        [
+          17,
+          26,
+          28
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        6654,
+        29521,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          247,
+          123,
+          49
+        ],
+        [
+          140,
+          214,
+          231
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#F77B31",
+        "#8CD6E7",
+        "#000000"
+      ]
+    }
+  },
+  "sprites": [
+    {
+      "id": "mn-274-starter-lynx-20261103-r8",
+      "species_id": "MN_274",
+      "view": "front",
+      "source": "sprites/mn-f125/starter-lynx-20261103-r8/front-back.imagegen.png",
+      "crop": [
+        55,
+        209,
+        362,
+        329
+      ],
+      "fit": [
+        40,
+        36
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        12989,
+        8424,
+        0
+      ],
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "exterior_contour": "source_backed",
+      "sampling": "source_center"
+    },
+    {
+      "id": "mn-274-starter-lynx-20261103-r8",
+      "species_id": "MN_274",
+      "view": "back",
+      "source": "sprites/mn-f125/starter-lynx-20261103-r8/front-back.imagegen.png",
+      "crop": [
+        54,
+        588,
+        363,
+        404
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        12989,
+        8424,
+        0
+      ],
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "exterior_contour": "source_backed",
+      "sampling": "source_center"
+    },
+    {
+      "id": "mn-275-starter-lynx-20261103-r8",
+      "species_id": "MN_275",
+      "view": "front",
+      "source": "sprites/mn-f125/starter-lynx-20261103-r8/front-back.imagegen.png",
+      "crop": [
+        471,
+        132,
+        466,
+        413
+      ],
+      "fit": [
+        48,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        7709,
+        13641,
+        0
+      ],
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "exterior_contour": "source_backed",
+      "sampling": "source_center"
+    },
+    {
+      "id": "mn-275-starter-lynx-20261103-r8",
+      "species_id": "MN_275",
+      "view": "back",
+      "source": "sprites/mn-f125/starter-lynx-20261103-r8/front-back.imagegen.png",
+      "crop": [
+        498,
+        580,
+        432,
+        412
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        7709,
+        13641,
+        0
+      ],
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "exterior_contour": "source_backed",
+      "sampling": "source_center"
+    },
+    {
+      "id": "mn-276-starter-lynx-20261103-r8",
+      "species_id": "MN_276",
+      "view": "front",
+      "source": "sprites/mn-f125/starter-lynx-20261103-r8/front-back.imagegen.png",
+      "crop": [
+        973,
+        93,
+        530,
+        452
+      ],
+      "fit": [
+        54,
+        50
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        6654,
+        29521,
+        0
+      ],
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "exterior_contour": "source_backed",
+      "sampling": "source_center"
+    },
+    {
+      "id": "mn-276-starter-lynx-20261103-r8",
+      "species_id": "MN_276",
+      "view": "back",
+      "source": "sprites/mn-f125/starter-lynx-20261103-r8/front-back.imagegen.png",
+      "crop": [
+        995,
+        573,
+        488,
+        419
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        6654,
+        29521,
+        0
+      ],
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "exterior_contour": "source_backed",
+      "sampling": "source_center"
+    }
+  ],
+  "back_framing": "gen2-close-rear-portrait",
+  "design_lock": "Always on four paws. Expressive animal faces. Ember kitten -> flame-mantled coal prowler -> low frost-mantled winter lynx with blazing chest and frozen snowshoe paws. Exactly four native inks per species; no tall armor spikes or layered fur.",
+  "original_manifest": "sprites/mn-f125/manifest.json",
+  "original_style_reference": {},
+  "generation_reference_files": [
+    "target/minnesota-pokemon/native/MN_F125/line.review.png"
+  ],
+  "authoring_note": "All three stages and both views regenerated together. Original selected art retained. Stage-specific native fits, canonical species palettes and no inherited pixel patches; inspect actual converted eyes and material.",
+  "crop_notes": "Explicit isolated per-view source rectangles, inspected against the returned sheet. Front feet extend beyond the nominal half-height; uniform grid crops were rejected for clipping and neighboring fragments.",
+  "visual_review": {
+    "status": "reviewed",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "7708e854524bf201a185913ee399ca306bd7e0374d0be18f0cb70baf8348e6b3",
+    "notes": "Inspected all six views at actual56x56/48x48 and integer zoom after isolated source crops corrected front feet/neighbor fragments. All stages remain quadrupedal with horizontal animal spines, blunt feline muzzles, broad paws and short bobtails. Kitten -> lean flame-mantled prowler -> broad roaring frost/fire lynx changes proportions and elemental anatomy. Dither rounds soot/tan shoulders, slate/orange mantle and white/cyan frost; facial masks/pupils remain distinct. Original sources and manifests preserved. Coverage-preserving comparison was not selected; source-center result retained. Runtime/shiny review separate."
+  },
+  "shiny_review": {
+    "status": "reviewed",
+    "profile_source": "species-profiles.json",
+    "renderer": "Rust publish_pokedex_sprite_revision using the same native index rows",
+    "notes": "Inspected each native shiny front/back. Connected eye and muzzle/petal detail, folds, quadrupedal animal shapes and species-specific material remain legible. All18shiny PNGs independently match authored shiny RGB5 palettes and unchanged native indices; normal exports byte-match reviewed native PNGs."
+  },
+  "previous_manifest_metadata": {
+    "reference_mapping": "sprites/mn-f125/reference-mapping.json",
+    "native_refinement": {
+      "revision": 11,
+      "basis": "ImageGen v7 plus minimal guarded native-pixel edits.",
+      "notes": "The broad face-stencil revision 8 was rejected as boxy/derpy. Native v9 preserves the original slanted animal eye contours and short muzzle; it darkens misplaced Iris inks, clears a single kitten fang and a single adult fang, and removes colored noise inside mouths. No replacement eye boxes, white face masks or new face silhouette. User-directed third-evolution facial outline pass: four black pixels define the near eye/brow bridge and muzzle edge, plus one profile-eye rim pixel. Other two stages remain pixel-identical. Two compact 2x2 eye clusters preserve white around the black pupils inside the adult facial outlines; no boxed replacement muzzle."
+    }
+  }
+}

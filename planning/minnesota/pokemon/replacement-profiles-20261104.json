@@ -1,0 +1,3703 @@
+{
+  "schema_version": 1,
+  "species": [
+    {
+      "id": "MN_320",
+      "classification": "Alcove",
+      "height_inches": 8,
+      "weight_tenths_lb": 35,
+      "dex_pages": [
+        "It pulls its head @ under its shell @ when rain stops.",
+        "Small bugs rest @ beside its warm @ folded mantle."
+      ],
+      "base_stats": {
+        "hp": 45,
+        "attack": 35,
+        "defense": 65,
+        "speed": 15,
+        "special_attack": 45,
+        "special_defense": 65
+      },
+      "catch_rate": 190,
+      "base_exp": 55,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_BUG",
+        "EGG_MINERAL"
+      ],
+      "evolution": {
+        "method": "LEVEL",
+        "level": 18
+      },
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_SQUIRTLE",
+      "footprint_species": "SQUIRTLE",
+      "cry": {
+        "cry": "CRY_SQUIRTLE",
+        "pitch": -40,
+        "length": 120
+      },
+      "shiny_rgb5": [
+        [
+          11,
+          31,
+          13
+        ],
+        [
+          21,
+          14,
+          5
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "TACKLE"
+        ],
+        [
+          1,
+          "WITHDRAW"
+        ],
+        [
+          5,
+          "ROCK_THROW"
+        ],
+        [
+          9,
+          "CHARM"
+        ],
+        [
+          13,
+          "FAIRY_WIND"
+        ],
+        [
+          17,
+          "ROLLOUT"
+        ],
+        [
+          21,
+          "PROTECT"
+        ],
+        [
+          25,
+          "ANCIENTPOWER"
+        ],
+        [
+          30,
+          "LIGHT_SCREEN"
+        ],
+        [
+          35,
+          "DAZZLING_GLEAM"
+        ],
+        [
+          41,
+          "SAFEGUARD"
+        ],
+        [
+          47,
+          "ROCK_SLIDE"
+        ],
+        [
+          54,
+          "MOONBLAST"
+        ]
+      ],
+      "tmhm_moves": [
+        "PROTECT",
+        "REST",
+        "TOXIC",
+        "ATTRACT",
+        "RETURN",
+        "DOUBLE_TEAM",
+        "ROLLOUT",
+        "SANDSTORM"
+      ],
+      "egg_moves": []
+    },
+    {
+      "id": "MN_321",
+      "classification": "Mantle",
+      "height_inches": 20,
+      "weight_tenths_lb": 140,
+      "dex_pages": [
+        "Its shell lip @ curls into a dry @ shelter at dusk.",
+        "It seals the gap @ with its mantle @ during hard rain."
+      ],
+      "base_stats": {
+        "hp": 65,
+        "attack": 45,
+        "defense": 85,
+        "speed": 20,
+        "special_attack": 65,
+        "special_defense": 85
+      },
+      "catch_rate": 90,
+      "base_exp": 120,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_BUG",
+        "EGG_MINERAL"
+      ],
+      "evolution": {
+        "method": "LEVEL",
+        "level": 36
+      },
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_SQUIRTLE",
+      "footprint_species": "SQUIRTLE",
+      "cry": {
+        "cry": "CRY_SQUIRTLE",
+        "pitch": -16,
+        "length": 144
+      },
+      "shiny_rgb5": [
+        [
+          16,
+          31,
+          11
+        ],
+        [
+          22,
+          12,
+          4
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "TACKLE"
+        ],
+        [
+          1,
+          "WITHDRAW"
+        ],
+        [
+          5,
+          "ROCK_THROW"
+        ],
+        [
+          9,
+          "CHARM"
+        ],
+        [
+          13,
+          "FAIRY_WIND"
+        ],
+        [
+          17,
+          "ROLLOUT"
+        ],
+        [
+          21,
+          "PROTECT"
+        ],
+        [
+          25,
+          "ANCIENTPOWER"
+        ],
+        [
+          30,
+          "LIGHT_SCREEN"
+        ],
+        [
+          35,
+          "DAZZLING_GLEAM"
+        ],
+        [
+          41,
+          "SAFEGUARD"
+        ],
+        [
+          47,
+          "ROCK_SLIDE"
+        ],
+        [
+          54,
+          "MOONBLAST"
+        ]
+      ],
+      "tmhm_moves": [
+        "PROTECT",
+        "REST",
+        "TOXIC",
+        "ATTRACT",
+        "RETURN",
+        "DOUBLE_TEAM",
+        "ROLLOUT",
+        "SANDSTORM"
+      ],
+      "egg_moves": []
+    },
+    {
+      "id": "MN_322",
+      "classification": "Sanctuary",
+      "height_inches": 43,
+      "weight_tenths_lb": 720,
+      "dex_pages": [
+        "Two deep alcoves @ in its shell stay @ warm all winter.",
+        "It travels slowly @ so its sheltered @ guests can sleep."
+      ],
+      "base_stats": {
+        "hp": 90,
+        "attack": 55,
+        "defense": 110,
+        "speed": 30,
+        "special_attack": 90,
+        "special_defense": 110
+      },
+      "catch_rate": 45,
+      "base_exp": 185,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_BUG",
+        "EGG_MINERAL"
+      ],
+      "evolution": null,
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_SQUIRTLE",
+      "footprint_species": "SQUIRTLE",
+      "cry": {
+        "cry": "CRY_SQUIRTLE",
+        "pitch": 8,
+        "length": 168
+      },
+      "shiny_rgb5": [
+        [
+          21,
+          30,
+          10
+        ],
+        [
+          23,
+          9,
+          5
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "TACKLE"
+        ],
+        [
+          1,
+          "WITHDRAW"
+        ],
+        [
+          5,
+          "ROCK_THROW"
+        ],
+        [
+          9,
+          "CHARM"
+        ],
+        [
+          13,
+          "FAIRY_WIND"
+        ],
+        [
+          17,
+          "ROLLOUT"
+        ],
+        [
+          21,
+          "PROTECT"
+        ],
+        [
+          25,
+          "ANCIENTPOWER"
+        ],
+        [
+          30,
+          "LIGHT_SCREEN"
+        ],
+        [
+          35,
+          "DAZZLING_GLEAM"
+        ],
+        [
+          41,
+          "SAFEGUARD"
+        ],
+        [
+          47,
+          "ROCK_SLIDE"
+        ],
+        [
+          54,
+          "MOONBLAST"
+        ]
+      ],
+      "tmhm_moves": [
+        "PROTECT",
+        "REST",
+        "TOXIC",
+        "ATTRACT",
+        "RETURN",
+        "DOUBLE_TEAM",
+        "ROLLOUT",
+        "SANDSTORM"
+      ],
+      "egg_moves": []
+    },
+    {
+      "id": "MN_323",
+      "classification": "Snow Brush",
+      "height_inches": 12,
+      "weight_tenths_lb": 60,
+      "dex_pages": [
+        "Its wide hind feet @ brush loose snow @ across its tracks.",
+        "It holds its ears @ flat when it hears @ ice break nearby."
+      ],
+      "base_stats": {
+        "hp": 45,
+        "attack": 60,
+        "defense": 35,
+        "speed": 80,
+        "special_attack": 35,
+        "special_defense": 45
+      },
+      "catch_rate": 190,
+      "base_exp": 55,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_GROUND",
+        "EGG_FAIRY"
+      ],
+      "evolution": {
+        "method": "LEVEL",
+        "level": 28
+      },
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_FOX",
+      "footprint_species": "PERSIAN",
+      "cry": {
+        "cry": "CRY_VULPIX",
+        "pitch": -37,
+        "length": 120
+      },
+      "shiny_rgb5": [
+        [
+          23,
+          31,
+          11
+        ],
+        [
+          25,
+          9,
+          10
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "POUND"
+        ],
+        [
+          1,
+          "GROWL"
+        ],
+        [
+          5,
+          "POWDER_SNOW"
+        ],
+        [
+          9,
+          "QUICK_ATTACK"
+        ],
+        [
+          13,
+          "CHARM"
+        ],
+        [
+          17,
+          "ICY_WIND"
+        ],
+        [
+          21,
+          "DOUBLE_KICK"
+        ],
+        [
+          25,
+          "FAIRY_WIND"
+        ],
+        [
+          30,
+          "AGILITY"
+        ],
+        [
+          35,
+          "ICE_PUNCH"
+        ],
+        [
+          41,
+          "PLAY_ROUGH"
+        ],
+        [
+          47,
+          "DOUBLE_EDGE"
+        ],
+        [
+          54,
+          "BLIZZARD"
+        ]
+      ],
+      "tmhm_moves": [
+        "PROTECT",
+        "REST",
+        "TOXIC",
+        "ATTRACT",
+        "RETURN",
+        "DOUBLE_TEAM",
+        "ICY_WIND",
+        "BLIZZARD",
+        "IRON_TAIL"
+      ],
+      "egg_moves": []
+    },
+    {
+      "id": "MN_324",
+      "classification": "Trail Sweep",
+      "height_inches": 35,
+      "weight_tenths_lb": 280,
+      "dex_pages": [
+        "Its broad feet @ sweep snow over @ the whole trail.",
+        "It circles a lost @ traveler until a @ safe path appears."
+      ],
+      "base_stats": {
+        "hp": 75,
+        "attack": 100,
+        "defense": 60,
+        "speed": 115,
+        "special_attack": 55,
+        "special_defense": 75
+      },
+      "catch_rate": 45,
+      "base_exp": 120,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_GROUND",
+        "EGG_FAIRY"
+      ],
+      "evolution": null,
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_FOX",
+      "footprint_species": "PERSIAN",
+      "cry": {
+        "cry": "CRY_VULPIX",
+        "pitch": -13,
+        "length": 144
+      },
+      "shiny_rgb5": [
+        [
+          26,
+          10,
+          30
+        ],
+        [
+          25,
+          12,
+          7
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "POUND"
+        ],
+        [
+          1,
+          "GROWL"
+        ],
+        [
+          5,
+          "POWDER_SNOW"
+        ],
+        [
+          9,
+          "QUICK_ATTACK"
+        ],
+        [
+          13,
+          "CHARM"
+        ],
+        [
+          17,
+          "ICY_WIND"
+        ],
+        [
+          21,
+          "DOUBLE_KICK"
+        ],
+        [
+          25,
+          "FAIRY_WIND"
+        ],
+        [
+          30,
+          "AGILITY"
+        ],
+        [
+          35,
+          "ICE_PUNCH"
+        ],
+        [
+          41,
+          "PLAY_ROUGH"
+        ],
+        [
+          47,
+          "DOUBLE_EDGE"
+        ],
+        [
+          54,
+          "BLIZZARD"
+        ]
+      ],
+      "tmhm_moves": [
+        "PROTECT",
+        "REST",
+        "TOXIC",
+        "ATTRACT",
+        "RETURN",
+        "DOUBLE_TEAM",
+        "ICY_WIND",
+        "BLIZZARD",
+        "IRON_TAIL"
+      ],
+      "egg_moves": []
+    },
+    {
+      "id": "MN_325",
+      "classification": "Gap Owlet",
+      "height_inches": 9,
+      "weight_tenths_lb": 30,
+      "dex_pages": [
+        "Pale gaps in its @ feathers look like @ moonlit leaves.",
+        "It stays so still @ that small birds @ perch beside it."
+      ],
+      "base_stats": {
+        "hp": 40,
+        "attack": 30,
+        "defense": 40,
+        "speed": 40,
+        "special_attack": 65,
+        "special_defense": 55
+      },
+      "catch_rate": 190,
+      "base_exp": 55,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_FLYING",
+        "EGG_INDETERMINATE"
+      ],
+      "evolution": {
+        "method": "LEVEL",
+        "level": 18
+      },
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_BIRD",
+      "footprint_species": "MURKROW",
+      "cry": {
+        "cry": "CRY_FEAROW",
+        "pitch": -34,
+        "length": 120
+      },
+      "shiny_rgb5": [
+        [
+          31,
+          22,
+          11
+        ],
+        [
+          18,
+          6,
+          8
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "PECK"
+        ],
+        [
+          1,
+          "GROWL"
+        ],
+        [
+          5,
+          "LICK"
+        ],
+        [
+          9,
+          "FORESIGHT"
+        ],
+        [
+          13,
+          "GUST"
+        ],
+        [
+          17,
+          "NIGHT_SHADE"
+        ],
+        [
+          21,
+          "HYPNOSIS"
+        ],
+        [
+          25,
+          "CONFUSE_RAY"
+        ],
+        [
+          30,
+          "WING_ATTACK"
+        ],
+        [
+          35,
+          "SHADOW_BALL"
+        ],
+        [
+          41,
+          "DREAM_EATER"
+        ],
+        [
+          47,
+          "SKY_ATTACK"
+        ],
+        [
+          54,
+          "FUTURE_SIGHT"
+        ]
+      ],
+      "tmhm_moves": [
+        "PROTECT",
+        "REST",
+        "TOXIC",
+        "ATTRACT",
+        "RETURN",
+        "DOUBLE_TEAM",
+        "SHADOW_BALL",
+        "DREAM_EATER",
+        "FLY"
+      ],
+      "egg_moves": []
+    },
+    {
+      "id": "MN_326",
+      "classification": "Hollow Wing",
+      "height_inches": 25,
+      "weight_tenths_lb": 150,
+      "dex_pages": [
+        "Two holes in its @ folded wings let @ no light pass.",
+        "A passing breeze @ echoes inside its @ hollow plumage."
+      ],
+      "base_stats": {
+        "hp": 60,
+        "attack": 45,
+        "defense": 60,
+        "speed": 55,
+        "special_attack": 85,
+        "special_defense": 75
+      },
+      "catch_rate": 90,
+      "base_exp": 120,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_FLYING",
+        "EGG_INDETERMINATE"
+      ],
+      "evolution": {
+        "method": "LEVEL",
+        "level": 36
+      },
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_BIRD",
+      "footprint_species": "MURKROW",
+      "cry": {
+        "cry": "CRY_FEAROW",
+        "pitch": -10,
+        "length": 144
+      },
+      "shiny_rgb5": [
+        [
+          30,
+          20,
+          10
+        ],
+        [
+          20,
+          4,
+          9
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "PECK"
+        ],
+        [
+          1,
+          "GROWL"
+        ],
+        [
+          5,
+          "LICK"
+        ],
+        [
+          9,
+          "FORESIGHT"
+        ],
+        [
+          13,
+          "GUST"
+        ],
+        [
+          17,
+          "NIGHT_SHADE"
+        ],
+        [
+          21,
+          "HYPNOSIS"
+        ],
+        [
+          25,
+          "CONFUSE_RAY"
+        ],
+        [
+          30,
+          "WING_ATTACK"
+        ],
+        [
+          35,
+          "SHADOW_BALL"
+        ],
+        [
+          41,
+          "DREAM_EATER"
+        ],
+        [
+          47,
+          "SKY_ATTACK"
+        ],
+        [
+          54,
+          "FUTURE_SIGHT"
+        ]
+      ],
+      "tmhm_moves": [
+        "PROTECT",
+        "REST",
+        "TOXIC",
+        "ATTRACT",
+        "RETURN",
+        "DOUBLE_TEAM",
+        "SHADOW_BALL",
+        "DREAM_EATER",
+        "FLY"
+      ],
+      "egg_moves": []
+    },
+    {
+      "id": "MN_327",
+      "classification": "Forest Gap",
+      "height_inches": 43,
+      "weight_tenths_lb": 390,
+      "dex_pages": [
+        "Its wings resemble @ dark gaps between @ branches at night.",
+        "The forest seems @ to vanish behind @ its dark wings."
+      ],
+      "base_stats": {
+        "hp": 80,
+        "attack": 60,
+        "defense": 75,
+        "speed": 80,
+        "special_attack": 115,
+        "special_defense": 90
+      },
+      "catch_rate": 45,
+      "base_exp": 185,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_FLYING",
+        "EGG_INDETERMINATE"
+      ],
+      "evolution": null,
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_BIRD",
+      "footprint_species": "MURKROW",
+      "cry": {
+        "cry": "CRY_FEAROW",
+        "pitch": 14,
+        "length": 168
+      },
+      "shiny_rgb5": [
+        [
+          29,
+          17,
+          9
+        ],
+        [
+          19,
+          2,
+          10
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "PECK"
+        ],
+        [
+          1,
+          "GROWL"
+        ],
+        [
+          5,
+          "LICK"
+        ],
+        [
+          9,
+          "FORESIGHT"
+        ],
+        [
+          13,
+          "GUST"
+        ],
+        [
+          17,
+          "NIGHT_SHADE"
+        ],
+        [
+          21,
+          "HYPNOSIS"
+        ],
+        [
+          25,
+          "CONFUSE_RAY"
+        ],
+        [
+          30,
+          "WING_ATTACK"
+        ],
+        [
+          35,
+          "SHADOW_BALL"
+        ],
+        [
+          41,
+          "DREAM_EATER"
+        ],
+        [
+          47,
+          "SKY_ATTACK"
+        ],
+        [
+          54,
+          "FUTURE_SIGHT"
+        ]
+      ],
+      "tmhm_moves": [
+        "PROTECT",
+        "REST",
+        "TOXIC",
+        "ATTRACT",
+        "RETURN",
+        "DOUBLE_TEAM",
+        "SHADOW_BALL",
+        "DREAM_EATER",
+        "FLY"
+      ],
+      "egg_moves": []
+    },
+    {
+      "id": "MN_328",
+      "classification": "Warning",
+      "height_inches": 24,
+      "weight_tenths_lb": 210,
+      "dex_pages": [
+        "Bright berries @ draw prey toward @ its hidden thorns.",
+        "It changes their @ scent to copy a @ nearby berry bush."
+      ],
+      "base_stats": {
+        "hp": 75,
+        "attack": 80,
+        "defense": 70,
+        "speed": 65,
+        "special_attack": 105,
+        "special_defense": 85
+      },
+      "catch_rate": 45,
+      "base_exp": 125,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_PLANT",
+        "EGG_FAIRY"
+      ],
+      "evolution": null,
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_ODDISH",
+      "footprint_species": "ODDISH",
+      "cry": {
+        "cry": "CRY_ODDISH",
+        "pitch": -31,
+        "length": 120
+      },
+      "shiny_rgb5": [
+        [
+          25,
+          31,
+          9
+        ],
+        [
+          5,
+          3,
+          13
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "ABSORB"
+        ],
+        [
+          1,
+          "LEER"
+        ],
+        [
+          5,
+          "POISON_STING"
+        ],
+        [
+          9,
+          "PURSUIT"
+        ],
+        [
+          13,
+          "ACID"
+        ],
+        [
+          17,
+          "FAINT_ATTACK"
+        ],
+        [
+          21,
+          "POISON_GAS"
+        ],
+        [
+          25,
+          "BITE"
+        ],
+        [
+          30,
+          "GIGA_DRAIN"
+        ],
+        [
+          35,
+          "SLUDGE_BOMB"
+        ],
+        [
+          41,
+          "CRUNCH"
+        ],
+        [
+          47,
+          "TOXIC"
+        ],
+        [
+          54,
+          "SYNTHESIS"
+        ]
+      ],
+      "tmhm_moves": [
+        "PROTECT",
+        "REST",
+        "TOXIC",
+        "ATTRACT",
+        "RETURN",
+        "DOUBLE_TEAM",
+        "GIGA_DRAIN",
+        "SLUDGE_BOMB",
+        "THIEF"
+      ],
+      "egg_moves": []
+    },
+    {
+      "id": "MN_329",
+      "classification": "Basalt Cub",
+      "height_inches": 20,
+      "weight_tenths_lb": 380,
+      "dex_pages": [
+        "Three stone knobs @ grow above its @ strong shoulders.",
+        "It sharpens blunt @ claws by scraping @ lakeside basalt."
+      ],
+      "base_stats": {
+        "hp": 60,
+        "attack": 70,
+        "defense": 65,
+        "speed": 30,
+        "special_attack": 30,
+        "special_defense": 45
+      },
+      "catch_rate": 190,
+      "base_exp": 55,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_GROUND",
+        "EGG_MINERAL"
+      ],
+      "evolution": {
+        "method": "LEVEL",
+        "level": 28
+      },
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_MONSTER",
+      "footprint_species": "URSARING",
+      "cry": {
+        "cry": "CRY_TEDDIURSA",
+        "pitch": -28,
+        "length": 120
+      },
+      "shiny_rgb5": [
+        [
+          4,
+          31,
+          15
+        ],
+        [
+          6,
+          3,
+          11
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "SCRATCH"
+        ],
+        [
+          1,
+          "DEFENSE_CURL"
+        ],
+        [
+          5,
+          "ROCK_THROW"
+        ],
+        [
+          9,
+          "MUD_SLAP"
+        ],
+        [
+          13,
+          "MAGNITUDE"
+        ],
+        [
+          17,
+          "ROLLOUT"
+        ],
+        [
+          21,
+          "BITE"
+        ],
+        [
+          25,
+          "PROTECT"
+        ],
+        [
+          30,
+          "SLASH"
+        ],
+        [
+          35,
+          "ROCK_SLIDE"
+        ],
+        [
+          41,
+          "EARTHQUAKE"
+        ],
+        [
+          47,
+          "CRUNCH"
+        ],
+        [
+          54,
+          "REST"
+        ]
+      ],
+      "tmhm_moves": [
+        "PROTECT",
+        "REST",
+        "TOXIC",
+        "ATTRACT",
+        "RETURN",
+        "DOUBLE_TEAM",
+        "EARTHQUAKE",
+        "DIG",
+        "STRENGTH",
+        "ROCK_SMASH"
+      ],
+      "egg_moves": []
+    },
+    {
+      "id": "MN_330",
+      "classification": "Talus",
+      "height_inches": 63,
+      "weight_tenths_lb": 4980,
+      "dex_pages": [
+        "Its back columns @ lock as it braces @ for a charge.",
+        "Its shed plates @ form shelters on @ the rocky shore."
+      ],
+      "base_stats": {
+        "hp": 100,
+        "attack": 115,
+        "defense": 110,
+        "speed": 40,
+        "special_attack": 40,
+        "special_defense": 80
+      },
+      "catch_rate": 45,
+      "base_exp": 120,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_GROUND",
+        "EGG_MINERAL"
+      ],
+      "evolution": null,
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_MONSTER",
+      "footprint_species": "URSARING",
+      "cry": {
+        "cry": "CRY_TEDDIURSA",
+        "pitch": -4,
+        "length": 144
+      },
+      "shiny_rgb5": [
+        [
+          3,
+          29,
+          11
+        ],
+        [
+          9,
+          3,
+          10
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "SCRATCH"
+        ],
+        [
+          1,
+          "DEFENSE_CURL"
+        ],
+        [
+          5,
+          "ROCK_THROW"
+        ],
+        [
+          9,
+          "MUD_SLAP"
+        ],
+        [
+          13,
+          "MAGNITUDE"
+        ],
+        [
+          17,
+          "ROLLOUT"
+        ],
+        [
+          21,
+          "BITE"
+        ],
+        [
+          25,
+          "PROTECT"
+        ],
+        [
+          30,
+          "SLASH"
+        ],
+        [
+          35,
+          "ROCK_SLIDE"
+        ],
+        [
+          41,
+          "EARTHQUAKE"
+        ],
+        [
+          47,
+          "CRUNCH"
+        ],
+        [
+          54,
+          "REST"
+        ]
+      ],
+      "tmhm_moves": [
+        "PROTECT",
+        "REST",
+        "TOXIC",
+        "ATTRACT",
+        "RETURN",
+        "DOUBLE_TEAM",
+        "EARTHQUAKE",
+        "DIG",
+        "STRENGTH",
+        "ROCK_SMASH"
+      ],
+      "egg_moves": []
+    },
+    {
+      "id": "MN_331",
+      "classification": "Trail Cub",
+      "height_inches": 15,
+      "weight_tenths_lb": 110,
+      "dex_pages": [
+        "Its forked ankle @ marks glow after @ fresh snowfall.",
+        "It retraces the @ tracks of its pack @ before going home."
+      ],
+      "base_stats": {
+        "hp": 45,
+        "attack": 55,
+        "defense": 40,
+        "speed": 65,
+        "special_attack": 35,
+        "special_defense": 40
+      },
+      "catch_rate": 190,
+      "base_exp": 55,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_GROUND",
+        "EGG_FAIRY"
+      ],
+      "evolution": {
+        "method": "LEVEL",
+        "level": 18
+      },
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_FOX",
+      "footprint_species": "HOUNDOUR",
+      "cry": {
+        "cry": "CRY_GROWLITHE",
+        "pitch": -25,
+        "length": 120
+      },
+      "shiny_rgb5": [
+        [
+          31,
+          11,
+          25
+        ],
+        [
+          22,
+          12,
+          5
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "TACKLE"
+        ],
+        [
+          1,
+          "TAIL_WHIP"
+        ],
+        [
+          5,
+          "SAND_ATTACK"
+        ],
+        [
+          9,
+          "QUICK_ATTACK"
+        ],
+        [
+          13,
+          "FAIRY_WIND"
+        ],
+        [
+          17,
+          "BITE"
+        ],
+        [
+          21,
+          "DIG"
+        ],
+        [
+          25,
+          "FORESIGHT"
+        ],
+        [
+          30,
+          "TAKE_DOWN"
+        ],
+        [
+          35,
+          "PLAY_ROUGH"
+        ],
+        [
+          41,
+          "EARTHQUAKE"
+        ],
+        [
+          47,
+          "CRUNCH"
+        ],
+        [
+          54,
+          "EXTREMESPEED"
+        ]
+      ],
+      "tmhm_moves": [
+        "PROTECT",
+        "REST",
+        "TOXIC",
+        "ATTRACT",
+        "RETURN",
+        "DOUBLE_TEAM",
+        "EARTHQUAKE",
+        "DIG",
+        "ROAR",
+        "IRON_TAIL"
+      ],
+      "egg_moves": []
+    },
+    {
+      "id": "MN_332",
+      "classification": "Wayfinder",
+      "height_inches": 31,
+      "weight_tenths_lb": 410,
+      "dex_pages": [
+        "Its pale leg bands @ split into small @ forked paths.",
+        "It scouts a pass, @ then returns to @ guide the pups."
+      ],
+      "base_stats": {
+        "hp": 65,
+        "attack": 75,
+        "defense": 55,
+        "speed": 85,
+        "special_attack": 50,
+        "special_defense": 60
+      },
+      "catch_rate": 90,
+      "base_exp": 120,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_GROUND",
+        "EGG_FAIRY"
+      ],
+      "evolution": {
+        "method": "LEVEL",
+        "level": 36
+      },
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_FOX",
+      "footprint_species": "HOUNDOUR",
+      "cry": {
+        "cry": "CRY_GROWLITHE",
+        "pitch": -1,
+        "length": 144
+      },
+      "shiny_rgb5": [
+        [
+          30,
+          9,
+          28
+        ],
+        [
+          23,
+          9,
+          5
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "TACKLE"
+        ],
+        [
+          1,
+          "TAIL_WHIP"
+        ],
+        [
+          5,
+          "SAND_ATTACK"
+        ],
+        [
+          9,
+          "QUICK_ATTACK"
+        ],
+        [
+          13,
+          "FAIRY_WIND"
+        ],
+        [
+          17,
+          "BITE"
+        ],
+        [
+          21,
+          "DIG"
+        ],
+        [
+          25,
+          "FORESIGHT"
+        ],
+        [
+          30,
+          "TAKE_DOWN"
+        ],
+        [
+          35,
+          "PLAY_ROUGH"
+        ],
+        [
+          41,
+          "EARTHQUAKE"
+        ],
+        [
+          47,
+          "CRUNCH"
+        ],
+        [
+          54,
+          "EXTREMESPEED"
+        ]
+      ],
+      "tmhm_moves": [
+        "PROTECT",
+        "REST",
+        "TOXIC",
+        "ATTRACT",
+        "RETURN",
+        "DOUBLE_TEAM",
+        "EARTHQUAKE",
+        "DIG",
+        "ROAR",
+        "IRON_TAIL"
+      ],
+      "egg_moves": []
+    },
+    {
+      "id": "MN_333",
+      "classification": "Path Keeper",
+      "height_inches": 43,
+      "weight_tenths_lb": 1060,
+      "dex_pages": [
+        "Its tracks glow @ until the last @ pup has passed.",
+        "It finds lost pups @ before its pale @ markings fade."
+      ],
+      "base_stats": {
+        "hp": 85,
+        "attack": 105,
+        "defense": 75,
+        "speed": 105,
+        "special_attack": 65,
+        "special_defense": 85
+      },
+      "catch_rate": 45,
+      "base_exp": 185,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_GROUND",
+        "EGG_FAIRY"
+      ],
+      "evolution": null,
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_FOX",
+      "footprint_species": "HOUNDOUR",
+      "cry": {
+        "cry": "CRY_GROWLITHE",
+        "pitch": 23,
+        "length": 168
+      },
+      "shiny_rgb5": [
+        [
+          31,
+          11,
+          29
+        ],
+        [
+          24,
+          9,
+          4
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "TACKLE"
+        ],
+        [
+          1,
+          "TAIL_WHIP"
+        ],
+        [
+          5,
+          "SAND_ATTACK"
+        ],
+        [
+          9,
+          "QUICK_ATTACK"
+        ],
+        [
+          13,
+          "FAIRY_WIND"
+        ],
+        [
+          17,
+          "BITE"
+        ],
+        [
+          21,
+          "DIG"
+        ],
+        [
+          25,
+          "FORESIGHT"
+        ],
+        [
+          30,
+          "TAKE_DOWN"
+        ],
+        [
+          35,
+          "PLAY_ROUGH"
+        ],
+        [
+          41,
+          "EARTHQUAKE"
+        ],
+        [
+          47,
+          "CRUNCH"
+        ],
+        [
+          54,
+          "EXTREMESPEED"
+        ]
+      ],
+      "tmhm_moves": [
+        "PROTECT",
+        "REST",
+        "TOXIC",
+        "ATTRACT",
+        "RETURN",
+        "DOUBLE_TEAM",
+        "EARTHQUAKE",
+        "DIG",
+        "ROAR",
+        "IRON_TAIL"
+      ],
+      "egg_moves": []
+    },
+    {
+      "id": "MN_334",
+      "classification": "Torpor",
+      "height_inches": 7,
+      "weight_tenths_lb": 18,
+      "dex_pages": [
+        "It saves moments @ while sleeping @ through winter.",
+        "It wakes and moves @ before its shadow @ can catch up."
+      ],
+      "base_stats": {
+        "hp": 35,
+        "attack": 30,
+        "defense": 35,
+        "speed": 65,
+        "special_attack": 65,
+        "special_defense": 50
+      },
+      "catch_rate": 190,
+      "base_exp": 55,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_FLYING",
+        "EGG_INDETERMINATE"
+      ],
+      "evolution": {
+        "method": "LEVEL",
+        "level": 18
+      },
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_BUG",
+      "footprint_species": "SPINARAK",
+      "cry": {
+        "cry": "CRY_SPINARAK",
+        "pitch": -22,
+        "length": 120
+      },
+      "shiny_rgb5": [
+        [
+          30,
+          22,
+          10
+        ],
+        [
+          20,
+          7,
+          6
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "LEECH_LIFE"
+        ],
+        [
+          1,
+          "GROWL"
+        ],
+        [
+          5,
+          "CONFUSION"
+        ],
+        [
+          9,
+          "GUST"
+        ],
+        [
+          13,
+          "DETECT"
+        ],
+        [
+          17,
+          "PSYBEAM"
+        ],
+        [
+          21,
+          "WING_ATTACK"
+        ],
+        [
+          25,
+          "LIGHT_SCREEN"
+        ],
+        [
+          30,
+          "AGILITY"
+        ],
+        [
+          35,
+          "PSYCHIC_M"
+        ],
+        [
+          41,
+          "RAZOR_WIND"
+        ],
+        [
+          47,
+          "FUTURE_SIGHT"
+        ],
+        [
+          54,
+          "REST"
+        ]
+      ],
+      "tmhm_moves": [
+        "PROTECT",
+        "REST",
+        "TOXIC",
+        "ATTRACT",
+        "RETURN",
+        "DOUBLE_TEAM",
+        "PSYCHIC_M",
+        "SWIFT",
+        "FLY",
+        "FLASH"
+      ],
+      "egg_moves": []
+    },
+    {
+      "id": "MN_335",
+      "classification": "Slow Pulse",
+      "height_inches": 16,
+      "weight_tenths_lb": 65,
+      "dex_pages": [
+        "Its pulse slows @ until a falling @ drop seems still.",
+        "Stored motion lets @ it dart forward @ without a sound."
+      ],
+      "base_stats": {
+        "hp": 50,
+        "attack": 45,
+        "defense": 50,
+        "speed": 80,
+        "special_attack": 90,
+        "special_defense": 70
+      },
+      "catch_rate": 90,
+      "base_exp": 120,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_FLYING",
+        "EGG_INDETERMINATE"
+      ],
+      "evolution": {
+        "method": "LEVEL",
+        "level": 36
+      },
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_BUG",
+      "footprint_species": "SPINARAK",
+      "cry": {
+        "cry": "CRY_SPINARAK",
+        "pitch": 2,
+        "length": 144
+      },
+      "shiny_rgb5": [
+        [
+          28,
+          28,
+          10
+        ],
+        [
+          22,
+          8,
+          4
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "LEECH_LIFE"
+        ],
+        [
+          1,
+          "GROWL"
+        ],
+        [
+          5,
+          "CONFUSION"
+        ],
+        [
+          9,
+          "GUST"
+        ],
+        [
+          13,
+          "DETECT"
+        ],
+        [
+          17,
+          "PSYBEAM"
+        ],
+        [
+          21,
+          "WING_ATTACK"
+        ],
+        [
+          25,
+          "LIGHT_SCREEN"
+        ],
+        [
+          30,
+          "AGILITY"
+        ],
+        [
+          35,
+          "PSYCHIC_M"
+        ],
+        [
+          41,
+          "RAZOR_WIND"
+        ],
+        [
+          47,
+          "FUTURE_SIGHT"
+        ],
+        [
+          54,
+          "REST"
+        ]
+      ],
+      "tmhm_moves": [
+        "PROTECT",
+        "REST",
+        "TOXIC",
+        "ATTRACT",
+        "RETURN",
+        "DOUBLE_TEAM",
+        "PSYCHIC_M",
+        "SWIFT",
+        "FLY",
+        "FLASH"
+      ],
+      "egg_moves": []
+    },
+    {
+      "id": "MN_336",
+      "classification": "Still Wing",
+      "height_inches": 35,
+      "weight_tenths_lb": 210,
+      "dex_pages": [
+        "It holds air @ still around its @ thick winter fur.",
+        "One wingbeat frees @ a whole night of @ stored motion."
+      ],
+      "base_stats": {
+        "hp": 70,
+        "attack": 60,
+        "defense": 65,
+        "speed": 105,
+        "special_attack": 110,
+        "special_defense": 85
+      },
+      "catch_rate": 45,
+      "base_exp": 185,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_FLYING",
+        "EGG_INDETERMINATE"
+      ],
+      "evolution": null,
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_BUG",
+      "footprint_species": "SPINARAK",
+      "cry": {
+        "cry": "CRY_SPINARAK",
+        "pitch": 26,
+        "length": 168
+      },
+      "shiny_rgb5": [
+        [
+          30,
+          21,
+          10
+        ],
+        [
+          21,
+          5,
+          8
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "LEECH_LIFE"
+        ],
+        [
+          1,
+          "GROWL"
+        ],
+        [
+          5,
+          "CONFUSION"
+        ],
+        [
+          9,
+          "GUST"
+        ],
+        [
+          13,
+          "DETECT"
+        ],
+        [
+          17,
+          "PSYBEAM"
+        ],
+        [
+          21,
+          "WING_ATTACK"
+        ],
+        [
+          25,
+          "LIGHT_SCREEN"
+        ],
+        [
+          30,
+          "AGILITY"
+        ],
+        [
+          35,
+          "PSYCHIC_M"
+        ],
+        [
+          41,
+          "RAZOR_WIND"
+        ],
+        [
+          47,
+          "FUTURE_SIGHT"
+        ],
+        [
+          54,
+          "REST"
+        ]
+      ],
+      "tmhm_moves": [
+        "PROTECT",
+        "REST",
+        "TOXIC",
+        "ATTRACT",
+        "RETURN",
+        "DOUBLE_TEAM",
+        "PSYCHIC_M",
+        "SWIFT",
+        "FLY",
+        "FLASH"
+      ],
+      "egg_moves": []
+    },
+    {
+      "id": "MN_337",
+      "classification": "Burrow Beak",
+      "height_inches": 6,
+      "weight_tenths_lb": 12,
+      "dex_pages": [
+        "Its broad toes @ scoop loose sand @ behind its body.",
+        "It tests the bank @ with its beak @ before it digs."
+      ],
+      "base_stats": {
+        "hp": 40,
+        "attack": 55,
+        "defense": 45,
+        "speed": 65,
+        "special_attack": 30,
+        "special_defense": 40
+      },
+      "catch_rate": 190,
+      "base_exp": 55,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_FLYING",
+        "EGG_GROUND"
+      ],
+      "evolution": {
+        "method": "LEVEL",
+        "level": 28
+      },
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_BIRD",
+      "footprint_species": "SPEAROW",
+      "cry": {
+        "cry": "CRY_SPEAROW",
+        "pitch": -19,
+        "length": 120
+      },
+      "shiny_rgb5": [
+        [
+          8,
+          31,
+          13
+        ],
+        [
+          22,
+          4,
+          11
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "PECK"
+        ],
+        [
+          1,
+          "SAND_ATTACK"
+        ],
+        [
+          5,
+          "GUST"
+        ],
+        [
+          9,
+          "MUD_SLAP"
+        ],
+        [
+          13,
+          "FURY_ATTACK"
+        ],
+        [
+          17,
+          "QUICK_ATTACK"
+        ],
+        [
+          21,
+          "DIG"
+        ],
+        [
+          25,
+          "WING_ATTACK"
+        ],
+        [
+          30,
+          "DETECT"
+        ],
+        [
+          35,
+          "DRILL_PECK"
+        ],
+        [
+          41,
+          "EARTHQUAKE"
+        ],
+        [
+          47,
+          "AGILITY"
+        ],
+        [
+          54,
+          "MIRROR_MOVE"
+        ]
+      ],
+      "tmhm_moves": [
+        "PROTECT",
+        "REST",
+        "TOXIC",
+        "ATTRACT",
+        "RETURN",
+        "DOUBLE_TEAM",
+        "DIG",
+        "EARTHQUAKE",
+        "FLY",
+        "SWIFT"
+      ],
+      "egg_moves": []
+    },
+    {
+      "id": "MN_338",
+      "classification": "Bank Delver",
+      "height_inches": 18,
+      "weight_tenths_lb": 95,
+      "dex_pages": [
+        "It carries sand @ out in its deep @ wing folds.",
+        "It dives beside a @ bluff face, then @ vanishes into it."
+      ],
+      "base_stats": {
+        "hp": 70,
+        "attack": 90,
+        "defense": 80,
+        "speed": 100,
+        "special_attack": 45,
+        "special_defense": 75
+      },
+      "catch_rate": 45,
+      "base_exp": 120,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_FLYING",
+        "EGG_GROUND"
+      ],
+      "evolution": null,
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_BIRD",
+      "footprint_species": "SPEAROW",
+      "cry": {
+        "cry": "CRY_SPEAROW",
+        "pitch": 5,
+        "length": 144
+      },
+      "shiny_rgb5": [
+        [
+          4,
+          31,
+          17
+        ],
+        [
+          23,
+          3,
+          11
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "PECK"
+        ],
+        [
+          1,
+          "SAND_ATTACK"
+        ],
+        [
+          5,
+          "GUST"
+        ],
+        [
+          9,
+          "MUD_SLAP"
+        ],
+        [
+          13,
+          "FURY_ATTACK"
+        ],
+        [
+          17,
+          "QUICK_ATTACK"
+        ],
+        [
+          21,
+          "DIG"
+        ],
+        [
+          25,
+          "WING_ATTACK"
+        ],
+        [
+          30,
+          "DETECT"
+        ],
+        [
+          35,
+          "DRILL_PECK"
+        ],
+        [
+          41,
+          "EARTHQUAKE"
+        ],
+        [
+          47,
+          "AGILITY"
+        ],
+        [
+          54,
+          "MIRROR_MOVE"
+        ]
+      ],
+      "tmhm_moves": [
+        "PROTECT",
+        "REST",
+        "TOXIC",
+        "ATTRACT",
+        "RETURN",
+        "DOUBLE_TEAM",
+        "DIG",
+        "EARTHQUAKE",
+        "FLY",
+        "SWIFT"
+      ],
+      "egg_moves": []
+    },
+    {
+      "id": "MN_339",
+      "classification": "Snow Fluff",
+      "height_inches": 5,
+      "weight_tenths_lb": 9,
+      "dex_pages": [
+        "It fluffs its pale @ wing tips to hide @ from biting wind.",
+        "Paired foot marks @ trail behind it @ in loose snow."
+      ],
+      "base_stats": {
+        "hp": 35,
+        "attack": 35,
+        "defense": 35,
+        "speed": 55,
+        "special_attack": 65,
+        "special_defense": 50
+      },
+      "catch_rate": 190,
+      "base_exp": 55,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_FLYING",
+        "EGG_FAIRY"
+      ],
+      "evolution": {
+        "method": "LEVEL",
+        "level": 18
+      },
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_BIRD",
+      "footprint_species": "MURKROW",
+      "cry": {
+        "cry": "CRY_FEAROW",
+        "pitch": -16,
+        "length": 120
+      },
+      "shiny_rgb5": [
+        [
+          31,
+          11,
+          29
+        ],
+        [
+          25,
+          5,
+          13
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "PECK"
+        ],
+        [
+          1,
+          "GROWL"
+        ],
+        [
+          5,
+          "POWDER_SNOW"
+        ],
+        [
+          9,
+          "GUST"
+        ],
+        [
+          13,
+          "MIST"
+        ],
+        [
+          17,
+          "ICY_WIND"
+        ],
+        [
+          21,
+          "QUICK_ATTACK"
+        ],
+        [
+          25,
+          "WING_ATTACK"
+        ],
+        [
+          30,
+          "HAZE"
+        ],
+        [
+          35,
+          "ICE_BEAM"
+        ],
+        [
+          41,
+          "WHIRLWIND"
+        ],
+        [
+          47,
+          "BLIZZARD"
+        ],
+        [
+          54,
+          "SKY_ATTACK"
+        ]
+      ],
+      "tmhm_moves": [
+        "PROTECT",
+        "REST",
+        "TOXIC",
+        "ATTRACT",
+        "RETURN",
+        "DOUBLE_TEAM",
+        "BLIZZARD",
+        "ICY_WIND",
+        "FLY",
+        "SWIFT"
+      ],
+      "egg_moves": []
+    },
+    {
+      "id": "MN_340",
+      "classification": "Snow Vane",
+      "height_inches": 12,
+      "weight_tenths_lb": 48,
+      "dex_pages": [
+        "Curved feathers @ guide loose snow @ around its body.",
+        "It turns into the @ wind to shelter a @ smaller flockmate."
+      ],
+      "base_stats": {
+        "hp": 50,
+        "attack": 50,
+        "defense": 50,
+        "speed": 70,
+        "special_attack": 85,
+        "special_defense": 65
+      },
+      "catch_rate": 90,
+      "base_exp": 120,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_FLYING",
+        "EGG_FAIRY"
+      ],
+      "evolution": {
+        "method": "LEVEL",
+        "level": 36
+      },
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_BIRD",
+      "footprint_species": "MURKROW",
+      "cry": {
+        "cry": "CRY_FEAROW",
+        "pitch": 8,
+        "length": 144
+      },
+      "shiny_rgb5": [
+        [
+          26,
+          7,
+          28
+        ],
+        [
+          25,
+          5,
+          12
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "PECK"
+        ],
+        [
+          1,
+          "GROWL"
+        ],
+        [
+          5,
+          "POWDER_SNOW"
+        ],
+        [
+          9,
+          "GUST"
+        ],
+        [
+          13,
+          "MIST"
+        ],
+        [
+          17,
+          "ICY_WIND"
+        ],
+        [
+          21,
+          "QUICK_ATTACK"
+        ],
+        [
+          25,
+          "WING_ATTACK"
+        ],
+        [
+          30,
+          "HAZE"
+        ],
+        [
+          35,
+          "ICE_BEAM"
+        ],
+        [
+          41,
+          "WHIRLWIND"
+        ],
+        [
+          47,
+          "BLIZZARD"
+        ],
+        [
+          54,
+          "SKY_ATTACK"
+        ]
+      ],
+      "tmhm_moves": [
+        "PROTECT",
+        "REST",
+        "TOXIC",
+        "ATTRACT",
+        "RETURN",
+        "DOUBLE_TEAM",
+        "BLIZZARD",
+        "ICY_WIND",
+        "FLY",
+        "SWIFT"
+      ],
+      "egg_moves": []
+    },
+    {
+      "id": "MN_341",
+      "classification": "Snow Spiral",
+      "height_inches": 28,
+      "weight_tenths_lb": 160,
+      "dex_pages": [
+        "Its long tail @ bends like a @ turning wind vane.",
+        "Its flock follows @ its pale wings @ through squalls."
+      ],
+      "base_stats": {
+        "hp": 75,
+        "attack": 60,
+        "defense": 65,
+        "speed": 95,
+        "special_attack": 115,
+        "special_defense": 80
+      },
+      "catch_rate": 45,
+      "base_exp": 185,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_FLYING",
+        "EGG_FAIRY"
+      ],
+      "evolution": null,
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_BIRD",
+      "footprint_species": "MURKROW",
+      "cry": {
+        "cry": "CRY_FEAROW",
+        "pitch": 32,
+        "length": 168
+      },
+      "shiny_rgb5": [
+        [
+          31,
+          8,
+          29
+        ],
+        [
+          24,
+          6,
+          9
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "PECK"
+        ],
+        [
+          1,
+          "GROWL"
+        ],
+        [
+          5,
+          "POWDER_SNOW"
+        ],
+        [
+          9,
+          "GUST"
+        ],
+        [
+          13,
+          "MIST"
+        ],
+        [
+          17,
+          "ICY_WIND"
+        ],
+        [
+          21,
+          "QUICK_ATTACK"
+        ],
+        [
+          25,
+          "WING_ATTACK"
+        ],
+        [
+          30,
+          "HAZE"
+        ],
+        [
+          35,
+          "ICE_BEAM"
+        ],
+        [
+          41,
+          "WHIRLWIND"
+        ],
+        [
+          47,
+          "BLIZZARD"
+        ],
+        [
+          54,
+          "SKY_ATTACK"
+        ]
+      ],
+      "tmhm_moves": [
+        "PROTECT",
+        "REST",
+        "TOXIC",
+        "ATTRACT",
+        "RETURN",
+        "DOUBLE_TEAM",
+        "BLIZZARD",
+        "ICY_WIND",
+        "FLY",
+        "SWIFT"
+      ],
+      "egg_moves": []
+    },
+    {
+      "id": "MN_342",
+      "classification": "Ice Runner",
+      "height_inches": 11,
+      "weight_tenths_lb": 65,
+      "dex_pages": [
+        "Six hooked feet @ grip the ice on @ its old pond.",
+        "It folds its wing @ buds flat to slip @ below snow crusts."
+      ],
+      "base_stats": {
+        "hp": 45,
+        "attack": 55,
+        "defense": 55,
+        "speed": 40,
+        "special_attack": 35,
+        "special_defense": 50
+      },
+      "catch_rate": 190,
+      "base_exp": 55,
+      "held_items": [
+        null,
+        null
+      ],
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_BUG",
+        "EGG_DRAGON"
+      ],
+      "level_moves": [
+        [
+          1,
+          "TACKLE"
+        ],
+        [
+          1,
+          "HARDEN"
+        ],
+        [
+          5,
+          "POWDER_SNOW"
+        ],
+        [
+          9,
+          "QUICK_ATTACK"
+        ],
+        [
+          13,
+          "FURY_CUTTER"
+        ],
+        [
+          17,
+          "ICY_WIND"
+        ],
+        [
+          21,
+          "DRAGONBREATH"
+        ],
+        [
+          25,
+          "WING_ATTACK"
+        ],
+        [
+          30,
+          "SLASH"
+        ],
+        [
+          35,
+          "ICE_BEAM"
+        ],
+        [
+          41,
+          "AGILITY"
+        ],
+        [
+          47,
+          "OUTRAGE"
+        ],
+        [
+          54,
+          "BLIZZARD"
+        ]
+      ],
+      "evolution": {
+        "method": "LEVEL",
+        "level": 28
+      },
+      "egg_moves": [],
+      "tmhm_moves": [
+        "PROTECT",
+        "REST",
+        "TOXIC",
+        "ATTRACT",
+        "RETURN",
+        "DOUBLE_TEAM",
+        "BLIZZARD",
+        "ICY_WIND",
+        "DRAGONBREATH",
+        "SWIFT"
+      ],
+      "menu_icon": "ICON_BUG",
+      "cry": {
+        "cry": "CRY_VENONAT",
+        "pitch": -13,
+        "length": 120
+      },
+      "footprint_species": "VENONAT",
+      "shiny_rgb5": [
+        [
+          22,
+          10,
+          30
+        ],
+        [
+          24,
+          5,
+          11
+        ]
+      ]
+    },
+    {
+      "id": "MN_343",
+      "classification": "Sail Wing",
+      "height_inches": 39,
+      "weight_tenths_lb": 370,
+      "dex_pages": [
+        "Four sail wings @ catch wind over @ a frozen lake.",
+        "It steers with its @ curved abdomen and @ six hooked feet."
+      ],
+      "base_stats": {
+        "hp": 75,
+        "attack": 105,
+        "defense": 80,
+        "speed": 110,
+        "special_attack": 65,
+        "special_defense": 75
+      },
+      "catch_rate": 45,
+      "base_exp": 120,
+      "held_items": [
+        null,
+        null
+      ],
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_BUG",
+        "EGG_DRAGON"
+      ],
+      "level_moves": [
+        [
+          1,
+          "TACKLE"
+        ],
+        [
+          1,
+          "HARDEN"
+        ],
+        [
+          5,
+          "POWDER_SNOW"
+        ],
+        [
+          9,
+          "QUICK_ATTACK"
+        ],
+        [
+          13,
+          "FURY_CUTTER"
+        ],
+        [
+          17,
+          "ICY_WIND"
+        ],
+        [
+          21,
+          "DRAGONBREATH"
+        ],
+        [
+          25,
+          "WING_ATTACK"
+        ],
+        [
+          30,
+          "SLASH"
+        ],
+        [
+          35,
+          "ICE_BEAM"
+        ],
+        [
+          41,
+          "AGILITY"
+        ],
+        [
+          47,
+          "OUTRAGE"
+        ],
+        [
+          54,
+          "BLIZZARD"
+        ]
+      ],
+      "evolution": null,
+      "egg_moves": [],
+      "tmhm_moves": [
+        "PROTECT",
+        "REST",
+        "TOXIC",
+        "ATTRACT",
+        "RETURN",
+        "DOUBLE_TEAM",
+        "BLIZZARD",
+        "ICY_WIND",
+        "DRAGONBREATH",
+        "SWIFT"
+      ],
+      "menu_icon": "ICON_BUG",
+      "cry": {
+        "cry": "CRY_VENONAT",
+        "pitch": 11,
+        "length": 144
+      },
+      "footprint_species": "VENONAT",
+      "shiny_rgb5": [
+        [
+          31,
+          7,
+          30
+        ],
+        [
+          25,
+          9,
+          7
+        ]
+      ]
+    },
+    {
+      "id": "MN_344",
+      "classification": "Touch Map",
+      "height_inches": 22,
+      "weight_tenths_lb": 460,
+      "dex_pages": [
+        "Its nose reads @ tiny ripples @ in damp soil.",
+        "It draws the shape @ of a tunnel with @ one broad paw."
+      ],
+      "base_stats": {
+        "hp": 80,
+        "attack": 85,
+        "defense": 80,
+        "speed": 60,
+        "special_attack": 105,
+        "special_defense": 80
+      },
+      "catch_rate": 45,
+      "base_exp": 125,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_GROUND",
+        "EGG_MONSTER"
+      ],
+      "evolution": null,
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_FIGHTER",
+      "footprint_species": "DIGLETT",
+      "cry": {
+        "cry": "CRY_DIGLETT",
+        "pitch": -10,
+        "length": 120
+      },
+      "shiny_rgb5": [
+        [
+          3,
+          31,
+          19
+        ],
+        [
+          25,
+          13,
+          8
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "SCRATCH"
+        ],
+        [
+          1,
+          "FORESIGHT"
+        ],
+        [
+          5,
+          "MUD_SLAP"
+        ],
+        [
+          9,
+          "CONFUSION"
+        ],
+        [
+          13,
+          "DEFENSE_CURL"
+        ],
+        [
+          17,
+          "DIG"
+        ],
+        [
+          21,
+          "DETECT"
+        ],
+        [
+          25,
+          "PSYBEAM"
+        ],
+        [
+          30,
+          "MAGNITUDE"
+        ],
+        [
+          35,
+          "SLASH"
+        ],
+        [
+          41,
+          "PSYCHIC_M"
+        ],
+        [
+          47,
+          "EARTHQUAKE"
+        ],
+        [
+          54,
+          "FUTURE_SIGHT"
+        ]
+      ],
+      "tmhm_moves": [
+        "PROTECT",
+        "REST",
+        "TOXIC",
+        "ATTRACT",
+        "RETURN",
+        "DOUBLE_TEAM",
+        "DIG",
+        "EARTHQUAKE",
+        "PSYCHIC_M",
+        "FLASH"
+      ],
+      "egg_moves": []
+    },
+    {
+      "id": "MN_345",
+      "classification": "New Tail",
+      "height_inches": 10,
+      "weight_tenths_lb": 28,
+      "dex_pages": [
+        "Its bright tail @ draws foes away @ from its head.",
+        "A lost tail grows @ back with bright @ new scales."
+      ],
+      "base_stats": {
+        "hp": 45,
+        "attack": 50,
+        "defense": 45,
+        "speed": 60,
+        "special_attack": 50,
+        "special_defense": 50
+      },
+      "catch_rate": 190,
+      "base_exp": 55,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_DRAGON",
+        "EGG_GROUND"
+      ],
+      "evolution": {
+        "method": "LEVEL",
+        "level": 32
+      },
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_SERPENT",
+      "footprint_species": "EKANS",
+      "cry": {
+        "cry": "CRY_EKANS",
+        "pitch": -7,
+        "length": 120
+      },
+      "shiny_rgb5": [
+        [
+          4,
+          31,
+          22
+        ],
+        [
+          10,
+          0,
+          15
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "TACKLE"
+        ],
+        [
+          1,
+          "TAIL_WHIP"
+        ],
+        [
+          5,
+          "TWISTER"
+        ],
+        [
+          9,
+          "CHARM"
+        ],
+        [
+          13,
+          "QUICK_ATTACK"
+        ],
+        [
+          17,
+          "DRAGON_RAGE"
+        ],
+        [
+          21,
+          "FAIRY_WIND"
+        ],
+        [
+          25,
+          "SLAM"
+        ],
+        [
+          30,
+          "DRAGONBREATH"
+        ],
+        [
+          35,
+          "AGILITY"
+        ],
+        [
+          41,
+          "PLAY_ROUGH"
+        ],
+        [
+          47,
+          "OUTRAGE"
+        ],
+        [
+          54,
+          "MOONBLAST"
+        ]
+      ],
+      "tmhm_moves": [
+        "PROTECT",
+        "REST",
+        "TOXIC",
+        "ATTRACT",
+        "RETURN",
+        "DOUBLE_TEAM",
+        "DRAGONBREATH",
+        "IRON_TAIL",
+        "SUNNY_DAY"
+      ],
+      "egg_moves": []
+    },
+    {
+      "id": "MN_346",
+      "classification": "Decoy Tail",
+      "height_inches": 35,
+      "weight_tenths_lb": 410,
+      "dex_pages": [
+        "Its two tail tips @ twitch like small @ hidden heads.",
+        "It sheds a tail @ tip to draw @ foes off a nest."
+      ],
+      "base_stats": {
+        "hp": 80,
+        "attack": 90,
+        "defense": 80,
+        "speed": 100,
+        "special_attack": 95,
+        "special_defense": 85
+      },
+      "catch_rate": 45,
+      "base_exp": 120,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_DRAGON",
+        "EGG_GROUND"
+      ],
+      "evolution": null,
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_SERPENT",
+      "footprint_species": "EKANS",
+      "cry": {
+        "cry": "CRY_EKANS",
+        "pitch": 17,
+        "length": 144
+      },
+      "shiny_rgb5": [
+        [
+          8,
+          20,
+          30
+        ],
+        [
+          14,
+          0,
+          13
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "TACKLE"
+        ],
+        [
+          1,
+          "TAIL_WHIP"
+        ],
+        [
+          5,
+          "TWISTER"
+        ],
+        [
+          9,
+          "CHARM"
+        ],
+        [
+          13,
+          "QUICK_ATTACK"
+        ],
+        [
+          17,
+          "DRAGON_RAGE"
+        ],
+        [
+          21,
+          "FAIRY_WIND"
+        ],
+        [
+          25,
+          "SLAM"
+        ],
+        [
+          30,
+          "DRAGONBREATH"
+        ],
+        [
+          35,
+          "AGILITY"
+        ],
+        [
+          41,
+          "PLAY_ROUGH"
+        ],
+        [
+          47,
+          "OUTRAGE"
+        ],
+        [
+          54,
+          "MOONBLAST"
+        ]
+      ],
+      "tmhm_moves": [
+        "PROTECT",
+        "REST",
+        "TOXIC",
+        "ATTRACT",
+        "RETURN",
+        "DOUBLE_TEAM",
+        "DRAGONBREATH",
+        "IRON_TAIL",
+        "SUNNY_DAY"
+      ],
+      "egg_moves": []
+    },
+    {
+      "id": "MN_347",
+      "classification": "Pendulum",
+      "height_inches": 17,
+      "weight_tenths_lb": 190,
+      "dex_pages": [
+        "Its weighted tail @ swings before @ each long leap.",
+        "A tremor in the @ ground can turn @ its tail midair."
+      ],
+      "base_stats": {
+        "hp": 70,
+        "attack": 60,
+        "defense": 90,
+        "speed": 105,
+        "special_attack": 95,
+        "special_defense": 80
+      },
+      "catch_rate": 45,
+      "base_exp": 125,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_GROUND",
+        "EGG_MINERAL"
+      ],
+      "evolution": null,
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_FOX",
+      "footprint_species": "SENTRET",
+      "cry": {
+        "cry": "CRY_RATTATA",
+        "pitch": -4,
+        "length": 120
+      },
+      "shiny_rgb5": [
+        [
+          3,
+          31,
+          24
+        ],
+        [
+          24,
+          6,
+          10
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "POUND"
+        ],
+        [
+          1,
+          "TAIL_WHIP"
+        ],
+        [
+          5,
+          "ROCK_THROW"
+        ],
+        [
+          9,
+          "CONFUSION"
+        ],
+        [
+          13,
+          "QUICK_ATTACK"
+        ],
+        [
+          17,
+          "ROLLOUT"
+        ],
+        [
+          21,
+          "DETECT"
+        ],
+        [
+          25,
+          "PSYBEAM"
+        ],
+        [
+          30,
+          "AGILITY"
+        ],
+        [
+          35,
+          "ANCIENTPOWER"
+        ],
+        [
+          41,
+          "BATON_PASS"
+        ],
+        [
+          47,
+          "PSYCHIC_M"
+        ],
+        [
+          54,
+          "ROCK_SLIDE"
+        ]
+      ],
+      "tmhm_moves": [
+        "PROTECT",
+        "REST",
+        "TOXIC",
+        "ATTRACT",
+        "RETURN",
+        "DOUBLE_TEAM",
+        "ROLLOUT",
+        "PSYCHIC_M",
+        "SANDSTORM",
+        "FLASH"
+      ],
+      "egg_moves": []
+    },
+    {
+      "id": "MN_348",
+      "classification": "Sett Cub",
+      "height_inches": 10,
+      "weight_tenths_lb": 65,
+      "dex_pages": [
+        "Its flat front @ paws press loose @ soil into a roof.",
+        "It braces with @ its tail when a @ burrow wall slips."
+      ],
+      "base_stats": {
+        "hp": 50,
+        "attack": 60,
+        "defense": 45,
+        "speed": 35,
+        "special_attack": 25,
+        "special_defense": 35
+      },
+      "catch_rate": 190,
+      "base_exp": 55,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_GROUND",
+        "EGG_MONSTER"
+      ],
+      "evolution": {
+        "method": "LEVEL",
+        "level": 18
+      },
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_FOX",
+      "footprint_species": "SENTRET",
+      "cry": {
+        "cry": "CRY_RATTATA",
+        "pitch": -1,
+        "length": 120
+      },
+      "shiny_rgb5": [
+        [
+          4,
+          31,
+          22
+        ],
+        [
+          22,
+          5,
+          10
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "SCRATCH"
+        ],
+        [
+          1,
+          "LEER"
+        ],
+        [
+          5,
+          "MUD_SLAP"
+        ],
+        [
+          9,
+          "DEFENSE_CURL"
+        ],
+        [
+          13,
+          "ROCK_SMASH"
+        ],
+        [
+          17,
+          "DIG"
+        ],
+        [
+          21,
+          "KARATE_CHOP"
+        ],
+        [
+          25,
+          "VITAL_THROW"
+        ],
+        [
+          30,
+          "SLASH"
+        ],
+        [
+          35,
+          "SUBMISSION"
+        ],
+        [
+          41,
+          "EARTHQUAKE"
+        ],
+        [
+          47,
+          "CROSS_CHOP"
+        ],
+        [
+          54,
+          "REVERSAL"
+        ]
+      ],
+      "tmhm_moves": [
+        "PROTECT",
+        "REST",
+        "TOXIC",
+        "ATTRACT",
+        "RETURN",
+        "DOUBLE_TEAM",
+        "DIG",
+        "EARTHQUAKE",
+        "ROCK_SMASH",
+        "STRENGTH",
+        "DYNAMICPUNCH"
+      ],
+      "egg_moves": []
+    },
+    {
+      "id": "MN_349",
+      "classification": "Brace Paw",
+      "height_inches": 24,
+      "weight_tenths_lb": 370,
+      "dex_pages": [
+        "It braces one @ paw, then shoves @ with the other.",
+        "Its shoulder @ ridges bend force @ toward the ground."
+      ],
+      "base_stats": {
+        "hp": 70,
+        "attack": 85,
+        "defense": 70,
+        "speed": 45,
+        "special_attack": 35,
+        "special_defense": 50
+      },
+      "catch_rate": 90,
+      "base_exp": 120,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_GROUND",
+        "EGG_MONSTER"
+      ],
+      "evolution": {
+        "method": "LEVEL",
+        "level": 36
+      },
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_FOX",
+      "footprint_species": "SENTRET",
+      "cry": {
+        "cry": "CRY_RATTATA",
+        "pitch": 23,
+        "length": 144
+      },
+      "shiny_rgb5": [
+        [
+          5,
+          31,
+          13
+        ],
+        [
+          23,
+          10,
+          5
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "SCRATCH"
+        ],
+        [
+          1,
+          "LEER"
+        ],
+        [
+          5,
+          "MUD_SLAP"
+        ],
+        [
+          9,
+          "DEFENSE_CURL"
+        ],
+        [
+          13,
+          "ROCK_SMASH"
+        ],
+        [
+          17,
+          "DIG"
+        ],
+        [
+          21,
+          "KARATE_CHOP"
+        ],
+        [
+          25,
+          "VITAL_THROW"
+        ],
+        [
+          30,
+          "SLASH"
+        ],
+        [
+          35,
+          "SUBMISSION"
+        ],
+        [
+          41,
+          "EARTHQUAKE"
+        ],
+        [
+          47,
+          "CROSS_CHOP"
+        ],
+        [
+          54,
+          "REVERSAL"
+        ]
+      ],
+      "tmhm_moves": [
+        "PROTECT",
+        "REST",
+        "TOXIC",
+        "ATTRACT",
+        "RETURN",
+        "DOUBLE_TEAM",
+        "DIG",
+        "EARTHQUAKE",
+        "ROCK_SMASH",
+        "STRENGTH",
+        "DYNAMICPUNCH"
+      ],
+      "egg_moves": []
+    },
+    {
+      "id": "MN_350",
+      "classification": "Earth Shear",
+      "height_inches": 47,
+      "weight_tenths_lb": 1650,
+      "dex_pages": [
+        "Its paws split @ hard soil along @ hidden seams.",
+        "It shifts its @ weight to turn @ a charge aside."
+      ],
+      "base_stats": {
+        "hp": 95,
+        "attack": 120,
+        "defense": 100,
+        "speed": 65,
+        "special_attack": 45,
+        "special_defense": 80
+      },
+      "catch_rate": 45,
+      "base_exp": 185,
+      "gender_ratio": 127,
+      "hatch_cycles": 20,
+      "growth_rate": "GROWTH_MEDIUM_FAST",
+      "egg_groups": [
+        "EGG_GROUND",
+        "EGG_MONSTER"
+      ],
+      "evolution": null,
+      "held_items": [
+        null,
+        null
+      ],
+      "menu_icon": "ICON_FOX",
+      "footprint_species": "SENTRET",
+      "cry": {
+        "cry": "CRY_RATTATA",
+        "pitch": 47,
+        "length": 168
+      },
+      "shiny_rgb5": [
+        [
+          8,
+          31,
+          9
+        ],
+        [
+          22,
+          8,
+          5
+        ]
+      ],
+      "level_moves": [
+        [
+          1,
+          "SCRATCH"
+        ],
+        [
+          1,
+          "LEER"
+        ],
+        [
+          5,
+          "MUD_SLAP"
+        ],
+        [
+          9,
+          "DEFENSE_CURL"
+        ],
+        [
+          13,
+          "ROCK_SMASH"
+        ],
+        [
+          17,
+          "DIG"
+        ],
+        [
+          21,
+          "KARATE_CHOP"
+        ],
+        [
+          25,
+          "VITAL_THROW"
+        ],
+        [
+          30,
+          "SLASH"
+        ],
+        [
+          35,
+          "SUBMISSION"
+        ],
+        [
+          41,
+          "EARTHQUAKE"
+        ],
+        [
+          47,
+          "CROSS_CHOP"
+        ],
+        [
+          54,
+          "REVERSAL"
+        ]
+      ],
+      "tmhm_moves": [
+        "PROTECT",
+        "REST",
+        "TOXIC",
+        "ATTRACT",
+        "RETURN",
+        "DOUBLE_TEAM",
+        "DIG",
+        "EARTHQUAKE",
+        "ROCK_SMASH",
+        "STRENGTH",
+        "DYNAMICPUNCH"
+      ],
+      "egg_moves": []
+    }
+  ]
+}

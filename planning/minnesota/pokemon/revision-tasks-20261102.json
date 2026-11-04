@@ -1,0 +1,2197 @@
+{
+  "schema_version": 1,
+  "status": "authoring-archives-and-restorations-applied",
+  "review_date": "2026-11-02",
+  "numbering_basis": "225-species active authoring lineup before applying these requests; stable species IDs are pinned per task. Do not reinterpret these numbers after roster changes. Live website numbering has not been independently checked.",
+  "implementation_scope": "Active roster, front/back art, species data, typing, evolution, moves and original cries; public Pokedex publication. No game-server deployment.",
+  "latest_decision": "Published release43:225 active Pokemon,99 families,121 preserved archives,225 six-pose normal/shiny walking sprites and225 working original cries. Eight requested battle pairs refined, including Pothollow with its original Water/Poison living-filter theme. Game server and selected campaign pack unchanged.",
+  "tasks": [
+    {
+      "id": "DEX-20261102-01",
+      "status": "in-progress",
+      "kind": "typing-and-pose",
+      "title": "Make #058 Rock/Psychic rock wizard; turn the battle sprite toward its opponent.",
+      "targets": [
+        {
+          "species_id": "MN_203",
+          "name": "Siphlet",
+          "family_id": "MN_F093",
+          "scope": "Two-eyed wizard face correction; retain small stage identity."
+        },
+        {
+          "species_id": "MN_204",
+          "name": "Obelurk",
+          "family_id": "MN_F093",
+          "review_number": 58
+        }
+      ],
+      "unresolved_names": [],
+      "notes": "Audit the whole Siphlet/Obelurk family for consistent rock-wizard typing; user explicitly selected #058. Sprite currently faces left.",
+      "sprite_progress": {
+        "MN_203": {
+          "state": "two-eyed-normal-shiny-native-pair-reviewed-selected",
+          "manifest": "sprites/mn-f093/two-eyes-20261103-r13/manifest.json",
+          "remaining": "Separate Rock/Psychic gameplay typing task; native art and local pack integration complete."
+        },
+        "MN_204": {
+          "state": "two-eyed-normal-shiny-native-pair-reviewed-selected",
+          "manifest": "sprites/mn-f093/two-eyes-20261103-r13/manifest.json",
+          "remaining": "Separate Rock/Psychic gameplay typing task; native art and local pack integration complete."
+        }
+      },
+      "native_art_review": {
+        "status": "complete-native-art-local-pack-verified",
+        "species_ids": [
+          "MN_203",
+          "MN_204"
+        ],
+        "remaining": "No remaining sprite work in this pass; separate typing, roster or other non-art requirements retain their own task status."
+      }
+    },
+    {
+      "id": "DEX-20261102-02",
+      "status": "done",
+      "kind": "archive",
+      "title": "Redo concepts for #059\u2013064.",
+      "targets": [
+        {
+          "species_id": "MN_287",
+          "name": "Rivvit",
+          "family_id": "MN_F130",
+          "review_number": 59
+        },
+        {
+          "species_id": "MN_288",
+          "name": "Slidewake",
+          "family_id": "MN_F130",
+          "review_number": 60
+        },
+        {
+          "species_id": "MN_303",
+          "name": "Ticklet",
+          "family_id": "MN_F137",
+          "review_number": 61
+        },
+        {
+          "species_id": "MN_304",
+          "name": "Solstort",
+          "family_id": "MN_F137",
+          "review_number": 62
+        },
+        {
+          "species_id": "MN_310",
+          "name": "Gillpup",
+          "family_id": "MN_F140",
+          "review_number": 63
+        },
+        {
+          "species_id": "MN_311",
+          "name": "Mudmender",
+          "family_id": "MN_F140",
+          "review_number": 64
+        }
+      ],
+      "unresolved_names": [],
+      "notes": " Archive applied to authoring on 2026-11-02; no runtime pack or website deployment.",
+      "implementation_status": "archived-in-authoring"
+    },
+    {
+      "id": "DEX-20261102-03",
+      "status": "in-progress",
+      "kind": "sprite",
+      "title": "Refine sprites #085\u2013089.",
+      "targets": [
+        {
+          "species_id": "MN_218",
+          "name": "Zapsap",
+          "family_id": "MN_F101",
+          "review_number": 85
+        },
+        {
+          "species_id": "MN_219",
+          "name": "Tapacitor",
+          "family_id": "MN_F101",
+          "review_number": 86
+        },
+        {
+          "species_id": "MN_220",
+          "name": "Beetynamo",
+          "family_id": "MN_F101",
+          "review_number": 87
+        },
+        {
+          "species_id": "MN_139",
+          "name": "Chorip",
+          "family_id": "MN_F064",
+          "review_number": 88
+        },
+        {
+          "species_id": "MN_140",
+          "name": "Choirbog",
+          "family_id": "MN_F064",
+          "review_number": 89
+        }
+      ],
+      "unresolved_names": [],
+      "notes": "",
+      "sprite_progress": {
+        "MN_140": {
+          "front": "regenerated-native-user-approved-selected",
+          "back": "regenerated-native-user-approved-selected",
+          "manifest": "sprites/mn-f064/native-refinement-20261103-r3/manifest.json",
+          "remaining": "No remaining sprite work in this pass; separate non-art task requirements retain their own status.",
+          "user_feedback": "its very good! move on",
+          "integration": "Verified local candidate; see NATIVE-ART-20261103.md."
+        },
+        "MN_139": {
+          "front": "regenerated-native-reviewed-selected",
+          "back": "regenerated-native-reviewed-selected",
+          "manifest": "sprites/mn-f064/native-refinement-20261103-r3/manifest.json",
+          "remaining": "No remaining sprite work in this pass; separate non-art task requirements retain their own status.",
+          "integration": "Verified local candidate; see NATIVE-ART-20261103.md."
+        },
+        "MN_219": {
+          "state": "native-front-back-reviewed-selected",
+          "manifest": "sprites/mn-f101/beet-root-20261103-r5/manifest.json",
+          "remaining": "No remaining sprite work in this pass; separate non-art task requirements retain their own status.",
+          "integration": "Verified local candidate; see NATIVE-ART-20261103.md."
+        },
+        "MN_220": {
+          "state": "native-front-back-reviewed-selected",
+          "manifest": "sprites/mn-f101/beet-root-20261103-r5/manifest.json",
+          "remaining": "No remaining sprite work in this pass; separate non-art task requirements retain their own status.",
+          "integration": "Verified local candidate; see NATIVE-ART-20261103.md."
+        },
+        "MN_218": {
+          "state": "native-front-back-reviewed-selected",
+          "manifest": "sprites/mn-f101/beet-root-20261103-r5/manifest.json",
+          "remaining": "No remaining sprite work in this pass; separate non-art task requirements retain their own status.",
+          "integration": "Verified local candidate; see NATIVE-ART-20261103.md."
+        }
+      },
+      "normal_shiny_review": {
+        "status": "native-reviewed",
+        "date": "2026-11-03",
+        "notes": "Native normal/shiny pairs inspected and exact palette/index consistency checked. Gameplay pack refresh and battle placement remain pending."
+      },
+      "native_art_review": {
+        "status": "complete-native-art-local-pack-verified",
+        "species_ids": [
+          "MN_218",
+          "MN_219",
+          "MN_220",
+          "MN_139",
+          "MN_140"
+        ],
+        "remaining": "No remaining sprite work in this pass; separate typing, roster or other non-art requirements retain their own task status."
+      }
+    },
+    {
+      "id": "DEX-20261102-04",
+      "status": "done",
+      "kind": "archive",
+      "title": "Drop #091\u2013095.",
+      "targets": [
+        {
+          "species_id": "MN_122",
+          "name": "Dustip",
+          "family_id": "MN_F057",
+          "review_number": 91
+        },
+        {
+          "species_id": "MN_123",
+          "name": "Gustilt",
+          "family_id": "MN_F057",
+          "review_number": 92
+        },
+        {
+          "species_id": "MN_124",
+          "name": "Loessurge",
+          "family_id": "MN_F057",
+          "review_number": 93
+        },
+        {
+          "species_id": "MN_245",
+          "name": "Skirrit",
+          "family_id": "MN_F112",
+          "review_number": 94
+        },
+        {
+          "species_id": "MN_246",
+          "name": "Ventactor",
+          "family_id": "MN_F112",
+          "review_number": 95
+        }
+      ],
+      "unresolved_names": [],
+      "notes": "Retain stable source records; remove selected species from the active lineup when implemented. Audit evolution closure. Archive applied to authoring on 2026-11-02; no runtime pack or website deployment.",
+      "implementation_status": "archived-in-authoring"
+    },
+    {
+      "id": "DEX-20261102-05",
+      "status": "in-progress",
+      "kind": "sprite",
+      "title": "Refine sprites #102 and #105\u2013107.",
+      "targets": [
+        {
+          "species_id": "MN_078",
+          "name": "Casserogre",
+          "family_id": "MN_F032",
+          "review_number": 102
+        },
+        {
+          "species_id": "MN_195",
+          "name": "Doughlin",
+          "family_id": "MN_F090",
+          "review_number": 105
+        },
+        {
+          "species_id": "MN_196",
+          "name": "Crumcone",
+          "family_id": "MN_F090",
+          "review_number": 106
+        },
+        {
+          "species_id": "MN_197",
+          "name": "Pailbaron",
+          "family_id": "MN_F090",
+          "review_number": 107
+        }
+      ],
+      "unresolved_names": [],
+      "notes": "",
+      "sprite_progress": {
+        "MN_195": {
+          "state": "native-front-back-reviewed-selected",
+          "manifest": "sprites/mn-f090/native-refinement-20261103-r5/manifest.json",
+          "remaining": "No remaining sprite work in this pass; separate non-art task requirements retain their own status.",
+          "integration": "Verified local candidate; see NATIVE-ART-20261103.md."
+        },
+        "MN_196": {
+          "state": "native-front-back-reviewed-selected",
+          "manifest": "sprites/mn-f090/native-refinement-20261103-r5/manifest.json",
+          "remaining": "No remaining sprite work in this pass; separate non-art task requirements retain their own status.",
+          "integration": "Verified local candidate; see NATIVE-ART-20261103.md."
+        },
+        "MN_197": {
+          "state": "native-front-back-reviewed-selected",
+          "manifest": "sprites/mn-f090/native-refinement-20261103-r5/manifest.json",
+          "remaining": "No remaining sprite work in this pass; separate non-art task requirements retain their own status.",
+          "integration": "Verified local candidate; see NATIVE-ART-20261103.md."
+        },
+        "MN_078": {
+          "state": "frozen-by-user",
+          "note": "Stop further work. Retained candidates are unselected. Do not revisit without explicit user instruction."
+        }
+      },
+      "normal_shiny_review": {
+        "status": "native-reviewed",
+        "date": "2026-11-03",
+        "notes": "Native normal/shiny pairs inspected and exact palette/index consistency checked. Gameplay pack refresh and battle placement remain pending."
+      },
+      "native_art_review": {
+        "status": "complete-native-art-local-pack-verified",
+        "species_ids": [
+          "MN_195",
+          "MN_196",
+          "MN_197"
+        ],
+        "remaining": "No remaining sprite work in this pass; separate typing, roster or other non-art requirements retain their own task status."
+      }
+    },
+    {
+      "id": "DEX-20261102-06",
+      "status": "in-progress",
+      "kind": "typing-and-sprite-refinement",
+      "title": "Restore Mudnip / Bankmaw; change their typing and refine their sprites.",
+      "targets": [
+        {
+          "species_id": "MN_291",
+          "name": "Mudnip",
+          "family_id": "MN_F132"
+        },
+        {
+          "species_id": "MN_292",
+          "name": "Bankmaw",
+          "family_id": "MN_F132"
+        }
+      ],
+      "unresolved_names": [],
+      "notes": "Replacement typing is not specified; propose a consistent family typing for review. Restored in authoring curation on 2026-11-02. Runtime pack and public site not republished.",
+      "restoration_status": "complete-in-authoring-curation",
+      "sprite_progress": {
+        "MN_291": {
+          "state": "normal-shiny-native-pair-reviewed-selected",
+          "manifest": "sprites/mn-f132/native-refinement-20261103-r14/manifest.json",
+          "remaining": "No remaining sprite work in this pass; separate non-art task requirements retain their own status.",
+          "integration": "Verified local candidate; see NATIVE-ART-20261103.md."
+        },
+        "MN_292": {
+          "state": "normal-shiny-native-pair-reviewed-selected",
+          "manifest": "sprites/mn-f132/native-refinement-20261103-r14/manifest.json",
+          "remaining": "No remaining sprite work in this pass; separate non-art task requirements retain their own status.",
+          "integration": "Verified local candidate; see NATIVE-ART-20261103.md."
+        }
+      },
+      "native_art_review": {
+        "status": "complete-native-art-local-pack-verified",
+        "species_ids": [
+          "MN_291",
+          "MN_292"
+        ],
+        "remaining": "No remaining sprite work in this pass; separate typing, roster or other non-art requirements retain their own task status."
+      }
+    },
+    {
+      "id": "DEX-20261102-07",
+      "status": "done",
+      "kind": "restore",
+      "title": "Restore Berryboo / Muffiend.",
+      "targets": [
+        {
+          "species_id": "MN_083",
+          "name": "Berryboo",
+          "family_id": "MN_F035"
+        },
+        {
+          "species_id": "MN_084",
+          "name": "Muffiend",
+          "family_id": "MN_F035"
+        }
+      ],
+      "unresolved_names": [],
+      "notes": " Restored in authoring curation on 2026-11-02. Runtime pack and public site not republished.",
+      "restoration_status": "complete-in-authoring-curation"
+    },
+    {
+      "id": "DEX-20261102-08",
+      "status": "done",
+      "kind": "restore",
+      "title": "Restore Riffbit \u2192 Dynarill \u2192 Cascavolt.",
+      "targets": [
+        {
+          "species_id": "MN_189",
+          "name": "Riffbit",
+          "family_id": "MN_F088"
+        },
+        {
+          "species_id": "MN_190",
+          "name": "Dynarill",
+          "family_id": "MN_F088"
+        },
+        {
+          "species_id": "MN_191",
+          "name": "Cascavolt",
+          "family_id": "MN_F088"
+        }
+      ],
+      "unresolved_names": [],
+      "notes": " Restored in authoring curation on 2026-11-02. Runtime pack and public site not republished.",
+      "restoration_status": "complete-in-authoring-curation"
+    },
+    {
+      "id": "DEX-20261102-09",
+      "status": "done",
+      "kind": "restore",
+      "title": "Restore Sparkveil \u2192 Aurorill \u2192 Polarisma.",
+      "targets": [
+        {
+          "species_id": "MN_037",
+          "name": "Sparkveil",
+          "family_id": "MN_F013"
+        },
+        {
+          "species_id": "MN_038",
+          "name": "Aurorill",
+          "family_id": "MN_F013"
+        },
+        {
+          "species_id": "MN_039",
+          "name": "Polarisma",
+          "family_id": "MN_F013"
+        }
+      ],
+      "unresolved_names": [],
+      "notes": "User wrote sparkviel; canonical roster spelling is Sparkveil. Restored in authoring curation on 2026-11-02. Runtime pack and public site not republished.",
+      "restoration_status": "complete-in-authoring-curation"
+    },
+    {
+      "id": "DEX-20261102-10",
+      "status": "done",
+      "kind": "restore",
+      "title": "Restore Loomlet / Inverveil.",
+      "targets": [
+        {
+          "species_id": "MN_174",
+          "name": "Loomlet",
+          "family_id": "MN_F080"
+        },
+        {
+          "species_id": "MN_175",
+          "name": "Inverveil",
+          "family_id": "MN_F080"
+        }
+      ],
+      "unresolved_names": [],
+      "notes": "User wrote interveil; canonical roster spelling is Inverveil. Restored in authoring curation on 2026-11-02. Runtime pack and public site not republished.",
+      "restoration_status": "complete-in-authoring-curation"
+    },
+    {
+      "id": "DEX-20261102-11",
+      "status": "done",
+      "kind": "archive",
+      "title": "Redo #028\u2013029.",
+      "targets": [
+        {
+          "species_id": "MN_255",
+          "name": "Whirlnut",
+          "family_id": "MN_F119",
+          "review_number": 28
+        },
+        {
+          "species_id": "MN_256",
+          "name": "Samurrel",
+          "family_id": "MN_F119",
+          "review_number": 29
+        }
+      ],
+      "unresolved_names": [],
+      "notes": " Archive applied to authoring on 2026-11-02; no runtime pack or website deployment.",
+      "implementation_status": "archived-in-authoring"
+    },
+    {
+      "id": "DEX-20261102-12",
+      "status": "done",
+      "kind": "archive",
+      "title": "Redo #034\u2013036.",
+      "targets": [
+        {
+          "species_id": "MN_300",
+          "name": "Densy",
+          "family_id": "MN_F136",
+          "review_number": 34
+        },
+        {
+          "species_id": "MN_301",
+          "name": "Dozebear",
+          "family_id": "MN_F136",
+          "review_number": 35
+        },
+        {
+          "species_id": "MN_302",
+          "name": "Denumbra",
+          "family_id": "MN_F136",
+          "review_number": 36
+        }
+      ],
+      "unresolved_names": [],
+      "notes": " Archive applied to authoring on 2026-11-02; no runtime pack or website deployment.",
+      "implementation_status": "archived-in-authoring"
+    },
+    {
+      "id": "DEX-20261102-13",
+      "status": "done",
+      "kind": "archive",
+      "title": "Redo #037\u2013039.",
+      "targets": [
+        {
+          "species_id": "MN_305",
+          "name": "Peckit",
+          "family_id": "MN_F138",
+          "review_number": 37
+        },
+        {
+          "species_id": "MN_306",
+          "name": "Notchbill",
+          "family_id": "MN_F138",
+          "review_number": 38
+        },
+        {
+          "species_id": "MN_307",
+          "name": "Gougecrest",
+          "family_id": "MN_F138",
+          "review_number": 39
+        }
+      ],
+      "unresolved_names": [],
+      "notes": " Archive applied to authoring on 2026-11-02; no runtime pack or website deployment.",
+      "implementation_status": "archived-in-authoring"
+    },
+    {
+      "id": "DEX-20261102-14",
+      "status": "done",
+      "kind": "new-species",
+      "title": "Add a Dark/Poison berry Pok\u00e9mon.",
+      "targets": [],
+      "unresolved_names": [],
+      "notes": "Choose a new stable identity and concept; do not assume this is Berryboo/Muffiend without review.",
+      "proposal_id": "P04",
+      "proposed_names": [
+        "Bitterry"
+      ],
+      "proposed_types": [
+        "DARK",
+        "POISON"
+      ],
+      "proposed_stage_count": 1,
+      "base": "Forest berry shrub",
+      "secondary_theme": "Deceptive warning berries",
+      "design_brief": "A small woody berry-cluster creature displays bright decoy berries around a concealed stern face. Fictional poisonous lure powers; a living plant, with no dough, baking or food-container anatomy.",
+      "proposal_status": "requested-new-species",
+      "website_release": "20261104-promoted-225-42",
+      "completion_scope": "Active authoring and public full Pokedex; compiled local data verified. Game server unchanged."
+    },
+    {
+      "id": "DEX-20261102-15",
+      "status": "done",
+      "kind": "archive",
+      "title": "Remove Spanlet / Liftruss.",
+      "targets": [
+        {
+          "species_id": "MN_073",
+          "name": "Spanlet",
+          "family_id": "MN_F030",
+          "review_number": 175
+        },
+        {
+          "species_id": "MN_074",
+          "name": "Liftruss",
+          "family_id": "MN_F030",
+          "review_number": 176
+        }
+      ],
+      "unresolved_names": [],
+      "notes": " Archive applied to authoring on 2026-11-02; no runtime pack or website deployment.",
+      "implementation_status": "archived-in-authoring"
+    },
+    {
+      "id": "DEX-20261102-16",
+      "status": "todo",
+      "kind": "typing-audit",
+      "title": "Make evolution-line typing consistent across the roster.",
+      "targets": [
+        {
+          "species_id": "MN_028",
+          "name": "Oatlet",
+          "family_id": "MN_F010",
+          "review_number": 96
+        },
+        {
+          "species_id": "MN_029",
+          "name": "Millimp",
+          "family_id": "MN_F010",
+          "review_number": 97
+        },
+        {
+          "species_id": "MN_030",
+          "name": "Flourgeist",
+          "family_id": "MN_F010",
+          "review_number": 98
+        },
+        {
+          "species_id": "MN_145",
+          "name": "Cartick",
+          "family_id": "MN_F067",
+          "review_number": 192
+        },
+        {
+          "species_id": "MN_146",
+          "name": "Haulgeist",
+          "family_id": "MN_F067",
+          "review_number": 193
+        }
+      ],
+      "unresolved_names": [],
+      "notes": "User cited Oatlet/Millimp and Cartick/Haulgeist. Avoid successive stages replacing one secondary type with an unrelated one. Audit every family; proposed replacements need review."
+    },
+    {
+      "id": "DEX-20261102-17",
+      "status": "done",
+      "kind": "archive",
+      "title": "Retire the monarch line: Stripillar \u2192 Giltalis \u2192 Regalarch.",
+      "targets": [
+        {
+          "species_id": "MN_019",
+          "name": "Stripillar",
+          "family_id": "MN_F007",
+          "review_number": 16
+        },
+        {
+          "species_id": "MN_020",
+          "name": "Giltalis",
+          "family_id": "MN_F007",
+          "review_number": 17
+        },
+        {
+          "species_id": "MN_021",
+          "name": "Regalarch",
+          "family_id": "MN_F007",
+          "review_number": 18
+        }
+      ],
+      "unresolved_names": [],
+      "notes": "Latest user clarification supersedes drop 16\u201319: KEEP Tussnip (#019). Archive applied to authoring on 2026-11-02; no runtime pack or website deployment.",
+      "implementation_status": "archived-in-authoring"
+    },
+    {
+      "id": "DEX-20261102-18",
+      "status": "todo",
+      "kind": "typing",
+      "title": "Keep Tussnip and make it Bug/Ground.",
+      "targets": [
+        {
+          "species_id": "MN_107",
+          "name": "Tussnip",
+          "family_id": "MN_F052",
+          "review_number": 19
+        }
+      ],
+      "unresolved_names": [],
+      "notes": "Explicit latest user decision: Tussnip stays active. Audit Silksod/Dakotaskip typing with the family-consistency task."
+    },
+    {
+      "id": "DEX-20261102-19",
+      "status": "done",
+      "kind": "archive",
+      "title": "Drop Winkfin \u2192 Glaciris \u2192 Tipulord.",
+      "targets": [
+        {
+          "species_id": "MN_251",
+          "name": "Winkfin",
+          "family_id": "MN_F117",
+          "review_number": 140
+        },
+        {
+          "species_id": "MN_252",
+          "name": "Glaciris",
+          "family_id": "MN_F117",
+          "review_number": 141
+        },
+        {
+          "species_id": "MN_266",
+          "name": "Tipulord",
+          "family_id": "MN_F117",
+          "review_number": 142
+        }
+      ],
+      "unresolved_names": [],
+      "notes": " Archive applied to authoring on 2026-11-02; no runtime pack or website deployment.",
+      "implementation_status": "archived-in-authoring"
+    },
+    {
+      "id": "DEX-20261102-20",
+      "status": "superseded",
+      "kind": "superseded-archive",
+      "title": "Redo Contakett (Contrakett): archive.",
+      "targets": [
+        {
+          "species_id": "MN_156",
+          "name": "Contrakett",
+          "family_id": "MN_F073"
+        }
+      ],
+      "unresolved_names": [],
+      "notes": "User clarified on2026-11-04 that this third turtle stage must be kept and redesigned/retyped. Original removal decision preserved in curation.restored_evolutions.prior_archive.",
+      "implementation_status": "archived-in-authoring",
+      "superseded_by": "DEX-20261104-TURTLE-THIRD"
+    },
+    {
+      "id": "DEX-20261102-21",
+      "status": "in-progress",
+      "kind": "sprite",
+      "title": "Fix eyes throughout Wadebud \u2192 Rakehorn \u2192 Marshrack.",
+      "targets": [
+        {
+          "species_id": "MN_295",
+          "name": "Wadebud",
+          "family_id": "MN_F134",
+          "review_number": 161
+        },
+        {
+          "species_id": "MN_296",
+          "name": "Rakehorn",
+          "family_id": "MN_F134",
+          "review_number": 162
+        },
+        {
+          "species_id": "MN_297",
+          "name": "Marshrack",
+          "family_id": "MN_F134",
+          "review_number": 163
+        }
+      ],
+      "unresolved_names": [],
+      "notes": "",
+      "normal_shiny_review": {
+        "status": "native-reviewed",
+        "date": "2026-11-03",
+        "notes": "Native normal/shiny pairs inspected and exact palette/index consistency checked. Gameplay pack refresh and battle placement remain pending."
+      },
+      "sprite_progress": {
+        "MN_295": {
+          "state": "user-preferred-native-conversion-normal-shiny-selected",
+          "manifest": "sprites/mn-f134/downscale-20261103-v1/manifest.json",
+          "remaining": "No remaining sprite work in this pass; separate non-art task requirements retain their own status.",
+          "integration": "Verified local candidate; see NATIVE-ART-20261103.md."
+        },
+        "MN_296": {
+          "state": "user-preferred-native-conversion-normal-shiny-selected",
+          "manifest": "sprites/mn-f134/downscale-20261103-v1/manifest.json",
+          "remaining": "No remaining sprite work in this pass; separate non-art task requirements retain their own status.",
+          "integration": "Verified local candidate; see NATIVE-ART-20261103.md."
+        },
+        "MN_297": {
+          "state": "user-preferred-native-conversion-normal-shiny-selected",
+          "manifest": "sprites/mn-f134/downscale-20261103-v1/manifest.json",
+          "remaining": "No remaining sprite work in this pass; separate non-art task requirements retain their own status.",
+          "integration": "Verified local candidate; see NATIVE-ART-20261103.md."
+        }
+      },
+      "native_art_review": {
+        "status": "complete-native-art-local-pack-verified",
+        "species_ids": [
+          "MN_295",
+          "MN_296",
+          "MN_297"
+        ],
+        "remaining": "No remaining sprite work in this pass; separate typing, roster or other non-art requirements retain their own task status."
+      }
+    },
+    {
+      "id": "DEX-20261102-22",
+      "status": "in-progress",
+      "kind": "sprite",
+      "title": "Refine Burroot.",
+      "targets": [
+        {
+          "species_id": "MN_294",
+          "name": "Burroot",
+          "family_id": "MN_F133",
+          "review_number": 160
+        }
+      ],
+      "unresolved_names": [],
+      "notes": "",
+      "sprite_progress": {
+        "MN_294": {
+          "state": "user-approved-native-pair-selected",
+          "manifest": "sprites/mn-f133/native-refinement-20261103-r7/manifest.json",
+          "note": "Exact approved r7 board retained and registered; Burrbud artifacts unchanged; native PNG/index/2bpp/palette/provenance checks passed. Runtime/shiny checks remain. Historical Python visual-credit counter does not recognize mixed contour profiles; runtime manifest uses existing mixed-source-solid-v1 policy."
+        }
+      },
+      "normal_shiny_review": {
+        "status": "native-reviewed",
+        "date": "2026-11-03",
+        "notes": "Native normal/shiny pairs inspected and exact palette/index consistency checked. Gameplay pack refresh and battle placement remain pending."
+      },
+      "native_art_review": {
+        "status": "complete-native-art-local-pack-verified",
+        "species_ids": [
+          "MN_294"
+        ],
+        "remaining": "No remaining sprite work in this pass; separate typing, roster or other non-art requirements retain their own task status."
+      }
+    },
+    {
+      "id": "DEX-20261102-23",
+      "status": "done",
+      "kind": "archive",
+      "title": "Drop Bobcast / Buoyostic.",
+      "targets": [
+        {
+          "species_id": "MN_172",
+          "name": "Bobcast",
+          "family_id": "MN_F079",
+          "review_number": 184
+        },
+        {
+          "species_id": "MN_173",
+          "name": "Buoyostic",
+          "family_id": "MN_F079",
+          "review_number": 185
+        }
+      ],
+      "unresolved_names": [],
+      "notes": "Latest direction supersedes historical keep decisions. Archive applied to authoring on 2026-11-02; no runtime pack or website deployment.",
+      "implementation_status": "archived-in-authoring"
+    },
+    {
+      "id": "DEX-20261102-24",
+      "status": "in-progress",
+      "kind": "sprite",
+      "title": "Give Wreckquiem visible eyes.",
+      "targets": [
+        {
+          "species_id": "MN_094",
+          "name": "Wreckquiem",
+          "family_id": "MN_F043"
+        }
+      ],
+      "unresolved_names": [],
+      "notes": "User spelling Wrequiem resolved to Wreckquiem (MN_094). Eye repair remains TODO.",
+      "sprite_progress": {
+        "MN_094": {
+          "front": "regenerated-native-reviewed-selected",
+          "back": "regenerated-native-reviewed-selected",
+          "manifest": "sprites/mn-f043/definition-20261103-v1/manifest.json",
+          "remaining": "No remaining sprite work in this pass; separate non-art task requirements retain their own status.",
+          "integration": "Verified local candidate; see NATIVE-ART-20261103.md."
+        }
+      },
+      "normal_shiny_review": {
+        "status": "native-reviewed",
+        "date": "2026-11-03",
+        "notes": "Native normal/shiny pairs inspected and exact palette/index consistency checked. Gameplay pack refresh and battle placement remain pending."
+      },
+      "native_art_review": {
+        "status": "complete-native-art-local-pack-verified",
+        "species_ids": [
+          "MN_094"
+        ],
+        "remaining": "No remaining sprite work in this pass; separate typing, roster or other non-art requirements retain their own task status."
+      }
+    },
+    {
+      "id": "DEX-20261102-25",
+      "status": "in-progress",
+      "kind": "sprite",
+      "title": "Improve all three starter lines: orchid, lynx and beaver.",
+      "targets": [
+        {
+          "species_id": "MN_001",
+          "name": "Pouchid",
+          "family_id": "MN_F001",
+          "review_number": 1
+        },
+        {
+          "species_id": "MN_002",
+          "name": "Slipperina",
+          "family_id": "MN_F001",
+          "review_number": 2
+        },
+        {
+          "species_id": "MN_003",
+          "name": "Cyprielle",
+          "family_id": "MN_F001",
+          "review_number": 3
+        },
+        {
+          "species_id": "MN_274",
+          "name": "Kindlit",
+          "family_id": "MN_F125",
+          "review_number": 4
+        },
+        {
+          "species_id": "MN_275",
+          "name": "Rimepelt",
+          "family_id": "MN_F125",
+          "review_number": 5
+        },
+        {
+          "species_id": "MN_276",
+          "name": "Borealynx",
+          "family_id": "MN_F125",
+          "review_number": 6
+        },
+        {
+          "species_id": "MN_010",
+          "name": "Birchit",
+          "family_id": "MN_F004",
+          "review_number": 7
+        },
+        {
+          "species_id": "MN_011",
+          "name": "Portabeau",
+          "family_id": "MN_F004",
+          "review_number": 8
+        },
+        {
+          "species_id": "MN_012",
+          "name": "Voyagear",
+          "family_id": "MN_F004",
+          "review_number": 9
+        }
+      ],
+      "unresolved_names": [],
+      "notes": "User expanded priority to all three starter lines, including Pouchid/Slipperina/Cyprielle. Preserve distinctive native proportions; improve native shading, eyes and material without generic big faces or furry humanoids.",
+      "original_review_title": "Improve depth and shading of #004\u2013009.",
+      "scope_extension": "User on2026-11-03: Do all starters next improve all. All nine species require front/back native review. Existing grass/water/fire identities resolved against world.json and roster starter_role.",
+      "sprite_progress": {
+        "MN_001": {
+          "state": "normal-shiny-native-pair-selected-runtime-import-checked",
+          "manifest": "sprites/mn-f001/starter-orchid-20261103-r8/manifest.json",
+          "remaining": "No remaining sprite work in this pass; separate non-art task requirements retain their own status.",
+          "integration": "Verified local candidate; see NATIVE-ART-20261103.md."
+        },
+        "MN_002": {
+          "state": "normal-shiny-native-pair-selected-runtime-import-checked",
+          "manifest": "sprites/mn-f001/starter-orchid-20261103-r8/manifest.json",
+          "remaining": "No remaining sprite work in this pass; separate non-art task requirements retain their own status.",
+          "integration": "Verified local candidate; see NATIVE-ART-20261103.md."
+        },
+        "MN_003": {
+          "state": "normal-shiny-native-pair-selected-runtime-import-checked",
+          "manifest": "sprites/mn-f001/starter-orchid-20261103-r8/manifest.json",
+          "remaining": "No remaining sprite work in this pass; separate non-art task requirements retain their own status.",
+          "integration": "Verified local candidate; see NATIVE-ART-20261103.md."
+        },
+        "MN_274": {
+          "state": "normal-shiny-native-pair-selected-runtime-import-checked",
+          "manifest": "sprites/mn-f125/starter-lynx-20261103-r8/manifest.json",
+          "remaining": "No remaining sprite work in this pass; separate non-art task requirements retain their own status.",
+          "integration": "Verified local candidate; see NATIVE-ART-20261103.md."
+        },
+        "MN_275": {
+          "state": "normal-shiny-native-pair-selected-runtime-import-checked",
+          "manifest": "sprites/mn-f125/starter-lynx-20261103-r8/manifest.json",
+          "remaining": "No remaining sprite work in this pass; separate non-art task requirements retain their own status.",
+          "integration": "Verified local candidate; see NATIVE-ART-20261103.md."
+        },
+        "MN_276": {
+          "state": "normal-shiny-native-pair-selected-runtime-import-checked",
+          "manifest": "sprites/mn-f125/starter-lynx-20261103-r8/manifest.json",
+          "remaining": "No remaining sprite work in this pass; separate non-art task requirements retain their own status.",
+          "integration": "Verified local candidate; see NATIVE-ART-20261103.md."
+        },
+        "MN_010": {
+          "state": "normal-shiny-native-pair-selected-runtime-import-checked",
+          "manifest": "sprites/mn-f004/starter-beaver-20261103-r8/manifest.json",
+          "remaining": "No remaining sprite work in this pass; separate non-art task requirements retain their own status.",
+          "integration": "Verified local candidate; see NATIVE-ART-20261103.md."
+        },
+        "MN_011": {
+          "state": "normal-shiny-native-pair-selected-runtime-import-checked",
+          "manifest": "sprites/mn-f004/starter-beaver-20261103-r8/manifest.json",
+          "remaining": "No remaining sprite work in this pass; separate non-art task requirements retain their own status.",
+          "integration": "Verified local candidate; see NATIVE-ART-20261103.md."
+        },
+        "MN_012": {
+          "state": "normal-shiny-native-pair-selected-runtime-import-checked",
+          "manifest": "sprites/mn-f004/starter-beaver-20261103-r8/manifest.json",
+          "remaining": "No remaining sprite work in this pass; separate non-art task requirements retain their own status.",
+          "integration": "Verified local candidate; see NATIVE-ART-20261103.md."
+        }
+      },
+      "validation": {
+        "native_views": 18,
+        "shiny_views": 18,
+        "normal_checks": "Exact four-color palette, native dimensions, PNG/index/2bpp/source/archive consistency passed.",
+        "shiny_checks": "Rust-generated shiny front/back inspected; independent check matches profile RGB5 palette and native index rows; normal exports byte-identical.",
+        "runtime_import": "Current complete active catalog loaded through MinnesotaPokemonCatalog::load successfully before builder overlay precondition. All selected source recipes, palettes and graphics accepted.",
+        "pack_build": "Not produced: map pack already has Minnesota species overlay; builder rejects applying a second overlay. No alternate pack substituted. Gameplay pack refresh remains separate."
+      },
+      "native_art_review": {
+        "status": "complete-native-art-local-pack-verified",
+        "species_ids": [
+          "MN_001",
+          "MN_002",
+          "MN_003",
+          "MN_274",
+          "MN_275",
+          "MN_276",
+          "MN_010",
+          "MN_011",
+          "MN_012"
+        ],
+        "remaining": "No remaining sprite work in this pass; separate typing, roster or other non-art requirements retain their own task status."
+      }
+    },
+    {
+      "id": "DEX-20261102-26",
+      "status": "in-progress",
+      "kind": "sprite",
+      "title": "Refine and highlight #044\u2013045.",
+      "targets": [
+        {
+          "species_id": "MN_211",
+          "name": "Pinglet",
+          "family_id": "MN_F097",
+          "review_number": 44
+        },
+        {
+          "species_id": "MN_212",
+          "name": "Paddarray",
+          "family_id": "MN_F097",
+          "review_number": 45
+        }
+      ],
+      "unresolved_names": [],
+      "notes": "Four new native front/back views selected after1x and integer-zoom review; curved dither, controlled highlights and deep fin/gill shadows preserve unique swimming silhouettes and near-eye readability. Exact four-color PNG/index/2bpp/provenance checks passed.",
+      "sprite_progress": {
+        "MN_211": {
+          "state": "native-front-back-reviewed-selected",
+          "manifest": "sprites/mn-f097/native-refinement-20261103-r7/manifest.json",
+          "remaining": "No remaining sprite work in this pass; separate non-art task requirements retain their own status.",
+          "integration": "Verified local candidate; see NATIVE-ART-20261103.md."
+        },
+        "MN_212": {
+          "state": "native-front-back-reviewed-selected",
+          "manifest": "sprites/mn-f097/native-refinement-20261103-r7/manifest.json",
+          "remaining": "No remaining sprite work in this pass; separate non-art task requirements retain their own status.",
+          "integration": "Verified local candidate; see NATIVE-ART-20261103.md."
+        }
+      },
+      "normal_shiny_review": {
+        "status": "native-reviewed",
+        "date": "2026-11-03",
+        "notes": "Native normal/shiny pairs inspected and exact palette/index consistency checked. Gameplay pack refresh and battle placement remain pending."
+      },
+      "native_art_review": {
+        "status": "complete-native-art-local-pack-verified",
+        "species_ids": [
+          "MN_211",
+          "MN_212"
+        ],
+        "remaining": "No remaining sprite work in this pass; separate typing, roster or other non-art requirements retain their own task status."
+      }
+    },
+    {
+      "id": "DEX-20261102-27",
+      "status": "in-progress",
+      "kind": "sprite",
+      "title": "Highlight #066\u2013068.",
+      "targets": [
+        {
+          "species_id": "MN_113",
+          "name": "Pipboom",
+          "family_id": "MN_F054",
+          "review_number": 66
+        },
+        {
+          "species_id": "MN_114",
+          "name": "Boomruff",
+          "family_id": "MN_F054",
+          "review_number": 67
+        },
+        {
+          "species_id": "MN_115",
+          "name": "Prairondo",
+          "family_id": "MN_F054",
+          "review_number": 68
+        }
+      ],
+      "unresolved_names": [],
+      "notes": "Existing designs are pretty good; preserve concepts.",
+      "active_art_pass": "Regenerating requested front/back views in native-size family sheets; preserve distinctive proportions, eye/visor separation and source originals. Splitbeam redesign must read as Fresnel lens, with central bullseye/stepped prism bands rather than generic star gem.",
+      "sprite_progress": {
+        "MN_113": {
+          "state": "normal-shiny-native-pair-reviewed-selected",
+          "manifest": "sprites/mn-f054/native-refinement-20261103-r9/manifest.json",
+          "remaining": "No remaining sprite work in this pass; separate non-art task requirements retain their own status.",
+          "integration": "Verified local candidate; see NATIVE-ART-20261103.md."
+        },
+        "MN_114": {
+          "state": "normal-shiny-native-pair-reviewed-selected",
+          "manifest": "sprites/mn-f054/native-refinement-20261103-r9/manifest.json",
+          "remaining": "No remaining sprite work in this pass; separate non-art task requirements retain their own status.",
+          "integration": "Verified local candidate; see NATIVE-ART-20261103.md."
+        },
+        "MN_115": {
+          "state": "normal-shiny-native-pair-reviewed-selected",
+          "manifest": "sprites/mn-f054/native-refinement-20261103-r9/manifest.json",
+          "remaining": "No remaining sprite work in this pass; separate non-art task requirements retain their own status.",
+          "integration": "Verified local candidate; see NATIVE-ART-20261103.md."
+        }
+      },
+      "validation": "New normal/shiny native pairs visually reviewed; four-color PNG/index/2bpp/source/provenance and shiny palette-index checks pass. Original source art retained. Wickit image/2bpp unchanged in Splitbeam family. No gameplay pack refresh or deployment.",
+      "native_art_review": {
+        "status": "complete-native-art-local-pack-verified",
+        "species_ids": [
+          "MN_113",
+          "MN_114",
+          "MN_115"
+        ],
+        "remaining": "No remaining sprite work in this pass; separate typing, roster or other non-art requirements retain their own task status."
+      }
+    },
+    {
+      "id": "DEX-20261102-28",
+      "status": "in-progress",
+      "kind": "sprite",
+      "title": "Highlight #055\u2013056.",
+      "targets": [
+        {
+          "species_id": "MN_201",
+          "name": "Trilume",
+          "family_id": "MN_F092",
+          "review_number": 55
+        },
+        {
+          "species_id": "MN_202",
+          "name": "Panoplite",
+          "family_id": "MN_F092",
+          "review_number": 56
+        }
+      ],
+      "unresolved_names": [],
+      "notes": "",
+      "active_art_pass": "Regenerating requested front/back views in native-size family sheets; preserve distinctive proportions, eye/visor separation and source originals. Splitbeam redesign must read as Fresnel lens, with central bullseye/stepped prism bands rather than generic star gem.",
+      "sprite_progress": {
+        "MN_201": {
+          "state": "normal-shiny-native-pair-reviewed-selected",
+          "manifest": "sprites/mn-f092/native-refinement-20261103-r9/manifest.json",
+          "remaining": "No remaining sprite work in this pass; separate non-art task requirements retain their own status.",
+          "integration": "Verified local candidate; see NATIVE-ART-20261103.md."
+        },
+        "MN_202": {
+          "state": "normal-shiny-native-pair-reviewed-selected",
+          "manifest": "sprites/mn-f092/native-refinement-20261103-r9/manifest.json",
+          "remaining": "No remaining sprite work in this pass; separate non-art task requirements retain their own status.",
+          "integration": "Verified local candidate; see NATIVE-ART-20261103.md."
+        }
+      },
+      "validation": "New normal/shiny native pairs visually reviewed; four-color PNG/index/2bpp/source/provenance and shiny palette-index checks pass. Original source art retained. Wickit image/2bpp unchanged in Splitbeam family. No gameplay pack refresh or deployment.",
+      "native_art_review": {
+        "status": "complete-native-art-local-pack-verified",
+        "species_ids": [
+          "MN_201",
+          "MN_202"
+        ],
+        "remaining": "No remaining sprite work in this pass; separate typing, roster or other non-art requirements retain their own task status."
+      }
+    },
+    {
+      "id": "DEX-20261102-29",
+      "status": "in-progress",
+      "kind": "sprite",
+      "title": "Refine Stackajack and Casserogre faces.",
+      "targets": [
+        {
+          "species_id": "MN_046",
+          "name": "Stackajack",
+          "family_id": "MN_F016",
+          "review_number": 100
+        },
+        {
+          "species_id": "MN_078",
+          "name": "Casserogre",
+          "family_id": "MN_F032",
+          "review_number": 102
+        }
+      ],
+      "unresolved_names": [],
+      "notes": "User wrote cassogre; canonical roster spelling is Casserogre.",
+      "sprite_progress": {
+        "MN_078": {
+          "state": "frozen-by-user",
+          "note": "Stop further work. Retained candidates are unselected. Do not revisit without explicit user instruction."
+        },
+        "MN_046": {
+          "state": "normal-shiny-native-pair-reviewed-selected",
+          "manifest": "sprites/mn-f016/native-refinement-20261103-r14/manifest.json",
+          "remaining": "No remaining sprite work in this pass; separate non-art task requirements retain their own status.",
+          "integration": "Verified local candidate; see NATIVE-ART-20261103.md."
+        }
+      },
+      "native_art_review": {
+        "status": "complete-native-art-local-pack-verified",
+        "species_ids": [
+          "MN_046"
+        ],
+        "remaining": "No remaining sprite work in this pass; separate typing, roster or other non-art requirements retain their own task status."
+      }
+    },
+    {
+      "id": "DEX-20261102-30",
+      "status": "done",
+      "kind": "archive",
+      "title": "Drop #116 and #117.",
+      "targets": [
+        {
+          "species_id": "MN_091",
+          "name": "Goosnide",
+          "family_id": "MN_F040",
+          "review_number": 116
+        },
+        {
+          "species_id": "MN_093",
+          "name": "Tiltawisp",
+          "family_id": "MN_F042",
+          "review_number": 117
+        }
+      ],
+      "unresolved_names": [],
+      "notes": "Audit family closure before changing the active lineup; do not silently remove additional stages. Archive applied to authoring on 2026-11-02; no runtime pack or website deployment.",
+      "implementation_status": "archived-in-authoring"
+    },
+    {
+      "id": "DEX-20261102-31",
+      "status": "in-progress",
+      "kind": "sprite",
+      "title": "Highlight #121.",
+      "targets": [
+        {
+          "species_id": "MN_277",
+          "name": "Kensigard",
+          "family_id": "MN_F126",
+          "review_number": 121
+        }
+      ],
+      "unresolved_names": [],
+      "notes": "",
+      "sprite_progress": {
+        "MN_277": {
+          "state": "normal-shiny-native-pair-reviewed-selected",
+          "manifest": "sprites/mn-f126/native-refinement-20261103-r14/manifest.json",
+          "remaining": "No remaining sprite work in this pass; separate non-art task requirements retain their own status.",
+          "integration": "Verified local candidate; see NATIVE-ART-20261103.md."
+        }
+      },
+      "native_art_review": {
+        "status": "complete-native-art-local-pack-verified",
+        "species_ids": [
+          "MN_277"
+        ],
+        "remaining": "No remaining sprite work in this pass; separate typing, roster or other non-art requirements retain their own task status."
+      }
+    },
+    {
+      "id": "DEX-20261102-32",
+      "status": "in-progress",
+      "kind": "sprite",
+      "title": "Fix and clean up faces #123\u2013124.",
+      "targets": [
+        {
+          "species_id": "MN_014",
+          "name": "Reedraft",
+          "family_id": "MN_F005",
+          "review_number": 123
+        },
+        {
+          "species_id": "MN_015",
+          "name": "Zizalith",
+          "family_id": "MN_F005",
+          "review_number": 124
+        }
+      ],
+      "unresolved_names": [],
+      "notes": "",
+      "sprite_progress": {
+        "MN_014": {
+          "state": "normal-shiny-native-pair-reviewed-selected",
+          "manifest": "sprites/mn-f005/native-refinement-20261103-r19/manifest.json",
+          "remaining": "No remaining sprite work in this pass; separate non-art task requirements retain their own status.",
+          "integration": "Verified local candidate; see NATIVE-ART-20261103.md."
+        },
+        "MN_015": {
+          "state": "normal-shiny-native-pair-reviewed-selected",
+          "manifest": "sprites/mn-f005/native-refinement-20261103-r19/manifest.json",
+          "remaining": "No remaining sprite work in this pass; separate non-art task requirements retain their own status.",
+          "integration": "Verified local candidate; see NATIVE-ART-20261103.md."
+        }
+      },
+      "native_art_review": {
+        "status": "complete-native-art-local-pack-verified",
+        "species_ids": [
+          "MN_014",
+          "MN_015"
+        ],
+        "remaining": "No remaining sprite work in this pass; separate typing, roster or other non-art requirements retain their own task status."
+      }
+    },
+    {
+      "id": "DEX-20261102-33",
+      "status": "in-progress",
+      "kind": "sprite",
+      "title": "Refine #166\u2013169.",
+      "targets": [
+        {
+          "species_id": "MN_312",
+          "name": "Velvawn",
+          "family_id": "MN_F141",
+          "review_number": 166
+        },
+        {
+          "species_id": "MN_313",
+          "name": "Shedstag",
+          "family_id": "MN_F141",
+          "review_number": 167
+        },
+        {
+          "species_id": "MN_314",
+          "name": "Dewbit",
+          "family_id": "MN_F142",
+          "review_number": 168
+        },
+        {
+          "species_id": "MN_315",
+          "name": "Glisnare",
+          "family_id": "MN_F142",
+          "review_number": 169
+        }
+      ],
+      "unresolved_names": [],
+      "notes": "Current sprites are unsatisfactory.",
+      "sprite_progress": {
+        "MN_312": {
+          "state": "quadruped-normal-shiny-native-pair-reviewed-selected",
+          "manifest": "sprites/mn-f141/quadruped-refinement-20261103-r15/manifest.json",
+          "remaining": "No remaining sprite work in this pass; separate non-art task requirements retain their own status.",
+          "integration": "Verified local candidate; see NATIVE-ART-20261103.md."
+        },
+        "MN_313": {
+          "state": "quadruped-normal-shiny-native-pair-reviewed-selected",
+          "manifest": "sprites/mn-f141/quadruped-refinement-20261103-r15/manifest.json",
+          "remaining": "No remaining sprite work in this pass; separate non-art task requirements retain their own status.",
+          "integration": "Verified local candidate; see NATIVE-ART-20261103.md."
+        },
+        "MN_314": {
+          "state": "normal-shiny-native-pair-reviewed-selected",
+          "manifest": "sprites/mn-f142/native-refinement-20261103-r15/manifest.json",
+          "remaining": "No remaining sprite work in this pass; separate non-art task requirements retain their own status.",
+          "integration": "Verified local candidate; see NATIVE-ART-20261103.md."
+        },
+        "MN_315": {
+          "state": "normal-shiny-native-pair-reviewed-selected",
+          "manifest": "sprites/mn-f142/native-refinement-20261103-r15/manifest.json",
+          "remaining": "No remaining sprite work in this pass; separate non-art task requirements retain their own status.",
+          "integration": "Verified local candidate; see NATIVE-ART-20261103.md."
+        }
+      },
+      "native_art_review": {
+        "status": "complete-native-art-local-pack-verified",
+        "species_ids": [
+          "MN_312",
+          "MN_313",
+          "MN_314",
+          "MN_315"
+        ],
+        "remaining": "No remaining sprite work in this pass; separate typing, roster or other non-art requirements retain their own task status."
+      }
+    },
+    {
+      "id": "DEX-20261102-34",
+      "status": "in-progress",
+      "kind": "sprite",
+      "title": "Make Splitbeam look more like a Fresnel lens.",
+      "targets": [
+        {
+          "species_id": "MN_076",
+          "name": "Splitbeam",
+          "family_id": "MN_F031",
+          "review_number": 174
+        }
+      ],
+      "unresolved_names": [],
+      "notes": "Preserve the optical lens identity in the native silhouette and shading.",
+      "active_art_pass": "Regenerating requested front/back views in native-size family sheets; preserve distinctive proportions, eye/visor separation and source originals. Splitbeam redesign must read as Fresnel lens, with central bullseye/stepped prism bands rather than generic star gem.",
+      "sprite_progress": {
+        "MN_076": {
+          "state": "normal-shiny-native-pair-reviewed-selected",
+          "manifest": "sprites/mn-f031/fresnel-redesign-20261103-r9/manifest.json",
+          "remaining": "No remaining sprite work in this pass; separate non-art task requirements retain their own status.",
+          "integration": "Verified local candidate; see NATIVE-ART-20261103.md."
+        }
+      },
+      "validation": "New normal/shiny native pairs visually reviewed; four-color PNG/index/2bpp/source/provenance and shiny palette-index checks pass. Original source art retained. Wickit image/2bpp unchanged in Splitbeam family. No gameplay pack refresh or deployment.",
+      "native_art_review": {
+        "status": "complete-native-art-local-pack-verified",
+        "species_ids": [
+          "MN_076"
+        ],
+        "remaining": "No remaining sprite work in this pass; separate typing, roster or other non-art requirements retain their own task status."
+      }
+    },
+    {
+      "id": "DEX-20261102-35",
+      "status": "in-progress",
+      "kind": "sprite",
+      "title": "Improve eyes #146\u2013148.",
+      "targets": [
+        {
+          "species_id": "MN_221",
+          "name": "Emberm",
+          "family_id": "MN_F102",
+          "review_number": 146
+        },
+        {
+          "species_id": "MN_222",
+          "name": "Smoulden",
+          "family_id": "MN_F102",
+          "review_number": 147
+        },
+        {
+          "species_id": "MN_223",
+          "name": "Cinderfen",
+          "family_id": "MN_F102",
+          "review_number": 148
+        }
+      ],
+      "unresolved_names": [],
+      "notes": "",
+      "sprite_progress": {
+        "MN_221": {
+          "state": "normal-shiny-native-pair-reviewed-selected",
+          "manifest": "sprites/mn-f102/native-refinement-20261103-r12/manifest.json",
+          "remaining": "No remaining sprite work in this pass; separate non-art task requirements retain their own status.",
+          "integration": "Verified local candidate; see NATIVE-ART-20261103.md."
+        },
+        "MN_222": {
+          "state": "normal-shiny-native-pair-reviewed-selected",
+          "manifest": "sprites/mn-f102/native-refinement-20261103-r12/manifest.json",
+          "remaining": "No remaining sprite work in this pass; separate non-art task requirements retain their own status.",
+          "integration": "Verified local candidate; see NATIVE-ART-20261103.md."
+        },
+        "MN_223": {
+          "state": "normal-shiny-native-pair-reviewed-selected",
+          "manifest": "sprites/mn-f102/native-refinement-20261103-r12/manifest.json",
+          "remaining": "No remaining sprite work in this pass; separate non-art task requirements retain their own status.",
+          "integration": "Verified local candidate; see NATIVE-ART-20261103.md."
+        }
+      },
+      "native_art_review": {
+        "status": "complete-native-art-local-pack-verified",
+        "species_ids": [
+          "MN_221",
+          "MN_222",
+          "MN_223"
+        ],
+        "remaining": "No remaining sprite work in this pass; separate typing, roster or other non-art requirements retain their own task status."
+      }
+    },
+    {
+      "id": "DEX-20261102-36",
+      "status": "in-progress",
+      "kind": "sprite",
+      "title": "Fix eyes and faces #164\u2013165.",
+      "targets": [
+        {
+          "species_id": "MN_308",
+          "name": "Crookit",
+          "family_id": "MN_F139",
+          "review_number": 164
+        },
+        {
+          "species_id": "MN_309",
+          "name": "Crookveil",
+          "family_id": "MN_F139",
+          "review_number": 165
+        }
+      ],
+      "unresolved_names": [],
+      "notes": "",
+      "sprite_progress": {
+        "MN_308": {
+          "state": "normal-shiny-native-pair-reviewed-selected",
+          "manifest": "sprites/mn-f139/native-completion-20261103-r14/manifest.json",
+          "remaining": "No remaining sprite work in this pass; separate non-art task requirements retain their own status.",
+          "integration": "Verified local candidate; see NATIVE-ART-20261103.md."
+        },
+        "MN_309": {
+          "state": "normal-shiny-native-pair-reviewed-selected",
+          "manifest": "sprites/mn-f139/native-completion-20261103-r14/manifest.json",
+          "remaining": "No remaining sprite work in this pass; separate non-art task requirements retain their own status.",
+          "integration": "Verified local candidate; see NATIVE-ART-20261103.md."
+        }
+      },
+      "native_art_review": {
+        "status": "complete-native-art-local-pack-verified",
+        "species_ids": [
+          "MN_308",
+          "MN_309"
+        ],
+        "remaining": "No remaining sprite work in this pass; separate typing, roster or other non-art requirements retain their own task status."
+      }
+    },
+    {
+      "id": "DEX-20261102-37",
+      "status": "in-progress",
+      "kind": "sprite",
+      "title": "Fix eyes #178 and #180.",
+      "targets": [
+        {
+          "species_id": "MN_132",
+          "name": "Lakernaut",
+          "family_id": "MN_F060",
+          "review_number": 178
+        },
+        {
+          "species_id": "MN_181",
+          "name": "Brinebraze",
+          "family_id": "MN_F083",
+          "review_number": 180
+        }
+      ],
+      "unresolved_names": [],
+      "notes": "",
+      "sprite_progress": {
+        "MN_132": {
+          "state": "normal-shiny-native-pair-reviewed-selected",
+          "manifest": "sprites/mn-f060/native-refinement-20261103-r18/manifest.json",
+          "remaining": "No remaining sprite work in this pass; separate non-art task requirements retain their own status.",
+          "integration": "Verified local candidate; see NATIVE-ART-20261103.md."
+        },
+        "MN_181": {
+          "state": "normal-shiny-native-pair-reviewed-selected",
+          "manifest": "sprites/mn-f083/native-refinement-20261103-r18/manifest.json",
+          "remaining": "No remaining sprite work in this pass; separate non-art task requirements retain their own status.",
+          "integration": "Verified local candidate; see NATIVE-ART-20261103.md."
+        }
+      },
+      "native_art_review": {
+        "status": "complete-native-art-local-pack-verified",
+        "species_ids": [
+          "MN_132",
+          "MN_181"
+        ],
+        "remaining": "No remaining sprite work in this pass; separate typing, roster or other non-art requirements retain their own task status."
+      }
+    },
+    {
+      "id": "DEX-20261102-38",
+      "status": "in-progress",
+      "kind": "sprite",
+      "title": "Fix eyes #187.",
+      "targets": [
+        {
+          "species_id": "MN_183",
+          "name": "Barbelisk",
+          "family_id": "MN_F084",
+          "review_number": 187
+        }
+      ],
+      "unresolved_names": [],
+      "notes": "",
+      "sprite_progress": {
+        "MN_183": {
+          "state": "normal-shiny-native-pair-reviewed-selected",
+          "manifest": "sprites/mn-f084/native-refinement-20261103-r18/manifest.json",
+          "remaining": "No remaining sprite work in this pass; separate non-art task requirements retain their own status.",
+          "integration": "Verified local candidate; see NATIVE-ART-20261103.md."
+        }
+      },
+      "native_art_review": {
+        "status": "complete-native-art-local-pack-verified",
+        "species_ids": [
+          "MN_183"
+        ],
+        "remaining": "No remaining sprite work in this pass; separate typing, roster or other non-art requirements retain their own task status."
+      }
+    },
+    {
+      "id": "DEX-20261102-39",
+      "status": "todo",
+      "kind": "typing",
+      "title": "Make #211\u2013213 pure Steel.",
+      "targets": [
+        {
+          "species_id": "MN_101",
+          "name": "Taconib",
+          "family_id": "MN_F050",
+          "review_number": 211
+        },
+        {
+          "species_id": "MN_102",
+          "name": "Pelletank",
+          "family_id": "MN_F050",
+          "review_number": 212
+        },
+        {
+          "species_id": "MN_103",
+          "name": "Taconarch",
+          "family_id": "MN_F050",
+          "review_number": 213
+        }
+      ],
+      "unresolved_names": [],
+      "notes": "Apply Steel consistently to all three selected stages."
+    },
+    {
+      "id": "DEX-20261102-40",
+      "status": "done",
+      "kind": "archive",
+      "title": "Drop #220 and #223\u2013225: Pepivern, Strandrak, Icemyth and Flarkindle.",
+      "targets": [
+        {
+          "species_id": "MN_097",
+          "name": "Pepivern",
+          "family_id": "MN_F046",
+          "review_number": 220
+        },
+        {
+          "species_id": "MN_248",
+          "name": "Strandrak",
+          "family_id": "MN_F114",
+          "review_number": 223
+        },
+        {
+          "species_id": "MN_100",
+          "name": "Icemyth",
+          "family_id": "MN_F049",
+          "review_number": 224
+        },
+        {
+          "species_id": "MN_250",
+          "name": "Flarkindle",
+          "family_id": "MN_F116",
+          "review_number": 225
+        }
+      ],
+      "unresolved_names": [],
+      "notes": "Latest user direction; original review numbers are pinned to stable IDs. Archives applied in authoring on 2026-11-02. Final recount is 201 active, with 24 proposed additions to reach 225. No runtime pack or website deployment.",
+      "implementation_status": "archived-in-authoring"
+    },
+    {
+      "id": "DEX-20261102-41",
+      "status": "done",
+      "kind": "new-family",
+      "title": "Sanctuary snail family",
+      "targets": [],
+      "unresolved_names": [],
+      "concept_direction": "user-preferred",
+      "proposed_types": [
+        "ROCK",
+        "FAIRY"
+      ],
+      "proposed_names": [
+        "Snugslug",
+        "Mantlesnail",
+        "Cloisterra"
+      ],
+      "proposed_stage_count": 3,
+      "notes": "Woodland snail base; a shell growing into a protective sanctuary. Avoid repeating the existing agate family. User likes these three concept directions. Names and stage arrangement are working proposals; no roster or sprite implementation yet.",
+      "proposal_id": "P01",
+      "base": "Woodland snail",
+      "secondary_theme": "Living sanctuary",
+      "design_brief": "A small sheltering shell develops protected chambers and a broad enclosing lip. Preserve obvious snail anatomy; do not repeat agate crystals or fortress shields.",
+      "proposal_status": "preferred-direction",
+      "website_release": "20261104-promoted-225-42",
+      "completion_scope": "Active authoring and public full Pokedex; compiled local data verified. Game server unchanged."
+    },
+    {
+      "id": "DEX-20261102-42",
+      "status": "done",
+      "kind": "new-family",
+      "title": "Snowshoe hare family",
+      "targets": [],
+      "unresolved_names": [],
+      "concept_direction": "user-preferred",
+      "proposed_types": [
+        "ICE",
+        "FAIRY"
+      ],
+      "proposed_names": [
+        "Flurrit",
+        "Hareskift"
+      ],
+      "proposed_stage_count": 2,
+      "notes": "Snowshoe hare base; snowdrifts, concealed outlines and disappearing tracks. Two-stage version proposed to fit the eight-species addition budget; Driftbound is omitted from this working arrangement. User likes these three concept directions. Names and stage arrangement are working proposals; no roster or sprite implementation yet.",
+      "proposal_id": "P02",
+      "base": "Snowshoe hare",
+      "secondary_theme": "Disappearing winter tracks",
+      "design_brief": "Broad sweeping paws erase its trail; layered fur develops into a shifting drift-shaped outline. Keep the two-stage arrangement provisional.",
+      "proposal_status": "preferred-direction",
+      "website_release": "20261104-promoted-225-42",
+      "completion_scope": "Active authoring and public full Pokedex; compiled local data verified. Game server unchanged."
+    },
+    {
+      "id": "DEX-20261102-43",
+      "status": "done",
+      "kind": "new-family",
+      "title": "Forest-gap owl family",
+      "targets": [],
+      "unresolved_names": [],
+      "concept_direction": "user-preferred",
+      "proposed_types": [
+        "GHOST",
+        "FLYING"
+      ],
+      "proposed_names": [
+        "Owletch",
+        "Hollowl",
+        "Gloamowl"
+      ],
+      "proposed_stage_count": 3,
+      "notes": "Barred owl base; broken plumage evolves into an owl-shaped absence between forest branches. User likes these three concept directions. Names and stage arrangement are working proposals; no roster or sprite implementation yet.",
+      "proposal_id": "P03",
+      "base": "Barred owl",
+      "secondary_theme": "Negative space between forest branches",
+      "design_brief": "Broken plumage patterns become openings in an owl silhouette; the final stage resembles a bird-shaped absence in northern woods.",
+      "proposal_status": "preferred-direction",
+      "website_release": "20261104-promoted-225-42",
+      "completion_scope": "Active authoring and public full Pokedex; compiled local data verified. Game server unchanged."
+    },
+    {
+      "id": "DEX-20261102-44",
+      "status": "done",
+      "kind": "new-family-proposal",
+      "title": "Review American black bear / North Shore basalt cliffs and talus proposal.",
+      "targets": [],
+      "unresolved_names": [],
+      "proposed_names": [
+        "Cubluff",
+        "Talursa"
+      ],
+      "proposed_types": [
+        "ROCK",
+        "GROUND"
+      ],
+      "proposed_stage_count": 2,
+      "proposal_id": "P05",
+      "notes": "Candidate to bring the lineup to 225; not independently approved or implemented.",
+      "base": "American black bear",
+      "secondary_theme": "North Shore basalt cliffs and talus",
+      "design_brief": "A black cub with blunt basalt claws becomes a broad four-legged bear whose interlocking shoulder columns and fallen-rock back plates embody a moving shoreline cliff.",
+      "proposal_status": "new-proposal",
+      "website_release": "20261104-promoted-225-42",
+      "completion_scope": "Active authoring and public full Pokedex; compiled local data verified. Game server unchanged."
+    },
+    {
+      "id": "DEX-20261102-45",
+      "status": "done",
+      "kind": "new-family-proposal",
+      "title": "Review Gray wolf / Northwoods winter trails and pack wayfinding proposal.",
+      "targets": [],
+      "unresolved_names": [],
+      "proposed_names": [
+        "Trailpup",
+        "Pathfang",
+        "Waywolf"
+      ],
+      "proposed_types": [
+        "GROUND",
+        "FAIRY"
+      ],
+      "proposed_stage_count": 3,
+      "proposal_id": "P06",
+      "notes": "Candidate to bring the lineup to 225; not independently approved or implemented.",
+      "base": "Gray wolf",
+      "secondary_theme": "Northwoods winter trails and pack wayfinding",
+      "design_brief": "Small forked paw markings develop into interlocking trail bands around legs and shoulders. The adult leaves temporary luminous paths its pack can follow. Invented path magic; avoid copper anatomy, aurora curtains and borrowed cultural teachings.",
+      "proposal_status": "new-proposal",
+      "website_release": "20261104-promoted-225-42",
+      "completion_scope": "Active authoring and public full Pokedex; compiled local data verified. Game server unchanged."
+    },
+    {
+      "id": "DEX-20261102-46",
+      "status": "done",
+      "kind": "new-family-proposal",
+      "title": "Hibernation and suspended-time natural bat family: Hushbat \u2192 Deepulse \u2192 Noctector, Psychic/Flying.",
+      "targets": [],
+      "unresolved_names": [],
+      "proposed_names": [
+        "Hushbat",
+        "Deepulse",
+        "Noctector"
+      ],
+      "proposed_types": [
+        "PSYCHIC",
+        "FLYING"
+      ],
+      "proposed_stage_count": 3,
+      "proposal_id": "P07",
+      "notes": "Candidate to bring the lineup to 225; not independently approved or implemented.",
+      "base": "Little brown bat",
+      "secondary_theme": "Soudan underground particle detection",
+      "design_brief": "Large ears and layered wing membranes become enclosed sensing chambers. A quiet folded bat develops a broad detector-like silhouette that senses rare invisible crossings. Fictional psychic detection inspired by the underground lab; avoid mining lamps, ore loads and musical echo silhouettes.",
+      "proposal_status": "new-proposal",
+      "website_release": "20261104-promoted-225-42",
+      "completion_scope": "Active authoring and public full Pokedex; compiled local data verified. Game server unchanged."
+    },
+    {
+      "id": "DEX-20261102-47",
+      "status": "done",
+      "kind": "new-family-proposal",
+      "title": "Review Bank swallow / Mississippi bluff nesting tunnels proposal.",
+      "targets": [],
+      "unresolved_names": [],
+      "proposed_names": [
+        "Burrowbill",
+        "Bankwing"
+      ],
+      "proposed_types": [
+        "GROUND",
+        "FLYING"
+      ],
+      "proposed_stage_count": 2,
+      "proposal_id": "P08",
+      "notes": "Candidate to bring the lineup to 225; not independently approved or implemented.",
+      "base": "Bank swallow",
+      "secondary_theme": "Mississippi bluff nesting tunnels",
+      "design_brief": "A small earth-dusted bird develops broad excavating claws, a reinforced beak and curved wing-root channels resembling tunnel arches. Aerial burrow construction rather than a carried nest or building.",
+      "proposal_status": "new-proposal",
+      "website_release": "20261104-promoted-225-42",
+      "completion_scope": "Active authoring and public full Pokedex; compiled local data verified. Game server unchanged."
+    },
+    {
+      "id": "DEX-20261102-48",
+      "status": "done",
+      "kind": "new-family-proposal",
+      "title": "Review Snow bunting / Prairie blowing snow and flock formations proposal.",
+      "targets": [],
+      "unresolved_names": [],
+      "proposed_names": [
+        "Snowpip",
+        "Squallfinch",
+        "Whitewhirl"
+      ],
+      "proposed_types": [
+        "ICE",
+        "FLYING"
+      ],
+      "proposed_stage_count": 3,
+      "proposal_id": "P09",
+      "notes": "Candidate to bring the lineup to 225; not independently approved or implemented.",
+      "base": "Snow bunting",
+      "secondary_theme": "Prairie blowing snow and flock formations",
+      "design_brief": "Small dark-and-white wing marks become broad curving snow-streamer feather vanes. The adult gathers windblown snow into a moving spiral around its flock. Keep this airborne weather silhouette distinct from the hare and stationary snow-fence line.",
+      "proposal_status": "new-proposal",
+      "website_release": "20261104-promoted-225-42",
+      "completion_scope": "Active authoring and public full Pokedex; compiled local data verified. Game server unchanged."
+    },
+    {
+      "id": "DEX-20261102-49",
+      "status": "done",
+      "kind": "new-family-proposal",
+      "title": "Review Dragonfly / Wind-powered travel over Minnesota lake ice proposal.",
+      "targets": [],
+      "unresolved_names": [],
+      "proposed_names": [
+        "Skimnymph",
+        "Rimefoil"
+      ],
+      "proposed_types": [
+        "ICE",
+        "DRAGON"
+      ],
+      "proposed_stage_count": 2,
+      "proposal_id": "P10",
+      "notes": "Candidate to bring the lineup to 225; not independently approved or implemented.",
+      "base": "Dragonfly",
+      "secondary_theme": "Wind-powered travel over Minnesota lake ice",
+      "design_brief": "A low long-bodied youngster grows six blade-edged ice-running legs; the adult unfolds four taut sail-like wings and steers over ice using its own abdomen as a boom. No separate boat, hockey equipment or fishing flag. Both stages share Ice/Dragon; maintain recognizable insect-derived anatomy.",
+      "proposal_status": "new-proposal",
+      "website_release": "20261104-promoted-225-42",
+      "completion_scope": "Active authoring and public full Pokedex; compiled local data verified. Game server unchanged."
+    },
+    {
+      "id": "DEX-20261103-50",
+      "status": "in-progress",
+      "kind": "sprite",
+      "title": "Fully redesign Rillbow and Torrout artwork.",
+      "targets": [
+        {
+          "species_id": "MN_259",
+          "name": "Rillbow",
+          "family_id": "MN_F121"
+        },
+        {
+          "species_id": "MN_260",
+          "name": "Torrout",
+          "family_id": "MN_F121"
+        }
+      ],
+      "unresolved_names": [],
+      "notes": "User added both to weak list on 2026-11-03; Rollbow resolves to roster name Rillbow. Preserve originals and family identity; evaluate regenerated front/back at native size using the shared sprite skill. Avoid anthropomorphic/furry treatment.",
+      "sprite_progress": {
+        "MN_259": {
+          "state": "normal-shiny-native-pair-reviewed-selected",
+          "manifest": "sprites/mn-f121/redesign-20261103-r12/manifest.json",
+          "remaining": "No remaining sprite work in this pass; separate non-art task requirements retain their own status.",
+          "integration": "Verified local candidate; see NATIVE-ART-20261103.md."
+        },
+        "MN_260": {
+          "state": "normal-shiny-native-pair-reviewed-selected",
+          "manifest": "sprites/mn-f121/redesign-20261103-r12/manifest.json",
+          "remaining": "No remaining sprite work in this pass; separate non-art task requirements retain their own status.",
+          "integration": "Verified local candidate; see NATIVE-ART-20261103.md."
+        }
+      },
+      "native_art_review": {
+        "status": "complete-native-art-local-pack-verified",
+        "species_ids": [
+          "MN_259",
+          "MN_260"
+        ],
+        "remaining": "No remaining sprite work in this pass; separate typing, roster or other non-art requirements retain their own task status."
+      }
+    },
+    {
+      "id": "DEX-20261104-AGRO-REMOVE",
+      "status": "done",
+      "kind": "archive",
+      "title": "Remove Agropummel from the active Pok\u00e9dex; preserve original art.",
+      "targets": [
+        {
+          "species_id": "MN_171",
+          "name": "Agropummel",
+          "family_id": "MN_F078"
+        }
+      ],
+      "notes": "User explicitly identified Agropummel as still present on 2026-11-04. Apply to the public sprite review without reactivating older archived woodpeckers or bears. Only this named final stage is specified; retain predecessor identities.",
+      "published_archive": "20261104-sprite-review-36"
+    },
+    {
+      "id": "DEX-20261104-PIKELING-SPRITES",
+      "status": "done",
+      "kind": "sprite-rework",
+      "title": "Rework Pikeling \u2192 Pikeman \u2192 Musketunge front/back sprites; lean into each stage theme.",
+      "targets": [
+        {
+          "species_id": "MN_263",
+          "name": "Pikeling",
+          "family_id": "MN_F123"
+        },
+        {
+          "species_id": "MN_264",
+          "name": "Pikeman",
+          "family_id": "MN_F123"
+        },
+        {
+          "species_id": "MN_265",
+          "name": "Musketunge",
+          "family_id": "MN_F123"
+        }
+      ],
+      "notes": "Artwork rework only, preserving existing identities and themes. Spear-snouted fry \u2192 lance-jawed northern pike \u2192 muskellunge with pressure-chamber cheeks and a broad water-launching muzzle. Express martial forms through living jaws, gills and fins; no held weapons or costume. Make progression, natural fish anatomy, eyes, silhouettes and native-size dithering clear in front AND back views. Preserve original sources. Do not alter typing, gameplay, cries or overworld art. This explicitly requests sprite rework, not concept retirement.",
+      "user_feedback": "2026-11-04: They do not lean into the theme at all; just look like pike.",
+      "rejected_candidate": "sprites/mn-f123/thematic-rework-20261104-v2/manifest.json",
+      "current_direction": "Entirely redraw species silhouettes: spearhead fry \u2192 lancer with huge integrated shield fins \u2192 squat biological artillery muskellunge with dominant pressure chambers and recoil-bracing fins. Retain fish anatomy, not realistic pike plus patterns.",
+      "sprite_progress": {
+        "status": "front-back-candidate-native-reviewed-awaiting-user-feedback",
+        "manifest": "sprites/mn-f123/vibrant-20261104-v2/manifest.json",
+        "normal_views": 6,
+        "website_release": "20261104-vibrant-225-40",
+        "original_preserved": true,
+        "native_verification": "Passed independent PNG/index/2bpp/palette/source checks for all6views.",
+        "remaining": "User visual feedback; gameplay/cries/overworld deferred.",
+        "public_verification": "All3normal/shiny front/back controls and images verified on mobile;225 review designs; no page errors or overflow."
+      },
+      "website_release": "20261104-promoted-225-42",
+      "completion_scope": "Active authoring and public full Pokedex; compiled local data verified. Game server unchanged."
+    },
+    {
+      "id": "DEX-20261104-DRIFTILE-REDO",
+      "status": "done",
+      "kind": "archive",
+      "title": "Replace Driftile entirely with a new concept addressing underrepresented current-roster types.",
+      "targets": [
+        {
+          "species_id": "MN_317",
+          "name": "Driftile",
+          "family_id": "MN_F144"
+        }
+      ],
+      "notes": "User requested Drift Tile be redone entirely; no duckweed/sliding-puzzle carryover required. Archive old concepts and preserve originals; replacement fronts/backs only. Keep total review lineup225 after replacement; do not wire gameplay.",
+      "sprite_candidates": [
+        "MN_347 Pendulop \u2014 Rock/Psychic; Minnesota jumping mouse + living pendulum and glacial-stone vibration balance."
+      ],
+      "archive_publication": "20261104-sprite-review-36",
+      "remaining": "User concept/art review; no gameplay work.",
+      "website_release": "20261104-promoted-225-42",
+      "completion_scope": "Active authoring and public full Pokedex; compiled local data verified. Game server unchanged."
+    },
+    {
+      "id": "DEX-20261104-DEWBIT-GLISNARE-REDO",
+      "status": "done",
+      "kind": "archive",
+      "title": "Replace Dewbit and Glisnare entirely with a strong Minnesota-themed concept.",
+      "targets": [
+        {
+          "species_id": "MN_314",
+          "name": "Dewbit",
+          "family_id": "MN_F142"
+        },
+        {
+          "species_id": "MN_315",
+          "name": "Glisnare",
+          "family_id": "MN_F142"
+        }
+      ],
+      "notes": "User dislikes Dubit and Gilsnare (Dewbit/Glisnare); full concept replacement, any typing/theme authorized, Minnesota foundation required. Archive old concepts and preserve originals; replacement fronts/backs only. Keep total review lineup225 after replacement; do not wire gameplay.",
+      "sprite_candidates": [
+        "MN_345 Rekink \u2192 MN_346 Revertail \u2014 Dragon/Fairy; Minnesota prairie skink + regenerative living decoy tails."
+      ],
+      "archive_publication": "20261104-sprite-review-36",
+      "remaining": "User concept/art review; no gameplay work.",
+      "website_release": "20261104-promoted-225-42",
+      "completion_scope": "Active authoring and public full Pokedex; compiled local data verified. Game server unchanged."
+    },
+    {
+      "id": "DEX-20261104-NONTURTLE-MN_F078",
+      "status": "done",
+      "kind": "archive",
+      "title": "Remove the entire non-turtle Knothuck/Boughlash line.",
+      "targets": [
+        {
+          "species_id": "MN_169",
+          "name": "Knothuck",
+          "family_id": "MN_F078"
+        },
+        {
+          "species_id": "MN_170",
+          "name": "Boughlash",
+          "family_id": "MN_F078"
+        }
+      ],
+      "notes": "Explicit user clarification after screenshot of retained stages. Archive whole family. Preserve original art and identities; do not retain predecessors just because the user named a final stage earlier.",
+      "published_archive": "20261104-vibrant-225-40"
+    },
+    {
+      "id": "DEX-20261104-NONTURTLE-MN_F082",
+      "status": "done",
+      "kind": "archive",
+      "title": "Remove the entire non-turtle Augrub/Heliknock line.",
+      "targets": [
+        {
+          "species_id": "MN_178",
+          "name": "Augrub",
+          "family_id": "MN_F082"
+        },
+        {
+          "species_id": "MN_179",
+          "name": "Heliknock",
+          "family_id": "MN_F082"
+        }
+      ],
+      "notes": "Explicit user clarification after screenshot of retained stages. Archive whole family. Preserve original art and identities; do not retain predecessors just because the user named a final stage earlier.",
+      "published_archive": "20261104-vibrant-225-40"
+    },
+    {
+      "id": "DEX-20261104-TURTLE-THIRD",
+      "status": "done",
+      "kind": "sprite-rework-and-retype",
+      "title": "Keep Hissip/Crosspout/Contrakett turtle line; restore and redesign/retype third stage.",
+      "targets": [
+        {
+          "species_id": "MN_156",
+          "name": "Contrakett",
+          "family_id": "MN_F073"
+        }
+      ],
+      "notes": "User correction: remove non-turtles, keep the turtle family, improve third-stage sprite and typing. First two sprites unchanged. Consistent Fire/Water family typing; regenerate only Contrakett native front/back as an unmistakable low softshell turtle with heat/river pressure anatomy. No game pack integration.",
+      "sprite_progress": {
+        "status": "native-front-back-candidate-reviewed-awaiting-user-feedback",
+        "manifest": "sprites/mn-f073/vibrant-20261104-v2/manifest.json",
+        "website_release": "20261104-vibrant-225-40",
+        "first_two_pngs_byte_identical": true,
+        "family_types": [
+          "FIRE",
+          "WATER"
+        ]
+      },
+      "website_release": "20261104-promoted-225-42",
+      "completion_scope": "Active authoring and public full Pokedex; compiled local data verified. Game server unchanged."
+    },
+    {
+      "id": "DEX-20261104-VIBRANT-ALL",
+      "status": "done",
+      "kind": "palette-revision",
+      "title": "Make every candidate vibrant, including wolves; remove beige realism.",
+      "targets": [],
+      "species_count": 35,
+      "new_candidate_species": 31,
+      "study": "sprites/vibrant-color-study-20261104/palette-study.imagegen.png",
+      "palette_plan": "sprites/vibrant-color-study-20261104/palette-plan.json",
+      "website_release": "20261104-promoted-225-42",
+      "verification": "Independent native62replacement views plus12turtle/pike views pass.74indexed grids unchanged, first2turtle normal PNGs unchanged. Original sources/palettes retained.",
+      "completion_scope": "Active authoring and public full Pokedex; compiled local data verified. Game server unchanged."
+    },
+    {
+      "id": "DEX-20261104-TACTUNNEL-PROMOTE",
+      "status": "done",
+      "kind": "sprite-and-roster-promotion",
+      "title": "Fix Tactunnel native front/back sprites, then promote31candidates to225active species.",
+      "targets": [
+        "MN_344"
+      ],
+      "website_release": "20261104-promoted-225-42",
+      "verification": "Native reviewed;225/99roster and evolution audit; full compiled data,225runtime cries, public mobile controls and archives verified. Originals preserved."
+    },
+    {
+      "id": "DEX-20261104-OVERWORLD-ALL",
+      "status": "complete",
+      "kind": "overworld-sprites",
+      "title": "Complete genuine six-pose normal/shiny overworld art for all225active Pokemon and preserve their original cries.",
+      "missing_species": 43,
+      "existing_identity_revisions": 6,
+      "preserve_existing": true,
+      "scope": "Native16x16 standing/stepping down/up/left, mirrored right, real rear anatomy, source-bound eyes, production map review; publish225walking thumbnails and225cries.",
+      "new_or_updated_species": 49,
+      "notes": "43 newly required field sets plus Contrakett, Pikeling/Pikeman/Musketunge, Valorythm and Pothollow replacements; 176 previously accepted sets retained. All225 runtime cries already present and preserved.",
+      "completed_in": "20261104-native-225-43",
+      "verification": "NATIVE-ART-20261104.md"
+    },
+    {
+      "id": "DEX-20261104-THEME-SEVEN",
+      "status": "complete",
+      "kind": "battle-sprite-refinement",
+      "title": "Strengthen Inverveil, Riffbit/Dynarill/Cascavolt, Mudnip/Bankmaw and Valorythm: themes, volume and visible native dithering.",
+      "targets": [
+        "MN_175",
+        "MN_189",
+        "MN_190",
+        "MN_191",
+        "MN_291",
+        "MN_292",
+        "MN_200"
+      ],
+      "preserve_originals": true,
+      "notes": "User screenshot rejects flat generic designs. Retain species/type identity; strengthen superior-mirage, StAnthonyFalls hydroelectric anatomy, muddy-cutbank ambush, and pacemaker/metronome guardian themes. Front down-left/back up-right; match new overworld art after native battle review. No Casserogre changes.",
+      "completed_in": "20261104-native-225-43",
+      "verification": "NATIVE-ART-20261104.md"
+    },
+    {
+      "id": "DEX-20261104-POTHOLLOW-REFINE",
+      "status": "complete",
+      "kind": "battle-sprite-refinement",
+      "title": "Improve Pothollow native front/back art: preserve prairie-pothole living-filter theme; strengthen volume, dither and face.",
+      "targets": [
+        "MN_149"
+      ],
+      "preserve_originals": true,
+      "theme_change": false,
+      "completed_in": "20261104-native-225-43",
+      "verification": "NATIVE-ART-20261104.md"
+    }
+  ],
+  "projected_count_with_preferred_additions": 210,
+  "current_active_species_count": 225,
+  "additional_species_needed_after_preferred_additions": 15,
+  "proposal_225_file": "proposal-225-20261102.json",
+  "proposed_total_with_all_candidates": 225,
+  "additional_species_needed_after_all_candidates": 0,
+  "sprite_conversion_review_20261103": {
+    "status": "in-progress",
+    "preserve_originals": true,
+    "user_selected": "MN_F134 larger-fit source-center source-backed original-art conversion",
+    "rejected": "23-family blanket source-center batch; giant-eye Casserogre revision",
+    "current_priority": "Fix native reduction of original artwork: missing eye whites/pupils on Casserogre and Wreckquiem. Do not enlarge anatomy to conceal conversion loss. Missing highlights/texture and unclear details remain refinement requirements.",
+    "tasks_remain_open": true
+  },
+  "active_sprite_priority": [
+    "MN_175",
+    "MN_189",
+    "MN_190",
+    "MN_191",
+    "MN_291",
+    "MN_292",
+    "MN_200"
+  ],
+  "active_sprite_authorization": {
+    "objective": "Regenerate every weak Pokemon sprite identified in this TODO. Judge actual native downsized pixels; preserve originals.",
+    "latest_user_direction": "Full redesign of any listed weak sprite is authorized when the native result is stronger. No furry/humanoid treatment. Eyes, pupils and socket boundaries must survive conversion; fewer highlights, kept clear of eyes. Dithering must model broad forms without invading face.",
+    "scope_note": "Sprite redesign here is artwork authorization, not an instruction to archive these active species. Earlier roster drop/redo/archive decisions remain separate.",
+    "highlight_clarification": "Some highlighting is wanted; deeper lowlights/shadows are welcome. Avoid excess near eyes, not all highlights. Preserve modeled volume and native face clarity together.",
+    "excluded_from_further_work": {
+      "MN_078": "User: stop working on Casserogre and move on. Do not revisit without a new explicit request. Original selected manifest remains unchanged."
+    },
+    "standard_correction": "User-approved Burroot r7 proves small face, low body and large canopy can be right. Prioritize distinctive native character; do not impose oversized faces/bodies. Repeated Casserogre refinement made it worse; keep original selected and do not revisit.",
+    "current_priority": "ALL THREE starter lines next: Pouchid/Slipperina/Cyprielle (MN_F001), Kindlit/Rimepelt/Borealynx (MN_F125), Birchit/Portabeau/Voyagear (MN_F004). All9species, front and back. Prairie grouse work deferred before generation."
+  },
+  "native_art_pass": {
+    "status": "complete-local-native-art-and-pack-integration",
+    "date": "2026-11-03",
+    "requested_species": 52,
+    "affected_families": 26,
+    "verified_views_including_preserved_stages": 118,
+    "normal_shiny_review": "Complete for all requested targets; exact palette/index and canonical normal byte checks passed.",
+    "excluded_by_user": [
+      "Casserogre remains frozen on original selected source."
+    ],
+    "runtime_integration": "Verified local candidate target/native-integration-20261103/reviewed-sprites.crystalpack; 208 exact selected graphics files, 104 production-validated normal/shiny battle saves, 11 inspected native 2D battle captures. World selection and deployment unchanged.",
+    "evidence": "NATIVE-ART-20261103.md",
+    "content_hash": "c4d477b7e6d42aef37dba84914316f13c9d8599a9da0bc37d98d33eefe76ce45"
+  },
+  "current_live_sprite_review": "20261104-native-225-43"
+}

@@ -1,0 +1,360 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F102",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_221": {
+      "species_id": "MN_221",
+      "name": "Emberm",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          30,
+          18,
+          8
+        ],
+        [
+          12,
+          6,
+          7
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        8798,
+        7372,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          247,
+          148,
+          66
+        ],
+        [
+          99,
+          49,
+          57
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#F79442",
+        "#633139",
+        "#000000"
+      ]
+    },
+    "MN_222": {
+      "species_id": "MN_222",
+      "name": "Smoulden",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          28,
+          16,
+          10
+        ],
+        [
+          10,
+          5,
+          12
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        10780,
+        12458,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          231,
+          132,
+          82
+        ],
+        [
+          82,
+          41,
+          99
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#E78452",
+        "#522963",
+        "#000000"
+      ]
+    },
+    "MN_223": {
+      "species_id": "MN_223",
+      "name": "Cinderfen",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          29,
+          17,
+          9
+        ],
+        [
+          11,
+          7,
+          15
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        9789,
+        15595,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          239,
+          140,
+          74
+        ],
+        [
+          90,
+          57,
+          123
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#EF8C4A",
+        "#5A397B",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f102/native-refinement-20261103-r12/prompt.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-221-emberm-v1",
+      "species_id": "MN_221",
+      "view": "front",
+      "source": "sprites/mn-f102/native-refinement-20261103-r12/front-back.imagegen.png",
+      "crop": [
+        0,
+        0,
+        480,
+        555
+      ],
+      "fit": [
+        36,
+        32
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        8798,
+        7372,
+        0
+      ],
+      "white_detail_min_samples": 16,
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-221-emberm-v1",
+      "species_id": "MN_221",
+      "view": "back",
+      "source": "sprites/mn-f102/native-refinement-20261103-r12/front-back.imagegen.png",
+      "crop": [
+        0,
+        565,
+        480,
+        459
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        8798,
+        7372,
+        0
+      ],
+      "white_detail_min_samples": 16,
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-222-smoulden-v1",
+      "species_id": "MN_222",
+      "view": "front",
+      "source": "sprites/mn-f102/native-refinement-20261103-r12/front-back.imagegen.png",
+      "crop": [
+        480,
+        0,
+        505,
+        555
+      ],
+      "fit": [
+        48,
+        42
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        10780,
+        12458,
+        0
+      ],
+      "white_detail_min_samples": 16,
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-222-smoulden-v1",
+      "species_id": "MN_222",
+      "view": "back",
+      "source": "sprites/mn-f102/native-refinement-20261103-r12/front-back.imagegen.png",
+      "crop": [
+        480,
+        565,
+        505,
+        459
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        10780,
+        12458,
+        0
+      ],
+      "white_detail_min_samples": 16,
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-223-cinderfen-v1",
+      "species_id": "MN_223",
+      "view": "front",
+      "source": "sprites/mn-f102/native-refinement-20261103-r12/front-back.imagegen.png",
+      "crop": [
+        985,
+        0,
+        551,
+        555
+      ],
+      "fit": [
+        50,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        9789,
+        15595,
+        0
+      ],
+      "white_detail_min_samples": 16,
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-223-cinderfen-v1",
+      "species_id": "MN_223",
+      "view": "back",
+      "source": "sprites/mn-f102/native-refinement-20261103-r12/front-back.imagegen.png",
+      "crop": [
+        985,
+        565,
+        551,
+        459
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        9789,
+        15595,
+        0
+      ],
+      "white_detail_min_samples": 16,
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "interior_black_min_samples": 32
+    }
+  ],
+  "original_manifest": "sprites/mn-f102/manifest.json",
+  "status": "native-front-back-reviewed",
+  "visual_review": {
+    "status": "reviewed",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "14c792ee0d9872d7f5ba7625628754061e875518aa6b286e59b2240f04afd710",
+    "notes": "Coarser regenerated peat line retains single hot-eye core and dark pupil under broad crust; no extra round eyes. Lit crust/dark underlayers and native dither turn crumb, three-vent broad clods and four floating slabs/root spiral. Fronts down-left and close rear portraits upper-right inspected at native56/48 and zoom. Original sources retained."
+  },
+  "shiny_review": {
+    "status": "reviewed",
+    "views": 6,
+    "notes": "Native shiny fronts/backs inspected for changed species; exact profile palette/index swaps verified for every family view, normal PNG bytes unchanged from canonical export. Native contours and eye contrast retained. No deployment."
+  }
+}

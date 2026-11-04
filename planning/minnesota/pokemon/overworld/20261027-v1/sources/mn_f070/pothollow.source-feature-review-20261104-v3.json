@@ -1,0 +1,122 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_149",
+  "result": "pass",
+  "manifest_sha256": "d38a63752b754267836e8ace8f01f26fb0bd8ed3f790d297074aa02d9dee6327",
+  "bank_sha256": "5d21b98208d21aa284e3a6f3244d4e6373554084c17a20c497203c4f491c3bd3",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f070/pothollow.overworld.imagegen-20261104-v3.png": "09bf37bfa54049aa74e6259b8f78d5f08cee2c760e4b7e31eb34eb1ae48522d3"
+  },
+  "canonical_eye_form": "Stalk tips and low face above the dark sludge chamber; side retains basin rim and four low flippers; rear shows backs of stalks and basin.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "source": "pothollow.overworld.imagegen-20261104-v3.png",
+          "source_sha256": "09bf37bfa54049aa74e6259b8f78d5f08cee2c760e4b7e31eb34eb1ae48522d3",
+          "source_alpha_bounds": [
+            97,
+            110,
+            321,
+            318
+          ],
+          "native_bounds": [
+            2,
+            2,
+            12,
+            13
+          ],
+          "native_pixel_sha256": "0660148a37d0bacfdc29ef0004f0f6327c07f0904fa4ce0b6c5663ccd2e95417",
+          "conversion": "Source-backed enclosed dark component preservation; no hand-painted field pixels. Actual source and normal/shiny native six-pose boards visually compared.",
+          "anatomy": "Stalk tips and low face above the dark sludge chamber; side retains basin rim and four low flippers; rear shows backs of stalks and basin."
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "source": "pothollow.overworld.imagegen-20261104-v3.png",
+          "source_sha256": "09bf37bfa54049aa74e6259b8f78d5f08cee2c760e4b7e31eb34eb1ae48522d3",
+          "source_alpha_bounds": [
+            81,
+            111,
+            342,
+            317
+          ],
+          "native_bounds": [
+            1,
+            2,
+            13,
+            13
+          ],
+          "native_pixel_sha256": "8785957c7d90d77fa4a3e0753bed0e89c1c6736710dbf0756966d3d227ee83d0",
+          "conversion": "Source-backed enclosed dark component preservation; no hand-painted field pixels. Actual source and normal/shiny native six-pose boards visually compared.",
+          "anatomy": "Stalk tips and low face above the dark sludge chamber; side retains basin rim and four low flippers; rear shows backs of stalks and basin."
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "source": "pothollow.overworld.imagegen-20261104-v3.png",
+          "source_sha256": "09bf37bfa54049aa74e6259b8f78d5f08cee2c760e4b7e31eb34eb1ae48522d3",
+          "source_alpha_bounds": [
+            86,
+            93,
+            335,
+            336
+          ],
+          "native_bounds": [
+            1,
+            2,
+            13,
+            13
+          ],
+          "native_pixel_sha256": "d103ce4cbc461813bffeda71a3b55a2855754470f96637c8479133a67f6a4eb5",
+          "conversion": "Source-backed enclosed dark component preservation; no hand-painted field pixels. Actual source and normal/shiny native six-pose boards visually compared.",
+          "anatomy": "Stalk tips and low face above the dark sludge chamber; side retains basin rim and four low flippers; rear shows backs of stalks and basin."
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "source": "pothollow.overworld.imagegen-20261104-v3.png",
+          "source_sha256": "09bf37bfa54049aa74e6259b8f78d5f08cee2c760e4b7e31eb34eb1ae48522d3",
+          "source_alpha_bounds": [
+            78,
+            95,
+            344,
+            335
+          ],
+          "native_bounds": [
+            1,
+            2,
+            13,
+            13
+          ],
+          "native_pixel_sha256": "8fcf9a5dd99c62cb51ce7e518f287c2f428394498c779ca571bdcf45bb81670a",
+          "conversion": "Source-backed enclosed dark component preservation; no hand-painted field pixels. Actual source and normal/shiny native six-pose boards visually compared.",
+          "anatomy": "Stalk tips and low face above the dark sludge chamber; side retains basin rim and four low flippers; rear shows backs of stalks and basin."
+        }
+      ]
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "poses": [
+      "up_idle",
+      "up_step"
+    ],
+    "notes": "Stalk tips and low face above the dark sludge chamber; side retains basin rim and four low flippers; rear shows backs of stalks and basin."
+  },
+  "native_and_shiny_visual_review": "All six poses compared at native scale and integer zoom with selected source; ordinary field-icon simplification retains species silhouette. Transparent edge, genuine stepping changes, matched normal/shiny index geometry and actual production terrain reviewed."
+}

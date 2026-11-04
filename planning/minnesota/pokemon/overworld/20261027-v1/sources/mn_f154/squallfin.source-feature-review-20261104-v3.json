@@ -1,0 +1,122 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_340",
+  "result": "pass",
+  "manifest_sha256": "f2ed120277312132729d3d677776787a05960366f701634acb316e3e886f9a84",
+  "bank_sha256": "8eb4777d8525a6eef23d4d0d28def84c1bb8bdbeac417193064f099b9d06843a",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f154/squallfin.overworld.imagegen-20261104-v1.png": "0f55eafaedbb153ba6be2c464736b98bc56bf9606beb1584f2e11e367743794c"
+  },
+  "canonical_eye_form": "Species-specific head, dark facial marks and themed body silhouette retained in front/profile. Rear poses show backs of ears/crest/head and the actual back/tail, without a pasted frontal face.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "source": "squallfin.overworld.imagegen-20261104-v1.png",
+          "source_sha256": "0f55eafaedbb153ba6be2c464736b98bc56bf9606beb1584f2e11e367743794c",
+          "source_alpha_bounds": [
+            80,
+            89,
+            352,
+            342
+          ],
+          "native_bounds": [
+            1,
+            2,
+            14,
+            13
+          ],
+          "native_pixel_sha256": "e7c02feb868929495aac861c9f9ae611dadc9a9c143a057bab0b050ce4c782a3",
+          "conversion": "Source-backed enclosed dark component preservation; no hand-painted field pixels. Actual source and normal/shiny native six-pose boards visually compared.",
+          "anatomy": "Species-specific head, dark facial marks and themed body silhouette retained in front/profile. Rear poses show backs of ears/crest/head and the actual back/tail, without a pasted frontal face."
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "source": "squallfin.overworld.imagegen-20261104-v1.png",
+          "source_sha256": "0f55eafaedbb153ba6be2c464736b98bc56bf9606beb1584f2e11e367743794c",
+          "source_alpha_bounds": [
+            81,
+            102,
+            332,
+            329
+          ],
+          "native_bounds": [
+            1,
+            3,
+            13,
+            12
+          ],
+          "native_pixel_sha256": "a2ee4e94a6c3512c8db2596439569a90d7409ad7dfac3df4bc03efb228e5d39c",
+          "conversion": "Source-backed enclosed dark component preservation; no hand-painted field pixels. Actual source and normal/shiny native six-pose boards visually compared.",
+          "anatomy": "Species-specific head, dark facial marks and themed body silhouette retained in front/profile. Rear poses show backs of ears/crest/head and the actual back/tail, without a pasted frontal face."
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "source": "squallfin.overworld.imagegen-20261104-v1.png",
+          "source_sha256": "0f55eafaedbb153ba6be2c464736b98bc56bf9606beb1584f2e11e367743794c",
+          "source_alpha_bounds": [
+            69,
+            80,
+            365,
+            354
+          ],
+          "native_bounds": [
+            1,
+            2,
+            14,
+            13
+          ],
+          "native_pixel_sha256": "e6faa4b6a669fe238c51cb8336a47eb0400223b4ba37ddb57840c587be840aad",
+          "conversion": "Source-backed enclosed dark component preservation; no hand-painted field pixels. Actual source and normal/shiny native six-pose boards visually compared.",
+          "anatomy": "Species-specific head, dark facial marks and themed body silhouette retained in front/profile. Rear poses show backs of ears/crest/head and the actual back/tail, without a pasted frontal face."
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "source": "squallfin.overworld.imagegen-20261104-v1.png",
+          "source_sha256": "0f55eafaedbb153ba6be2c464736b98bc56bf9606beb1584f2e11e367743794c",
+          "source_alpha_bounds": [
+            71,
+            76,
+            350,
+            361
+          ],
+          "native_bounds": [
+            1,
+            2,
+            14,
+            13
+          ],
+          "native_pixel_sha256": "b734e699a849681c8e5e2ef5be8d2efc1439bb5c6c73b57c4634471aba9e3f6f",
+          "conversion": "Source-backed enclosed dark component preservation; no hand-painted field pixels. Actual source and normal/shiny native six-pose boards visually compared.",
+          "anatomy": "Species-specific head, dark facial marks and themed body silhouette retained in front/profile. Rear poses show backs of ears/crest/head and the actual back/tail, without a pasted frontal face."
+        }
+      ]
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "poses": [
+      "up_idle",
+      "up_step"
+    ],
+    "notes": "Species-specific head, dark facial marks and themed body silhouette retained in front/profile. Rear poses show backs of ears/crest/head and the actual back/tail, without a pasted frontal face."
+  },
+  "native_and_shiny_visual_review": "All six poses compared at native scale and integer zoom with selected source; ordinary field-icon simplification retains species silhouette. Transparent edge, genuine stepping changes, matched normal/shiny index geometry and actual production terrain reviewed."
+}

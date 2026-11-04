@@ -1,0 +1,562 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F123",
+  "status": "native-vibrant-candidate-reviewed-awaiting-user-feedback",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_263": {
+      "species_id": "MN_263",
+      "name": "Pikeling",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          16,
+          29,
+          7
+        ],
+        [
+          2,
+          13,
+          9
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        8112,
+        9634,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          132,
+          239,
+          57
+        ],
+        [
+          16,
+          107,
+          74
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#84EF39",
+        "#106B4A",
+        "#000000"
+      ]
+    },
+    "MN_264": {
+      "species_id": "MN_264",
+      "name": "Pikeman",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          31,
+          23,
+          3
+        ],
+        [
+          1,
+          11,
+          15
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        3839,
+        15713,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          189,
+          24
+        ],
+        [
+          8,
+          90,
+          123
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#FFBD18",
+        "#085A7B",
+        "#000000"
+      ]
+    },
+    "MN_265": {
+      "species_id": "MN_265",
+      "name": "Musketunge",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          9,
+          22,
+          31
+        ],
+        [
+          9,
+          7,
+          20
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        32457,
+        20713,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          74,
+          181,
+          255
+        ],
+        [
+          74,
+          57,
+          165
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#4AB5FF",
+        "#4A39A5",
+        "#000000"
+      ]
+    }
+  },
+  "source_sha256": "266e1f80791add68051b49bf780732742aacd9c6b3a03bbbe8472aca242aef16",
+  "style_reference": {
+    "identity": "sprites/mn-f123/mn-263-265.front-back.imagegen-v1.png",
+    "rendering": "Choirbog native-refinement-20261103-r3; viewed locally, pixel volume and dithering only."
+  },
+  "sprites": [
+    {
+      "id": "mn-263-theme-v3",
+      "species_id": "MN_263",
+      "view": "front",
+      "source": "sprites/mn-f123/theme-redesign-20261104-v3/front-back.imagegen.png",
+      "crop": [
+        0,
+        80,
+        430,
+        430
+      ],
+      "fit": [
+        39,
+        34
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        8112,
+        9634,
+        0
+      ],
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "source_palette_rgb555": [
+        32767,
+        16180,
+        9607,
+        0
+      ]
+    },
+    {
+      "id": "mn-263-theme-v3",
+      "species_id": "MN_263",
+      "view": "back",
+      "source": "sprites/mn-f123/theme-redesign-20261104-v3/front-back.imagegen.png",
+      "crop": [
+        0,
+        550,
+        430,
+        460
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        8112,
+        9634,
+        0
+      ],
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "source_palette_rgb555": [
+        32767,
+        16180,
+        9607,
+        0
+      ]
+    },
+    {
+      "id": "mn-264-theme-v3",
+      "species_id": "MN_264",
+      "view": "front",
+      "source": "sprites/mn-f123/theme-redesign-20261104-v3/front-back.imagegen.png",
+      "crop": [
+        430,
+        40,
+        536,
+        470
+      ],
+      "fit": [
+        49,
+        43
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        3839,
+        15713,
+        0
+      ],
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "pixel_edits": [
+        {
+          "x": 51,
+          "y": 49,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 51,
+          "y": 50,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 50,
+          "y": 50,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 51,
+          "y": 51,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 51,
+          "y": 52,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 50,
+          "y": 52,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 51,
+          "y": 53,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 49,
+          "y": 52,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 50,
+          "y": 53,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 49,
+          "y": 51,
+          "from": 3,
+          "to": 0
+        }
+      ],
+      "source_palette_rgb555": [
+        32767,
+        12983,
+        12645,
+        0
+      ]
+    },
+    {
+      "id": "mn-264-theme-v3",
+      "species_id": "MN_264",
+      "view": "back",
+      "source": "sprites/mn-f123/theme-redesign-20261104-v3/front-back.imagegen.png",
+      "crop": [
+        440,
+        550,
+        510,
+        450
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        3839,
+        15713,
+        0
+      ],
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "source_palette_rgb555": [
+        32767,
+        12983,
+        12645,
+        0
+      ]
+    },
+    {
+      "id": "mn-265-theme-v3",
+      "species_id": "MN_265",
+      "view": "front",
+      "source": "sprites/mn-f123/theme-redesign-20261104-v3/front-back.imagegen.png",
+      "crop": [
+        930,
+        20,
+        606,
+        490
+      ],
+      "fit": [
+        53,
+        45
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        32457,
+        20713,
+        0
+      ],
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "pixel_edits": [
+        {
+          "x": 1,
+          "y": 17,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 2,
+          "y": 17,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 3,
+          "y": 17,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 1,
+          "y": 18,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 2,
+          "y": 18,
+          "from": 1,
+          "to": 0
+        },
+        {
+          "x": 3,
+          "y": 18,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 1,
+          "y": 19,
+          "from": 1,
+          "to": 0
+        },
+        {
+          "x": 2,
+          "y": 19,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 3,
+          "y": 19,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 1,
+          "y": 20,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 2,
+          "y": 20,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 1,
+          "y": 21,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 2,
+          "y": 21,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 1,
+          "y": 22,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 2,
+          "y": 22,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 1,
+          "y": 23,
+          "from": 3,
+          "to": 0
+        }
+      ],
+      "source_palette_rgb555": [
+        32767,
+        26356,
+        8521,
+        0
+      ]
+    },
+    {
+      "id": "mn-265-theme-v3",
+      "species_id": "MN_265",
+      "view": "back",
+      "source": "sprites/mn-f123/theme-redesign-20261104-v3/front-back.imagegen.png",
+      "crop": [
+        960,
+        550,
+        576,
+        450
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        32457,
+        20713,
+        0
+      ],
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "source_palette_rgb555": [
+        32767,
+        26356,
+        8521,
+        0
+      ]
+    }
+  ],
+  "prompt_file": "sprites/mn-f123/theme-redesign-20261104-v3/prompt.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "manual_refinement": "Guarded native edits erase detached neighboring-frame fragments at crop edges; creature pixels untouched.",
+  "color_revision": {
+    "authority": "User: Make candidates more vibrant; not just current work, all the wolves and stuff are beige.",
+    "study": "sprites/vibrant-color-study-20261104/palette-study.imagegen.png",
+    "method": "Native palette remapping through existing Rust converter. Source quantization palette retained; indexed geometry, eyes, outlines and dither unchanged."
+  },
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "4c5299bb92913738c86b85e65b5d3435b65e61bc576d57b32613d757670991be",
+    "notes": "Reviewed native front/back color pass: stronger Pokemon-like palettes, neutral white eyes/black pupils preserved, saturated body and shadow inks distinct. Indexed geometry proven identical before/after palette remap, including dither. Original sheets and prior palettes retained. User feedback pending."
+  }
+}

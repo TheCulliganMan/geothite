@@ -1,0 +1,240 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F016",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_045": {
+      "species_id": "MN_045",
+      "name": "Flapip",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          30,
+          24,
+          11
+        ],
+        [
+          17,
+          10,
+          5
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        12062,
+        5457,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          247,
+          198,
+          90
+        ],
+        [
+          140,
+          82,
+          41
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#F7C65A",
+        "#8C5229",
+        "#000000"
+      ]
+    },
+    "MN_046": {
+      "species_id": "MN_046",
+      "name": "Stackajack",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          31,
+          22,
+          8
+        ],
+        [
+          16,
+          7,
+          4
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        8927,
+        4336,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          181,
+          66
+        ],
+        [
+          132,
+          57,
+          33
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#FFB542",
+        "#843921",
+        "#000000"
+      ]
+    }
+  },
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-045-flapip-v1",
+      "species_id": "MN_045",
+      "view": "front",
+      "source": "sprites/mn-f016/mn-045-046.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        846,
+        443
+      ],
+      "fit": [
+        40,
+        40
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        12062,
+        5457,
+        0
+      ]
+    },
+    {
+      "id": "mn-045-flapip-v1",
+      "species_id": "MN_045",
+      "view": "back",
+      "source": "sprites/mn-f016/mn-045-046.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        443,
+        846,
+        444
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        12062,
+        5457,
+        0
+      ]
+    },
+    {
+      "id": "mn-046-stackajack-v1",
+      "species_id": "MN_046",
+      "view": "front",
+      "source": "sprites/mn-f016/native-refinement-20261103-r14/front-back.imagegen.png",
+      "crop": [
+        0,
+        0,
+        887,
+        887
+      ],
+      "fit": [
+        50,
+        48
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        8927,
+        4336,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-046-stackajack-v1",
+      "species_id": "MN_046",
+      "view": "back",
+      "source": "sprites/mn-f016/native-refinement-20261103-r14/front-back.imagegen.png",
+      "crop": [
+        887,
+        0,
+        887,
+        887
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        8927,
+        4336,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    }
+  ],
+  "prompt_file": "sprites/mn-f016/native-refinement-20261103-r14/prompt.txt",
+  "original_manifest": "sprites/mn-f016/manifest.json",
+  "status": "native-front-back-reviewed",
+  "visual_review": {
+    "status": "reviewed",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "6cba2f820537ba1f17b70b26cce30f19bdb04d4f19899c1d65b3c90d885072f3",
+    "notes": "Stackajack regenerated adult only. Distinct white eye fields and dark pupils sit under butter brows with black separation; syrup beard starts below mouth. Three irregular pancake tiers, short folded side tabs and broad base pads remain creature anatomy rather than human clothing/hands. Warm lit rims, reddish toasted shadow planes and native dither round stack and close rear tiers. Highlights stay away from sockets. Native56/48 and integer zoom inspected. Original Flapip views unchanged, Casserogre untouched."
+  },
+  "shiny_review": {
+    "status": "reviewed",
+    "views": 4,
+    "notes": "Changed-species normal/shiny native fronts/backs inspected. Shiny colors exactly match profile palette swaps of native indices; normal files match canonical PNG bytes. Eyes and defining shape boundaries retained."
+  }
+}

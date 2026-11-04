@@ -1,0 +1,248 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F121",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_259": {
+      "species_id": "MN_259",
+      "name": "Rillbow",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          23,
+          26,
+          25
+        ],
+        [
+          6,
+          13,
+          15
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        26455,
+        15782,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          189,
+          214,
+          206
+        ],
+        [
+          49,
+          107,
+          123
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#BDD6CE",
+        "#316B7B",
+        "#000000"
+      ]
+    },
+    "MN_260": {
+      "species_id": "MN_260",
+      "name": "Torrout",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          27,
+          25,
+          17
+        ],
+        [
+          7,
+          12,
+          9
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        18235,
+        9607,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          222,
+          206,
+          140
+        ],
+        [
+          57,
+          99,
+          74
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#DECE8C",
+        "#39634A",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f121/redesign-20261103-r12/prompt.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-259-rillbow-v1",
+      "species_id": "MN_259",
+      "view": "front",
+      "source": "sprites/mn-f121/redesign-20261103-r12/front-back.imagegen.png",
+      "crop": [
+        0,
+        0,
+        510,
+        640
+      ],
+      "fit": [
+        42,
+        40
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        26455,
+        15782,
+        0
+      ],
+      "interior_black_min_samples": 32,
+      "white_detail_min_samples": 16,
+      "sampling": "source_center",
+      "exterior_contour": "source_backed"
+    },
+    {
+      "id": "mn-259-rillbow-v1",
+      "species_id": "MN_259",
+      "view": "back",
+      "source": "sprites/mn-f121/redesign-20261103-r12/front-back.imagegen.png",
+      "crop": [
+        0,
+        650,
+        510,
+        553
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        26455,
+        15782,
+        0
+      ],
+      "interior_black_min_samples": 32,
+      "white_detail_min_samples": 16,
+      "sampling": "source_center",
+      "exterior_contour": "source_backed"
+    },
+    {
+      "id": "mn-260-torrout-v1",
+      "species_id": "MN_260",
+      "view": "front",
+      "source": "sprites/mn-f121/redesign-20261103-r12/front-back.imagegen.png",
+      "crop": [
+        510,
+        0,
+        797,
+        640
+      ],
+      "fit": [
+        52,
+        50
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        18235,
+        9607,
+        0
+      ],
+      "interior_black_min_samples": 32,
+      "white_detail_min_samples": 16,
+      "sampling": "source_center",
+      "exterior_contour": "source_backed"
+    },
+    {
+      "id": "mn-260-torrout-v1",
+      "species_id": "MN_260",
+      "view": "back",
+      "source": "sprites/mn-f121/redesign-20261103-r12/front-back.imagegen.png",
+      "crop": [
+        510,
+        650,
+        797,
+        553
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        18235,
+        9607,
+        0
+      ],
+      "interior_black_min_samples": 32,
+      "white_detail_min_samples": 16,
+      "sampling": "source_center",
+      "exterior_contour": "source_backed"
+    }
+  ],
+  "original_manifest": "sprites/mn-f121/manifest.json",
+  "status": "native-front-back-reviewed",
+  "visual_review": {
+    "status": "reviewed",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "0049ae08783135db9d8b4a1e57ad43dda51c0dd75f1c2fe1e8a5cd0be23b84d7",
+    "notes": "Full trout artwork redesign. Compact blunt-snouted spring-fin Rillbow grows into heavy coiled Torrout with strong gill shield and integrated three-rib crescent keel. Native front eyes retain white field, dark pupil and socket separately from cheeks; close rears retain head/gill/fin roots. Coarse teal/mint and gold/green dither survives on flank/fin curves. Fronts down-left, rears upper-right. Reviewed actual56/48 pixels and integer zoom. Original sources retained."
+  },
+  "shiny_review": {
+    "status": "reviewed",
+    "views": 4,
+    "notes": "Native shiny fronts/backs inspected for changed species; exact profile palette/index swaps verified for every family view, normal PNG bytes unchanged from canonical export. Native contours and eye contrast retained. No deployment."
+  }
+}

@@ -1,0 +1,396 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F152",
+  "tool": "built-in image_gen",
+  "prompt_file": "sprites/mn-f152/replacement-20261104-v3/prompt-retry.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "status": "native-vibrant-candidate-reviewed-awaiting-user-feedback",
+  "sprites": [
+    {
+      "id": "mn-334-hushbat-v3",
+      "species_id": "MN_334",
+      "view": "front",
+      "source": "sprites/mn-f152/replacement-20261104-v3/front-back.imagegen.png",
+      "crop": [
+        0,
+        0,
+        300,
+        627
+      ],
+      "fit": [
+        33,
+        34
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        31225,
+        20680,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "source_palette_rgb555": [
+        32767,
+        14935,
+        18762,
+        0
+      ]
+    },
+    {
+      "id": "mn-334-hushbat-v3",
+      "species_id": "MN_334",
+      "view": "back",
+      "source": "sprites/mn-f152/replacement-20261104-v3/front-back.imagegen.png",
+      "crop": [
+        0,
+        627,
+        300,
+        627
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        31225,
+        20680,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "source_palette_rgb555": [
+        32767,
+        14935,
+        18762,
+        0
+      ]
+    },
+    {
+      "id": "mn-335-deepulse-v3",
+      "species_id": "MN_335",
+      "view": "front",
+      "source": "sprites/mn-f152/replacement-20261104-v3/front-back.imagegen.png",
+      "crop": [
+        300,
+        0,
+        425,
+        627
+      ],
+      "fit": [
+        43,
+        40
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        28060,
+        22665,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "source_palette_rgb555": [
+        32767,
+        15958,
+        19753,
+        0
+      ]
+    },
+    {
+      "id": "mn-335-deepulse-v3",
+      "species_id": "MN_335",
+      "view": "back",
+      "source": "sprites/mn-f152/replacement-20261104-v3/front-back.imagegen.png",
+      "crop": [
+        300,
+        627,
+        425,
+        627
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        28060,
+        22665,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "source_palette_rgb555": [
+        32767,
+        15958,
+        19753,
+        0
+      ]
+    },
+    {
+      "id": "mn-336-noctector-v3",
+      "species_id": "MN_336",
+      "view": "front",
+      "source": "sprites/mn-f152/replacement-20261104-v3/front-back.imagegen.png",
+      "crop": [
+        725,
+        0,
+        529,
+        627
+      ],
+      "fit": [
+        52,
+        46
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        31063,
+        21733,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "source_palette_rgb555": [
+        32767,
+        17013,
+        20776,
+        0
+      ]
+    },
+    {
+      "id": "mn-336-noctector-v3",
+      "species_id": "MN_336",
+      "view": "back",
+      "source": "sprites/mn-f152/replacement-20261104-v3/front-back.imagegen.png",
+      "crop": [
+        725,
+        627,
+        529,
+        627
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        31063,
+        21733,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "source_palette_rgb555": [
+        32767,
+        17013,
+        20776,
+        0
+      ]
+    }
+  ],
+  "pokemon_palettes": {
+    "MN_334": {
+      "species_id": "MN_334",
+      "name": "Hushbat",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          25,
+          15,
+          30
+        ],
+        [
+          8,
+          6,
+          20
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        31225,
+        20680,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          206,
+          123,
+          247
+        ],
+        [
+          66,
+          49,
+          165
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#CE7BF7",
+        "#4231A5",
+        "#000000"
+      ]
+    },
+    "MN_335": {
+      "species_id": "MN_335",
+      "name": "Deepulse",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          28,
+          12,
+          27
+        ],
+        [
+          9,
+          4,
+          22
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        28060,
+        22665,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          231,
+          99,
+          222
+        ],
+        [
+          74,
+          33,
+          181
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#E763DE",
+        "#4A21B5",
+        "#000000"
+      ]
+    },
+    "MN_336": {
+      "species_id": "MN_336",
+      "name": "Noctector",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          23,
+          10,
+          30
+        ],
+        [
+          5,
+          7,
+          21
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        31063,
+        21733,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          189,
+          82,
+          247
+        ],
+        [
+          41,
+          57,
+          173
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#BD52F7",
+        "#2939AD",
+        "#000000"
+      ]
+    }
+  },
+  "color_revision": {
+    "authority": "User: Make candidates more vibrant; not just current work, all the wolves and stuff are beige.",
+    "study": "sprites/vibrant-color-study-20261104/palette-study.imagegen.png",
+    "method": "Native palette remapping through existing Rust converter. Source quantization palette retained; indexed geometry, eyes, outlines and dither unchanged."
+  },
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "16371c02520f4bcbefa7ae55826e83c14674a282f5352b65b30a481f731b6bfa",
+    "notes": "Reviewed native front/back color pass: stronger Pokemon-like palettes, neutral white eyes/black pupils preserved, saturated body and shadow inks distinct. Indexed geometry proven identical before/after palette remap, including dither. Original sheets and prior palettes retained. User feedback pending."
+  }
+}

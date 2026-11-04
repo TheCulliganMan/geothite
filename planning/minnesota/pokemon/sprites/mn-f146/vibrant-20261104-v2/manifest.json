@@ -1,0 +1,396 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F146",
+  "tool": "built-in image_gen",
+  "prompt_file": "sprites/mn-f146/replacement-20261104-v1/prompt.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "status": "native-vibrant-candidate-reviewed-awaiting-user-feedback",
+  "sprites": [
+    {
+      "id": "mn-320-snugslug-v1",
+      "species_id": "MN_320",
+      "view": "front",
+      "source": "sprites/mn-f146/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        0,
+        0,
+        470,
+        512
+      ],
+      "fit": [
+        34,
+        34
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13855,
+        21679,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "source_palette_rgb555": [
+        32767,
+        19225,
+        16908,
+        0
+      ]
+    },
+    {
+      "id": "mn-320-snugslug-v1",
+      "species_id": "MN_320",
+      "view": "back",
+      "source": "sprites/mn-f146/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        0,
+        512,
+        470,
+        512
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13855,
+        21679,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "source_palette_rgb555": [
+        32767,
+        19225,
+        16908,
+        0
+      ]
+    },
+    {
+      "id": "mn-321-mantlsnail-v1",
+      "species_id": "MN_321",
+      "view": "front",
+      "source": "sprites/mn-f146/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        470,
+        0,
+        460,
+        512
+      ],
+      "fit": [
+        43,
+        40
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        17887,
+        22669,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "source_palette_rgb555": [
+        32767,
+        17112,
+        17933,
+        0
+      ]
+    },
+    {
+      "id": "mn-321-mantlsnail-v1",
+      "species_id": "MN_321",
+      "view": "back",
+      "source": "sprites/mn-f146/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        470,
+        512,
+        460,
+        512
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        17887,
+        22669,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "source_palette_rgb555": [
+        32767,
+        17112,
+        17933,
+        0
+      ]
+    },
+    {
+      "id": "mn-322-cloisterra-v1",
+      "species_id": "MN_322",
+      "view": "front",
+      "source": "sprites/mn-f146/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        930,
+        0,
+        606,
+        512
+      ],
+      "fit": [
+        52,
+        43
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        20894,
+        23722,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "source_palette_rgb555": [
+        32767,
+        19191,
+        16874,
+        0
+      ]
+    },
+    {
+      "id": "mn-322-cloisterra-v1",
+      "species_id": "MN_322",
+      "view": "back",
+      "source": "sprites/mn-f146/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        930,
+        512,
+        606,
+        512
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        20894,
+        23722,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "source_palette_rgb555": [
+        32767,
+        19191,
+        16874,
+        0
+      ]
+    }
+  ],
+  "pokemon_palettes": {
+    "MN_320": {
+      "species_id": "MN_320",
+      "name": "Snugslug",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          31,
+          16,
+          13
+        ],
+        [
+          15,
+          5,
+          21
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        13855,
+        21679,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          132,
+          107
+        ],
+        [
+          123,
+          41,
+          173
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#FF846B",
+        "#7B29AD",
+        "#000000"
+      ]
+    },
+    "MN_321": {
+      "species_id": "MN_321",
+      "name": "Mantlsnail",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          31,
+          14,
+          17
+        ],
+        [
+          13,
+          4,
+          22
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        17887,
+        22669,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          115,
+          140
+        ],
+        [
+          107,
+          33,
+          181
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#FF738C",
+        "#6B21B5",
+        "#000000"
+      ]
+    },
+    "MN_322": {
+      "species_id": "MN_322",
+      "name": "Cloisterra",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          30,
+          12,
+          20
+        ],
+        [
+          10,
+          5,
+          23
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        20894,
+        23722,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          247,
+          99,
+          165
+        ],
+        [
+          82,
+          41,
+          189
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#F763A5",
+        "#5229BD",
+        "#000000"
+      ]
+    }
+  },
+  "color_revision": {
+    "authority": "User: Make candidates more vibrant; not just current work, all the wolves and stuff are beige.",
+    "study": "sprites/vibrant-color-study-20261104/palette-study.imagegen.png",
+    "method": "Native palette remapping through existing Rust converter. Source quantization palette retained; indexed geometry, eyes, outlines and dither unchanged."
+  },
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "11add2edbf4e1728ac873a40b3285eae1df337bb82520013dda1e61dc9273676",
+    "notes": "Reviewed native front/back color pass: stronger Pokemon-like palettes, neutral white eyes/black pupils preserved, saturated body and shadow inks distinct. Indexed geometry proven identical before/after palette remap, including dither. Original sheets and prior palettes retained. User feedback pending."
+  }
+}

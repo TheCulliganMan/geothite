@@ -1,0 +1,272 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F150",
+  "tool": "built-in image_gen",
+  "prompt_file": "sprites/mn-f150/replacement-20261104-v1/prompt.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "status": "native-vibrant-candidate-reviewed-awaiting-user-feedback",
+  "sprites": [
+    {
+      "id": "mn-329-cubluff-v1",
+      "species_id": "MN_329",
+      "view": "front",
+      "source": "sprites/mn-f150/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        0,
+        0,
+        560,
+        627
+      ],
+      "fit": [
+        36,
+        34
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        4671,
+        7523,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "source_palette_rgb555": [
+        32767,
+        21139,
+        14698,
+        0
+      ]
+    },
+    {
+      "id": "mn-329-cubluff-v1",
+      "species_id": "MN_329",
+      "view": "back",
+      "source": "sprites/mn-f150/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        0,
+        627,
+        560,
+        627
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        4671,
+        7523,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "source_palette_rgb555": [
+        32767,
+        21139,
+        14698,
+        0
+      ]
+    },
+    {
+      "id": "mn-330-talursa-v1",
+      "species_id": "MN_330",
+      "view": "front",
+      "source": "sprites/mn-f150/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        560,
+        0,
+        694,
+        627
+      ],
+      "fit": [
+        52,
+        43
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        3517,
+        10563,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "source_palette_rgb555": [
+        32767,
+        21105,
+        13640,
+        0
+      ]
+    },
+    {
+      "id": "mn-330-talursa-v1",
+      "species_id": "MN_330",
+      "view": "back",
+      "source": "sprites/mn-f150/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        560,
+        627,
+        694,
+        627
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        3517,
+        10563,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "source_palette_rgb555": [
+        32767,
+        21105,
+        13640,
+        0
+      ]
+    }
+  ],
+  "pokemon_palettes": {
+    "MN_329": {
+      "species_id": "MN_329",
+      "name": "Cubluff",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          31,
+          17,
+          4
+        ],
+        [
+          3,
+          11,
+          7
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        4671,
+        7523,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          140,
+          33
+        ],
+        [
+          24,
+          90,
+          57
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#FF8C21",
+        "#185A39",
+        "#000000"
+      ]
+    },
+    "MN_330": {
+      "species_id": "MN_330",
+      "name": "Talursa",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          29,
+          13,
+          3
+        ],
+        [
+          3,
+          10,
+          10
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        3517,
+        10563,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          239,
+          107,
+          24
+        ],
+        [
+          24,
+          82,
+          82
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#EF6B18",
+        "#185252",
+        "#000000"
+      ]
+    }
+  },
+  "color_revision": {
+    "authority": "User: Make candidates more vibrant; not just current work, all the wolves and stuff are beige.",
+    "study": "sprites/vibrant-color-study-20261104/palette-study.imagegen.png",
+    "method": "Native palette remapping through existing Rust converter. Source quantization palette retained; indexed geometry, eyes, outlines and dither unchanged."
+  },
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "2a28053ea6f9288b15a958e34e74203816c02e076a97843467d9f907cfa96579",
+    "notes": "Reviewed native front/back color pass: stronger Pokemon-like palettes, neutral white eyes/black pupils preserved, saturated body and shadow inks distinct. Indexed geometry proven identical before/after palette remap, including dither. Original sheets and prior palettes retained. User feedback pending."
+  }
+}

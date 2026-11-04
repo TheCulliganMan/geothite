@@ -1,0 +1,270 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F139",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "prompt_file": "sprites/mn-f139/redesign-20261103-r11/prompt.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "pokemon_palettes": {
+    "MN_308": {
+      "species_id": "MN_308",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          25,
+          16,
+          8
+        ],
+        [
+          10,
+          7,
+          9
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        8729,
+        9450,
+        0
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#CE8442",
+        "#52394A",
+        "#000000"
+      ],
+      "name": "Crookit",
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          206,
+          132,
+          66
+        ],
+        [
+          82,
+          57,
+          74
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    "MN_309": {
+      "species_id": "MN_309",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          13,
+          10,
+          16
+        ],
+        [
+          6,
+          8,
+          11
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        16717,
+        11526,
+        0
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#6B5284",
+        "#31425A",
+        "#000000"
+      ],
+      "name": "Crookveil",
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          107,
+          82,
+          132
+        ],
+        [
+          49,
+          66,
+          90
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ]
+    }
+  },
+  "sprites": [
+    {
+      "id": "mn-308-crookit-v1",
+      "species_id": "MN_308",
+      "view": "front",
+      "source": "sprites/mn-f139/redesign-20261103-r11/front-back.imagegen.png",
+      "crop": [
+        0,
+        0,
+        627,
+        627
+      ],
+      "fit": [
+        40,
+        38
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        8729,
+        9450,
+        0
+      ],
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "sampling": "source_center",
+      "exterior_contour": "source_backed"
+    },
+    {
+      "id": "mn-309-crookveil-v1",
+      "species_id": "MN_309",
+      "view": "front",
+      "source": "sprites/mn-f139/redesign-20261103-r11/front-back.imagegen.png",
+      "crop": [
+        627,
+        0,
+        627,
+        627
+      ],
+      "fit": [
+        54,
+        46
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        16717,
+        11526,
+        0
+      ],
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "pixel_edits": [
+        {
+          "x": 3,
+          "y": 44,
+          "from": 1,
+          "to": 0
+        },
+        {
+          "x": 3,
+          "y": 45,
+          "from": 1,
+          "to": 0
+        },
+        {
+          "x": 4,
+          "y": 45,
+          "from": 3,
+          "to": 0
+        }
+      ]
+    },
+    {
+      "id": "mn-308-crookit-v1",
+      "species_id": "MN_308",
+      "view": "back",
+      "source": "sprites/mn-f139/redesign-20261103-r11/front-back.imagegen.png",
+      "crop": [
+        0,
+        627,
+        627,
+        627
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        8729,
+        9450,
+        0
+      ],
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "sampling": "source_center",
+      "exterior_contour": "source_backed"
+    },
+    {
+      "id": "mn-309-crookveil-v1",
+      "species_id": "MN_309",
+      "view": "back",
+      "source": "sprites/mn-f139/redesign-20261103-r11/front-back.imagegen.png",
+      "crop": [
+        627,
+        627,
+        627,
+        627
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        16717,
+        11526,
+        0
+      ],
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "sampling": "source_center",
+      "exterior_contour": "source_backed"
+    }
+  ],
+  "native_refinement_note": "Guarded native ink corrections clarify existing eyes and facial details. Source art, fit and per-species palettes retained. Orientation corrections keep enemy fronts facing left and player rear portraits facing upper right.",
+  "original_manifest": "sprites/mn-f139/manifest.json",
+  "native_eye_note": "Crookit regenerated front/rear pair selected from retained r11 source after native review. Crookveil exact four-legged corrected source and three far-eye guards unchanged.",
+  "visual_review": {
+    "status": "reviewed",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "d7eaca4ab79994848b0f44371c8d3453489f93e2b537df8cb24b4b1930f67869",
+    "notes": "Completed Crookit regenerated native pair using retained r11 source, preserving unusual crooked marten spine, four legs, fork tail and original proportions; chestnut/plum curved dither and directional shadows improve body/back volume. Both eye whites/pupils and dark cheek separation inspected at56/48 and zoom. Crookveil four-legged corrected PNGs remain byte-identical. Original sources retained; gameplay pack integration pending."
+  },
+  "shiny_review": {
+    "status": "reviewed",
+    "views": 4,
+    "notes": "Crookit regenerated shiny front/back inspected at native size; Crookveil retains corrected selected art. All four family normal/shiny pairs exactly match native indices/profile palettes and canonical normal bytes."
+  }
+}

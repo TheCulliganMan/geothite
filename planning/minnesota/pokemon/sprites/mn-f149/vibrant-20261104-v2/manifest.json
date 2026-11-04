@@ -1,0 +1,148 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F149",
+  "tool": "built-in image_gen",
+  "prompt_file": "sprites/mn-f149/replacement-20261104-v2/prompt-retry.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "status": "native-vibrant-candidate-reviewed-awaiting-user-feedback",
+  "sprites": [
+    {
+      "id": "mn-328-bitterry-v2",
+      "species_id": "MN_328",
+      "view": "front",
+      "source": "sprites/mn-f149/replacement-20261104-v2/front-back.imagegen.png",
+      "crop": [
+        0,
+        0,
+        900,
+        848
+      ],
+      "fit": [
+        46,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        23871,
+        6563,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "source_palette_rgb555": [
+        32767,
+        21881,
+        9672,
+        0
+      ]
+    },
+    {
+      "id": "mn-328-bitterry-v2",
+      "species_id": "MN_328",
+      "view": "back",
+      "source": "sprites/mn-f149/replacement-20261104-v2/front-back.imagegen.png",
+      "crop": [
+        900,
+        0,
+        955,
+        848
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        23871,
+        6563,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "source_palette_rgb555": [
+        32767,
+        21881,
+        9672,
+        0
+      ]
+    }
+  ],
+  "pokemon_palettes": {
+    "MN_328": {
+      "species_id": "MN_328",
+      "name": "Bitterry",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          31,
+          9,
+          23
+        ],
+        [
+          3,
+          13,
+          6
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        23871,
+        6563,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          74,
+          189
+        ],
+        [
+          24,
+          107,
+          49
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#FF4ABD",
+        "#186B31",
+        "#000000"
+      ]
+    }
+  },
+  "color_revision": {
+    "authority": "User: Make candidates more vibrant; not just current work, all the wolves and stuff are beige.",
+    "study": "sprites/vibrant-color-study-20261104/palette-study.imagegen.png",
+    "method": "Native palette remapping through existing Rust converter. Source quantization palette retained; indexed geometry, eyes, outlines and dither unchanged."
+  },
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "f089912dc003b09217d2a01d11cf50cb740e9a0fb68a01e9e26c0679b3fd8d6c",
+    "notes": "Reviewed native front/back color pass: stronger Pokemon-like palettes, neutral white eyes/black pupils preserved, saturated body and shadow inks distinct. Indexed geometry proven identical before/after palette remap, including dither. Original sheets and prior palettes retained. User feedback pending."
+  }
+}

@@ -1,0 +1,261 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F097",
+  "status": "native-front-back-reviewed",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_211": {
+      "species_id": "MN_211",
+      "name": "Pinglet",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          29,
+          23,
+          9
+        ],
+        [
+          5,
+          14,
+          17
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        9981,
+        17861,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          239,
+          189,
+          74
+        ],
+        [
+          41,
+          115,
+          140
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#EFBD4A",
+        "#29738C",
+        "#000000"
+      ]
+    },
+    "MN_212": {
+      "species_id": "MN_212",
+      "name": "Paddarray",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          12,
+          25,
+          28
+        ],
+        [
+          11,
+          8,
+          21
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        29484,
+        21771,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          99,
+          206,
+          231
+        ],
+        [
+          90,
+          66,
+          173
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#63CEE7",
+        "#5A42AD",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f097/native-refinement-20261103-r7/prompt-211-front.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-211-pinglet-native-refinement-20261103-r7",
+      "species_id": "MN_211",
+      "view": "front",
+      "source": "sprites/mn-f097/native-refinement-20261103-r7/mn-211.front.imagegen.png",
+      "crop": [
+        0,
+        0,
+        1254,
+        1254
+      ],
+      "fit": [
+        44,
+        40
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        9981,
+        17861,
+        0
+      ],
+      "interior_black_min_samples": 32,
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "prompt_file": "sprites/mn-f097/native-refinement-20261103-r7/prompt-211-front.txt"
+    },
+    {
+      "id": "mn-211-pinglet-native-refinement-20261103-r7",
+      "species_id": "MN_211",
+      "view": "back",
+      "source": "sprites/mn-f097/native-refinement-20261103-r7/mn-211.back.imagegen.png",
+      "crop": [
+        0,
+        760,
+        630,
+        494
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        9981,
+        17861,
+        0
+      ],
+      "interior_black_min_samples": 32,
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "prompt_file": "sprites/mn-f097/native-refinement-20261103-r7/prompt-211-back.txt"
+    },
+    {
+      "id": "mn-212-paddarray-native-refinement-20261103-r7",
+      "species_id": "MN_212",
+      "view": "front",
+      "source": "sprites/mn-f097/native-refinement-20261103-r7/mn-212.front.imagegen.png",
+      "crop": [
+        0,
+        0,
+        1254,
+        1254
+      ],
+      "fit": [
+        52,
+        48
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        29484,
+        21771,
+        0
+      ],
+      "interior_black_min_samples": 32,
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "prompt_file": "sprites/mn-f097/native-refinement-20261103-r7/prompt-212-front.txt"
+    },
+    {
+      "id": "mn-212-paddarray-native-refinement-20261103-r7",
+      "species_id": "MN_212",
+      "view": "back",
+      "source": "sprites/mn-f097/native-refinement-20261103-r7/mn-212.back.imagegen.png",
+      "crop": [
+        0,
+        0,
+        1254,
+        1254
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        29484,
+        21771,
+        0
+      ],
+      "interior_black_min_samples": 32,
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "prompt_file": "sprites/mn-f097/native-refinement-20261103-r7/prompt-212-back.txt"
+    }
+  ],
+  "original_manifest": "sprites/mn-f097/manifest.json",
+  "original_style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "generator": "crates/crystal-assets/examples/minnesota_gen2_reference.rs",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png",
+      "target/minnesota-pokemon/gen2-reference/bugs.png"
+    ]
+  },
+  "crop_notes": "Pinglet back generation returned a four-view board despite one-view prompt; only lower-left intended back cell is imported. Complete original returned bitmap retained.",
+  "visual_review": {
+    "status": "reviewed",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "71bd8b432f3658dc081b0108ea70af399c05eef8fbb77397f2fcd98d4e79ca87",
+    "notes": "Inspected actual56x56 fronts and48x48 backs plus integer zoom. Small gold/teal spoon-snouted juvenile grows into cyan/purple three-pronged sensory fan with pleated gills and three-lobed tail. Front swimming arcs face lower-left; rear portraits angle upper-right. Connected near-eye white/pupil sockets remain separate from body highlights without forcing an extra far eye or generic large face. Curved palette-limited dither, body shadows and limited rim/fin lights add depth. Original sources/manifests retained. Runtime/shiny review pending."
+  },
+  "shiny_review": {
+    "status": "reviewed",
+    "views": 4,
+    "notes": "Inspected actual native shiny front/back images. Shiny PNGs exactly match profile palette swaps of native indices; normal PNG bytes match canonical native files. Eye contrast and silhouette retained. No deployment."
+  }
+}

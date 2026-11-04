@@ -4,7 +4,7 @@
   "families": [
     {
       "id": "MN_F001",
-      "manifest": "sprites/mn-f001/manifest.json"
+      "manifest": "sprites/mn-f001/starter-orchid-20261103-r8/manifest.json"
     },
     {
       "id": "MN_F002",
@@ -16,11 +16,11 @@
     },
     {
       "id": "MN_F004",
-      "manifest": "sprites/mn-f004/manifest.json"
+      "manifest": "sprites/mn-f004/starter-beaver-20261103-r8/manifest.json"
     },
     {
       "id": "MN_F005",
-      "manifest": "sprites/mn-f005/manifest.json"
+      "manifest": "sprites/mn-f005/native-refinement-20261103-r19/manifest.json"
     },
     {
       "id": "MN_F006",
@@ -64,7 +64,7 @@
     },
     {
       "id": "MN_F016",
-      "manifest": "sprites/mn-f016/manifest.json"
+      "manifest": "sprites/mn-f016/native-refinement-20261103-r14/manifest.json"
     },
     {
       "id": "MN_F017",
@@ -124,7 +124,7 @@
     },
     {
       "id": "MN_F031",
-      "manifest": "sprites/mn-f031/manifest.json"
+      "manifest": "sprites/mn-f031/fresnel-redesign-20261103-r9/manifest.json"
     },
     {
       "id": "MN_F032",
@@ -172,7 +172,7 @@
     },
     {
       "id": "MN_F043",
-      "manifest": "sprites/mn-f043/manifest.json"
+      "manifest": "sprites/mn-f043/definition-20261103-v1/manifest.json"
     },
     {
       "id": "MN_F044",
@@ -216,7 +216,7 @@
     },
     {
       "id": "MN_F054",
-      "manifest": "sprites/mn-f054/manifest.json"
+      "manifest": "sprites/mn-f054/native-refinement-20261103-r9/manifest.json"
     },
     {
       "id": "MN_F055",
@@ -240,7 +240,7 @@
     },
     {
       "id": "MN_F060",
-      "manifest": "sprites/mn-f060/manifest.json"
+      "manifest": "sprites/mn-f060/native-refinement-20261103-r18/manifest.json"
     },
     {
       "id": "MN_F061",
@@ -256,7 +256,7 @@
     },
     {
       "id": "MN_F064",
-      "manifest": "sprites/mn-f064/manifest.json"
+      "manifest": "sprites/mn-f064/native-refinement-20261103-r3/manifest.json"
     },
     {
       "id": "MN_F065",
@@ -280,7 +280,7 @@
     },
     {
       "id": "MN_F070",
-      "manifest": "sprites/mn-f070/manifest.json"
+      "manifest": "sprites/mn-f070/thematic-refinement-20261104-v2/manifest.json"
     },
     {
       "id": "MN_F071",
@@ -292,7 +292,7 @@
     },
     {
       "id": "MN_F073",
-      "manifest": "sprites/mn-f073/manifest.json"
+      "manifest": "sprites/mn-f073/vibrant-20261104-v2/manifest.json"
     },
     {
       "id": "MN_F074",
@@ -312,7 +312,7 @@
     },
     {
       "id": "MN_F078",
-      "manifest": "sprites/mn-f078/manifest.json"
+      "manifest": "sprites/mn-f078/curation-20261104/manifest.json"
     },
     {
       "id": "MN_F079",
@@ -320,7 +320,7 @@
     },
     {
       "id": "MN_F080",
-      "manifest": "sprites/mn-f080/manifest.json"
+      "manifest": "sprites/mn-f080/thematic-refinement-20261104-v2/manifest.json"
     },
     {
       "id": "MN_F081",
@@ -332,11 +332,11 @@
     },
     {
       "id": "MN_F083",
-      "manifest": "sprites/mn-f083/manifest.json"
+      "manifest": "sprites/mn-f083/native-refinement-20261103-r18/manifest.json"
     },
     {
       "id": "MN_F084",
-      "manifest": "sprites/mn-f084/manifest.json"
+      "manifest": "sprites/mn-f084/native-refinement-20261103-r18/manifest.json"
     },
     {
       "id": "MN_F085",
@@ -352,7 +352,7 @@
     },
     {
       "id": "MN_F088",
-      "manifest": "sprites/mn-f088/manifest.json"
+      "manifest": "sprites/mn-f088/thematic-refinement-20261104-v2/manifest.json"
     },
     {
       "id": "MN_F089",
@@ -360,19 +360,19 @@
     },
     {
       "id": "MN_F090",
-      "manifest": "sprites/mn-f090/manifest.json"
+      "manifest": "sprites/mn-f090/native-refinement-20261103-r5/manifest.json"
     },
     {
       "id": "MN_F091",
-      "manifest": "sprites/mn-f091/manifest.json"
+      "manifest": "sprites/mn-f091/thematic-refinement-20261104-v2/manifest.json"
     },
     {
       "id": "MN_F092",
-      "manifest": "sprites/mn-f092/manifest.json"
+      "manifest": "sprites/mn-f092/native-refinement-20261103-r9/manifest.json"
     },
     {
       "id": "MN_F093",
-      "manifest": "sprites/mn-f093/manifest.json"
+      "manifest": "sprites/mn-f093/two-eyes-20261103-r13/manifest.json"
     },
     {
       "id": "MN_F094",
@@ -388,7 +388,7 @@
     },
     {
       "id": "MN_F097",
-      "manifest": "sprites/mn-f097/manifest.json"
+      "manifest": "sprites/mn-f097/native-refinement-20261103-r7/manifest.json"
     },
     {
       "id": "MN_F098",
@@ -404,11 +404,11 @@
     },
     {
       "id": "MN_F101",
-      "manifest": "sprites/mn-f101/manifest.json"
+      "manifest": "sprites/mn-f101/beet-root-20261103-r5/manifest.json"
     },
     {
       "id": "MN_F102",
-      "manifest": "sprites/mn-f102/manifest.json"
+      "manifest": "sprites/mn-f102/native-refinement-20261103-r12/manifest.json"
     },
     {
       "id": "MN_F103",
@@ -484,7 +484,7 @@
     },
     {
       "id": "MN_F121",
-      "manifest": "sprites/mn-f121/manifest.json"
+      "manifest": "sprites/mn-f121/redesign-20261103-r12/manifest.json"
     },
     {
       "id": "MN_F122",
@@ -492,15 +492,15 @@
     },
     {
       "id": "MN_F123",
-      "manifest": "sprites/mn-f123/manifest.json"
+      "manifest": "sprites/mn-f123/vibrant-20261104-v2/manifest.json"
     },
     {
       "id": "MN_F125",
-      "manifest": "sprites/mn-f125/manifest.json"
+      "manifest": "sprites/mn-f125/starter-lynx-20261103-r8/manifest.json"
     },
     {
       "id": "MN_F126",
-      "manifest": "sprites/mn-f126/manifest.json"
+      "manifest": "sprites/mn-f126/native-refinement-20261103-r14/manifest.json"
     },
     {
       "id": "MN_F127",
@@ -524,15 +524,15 @@
     },
     {
       "id": "MN_F132",
-      "manifest": "sprites/mn-f132/manifest.json"
+      "manifest": "sprites/mn-f132/thematic-refinement-20261104-v2/manifest.json"
     },
     {
       "id": "MN_F133",
-      "manifest": "sprites/mn-f133/manifest.json"
+      "manifest": "sprites/mn-f133/native-refinement-20261103-r7/manifest.json"
     },
     {
       "id": "MN_F134",
-      "manifest": "sprites/mn-f134/manifest.json"
+      "manifest": "sprites/mn-f134/downscale-20261103-v1/manifest.json"
     },
     {
       "id": "MN_F135",
@@ -552,7 +552,7 @@
     },
     {
       "id": "MN_F139",
-      "manifest": "sprites/mn-f139/manifest.json"
+      "manifest": "sprites/mn-f139/native-completion-20261103-r14/manifest.json"
     },
     {
       "id": "MN_F140",
@@ -560,11 +560,11 @@
     },
     {
       "id": "MN_F141",
-      "manifest": "sprites/mn-f141/manifest.json"
+      "manifest": "sprites/mn-f141/quadruped-refinement-20261103-r15/manifest.json"
     },
     {
       "id": "MN_F142",
-      "manifest": "sprites/mn-f142/manifest.json"
+      "manifest": "sprites/mn-f142/native-refinement-20261103-r15/manifest.json"
     },
     {
       "id": "MN_F143",
@@ -577,6 +577,62 @@
     {
       "id": "MN_F145",
       "manifest": "sprites/mn-f145/manifest.json"
+    },
+    {
+      "id": "MN_F146",
+      "manifest": "sprites/mn-f146/vibrant-20261104-v2/manifest.json"
+    },
+    {
+      "id": "MN_F147",
+      "manifest": "sprites/mn-f147/vibrant-20261104-v2/manifest.json"
+    },
+    {
+      "id": "MN_F148",
+      "manifest": "sprites/mn-f148/vibrant-20261104-v2/manifest.json"
+    },
+    {
+      "id": "MN_F149",
+      "manifest": "sprites/mn-f149/vibrant-20261104-v2/manifest.json"
+    },
+    {
+      "id": "MN_F150",
+      "manifest": "sprites/mn-f150/vibrant-20261104-v2/manifest.json"
+    },
+    {
+      "id": "MN_F151",
+      "manifest": "sprites/mn-f151/vibrant-20261104-v2/manifest.json"
+    },
+    {
+      "id": "MN_F152",
+      "manifest": "sprites/mn-f152/vibrant-20261104-v2/manifest.json"
+    },
+    {
+      "id": "MN_F153",
+      "manifest": "sprites/mn-f153/vibrant-20261104-v2/manifest.json"
+    },
+    {
+      "id": "MN_F154",
+      "manifest": "sprites/mn-f154/vibrant-20261104-v2/manifest.json"
+    },
+    {
+      "id": "MN_F155",
+      "manifest": "sprites/mn-f155/vibrant-20261104-v2/manifest.json"
+    },
+    {
+      "id": "MN_F156",
+      "manifest": "sprites/mn-f156/native-redesign-20261104-v4/manifest.json"
+    },
+    {
+      "id": "MN_F157",
+      "manifest": "sprites/mn-f157/vibrant-20261104-v2/manifest.json"
+    },
+    {
+      "id": "MN_F158",
+      "manifest": "sprites/mn-f158/vibrant-20261104-v2/manifest.json"
+    },
+    {
+      "id": "MN_F159",
+      "manifest": "sprites/mn-f159/vibrant-20261104-v2/manifest.json"
     }
   ]
 }

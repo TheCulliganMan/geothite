@@ -2,9 +2,9 @@
   "schema_version": 1,
   "status": "active-roster-curation",
   "scope": "Whole evolution families are retired from the active Northwoods Pok\u00e9dex. Keep all authoring records, generated renders, native outputs, archived inventories and previous website releases. Stable source IDs and app evolution-line numbers are unchanged. Active species numbers are repacked in master order, with pseudo-legendaries, legendaries and mythicals last.",
-  "source_species_count": 315,
+  "source_species_count": 345,
   "active_species_count": 225,
-  "active_family_count": 102,
+  "active_family_count": 99,
   "type_counts_before": {
     "BUG": 27,
     "DARK": 35,
@@ -26,24 +26,24 @@
     "WATER": 52
   },
   "type_counts_after": {
-    "BUG": 27,
-    "DARK": 23,
-    "DRAGON": 11,
-    "ELECTRIC": 15,
-    "FAIRY": 13,
-    "FIGHTING": 22,
+    "GRASS": 27,
+    "FAIRY": 18,
     "FIRE": 27,
-    "FLYING": 17,
-    "GHOST": 15,
-    "GRASS": 28,
-    "GROUND": 17,
-    "ICE": 19,
-    "NORMAL": 29,
-    "POISON": 20,
-    "PSYCHIC": 16,
-    "ROCK": 17,
     "STEEL": 23,
-    "WATER": 43
+    "WATER": 38,
+    "FIGHTING": 20,
+    "ROCK": 18,
+    "PSYCHIC": 17,
+    "BUG": 24,
+    "NORMAL": 24,
+    "GHOST": 18,
+    "ICE": 22,
+    "ELECTRIC": 18,
+    "DARK": 20,
+    "POISON": 16,
+    "DRAGON": 13,
+    "GROUND": 19,
+    "FLYING": 19
   },
   "retired_families": [
     {
@@ -261,22 +261,6 @@
       "reason": "Rejected by the user using the app evolution-line number."
     },
     {
-      "id": "MN_F088",
-      "app_line_number": 88,
-      "authority": "user",
-      "species_ids": [
-        "MN_189",
-        "MN_190",
-        "MN_191"
-      ],
-      "names": [
-        "Riffbit",
-        "Dynarill",
-        "Cascavolt"
-      ],
-      "reason": "Rejected by the user using the app evolution-line number."
-    },
-    {
       "id": "MN_F094",
       "app_line_number": 94,
       "authority": "user",
@@ -377,22 +361,6 @@
       "reason": "Ground wedge and leverage fighter repeat stronger auger-folklore and bracing concepts."
     },
     {
-      "id": "MN_F013",
-      "app_line_number": 13,
-      "authority": "user",
-      "species_ids": [
-        "MN_037",
-        "MN_038",
-        "MN_039"
-      ],
-      "names": [
-        "Sparkveil",
-        "Aurorill",
-        "Polarisma"
-      ],
-      "reason": "User rejected the weather families except Bobcast/Buoyostic and requested wildlife replacements."
-    },
-    {
       "id": "MN_F069",
       "app_line_number": 69,
       "authority": "user",
@@ -417,20 +385,6 @@
         "Icesnap",
         "Crickvolt",
         "Thundrift"
-      ],
-      "reason": "User rejected the weather families except Bobcast/Buoyostic and requested wildlife replacements."
-    },
-    {
-      "id": "MN_F080",
-      "app_line_number": 80,
-      "authority": "user",
-      "species_ids": [
-        "MN_174",
-        "MN_175"
-      ],
-      "names": [
-        "Loomlet",
-        "Inverveil"
       ],
       "reason": "User rejected the weather families except Bobcast/Buoyostic and requested wildlife replacements."
     },
@@ -580,24 +534,6 @@
       "date": "2026-10-27"
     },
     {
-      "id": "MN_F132",
-      "app_line_number": 132,
-      "authority": "user_requested_design_replacement",
-      "species_ids": [
-        "MN_291",
-        "MN_292"
-      ],
-      "names": [
-        "Mudnip",
-        "Bankmaw"
-      ],
-      "reason": "Replace ordinary snapping turtle with an integrated sundial-shell design.",
-      "replacement_families": [
-        "MN_F137"
-      ],
-      "date": "2026-10-27"
-    },
-    {
       "id": "MN_F022",
       "app_line_number": 22,
       "authority": "user_requested_design_replacement",
@@ -630,24 +566,6 @@
       "reason": "Reduce food repetition; replace flatbread with locking-anchor porcupine.",
       "replacement_families": [
         "MN_F135"
-      ],
-      "date": "2026-10-27"
-    },
-    {
-      "id": "MN_F035",
-      "app_line_number": 35,
-      "authority": "user_requested_design_replacement",
-      "species_ids": [
-        "MN_083",
-        "MN_084"
-      ],
-      "names": [
-        "Berryboo",
-        "Muffiend"
-      ],
-      "reason": "Reduce food repetition; sundew finger-trap preserves Grass/Dark coverage with stronger anatomy.",
-      "replacement_families": [
-        "MN_F142"
       ],
       "date": "2026-10-27"
     },
@@ -687,6 +605,332 @@
         "MN_F140"
       ],
       "date": "2026-10-27"
+    },
+    {
+      "id": "MN_F007",
+      "app_line_number": 7,
+      "authority": "user",
+      "date": "2026-11-02",
+      "species_ids": [
+        "MN_019",
+        "MN_020",
+        "MN_021"
+      ],
+      "names": [
+        "Stripillar",
+        "Giltalis",
+        "Regalarch"
+      ],
+      "reason": "User requested drop/remove/redo. All these terms mean archive; preserve source records and artwork."
+    },
+    {
+      "id": "MN_F030",
+      "app_line_number": 30,
+      "authority": "user",
+      "date": "2026-11-02",
+      "species_ids": [
+        "MN_073",
+        "MN_074"
+      ],
+      "names": [
+        "Spanlet",
+        "Liftruss"
+      ],
+      "reason": "User requested drop/remove/redo. All these terms mean archive; preserve source records and artwork."
+    },
+    {
+      "id": "MN_F040",
+      "app_line_number": 40,
+      "authority": "user",
+      "date": "2026-11-02",
+      "species_ids": [
+        "MN_091"
+      ],
+      "names": [
+        "Goosnide"
+      ],
+      "reason": "User requested drop/remove/redo. All these terms mean archive; preserve source records and artwork."
+    },
+    {
+      "id": "MN_F042",
+      "app_line_number": 42,
+      "authority": "user",
+      "date": "2026-11-02",
+      "species_ids": [
+        "MN_093"
+      ],
+      "names": [
+        "Tiltawisp"
+      ],
+      "reason": "User requested drop/remove/redo. All these terms mean archive; preserve source records and artwork."
+    },
+    {
+      "id": "MN_F046",
+      "app_line_number": 46,
+      "authority": "user",
+      "date": "2026-11-02",
+      "species_ids": [
+        "MN_097"
+      ],
+      "names": [
+        "Pepivern"
+      ],
+      "reason": "User requested drop/remove/redo. All these terms mean archive; preserve source records and artwork."
+    },
+    {
+      "id": "MN_F049",
+      "app_line_number": 49,
+      "authority": "user",
+      "date": "2026-11-02",
+      "species_ids": [
+        "MN_100"
+      ],
+      "names": [
+        "Icemyth"
+      ],
+      "reason": "User requested drop/remove/redo. All these terms mean archive; preserve source records and artwork."
+    },
+    {
+      "id": "MN_F057",
+      "app_line_number": 57,
+      "authority": "user",
+      "date": "2026-11-02",
+      "species_ids": [
+        "MN_122",
+        "MN_123",
+        "MN_124"
+      ],
+      "names": [
+        "Dustip",
+        "Gustilt",
+        "Loessurge"
+      ],
+      "reason": "User requested drop/remove/redo. All these terms mean archive; preserve source records and artwork."
+    },
+    {
+      "id": "MN_F079",
+      "app_line_number": 79,
+      "authority": "user",
+      "date": "2026-11-02",
+      "species_ids": [
+        "MN_172",
+        "MN_173"
+      ],
+      "names": [
+        "Bobcast",
+        "Buoyostic"
+      ],
+      "reason": "User requested drop/remove/redo. All these terms mean archive; preserve source records and artwork."
+    },
+    {
+      "id": "MN_F112",
+      "app_line_number": 112,
+      "authority": "user",
+      "date": "2026-11-02",
+      "species_ids": [
+        "MN_245",
+        "MN_246"
+      ],
+      "names": [
+        "Skirrit",
+        "Ventactor"
+      ],
+      "reason": "User requested drop/remove/redo. All these terms mean archive; preserve source records and artwork."
+    },
+    {
+      "id": "MN_F114",
+      "app_line_number": 114,
+      "authority": "user",
+      "date": "2026-11-02",
+      "species_ids": [
+        "MN_248"
+      ],
+      "names": [
+        "Strandrak"
+      ],
+      "reason": "User requested drop/remove/redo. All these terms mean archive; preserve source records and artwork."
+    },
+    {
+      "id": "MN_F116",
+      "app_line_number": 116,
+      "authority": "user",
+      "date": "2026-11-02",
+      "species_ids": [
+        "MN_250"
+      ],
+      "names": [
+        "Flarkindle"
+      ],
+      "reason": "User requested drop/remove/redo. All these terms mean archive; preserve source records and artwork."
+    },
+    {
+      "id": "MN_F117",
+      "app_line_number": 117,
+      "authority": "user",
+      "date": "2026-11-02",
+      "species_ids": [
+        "MN_251",
+        "MN_252",
+        "MN_266"
+      ],
+      "names": [
+        "Winkfin",
+        "Glaciris",
+        "Tipulord"
+      ],
+      "reason": "User requested drop/remove/redo. All these terms mean archive; preserve source records and artwork."
+    },
+    {
+      "id": "MN_F119",
+      "app_line_number": 119,
+      "authority": "user",
+      "date": "2026-11-02",
+      "species_ids": [
+        "MN_255",
+        "MN_256"
+      ],
+      "names": [
+        "Whirlnut",
+        "Samurrel"
+      ],
+      "reason": "User requested drop/remove/redo. All these terms mean archive; preserve source records and artwork."
+    },
+    {
+      "id": "MN_F130",
+      "app_line_number": 130,
+      "authority": "user",
+      "date": "2026-11-02",
+      "species_ids": [
+        "MN_287",
+        "MN_288"
+      ],
+      "names": [
+        "Rivvit",
+        "Slidewake"
+      ],
+      "reason": "User requested drop/remove/redo. All these terms mean archive; preserve source records and artwork."
+    },
+    {
+      "id": "MN_F136",
+      "app_line_number": 136,
+      "authority": "user",
+      "date": "2026-11-02",
+      "species_ids": [
+        "MN_300",
+        "MN_301",
+        "MN_302"
+      ],
+      "names": [
+        "Densy",
+        "Dozebear",
+        "Denumbra"
+      ],
+      "reason": "User requested drop/remove/redo. All these terms mean archive; preserve source records and artwork."
+    },
+    {
+      "id": "MN_F137",
+      "app_line_number": 137,
+      "authority": "user",
+      "date": "2026-11-02",
+      "species_ids": [
+        "MN_303",
+        "MN_304"
+      ],
+      "names": [
+        "Ticklet",
+        "Solstort"
+      ],
+      "reason": "User requested drop/remove/redo. All these terms mean archive; preserve source records and artwork."
+    },
+    {
+      "id": "MN_F138",
+      "app_line_number": 138,
+      "authority": "user",
+      "date": "2026-11-02",
+      "species_ids": [
+        "MN_305",
+        "MN_306",
+        "MN_307"
+      ],
+      "names": [
+        "Peckit",
+        "Notchbill",
+        "Gougecrest"
+      ],
+      "reason": "User requested drop/remove/redo. All these terms mean archive; preserve source records and artwork."
+    },
+    {
+      "id": "MN_F140",
+      "app_line_number": 140,
+      "authority": "user",
+      "date": "2026-11-02",
+      "species_ids": [
+        "MN_310",
+        "MN_311"
+      ],
+      "names": [
+        "Gillpup",
+        "Mudmender"
+      ],
+      "reason": "User requested drop/remove/redo. All these terms mean archive; preserve source records and artwork."
+    },
+    {
+      "id": "MN_F144",
+      "app_line_number": 144,
+      "authority": "user",
+      "date": "2026-11-04",
+      "species_ids": [
+        "MN_317"
+      ],
+      "names": [
+        "Driftile"
+      ],
+      "reason": "User requested Drift Tile be redone entirely; no duckweed/sliding-puzzle carryover required."
+    },
+    {
+      "id": "MN_F142",
+      "app_line_number": 142,
+      "authority": "user",
+      "date": "2026-11-04",
+      "species_ids": [
+        "MN_314",
+        "MN_315"
+      ],
+      "names": [
+        "Dewbit",
+        "Glisnare"
+      ],
+      "reason": "User dislikes Dubit and Gilsnare (Dewbit/Glisnare); full concept replacement, any typing/theme authorized, Minnesota foundation required."
+    },
+    {
+      "id": "MN_F078",
+      "app_line_number": 78,
+      "authority": "user",
+      "date": "2026-11-04",
+      "species_ids": [
+        "MN_169",
+        "MN_170"
+      ],
+      "names": [
+        "Knothuck",
+        "Boughlash"
+      ],
+      "reason": "User correction: remove the non-turtle lines entirely, not only a final stage. Preserve original identities and all art."
+    },
+    {
+      "id": "MN_F082",
+      "app_line_number": 82,
+      "authority": "user",
+      "date": "2026-11-04",
+      "species_ids": [
+        "MN_178",
+        "MN_179"
+      ],
+      "names": [
+        "Augrub",
+        "Heliknock"
+      ],
+      "reason": "User correction: remove the non-turtle lines entirely, not only a final stage. Preserve original identities and all art."
     }
   ],
   "removed_evolutions": [
@@ -944,13 +1188,720 @@
           "white_detail_min_samples": 4
         }
       ]
+    },
+    {
+      "id": "MN_171",
+      "family_id": "MN_F078",
+      "name": "Agropummel",
+      "authority": "user",
+      "date": "2026-11-04",
+      "reason": "User explicitly requested removal from the active Pokedex. Preserve original design and artwork.",
+      "member": {
+        "id": "MN_171",
+        "name": "Agropummel",
+        "types": [
+          "DARK",
+          "FIGHTING"
+        ],
+        "stage": 3,
+        "evolves_to": null
+      },
+      "profile": {
+        "id": "MN_171",
+        "classification": "Branch Cast",
+        "height_inches": 88,
+        "weight_tenths_lb": 2200,
+        "dex_pages": [
+          "It attacks those @ who damage old @ pine trees.",
+          "A heavy branch @ often falls @ before it is seen."
+        ],
+        "base_stats": {
+          "hp": 85,
+          "attack": 125,
+          "defense": 80,
+          "speed": 85,
+          "special_attack": 55,
+          "special_defense": 85
+        },
+        "catch_rate": 45,
+        "base_exp": 216,
+        "gender_ratio": 127,
+        "hatch_cycles": 20,
+        "growth_rate": "GROWTH_MEDIUM_SLOW",
+        "egg_groups": [
+          "EGG_GROUND",
+          "EGG_HUMANSHAPE"
+        ],
+        "evolution": null,
+        "held_items": [
+          null,
+          null
+        ],
+        "menu_icon": "ICON_MONSTER",
+        "footprint_species": "AIPOM",
+        "cry": {
+          "cry": "CRY_AIPOM",
+          "pitch": 0,
+          "length": 176
+        },
+        "shiny_rgb5": [
+          [
+            8,
+            19,
+            11
+          ],
+          [
+            9,
+            7,
+            5
+          ]
+        ],
+        "level_moves": [
+          [
+            1,
+            "SCRATCH"
+          ],
+          [
+            1,
+            "LEER"
+          ],
+          [
+            1,
+            "BARRAGE"
+          ],
+          [
+            1,
+            "FOCUS_ENERGY"
+          ],
+          [
+            17,
+            "PURSUIT"
+          ],
+          [
+            21,
+            "ROCK_THROW"
+          ],
+          [
+            26,
+            "FAINT_ATTACK"
+          ],
+          [
+            33,
+            "SCARY_FACE"
+          ],
+          [
+            36,
+            "TAKE_DOWN"
+          ],
+          [
+            40,
+            "BEAT_UP"
+          ],
+          [
+            42,
+            "VITAL_THROW"
+          ],
+          [
+            44,
+            "CROSS_CHOP"
+          ],
+          [
+            48,
+            "CRUNCH"
+          ],
+          [
+            53,
+            "REVERSAL"
+          ]
+        ],
+        "tmhm_moves": [
+          "THIEF",
+          "DYNAMICPUNCH",
+          "ROCK_SMASH",
+          "STRENGTH",
+          "HEADBUTT",
+          "SWAGGER",
+          "ENDURE",
+          "PROTECT",
+          "REST"
+        ],
+        "egg_moves": [
+          "MEGA_PUNCH",
+          "COUNTER",
+          "SLASH"
+        ]
+      },
+      "prior_family": {
+        "id": "MN_F078",
+        "region": "north_shore_cutover",
+        "theme": "Agropelter logging-camp folklore becomes a hollow-bodied branch flinger whose bowed forearms mature into opposing spring limbs.",
+        "members": [
+          {
+            "id": "MN_169",
+            "name": "Knothuck",
+            "types": [
+              "DARK"
+            ],
+            "stage": 1,
+            "evolves_to": "MN_170"
+          },
+          {
+            "id": "MN_170",
+            "name": "Boughlash",
+            "types": [
+              "DARK",
+              "FIGHTING"
+            ],
+            "stage": 2,
+            "evolves_to": "MN_171"
+          },
+          {
+            "id": "MN_171",
+            "name": "Agropummel",
+            "types": [
+              "DARK",
+              "FIGHTING"
+            ],
+            "stage": 3,
+            "evolves_to": null
+          }
+        ],
+        "evolution_design": {
+          "regional_evidence": "MNHS records the agropelter hiding in hollow trees near trails and throwing dead branches; accounts describe a small mean face but leave its overall body uncertain.",
+          "original_invention": "The knotted seed shape, hollow chest, spring forearms and three-stage anatomy are original inventions, not an illustration claimed from the historical source.",
+          "body_growth": [
+            {
+              "species_id": "MN_169",
+              "body": "A hollow knot creature with a tiny face peering from one deep side opening; two bent branch forearms fold below the round chest and root toes grip the trail edge.",
+              "silhouette": "Round hollow knot, small bent arms and two root feet."
+            },
+            {
+              "species_id": "MN_170",
+              "body": "The central knot splits vertically into a hollow wooden ribcage. One large bent arm curves above the shoulder and the other braces forward, producing an uneven ready-to-throw pose.",
+              "silhouette": "Open split trunk with one raised bow-arm and one long bracing arm."
+            },
+            {
+              "species_id": "MN_171",
+              "body": "A powerful squat branch-spring brawler with two enormous bowed arms attached by round growth joints, a hollow barrel chest and a low face tucked under a thick brow. Short stump legs keep the silhouette grounded.",
+              "silhouette": "Wide low brawler framed by two great asymmetric bowed arms; one large chest hollow, no held club."
+            }
+          ]
+        },
+        "silhouette_concept": "Round hollow knot, small bent arms and two root feet. \u2192 Open split trunk with one raised bow-arm and one long bracing arm. \u2192 Wide low brawler framed by two great asymmetric bowed arms; one large chest hollow, no held club.",
+        "habitat": "Second-growth hollow trees above North Shore portage trails.",
+        "proposed_routes": [
+          {
+            "id": "MN_R12",
+            "placement": "Windthrow district forest edge and optional deadwood pocket, keeping the navigation path readable.",
+            "status": "encounter proposal only; no map or story mutation"
+          }
+        ],
+        "sources": [
+          {
+            "title": "Marjorie Edgar, Imaginary Animals of Northern Minnesota, Minnesota History21(4),1940,pp353\u2013356",
+            "url": "https://storage.googleapis.com/mnhs-org-support/mn_history_articles/21/v21i04p353-356.pdf",
+            "supports": "Historical logging-camp tall tales collected on the North Shore; each family notes the limited source anatomy.",
+            "source_kind": "primary historical field recollection"
+          }
+        ],
+        "nonduplication": "Unlike haunted axeF017, there is no blade or possessed tool; unlike F068 scarecrow, no human figure or crop guardian. Power comes from grown branch springs and a hollow chest.",
+        "classification": "ordinary",
+        "design_lock": "locked by root; first153identities fixed",
+        "sprite_constraints": "Native56x56 front full body facing left;48x48 close rear portrait facing upper-right. Four colors per species, individually planned after design lock. Large solid anatomical landmarks, stepped black exterior anchors, sparse internal marks; no gradients, particles or texture-dependent identity.",
+        "design_status": "root-reviewed-locked-for-art"
+      }
     }
   ],
   "evolution_mix": {
-    "three_stage_families": 41,
-    "two_stage_families": 41,
-    "single_stage_species": 20,
-    "legendary_species": 7,
-    "mythical_species": 2
-  }
+    "three_stage_families": 43,
+    "two_stage_families": 40,
+    "single_stage_species": 16
+  },
+  "restored_families": [
+    {
+      "id": "MN_F088",
+      "names": [
+        "Riffbit",
+        "Dynarill",
+        "Cascavolt"
+      ],
+      "authority": "user",
+      "date": "2026-11-02",
+      "reason": "Explicitly restore before applying the new archive requests.",
+      "prior_retirement": {
+        "id": "MN_F088",
+        "app_line_number": 88,
+        "authority": "user",
+        "species_ids": [
+          "MN_189",
+          "MN_190",
+          "MN_191"
+        ],
+        "names": [
+          "Riffbit",
+          "Dynarill",
+          "Cascavolt"
+        ],
+        "reason": "Rejected by the user using the app evolution-line number."
+      }
+    },
+    {
+      "id": "MN_F013",
+      "names": [
+        "Sparkveil",
+        "Aurorill",
+        "Polarisma"
+      ],
+      "authority": "user",
+      "date": "2026-11-02",
+      "reason": "Explicitly restore before applying the new archive requests.",
+      "prior_retirement": {
+        "id": "MN_F013",
+        "app_line_number": 13,
+        "authority": "user",
+        "species_ids": [
+          "MN_037",
+          "MN_038",
+          "MN_039"
+        ],
+        "names": [
+          "Sparkveil",
+          "Aurorill",
+          "Polarisma"
+        ],
+        "reason": "User rejected the weather families except Bobcast/Buoyostic and requested wildlife replacements."
+      }
+    },
+    {
+      "id": "MN_F080",
+      "names": [
+        "Loomlet",
+        "Inverveil"
+      ],
+      "authority": "user",
+      "date": "2026-11-02",
+      "reason": "Explicitly restore before applying the new archive requests.",
+      "prior_retirement": {
+        "id": "MN_F080",
+        "app_line_number": 80,
+        "authority": "user",
+        "species_ids": [
+          "MN_174",
+          "MN_175"
+        ],
+        "names": [
+          "Loomlet",
+          "Inverveil"
+        ],
+        "reason": "User rejected the weather families except Bobcast/Buoyostic and requested wildlife replacements."
+      }
+    },
+    {
+      "id": "MN_F132",
+      "names": [
+        "Mudnip",
+        "Bankmaw"
+      ],
+      "authority": "user",
+      "date": "2026-11-02",
+      "reason": "Explicitly restore before applying the new archive requests.",
+      "prior_retirement": {
+        "id": "MN_F132",
+        "app_line_number": 132,
+        "authority": "user_requested_design_replacement",
+        "species_ids": [
+          "MN_291",
+          "MN_292"
+        ],
+        "names": [
+          "Mudnip",
+          "Bankmaw"
+        ],
+        "reason": "Replace ordinary snapping turtle with an integrated sundial-shell design.",
+        "replacement_families": [
+          "MN_F137"
+        ],
+        "date": "2026-10-27"
+      }
+    },
+    {
+      "id": "MN_F035",
+      "names": [
+        "Berryboo",
+        "Muffiend"
+      ],
+      "authority": "user",
+      "date": "2026-11-02",
+      "reason": "Explicitly restore before applying the new archive requests.",
+      "prior_retirement": {
+        "id": "MN_F035",
+        "app_line_number": 35,
+        "authority": "user_requested_design_replacement",
+        "species_ids": [
+          "MN_083",
+          "MN_084"
+        ],
+        "names": [
+          "Berryboo",
+          "Muffiend"
+        ],
+        "reason": "Reduce food repetition; sundew finger-trap preserves Grass/Dark coverage with stronger anatomy.",
+        "replacement_families": [
+          "MN_F142"
+        ],
+        "date": "2026-10-27"
+      }
+    }
+  ],
+  "restored_evolutions": [
+    {
+      "id": "MN_156",
+      "name": "Contrakett",
+      "family_id": "MN_F073",
+      "authority": "user",
+      "date": "2026-11-04",
+      "reason": "User clarified the turtle line stays; redo/retype the third turtle sprite rather than remove it.",
+      "prior_archive": {
+        "id": "MN_156",
+        "family_id": "MN_F073",
+        "name": "Contrakett",
+        "authority": "user",
+        "date": "2026-11-02",
+        "reason": "Redo Contakett means archive Contrakett. Only the named final stage is removed; Hissip and Crosspout remain.",
+        "member": {
+          "id": "MN_156",
+          "name": "Contrakett",
+          "types": [
+            "FIRE",
+            "DARK"
+          ],
+          "stage": 3,
+          "evolves_to": null
+        },
+        "profile": {
+          "id": "MN_156",
+          "classification": "False Trail",
+          "height_inches": 62,
+          "weight_tenths_lb": 1630,
+          "dex_pages": [
+            "Its tracks point @ in opposite @ directions.",
+            "People following @ them usually @ walk in circles."
+          ],
+          "base_stats": {
+            "hp": 85,
+            "attack": 100,
+            "defense": 85,
+            "speed": 90,
+            "special_attack": 90,
+            "special_defense": 75
+          },
+          "catch_rate": 45,
+          "base_exp": 220,
+          "gender_ratio": 127,
+          "hatch_cycles": 20,
+          "growth_rate": "GROWTH_MEDIUM_SLOW",
+          "egg_groups": [
+            "EGG_MONSTER",
+            "EGG_MINERAL"
+          ],
+          "evolution": null,
+          "held_items": [
+            null,
+            null
+          ],
+          "menu_icon": "ICON_MONSTER",
+          "footprint_species": "MAGCARGO",
+          "cry": {
+            "cry": "CRY_MAGCARGO",
+            "pitch": 0,
+            "length": 176
+          },
+          "shiny_rgb5": [
+            [
+              7,
+              29,
+              12
+            ],
+            [
+              10,
+              8,
+              6
+            ]
+          ],
+          "level_moves": [
+            [
+              1,
+              "POUND"
+            ],
+            [
+              1,
+              "LEER"
+            ],
+            [
+              1,
+              "EMBER"
+            ],
+            [
+              1,
+              "SMOKESCREEN"
+            ],
+            [
+              17,
+              "PURSUIT"
+            ],
+            [
+              21,
+              "SWAGGER"
+            ],
+            [
+              26,
+              "FLAME_WHEEL"
+            ],
+            [
+              29,
+              "SCARY_FACE"
+            ],
+            [
+              33,
+              "FAINT_ATTACK"
+            ],
+            [
+              36,
+              "FIRE_SPIN"
+            ],
+            [
+              40,
+              "COUNTER"
+            ],
+            [
+              44,
+              "FLAMETHROWER"
+            ],
+            [
+              48,
+              "CRUNCH"
+            ],
+            [
+              53,
+              "FIRE_BLAST"
+            ]
+          ],
+          "tmhm_moves": [
+            "FIRE_BLAST",
+            "FLAMETHROWER",
+            "SUNNY_DAY",
+            "THIEF",
+            "SWAGGER",
+            "HEADBUTT",
+            "ENDURE",
+            "PROTECT",
+            "REST"
+          ],
+          "egg_moves": [
+            "MIRROR_MOVE",
+            "ENCORE",
+            "AMNESIA"
+          ]
+        },
+        "prior_parent": {
+          "id": "MN_155",
+          "name": "Crosspout",
+          "types": [
+            "FIRE",
+            "DARK"
+          ],
+          "stage": 2,
+          "evolves_to": "MN_156"
+        },
+        "prior_parent_evolution": {
+          "method": "LEVEL",
+          "level": 40
+        },
+        "prior_order_entry": {
+          "id": "MN_156",
+          "number": 205
+        },
+        "evolution_design": {
+          "regional_evidence": "A North Shore tall tale describes a hissing spout-mouth creature whose odd feet leave snowshoe tracks pointing in opposite directions.",
+          "original_invention": "Kettle-like chest, pressure anatomy and the precise three-stage shapes below are original design inventions, not a claimed historical illustration.",
+          "body_growth": [
+            {
+              "species_id": "MN_154",
+              "body": "Small squat warm-bodied sprite; short spout muzzle, lid-like brow, two little oval feet with opposite toe directions. Compact alert face.",
+              "silhouette": "Low teardrop chest, one projecting muzzle, two deliberately mismatched foot tips; no separate held kettle."
+            },
+            {
+              "species_id": "MN_155",
+              "body": "Chest expands into a rounded pressure body, muzzle lengthens, and the two feet broaden into opposed snowshoe paddles. One short steam curl marks the mouth.",
+              "silhouette": "Round chest above two long low ovals pointing away from one another; the feet become the unmistakable family signature."
+            },
+            {
+              "species_id": "MN_156",
+              "body": "Very low horizontal pressure beast: long continuous arched spine, longer forward spout head, two folded short forearms beneath its chest, and enormous opposed snowshoe feet at opposite ends. Three vent slits remain on the chest.",
+              "silhouette": "Long low arch nearly twice as wide as tall, broad foot ovals at the two ends with one wide dark opening each; crouched pivoting anatomy changes the upright middle-stage silhouette."
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "promoted_families": [
+    {
+      "id": "MN_F146",
+      "names": [
+        "Snugslug",
+        "Mantlsnail",
+        "Cloisterra"
+      ],
+      "date": "2026-11-04",
+      "authority": "user",
+      "reason": "2026-11-04 user: Tactunnel needs work. It is not a good sprite. Fix and then promote candidates.",
+      "source_art_manifest": "sprites/mn-f146/vibrant-20261104-v2/manifest.json"
+    },
+    {
+      "id": "MN_F147",
+      "names": [
+        "Flurrit",
+        "Hareskift"
+      ],
+      "date": "2026-11-04",
+      "authority": "user",
+      "reason": "2026-11-04 user: Tactunnel needs work. It is not a good sprite. Fix and then promote candidates.",
+      "source_art_manifest": "sprites/mn-f147/vibrant-20261104-v2/manifest.json"
+    },
+    {
+      "id": "MN_F148",
+      "names": [
+        "Owletch",
+        "Hollowl",
+        "Gloamowl"
+      ],
+      "date": "2026-11-04",
+      "authority": "user",
+      "reason": "2026-11-04 user: Tactunnel needs work. It is not a good sprite. Fix and then promote candidates.",
+      "source_art_manifest": "sprites/mn-f148/vibrant-20261104-v2/manifest.json"
+    },
+    {
+      "id": "MN_F149",
+      "names": [
+        "Bitterry"
+      ],
+      "date": "2026-11-04",
+      "authority": "user",
+      "reason": "2026-11-04 user: Tactunnel needs work. It is not a good sprite. Fix and then promote candidates.",
+      "source_art_manifest": "sprites/mn-f149/vibrant-20261104-v2/manifest.json"
+    },
+    {
+      "id": "MN_F150",
+      "names": [
+        "Cubluff",
+        "Talursa"
+      ],
+      "date": "2026-11-04",
+      "authority": "user",
+      "reason": "2026-11-04 user: Tactunnel needs work. It is not a good sprite. Fix and then promote candidates.",
+      "source_art_manifest": "sprites/mn-f150/vibrant-20261104-v2/manifest.json"
+    },
+    {
+      "id": "MN_F151",
+      "names": [
+        "Trailpup",
+        "Pathfang",
+        "Waywolf"
+      ],
+      "date": "2026-11-04",
+      "authority": "user",
+      "reason": "2026-11-04 user: Tactunnel needs work. It is not a good sprite. Fix and then promote candidates.",
+      "source_art_manifest": "sprites/mn-f151/vibrant-20261104-v2/manifest.json"
+    },
+    {
+      "id": "MN_F152",
+      "names": [
+        "Hushbat",
+        "Deepulse",
+        "Noctector"
+      ],
+      "date": "2026-11-04",
+      "authority": "user",
+      "reason": "2026-11-04 user: Tactunnel needs work. It is not a good sprite. Fix and then promote candidates.",
+      "source_art_manifest": "sprites/mn-f152/vibrant-20261104-v2/manifest.json"
+    },
+    {
+      "id": "MN_F153",
+      "names": [
+        "Burrowbill",
+        "Bankwing"
+      ],
+      "date": "2026-11-04",
+      "authority": "user",
+      "reason": "2026-11-04 user: Tactunnel needs work. It is not a good sprite. Fix and then promote candidates.",
+      "source_art_manifest": "sprites/mn-f153/vibrant-20261104-v2/manifest.json"
+    },
+    {
+      "id": "MN_F154",
+      "names": [
+        "Snowpip",
+        "Squallfin",
+        "Whitewhirl"
+      ],
+      "date": "2026-11-04",
+      "authority": "user",
+      "reason": "2026-11-04 user: Tactunnel needs work. It is not a good sprite. Fix and then promote candidates.",
+      "source_art_manifest": "sprites/mn-f154/vibrant-20261104-v2/manifest.json"
+    },
+    {
+      "id": "MN_F155",
+      "names": [
+        "Skimnymph",
+        "Rimefoil"
+      ],
+      "date": "2026-11-04",
+      "authority": "user",
+      "reason": "2026-11-04 user: Tactunnel needs work. It is not a good sprite. Fix and then promote candidates.",
+      "source_art_manifest": "sprites/mn-f155/vibrant-20261104-v2/manifest.json"
+    },
+    {
+      "id": "MN_F156",
+      "names": [
+        "Tactunnel"
+      ],
+      "date": "2026-11-04",
+      "authority": "user",
+      "reason": "2026-11-04 user: Tactunnel needs work. It is not a good sprite. Fix and then promote candidates.",
+      "source_art_manifest": "sprites/mn-f156/native-redesign-20261104-v4/manifest.json"
+    },
+    {
+      "id": "MN_F157",
+      "names": [
+        "Rekink",
+        "Revertail"
+      ],
+      "date": "2026-11-04",
+      "authority": "user",
+      "reason": "2026-11-04 user: Tactunnel needs work. It is not a good sprite. Fix and then promote candidates.",
+      "source_art_manifest": "sprites/mn-f157/vibrant-20261104-v2/manifest.json"
+    },
+    {
+      "id": "MN_F158",
+      "names": [
+        "Pendulop"
+      ],
+      "date": "2026-11-04",
+      "authority": "user",
+      "reason": "2026-11-04 user: Tactunnel needs work. It is not a good sprite. Fix and then promote candidates.",
+      "source_art_manifest": "sprites/mn-f158/vibrant-20261104-v2/manifest.json"
+    },
+    {
+      "id": "MN_F159",
+      "names": [
+        "Settkit",
+        "Braclaw",
+        "Riftmaul"
+      ],
+      "date": "2026-11-04",
+      "authority": "user",
+      "reason": "2026-11-04 user: Tactunnel needs work. It is not a good sprite. Fix and then promote candidates.",
+      "source_art_manifest": "sprites/mn-f159/vibrant-20261104-v2/manifest.json"
+    }
+  ]
 }

@@ -251,8 +251,15 @@ def review_sprites(catalog, require_all, registry=None, publish=True):
         require(set(views) == {(sid,v) for sid in members for v in ('front','back')}, f'{fid}: registered family requires every front AND back')
         review = manifest.get('visual_review',{})
         individual_palettes = len({tuple(p) for p in species_palettes.values()}) == len(members)
-        current_outline = outline_profiles == {'source-contour-v1'}
-        reviewed = current_outline and review.get('outline_profile') == 'source-contour-v1' and individual_palettes and manifest.get('back_framing') == 'gen2-close-rear-portrait' and review.get('status') == 'reviewed' and review.get('sheet_sha256') == hashlib.sha256((out/review_sheet).read_bytes()).hexdigest()
+        # A reviewed replacement may deliberately retain an approved older stage.
+        # Require the explicit mixed review marker and both actual export profiles;
+        # this does not credit all-solid or unknown contour output as current art.
+        expected_outline = {
+            frozenset({'source-contour-v1'}): 'source-contour-v1',
+            frozenset({'source-contour-v1', 'solid-exterior-v1'}): 'mixed-source-solid-v1',
+        }.get(frozenset(outline_profiles))
+        current_outline = expected_outline is not None and review.get('outline_profile') == expected_outline
+        reviewed = current_outline and individual_palettes and manifest.get('back_framing') == 'gen2-close-rear-portrait' and review.get('status') == 'reviewed' and review.get('sheet_sha256') == hashlib.sha256((out/review_sheet).read_bytes()).hexdigest()
         if reviewed:
             completed.update(members)
         family_views[fid] = (reviewed,len(members),individual_palettes,current_outline)

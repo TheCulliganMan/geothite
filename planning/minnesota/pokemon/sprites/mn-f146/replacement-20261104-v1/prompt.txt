@@ -1,0 +1,16 @@
+Use case: stylized-concept. Asset type: native Game Boy Color creature battle-sprite sheet for Geothite Northstar, NOT concept illustration.
+REFERENCE ROLES: supplied native Choirbog and Burroot sheets are accepted PIXEL RENDERING references only, never copy their anatomy. Original starter line is progression/pose reference only.
+Create ONE sheet with 3 columns and TWO rows. Top row: FRONT full creature of each evolution in order. Bottom row: corresponding BACK close rear shoulder/head portrait, cropped at lower body as original Crystal battle backs. Same species anatomy in both views. Pure WHITE empty paper, no text, labels, shadows, ground, UI or dividers. Each isolated view has ample gutters and owns its entire cell.
+CRITICAL NATIVE PIXEL BUDGET: design every front as actual56x56 logical pixels (small stages occupy32-38px; middle42-46px; adult48-52px), and every back as actual48x48 logical pixels, then enlarge with strictly nearest-neighbor square pixel blocks. DO NOT draw a detailed high-res illustration and shrink it. Faces and eye boundaries must exist as intentional native pixels. Logical pixel blocks of uniform scale across the sheet. Hard square steps, no smooth outline, antialias, vector curves, gradients or painted texture.
+MANDATORY FACING: FRONT head, gaze, muzzle and body all face diagonally DOWN-LEFT toward the opponent in the lower-left of a battle. BACK head/gaze face UP-RIGHT toward enemy at upper-right, close rear view. Not horizontally left and not front art mirrored.
+FOUR COLORS PER SPECIES ONLY, shared front/back. Palettes:
+Snugslug: #FFFFFF, #CEC694, #638484, #000000
+Mantlsnail: #FFFFFF, #C6B584, #6B848C, #000000
+Cloisterra: #FFFFFF, #BDBD94, #527B84, #000000
+USE DITHERING to model round volume using these 3-4 colors: broad lit/midtone/shadow planes joined by curved bands of25% paired pixels,50% checker and75% shadow. Dark contact seams under overlapping parts, meaningful volume, not flat color masses with glints. Sparse white highlights confined to body forms away from eye sockets. TWO distinct eye whites, dark pupils and continuous BLACK boundaries; two-pixel dark buffer where needed. Keep dithering OUT of eye whites/socket boundaries. No giant generic faces. Creature anatomy and characteristic proportions, NO human limbs/hands, furry people, uniforms, clothes or carried props.
+Family theme: Woodland snail + Living sanctuary.
+Stage designs:
+Snugslug: tiny soft woodland snail with TWO short rounded eye-stalks, squat folded foot and a low oval limestone shell, whose thick forward-curled lip shelters the head like a small alcove. One bold curl seam; no castle.
+Mantlsnail: longer slug head and forward foot, crescent-curled shell opening around an empty dark side alcove, a thick scalloped mantle skirt and two separate short eye stalks. Shell grows in horizontal depth, not stacked towers.
+Cloisterra: broad low adult snail with a swept hood shell, two deep separated shelter recesses formed by its own shell lip and a trailing curled foot; shy small face reaches from under the hood. Shell is a living rounded sanctuary, NOT Fortigard-like agate/shields/castle.
+Make each evolution change silhouette, posture and anatomical proportions; don't merely enlarge the first. Preserve the SAME base and theme throughout. Final output is a clean compact PIXEL-ART production sheet.

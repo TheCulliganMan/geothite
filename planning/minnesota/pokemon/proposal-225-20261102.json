@@ -1,0 +1,259 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-02",
+  "status": "proposal-only-not-active-roster",
+  "active_species_count": 201,
+  "proposed_addition_count": 24,
+  "proposed_total": 225,
+  "preferred_or_requested_count": 9,
+  "new_candidate_count": 15,
+  "scope": "No source IDs allocated, archived families restored, sprites generated, runtime packs changed or releases deployed by this proposal. Individual designs and working names require selection.",
+  "pending_existing_type_changes": {
+    "MN_204": [
+      "ROCK",
+      "PSYCHIC"
+    ],
+    "MN_107": [
+      "BUG",
+      "GROUND"
+    ],
+    "MN_101": [
+      "STEEL"
+    ],
+    "MN_102": [
+      "STEEL"
+    ],
+    "MN_103": [
+      "STEEL"
+    ]
+  },
+  "families": [
+    {
+      "proposal_id": "P01",
+      "status": "preferred-direction",
+      "working_names": [
+        "Snugslug",
+        "Mantlesnail",
+        "Cloisterra"
+      ],
+      "types": [
+        "ROCK",
+        "FAIRY"
+      ],
+      "stage_count": 3,
+      "base": "Woodland snail",
+      "secondary_theme": "Living sanctuary",
+      "evolution_design": "A small sheltering shell develops protected chambers and a broad enclosing lip. Preserve obvious snail anatomy; do not repeat agate crystals or fortress shields."
+    },
+    {
+      "proposal_id": "P02",
+      "status": "preferred-direction",
+      "working_names": [
+        "Flurrit",
+        "Hareskift"
+      ],
+      "types": [
+        "ICE",
+        "FAIRY"
+      ],
+      "stage_count": 2,
+      "base": "Snowshoe hare",
+      "secondary_theme": "Disappearing winter tracks",
+      "evolution_design": "Broad sweeping paws erase its trail; layered fur develops into a shifting drift-shaped outline. Keep the two-stage arrangement provisional."
+    },
+    {
+      "proposal_id": "P03",
+      "status": "preferred-direction",
+      "working_names": [
+        "Owletch",
+        "Hollowl",
+        "Gloamowl"
+      ],
+      "types": [
+        "GHOST",
+        "FLYING"
+      ],
+      "stage_count": 3,
+      "base": "Barred owl",
+      "secondary_theme": "Negative space between forest branches",
+      "evolution_design": "Broken plumage patterns become openings in an owl silhouette; the final stage resembles a bird-shaped absence in northern woods."
+    },
+    {
+      "proposal_id": "P04",
+      "status": "requested-new-species",
+      "working_names": [
+        "Bitterry"
+      ],
+      "types": [
+        "DARK",
+        "POISON"
+      ],
+      "stage_count": 1,
+      "base": "Forest berry shrub",
+      "secondary_theme": "Deceptive warning berries",
+      "evolution_design": "A small woody berry-cluster creature displays bright decoy berries around a concealed stern face. Fictional poisonous lure powers; a living plant, with no dough, baking or food-container anatomy."
+    },
+    {
+      "proposal_id": "P05",
+      "status": "new-proposal",
+      "working_names": [
+        "Cubluff",
+        "Talursa"
+      ],
+      "types": [
+        "ROCK",
+        "GROUND"
+      ],
+      "stage_count": 2,
+      "base": "American black bear",
+      "secondary_theme": "North Shore basalt cliffs and talus",
+      "evolution_design": "A black cub with blunt basalt claws becomes a broad four-legged bear whose interlocking shoulder columns and fallen-rock back plates embody a moving shoreline cliff."
+    },
+    {
+      "proposal_id": "P06",
+      "status": "new-proposal",
+      "working_names": [
+        "Trailpup",
+        "Pathfang",
+        "Waywolf"
+      ],
+      "types": [
+        "GROUND",
+        "FAIRY"
+      ],
+      "stage_count": 3,
+      "base": "Gray wolf",
+      "secondary_theme": "Northwoods winter trails and pack wayfinding",
+      "evolution_design": "Small forked paw markings develop into interlocking trail bands around legs and shoulders. The adult leaves temporary luminous paths its pack can follow. Invented path magic; avoid copper anatomy, aurora curtains and borrowed cultural teachings."
+    },
+    {
+      "proposal_id": "P07",
+      "status": "new-proposal",
+      "working_names": [
+        "Hushbat",
+        "Deepulse",
+        "Noctector"
+      ],
+      "types": [
+        "PSYCHIC",
+        "FLYING"
+      ],
+      "stage_count": 3,
+      "base": "Little brown bat",
+      "secondary_theme": "Soudan underground particle detection",
+      "evolution_design": "Large ears and layered wing membranes become enclosed sensing chambers. A quiet folded bat develops a broad detector-like silhouette that senses rare invisible crossings. Fictional psychic detection inspired by the underground lab; avoid mining lamps, ore loads and musical echo silhouettes."
+    },
+    {
+      "proposal_id": "P08",
+      "status": "new-proposal",
+      "working_names": [
+        "Burrowbill",
+        "Bankwing"
+      ],
+      "types": [
+        "GROUND",
+        "FLYING"
+      ],
+      "stage_count": 2,
+      "base": "Bank swallow",
+      "secondary_theme": "Mississippi bluff nesting tunnels",
+      "evolution_design": "A small earth-dusted bird develops broad excavating claws, a reinforced beak and curved wing-root channels resembling tunnel arches. Aerial burrow construction rather than a carried nest or building."
+    },
+    {
+      "proposal_id": "P09",
+      "status": "new-proposal",
+      "working_names": [
+        "Snowpip",
+        "Squallfinch",
+        "Whitewhirl"
+      ],
+      "types": [
+        "ICE",
+        "FLYING"
+      ],
+      "stage_count": 3,
+      "base": "Snow bunting",
+      "secondary_theme": "Prairie blowing snow and flock formations",
+      "evolution_design": "Small dark-and-white wing marks become broad curving snow-streamer feather vanes. The adult gathers windblown snow into a moving spiral around its flock. Keep this airborne weather silhouette distinct from the hare and stationary snow-fence line."
+    },
+    {
+      "proposal_id": "P10",
+      "status": "new-proposal",
+      "working_names": [
+        "Skimnymph",
+        "Rimefoil"
+      ],
+      "types": [
+        "ICE",
+        "DRAGON"
+      ],
+      "stage_count": 2,
+      "base": "Dragonfly",
+      "secondary_theme": "Wind-powered travel over Minnesota lake ice",
+      "evolution_design": "A low long-bodied youngster grows six blade-edged ice-running legs; the adult unfolds four taut sail-like wings and steers over ice using its own abdomen as a boom. No separate boat, hockey equipment or fishing flag. Both stages share Ice/Dragon; maintain recognizable insect-derived anatomy."
+    }
+  ],
+  "current_type_counts": {
+    "BUG": 24,
+    "DARK": 24,
+    "DRAGON": 9,
+    "ELECTRIC": 18,
+    "FAIRY": 9,
+    "FIGHTING": 21,
+    "FIRE": 26,
+    "FLYING": 9,
+    "GHOST": 14,
+    "GRASS": 30,
+    "GROUND": 15,
+    "ICE": 15,
+    "NORMAL": 22,
+    "POISON": 18,
+    "PSYCHIC": 14,
+    "ROCK": 15,
+    "STEEL": 21,
+    "WATER": 34
+  },
+  "proposed_type_counts": {
+    "BUG": 24,
+    "DARK": 24,
+    "DRAGON": 8,
+    "ELECTRIC": 18,
+    "FAIRY": 17,
+    "FIGHTING": 21,
+    "FIRE": 26,
+    "FLYING": 20,
+    "GHOST": 17,
+    "GRASS": 30,
+    "GROUND": 23,
+    "ICE": 22,
+    "NORMAL": 22,
+    "POISON": 19,
+    "PSYCHIC": 18,
+    "ROCK": 19,
+    "STEEL": 22,
+    "WATER": 34
+  },
+  "remaining_uncertainty": "Mudnip/Bankmaw replacement types and the broader consistency audit remain undecided. Counts retain current types except the five explicit overrides.",
+  "sources": [
+    {
+      "url": "https://cse.umn.edu/mgs/common-minnesota-rocks",
+      "supports": "North Shore basalt inspiration"
+    },
+    {
+      "url": "https://www.soudan.umn.edu/",
+      "supports": "Soudan underground particle-detection laboratory inspiration"
+    },
+    {
+      "url": "https://www.dnr.state.mn.us/mammals/bats.html",
+      "supports": "Minnesota bats and Soudan association"
+    },
+    {
+      "url": "https://mnbirdatlas.org/species/bank-swallow/",
+      "supports": "Minnesota bank swallows and nesting burrows"
+    },
+    {
+      "url": "https://content.govdelivery.com/accounts/MNDNR/bulletins/38bc111",
+      "supports": "Snow buntings wintering in Minnesota"
+    }
+  ]
+}

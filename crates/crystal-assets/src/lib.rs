@@ -1594,3 +1594,6 @@ pub use rochester_dialogue_repair::repair_rochester_dialogue;
 
 mod northstar_driftless_passage;
 pub use northstar_driftless_passage::add_northstar_driftless_passage;
+
+mod minnesota_typing_revision;
+pub use minnesota_typing_revision::build_minnesota_typing_revision;

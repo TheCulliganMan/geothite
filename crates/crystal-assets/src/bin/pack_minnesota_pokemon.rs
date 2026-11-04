@@ -1,4 +1,5 @@
 //! Compile original species overlays from a supplied verified local pack.
+use std::collections::BTreeSet;
 use std::fs;
 use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicUsize, Ordering};
@@ -8,7 +9,7 @@ use crystal_assets::MinnesotaPokemonCatalog;
 
 fn main() -> Result<()> {
     let mut arguments = std::env::args().skip(1);
-    let usage = "usage: pack_minnesota_pokemon BASE_PACK POKEMON_ROOT NATIVE_ROOT PROFILES_JSON_OR_DIR OUTPUT_PACK [--family MN_F001] [--families-dir OUTPUT_DIRECTORY [--jobs N]]";
+    let usage = "usage: pack_minnesota_pokemon BASE_PACK POKEMON_ROOT NATIVE_ROOT PROFILES_JSON_OR_DIR OUTPUT_PACK [--family MN_F001] [--families-dir OUTPUT_DIRECTORY [--jobs N]] [--refresh-graphics MN_F001,MN_F002] [--add-families MN_F146,MN_F147]";
     let base_path = PathBuf::from(arguments.next().context(usage)?).canonicalize()?;
     let pokemon_root = PathBuf::from(arguments.next().context(usage)?);
     let native_root = PathBuf::from(arguments.next().context(usage)?);
@@ -17,8 +18,18 @@ fn main() -> Result<()> {
     let mut family = None;
     let mut families_directory = None;
     let mut jobs = None;
+    let mut refresh_families = None;
+    let mut add_families = None;
     while let Some(argument) = arguments.next() {
         match argument.as_str() {
+            "--add-families" => {
+                ensure!(add_families.is_none(), "duplicate --add-families");
+                add_families = Some(arguments.next().context("missing new family IDs")?);
+            }
+            "--refresh-graphics" => {
+                ensure!(refresh_families.is_none(), "duplicate --refresh-graphics");
+                refresh_families = Some(arguments.next().context("missing graphics family IDs")?);
+            }
             "--family" => {
                 ensure!(family.is_none(), "duplicate --family");
                 family = Some(arguments.next().context("missing family ID")?);
@@ -52,11 +63,47 @@ fn main() -> Result<()> {
         jobs.is_none() || families_directory.is_some(),
         "--jobs requires --families-dir"
     );
+    ensure!(
+        refresh_families.is_none() || (family.is_none() && families_directory.is_none()),
+        "graphics refresh cannot reinstall species or publish family extensions"
+    );
+    ensure!(
+        add_families.is_none()
+            || (family.is_none() && families_directory.is_none() && refresh_families.is_none()),
+        "choose one species installation or graphics refresh mode"
+    );
     let jobs = jobs.unwrap_or(1);
     ensure!((1..=8).contains(&jobs), "family worker count must be 1..8");
     ensure_ignored_output(&output, &base_path)?;
     let base = crystal_assets::read_verified_compiled_game_pack(&base_path)?;
     let catalog = MinnesotaPokemonCatalog::load(&pokemon_root, &native_root, &profiles)?;
+    if let Some(ids) = add_families {
+        let ids: Vec<_> = ids.split(',').collect();
+        let unique: BTreeSet<_> = ids.iter().copied().collect();
+        ensure!(unique.len() == ids.len(), "duplicate new family selection");
+        let known = catalog.family_ids();
+        ensure!(
+            ids.iter().all(|id| known.contains(id)),
+            "unknown new family selection"
+        );
+        let mut pack = base;
+        for id in &ids {
+            pack = catalog
+                .build(&pack, Some(id))
+                .with_context(|| format!("install new family {id}"))?;
+        }
+        // Publish only after every family has passed full runtime validation.
+        write_and_check(&pack, &output)?;
+        println!("installed {} new families", ids.len());
+        return Ok(());
+    }
+    if let Some(ids) = refresh_families {
+        let ids: Vec<_> = ids.split(',').collect();
+        let pack = catalog.refresh_graphics(&base, &ids)?;
+        write_and_check(&pack, &output)?;
+        println!("refreshed reviewed graphics for {} families", ids.len());
+        return Ok(());
+    }
     if let Some(directory) = &families_directory {
         for id in catalog.family_ids() {
             let path = directory.join(format!("{}.crystalpack", id.to_ascii_lowercase()));

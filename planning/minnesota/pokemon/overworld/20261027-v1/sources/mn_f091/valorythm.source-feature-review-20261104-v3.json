@@ -1,0 +1,122 @@
+{
+  "schema_version": 1,
+  "species_id": "MN_200",
+  "result": "pass",
+  "manifest_sha256": "f6ae8a018b8456537200cc09616b89dc2a9cab09a6e8b3e979a3be43a73fab00",
+  "bank_sha256": "0c171224b256726474e6b87e8a46619f081060cbcf4072709d69bda6fa43785b",
+  "source_sha256": {
+    "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f091/valorythm.overworld.imagegen-20261104-v3.png": "291399a4449ff688d79a805338bcee5d23bead91b56fb6c93611dd41542fe5c9"
+  },
+  "canonical_eye_form": "Pulse-pad guardian with four arms, two legs, curved conductor crest and tail counterweight; rear has back of crest and torso.",
+  "nonrear_poses": [
+    {
+      "pose": "down_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "source": "valorythm.overworld.imagegen-20261104-v3.png",
+          "source_sha256": "291399a4449ff688d79a805338bcee5d23bead91b56fb6c93611dd41542fe5c9",
+          "source_alpha_bounds": [
+            111,
+            54,
+            296,
+            403
+          ],
+          "native_bounds": [
+            3,
+            2,
+            10,
+            13
+          ],
+          "native_pixel_sha256": "4fb3c090c226bd3ee63b34a37fa1ef4929a702c17274015380dd21042ef1e685",
+          "conversion": "Source-backed enclosed dark component preservation; no hand-painted field pixels. Actual source and normal/shiny native six-pose boards visually compared.",
+          "anatomy": "Pulse-pad guardian with four arms, two legs, curved conductor crest and tail counterweight; rear has back of crest and torso."
+        }
+      ]
+    },
+    {
+      "pose": "left_idle",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "source": "valorythm.overworld.imagegen-20261104-v3.png",
+          "source_sha256": "291399a4449ff688d79a805338bcee5d23bead91b56fb6c93611dd41542fe5c9",
+          "source_alpha_bounds": [
+            72,
+            83,
+            328,
+            372
+          ],
+          "native_bounds": [
+            2,
+            3,
+            10,
+            12
+          ],
+          "native_pixel_sha256": "beb25f37a457ffb316fdeaaf13e4f725c4421a09864e1bcca14ed34d5534da17",
+          "conversion": "Source-backed enclosed dark component preservation; no hand-painted field pixels. Actual source and normal/shiny native six-pose boards visually compared.",
+          "anatomy": "Pulse-pad guardian with four arms, two legs, curved conductor crest and tail counterweight; rear has back of crest and torso."
+        }
+      ]
+    },
+    {
+      "pose": "down_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "source": "valorythm.overworld.imagegen-20261104-v3.png",
+          "source_sha256": "291399a4449ff688d79a805338bcee5d23bead91b56fb6c93611dd41542fe5c9",
+          "source_alpha_bounds": [
+            102,
+            35,
+            320,
+            413
+          ],
+          "native_bounds": [
+            3,
+            1,
+            10,
+            14
+          ],
+          "native_pixel_sha256": "e37eb54fccfcee2a3d75d0b9f43eb91f8a8b734bde4fa46b9dc6127ac25185cf",
+          "conversion": "Source-backed enclosed dark component preservation; no hand-painted field pixels. Actual source and normal/shiny native six-pose boards visually compared.",
+          "anatomy": "Pulse-pad guardian with four arms, two legs, curved conductor crest and tail counterweight; rear has back of crest and torso."
+        }
+      ]
+    },
+    {
+      "pose": "left_step",
+      "result": "pass",
+      "source_feature_proof": [
+        {
+          "source": "valorythm.overworld.imagegen-20261104-v3.png",
+          "source_sha256": "291399a4449ff688d79a805338bcee5d23bead91b56fb6c93611dd41542fe5c9",
+          "source_alpha_bounds": [
+            81,
+            61,
+            319,
+            387
+          ],
+          "native_bounds": [
+            2,
+            2,
+            10,
+            13
+          ],
+          "native_pixel_sha256": "13c1018dae8fbba67832736395cd7e4e9614a9261abfd62ea48649513165a2f7",
+          "conversion": "Source-backed enclosed dark component preservation; no hand-painted field pixels. Actual source and normal/shiny native six-pose boards visually compared.",
+          "anatomy": "Pulse-pad guardian with four arms, two legs, curved conductor crest and tail counterweight; rear has back of crest and torso."
+        }
+      ]
+    }
+  ],
+  "rear_anatomy": {
+    "result": "pass",
+    "poses": [
+      "up_idle",
+      "up_step"
+    ],
+    "notes": "Pulse-pad guardian with four arms, two legs, curved conductor crest and tail counterweight; rear has back of crest and torso."
+  },
+  "native_and_shiny_visual_review": "All six poses compared at native scale and integer zoom with selected source; ordinary field-icon simplification retains species silhouette. Transparent edge, genuine stepping changes, matched normal/shiny index geometry and actual production terrain reviewed."
+}

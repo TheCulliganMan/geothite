@@ -1,0 +1,152 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F070",
+  "tool": "built-in image_gen",
+  "prompt_file": "sprites/mn-f070/thematic-refinement-20261104-v2/prompt-v2.txt",
+  "status": "native-reviewed",
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-149-thematic-20261104-v2",
+      "species_id": "MN_149",
+      "view": "front",
+      "source": "sprites/mn-f070/thematic-refinement-20261104-v2/front-back.imagegen-v2.png",
+      "crop": [
+        0,
+        0,
+        887,
+        887
+      ],
+      "fit": [
+        48,
+        43
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        24333,
+        17676,
+        0
+      ],
+      "sampling": "area_dither",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 8,
+      "interior_black_min_samples": 24,
+      "pixel_edits": [
+        {
+          "x": 12,
+          "y": 26,
+          "from": 2,
+          "to": 3
+        },
+        {
+          "x": 22,
+          "y": 27,
+          "from": 0,
+          "to": 3
+        },
+        {
+          "x": 22,
+          "y": 28,
+          "from": 0,
+          "to": 3
+        }
+      ],
+      "native_correction_note": "Restore the source-backed left-facing pupils inside the two stalk-eye whites. No extra cheek eyes or enlarged sockets; preserve surrounding eye whites and body shading."
+    },
+    {
+      "id": "mn-149-thematic-20261104-v2",
+      "species_id": "MN_149",
+      "view": "back",
+      "source": "sprites/mn-f070/thematic-refinement-20261104-v2/front-back.imagegen-v2.png",
+      "crop": [
+        887,
+        0,
+        887,
+        887
+      ],
+      "fit": [
+        46,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        24333,
+        17676,
+        0
+      ],
+      "sampling": "area_dither",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 8,
+      "interior_black_min_samples": 24
+    }
+  ],
+  "previous_manifest": "sprites/mn-f070/manifest.json",
+  "pokemon_palettes": {
+    "MN_149": {
+      "species_id": "MN_149",
+      "name": "Pothollow",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          13,
+          24,
+          23
+        ],
+        [
+          12,
+          8,
+          17
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        24333,
+        17676,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          107,
+          198,
+          189
+        ],
+        [
+          99,
+          66,
+          140
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#6BC6BD",
+        "#63428C",
+        "#000000"
+      ]
+    }
+  },
+  "visual_review": {
+    "status": "reviewed",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "091133995d6c8547a2ad3ab46175b35c0f32e2504711f780d76758ab60cf092f",
+    "notes": "Native front and close rear retain a clear-water basin above layered scalloped filter folds and a separate violet sludge chamber. Four rounded flippers have curved turquoise/violet dither transitions. Two stalk pupils restored by guarded native edits; lower face has nostrils and mouth, no cheek eyes. Front looks down-left; rear shows backs of stalks and basin."
+  }
+}
