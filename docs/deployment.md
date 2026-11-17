@@ -758,3 +758,59 @@ bytes (about 17.46 GiB), leaving about 393 GiB free. Remote cleanup recovered
 208 GiB and leaving Docker build cache at 0 B. Only the owned toolchain image
 was removed; current and adventure rollback image IDs were verified unchanged.
 Volumes, packs, saves, downloads and retained evidence were preserved.
+
+## Minnesota floorplans release (2026-11-17)
+
+The production image for `floorplans-20261117` is
+`sha256:89fe18b0c0fece1d00079d714cfeb08259562fb2348d4500be5f33cfe88ac9f9`.
+The Linux server, native terminal clients, browser builds and workers were
+built from `b81f13a420e0a093568aca2470caa13a7a5996b1`. The final external
+pack was authored at `172a0e7004a3d749b534a7e6c0951d03978775a3`.
+The release records include the compiler input lists and the exact subsequent
+pack-authoring changes.
+
+| Artifact | SHA-256 | Content identity |
+| --- | --- | --- |
+| Raw Minnesota pack | `2e2554784f82f6b9e53c8b1d7a24e5993f730eefb460239d3edc4bc7d558a3df` | `dc8ae8db7bb28ea5fa3265e739f51d60a8f0cc7c688ee5b532150153b01a8860` |
+| Hosted and installer pack | `de7379234cf30325688436bd2c846b7f00e23830f0125d762ea962ad304fddb4` | `9522073158484d254ad32f1b53b4aac326e24e95ba4a5ccad0067f0810d26e1a` |
+
+The release includes all eight redesigned Gyms, the cave and mine revisions,
+twenty route landmarks and twenty progress-aware guides. In Brainerd the
+player crosses the shallows freely before earning Surf. The guide, both
+trainers and Sivren stand on connected sand, and the trainers stay on shore
+after approaching a challenger. All 301 ordinary Minnesota trainers have a
+native sight battle. All eight Gym leaders retain their conversation, badge
+and reward scripts. The two restoration partners at Winona and Leech Lake use
+the active Chorip overworld art.
+
+The final compiled pack changes 83 maps from the v04 parent. Comparing both
+pack variants verified all 466 existing field pickups and all 2,625 warp
+destinations. The regional roster check covered 335 trainer parties and 761
+members. Native room renders and static route searches covered the Gym
+approaches, including the eight-step walk from Brainerd's entrance to Sivren.
+The final Linux checks passed formatting, all-target asset Clippy, Brainerd
+and mine regressions, bounded save migration and all 602 hosted audio PCM,
+length and loop checks. Verification used static maps, pure tests and
+distribution checks. Campaign pacing and combat difficulty were not playtested.
+
+The public server passed all 145 client asset checks, both HTML/gzip checks,
+the immutable native download hashes and a WebSocket welcome with zero gameplay
+inputs. The network welcome matched the hosted content identity above.
+Apple Silicon macOS and Linux x86-64 each completed two silent installs using
+`--no-play`, including retention of a scratch save marker. No game client ran.
+The proxy briefly returned HTTP 502 during the container switch and subsequently
+passed the public health, asset and pack verification. The private candidate
+was removed after verification.
+
+The previous refinement image is retained for guarded rollback. From the build
+host, use the release transaction if this is still the active deployment.
+
+```sh
+python3 /mnt/homelab/config/geothite/releases/floorplans-20261117/deploy.py rollback
+```
+
+Paced local Cargo cleanup and removal of duplicate deployment inputs recovered
+12.79 GiB on the Mac. Remote cleanup of the isolated validation checkout,
+release scratch files and 42 attributable BuildKit records recovered 25.24 GiB.
+The final source, published and rollback images, user saves and canonical packs
+were retained.

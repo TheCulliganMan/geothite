@@ -7964,7 +7964,7 @@
     "status": "Accepted current-parent terrain revision: source/native pixels, strict whole-pack preservation, directional grass/ledge proof, actual2D review, native encounters/trainerPP/resources/Continue and stdio pass. CurrentR12 work preserved.",
     "scope_limit": "Sequential Minnesota grass pass remains open beyond R01-R03. Explicit local fixtures do not prove an earned statewide campaign."
   },
-  "active_local_review_revision": "gym_cave_continuation_revision",
+  "active_local_review_revision": "regional_floorplans_revision",
   "script_command_repair_revision": {
     "kind": "missing_minnesota_map_command_records",
     "parent_revision": "field_hm_habitats_cyclists_revision",
@@ -12612,7 +12612,7 @@
     "runbook": "docs/game-content.md#minnesota-gym-and-cave-overhaul",
     "gym_design": "planning/minnesota/gyms/continuation-20261117/README.md",
     "cave_design": "planning/minnesota/caves/continuation-20261117/README.md",
-    "status": "Selected locally. Eight Gyms and eight caves passed compiled native geometry, actor, reward, text and art checks. Production remains on the published refinement release. Verification used static renders and tests.",
+    "status": "Reviewed locally as the parent of regional_floorplans_revision. Eight Gyms and eight caves passed compiled native geometry, actor, reward, text and art checks.",
     "hosted_pack_sha256": "c0a19e3336c77920a119c7996601aca7f3962cc9b56eca84087ca1d29b1e335a",
     "hosted_content_identity": "fd71e9f9231a031d5931caf559faeee0fa2287a8cb6e6686ccd3d156f8850e41",
     "reviewed_previous_revision": "gym_cave_overhaul_revision",
@@ -12626,5 +12626,28 @@
     ],
     "gym_trainers": 18,
     "cave_trainers": 6
+  },
+  "regional_floorplans_revision": {
+    "kind": "native_2d_regional_exploration",
+    "parent_revision": "gym_cave_continuation_revision",
+    "pack": "content-packs/minnesota-floorplans-v01.crystalpack",
+    "pack_sha256": "2e2554784f82f6b9e53c8b1d7a24e5993f730eefb460239d3edc4bc7d558a3df",
+    "content_identity": "dc8ae8db7bb28ea5fa3265e739f51d60a8f0cc7c688ee5b532150153b01a8860",
+    "map_count": 743,
+    "changed_maps_from_parent": 83,
+    "runbook": "docs/game-content.md#minnesota-regional-floorplans-and-exploration",
+    "route_design": "planning/minnesota/routes/exploration-20261117/routes.json",
+    "numbered_routes": 20,
+    "route_cache_map_transfers": 11,
+    "guidance_locations": 20,
+    "gym_trainers_on_sight": 18,
+    "talk_to_challenge_leaders": 8,
+    "save_compatibility_source_identities": 8,
+    "status": "Selected and published as floorplans-20261117. Native map renders, compiled movement and encounter checks, pure save and atlas tests, all 602 audio checks and public release verification passed.",
+    "hosted_pack_sha256": "de7379234cf30325688436bd2c846b7f00e23830f0125d762ea962ad304fddb4",
+    "hosted_content_identity": "9522073158484d254ad32f1b53b4aac326e24e95ba4a5ccad0067f0810d26e1a",
+    "ordinary_trainers_with_sight": 301,
+    "brainerd_shallow_water_tiles": 80,
+    "hosted_release": "floorplans-20261117"
   }
 }

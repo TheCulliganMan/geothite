@@ -86,7 +86,9 @@ Minnesota's ordinary trainers initiate their first battles on sight. At the
 State Fair the stamp-card activities still use their own interactions. Gym
 leaders, invitations and rematches retain their authored conversations.
 
-Build with the pre-existing external v04 files and an unused ignored output path.
+Run the following commands on the build server with the retained external v04
+files and an unused ignored output path. Run full-pack verification and Cargo
+checks there as well so they do not compete with applications on the Mac.
 
 ```sh
 CARGO_INCREMENTAL=0 cargo build --locked -p crystal-assets \

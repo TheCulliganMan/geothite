@@ -12,22 +12,19 @@ The [Minnesota campaign polish review](docs/game-content.md#minnesota-campaign-p
 includes local build and play commands for the dialogue, roster, and early
 fishing update on top of the Glacier Line pack.
 
-The [current Minnesota release](docs/deployment.md#minnesota-refinement-release-2026-11-17),
-`refinement-20261117`, implements the ten accepted improvements: checked save
-continuity, supplies and training services, distinct leader tactics, targeted
-party corrections, discovery clues and rewards, a rematch circuit, Reed's
-optional challenge, interactive museums and persistent story aftermath.
-The graphical browser, browser TUI and both native terminal downloads are
-published. Minnesota remains native 2D. Builds, unit tests and static/content
-release checks passed; campaign balance was assessed statically, with no
-gameplay, controller or visual verification.
+The [current Minnesota release](docs/deployment.md#minnesota-floorplans-release-2026-11-17),
+`floorplans-20261117`, rebuilds all eight Gyms. The 18 supporting Gym trainers
+challenge you on sight, and each leader waits for you to speak. In Brainerd,
+wade straight north through the lake to Sivren. Lorla and Bravel watch from
+the sandy banks. In St. Paul, take a lift to the archive or the workshop before
+returning to the central court.
 
-The selected local [Gym and cave overhaul](docs/game-content.md#minnesota-gym-and-cave-overhaul)
-redesigns all eight Gyms and eight cave rooms. Supporting Gym trainers challenge
-players on sight. Nine hidden cave items reward exploration, including four
-found by examining visible rocks. Its compiled maps,
-native art, routes, reward preservation and bounded save migration have been
-checked without playing the game. Production publication is pending.
+The [regional exploration update](docs/game-content.md#minnesota-regional-floorplans-and-exploration)
+gives all twenty numbered roads hidden-item landmarks, revises the Voyageurs
+ice courses and Iron Range mine, and adds progress-aware directions at twenty
+locations. The Pokégear now distinguishes all nineteen towns and twenty routes.
+The graphical browser, browser TUI and native terminal releases for Apple
+Silicon and Linux x86-64 use the same published Minnesota content.
 
 The [Tamarack and Team ICE sprite revision](planning/minnesota/npcs/tamarack-ice/README.md)
 uses normal Crystal overworld proportions, woman Tamarack and eight additional
