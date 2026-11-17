@@ -1,7 +1,7 @@
 # Deploy Geothite multiplayer
 
 The live browser game serves [The Northstar Survey](https://geothite.ryanculligan.com/?view=2d)
-in native 2D. See the [2026-11-01 release record](#reviewed-minnesota-release-2026-11-01)
+in native 2D. See the [2026-11-16 release record](#integrated-minnesota-release-2026-11-16)
 for the exact pack, image, verification scope and rollback command.
 
 ## Requirements
@@ -557,3 +557,63 @@ and graph accessibility after rollout. Run the render review against the actual
 HTTPS route and check manual takeover followed by Run resumes button submissions.
 Keep the previous image, Compose configuration, signing secret and named data
 volume for rollback; redeploy only the Geothite service.
+
+## Integrated Minnesota release (2026-11-16)
+
+Published source commit `1ba193536f302602ef4cd020e6d9a733fc2c5430` as
+`geothite:integrated-20261116-final`, image
+`sha256:87eceee5ea689ba112bfd2638cab84e7b9e662c1a56740e7ebf6e1bcb01f7401`.
+The 743-map integrated campaign is selected in `planning/minnesota/world.json`.
+The graphical browser remains native 2D for Minnesota. The browser TUI and both
+native terminal downloads were also rebuilt and published.
+
+- Input: `content-packs/minnesota-integrated-campaign-v03.crystalpack`, SHA-256
+  `6d4cca148a5e277442a714fd1474d84bd315a1c63aea0ff80dd2a1003437e3a7`.
+- Hosted content identity, after the server's standard wrappers:
+  `b5f8411db557d73a0a9c755243415a33342537f619e200f544233dffc8027c02`.
+- Hosted/installer pack SHA-256:
+  `8498ef8d685b32d468876dc46da069ab394f97dd9da3da73b4c40ac9afecec0e`.
+- Native manifest: `downloads/terminal/current.txt`, release
+  `integrated-20261116`, with `aarch64-apple-darwin` and
+  `x86_64-unknown-linux-gnu`. Its versioned pack remains in that release directory.
+
+Public checks matched 160 assets byte-for-byte, including the graphical and TUI
+WASM, checked both compressed HTML pages, and confirmed health, clock, Flygon
+and Pokedex routes. A WebSocket handshake accepted the integrated pack identity.
+Both public native downloads, the launcher and versioned pack matched their
+manifest checksums. The Linux candidate installer and public macOS installer
+completed with `--no-play` and zero output; the downloaded macOS executable
+matched the built binary. No gameplay, controller journeys or visual play review
+were performed, per the user's instruction.
+
+Formatting and production worker-library Clippy passed with existing warnings.
+The worker's all-target WASM Clippy invocation exposed a pre-existing native-only
+test call to `bevy::tasks::tick_global_task_pools_on_main_thread` in
+`crates/crystal-voxel-view/src/pokemon_motion_quality.rs:304`; that invocation did
+not pass. The production library and all release binaries built successfully.
+The missing WinterPine worker serialization mapping was fixed in both directions.
+Deployment tooling now matches the lockfile's wasm-bindgen CLI 0.2.129 and
+includes the authored JSON required by the Rust build.
+
+The first public check received Cloudflare error 1010 for Python's HTTP client
+and automatically restored the previous healthy service. Repeating publication
+with curl-based asset checks passed. Signing configuration, persistent data,
+existing saves, Pokedex/Flygon mounts and older immutable downloads were retained.
+Saves were not relabeled or migrated.
+
+Frozen source, build recipes, checksums and guarded rollback state are retained
+outside Git at `/mnt/homelab/config/geothite/releases/integrated-20261116`.
+The completed build uses `Dockerfile.build`; `package.py` assembles a fresh image
+while retaining historical assets. Use fresh staging for another release.
+To restore the captured previous service, provided its configuration has not
+changed since publication:
+
+```sh
+python3 /mnt/homelab/config/geothite/releases/integrated-20261116/deploy.py rollback
+```
+
+Inactive local debug/release/WASM compiler output and installer scratch were
+removed, retaining the finished clients, packs, saves and review evidence.
+Local free space increased from about 342 GiB to 396 GiB. Docker build-cache
+cleanup reported 10.69 GB removed; the server has 227 GiB free. Published and
+rollback images, volumes and release files were preserved.

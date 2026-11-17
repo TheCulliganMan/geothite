@@ -12549,6 +12549,9 @@
     "content_identity": "cd81b377a9d08285dddba8568547e573827860f1ea41630e2301be4750296313",
     "map_count": 743,
     "runbook": "planning/minnesota/QUALITY.md",
-    "status": "Selected for publication at user request. Native client and pack builds, formatting, Clippy, dialogue and content checks passed. No gameplay verification after explicit user instruction; existing saves are not migrated."
+    "status": "Selected and published as integrated-20261116. Native clients, browser and TUI builds and static deployment checks passed. Gameplay verification was explicitly excluded by the user. Existing saves are preserved without migration.",
+    "hosted_release": "integrated-20261116",
+    "hosted_pack_sha256": "8498ef8d685b32d468876dc46da069ab394f97dd9da3da73b4c40ac9afecec0e",
+    "hosted_content_identity": "b5f8411db557d73a0a9c755243415a33342537f619e200f544233dffc8027c02"
   }
 }

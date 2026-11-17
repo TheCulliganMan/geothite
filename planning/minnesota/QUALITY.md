@@ -205,7 +205,8 @@ repository warnings remain. `CARGO_INCREMENTAL=0 cargo build --locked -p
 crystal-bevy --bin crystal-bevy` also passed, with one existing dead-code
 warning for `browser_save_path_for_identity`. No client was launched.
 
-The candidate is selected for publication at the user's explicit request.
-Deployment results are recorded in docs/deployment.md. Existing saves remain
+The candidate was selected and published as `integrated-20261116` at the user's
+explicit request. Deployment results and verification limits are recorded in
+`docs/deployment.md`. Existing saves remain
 untouched. No gameplay verification is being performed after the user's
 explicit instruction to stop it.
