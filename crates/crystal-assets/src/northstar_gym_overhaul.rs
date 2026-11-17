@@ -125,7 +125,7 @@ fn install_compatibility(
                 })
             })
             .collect();
-        metadata["cave_reentry"] = json!({"policy":"minnesota-five-caves-v1","maps":maps});
+        metadata["cave_reentry"] = json!({"policy":"minnesota-eight-caves-v1","maps":maps});
     }
     pack.runtime_files
         .insert(COMPATIBILITY.into(), serde_json::to_vec(&metadata)?);

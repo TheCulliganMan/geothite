@@ -7,7 +7,7 @@ use sha2::{Digest, Sha256};
 use crate::northstar_cave_design::{MANIFEST, Revision};
 use crate::{CompiledGamePack, MapModule};
 
-/// Installs five cave revisions on a parent whose cave programs are unchanged.
+/// Installs eight cave revisions on a parent whose cave programs are unchanged.
 ///
 /// Whole-pack identity is deliberately not fixed: reviewed Gym changes may be
 /// installed first. Existing cave actors, warps, story programs, item receipts,
@@ -50,6 +50,21 @@ pub(crate) fn install(pack: &mut CompiledGamePack, design: &str, story: &str) ->
             actor.x = at[0];
             actor.y = at[1];
         }
+        for (id, sight) in &cave.retained_sightlines {
+            let actor = room
+                .objects
+                .iter_mut()
+                .find(|actor| actor.object_identifier.as_deref() == Some(id))
+                .context("retained cave sightline actor")?;
+            ensure!(
+                actor.object_type == "OBJECTTYPE_TRAINER",
+                "retained cave battle actor"
+            );
+            let direction = sight.direction.to_ascii_uppercase();
+            actor.spritemovedata = format!("SPRITEMOVEDATA_STANDING_{direction}");
+            actor.sightline_direction_override = Some(direction);
+            actor.radius = sight.radius;
+        }
         crate::northstar_cave_encounters::install(&mut revised, &mut room, cave, story)?;
         crate::northstar_cave_geometry::validate(&revised, &room, cave)
             .with_context(|| format!("cave geometry {}", cave.id))?;
@@ -85,6 +100,12 @@ pub(crate) fn install(pack: &mut CompiledGamePack, design: &str, story: &str) ->
         crate::northstar_story_revision::publish(&mut revised, room)?;
     }
     revised.report.manifests.push(MANIFEST.into());
+    // Browser save filenames include the composed manifest ID. Give these
+    // eight rooms a distinct slot from the earlier five-cave review build.
+    revised
+        .report
+        .manifests
+        .push("northstar-cave-trails-v1".into());
     *pack = revised;
     Ok(())
 }
@@ -164,11 +185,21 @@ mod tests {
             std::env::var_os("CRYSTAL_CAVE_PARENT").expect("external unchanged cave parent"),
         ))
         .expect("verified cave parent");
-        let source = include_str!("../../../planning/minnesota/caves/overhaul-20261117/rooms.json");
+        let source =
+            include_str!("../../../planning/minnesota/caves/continuation-20261117/rooms.json");
         let story = include_str!("../../../planning/minnesota/story.json");
+        let revision: crate::northstar_cave_design::Revision =
+            serde_json::from_str(source).expect("cave contracts");
         let mut revised = base.clone();
         super::install(&mut revised, source, story)
             .expect("native cave geometry and event contracts");
+        assert!(
+            revised
+                .runtime_modpack_id()
+                .expect("eight-cave save slot")
+                .split('+')
+                .any(|part| part == "northstar-cave-trails-v1")
+        );
         for (name, value) in &base.data.story_event_script_constants.global {
             assert_eq!(
                 revised.data.story_event_script_constants.global.get(name),
@@ -185,10 +216,31 @@ mod tests {
                 );
             } else {
                 let after = &revised.data.maps[name];
+                let design = revision
+                    .rooms
+                    .iter()
+                    .find(|room| room.id == *name)
+                    .expect("authored cave");
                 assert_eq!(map.events.warps, after.events.warps);
                 assert_eq!(map.attributes, after.attributes);
                 for (before, retained) in map.objects.iter().zip(&after.objects) {
-                    assert_eq!(before, retained, "all old cave actor bytes survive");
+                    let mut expected = before.clone();
+                    if let Some(id) = before.object_identifier.as_deref() {
+                        if let Some(at) = design.actor_positions.get(id) {
+                            [expected.x, expected.y] = *at;
+                        }
+                        if let Some(sight) = design.retained_sightlines.get(id) {
+                            let direction = sight.direction.to_ascii_uppercase();
+                            expected.spritemovedata =
+                                format!("SPRITEMOVEDATA_STANDING_{direction}");
+                            expected.sightline_direction_override = Some(direction);
+                            expected.radius = sight.radius;
+                        }
+                    }
+                    assert_eq!(
+                        &expected, retained,
+                        "only declared old actor adjustments survive"
+                    );
                 }
                 for pickup in &map.script_field_pickups {
                     assert!(

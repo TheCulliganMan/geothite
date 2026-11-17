@@ -23,8 +23,9 @@ release checks passed; campaign balance was assessed statically, with no
 gameplay, controller or visual verification.
 
 The selected local [Gym and cave overhaul](docs/game-content.md#minnesota-gym-and-cave-overhaul)
-redesigns all eight Gyms and five cave rooms, adds native trainer sight encounters,
-strengthens the Gym teams, and adds six hidden cave items. Its compiled maps,
+redesigns all eight Gyms and eight cave rooms. Supporting Gym trainers challenge
+players on sight. Nine hidden cave items reward exploration, including four
+found by examining visible rocks. Its compiled maps,
 native art, routes, reward preservation and bounded save migration have been
 checked without playing the game. Production publication is pending.
 

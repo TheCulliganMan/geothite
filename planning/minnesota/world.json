@@ -1529,18 +1529,18 @@
           "kind": "canonical_gym_reference",
           "dimensions_metatiles": [
             9,
-            11
+            9
           ],
-          "authoring_file": "gyms/overhaul-20261117/st-cloud.json",
+          "authoring_file": "gyms/continuation-20261117/st-cloud.json",
           "clear_arrival": [
             4,
-            19
+            15
           ],
           "passive_arrival": {
             "index": 3,
             "tile": [
               4,
-              19
+              15
             ],
             "collision": "FLOOR"
           },
@@ -1549,7 +1549,7 @@
               "index": 1,
               "tile": [
                 4,
-                21
+                17
               ],
               "target": "MnStCloud",
               "target_warp": 6,
@@ -1559,7 +1559,7 @@
               "index": 2,
               "tile": [
                 5,
-                21
+                17
               ],
               "target": "MnStCloud",
               "target_warp": 6,
@@ -1569,73 +1569,77 @@
           "native_constant": "MN_ST_CLOUD_GYM",
           "tileset": "mn_gym_5",
           "source_reference": {
-            "path": "planning/minnesota/gyms/interiors.json",
+            "path": "planning/minnesota/gyms/continuation-20261117/st-cloud.json",
             "gym_id": "MnStCloudGym",
-            "room_sha256": "4c0aae779e7fd5ed2dac92dce0a911b8dfc3ff7abee6443ec734d41ab15ba08d",
-            "file_sha256_informational": "441d1312d8e94080c7bae58fe93d0dfce3be3dfabf9094c107064ec56c6ecbb7",
+            "room_sha256": "55aa116a4ba41a4d6b75d880c9f5cac7a5fb4b270fbff720f27177262649f950",
+            "file_sha256_informational": "ea17af263f1bacae7518c35b6ac6fa7b3e47f6af05cdf915854fe8a88a3c9806",
             "symbol_blocks": {
               "#": "00",
               ".": "01",
               "<": "02",
               ">": "03",
-              "A": "04",
-              "B": "05",
+              "C": "04",
+              "G": "05",
               "L": "06",
-              "R": "07",
-              "b": "08",
-              "f": "09",
-              "s": "0a",
-              "t": "0b"
+              "M": "07",
+              "R": "08",
+              "[": "09",
+              "]": "0a",
+              "b": "0b",
+              "d": "0c",
+              "s": "0d",
+              "t": "0e",
+              "w": "0f"
             },
-            "native_builder": "gym_art::install + gym_publication::room + gym_scripts",
-            "scope": "This canonical Gym5 object alone is authoritative; whole-file hash is informational and unrelated gym edits do not invalidate it."
+            "native_builder": "gym_art::install + northstar_gym_rooms::install",
+            "scope": "Selected interior geometry and physical controls. story-pokemon.json owns the installed regional teams."
           },
-          "status": "Canonical blue-walkway wind gym published and controller-verified as a standalone interior; city-door binding remains pending.",
-          "source_behavior": "Resolve canonical Gym5 directly: native wind slats, Wyrel then Hallen, both required trainer battles, Saven and retryable TM_SWIFT. No alternate room, party, sprite, puzzle or reward is owned by this city descriptor.",
-          "native_rebinding_contract": "Preserve canonical MnStCloudGym module geometry, source art allocation, actors/scripts/flags/parties/reward and native warp indices1,2,3. Root retargets only review-hall exterior destinations to MN_ST_CLOUD passive exterior warp6. Existing city gym door5 targets canonical room passive3.",
+          "status": "Selected local shared-relay course with native exterior door bindings.",
+          "source_behavior": "Wyrel qualifies the lower bank. Either reverse the shared relay to WEST on the far bank or win Hallen's optional catwalk battle to reach Saven and TM_SWIFT.",
+          "native_rebinding_contract": "Keep warp indices 1 and 2 paired to the MnStCloud exterior warp 6. Exterior door 5 targets interior passive warp 3.",
           "viewpoints": [
             {
-              "id": "arrival-closed",
+              "id": "entry",
               "tile": [
                 4,
-                19
+                15
               ],
               "phase": "ARRIVAL_CLOSED"
             },
             {
-              "id": "lower-crossing-open",
+              "id": "east-relay",
               "tile": [
                 7,
-                13
+                11
               ],
-              "phase": "MN_GYM_5_TRAINER_1"
+              "phase": "EVENT_MN_GYM_5_V2_RELAY_EAST"
             },
             {
-              "id": "upper-crossing-open",
+              "id": "west-relay",
               "tile": [
-                12,
-                9
+                13,
+                3
               ],
-              "phase": "MN_GYM_5_TRAINER_2"
+              "phase": "EVENT_MN_GYM_5_V2_RELAY_WEST"
             },
             {
-              "id": "leader-open",
+              "id": "earned-catwalk",
+              "tile": [
+                11,
+                6
+              ],
+              "phase": "EVENT_MN_GYM_5_TRAINER_2_DEFEATED"
+            },
+            {
+              "id": "leader-bank",
               "tile": [
                 3,
                 4
               ],
-              "phase": "MN_GYM_5_TRAINER_2"
-            },
-            {
-              "id": "return-open",
-              "tile": [
-                12,
-                17
-              ],
-              "phase": "MN_GYM_5_TRAINER_2"
+              "phase": "EVENT_MN_GYM_5_V2_RELAY_WEST"
             }
           ],
-          "gym_revision_file": "gyms/st-cloud-arrows.json"
+          "gym_revision_file": "gyms/continuation-20261117/st-cloud-contract.json"
         },
         {
           "id": "MnStCloudStation",
@@ -1751,7 +1755,7 @@
             5,
             8
           ],
-          "gym_revision_file": "gyms/brainerd-winch.json",
+          "gym_revision_file": "gyms/continuation-20261117/brainerd-contract.json",
           "authoring_file": "gyms/overhaul-20261117/brainerd.json"
         },
         {
@@ -1949,8 +1953,8 @@
             6,
             10
           ],
-          "gym_revision_file": "gyms/bemidji-return.json",
-          "authoring_file": "gyms/overhaul-20261117/bemidji.json"
+          "gym_revision_file": "gyms/continuation-20261117/bemidji-contract.json",
+          "authoring_file": "gyms/continuation-20261117/bemidji.json"
         },
         {
           "id": "MnBemidjiShelfHouse",
@@ -7960,7 +7964,7 @@
     "status": "Accepted current-parent terrain revision: source/native pixels, strict whole-pack preservation, directional grass/ledge proof, actual2D review, native encounters/trainerPP/resources/Continue and stdio pass. CurrentR12 work preserved.",
     "scope_limit": "Sequential Minnesota grass pass remains open beyond R01-R03. Explicit local fixtures do not prove an earned statewide campaign."
   },
-  "active_local_review_revision": "gym_cave_overhaul_revision",
+  "active_local_review_revision": "gym_cave_continuation_revision",
   "script_command_repair_revision": {
     "kind": "missing_minnesota_map_command_records",
     "parent_revision": "field_hm_habitats_cyclists_revision",
@@ -12597,5 +12601,30 @@
     "status": "Selected locally. Eight Gyms and five cave rooms rebuilt and statically reviewed. All 18 supporting Gym trainers and three added cave trainers use native sight encounters; leaders require conversation. Pure migration/cave tests, all-target asset/runtime Clippy, native art comparisons, geometry checks and all 602 audio checks pass. No gameplay, controller journeys or client launches. Production publication is pending.",
     "hosted_pack_sha256": "e33f90aaa3fde37b24af9d0afdd8a2173cf4d1977ffa116e2dc154e0dedbd080",
     "hosted_content_identity": "22165cc69e78d2f53545f3b32c98356e5fd04e911c23290941a54a749b9281f9"
+  },
+  "gym_cave_continuation_revision": {
+    "kind": "native_2d_gym_and_cave_continuation",
+    "parent_revision": "refinement_revision",
+    "pack": "content-packs/minnesota-gym-cave-overhaul-v04.crystalpack",
+    "pack_sha256": "11b81fcc2e06bab49de4b95f3a4211bb270872fcafbbeed5fbfad9021f143834",
+    "content_identity": "1cd664f35594c693a87a68e25c2430a0ad24a814cd1959bf198678dd340c8149",
+    "map_count": 743,
+    "runbook": "docs/game-content.md#minnesota-gym-and-cave-overhaul",
+    "gym_design": "planning/minnesota/gyms/continuation-20261117/README.md",
+    "cave_design": "planning/minnesota/caves/continuation-20261117/README.md",
+    "status": "Selected locally. Eight Gyms and eight caves passed compiled native geometry, actor, reward, text and art checks. Production remains on the published refinement release. Verification used static renders and tests.",
+    "hosted_pack_sha256": "c0a19e3336c77920a119c7996601aca7f3962cc9b56eca84087ca1d29b1e335a",
+    "hosted_content_identity": "fd71e9f9231a031d5931caf559faeee0fa2287a8cb6e6686ccd3d156f8850e41",
+    "reviewed_previous_revision": "gym_cave_overhaul_revision",
+    "checked_authored_labels": 168,
+    "hidden_items": 9,
+    "hidden_rock_targets": [
+      "NUGGET",
+      "ELIXER",
+      "MAX_REPEL",
+      "MAX_REVIVE"
+    ],
+    "gym_trainers": 18,
+    "cave_trainers": 6
   }
 }

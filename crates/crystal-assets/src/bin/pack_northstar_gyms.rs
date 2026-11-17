@@ -4,7 +4,15 @@ use std::collections::BTreeMap;
 use std::path::PathBuf;
 
 use anyhow::{Context, Result, ensure};
+use serde::Deserialize;
 use serde_json::{Value, json};
+
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct DirectoryRevision {
+    schema_version: u8,
+    base: PathBuf,
+}
 
 fn main() -> Result<()> {
     let paths: Vec<_> = std::env::args_os().skip(1).map(PathBuf::from).collect();
@@ -24,6 +32,31 @@ fn main() -> Result<()> {
     );
     let raw = crystal_assets::read_loaded_verified_compiled_game_pack(&paths[0])?;
     let hosted = crystal_assets::read_loaded_verified_compiled_game_pack(&paths[1])?;
+    let revision_path = paths[2].join("revision.json");
+    let fallback = if revision_path.exists() {
+        let revision: DirectoryRevision = serde_json::from_slice(&std::fs::read(revision_path)?)?;
+        ensure!(
+            revision.schema_version == 1 && revision.base.is_relative(),
+            "relative Gym source revision"
+        );
+        Some(paths[2].join(revision.base))
+    } else {
+        None
+    };
+    let read_source = |name: &str| -> Result<Value> {
+        let local = paths[2].join(name);
+        let path = if local.try_exists()? {
+            local
+        } else {
+            fallback
+                .as_ref()
+                .with_context(|| format!("missing Gym source {name}"))?
+                .join(name)
+        };
+        Ok(serde_json::from_slice(
+            &std::fs::read(&path).with_context(|| path.display().to_string())?,
+        )?)
+    };
     let mut rooms = Vec::new();
     let mut contracts = BTreeMap::new();
     for name in [
@@ -36,17 +69,14 @@ fn main() -> Result<()> {
         "bemidji",
         "duluth",
     ] {
-        let document: Value =
-            serde_json::from_slice(&std::fs::read(paths[2].join(format!("{name}.json")))?)?;
+        let document = read_source(&format!("{name}.json"))?;
         let room = document["gyms"]
             .as_array()
             .and_then(|rooms| (rooms.len() == 1).then(|| &rooms[0]))
             .context("one room per authored source")?
             .clone();
         let id = room["id"].as_str().context("room ID")?.to_owned();
-        let contract: Value = serde_json::from_slice(&std::fs::read(
-            paths[2].join(format!("{name}-contract.json")),
-        )?)?;
+        let contract = read_source(&format!("{name}-contract.json"))?;
         rooms.push(room);
         contracts.insert(id, contract);
     }

@@ -1,4 +1,4 @@
-//! Pure checks for the optional five-cave extension to gym save migration.
+//! Pure checks for the bounded cave extension to gym save migration.
 
 use crystal_assets::GameDataSet;
 use crystal_core::state::{GameState, OverworldMemory};
@@ -12,19 +12,22 @@ use crate::cave_save_migration::CAVES;
 use crate::gym_save_migration::GYMS;
 
 const TARGET: &str = "core+northstar-gym-overhaul-v1+northstar-cave-overhaul-v1";
-const ARRIVALS: [TilePosition; 5] = [
+const ARRIVALS: [TilePosition; 8] = [
     TilePosition::new(9, 10),
     TilePosition::new(4, 13),
     TilePosition::new(17, 22),
     TilePosition::new(5, 18),
     TilePosition::new(5, 18),
+    TilePosition::new(7, 14),
+    TilePosition::new(9, 12),
+    TilePosition::new(5, 20),
 ];
 
 fn metadata_value() -> Value {
     let mut value = gym_tests::metadata_value();
     value["target_modpack_ids"] = json!([TARGET, format!("{TARGET}+hosted")]);
     value["cave_reentry"] = json!({
-        "policy": "minnesota-five-caves-v1",
+        "policy": "minnesota-eight-caves-v1",
         "maps": CAVES.iter().zip(ARRIVALS).map(|(map, arrival)| json!({
             "map_id": map, "arrival": arrival, "facing": "down",
         })).collect::<Vec<_>>()
@@ -78,7 +81,28 @@ fn clear_expected_snapshots(state: &mut GameState) {
 }
 
 #[test]
-fn combined_upgrade_relocates_all_thirteen_rooms_and_preserves_other_state() {
+fn earlier_five_cave_policy_preserves_the_three_later_rooms() {
+    let mut value = metadata_value();
+    value["cave_reentry"]["policy"] = json!("minnesota-five-caves-v1");
+    value["cave_reentry"]["maps"]
+        .as_array_mut()
+        .expect("room arrivals")
+        .truncate(5);
+    let metadata = parse(&value).expect("retained five-cave review policy");
+    for map_id in &CAVES[5..] {
+        let source = source_state(map_id);
+        let mut expected = source.clone();
+        for reset in GYMS.into_iter().chain(CAVES[..5].iter().copied()) {
+            expected.map_block_overrides.remove(reset);
+            expected.map_object_overrides.remove(reset);
+        }
+        let upgraded = upgrade_checkpoint(source, &metadata).expect("old bounded migration");
+        assert_eq!(upgraded, expected, "old policy must not reset {map_id}");
+    }
+}
+
+#[test]
+fn combined_upgrade_relocates_all_sixteen_rooms_and_preserves_other_state() {
     let metadata = metadata();
     let data = data();
     metadata

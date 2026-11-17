@@ -31652,14 +31652,14 @@
         ],
         "MN_GYM_1_TRAINER_1WonText": [
           [
-            "Well played!",
-            "Take a breath."
+            "Wait, we started",
+            "AND finished?"
           ]
         ],
         "MN_GYM_1_TRAINER_1LostText": [
           [
-            "Rest your team.",
-            "We can try again."
+            "There! I counted",
+            "that one."
           ]
         ],
         "MN_GYM_1_TRAINER_2Seen": [
@@ -31674,14 +31674,14 @@
         ],
         "MN_GYM_1_TRAINER_2WonText": [
           [
-            "Well played!",
-            "Take a breath."
+            "PIPBOOM, you can",
+            "exhale now."
           ]
         ],
         "MN_GYM_1_TRAINER_2LostText": [
           [
-            "Rest your team.",
-            "We can try again."
+            "Heard that stomp?",
+            "So did the guide."
           ]
         ],
         "MnRochesterGymGuideText": [
@@ -32298,14 +32298,14 @@
         ],
         "MN_GYM_2_TRAINER_1WonText": [
           [
-            "Well played!",
-            "Take a breath."
+            "Those hoof marks",
+            "are ours. Phew!"
           ]
         ],
         "MN_GYM_2_TRAINER_1LostText": [
           [
-            "Rest your team.",
-            "We can try again."
+            "Good footing,",
+            "SODCALF!"
           ]
         ],
         "MN_GYM_2_TRAINER_2Seen": [
@@ -32320,14 +32320,14 @@
         ],
         "MN_GYM_2_TRAINER_2WonText": [
           [
-            "Well played!",
-            "Take a breath."
+            "MUDNIP? Up here.",
+            "Match is over."
           ]
         ],
         "MN_GYM_2_TRAINER_2LostText": [
           [
-            "Rest your team.",
-            "We can try again."
+            "Up you come!",
+            "We got this one."
           ]
         ],
         "MN_GYM_2_TRAINER_1AfterText": [
@@ -32552,14 +32552,14 @@
         ],
         "MN_GYM_3_TRAINER_1WonText": [
           [
-            "Well played!",
-            "Take a breath."
+            "I felt safe behind",
+            "that screen. Huh."
           ]
         ],
         "MN_GYM_3_TRAINER_1LostText": [
           [
-            "Rest your team.",
-            "We can try again."
+            "That screen buys",
+            "us a little time."
           ]
         ],
         "MN_GYM_3_TRAINER_2Seen": [
@@ -32574,14 +32574,14 @@
         ],
         "MN_GYM_3_TRAINER_2WonText": [
           [
-            "Well played!",
-            "Take a breath."
+            "Two partners and I",
+            "still need a hand!"
           ]
         ],
         "MN_GYM_3_TRAINER_2LostText": [
           [
-            "Rest your team.",
-            "We can try again."
+            "Took me weeks to",
+            "get them in sync."
           ]
         ],
         "MN_GYM_3_TRAINER_1AfterText": [
@@ -36312,14 +36312,14 @@
         ],
         "MN_GYM_4_TRAINER_1WonText": [
           [
-            "Well played!",
-            "Take a breath."
+            "May I write down",
+            "how you did that?"
           ]
         ],
         "MN_GYM_4_TRAINER_1LostText": [
           [
-            "Rest your team.",
-            "We can try again."
+            "Hold still! I want",
+            "to draw that pose."
           ]
         ],
         "MN_GYM_4_TRAINER_2Seen": [
@@ -36334,14 +36334,14 @@
         ],
         "MN_GYM_4_TRAINER_2WonText": [
           [
-            "Well played!",
-            "Take a breath."
+            "Oof. Even my tool",
+            "belt felt that."
           ]
         ],
         "MN_GYM_4_TRAINER_2LostText": [
           [
-            "Rest your team.",
-            "We can try again."
+            "Hear those claws?",
+            "Sharp as shears."
           ]
         ],
         "MN_GYM_4_TRAINER_1AfterText": [
@@ -38777,22 +38777,18 @@
             "A clean landing."
           ],
           [
-            "Come onto the",
-            "stone. Your BADGE!"
+            "You've earned the",
+            "WIND BADGE!"
           ]
         ],
         "MnStCloudGymLeaderLostText": [
           [
-            "SAVEN: Back onto",
-            "the stone."
+            "SAVEN: Catch your",
+            "breath. Heal up"
           ],
           [
-            "Heal in town.",
-            "Watch each step."
-          ],
-          [
-            "Next time, look",
-            "one turn ahead."
+            "in town, then",
+            "come try again."
           ]
         ],
         "MnStCloudGymLeaderAfterText": [
@@ -38828,73 +38824,80 @@
         ],
         "MN_GYM_5_TRAINER_1WonText": [
           [
-            "Well played!",
-            "Take a breath."
+            "DEEPULSE heard me",
+            "gasp, I bet."
           ]
         ],
         "MN_GYM_5_TRAINER_1LostText": [
           [
-            "Rest your team.",
-            "We can try again."
+            "Even in this wind,",
+            "it hears my cue."
           ]
         ],
         "MN_GYM_5_TRAINER_2Seen": [
           [
-            "HALLEN: You came",
-            "through the wind."
+            "HALLEN: The fans",
+            "take the long way."
           ],
           [
-            "Can your team keep",
-            "its footing too?"
+            "This catwalk is",
+            "my training lane!"
           ]
         ],
         "MN_GYM_5_TRAINER_2WonText": [
           [
-            "Well played!",
-            "Take a breath."
+            "Deal. The catwalk",
+            "is yours to use."
           ]
         ],
         "MN_GYM_5_TRAINER_2LostText": [
           [
-            "Rest your team.",
-            "We can try again."
+            "I could hear that",
+            "over both fans!"
           ]
         ],
         "MN_GYM_5_TRAINER_1AfterText": [
           [
-            "Set the lower fan",
-            "EAST. Cross to the"
+            "Both fans turn",
+            "together. EAST"
           ],
           [
-            "other platform."
+            "takes you over.",
+            "WEST brings you"
+          ],
+          [
+            "to SAVEN's bank."
           ]
         ],
         "MN_GYM_5_TRAINER_2AfterText": [
           [
-            "The upper fan must",
-            "blow WEST to reach"
+            "Catwalk is clear.",
+            "Take the short way"
           ],
           [
-            "SAVEN. A control",
-            "on either bank."
+            "to SAVEN or home."
           ]
         ],
         "MnStCloudGymGuideText": [
           [
-            "Battle WYREL, then",
-            "turn the lower fan"
+            "Beat WYREL first.",
+            "Both fans turn"
           ],
           [
-            "EAST. Cross over.",
-            "Turn the upper fan"
+            "together. Choose",
+            "EAST to cross."
           ],
           [
-            "WEST to reach",
-            "SAVEN. Controls on"
+            "Reverse to WEST",
+            "on the far bank."
           ],
           [
-            "both banks let you",
-            "change your route."
+            "HALLEN opens a",
+            "shorter catwalk."
+          ],
+          [
+            "His match is",
+            "optional."
           ]
         ],
         "MnStCloudGymLeaderGiftText": [
@@ -38938,19 +38941,19 @@
         "MnStCloudGymRequirementsText": [
           [
             "Show your CAPITOL",
-            "BADGE first. Then"
+            "BADGE, then beat"
           ],
           [
-            "take WYREL and",
-            "HALLEN in that"
+            "WYREL. Cross EAST.",
+            "On the far bank,"
           ],
           [
-            "order. The guide",
-            "by the door can"
+            "choose WEST to",
+            "reach me, or beat"
           ],
           [
-            "show you where the",
-            "wind carries you."
+            "HALLEN to open",
+            "his catwalk."
           ]
         ]
       },
@@ -39135,14 +39138,14 @@
         ],
         "MN_GYM_6_TRAINER_1WonText": [
           [
-            "Well played!",
-            "Take a breath."
+            "Whoa! Grab the",
+            "rail, YODELOON!"
           ]
         ],
         "MN_GYM_6_TRAINER_1LostText": [
           [
-            "Rest your team.",
-            "We can try again."
+            "Look at the rings",
+            "in the water!"
           ]
         ],
         "MN_GYM_6_TRAINER_2Seen": [
@@ -39157,14 +39160,14 @@
         ],
         "MN_GYM_6_TRAINER_2WonText": [
           [
-            "Well played!",
-            "Take a breath."
+            "Made some waves,",
+            "didn't we?"
           ]
         ],
         "MN_GYM_6_TRAINER_2LostText": [
           [
-            "Rest your team.",
-            "We can try again."
+            "The dock will stop",
+            "rocking in a bit."
           ]
         ],
         "MN_GYM_6_TRAINER_1AfterText": [
@@ -40243,14 +40246,14 @@
         ],
         "MN_GYM_7_TRAINER_1WonText": [
           [
-            "Well played!",
-            "Take a breath."
+            "I could learn from",
+            "your timing."
           ]
         ],
         "MN_GYM_7_TRAINER_1LostText": [
           [
-            "Rest your team.",
-            "We can try again."
+            "Had time to grow",
+            "some deep roots."
           ]
         ],
         "MN_GYM_7_TRAINER_2Seen": [
@@ -40265,78 +40268,87 @@
         ],
         "MN_GYM_7_TRAINER_2WonText": [
           [
-            "Well played!",
-            "Take a breath."
+            "Even my CYPRIELLE",
+            "looks impressed."
           ]
         ],
         "MN_GYM_7_TRAINER_2LostText": [
           [
-            "Rest your team.",
-            "We can try again."
+            "My hands smell of",
+            "blossoms again."
           ]
         ],
         "MN_GYM_7_TRAINER_3Seen": [
           [
-            "BRINDEL: A quiet",
-            "corner suits me."
+            "This old bramble",
+            "hides a short way."
           ],
           [
-            "A quiet battle?",
-            "Not so much!"
+            "Win our match and",
+            "I will clear it."
           ]
         ],
         "MN_GYM_7_TRAINER_3WonText": [
           [
-            "Well played!",
-            "Take a breath."
+            "You took my bet.",
+            "I owe you a trail."
           ]
         ],
         "MN_GYM_7_TRAINER_3LostText": [
           [
-            "Rest your team.",
-            "We can try again."
+            "There's still the",
+            "long way round."
           ]
         ],
         "MnBemidjiGymGuideText": [
           [
             "Prune either tree.",
-            "Seek both keepers."
+            "Beat both keepers."
           ],
           [
             "West: MOSLEN.",
             "North: ELVREN."
           ],
           [
-            "BRINDEL is extra.",
-            "Then face ORLIS."
+            "BRINDEL opens a",
+            "trail between the"
           ],
           [
-            "His gate opens a",
-            "short way home."
+            "clearings. His",
+            "match is extra."
           ]
         ],
         "MN_GYM_7_TRAINER_1AfterText": [
           [
-            "ELVREN tends the",
-            "north clearing."
+            "Have you met",
+            "ELVREN up north?"
           ],
           [
-            "Try that tree."
+            "Once you beat us",
+            "both, ORLIS will"
+          ],
+          [
+            "battle you."
           ]
         ],
         "MN_GYM_7_TRAINER_2AfterText": [
           [
             "MOSLEN tends west.",
-            "ORLIS wants to see"
+            "Win against both"
           ],
           [
-            "both our stamps."
+            "of us, then meet",
+            "ORLIS."
           ]
         ],
         "MN_GYM_7_TRAINER_3AfterText": [
           [
-            "Old roots can feed",
-            "a brand-new shoot."
+            "I've cleared a",
+            "trail to the east."
+          ],
+          [
+            "It joins the path",
+            "to the north tree."
           ]
         ],
         "MnBemidjiGymCourtRequirementsText": [
@@ -40355,19 +40367,15 @@
             "Teach it from your"
           ],
           [
-            "TM/HM pocket. Once",
-            "you've beaten"
+            "TM/HM pocket.",
+            "Cut either little"
           ],
           [
-            "MOSLEN, cut the",
-            "little tree in the"
+            "tree to reach a",
+            "keeper. Beat both"
           ],
           [
-            "west hedge. That's",
-            "where we left room"
-          ],
-          [
-            "for a path."
+            "before ORLIS."
           ]
         ],
         "MnBemidjiGymGuideFullText": [
@@ -40873,14 +40881,14 @@
         ],
         "MN_GYM_8_TRAINER_1WonText": [
           [
-            "Well played!",
-            "Take a breath."
+            "Easy, PLOWZER!",
+            "We can stop here."
           ]
         ],
         "MN_GYM_8_TRAINER_1LostText": [
           [
-            "Rest your team.",
-            "We can try again."
+            "See the grooves",
+            "PLOWZER leaves?"
           ]
         ],
         "MN_GYM_8_TRAINER_2Seen": [
@@ -40895,14 +40903,14 @@
         ],
         "MN_GYM_8_TRAINER_2WonText": [
           [
-            "Well played!",
-            "Take a breath."
+            "No encore? Ah,",
+            "fair enough."
           ]
         ],
         "MN_GYM_8_TRAINER_2LostText": [
           [
-            "Rest your team.",
-            "We can try again."
+            "BUTTERMUSE likes",
+            "a repeat audience."
           ]
         ],
         "MN_GYM_8_TRAINER_3Seen": [
@@ -40917,14 +40925,14 @@
         ],
         "MN_GYM_8_TRAINER_3WonText": [
           [
-            "Well played!",
-            "Take a breath."
+            "Worth the wait!",
+            "Thanks for coming."
           ]
         ],
         "MN_GYM_8_TRAINER_3LostText": [
           [
-            "Rest your team.",
-            "We can try again."
+            "We get few guests",
+            "on this side."
           ]
         ],
         "MN_GYM_8_TRAINER_1AfterText": [
@@ -46999,19 +47007,15 @@
         "MN_EXTRA_R10_SPRINGWon": [
           [
             "You got me. I'll",
-            "warm the lid in my"
+            "warm the tin lid"
           ],
           [
-            "hands. If it comes",
-            "loose, I'll eat"
+            "in my hands.",
+            "Stuff washes up"
           ],
           [
-            "before I decide",
-            "whether to put"
-          ],
-          [
-            "anything else in",
-            "that spring."
+            "on the south bank.",
+            "My last spoon did."
           ]
         ],
         "MN_EXTRA_R10_SPRINGLost": [
@@ -47170,24 +47174,20 @@
         ],
         "MN_INTERIOR_R20_CLEFT_SCOUTInteriorText": [
           [
-            "For the far mouth,",
-            "take the dry"
+            "East stairs lead",
+            "to the far mouth."
           ],
           [
-            "gallery to the",
-            "stairs in the east"
+            "Heading back? Take",
+            "the west drops."
           ],
           [
-            "corner. Coming",
-            "back west from the"
+            "See that dry lip",
+            "across the seep?"
           ],
           [
-            "shelf? You can",
-            "drop down that"
-          ],
-          [
-            "side and skip the",
-            "loop."
+            "Someone set a pack",
+            "down over there."
           ]
         ]
       },
@@ -50126,27 +50126,20 @@
       "MnR17Cave1F": {
         "MN_INTERIOR_R17_LICHEN_READERInteriorText": [
           [
-            "See where the",
-            "lichen stops at"
+            "The lichen crossed",
+            "the crack at last."
           ],
           [
-            "the crack? I",
-            "thought it was a"
+            "I waited a year",
+            "to draw that line!"
           ],
           [
-            "stain till I came",
-            "back the next"
+            "Use the west steps",
+            "for the cache."
           ],
           [
-            "spring and saw it",
-            "had crossed. Leave"
-          ],
-          [
-            "the loose stones",
-            "alone on your way"
-          ],
-          [
-            "to the cache."
+            "The low ledge is a",
+            "quick way back."
           ]
         ]
       },
@@ -50770,20 +50763,20 @@
       "MnR13Cave1F": {
         "MN_R13_HARPERText": [
           [
-            "Set your pack out",
-            "of the doorway and"
+            "Cold hands? Here,",
+            "I'll hold those"
           ],
           [
-            "bring your team to",
-            "the bench. I'll"
+            "POKE BALLS. I'll",
+            "check your team."
           ],
           [
-            "check them while",
-            "you get the"
+            "I tucked a can",
+            "under the stone"
           ],
           [
-            "feeling back in",
-            "your hands."
+            "on the north bank.",
+            "Yours if you like."
           ]
         ]
       },
@@ -52984,26 +52977,26 @@
         ],
         "MN_GYM_1_TRAINER_1WonText": [
           [
-            "Well played!",
-            "Take a breath."
+            "Wait, we started",
+            "AND finished?"
           ]
         ],
         "MN_GYM_1_TRAINER_1LostText": [
           [
-            "Rest your team.",
-            "We can try again."
+            "There! I counted",
+            "that one."
           ]
         ],
         "MN_GYM_1_TRAINER_2WonText": [
           [
-            "Well played!",
-            "Take a breath."
+            "PIPBOOM, you can",
+            "exhale now."
           ]
         ],
         "MN_GYM_1_TRAINER_2LostText": [
           [
-            "Rest your team.",
-            "We can try again."
+            "Heard that stomp?",
+            "So did the guide."
           ]
         ],
         "MnRochesterGymBeatTavelText": [
@@ -53103,26 +53096,26 @@
         ],
         "MN_GYM_2_TRAINER_1WonText": [
           [
-            "Well played!",
-            "Take a breath."
+            "Those hoof marks",
+            "are ours. Phew!"
           ]
         ],
         "MN_GYM_2_TRAINER_1LostText": [
           [
-            "Rest your team.",
-            "We can try again."
+            "Good footing,",
+            "SODCALF!"
           ]
         ],
         "MN_GYM_2_TRAINER_2WonText": [
           [
-            "Well played!",
-            "Take a breath."
+            "MUDNIP? Up here.",
+            "Match is over."
           ]
         ],
         "MN_GYM_2_TRAINER_2LostText": [
           [
-            "Rest your team.",
-            "We can try again."
+            "Up you come!",
+            "We got this one."
           ]
         ]
       },
@@ -53264,26 +53257,26 @@
         ],
         "MN_GYM_3_TRAINER_1WonText": [
           [
-            "Well played!",
-            "Take a breath."
+            "I felt safe behind",
+            "that screen. Huh."
           ]
         ],
         "MN_GYM_3_TRAINER_1LostText": [
           [
-            "Rest your team.",
-            "We can try again."
+            "That screen buys",
+            "us a little time."
           ]
         ],
         "MN_GYM_3_TRAINER_2WonText": [
           [
-            "Well played!",
-            "Take a breath."
+            "Two partners and I",
+            "still need a hand!"
           ]
         ],
         "MN_GYM_3_TRAINER_2LostText": [
           [
-            "Rest your team.",
-            "We can try again."
+            "Took me weeks to",
+            "get them in sync."
           ]
         ],
         "MnMinneapolisGymV2CompleteText": [
@@ -53397,46 +53390,50 @@
         ],
         "MN_GYM_4_TRAINER_1WonText": [
           [
-            "Well played!",
-            "Take a breath."
+            "May I write down",
+            "how you did that?"
           ]
         ],
         "MN_GYM_4_TRAINER_1LostText": [
           [
-            "Rest your team.",
-            "We can try again."
+            "Hold still! I want",
+            "to draw that pose."
           ]
         ],
         "MN_GYM_4_TRAINER_2WonText": [
           [
-            "Well played!",
-            "Take a breath."
+            "Oof. Even my tool",
+            "belt felt that."
           ]
         ],
         "MN_GYM_4_TRAINER_2LostText": [
           [
-            "Rest your team.",
-            "We can try again."
+            "Hear those claws?",
+            "Sharp as shears."
           ]
         ]
       },
       "MnStCloudGym": {
         "MnStCloudGymGuideText": [
           [
-            "Battle WYREL, then",
-            "turn the lower fan"
+            "Beat WYREL first.",
+            "Both fans turn"
           ],
           [
-            "EAST. Cross over.",
-            "Turn the upper fan"
+            "together. Choose",
+            "EAST to cross."
           ],
           [
-            "WEST to reach",
-            "SAVEN. Controls on"
+            "Reverse to WEST",
+            "on the far bank."
           ],
           [
-            "both banks let you",
-            "change your route."
+            "HALLEN opens a",
+            "shorter catwalk."
+          ],
+          [
+            "His match is",
+            "optional."
           ]
         ],
         "MnStCloudGymLeaderSeenText": [
@@ -53459,8 +53456,8 @@
             "A clean landing."
           ],
           [
-            "Come onto the",
-            "stone. Your BADGE!"
+            "You've earned the",
+            "WIND BADGE!"
           ]
         ],
         "MnStCloudGymLeaderAfterText": [
@@ -53496,36 +53493,39 @@
         ],
         "MN_GYM_5_TRAINER_1AfterText": [
           [
-            "Set the lower fan",
-            "EAST. Cross to the"
+            "Both fans turn",
+            "together. EAST"
           ],
           [
-            "other platform."
+            "takes you over.",
+            "WEST brings you"
+          ],
+          [
+            "to SAVEN's bank."
           ]
         ],
         "MN_GYM_5_TRAINER_2Seen": [
           [
-            "HALLEN: You came",
-            "through the wind."
+            "HALLEN: The fans",
+            "take the long way."
           ],
           [
-            "Can your team keep",
-            "its footing too?"
+            "This catwalk is",
+            "my training lane!"
           ]
         ],
         "MN_GYM_5_TRAINER_2AfterText": [
           [
-            "The upper fan must",
-            "blow WEST to reach"
+            "Catwalk is clear.",
+            "Take the short way"
           ],
           [
-            "SAVEN. A control",
-            "on either bank."
+            "to SAVEN or home."
           ]
         ],
         "MnStCloudGymLOWER_WEST_BANKRoutingEASTSuccessText": [
           [
-            "Lower fan: EAST.",
+            "Both fans: EAST.",
             "Follow the arrows."
           ]
         ],
@@ -53536,7 +53536,7 @@
         ],
         "MnStCloudGymLOWER_WEST_BANKRoutingWESTSuccessText": [
           [
-            "Lower fan: WEST.",
+            "Both fans: WEST.",
             "Follow the arrows."
           ]
         ],
@@ -53547,7 +53547,7 @@
         ],
         "MnStCloudGymLOWER_EAST_BANKRoutingEASTSuccessText": [
           [
-            "Lower fan: EAST.",
+            "Both fans: EAST.",
             "Follow the arrows."
           ]
         ],
@@ -53558,7 +53558,7 @@
         ],
         "MnStCloudGymLOWER_EAST_BANKRoutingWESTSuccessText": [
           [
-            "Lower fan: WEST.",
+            "Both fans: WEST.",
             "Follow the arrows."
           ]
         ],
@@ -53569,7 +53569,7 @@
         ],
         "MnStCloudGymUPPER_WEST_BANKRoutingWESTSuccessText": [
           [
-            "Upper fan: WEST.",
+            "Both fans: WEST.",
             "Follow the arrows."
           ]
         ],
@@ -53580,7 +53580,7 @@
         ],
         "MnStCloudGymUPPER_WEST_BANKRoutingEASTSuccessText": [
           [
-            "Upper fan: EAST.",
+            "Both fans: EAST.",
             "Follow the arrows."
           ]
         ],
@@ -53591,7 +53591,7 @@
         ],
         "MnStCloudGymUPPER_EAST_BANKRoutingWESTSuccessText": [
           [
-            "Upper fan: WEST.",
+            "Both fans: WEST.",
             "Follow the arrows."
           ]
         ],
@@ -53602,7 +53602,7 @@
         ],
         "MnStCloudGymUPPER_EAST_BANKRoutingEASTSuccessText": [
           [
-            "Upper fan: EAST.",
+            "Both fans: EAST.",
             "Follow the arrows."
           ]
         ],
@@ -53613,26 +53613,78 @@
         ],
         "MN_GYM_5_TRAINER_1WonText": [
           [
-            "Well played!",
-            "Take a breath."
+            "DEEPULSE heard me",
+            "gasp, I bet."
           ]
         ],
         "MN_GYM_5_TRAINER_1LostText": [
           [
-            "Rest your team.",
-            "We can try again."
+            "Even in this wind,",
+            "it hears my cue."
           ]
         ],
         "MN_GYM_5_TRAINER_2WonText": [
           [
-            "Well played!",
-            "Take a breath."
+            "Deal. The catwalk",
+            "is yours to use."
           ]
         ],
         "MN_GYM_5_TRAINER_2LostText": [
           [
-            "Rest your team.",
-            "We can try again."
+            "I could hear that",
+            "over both fans!"
+          ]
+        ],
+        "MnStCloudGymLOWER_WEST_BANKRoutingPrompt": [
+          [
+            "Both fans share",
+            "one air relay."
+          ]
+        ],
+        "MnStCloudGymLOWER_EAST_BANKRoutingPrompt": [
+          [
+            "Both fans share",
+            "one air relay."
+          ]
+        ],
+        "MnStCloudGymUPPER_WEST_BANKRoutingPrompt": [
+          [
+            "Both fans share",
+            "one air relay."
+          ]
+        ],
+        "MnStCloudGymUPPER_EAST_BANKRoutingPrompt": [
+          [
+            "Both fans share",
+            "one air relay."
+          ]
+        ],
+        "MnStCloudGymLeaderLostText": [
+          [
+            "SAVEN: Catch your",
+            "breath. Heal up"
+          ],
+          [
+            "in town, then",
+            "come try again."
+          ]
+        ],
+        "MnStCloudGymRequirementsText": [
+          [
+            "Show your CAPITOL",
+            "BADGE, then beat"
+          ],
+          [
+            "WYREL. Cross EAST.",
+            "On the far bank,"
+          ],
+          [
+            "choose WEST to",
+            "reach me, or beat"
+          ],
+          [
+            "HALLEN to open",
+            "his catwalk."
           ]
         ]
       },
@@ -53820,26 +53872,26 @@
         ],
         "MN_GYM_6_TRAINER_1WonText": [
           [
-            "Well played!",
-            "Take a breath."
+            "Whoa! Grab the",
+            "rail, YODELOON!"
           ]
         ],
         "MN_GYM_6_TRAINER_1LostText": [
           [
-            "Rest your team.",
-            "We can try again."
+            "Look at the rings",
+            "in the water!"
           ]
         ],
         "MN_GYM_6_TRAINER_2WonText": [
           [
-            "Well played!",
-            "Take a breath."
+            "Made some waves,",
+            "didn't we?"
           ]
         ],
         "MN_GYM_6_TRAINER_2LostText": [
           [
-            "Rest your team.",
-            "We can try again."
+            "The dock will stop",
+            "rocking in a bit."
           ]
         ]
       },
@@ -53847,19 +53899,19 @@
         "MnBemidjiGymGuideText": [
           [
             "Prune either tree.",
-            "Seek both keepers."
+            "Beat both keepers."
           ],
           [
             "West: MOSLEN.",
             "North: ELVREN."
           ],
           [
-            "BRINDEL is extra.",
-            "Then face ORLIS."
+            "BRINDEL opens a",
+            "trail between the"
           ],
           [
-            "His gate opens a",
-            "short way home."
+            "clearings. His",
+            "match is extra."
           ]
         ],
         "MnBemidjiGymLeaderSeenText": [
@@ -53924,11 +53976,15 @@
         ],
         "MN_GYM_7_TRAINER_1AfterText": [
           [
-            "ELVREN tends the",
-            "north clearing."
+            "Have you met",
+            "ELVREN up north?"
           ],
           [
-            "Try that tree."
+            "Once you beat us",
+            "both, ORLIS will"
+          ],
+          [
+            "battle you."
           ]
         ],
         "MN_GYM_7_TRAINER_2Seen": [
@@ -53944,62 +54000,84 @@
         "MN_GYM_7_TRAINER_2AfterText": [
           [
             "MOSLEN tends west.",
-            "ORLIS wants to see"
+            "Win against both"
           ],
           [
-            "both our stamps."
+            "of us, then meet",
+            "ORLIS."
           ]
         ],
         "MN_GYM_7_TRAINER_3Seen": [
           [
-            "BRINDEL: A quiet",
-            "corner suits me."
+            "This old bramble",
+            "hides a short way."
           ],
           [
-            "A quiet battle?",
-            "Not so much!"
+            "Win our match and",
+            "I will clear it."
           ]
         ],
         "MN_GYM_7_TRAINER_3AfterText": [
           [
-            "Old roots can feed",
-            "a brand-new shoot."
+            "I've cleared a",
+            "trail to the east."
+          ],
+          [
+            "It joins the path",
+            "to the north tree."
           ]
         ],
         "MN_GYM_7_TRAINER_1WonText": [
           [
-            "Well played!",
-            "Take a breath."
+            "I could learn from",
+            "your timing."
           ]
         ],
         "MN_GYM_7_TRAINER_1LostText": [
           [
-            "Rest your team.",
-            "We can try again."
+            "Had time to grow",
+            "some deep roots."
           ]
         ],
         "MN_GYM_7_TRAINER_2WonText": [
           [
-            "Well played!",
-            "Take a breath."
+            "Even my CYPRIELLE",
+            "looks impressed."
           ]
         ],
         "MN_GYM_7_TRAINER_2LostText": [
           [
-            "Rest your team.",
-            "We can try again."
+            "My hands smell of",
+            "blossoms again."
           ]
         ],
         "MN_GYM_7_TRAINER_3WonText": [
           [
-            "Well played!",
-            "Take a breath."
+            "You took my bet.",
+            "I owe you a trail."
           ]
         ],
         "MN_GYM_7_TRAINER_3LostText": [
           [
-            "Rest your team.",
-            "We can try again."
+            "There's still the",
+            "long way round."
+          ]
+        ],
+        "MnBemidjiGymGuideCutGiftText": [
+          [
+            "Here, HM CUT.",
+            "Teach it from your"
+          ],
+          [
+            "TM/HM pocket.",
+            "Cut either little"
+          ],
+          [
+            "tree to reach a",
+            "keeper. Beat both"
+          ],
+          [
+            "before ORLIS."
           ]
         ]
       },
@@ -54125,38 +54203,38 @@
         ],
         "MN_GYM_8_TRAINER_1WonText": [
           [
-            "Well played!",
-            "Take a breath."
+            "Easy, PLOWZER!",
+            "We can stop here."
           ]
         ],
         "MN_GYM_8_TRAINER_1LostText": [
           [
-            "Rest your team.",
-            "We can try again."
+            "See the grooves",
+            "PLOWZER leaves?"
           ]
         ],
         "MN_GYM_8_TRAINER_2WonText": [
           [
-            "Well played!",
-            "Take a breath."
+            "No encore? Ah,",
+            "fair enough."
           ]
         ],
         "MN_GYM_8_TRAINER_2LostText": [
           [
-            "Rest your team.",
-            "We can try again."
+            "BUTTERMUSE likes",
+            "a repeat audience."
           ]
         ],
         "MN_GYM_8_TRAINER_3WonText": [
           [
-            "Well played!",
-            "Take a breath."
+            "Worth the wait!",
+            "Thanks for coming."
           ]
         ],
         "MN_GYM_8_TRAINER_3LostText": [
           [
-            "Rest your team.",
-            "We can try again."
+            "We get few guests",
+            "on this side."
           ]
         ]
       }
@@ -54187,15 +54265,18 @@
         ],
         "MN_CAVE_DRIFTLESS_ROOKIEAfterText": [
           [
-            "This ridge goes",
-            "right in a circle."
+            "I went around this",
+            "ridge three times."
           ],
           [
-            "I passed the same",
-            "rock three times."
+            "Saw a dented can",
+            "under its west lip"
           ],
           [
-            "I call that",
+            "all three times.",
+            "I call that"
+          ],
+          [
             "exploring."
           ]
         ]
@@ -54229,6 +54310,20 @@
           [
             "I found a little",
             "gold in the dust."
+          ]
+        ],
+        "MN_EXTRA_R10_SPRINGWon": [
+          [
+            "You got me. I'll",
+            "warm the tin lid"
+          ],
+          [
+            "in my hands.",
+            "Stuff washes up"
+          ],
+          [
+            "on the south bank.",
+            "My last spoon did."
           ]
         ]
       },
@@ -54287,7 +54382,67 @@
           ]
         ]
       },
-      "MnVoyageursIceB1F": {}
+      "MnVoyageursIceB1F": {},
+      "MnR13Cave1F": {
+        "MN_R13_HARPERText": [
+          [
+            "Cold hands? Here,",
+            "I'll hold those"
+          ],
+          [
+            "POKE BALLS. I'll",
+            "check your team."
+          ],
+          [
+            "I tucked a can",
+            "under the stone"
+          ],
+          [
+            "on the north bank.",
+            "Yours if you like."
+          ]
+        ]
+      },
+      "MnR17Cave1F": {
+        "MN_INTERIOR_R17_LICHEN_READERInteriorText": [
+          [
+            "The lichen crossed",
+            "the crack at last."
+          ],
+          [
+            "I waited a year",
+            "to draw that line!"
+          ],
+          [
+            "Use the west steps",
+            "for the cache."
+          ],
+          [
+            "The low ledge is a",
+            "quick way back."
+          ]
+        ]
+      },
+      "MnR20Cave1F": {
+        "MN_INTERIOR_R20_CLEFT_SCOUTInteriorText": [
+          [
+            "East stairs lead",
+            "to the far mouth."
+          ],
+          [
+            "Heading back? Take",
+            "the west drops."
+          ],
+          [
+            "See that dry lip",
+            "across the seep?"
+          ],
+          [
+            "Someone set a pack",
+            "down over there."
+          ]
+        ]
+      }
     }
   }
 }

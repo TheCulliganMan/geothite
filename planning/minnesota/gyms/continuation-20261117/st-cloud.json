@@ -1,0 +1,561 @@
+{
+  "schema_version": 1,
+  "status": "Native continuation room. Installed roster and dialogue follow the canonical story-pokemon.json and story.json sources.",
+  "gyms": [
+    {
+      "slot": 5,
+      "id": "MnStCloudGym",
+      "constant": "MN_ST_CLOUD_GYM",
+      "city": "ST CLOUD",
+      "leader": "SAVEN",
+      "trainer_class": "MN_LEADER_SAVEN",
+      "leader_sprite": "SPRITE_MN_LEADER_SAVEN",
+      "leader_at": [
+        3,
+        3
+      ],
+      "badge_flag": "ENGINE_STORMBADGE",
+      "requires": [
+        "BADGE_4"
+      ],
+      "reward": "TM_SWIFT",
+      "party": [
+        {
+          "species": "DEEPULSE",
+          "level": 28,
+          "moves": [
+            "PSYBEAM",
+            "WING_ATTACK",
+            "LIGHT_SCREEN",
+            "SWIFT"
+          ]
+        },
+        {
+          "species": "BANKWING",
+          "level": 29,
+          "moves": [
+            "DIG",
+            "WING_ATTACK",
+            "QUICK_ATTACK",
+            "SWIFT"
+          ]
+        },
+        {
+          "species": "SILOHAWK",
+          "level": 30,
+          "moves": [
+            "WING_ATTACK",
+            "FAINT_ATTACK",
+            "LEER",
+            "ROAR"
+          ]
+        }
+      ],
+      "rows": [
+        "[ttt##tt]",
+        "[...<<.C]",
+        "[..C##..]",
+        "##GGGG..]",
+        "[www##.M]",
+        "[www<<..]",
+        "[wwC##C.]",
+        "[LwR##bb]",
+        "[dsd####]"
+      ],
+      "art": {
+        "#": [
+          "lab",
+          "00"
+        ],
+        ".": [
+          "lab",
+          "01"
+        ],
+        "t": [
+          "lab",
+          "09"
+        ],
+        "b": [
+          "tower",
+          "0d"
+        ],
+        "L": [
+          "tower",
+          "1a"
+        ],
+        "R": [
+          "tower",
+          "19"
+        ],
+        "s": [
+          "tower",
+          "26"
+        ],
+        ">": [
+          "tower",
+          "0b"
+        ],
+        "<": [
+          "tower",
+          "0b"
+        ],
+        "[": [
+          "lab",
+          "1d"
+        ],
+        "]": [
+          "lab",
+          "1e"
+        ],
+        "w": [
+          "tower",
+          "09"
+        ],
+        "d": [
+          "tower",
+          "0d"
+        ],
+        "C": [
+          "lab",
+          "08"
+        ],
+        "M": [
+          "facility",
+          "12"
+        ],
+        "G": [
+          "tower",
+          "0b"
+        ]
+      },
+      "trainers": [
+        {
+          "id": "MN_GYM_5_TRAINER_1",
+          "name": "WYREL",
+          "trainer_class": "COOLTRAINERF",
+          "sprite": "SPRITE_COOLTRAINER_F",
+          "at": [
+            4,
+            11
+          ],
+          "party": [
+            {
+              "species": "DEEPULSE",
+              "level": 25,
+              "moves": [
+                "PSYBEAM",
+                "WING_ATTACK",
+                "LIGHT_SCREEN",
+                "SWIFT"
+              ]
+            }
+          ],
+          "optional": false,
+          "before_lines": [
+            "WYREL: DEEPULSE",
+            "hears every step.",
+            "Even yours!"
+          ],
+          "after_lines": [
+            "Both fans turn",
+            "together. EAST",
+            "takes you over.",
+            "WEST brings you",
+            "to SAVEN's bank."
+          ],
+          "requires": []
+        },
+        {
+          "id": "MN_GYM_5_TRAINER_2",
+          "name": "HALLEN",
+          "trainer_class": "BIRD_KEEPER",
+          "sprite": "SPRITE_YOUNGSTER",
+          "at": [
+            14,
+            6
+          ],
+          "party": [
+            {
+              "species": "SQUALLFIN",
+              "level": 25,
+              "moves": [
+                "ICY_WIND",
+                "WING_ATTACK",
+                "QUICK_ATTACK",
+                "MIST"
+              ]
+            },
+            {
+              "species": "BOOMRUFF",
+              "level": 26,
+              "moves": [
+                "STOMP",
+                "WING_ATTACK",
+                "FOCUS_ENERGY",
+                "ROAR"
+              ]
+            }
+          ],
+          "optional": true,
+          "before_lines": [
+            "HALLEN: The fans",
+            "take the long way.",
+            "This catwalk is",
+            "my training lane!"
+          ],
+          "after_lines": [
+            "Catwalk is clear.",
+            "Take the short way",
+            "to SAVEN or home."
+          ],
+          "requires": []
+        }
+      ],
+      "stations": [],
+      "gates": [
+        {
+          "at": [
+            4,
+            5
+          ],
+          "requires": [
+            "EVENT_MN_GYM_5_V2_RELAY_EAST"
+          ],
+          "open_symbol": ">",
+          "event": "EVENT_MN_GYM_5_V2_LOWER_TILE_A"
+        },
+        {
+          "at": [
+            5,
+            5
+          ],
+          "requires": [
+            "EVENT_MN_GYM_5_V2_RELAY_EAST"
+          ],
+          "open_symbol": ">",
+          "event": "EVENT_MN_GYM_5_V2_LOWER_TILE_B"
+        },
+        {
+          "at": [
+            4,
+            1
+          ],
+          "requires": [
+            "EVENT_MN_GYM_5_V2_RELAY_EAST"
+          ],
+          "open_symbol": ">",
+          "event": "EVENT_MN_GYM_5_V2_UPPER_TILE_A"
+        },
+        {
+          "at": [
+            5,
+            1
+          ],
+          "requires": [
+            "EVENT_MN_GYM_5_V2_RELAY_EAST"
+          ],
+          "open_symbol": ">",
+          "event": "EVENT_MN_GYM_5_V2_UPPER_TILE_B"
+        },
+        {
+          "at": [
+            2,
+            3
+          ],
+          "requires": [
+            "EVENT_MN_GYM_5_TRAINER_2_DEFEATED"
+          ],
+          "open_symbol": "w",
+          "event": "EVENT_MN_GYM_5_V2_CATWALK_2_OPEN"
+        },
+        {
+          "at": [
+            3,
+            3
+          ],
+          "requires": [
+            "EVENT_MN_GYM_5_TRAINER_2_DEFEATED"
+          ],
+          "open_symbol": "w",
+          "event": "EVENT_MN_GYM_5_V2_CATWALK_3_OPEN"
+        },
+        {
+          "at": [
+            4,
+            3
+          ],
+          "requires": [
+            "EVENT_MN_GYM_5_TRAINER_2_DEFEATED"
+          ],
+          "open_symbol": "w",
+          "event": "EVENT_MN_GYM_5_V2_CATWALK_4_OPEN"
+        },
+        {
+          "at": [
+            5,
+            3
+          ],
+          "requires": [
+            "EVENT_MN_GYM_5_TRAINER_2_DEFEATED"
+          ],
+          "open_symbol": "w",
+          "event": "EVENT_MN_GYM_5_V2_CATWALK_5_OPEN"
+        }
+      ],
+      "guide": [
+        "Beat WYREL first.",
+        "Both fans turn",
+        "together. Choose",
+        "EAST to cross.",
+        "Reverse to WEST",
+        "on the far bank.",
+        "HALLEN opens a",
+        "shorter catwalk.",
+        "His match is",
+        "optional."
+      ],
+      "walkthrough": [
+        "MN_GYM_5_TRAINER_1",
+        "EAST",
+        "WEST"
+      ],
+      "dimensions_metatiles": [
+        9,
+        9
+      ],
+      "arrival_core": [
+        4,
+        15
+      ],
+      "exit_tiles_core": [
+        [
+          4,
+          17
+        ],
+        [
+          5,
+          17
+        ]
+      ],
+      "guide_at": [
+        7,
+        14
+      ],
+      "leader_court_locked": true,
+      "before_lines": [
+        "SAVEN: Feel that?",
+        "The wind turned.",
+        "A good flier",
+        "turns with it.",
+        "Let me see how",
+        "quickly you adapt!"
+      ],
+      "victory_lines": [
+        "SAVEN: Down we go!",
+        "A clean landing.",
+        "You've earned the",
+        "WIND BADGE!"
+      ],
+      "after_lines": [
+        "Show your WIND",
+        "BADGE to the depot",
+        "guide for HM FLY.",
+        "Pick somewhere",
+        "you've already",
+        "walked to for your",
+        "first flight back.",
+        "It's different",
+        "seeing it from up",
+        "there."
+      ],
+      "winds": {
+        ">": "WALK_RIGHT",
+        "<": "WALK_LEFT"
+      },
+      "wind_arrows": true,
+      "routers": [
+        {
+          "id": "LOWER_WEST_BANK",
+          "operator": null,
+          "toggle": false,
+          "at": [
+            6,
+            13
+          ],
+          "prompt": [
+            "Both fans share",
+            "one air relay."
+          ],
+          "modes": [
+            {
+              "id": "EAST",
+              "label": "EAST",
+              "requires": [
+                "EVENT_MN_GYM_5_TRAINER_1_DEFEATED"
+              ],
+              "event": "EVENT_MN_GYM_5_V2_RELAY_EAST",
+              "lines": [
+                "Both fans: EAST.",
+                "Follow the arrows."
+              ],
+              "denied_lines": [
+                "Beat WYREL first."
+              ]
+            },
+            {
+              "id": "WEST",
+              "label": "WEST",
+              "requires": [
+                "EVENT_MN_GYM_5_TRAINER_1_DEFEATED"
+              ],
+              "event": "EVENT_MN_GYM_5_V2_RELAY_WEST",
+              "lines": [
+                "Both fans: WEST.",
+                "Follow the arrows."
+              ],
+              "denied_lines": [
+                "Beat WYREL first."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "LOWER_EAST_BANK",
+          "operator": null,
+          "toggle": false,
+          "at": [
+            13,
+            13
+          ],
+          "prompt": [
+            "Both fans share",
+            "one air relay."
+          ],
+          "modes": [
+            {
+              "id": "EAST",
+              "label": "EAST",
+              "requires": [
+                "EVENT_MN_GYM_5_TRAINER_1_DEFEATED"
+              ],
+              "event": "EVENT_MN_GYM_5_V2_RELAY_EAST",
+              "lines": [
+                "Both fans: EAST.",
+                "Follow the arrows."
+              ],
+              "denied_lines": [
+                "Beat WYREL first."
+              ]
+            },
+            {
+              "id": "WEST",
+              "label": "WEST",
+              "requires": [
+                "EVENT_MN_GYM_5_TRAINER_1_DEFEATED"
+              ],
+              "event": "EVENT_MN_GYM_5_V2_RELAY_WEST",
+              "lines": [
+                "Both fans: WEST.",
+                "Follow the arrows."
+              ],
+              "denied_lines": [
+                "Beat WYREL first."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "UPPER_WEST_BANK",
+          "operator": null,
+          "toggle": false,
+          "at": [
+            6,
+            5
+          ],
+          "prompt": [
+            "Both fans share",
+            "one air relay."
+          ],
+          "modes": [
+            {
+              "id": "EAST",
+              "label": "EAST",
+              "requires": [
+                "EVENT_MN_GYM_5_TRAINER_1_DEFEATED"
+              ],
+              "event": "EVENT_MN_GYM_5_V2_RELAY_EAST",
+              "lines": [
+                "Both fans: EAST.",
+                "Follow the arrows."
+              ],
+              "denied_lines": [
+                "Beat WYREL first."
+              ]
+            },
+            {
+              "id": "WEST",
+              "label": "WEST",
+              "requires": [
+                "EVENT_MN_GYM_5_TRAINER_1_DEFEATED"
+              ],
+              "event": "EVENT_MN_GYM_5_V2_RELAY_WEST",
+              "lines": [
+                "Both fans: WEST.",
+                "Follow the arrows."
+              ],
+              "denied_lines": [
+                "Beat WYREL first."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "UPPER_EAST_BANK",
+          "operator": null,
+          "toggle": false,
+          "at": [
+            14,
+            3
+          ],
+          "prompt": [
+            "Both fans share",
+            "one air relay."
+          ],
+          "modes": [
+            {
+              "id": "EAST",
+              "label": "EAST",
+              "requires": [
+                "EVENT_MN_GYM_5_TRAINER_1_DEFEATED"
+              ],
+              "event": "EVENT_MN_GYM_5_V2_RELAY_EAST",
+              "lines": [
+                "Both fans: EAST.",
+                "Follow the arrows."
+              ],
+              "denied_lines": [
+                "Beat WYREL first."
+              ]
+            },
+            {
+              "id": "WEST",
+              "label": "WEST",
+              "requires": [
+                "EVENT_MN_GYM_5_TRAINER_1_DEFEATED"
+              ],
+              "event": "EVENT_MN_GYM_5_V2_RELAY_WEST",
+              "lines": [
+                "Both fans: WEST.",
+                "Follow the arrows."
+              ],
+              "denied_lines": [
+                "Beat WYREL first."
+              ]
+            }
+          ]
+        }
+      ],
+      "court_requires": []
+    }
+  ]
+}

@@ -60,15 +60,18 @@ the runtime library, rather than the authoring CLI targets.
 The combined overlay builds directly on the exact refinement v02 raw and hosted
 packs. It replaces all eight Gym layouts, gives all eighteen supporting Gym
 trainers native sight encounters, preserves talk-initiated leaders, and installs
-twenty-six reviewed teams. Five cave rooms gain branching routes, three native
-sightline trainers and six hidden items. The
-[Gym design comparison](../planning/minnesota/gyms/overhaul-20261117/README.md)
-and [cave comparison](../planning/minnesota/caves/overhaul-20261117/README.md)
-record the mainline references and room-by-room decisions.
+twenty-six reviewed teams. Eight cave rooms gain branching routes, nine hidden
+items and three new trainers. Three existing cave trainers gain fixed sightlines.
+St. Cloud's reversible relay, Bemidji's bramble shortcut and Brainerd's bypass
+are described in the [Gym design notes](../planning/minnesota/gyms/continuation-20261117/README.md).
+The [cave design notes](../planning/minnesota/caves/continuation-20261117/README.md)
+document the mainline comparisons, hidden-item landmarks and Surf route.
 
 The builder rejects a changed parent, illegal regional teams, inaccessible
 controls or rewards, trapped return routes, invalid native art and unrelated
-content changes. It retains original numeric event IDs, leader rewards,
+content changes. Its graph checks native trainer approaches and optional paths
+from fresh entrances and required battle completions. It retains original
+numeric event IDs, leader rewards,
 rematches, cave exits and encounter tables, and all audio. Two restoration
 actors use active CHORIP art instead of retired GILLPUP.
 
@@ -82,29 +85,31 @@ CARGO_INCREMENTAL=0 cargo build --locked -p crystal-assets \
 target/debug/pack_northstar_gyms \
   content-packs/minnesota-refinement-v02.crystalpack \
   target/northstar-refinement/hosted-v02.crystalpack \
-  planning/minnesota/gyms/overhaul-20261117 \
+  planning/minnesota/gyms/continuation-20261117 \
   planning/minnesota/story.json planning/minnesota/story-pokemon.json \
-  content-packs/minnesota-gym-cave-overhaul-v02.crystalpack \
-  planning/minnesota/caves/overhaul-20261117/rooms.json
+  content-packs/minnesota-gym-cave-overhaul-v04.crystalpack \
+  planning/minnesota/caves/continuation-20261117/rooms.json
 target/debug/materialize_northstar_hosted \
-  content-packs/minnesota-gym-cave-overhaul-v02.crystalpack \
-  target/northstar-gym-overhaul/hosted-v02.crystalpack
+  content-packs/minnesota-gym-cave-overhaul-v04.crystalpack \
+  target/northstar-gym-overhaul/hosted-v04.crystalpack
 target/debug/verify_crystalpack \
-  content-packs/minnesota-gym-cave-overhaul-v02.crystalpack --audio --desktop
+  content-packs/minnesota-gym-cave-overhaul-v04.crystalpack --audio --desktop
 ```
 
-Schema-2 save compatibility accepts six exact previous release identities. It
+The eight-cave build adds a distinct manifest ID so earlier local review saves
+retain their own browser storage slots. Schema-2 save compatibility accepts six
+exact previous published release identities. It
 copies an idle overworld checkpoint into the new slot, preserves earned flags
-and rewards, clears only the thirteen revised rooms' terrain/object snapshots,
+and rewards, clears only the sixteen revised rooms' terrain/object snapshots,
 and moves a player inside one of those rooms to its reviewed entrance. Other
 positions and state remain intact. Pending scripts and unsafe movement states
 are rejected; previous save files remain untouched. Same-release recovery keeps
 its existing precedence and does not perform this room migration.
 
 Verification uses pure save/geometry tests, static native map renders, compiled
-source/art comparisons and build/publication checks. No controller journey,
+source/art comparisons and compiled pack comparisons. No controller journey,
 gameplay simulation or client launch is used. Static route reachability assumes
-trainer victories; it does not establish battle win rates or played pacing.
+trainer victories. Actual battle win rates and felt pacing remain unmeasured.
 
 ## Minnesota refinement revision
 

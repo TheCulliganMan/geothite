@@ -1,24 +1,36 @@
-//! Explicit native terrain and discovery contracts for five installed caves.
+//! Explicit native terrain and discovery contracts for eight installed caves.
 
 use std::collections::BTreeMap;
 
 use anyhow::{Result, ensure};
 use serde::Deserialize;
 
-pub(crate) const MAPS: [&str; 5] = [
+pub(crate) const MAPS: [&str; 8] = [
     "MnR01Cave1F",
     "MnR10Cave1F",
     "MnR12Cave1F",
     "MnVoyageursIce1F",
     "MnVoyageursIceB1F",
+    "MnR13Cave1F",
+    "MnR17Cave1F",
+    "MnR20Cave1F",
 ];
-pub(crate) const ARRIVALS: [[u16; 2]; 5] = [[9, 10], [4, 13], [17, 22], [5, 18], [5, 18]];
+pub(crate) const ARRIVALS: [[u16; 2]; 8] = [
+    [9, 10],
+    [4, 13],
+    [17, 22],
+    [5, 18],
+    [5, 18],
+    [7, 14],
+    [9, 12],
+    [5, 20],
+];
 pub(crate) const TRAINERS: [&str; 3] = [
     "MN_CAVE_DRIFTLESS_ROOKIE",
     "MN_CAVE_ORE_CLIMBER",
     "MN_CAVE_GUNFLINT_ANGLER",
 ];
-pub(crate) const EVENTS: [&str; 9] = [
+pub(crate) const EVENTS: [&str; 12] = [
     "EVENT_MN_CAVE_DRIFTLESS_ROOKIE",
     "EVENT_MN_CAVE_ORE_CLIMBER",
     "EVENT_MN_CAVE_GUNFLINT_ANGLER",
@@ -28,6 +40,9 @@ pub(crate) const EVENTS: [&str; 9] = [
     "EVENT_MN_CAVE_GUNFLINT_ELIXER",
     "EVENT_MN_CAVE_ICE_FULL_HEAL",
     "EVENT_MN_CAVE_ICE_PP_UP",
+    "EVENT_MN_CAVE_CEDAR_MAX_REPEL",
+    "EVENT_MN_CAVE_R20_UPPER_CACHE",
+    "EVENT_MN_CAVE_R20_SEEP_CACHE",
 ];
 pub(crate) const MANIFEST: &str = "northstar-cave-overhaul-v1";
 
@@ -49,6 +64,8 @@ pub(crate) struct Cave {
     pub arrival: [u16; 2],
     pub rows: Vec<String>,
     pub actor_positions: BTreeMap<String, [u16; 2]>,
+    #[serde(default)]
+    pub retained_sightlines: BTreeMap<String, CaveSightline>,
     pub trainers: Vec<Trainer>,
     pub hidden_items: Vec<HiddenItem>,
     pub waypoints: Vec<[u16; 2]>,
@@ -70,6 +87,13 @@ pub(crate) struct Trainer {
 
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
+pub(crate) struct CaveSightline {
+    pub direction: String,
+    pub radius: u16,
+}
+
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
 pub(crate) struct Member {
     pub species: String,
     pub level: u8,
@@ -82,13 +106,25 @@ pub(crate) struct HiddenItem {
     pub tile: [u16; 2],
     pub item: String,
     pub landmark: String,
+    #[serde(default)]
+    pub target_surface: HiddenItemSurface,
+    #[serde(default)]
+    pub requires_surf: bool,
+}
+
+#[derive(Clone, Copy, Default, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub(crate) enum HiddenItemSurface {
+    #[default]
+    Floor,
+    Rock,
 }
 
 impl Revision {
     pub fn validate(&self) -> Result<()> {
         ensure!(
             self.schema_version == 1 && self.id == MANIFEST && self.rooms.len() == MAPS.len(),
-            "five-cave revision required"
+            "eight-cave revision required"
         );
         let mut ids = std::collections::BTreeSet::new();
         for ((room, expected), arrival) in self.rooms.iter().zip(MAPS).zip(ARRIVALS) {
@@ -127,6 +163,15 @@ impl Revision {
                         && matches!(trainer.direction.as_str(), "up" | "right" | "down" | "left")
                         && (1..=3).contains(&trainer.party.len()),
                     "bounded native sightline and party"
+                );
+            }
+            for (id, sight) in &room.retained_sightlines {
+                ensure!(
+                    !id.is_empty()
+                        && !room.trainers.iter().any(|trainer| &trainer.id == id)
+                        && (1..=3).contains(&sight.radius)
+                        && matches!(sight.direction.as_str(), "up" | "right" | "down" | "left"),
+                    "bounded retained native cave sightline"
                 );
             }
             ensure!(
@@ -183,7 +228,7 @@ mod tests {
     use super::Revision;
 
     const SOURCE: &str =
-        include_str!("../../../planning/minnesota/caves/overhaul-20261117/rooms.json");
+        include_str!("../../../planning/minnesota/caves/continuation-20261117/rooms.json");
 
     #[test]
     fn cave_design_rejects_truncated_geometry_and_duplicate_rewards() {
