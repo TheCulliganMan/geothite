@@ -241,7 +241,7 @@
       "map_id": "MnR13C00R00",
       "tile": [38, 32],
       "target_kind": "WALL",
-      "entry": [34, 47],
+      "entry": [33, 0],
       "edits": [
         {"at": [18, 15], "from": 139, "to": 131},
         {"at": [18, 16], "from": 139, "to": 131},
