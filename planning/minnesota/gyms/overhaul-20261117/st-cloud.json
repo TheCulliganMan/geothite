@@ -1,0 +1,520 @@
+{
+  "schema_version": 1,
+  "status": "Authored overhaul candidate for exact refinement v02; static native art and course review only. Not installed or gameplay verified.",
+  "gyms": [
+    {
+      "slot": 5,
+      "id": "MnStCloudGym",
+      "constant": "MN_ST_CLOUD_GYM",
+      "city": "ST CLOUD",
+      "leader": "SAVEN",
+      "trainer_class": "MN_LEADER_SAVEN",
+      "leader_sprite": "SPRITE_MN_LEADER_SAVEN",
+      "leader_at": [
+        3,
+        3
+      ],
+      "badge_flag": "ENGINE_STORMBADGE",
+      "requires": [
+        "BADGE_4"
+      ],
+      "reward": "TM_SWIFT",
+      "party": [
+        {
+          "species": "VANECHICK",
+          "level": 28,
+          "moves": [
+            "WING_ATTACK",
+            "THIEF",
+            "FAINT_ATTACK",
+            "SWAGGER"
+          ]
+        },
+        {
+          "species": "BOOMRUFF",
+          "level": 29,
+          "moves": [
+            "STOMP",
+            "WING_ATTACK",
+            "FOCUS_ENERGY",
+            "MAGNITUDE"
+          ]
+        },
+        {
+          "species": "SILOHAWK",
+          "level": 30,
+          "moves": [
+            "SAND_ATTACK",
+            "WING_ATTACK",
+            "THIEF",
+            "FAINT_ATTACK"
+          ]
+        }
+      ],
+      "rows": [
+        "[ttt##tt]",
+        "[...##..]",
+        "[...##..]",
+        "[...>>..]",
+        "[..C##C.]",
+        "######..]",
+        "[www##.M]",
+        "[www<<..]",
+        "[wwC##C.]",
+        "[LwR##bb]",
+        "[dsd####]"
+      ],
+      "art": {
+        "#": [
+          "lab",
+          "00"
+        ],
+        ".": [
+          "lab",
+          "01"
+        ],
+        "t": [
+          "lab",
+          "09"
+        ],
+        "b": [
+          "tower",
+          "0d"
+        ],
+        "L": [
+          "tower",
+          "1a"
+        ],
+        "R": [
+          "tower",
+          "19"
+        ],
+        "s": [
+          "tower",
+          "26"
+        ],
+        ">": [
+          "tower",
+          "0b"
+        ],
+        "<": [
+          "tower",
+          "0b"
+        ],
+        "[": [
+          "lab",
+          "1d"
+        ],
+        "]": [
+          "lab",
+          "1e"
+        ],
+        "w": [
+          "tower",
+          "09"
+        ],
+        "d": [
+          "tower",
+          "0d"
+        ],
+        "C": [
+          "lab",
+          "08"
+        ],
+        "M": [
+          "facility",
+          "12"
+        ]
+      },
+      "trainers": [
+        {
+          "id": "MN_GYM_5_TRAINER_1",
+          "name": "WYREL",
+          "trainer_class": "COOLTRAINERF",
+          "sprite": "SPRITE_COOLTRAINER_F",
+          "at": [
+            4,
+            15
+          ],
+          "party": [
+            {
+              "species": "VANECHICK",
+              "level": 25,
+              "moves": [
+                "SAND_ATTACK",
+                "WING_ATTACK",
+                "THIEF",
+                "FAINT_ATTACK"
+              ]
+            }
+          ],
+          "optional": false,
+          "before_lines": [
+            "WYREL: My cap went",
+            "east. I ran after",
+            "it and got carried",
+            "right past. My",
+            "partner waited on",
+            "the stone and",
+            "caught it. Want a",
+            "match before it",
+            "gets away again?"
+          ],
+          "after_lines": [
+            "Set the lower fan",
+            "EAST. Cross to the",
+            "other platform."
+          ],
+          "requires": []
+        },
+        {
+          "id": "MN_GYM_5_TRAINER_2",
+          "name": "HALLEN",
+          "trainer_class": "BIRD_KEEPER",
+          "sprite": "SPRITE_YOUNGSTER",
+          "at": [
+            14,
+            10
+          ],
+          "party": [
+            {
+              "species": "VANECHICK",
+              "level": 25,
+              "moves": [
+                "SAND_ATTACK",
+                "WING_ATTACK",
+                "THIEF",
+                "FAINT_ATTACK"
+              ]
+            },
+            {
+              "species": "BOOMRUFF",
+              "level": 26,
+              "moves": [
+                "FOCUS_ENERGY",
+                "STOMP",
+                "WING_ATTACK",
+                "BELLY_DRUM"
+              ]
+            }
+          ],
+          "optional": true,
+          "before_lines": [
+            "HALLEN: See how",
+            "he's looking at my",
+            "hands? Two fingers",
+            "means turn. I",
+            "spent a week",
+            "yelling the word",
+            "before I thought",
+            "to show him. Ready",
+            "to battle?"
+          ],
+          "after_lines": [
+            "The upper fan must",
+            "blow WEST to reach",
+            "SAVEN. A control",
+            "on either bank."
+          ],
+          "requires": []
+        }
+      ],
+      "stations": [],
+      "gates": [
+        {
+          "at": [
+            4,
+            7
+          ],
+          "requires": [
+            "EVENT_MN_GYM_5_V2_LOWER_EAST"
+          ],
+          "open_symbol": ">",
+          "event": "EVENT_MN_GYM_5_V2_LOWER_TILE_A"
+        },
+        {
+          "at": [
+            5,
+            7
+          ],
+          "requires": [
+            "EVENT_MN_GYM_5_V2_LOWER_EAST"
+          ],
+          "open_symbol": ">",
+          "event": "EVENT_MN_GYM_5_V2_LOWER_TILE_B"
+        },
+        {
+          "at": [
+            4,
+            3
+          ],
+          "requires": [
+            "EVENT_MN_GYM_5_V2_UPPER_WEST"
+          ],
+          "open_symbol": "<",
+          "event": "EVENT_MN_GYM_5_V2_UPPER_TILE_A"
+        },
+        {
+          "at": [
+            5,
+            3
+          ],
+          "requires": [
+            "EVENT_MN_GYM_5_V2_UPPER_WEST"
+          ],
+          "open_symbol": "<",
+          "event": "EVENT_MN_GYM_5_V2_UPPER_TILE_B"
+        }
+      ],
+      "guide": [
+        "Battle WYREL, then",
+        "turn the lower fan",
+        "EAST. Cross over.",
+        "Turn the upper fan",
+        "WEST to reach",
+        "SAVEN. Controls on",
+        "both banks let you",
+        "change your route."
+      ],
+      "walkthrough": [
+        "MN_GYM_5_TRAINER_1",
+        "EAST",
+        "MN_GYM_5_TRAINER_2",
+        "WEST"
+      ],
+      "dimensions_metatiles": [
+        9,
+        11
+      ],
+      "arrival_core": [
+        4,
+        19
+      ],
+      "exit_tiles_core": [
+        [
+          4,
+          21
+        ],
+        [
+          5,
+          21
+        ]
+      ],
+      "guide_at": [
+        7,
+        18
+      ],
+      "leader_court_locked": true,
+      "before_lines": [
+        "SAVEN: Feel that?",
+        "The wind turned.",
+        "A good flier",
+        "turns with it.",
+        "Let me see how",
+        "quickly you adapt!"
+      ],
+      "victory_lines": [
+        "SAVEN: Down we go!",
+        "A clean landing.",
+        "Come onto the",
+        "stone. Your BADGE!"
+      ],
+      "after_lines": [
+        "Show your WIND",
+        "BADGE to the depot",
+        "guide for HM FLY.",
+        "Pick somewhere",
+        "you've already",
+        "walked to for your",
+        "first flight back.",
+        "It's different",
+        "seeing it from up",
+        "there."
+      ],
+      "winds": {
+        ">": "WALK_RIGHT",
+        "<": "WALK_LEFT"
+      },
+      "wind_arrows": true,
+      "routers": [
+        {
+          "id": "LOWER_WEST_BANK",
+          "operator": null,
+          "toggle": true,
+          "at": [
+            6,
+            17
+          ],
+          "prompt": [
+            "Lower fan control."
+          ],
+          "modes": [
+            {
+              "id": "EAST",
+              "label": "EAST",
+              "requires": [
+                "EVENT_MN_GYM_5_TRAINER_1_DEFEATED"
+              ],
+              "event": "EVENT_MN_GYM_5_V2_LOWER_EAST",
+              "lines": [
+                "Lower fan: EAST.",
+                "Follow the arrows."
+              ],
+              "denied_lines": [
+                "Beat WYREL first."
+              ]
+            },
+            {
+              "id": "WEST",
+              "label": "WEST",
+              "requires": [
+                "EVENT_MN_GYM_5_TRAINER_1_DEFEATED"
+              ],
+              "event": "EVENT_MN_GYM_5_V2_LOWER_WEST",
+              "lines": [
+                "Lower fan: WEST.",
+                "Follow the arrows."
+              ],
+              "denied_lines": [
+                "Beat WYREL first."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "LOWER_EAST_BANK",
+          "operator": null,
+          "toggle": true,
+          "at": [
+            13,
+            17
+          ],
+          "prompt": [
+            "Lower fan control."
+          ],
+          "modes": [
+            {
+              "id": "EAST",
+              "label": "EAST",
+              "requires": [
+                "EVENT_MN_GYM_5_TRAINER_1_DEFEATED"
+              ],
+              "event": "EVENT_MN_GYM_5_V2_LOWER_EAST",
+              "lines": [
+                "Lower fan: EAST.",
+                "Follow the arrows."
+              ],
+              "denied_lines": [
+                "Beat WYREL first."
+              ]
+            },
+            {
+              "id": "WEST",
+              "label": "WEST",
+              "requires": [
+                "EVENT_MN_GYM_5_TRAINER_1_DEFEATED"
+              ],
+              "event": "EVENT_MN_GYM_5_V2_LOWER_WEST",
+              "lines": [
+                "Lower fan: WEST.",
+                "Follow the arrows."
+              ],
+              "denied_lines": [
+                "Beat WYREL first."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "UPPER_WEST_BANK",
+          "operator": null,
+          "toggle": true,
+          "at": [
+            6,
+            9
+          ],
+          "prompt": [
+            "Upper fan control."
+          ],
+          "modes": [
+            {
+              "id": "WEST",
+              "label": "WEST",
+              "requires": [
+                "EVENT_MN_GYM_5_TRAINER_1_DEFEATED"
+              ],
+              "event": "EVENT_MN_GYM_5_V2_UPPER_WEST",
+              "lines": [
+                "Upper fan: WEST.",
+                "Follow the arrows."
+              ],
+              "denied_lines": [
+                "Beat WYREL first."
+              ]
+            },
+            {
+              "id": "EAST",
+              "label": "EAST",
+              "requires": [
+                "EVENT_MN_GYM_5_TRAINER_1_DEFEATED"
+              ],
+              "event": "EVENT_MN_GYM_5_V2_UPPER_EAST",
+              "lines": [
+                "Upper fan: EAST.",
+                "Follow the arrows."
+              ],
+              "denied_lines": [
+                "Beat WYREL first."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "UPPER_EAST_BANK",
+          "operator": null,
+          "toggle": true,
+          "at": [
+            13,
+            9
+          ],
+          "prompt": [
+            "Upper fan control."
+          ],
+          "modes": [
+            {
+              "id": "WEST",
+              "label": "WEST",
+              "requires": [
+                "EVENT_MN_GYM_5_TRAINER_1_DEFEATED"
+              ],
+              "event": "EVENT_MN_GYM_5_V2_UPPER_WEST",
+              "lines": [
+                "Upper fan: WEST.",
+                "Follow the arrows."
+              ],
+              "denied_lines": [
+                "Beat WYREL first."
+              ]
+            },
+            {
+              "id": "EAST",
+              "label": "EAST",
+              "requires": [
+                "EVENT_MN_GYM_5_TRAINER_1_DEFEATED"
+              ],
+              "event": "EVENT_MN_GYM_5_V2_UPPER_EAST",
+              "lines": [
+                "Upper fan: EAST.",
+                "Follow the arrows."
+              ],
+              "denied_lines": [
+                "Beat WYREL first."
+              ]
+            }
+          ]
+        }
+      ],
+      "court_requires": []
+    }
+  ]
+}

@@ -1,0 +1,333 @@
+{
+  "schema_version": 1,
+  "status": "Authored gym overhaul candidate; static native source-art and collision review only. Not yet built or selected.",
+  "gyms": [
+    {
+      "slot": 8,
+      "id": "MnDuluthGym",
+      "constant": "MN_DULUTH_GYM",
+      "city": "DULUTH",
+      "leader": "NOREK",
+      "trainer_class": "SAILOR",
+      "leader_sprite": "SPRITE_SAILOR",
+      "leader_at": [
+        8,
+        3
+      ],
+      "badge_flag": "ENGINE_RISINGBADGE",
+      "requires": [
+        "BADGE_7"
+      ],
+      "reward": "TM_ICY_WIND",
+      "party": [
+        {
+          "species": "LUTEBRISK",
+          "level": 42,
+          "moves": [
+            "AMNESIA",
+            "REST",
+            "ICE_BEAM",
+            "LIGHT_SCREEN"
+          ]
+        },
+        {
+          "species": "PLOWZER",
+          "level": 43,
+          "moves": [
+            "IRON_HEAD",
+            "HAZE",
+            "IRON_TAIL",
+            "ICE_BEAM"
+          ]
+        },
+        {
+          "species": "CROOKVEIL",
+          "level": 44,
+          "moves": [
+            "SLASH",
+            "FAINT_ATTACK",
+            "AGILITY",
+            "SCREECH"
+          ]
+        },
+        {
+          "species": "VERNACAPE",
+          "level": 45,
+          "moves": [
+            "ICE_BEAM",
+            "PSYBEAM",
+            "FUTURE_SIGHT",
+            "AMNESIA"
+          ]
+        }
+      ],
+      "rows": [
+        "WWWWWWW",
+        "W.....W",
+        "WWWCWWW",
+        "W..IIaW",
+        "WVIbIbW",
+        "W.WWWGW",
+        "WIIaIIW",
+        "WIIIIIW",
+        "W.....W",
+        "WWWsWWW"
+      ],
+      "art": {
+        "#": [
+          "elite_four_room",
+          "27"
+        ],
+        "W": [
+          "elite_four_room",
+          "27"
+        ],
+        ".": [
+          "elite_four_room",
+          "2d"
+        ],
+        "I": [
+          "elite_four_room",
+          "39"
+        ],
+        "a": [
+          "elite_four_room",
+          "31"
+        ],
+        "b": [
+          "elite_four_room",
+          "32"
+        ],
+        "G": [
+          "elite_four_room",
+          "14"
+        ],
+        "C": [
+          "elite_four_room",
+          "14"
+        ],
+        "s": [
+          "elite_four_room",
+          "1c"
+        ],
+        "V": [
+          "elite_four_room",
+          "14"
+        ]
+      },
+      "trainers": [
+        {
+          "id": "MN_GYM_8_TRAINER_1",
+          "name": "LIVRA",
+          "trainer_class": "COOLTRAINERF",
+          "sprite": "SPRITE_COOLTRAINER_F",
+          "at": [
+            3,
+            10
+          ],
+          "party": [
+            {
+              "species": "THAWBONNET",
+              "level": 39,
+              "moves": [
+                "ICY_WIND",
+                "PSYBEAM",
+                "AMNESIA",
+                "ICE_BEAM"
+              ]
+            },
+            {
+              "species": "SCRAPLOW",
+              "level": 40,
+              "moves": [
+                "TAKE_DOWN",
+                "HAZE",
+                "IRON_HEAD",
+                "IRON_TAIL"
+              ]
+            }
+          ],
+          "optional": false,
+          "before_lines": [
+            "A good stop makes",
+            "each turn easier."
+          ],
+          "after_lines": [
+            "East gate's open.",
+            "Aim for the rough",
+            "patch at the top."
+          ],
+          "requires": []
+        },
+        {
+          "id": "MN_GYM_8_TRAINER_2",
+          "name": "TORDEL",
+          "trainer_class": "SAILOR",
+          "sprite": "SPRITE_SAILOR",
+          "at": [
+            4,
+            6
+          ],
+          "party": [
+            {
+              "species": "CROOKVEIL",
+              "level": 40,
+              "moves": [
+                "SLASH",
+                "FAINT_ATTACK",
+                "AGILITY",
+                "SCREECH"
+              ]
+            }
+          ],
+          "optional": false,
+          "before_lines": [
+            "You found your",
+            "footing. Can your",
+            "team keep it?"
+          ],
+          "after_lines": [
+            "For the last turn,",
+            "touch east wall,",
+            "then slide south.",
+            "Turn west at rough",
+            "ice. Then go north"
+          ],
+          "requires": []
+        },
+        {
+          "id": "MN_GYM_8_TRAINER_3",
+          "name": "ANVER",
+          "trainer_class": "COOLTRAINERM",
+          "sprite": "SPRITE_COOLTRAINER_M",
+          "at": [
+            2,
+            7
+          ],
+          "party": [
+            {
+              "species": "LUTEBRISK",
+              "level": 41,
+              "moves": [
+                "AMNESIA",
+                "REST",
+                "ICE_BEAM",
+                "LIGHT_SCREEN"
+              ]
+            }
+          ],
+          "optional": true,
+          "requires": [],
+          "before_lines": [
+            "Want one more lap?",
+            "My team likes ice."
+          ],
+          "after_lines": [
+            "East leads out.",
+            "West opens after",
+            "NOREK's battle."
+          ]
+        }
+      ],
+      "stations": [],
+      "gates": [
+        {
+          "at": [
+            5,
+            5
+          ],
+          "requires": [
+            "EVENT_MN_GYM_8_TRAINER_1_DEFEATED"
+          ],
+          "open_symbol": ".",
+          "event": "EVENT_MN_GYM_8_EAST_ENTRY_OPEN"
+        },
+        {
+          "at": [
+            1,
+            4
+          ],
+          "requires": [
+            "EVENT_MN_GYM_8_DEFEATED"
+          ],
+          "open_symbol": ".",
+          "event": "EVENT_MN_GYM_8_WEST_RETURN_OPEN"
+        },
+        {
+          "at": [
+            3,
+            2
+          ],
+          "requires": [
+            "EVENT_MN_GYM_8_COURT_OPEN"
+          ],
+          "open_symbol": ".",
+          "event": "EVENT_MN_GYM_8_COURT_OPEN"
+        }
+      ],
+      "guide": [
+        "Ice carries you.",
+        "Rough patches stop",
+        "you. Aim for them.",
+        "Try the near patch",
+        "and turn west.",
+        "The next course",
+        "opens after LIVRA."
+      ],
+      "walkthrough": [
+        "MN_GYM_8_TRAINER_1",
+        "MN_GYM_8_TRAINER_2"
+      ],
+      "dimensions_metatiles": [
+        7,
+        10
+      ],
+      "arrival_core": [
+        6,
+        17
+      ],
+      "exit_tiles_core": [
+        [
+          6,
+          19
+        ],
+        [
+          7,
+          19
+        ]
+      ],
+      "guide_at": [
+        10,
+        17
+      ],
+      "leader_court_locked": true,
+      "before_lines": [
+        "Ice rewards a",
+        "steady plan.",
+        "When it slips,",
+        "find a new line.",
+        "Show me yours."
+      ],
+      "victory_lines": [
+        "A clean finish.",
+        "You earned it."
+      ],
+      "after_lines": [
+        "Eight BADGES.",
+        "The journey goes",
+        "on. Take the",
+        "instrument to",
+        "the workshop."
+      ],
+      "court_requires": [
+        "EVENT_MN_GYM_8_TRAINER_1_DEFEATED",
+        "EVENT_MN_GYM_8_TRAINER_2_DEFEATED"
+      ],
+      "court_denied_lines": [
+        "Show LIVRA and",
+        "TORDEL your turns.",
+        "Then face me."
+      ]
+    }
+  ]
+}

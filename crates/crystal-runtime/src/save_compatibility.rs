@@ -9,6 +9,8 @@ use crystal_core::state::{BattleMemory, GameState, OverworldMemory};
 use serde::Deserialize;
 
 use crate::CrystalRuntime;
+use crate::cave_save_migration::{self, CaveReentry};
+use crate::gym_save_migration::{self, GymReentry};
 
 pub const SAVE_COMPATIBILITY_FILE: &str = "data/northstar-save-compatibility.json";
 pub const SAVE_COMPATIBILITY_MANIFEST: &str = "northstar-refinement-v1";
@@ -29,6 +31,8 @@ struct Compatibility {
     target_manifest: String,
     target_modpack_ids: Vec<String>,
     sources: Vec<CompatibleSaveSource>,
+    gym_reentry: Option<GymReentry>,
+    cave_reentry: Option<CaveReentry>,
 }
 
 /// Returns the exact source identities approved by this target's hashed metadata.
@@ -39,16 +43,38 @@ pub fn compatible_save_sources(runtime: &CrystalRuntime) -> Result<Vec<Compatibl
     let Some(bytes) = runtime.runtime_file(SAVE_COMPATIBILITY_FILE) else {
         return Ok(Vec::new());
     };
-    parse_sources(bytes, runtime.modpack().id())
+    Ok(parse_compatibility(bytes, runtime.modpack().id())?.sources)
 }
 
-fn parse_sources(bytes: &[u8], target_id: &str) -> Result<Vec<CompatibleSaveSource>> {
+fn parse_compatibility(bytes: &[u8], target_id: &str) -> Result<Compatibility> {
     let metadata: Compatibility =
         serde_json::from_slice(bytes).context("save compatibility metadata")?;
-    ensure!(
-        metadata.schema_version == 1 && metadata.target_manifest == SAVE_COMPATIBILITY_MANIFEST,
-        "unsupported save compatibility schema"
-    );
+    match metadata.schema_version {
+        1 => ensure!(
+            metadata.target_manifest == SAVE_COMPATIBILITY_MANIFEST
+                && metadata.gym_reentry.is_none()
+                && metadata.cave_reentry.is_none(),
+            "unsupported refinement save compatibility policy"
+        ),
+        2 => {
+            ensure!(
+                metadata.target_manifest == gym_save_migration::TARGET_MANIFEST
+                    && metadata.target_modpack_ids.len() == 2
+                    && metadata.target_modpack_ids[0] != metadata.target_modpack_ids[1]
+                    && metadata.sources.len() == 6,
+                "gym compatibility requires two exact targets and six exact sources"
+            );
+            metadata
+                .gym_reentry
+                .as_ref()
+                .context("gym compatibility requires the gym reentry policy")?
+                .validate_metadata()?;
+            if let Some(policy) = &metadata.cave_reentry {
+                policy.validate_metadata()?;
+            }
+        }
+        _ => anyhow::bail!("unsupported save compatibility schema"),
+    }
     ensure!(
         target_id
             .split('+')
@@ -63,12 +89,26 @@ fn parse_sources(bytes: &[u8], target_id: &str) -> Result<Vec<CompatibleSaveSour
     );
     for id in &metadata.target_modpack_ids {
         SaveModpackIdentity::validate_id(id)?;
+        if metadata.schema_version == 2 {
+            ensure!(
+                id.split('+').any(|part| part == metadata.target_manifest),
+                "gym target identity is missing its release marker"
+            );
+            if metadata.cave_reentry.is_some() {
+                ensure!(
+                    id.split('+')
+                        .any(|part| part == cave_save_migration::TARGET_MANIFEST),
+                    "cave target identity is missing its release marker"
+                );
+            }
+        }
     }
     ensure!(
         !metadata.sources.is_empty() && metadata.sources.len() <= 8,
         "bounded compatibility source list required"
     );
     let mut identities = BTreeSet::new();
+    let mut source_modpacks = BTreeSet::new();
     for source in &metadata.sources {
         SaveModpackIdentity::new(&source.modpack_id, &source.modpack_hash)?;
         ensure!(
@@ -87,8 +127,14 @@ fn parse_sources(bytes: &[u8], target_id: &str) -> Result<Vec<CompatibleSaveSour
             )),
             "duplicate compatible source"
         );
+        if metadata.schema_version == 2 {
+            ensure!(
+                source_modpacks.insert((&source.modpack_id, &source.modpack_hash)),
+                "duplicate gym source pack identity"
+            );
+        }
     }
-    Ok(metadata.sources)
+    Ok(metadata)
 }
 
 /// Resumes/recover a current slot, or copies the first compatible prior slot.
@@ -130,8 +176,18 @@ pub fn prepare_runtime_save_slot(
         }
         return Ok(true);
     }
-    for source in compatible_save_sources(runtime)? {
-        let path = previous_path(&source);
+    let Some(bytes) = runtime.runtime_file(SAVE_COMPATIBILITY_FILE) else {
+        return Ok(false);
+    };
+    let metadata = parse_compatibility(bytes, runtime.modpack().id())?;
+    if let Some(policy) = &metadata.gym_reentry {
+        policy.validate_arrivals(runtime.data())?;
+    }
+    if let Some(policy) = &metadata.cave_reentry {
+        policy.validate_arrivals(runtime.data())?;
+    }
+    for source in &metadata.sources {
+        let path = previous_path(source);
         if path == destination {
             continue;
         }
@@ -143,7 +199,7 @@ pub fn prepare_runtime_save_slot(
                 &identity,
                 &source.content_hash,
             )?;
-            let upgraded = normalize_upgrade_checkpoint(saved.into_state())?;
+            let upgraded = upgrade_checkpoint(saved.into_state(), &metadata)?;
             runtime.validate_save_state_for_runtime_pack(&upgraded)?;
             Ok(upgraded)
         }) else {
@@ -158,6 +214,17 @@ pub fn prepare_runtime_save_slot(
         return Ok(true);
     }
     Ok(false)
+}
+
+fn upgrade_checkpoint(state: GameState, metadata: &Compatibility) -> Result<GameState> {
+    let mut upgraded = normalize_upgrade_checkpoint(state)?;
+    if let Some(policy) = &metadata.gym_reentry {
+        policy.apply(&mut upgraded)?;
+    }
+    if let Some(policy) = &metadata.cave_reentry {
+        policy.apply(&mut upgraded)?;
+    }
+    Ok(upgraded)
 }
 
 struct SelectedSave {
@@ -287,7 +354,7 @@ fn validate_upgrade_checkpoint(state: &GameState) -> Result<()> {
 
 #[cfg(test)]
 mod tests {
-    use super::{parse_sources, read_pair, validate_upgrade_checkpoint};
+    use super::{parse_compatibility, read_pair, validate_upgrade_checkpoint};
     use crystal_core::save::{
         SaveModpackIdentity, read_save_game_bytes_for_modpack, write_new_compatible_save,
     };
@@ -302,16 +369,17 @@ mod tests {
             "sources":[{"modpack_id":"core+minnesota-adventure","modpack_hash":"a".repeat(64),"content_hash":"b".repeat(64)}]});
         let bytes = serde_json::to_vec(&metadata).expect("metadata");
         assert_eq!(
-            parse_sources(&bytes, "core+northstar-refinement-v1")
+            parse_compatibility(&bytes, "core+northstar-refinement-v1")
                 .expect("authorized destination")
+                .sources
                 .len(),
             1
         );
-        assert!(parse_sources(&bytes, "core+northstar-refinement-v1+next-release").is_err());
+        assert!(parse_compatibility(&bytes, "core+northstar-refinement-v1+next-release").is_err());
         let mut invalid = metadata.clone();
         invalid["sources"][0]["modpack_hash"] = "wrong".into();
         assert!(
-            parse_sources(
+            parse_compatibility(
                 &serde_json::to_vec(&invalid).expect("invalid metadata"),
                 "core+northstar-refinement-v1"
             )
@@ -431,3 +499,11 @@ mod tests {
 #[cfg(test)]
 #[path = "save_compatibility_history_tests.rs"]
 mod history_tests;
+
+#[cfg(test)]
+#[path = "gym_save_migration_tests.rs"]
+mod gym_tests;
+
+#[cfg(test)]
+#[path = "cave_save_migration_tests.rs"]
+mod cave_tests;

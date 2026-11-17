@@ -55,6 +55,57 @@ tools in separate commands; retain one target directory so common dependencies
 remain cached. The no-default-feature command above intentionally checks only
 the runtime library, rather than the authoring CLI targets.
 
+## Minnesota Gym and cave overhaul
+
+The combined overlay builds directly on the exact refinement v02 raw and hosted
+packs. It replaces all eight Gym layouts, gives all eighteen supporting Gym
+trainers native sight encounters, preserves talk-initiated leaders, and installs
+twenty-six reviewed teams. Five cave rooms gain branching routes, three native
+sightline trainers and six hidden items. The
+[Gym design comparison](../planning/minnesota/gyms/overhaul-20261117/README.md)
+and [cave comparison](../planning/minnesota/caves/overhaul-20261117/README.md)
+record the mainline references and room-by-room decisions.
+
+The builder rejects a changed parent, illegal regional teams, inaccessible
+controls or rewards, trapped return routes, invalid native art and unrelated
+content changes. It retains original numeric event IDs, leader rewards,
+rematches, cave exits and encounter tables, and all audio. Two restoration
+actors use active CHORIP art instead of retired GILLPUP.
+
+Verified build commands, using the retained external parent packs and fresh
+output paths:
+
+```sh
+CARGO_INCREMENTAL=0 cargo build --locked -p crystal-assets \
+  --bin pack_northstar_gyms --bin materialize_northstar_hosted \
+  --bin verify_crystalpack
+target/debug/pack_northstar_gyms \
+  content-packs/minnesota-refinement-v02.crystalpack \
+  target/northstar-refinement/hosted-v02.crystalpack \
+  planning/minnesota/gyms/overhaul-20261117 \
+  planning/minnesota/story.json planning/minnesota/story-pokemon.json \
+  content-packs/minnesota-gym-cave-overhaul-v02.crystalpack \
+  planning/minnesota/caves/overhaul-20261117/rooms.json
+target/debug/materialize_northstar_hosted \
+  content-packs/minnesota-gym-cave-overhaul-v02.crystalpack \
+  target/northstar-gym-overhaul/hosted-v02.crystalpack
+target/debug/verify_crystalpack \
+  content-packs/minnesota-gym-cave-overhaul-v02.crystalpack --audio --desktop
+```
+
+Schema-2 save compatibility accepts six exact previous release identities. It
+copies an idle overworld checkpoint into the new slot, preserves earned flags
+and rewards, clears only the thirteen revised rooms' terrain/object snapshots,
+and moves a player inside one of those rooms to its reviewed entrance. Other
+positions and state remain intact. Pending scripts and unsafe movement states
+are rejected; previous save files remain untouched. Same-release recovery keeps
+its existing precedence and does not perform this room migration.
+
+Verification uses pure save/geometry tests, static native map renders, compiled
+source/art comparisons and build/publication checks. No controller journey,
+gameplay simulation or client launch is used. Static route reachability assumes
+trainer victories; it does not establish battle win rates or played pacing.
+
 ## Minnesota refinement revision
 
 The refinement recipe extends the exact adventure v01 release. It adds the

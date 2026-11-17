@@ -1,0 +1,130 @@
+{
+  "cave_overhaul": {
+    "dialogue": {
+      "MnR01Cave1F": {
+        "MN_CAVE_DRIFTLESS_ROOKIESeen": [
+          [
+            "I made it through!"
+          ],
+          [
+            "Now I need someone",
+            "to tell about it!"
+          ]
+        ],
+        "MN_CAVE_DRIFTLESS_ROOKIEWon": [
+          [
+            "Even my echo lost!"
+          ]
+        ],
+        "MN_CAVE_DRIFTLESS_ROOKIELost": [
+          [
+            "Did you hear that?",
+            "I won!"
+          ]
+        ],
+        "MN_CAVE_DRIFTLESS_ROOKIEAfterText": [
+          [
+            "This ridge goes",
+            "right in a circle."
+          ],
+          [
+            "I passed the same",
+            "rock three times."
+          ],
+          [
+            "I call that",
+            "exploring."
+          ]
+        ]
+      },
+      "MnR10Cave1F": {
+        "MN_CAVE_ORE_CLIMBERSeen": [
+          [
+            "My legs need a",
+            "break. My team?"
+          ],
+          [
+            "They're ready!"
+          ]
+        ],
+        "MN_CAVE_ORE_CLIMBERWon": [
+          [
+            "All right. We all",
+            "need a break."
+          ]
+        ],
+        "MN_CAVE_ORE_CLIMBERLost": [
+          [
+            "Steady footing!"
+          ]
+        ],
+        "MN_CAVE_ORE_CLIMBERAfterText": [
+          [
+            "That pocket above",
+            "us catches ore."
+          ],
+          [
+            "I found a little",
+            "gold in the dust."
+          ]
+        ]
+      },
+      "MnR12Cave1F": {
+        "MN_CAVE_GUNFLINT_ANGLERSeen": [
+          [
+            "No bites yet."
+          ],
+          [
+            "How about a battle",
+            "while we wait?"
+          ]
+        ],
+        "MN_CAVE_GUNFLINT_ANGLERWon": [
+          [
+            "That woke me up!"
+          ]
+        ],
+        "MN_CAVE_GUNFLINT_ANGLERLost": [
+          [
+            "A good catch!"
+          ]
+        ],
+        "MN_CAVE_GUNFLINT_ANGLERAfterText": [
+          [
+            "The pool is deeper",
+            "than it looks."
+          ],
+          [
+            "I leave the island",
+            "to good swimmers."
+          ]
+        ]
+      },
+      "MnVoyageursIce1F": {
+        "MnVoyageursIceGuideText": [
+          [
+            "My boots are dry.",
+            "For now."
+          ],
+          [
+            "On the ice, find",
+            "your next stop"
+          ],
+          [
+            "before you move.",
+            "Rock or dry ground"
+          ],
+          [
+            "will catch you.",
+            "The middle shelf"
+          ],
+          [
+            "is a good place",
+            "to catch a breath."
+          ]
+        ]
+      },
+      "MnVoyageursIceB1F": {}
+    }
+  }
+}

@@ -31,11 +31,7 @@ pub(crate) fn install(pack: &mut CompiledGamePack, story_source: &str) -> Result
         !pack.report.manifests.iter().any(|name| name == MANIFEST),
         "restoration aftermath already installed"
     );
-    ensure!(
-        pack.runtime_files
-            .contains_key("gfx/pokemon/gillpup/overworld.2bpp"),
-        "accepted native Gillpup art required"
-    );
+    crate::northstar_shore_roster_repair::validate_partner(pack)?;
     let story: Value = serde_json::from_str(story_source)?;
     let dialogue: Dialogue =
         serde_json::from_value(story["refinement_aftermath"]["dialogue"].clone())?;
@@ -266,7 +262,7 @@ fn shoreline(pack: &mut CompiledGamePack, dialogue: &Dialogue, shore: &Shore) ->
         pack,
         &mut map,
         shore.partner,
-        "SPRITE_GILLPUP",
+        crate::northstar_shore_roster_repair::PARTNER_SPRITE,
         shore.partner_at,
     )?;
     let additions = BTreeSet::from([shore.worker_at, shore.partner_at]);

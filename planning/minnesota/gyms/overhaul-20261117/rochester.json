@@ -1,0 +1,274 @@
+{
+  "schema_version": 1,
+  "status": "Authored gym-overhaul source; native source-art/static review only. Integration, build and publication pending. No gameplay verification.",
+  "gyms": [
+    {
+      "slot": 1,
+      "id": "MnRochesterGym",
+      "constant": "MN_ROCHESTER_GYM",
+      "city": "ROCHESTER",
+      "leader": "VAREL",
+      "trainer_class": "COOLTRAINERF",
+      "leader_sprite": "SPRITE_MN_LEADER_VAREL",
+      "leader_at": [
+        6,
+        3
+      ],
+      "badge_flag": "ENGINE_ZEPHYRBADGE",
+      "requires": [
+        "EVENT_MN_DELIVERED_ROCHESTER_PARCEL"
+      ],
+      "reward": "TM_HEADBUTT",
+      "party": [
+        {
+          "species": "NIBBIN",
+          "level": 10,
+          "moves": [
+            "SCRATCH",
+            "TAIL_WHIP",
+            "QUICK_ATTACK",
+            "SAND_ATTACK"
+          ]
+        },
+        {
+          "species": "CROOKIT",
+          "level": 12,
+          "moves": [
+            "SCRATCH",
+            "TAIL_WHIP",
+            "QUICK_ATTACK",
+            "BITE"
+          ]
+        }
+      ],
+      "rows": [
+        "AWXYWB",
+        "L....R",
+        "L..i.R",
+        "L.ZZ.#",
+        "L.ZZ.#",
+        "L....R",
+        "###G##",
+        "L....R",
+        "#P.DQ#"
+      ],
+      "art": {
+        "#": [
+          "tower",
+          "1b"
+        ],
+        "A": [
+          "tower",
+          "04"
+        ],
+        "W": [
+          "tower",
+          "05"
+        ],
+        "B": [
+          "tower",
+          "06"
+        ],
+        "L": [
+          "tower",
+          "08"
+        ],
+        "R": [
+          "tower",
+          "0a"
+        ],
+        ".": [
+          "tower",
+          "09"
+        ],
+        "i": [
+          "tower",
+          "0d"
+        ],
+        "z": [
+          "tower",
+          "05"
+        ],
+        "P": [
+          "tower",
+          "13"
+        ],
+        "Q": [
+          "tower",
+          "12"
+        ],
+        "D": [
+          "tower",
+          "26"
+        ],
+        "x": [
+          "tower",
+          "2e"
+        ],
+        "y": [
+          "tower",
+          "2f"
+        ],
+        "X": [
+          "tower",
+          "22"
+        ],
+        "Y": [
+          "tower",
+          "21"
+        ],
+        "Z": [
+          "tower",
+          "1b"
+        ],
+        "G": [
+          "tower",
+          "0b"
+        ]
+      },
+      "trainers": [
+        {
+          "id": "MN_GYM_1_TRAINER_1",
+          "name": "TAVEL",
+          "trainer_class": "SCHOOLBOY",
+          "sprite": "SPRITE_YOUNGSTER",
+          "at": [
+            5,
+            14
+          ],
+          "party": [
+            {
+              "species": "NIBBIN",
+              "level": 8,
+              "moves": [
+                "SCRATCH",
+                "TAIL_WHIP",
+                "QUICK_ATTACK"
+              ]
+            }
+          ],
+          "optional": false,
+          "before_lines": [
+            "One practice bout.",
+            "Then pick a lane!"
+          ],
+          "after_lines": [
+            "ELVIK takes the",
+            "short right lane.",
+            "The left loop is",
+            "open practice."
+          ],
+          "requires": []
+        },
+        {
+          "id": "MN_GYM_1_TRAINER_2",
+          "name": "ELVIK",
+          "trainer_class": "SCHOOLBOY",
+          "sprite": "SPRITE_YOUNGSTER",
+          "at": [
+            9,
+            8
+          ],
+          "party": [
+            {
+              "species": "PIPBOOM",
+              "level": 9,
+              "moves": [
+                "GROWL",
+                "GUST",
+                "FOCUS_ENERGY",
+                "STOMP"
+              ]
+            }
+          ],
+          "optional": true,
+          "before_lines": [
+            "Taking my lane?",
+            "Let us practice!"
+          ],
+          "after_lines": [
+            "The left loop",
+            "works well, too.",
+            "We learn our way."
+          ],
+          "requires": []
+        }
+      ],
+      "stations": [],
+      "gates": [
+        {
+          "at": [
+            3,
+            6
+          ],
+          "requires": [
+            "EVENT_MN_GYM_1_TRAINER_1_DEFEATED"
+          ],
+          "open_symbol": ".",
+          "event": "EVENT_MN_GYM_1_V2_INTRO_RAIL_OPEN"
+        }
+      ],
+      "guide": [
+        "TAVEL teaches the",
+        "first bout. Then",
+        "choose: ELVIK on",
+        "the short right",
+        "lane, or a quiet",
+        "loop on the left."
+      ],
+      "walkthrough": [
+        "MN_GYM_1_TRAINER_1"
+      ],
+      "dimensions_metatiles": [
+        6,
+        9
+      ],
+      "arrival_core": [
+        6,
+        15
+      ],
+      "exit_tiles_core": [
+        [
+          6,
+          17
+        ],
+        [
+          7,
+          17
+        ]
+      ],
+      "guide_at": [
+        9,
+        15
+      ],
+      "leader_court_locked": false,
+      "before_lines": [
+        "I am VAREL.",
+        "No fancy tricks.",
+        "Show me how well",
+        "you use your team!"
+      ],
+      "victory_lines": [
+        "You noticed when",
+        "the battle turned.",
+        "You earned this!"
+      ],
+      "after_lines": [
+        "Prairie Farm Road",
+        "leads to MANKATO.",
+        "Let your partners",
+        "rest on the way."
+      ],
+      "pads": [],
+      "routers": [],
+      "court_requires": [
+        "EVENT_MN_GYM_1_TRAINER_1_DEFEATED"
+      ],
+      "court_denied_lines": [
+        "Meet TAVEL first.",
+        "Then choose your",
+        "own route here."
+      ]
+    }
+  ]
+}

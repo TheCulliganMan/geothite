@@ -192,10 +192,10 @@
           "id": "MnRochesterGym",
           "kind": "gym_1",
           "dimensions_metatiles": [
-            7,
-            10
+            6,
+            9
           ],
-          "authoring_file": "towns/MnRochester.json"
+          "authoring_file": "gyms/overhaul-20261117/rochester.json"
         },
         {
           "id": "MnRochesterClerkHouse",
@@ -301,7 +301,8 @@
             8,
             10
           ],
-          "gym_revision_file": "gyms/mankato-terraces.json"
+          "gym_revision_file": "gyms/mankato-terraces.json",
+          "authoring_file": "gyms/overhaul-20261117/mankato.json"
         }
       ],
       "walkable_destinations": [
@@ -380,8 +381,8 @@
           "id": "MnMinneapolisGym",
           "kind": "gym_3",
           "dimensions_metatiles": [
-            5,
-            9
+            7,
+            11
           ],
           "native_constant": "MN_MINNEAPOLIS_GYM",
           "template": "installed_native",
@@ -428,7 +429,8 @@
             ],
             "status": "Canonical original-style switch-pair gym. The city binds its two carpets and passive arrival while preserving terrain, actors, puzzle, parties and rewards."
           },
-          "gym_revision_file": "gyms/minneapolis-circuit.json"
+          "gym_revision_file": "gyms/minneapolis-circuit.json",
+          "authoring_file": "gyms/overhaul-20261117/minneapolis.json"
         },
         {
           "id": "MnMinneapolisMart",
@@ -912,7 +914,7 @@
       ],
       "role": "gym_4",
       "tileset": "kanto",
-      "composition": "Dense fair lanes, attached Capitol and Summit blocks, three-floor Lowertown Exchange, short shared south-bank streets, and unchanged Union Depot story interior; exact native40×34 composition.",
+      "composition": "Dense fair lanes, attached Capitol and Summit blocks, three-floor Lowertown Exchange, short shared south-bank streets, and unchanged Union Depot story interior; exact native40\u00d734 composition.",
       "ports": [
         {
           "route": "MN_R04",
@@ -952,10 +954,10 @@
           "id": "MnStPaulGym",
           "kind": "canonical_gym_reference",
           "dimensions_metatiles": [
-            7,
-            10
+            9,
+            12
           ],
-          "authoring_file": "towns/MnStPaul.json",
+          "authoring_file": "gyms/overhaul-20261117/st-paul.json",
           "tileset": "mn_gym_4",
           "native_constant": "MN_ST_PAUL_GYM",
           "source_reference": {
@@ -1456,7 +1458,7 @@
       "door_contract": "Native source DOOR quadrants, exterior active/passive indices, reciprocal room carpets and safe passive Floor arrivals are explicit; production lowering/roundtrip proof pending.",
       "authoring_file": "towns/MnStPaul.json",
       "layout_file": "towns/MnStPaul.layout.json",
-      "native_status": "Published660-map compact40×34 StPaul in twin-cities-compact-v01; nine local controller cases and15native GPU captures passed. No earned progression or final user visual approval claimed.",
+      "native_status": "Published660-map compact40\u00d734 StPaul in twin-cities-compact-v01; nine local controller cases and15native GPU captures passed. No earned progression or final user visual approval claimed.",
       "compiled_tileset": "kanto",
       "expansion_contract_file": "towns/MnStPaul.expansion.contract.json",
       "recomposition_contract_file": "towns/MnStPaul.recomposition.contract.json"
@@ -1529,7 +1531,7 @@
             9,
             11
           ],
-          "authoring_file": "towns/MnStCloud.json",
+          "authoring_file": "gyms/overhaul-20261117/st-cloud.json",
           "clear_arrival": [
             4,
             19
@@ -1749,7 +1751,8 @@
             5,
             8
           ],
-          "gym_revision_file": "gyms/brainerd-winch.json"
+          "gym_revision_file": "gyms/brainerd-winch.json",
+          "authoring_file": "gyms/overhaul-20261117/brainerd.json"
         },
         {
           "id": "MnBrainerdRangerStation",
@@ -1946,7 +1949,8 @@
             6,
             10
           ],
-          "gym_revision_file": "gyms/bemidji-return.json"
+          "gym_revision_file": "gyms/bemidji-return.json",
+          "authoring_file": "gyms/overhaul-20261117/bemidji.json"
         },
         {
           "id": "MnBemidjiShelfHouse",
@@ -2149,7 +2153,7 @@
             7,
             10
           ],
-          "authoring_file": "towns/MnDuluth.json",
+          "authoring_file": "gyms/overhaul-20261117/duluth.json",
           "clear_arrival": [
             6,
             17
@@ -3773,7 +3777,7 @@
       ],
       "role": "landmark",
       "tileset": "johto",
-      "composition": "A quiet reference site: pine banks, a northern lake feeding a narrow brook, one short railed crossing and a dry-land survey plaque. Visiting is possible after Lake; only the Pine-qualified, acknowledged marker records the independent reading. The future western trail remains visibly closed. The eastern arrival passes through the authentic Ilex Forest–Azalea gatehouse floorplan, with two native side-carpet lanes and separate safe arrivals on both sides.",
+      "composition": "A quiet reference site: pine banks, a northern lake feeding a narrow brook, one short railed crossing and a dry-land survey plaque. Visiting is possible after Lake; only the Pine-qualified, acknowledged marker records the independent reading. The future western trail remains visibly closed. The eastern arrival passes through the authentic Ilex Forest\u2013Azalea gatehouse floorplan, with two native side-carpet lanes and separate safe arrivals on both sides.",
       "ports": [
         {
           "route": "MN_R14",
@@ -7507,7 +7511,7 @@
       "id": "MN_BOUNDARY_WATERS_SAFARI",
       "hub": "MnBoundaryWaters",
       "file": "zones/boundary-waters-safari.json",
-      "status": "Expanded v17 source contract reserves six preserve chunks (group61 exterior IDs1–4 and6–7) and the unchanged cabin map5. Record the actual 505-map native publication and controller evidence separately. Free regional basecamp/story access is independent; Safari admission stays closed without fees and session/capture rules remain unimplemented."
+      "status": "Expanded v17 source contract reserves six preserve chunks (group61 exterior IDs1\u20134 and6\u20137) and the unchanged cabin map5. Record the actual 505-map native publication and controller evidence separately. Free regional basecamp/story access is independent; Safari admission stays closed without fees and session/capture rules remain unimplemented."
     }
   ],
   "standalone_dungeons": [
@@ -7956,7 +7960,7 @@
     "status": "Accepted current-parent terrain revision: source/native pixels, strict whole-pack preservation, directional grass/ledge proof, actual2D review, native encounters/trainerPP/resources/Continue and stdio pass. CurrentR12 work preserved.",
     "scope_limit": "Sequential Minnesota grass pass remains open beyond R01-R03. Explicit local fixtures do not prove an earned statewide campaign."
   },
-  "active_local_review_revision": "refinement_revision",
+  "active_local_review_revision": "gym_cave_overhaul_revision",
   "script_command_repair_revision": {
     "kind": "missing_minnesota_map_command_records",
     "parent_revision": "field_hm_habitats_cyclists_revision",
@@ -12132,7 +12136,7 @@
     "audio_programs_verified": 602,
     "source_web_release": "20261031-progression-32",
     "presentation": "native_2d_only",
-    "status": "Verified full-roster acquisition and rising progression, preserving the reviewed title and current geography. Live Pokédex release 20261031-progression-32 has all 225 paths, exact verification of 2203 files, and passing desktop/mobile checks. Local mechanics and earned opening verified; complete campaign and earned full collection remain unclaimed.",
+    "status": "Verified full-roster acquisition and rising progression, preserving the reviewed title and current geography. Live Pok\u00e9dex release 20261031-progression-32 has all 225 paths, exact verification of 2203 files, and passing desktop/mobile checks. Local mechanics and earned opening verified; complete campaign and earned full collection remain unclaimed.",
     "scope_limit": "Local input fixtures and an earned opening return establish acquisition mechanics and source conditions; no uninterrupted full campaign or earned capture of all 225 is claimed."
   },
   "north_shore_passing_width_revision": {
@@ -12579,5 +12583,19 @@
     "hosted_release": "refinement-20261117",
     "hosted_pack_sha256": "5d82fb89116f82856f8cc1cef77ceac018d2863f756ad8e7bbb7bbf589cc6c70",
     "hosted_content_identity": "5eba128f5fd1871d87a58bfca28833476591708c6a6ad6d04075ed29a6f087e4"
+  },
+  "gym_cave_overhaul_revision": {
+    "kind": "native_2d_gym_and_cave_overhaul",
+    "parent_revision": "refinement_revision",
+    "pack": "content-packs/minnesota-gym-cave-overhaul-v02.crystalpack",
+    "pack_sha256": "70202415e78301d7d8015daf4a3177864b54c651bdc015f138bb4eccd3e23324",
+    "content_identity": "0a93aeca89fb76e46eb17cf3b1941aeea53d9c2ff6fcfe0b7ab8fe7866c9bf80",
+    "map_count": 743,
+    "runbook": "docs/game-content.md#minnesota-gym-and-cave-overhaul",
+    "gym_design": "planning/minnesota/gyms/overhaul-20261117/README.md",
+    "cave_design": "planning/minnesota/caves/overhaul-20261117/README.md",
+    "status": "Selected locally. Eight Gyms and five cave rooms rebuilt and statically reviewed. All 18 supporting Gym trainers and three added cave trainers use native sight encounters; leaders require conversation. Pure migration/cave tests, all-target asset/runtime Clippy, native art comparisons, geometry checks and all 602 audio checks pass. No gameplay, controller journeys or client launches. Production publication is pending.",
+    "hosted_pack_sha256": "e33f90aaa3fde37b24af9d0afdd8a2173cf4d1977ffa116e2dc154e0dedbd080",
+    "hosted_content_identity": "22165cc69e78d2f53545f3b32c98356e5fd04e911c23290941a54a749b9281f9"
   }
 }

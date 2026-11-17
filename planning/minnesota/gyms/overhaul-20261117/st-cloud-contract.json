@@ -1,0 +1,19 @@
+{
+  "sightlines": {
+    "MN_GYM_5_TRAINER_1": {
+      "direction": "right",
+      "radius": 3
+    },
+    "MN_GYM_5_TRAINER_2": {
+      "direction": "left",
+      "radius": 2
+    }
+  },
+  "court": {
+    "all": [
+      "EVENT_MN_GYM_5_TRAINER_1_DEFEATED",
+      "EVENT_MN_GYM_5_V2_UPPER_WEST"
+    ],
+    "any": []
+  }
+}

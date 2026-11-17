@@ -1,0 +1,358 @@
+{
+  "schema_version": 1,
+  "status": "Authored gym overhaul candidate; static native source-art and collision review only. Not yet built or selected.",
+  "gyms": [
+    {
+      "slot": 7,
+      "id": "MnBemidjiGym",
+      "constant": "MN_BEMIDJI_GYM",
+      "city": "BEMIDJI",
+      "leader": "ORLIS",
+      "trainer_class": "COOLTRAINERM",
+      "leader_sprite": "SPRITE_COOLTRAINER_M",
+      "leader_at": [
+        5,
+        3
+      ],
+      "badge_flag": "ENGINE_GLACIERBADGE",
+      "requires": [
+        "BADGE_6"
+      ],
+      "reward": "TM_GIGA_DRAIN",
+      "party": [
+        {
+          "species": "ZIZALITH",
+          "level": 38,
+          "moves": [
+            "ENERGY_BALL",
+            "BUBBLEBEAM",
+            "RAIN_DANCE",
+            "LEECH_SEED"
+          ]
+        },
+        {
+          "species": "PARAFLOSS",
+          "level": 39,
+          "moves": [
+            "GUST",
+            "STUN_SPORE",
+            "SLUDGE",
+            "WHIRLWIND"
+          ]
+        },
+        {
+          "species": "CYPRIELLE",
+          "level": 40,
+          "moves": [
+            "SYNTHESIS",
+            "SLIPPER_WALTZ",
+            "ENERGY_BALL",
+            "PETAL_DANCE"
+          ]
+        }
+      ],
+      "rows": [
+        "TTTTTT",
+        "T...TT",
+        "T.F..T",
+        "TTTCTT",
+        "T.r..T",
+        "T.r..T",
+        "TcTGoT",
+        "T..d.T",
+        "T....T",
+        "TTsTTT"
+      ],
+      "art": {
+        "#": [
+          "johto",
+          "05"
+        ],
+        "T": [
+          "johto",
+          "05"
+        ],
+        ".": [
+          "forest",
+          "01"
+        ],
+        "r": [
+          "forest",
+          "0e"
+        ],
+        "F": [
+          "park",
+          "05"
+        ],
+        "d": [
+          "park",
+          "02"
+        ],
+        "c": [
+          "kanto",
+          "32"
+        ],
+        "C": [
+          "kanto",
+          "32"
+        ],
+        "o": [
+          "kanto",
+          "6d"
+        ],
+        "G": [
+          "underground",
+          "0b"
+        ],
+        "s": [
+          "elite_four_room",
+          "1c"
+        ]
+      },
+      "trainers": [
+        {
+          "id": "MN_GYM_7_TRAINER_1",
+          "name": "MOSLEN",
+          "trainer_class": "COOLTRAINERM",
+          "sprite": "SPRITE_COOLTRAINER_M",
+          "at": [
+            4,
+            9
+          ],
+          "party": [
+            {
+              "species": "REEDRAFT",
+              "level": 35,
+              "moves": [
+                "MEGA_DRAIN",
+                "SYNTHESIS",
+                "RAZOR_LEAF",
+                "RAIN_DANCE"
+              ]
+            }
+          ],
+          "optional": false,
+          "before_lines": [
+            "New shoots need",
+            "room. So do teams."
+          ],
+          "after_lines": [
+            "ELVREN tends the",
+            "north clearing.",
+            "Try that tree."
+          ],
+          "requires": []
+        },
+        {
+          "id": "MN_GYM_7_TRAINER_2",
+          "name": "ELVREN",
+          "trainer_class": "COOLTRAINERF",
+          "sprite": "SPRITE_LASS",
+          "at": [
+            8,
+            4
+          ],
+          "party": [
+            {
+              "species": "PODLET",
+              "level": 35,
+              "moves": [
+                "GUST",
+                "STUN_SPORE",
+                "SLUDGE",
+                "WHIRLWIND"
+              ]
+            },
+            {
+              "species": "SLIPPERINA",
+              "level": 36,
+              "moves": [
+                "MIMIC",
+                "DAZZLING_GLEAM",
+                "PSYBEAM",
+                "SYNTHESIS"
+              ]
+            }
+          ],
+          "optional": false,
+          "before_lines": [
+            "Sun above, roots",
+            "below. Keep both",
+            "halves growing."
+          ],
+          "after_lines": [
+            "MOSLEN tends west.",
+            "ORLIS wants to see",
+            "both our stamps."
+          ],
+          "requires": []
+        },
+        {
+          "id": "MN_GYM_7_TRAINER_3",
+          "name": "BRINDEL",
+          "trainer_class": "GENTLEMAN",
+          "sprite": "SPRITE_GRAMPS",
+          "at": [
+            2,
+            8
+          ],
+          "party": [
+            {
+              "species": "VERGLOOM",
+              "level": 36,
+              "moves": [
+                "VINE_WHIP",
+                "LEECH_SEED",
+                "FAINT_ATTACK",
+                "RAZOR_LEAF"
+              ]
+            }
+          ],
+          "optional": true,
+          "before_lines": [
+            "A small side path.",
+            "A small surprise.",
+            "Care for a battle?"
+          ],
+          "after_lines": [
+            "Old roots can feed",
+            "a brand-new shoot."
+          ],
+          "requires": []
+        }
+      ],
+      "stations": [],
+      "gates": [
+        {
+          "at": [
+            3,
+            6
+          ],
+          "requires": [
+            "EVENT_MN_GYM_7_DEFEATED"
+          ],
+          "open_symbol": ".",
+          "event": "EVENT_MN_GYM_7_RETURN_OPEN"
+        }
+      ],
+      "guide": [
+        "Prune either tree.",
+        "Seek both keepers.",
+        "West: MOSLEN.",
+        "North: ELVREN.",
+        "BRINDEL is extra.",
+        "Then face ORLIS.",
+        "His gate opens a",
+        "short way home."
+      ],
+      "walkthrough": [
+        "SOUTH_HEDGE",
+        "MN_GYM_7_TRAINER_1",
+        "NORTH_HEDGE",
+        "MN_GYM_7_TRAINER_2"
+      ],
+      "dimensions_metatiles": [
+        6,
+        10
+      ],
+      "arrival_core": [
+        4,
+        17
+      ],
+      "exit_tiles_core": [
+        [
+          4,
+          19
+        ],
+        [
+          5,
+          19
+        ]
+      ],
+      "guide_at": [
+        9,
+        17
+      ],
+      "leader_court_locked": true,
+      "before_lines": [
+        "A garden needs",
+        "strong roots and",
+        "room to change.",
+        "How has your team",
+        "grown?"
+      ],
+      "victory_lines": [
+        "Strong roots.",
+        "Room to grow."
+      ],
+      "after_lines": [
+        "The center gate",
+        "is open for you.",
+        "West leads to",
+        "LAKE ITASCA.",
+        "For HM WHIRLPOOL,",
+        "ask the fisherman",
+        "on BEMIDJI pier.",
+        "The PINE BADGE",
+        "allows field use."
+      ],
+      "cut_gates": [
+        {
+          "id": "SOUTH_HEDGE",
+          "tree_core": [
+            3,
+            12
+          ],
+          "approach_core": [
+            3,
+            13
+          ],
+          "replacement_symbol": "o",
+          "targets_core": [
+            [
+              3,
+              11
+            ]
+          ],
+          "gated_trainers": [
+            "MN_GYM_7_TRAINER_1",
+            "MN_GYM_7_TRAINER_3"
+          ],
+          "event": "EVENT_MN_GYM_7_CUT_SOUTH_HEDGE_PRUNED"
+        },
+        {
+          "id": "NORTH_HEDGE",
+          "tree_core": [
+            7,
+            6
+          ],
+          "approach_core": [
+            7,
+            7
+          ],
+          "replacement_symbol": "o",
+          "targets_core": [
+            [
+              7,
+              5
+            ]
+          ],
+          "gated_trainers": [
+            "MN_GYM_7_TRAINER_2"
+          ],
+          "event": "EVENT_MN_GYM_7_CUT_NORTH_HEDGE_PRUNED"
+        }
+      ],
+      "court_requires": [
+        "EVENT_MN_GYM_7_TRAINER_1_DEFEATED",
+        "EVENT_MN_GYM_7_TRAINER_2_DEFEATED"
+      ],
+      "court_denied_lines": [
+        "Find MOSLEN west",
+        "and ELVREN north.",
+        "Beat both, then",
+        "come back to me."
+      ]
+    }
+  ]
+}

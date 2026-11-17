@@ -109,7 +109,10 @@ pub(crate) fn install(pack: &mut CompiledGamePack, gym: &Gym) -> Result<BTreeMap
                         .get(&format!("gfx/tilesets/{glyph_source}.2bpp"))
                         .context("replacement glyph graphics")?
                 };
-                let palette = glyph_definition.palette_map[usize::from(glyph_index)];
+                let palette = glyph_definition.palette_map.get(usize::from(glyph_index))
+                    .copied().with_context(|| format!(
+                        "{}: undefined native glyph palette {glyph_source}:{glyph_index:02x} in {source}:{id}", gym.id
+                    ))?;
                 let physical = if palette & 8 == 0 {
                     usize::from(glyph_index)
                 } else {

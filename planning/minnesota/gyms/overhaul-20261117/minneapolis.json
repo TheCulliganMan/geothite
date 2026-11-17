@@ -1,0 +1,471 @@
+{
+  "schema_version": 1,
+  "status": "Authored gym-overhaul source; native source-art/static review only. Integration, build and publication pending. No gameplay verification.",
+  "gyms": [
+    {
+      "slot": 3,
+      "id": "MnMinneapolisGym",
+      "constant": "MN_MINNEAPOLIS_GYM",
+      "city": "MINNEAPOLIS",
+      "leader": "AVRIN",
+      "trainer_class": "COOLTRAINERF",
+      "leader_sprite": "SPRITE_MN_LEADER_AVRIN",
+      "leader_at": [
+        6,
+        3
+      ],
+      "badge_flag": "ENGINE_PLAINBADGE",
+      "requires": [
+        "BADGE_2"
+      ],
+      "reward": "TM_THUNDERPUNCH",
+      "party": [
+        {
+          "species": "ZAPSAP",
+          "level": 19,
+          "moves": [
+            "THUNDERSHOCK",
+            "ABSORB",
+            "THUNDER_WAVE",
+            "MEGA_DRAIN"
+          ]
+        },
+        {
+          "species": "CARTICK",
+          "level": 20,
+          "moves": [
+            "SMOG",
+            "METAL_CLAW",
+            "POISON_GAS",
+            "MUD_SLAP"
+          ]
+        },
+        {
+          "species": "ZAPSAP",
+          "level": 21,
+          "moves": [
+            "THUNDERSHOCK",
+            "ABSORB",
+            "THUNDER_WAVE",
+            "MEGA_DRAIN"
+          ]
+        }
+      ],
+      "rows": [
+        "LTTTTTR",
+        "lfffffr",
+        "XXCXYYY",
+        "XffmcfY",
+        "XfffffY",
+        "XXAmBhY",
+        "XffmffY",
+        "XfcmmfY",
+        "XffmffY",
+        "XSfffEY",
+        "XXXsYYY"
+      ],
+      "art": {
+        "#": [
+          "game_corner",
+          "00"
+        ],
+        "L": [
+          "game_corner",
+          "22"
+        ],
+        "T": [
+          "game_corner",
+          "26"
+        ],
+        "R": [
+          "game_corner",
+          "24"
+        ],
+        "l": [
+          "game_corner",
+          "23"
+        ],
+        "r": [
+          "game_corner",
+          "25"
+        ],
+        "u": [
+          "game_corner",
+          "20"
+        ],
+        "v": [
+          "game_corner",
+          "21"
+        ],
+        ".": [
+          "game_corner",
+          "01"
+        ],
+        "c": [
+          "facility",
+          "02"
+        ],
+        "S": [
+          "game_corner",
+          "1d"
+        ],
+        "E": [
+          "game_corner",
+          "1e"
+        ],
+        "s": [
+          "game_corner",
+          "0c"
+        ],
+        "A": [
+          "facility",
+          "0b"
+        ],
+        "B": [
+          "facility",
+          "0b"
+        ],
+        "X": [
+          "facility",
+          "12"
+        ],
+        "Y": [
+          "facility",
+          "13"
+        ],
+        "Z": [
+          "game_corner",
+          "00"
+        ],
+        "d": [
+          "facility",
+          "12"
+        ],
+        "e": [
+          "facility",
+          "13"
+        ],
+        "|": [
+          "facility",
+          "0f"
+        ],
+        "m": [
+          "facility",
+          "12"
+        ],
+        "n": [
+          "facility",
+          "13"
+        ],
+        "C": [
+          "facility",
+          "0b"
+        ],
+        "f": [
+          "game_corner",
+          "01"
+        ],
+        "h": [
+          "tower",
+          "3d"
+        ]
+      },
+      "trainers": [
+        {
+          "id": "MN_GYM_3_TRAINER_1",
+          "name": "LENVI",
+          "trainer_class": "SCIENTIST",
+          "sprite": "SPRITE_SCIENTIST",
+          "at": [
+            3,
+            15
+          ],
+          "party": [
+            {
+              "species": "ZAPSAP",
+              "level": 17,
+              "moves": [
+                "THUNDERSHOCK",
+                "ABSORB",
+                "THUNDER_WAVE",
+                "MEGA_DRAIN"
+              ]
+            }
+          ],
+          "optional": false,
+          "before_lines": [
+            "I tend the west",
+            "feeder. First, a",
+            "test of your team."
+          ],
+          "after_lines": [
+            "Flip the console",
+            "above me. Its",
+            "bridge leads up",
+            "to JOSSA."
+          ],
+          "requires": []
+        },
+        {
+          "id": "MN_GYM_3_TRAINER_2",
+          "name": "JOSSA",
+          "trainer_class": "SUPER_NERD",
+          "sprite": "SPRITE_SUPER_NERD",
+          "at": [
+            10,
+            8
+          ],
+          "party": [
+            {
+              "species": "CARTICK",
+              "level": 18,
+              "moves": [
+                "SMOG",
+                "METAL_CLAW",
+                "POISON_GAS",
+                "MUD_SLAP"
+              ]
+            },
+            {
+              "species": "PIPULSE",
+              "level": 18,
+              "moves": [
+                "THUNDERSHOCK",
+                "FOCUS_ENERGY",
+                "SPARK",
+                "QUICK_ATTACK"
+              ]
+            }
+          ],
+          "optional": false,
+          "before_lines": [
+            "West power is on.",
+            "Now test the east!"
+          ],
+          "after_lines": [
+            "The east console",
+            "opens a way back.",
+            "Both feeders open",
+            "the court bridge."
+          ],
+          "requires": []
+        }
+      ],
+      "stations": [],
+      "gates": [
+        {
+          "at": [
+            2,
+            5
+          ],
+          "requires": [
+            "EVENT_MN_GYM_3_V2_WEST_FEED_ON"
+          ],
+          "open_symbol": "f",
+          "event": "EVENT_MN_GYM_3_V2_WEST_BRIDGE_OPEN"
+        },
+        {
+          "at": [
+            4,
+            5
+          ],
+          "requires": [
+            "EVENT_MN_GYM_3_V2_EAST_FEED_ON"
+          ],
+          "open_symbol": "f",
+          "event": "EVENT_MN_GYM_3_V2_EAST_BRIDGE_OPEN"
+        },
+        {
+          "at": [
+            2,
+            2
+          ],
+          "requires": [
+            "EVENT_MN_GYM_3_V2_WEST_FEED_ON",
+            "EVENT_MN_GYM_3_V2_EAST_FEED_ON"
+          ],
+          "open_symbol": "f",
+          "event": "EVENT_MN_GYM_3_V2_COURT_OPEN"
+        }
+      ],
+      "guide": [
+        "West power opens",
+        "the first bridge.",
+        "JOSSA tends east.",
+        "Both on opens the",
+        "court. The ledge",
+        "always leads out."
+      ],
+      "walkthrough": [
+        "MN_GYM_3_TRAINER_1",
+        "WEST_FEEDER",
+        "MN_GYM_3_TRAINER_2",
+        "EAST_FEEDER"
+      ],
+      "dimensions_metatiles": [
+        7,
+        11
+      ],
+      "arrival_core": [
+        6,
+        19
+      ],
+      "exit_tiles_core": [
+        [
+          6,
+          21
+        ],
+        [
+          7,
+          21
+        ]
+      ],
+      "guide_at": [
+        9,
+        19
+      ],
+      "leader_court_locked": true,
+      "before_lines": [
+        "I am AVRIN.",
+        "A spark can change",
+        "the whole battle!"
+      ],
+      "victory_lines": [
+        "You kept the spark",
+        "alive to the end."
+      ],
+      "after_lines": [
+        "Before ST. PAUL,",
+        "read the note at",
+        "the dispatch desk."
+      ],
+      "routers": [
+        {
+          "id": "WEST_FEEDER",
+          "toggle": true,
+          "at": [
+            5,
+            14
+          ],
+          "prompt": [
+            "WEST feeder."
+          ],
+          "modes": [
+            {
+              "id": "ON",
+              "label": "On",
+              "requires": [
+                "EVENT_MN_GYM_3_TRAINER_1_DEFEATED"
+              ],
+              "event": "EVENT_MN_GYM_3_V2_WEST_FEED_ON",
+              "lines": [
+                "WEST feeder on.",
+                "Its bridge opens."
+              ],
+              "denied_lines": [
+                "Meet the feeder",
+                "trainer first."
+              ]
+            },
+            {
+              "id": "OFF",
+              "label": "Off",
+              "requires": [
+                "EVENT_MN_GYM_3_TRAINER_1_DEFEATED"
+              ],
+              "event": "EVENT_MN_GYM_3_V2_WEST_FEED_OFF",
+              "lines": [
+                "WEST feeder off.",
+                "Its bridge closes."
+              ],
+              "denied_lines": [
+                "Meet the feeder",
+                "trainer first."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "EAST_FEEDER",
+          "toggle": true,
+          "at": [
+            8,
+            7
+          ],
+          "prompt": [
+            "EAST feeder."
+          ],
+          "modes": [
+            {
+              "id": "ON",
+              "label": "On",
+              "requires": [
+                "EVENT_MN_GYM_3_TRAINER_2_DEFEATED"
+              ],
+              "event": "EVENT_MN_GYM_3_V2_EAST_FEED_ON",
+              "lines": [
+                "EAST feeder on.",
+                "Its bridge opens."
+              ],
+              "denied_lines": [
+                "Meet the feeder",
+                "trainer first."
+              ]
+            },
+            {
+              "id": "OFF",
+              "label": "Off",
+              "requires": [
+                "EVENT_MN_GYM_3_TRAINER_2_DEFEATED"
+              ],
+              "event": "EVENT_MN_GYM_3_V2_EAST_FEED_OFF",
+              "lines": [
+                "EAST feeder off.",
+                "Its bridge closes."
+              ],
+              "denied_lines": [
+                "Meet the feeder",
+                "trainer first."
+              ]
+            }
+          ]
+        }
+      ],
+      "barriers": [
+        "A",
+        "B",
+        "C"
+      ],
+      "court_requires": [
+        "EVENT_MN_GYM_3_V2_WEST_FEED_ON",
+        "EVENT_MN_GYM_3_V2_EAST_FEED_ON"
+      ],
+      "court_denied_lines": [
+        "Both feeders must",
+        "be on. A console",
+        "keeps its setting."
+      ],
+      "ledges": [
+        {
+          "id": "FEEDER_SERVICE_DROP",
+          "direction": "south",
+          "hop_from": [
+            11,
+            10
+          ],
+          "landing": [
+            11,
+            12
+          ],
+          "return_passage_core": [
+            4,
+            10,
+            10,
+            12
+          ],
+          "minimum_return_steps": 8
+        }
+      ]
+    }
+  ]
+}

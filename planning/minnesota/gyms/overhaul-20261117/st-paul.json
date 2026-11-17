@@ -1,0 +1,386 @@
+{
+  "schema_version": 1,
+  "status": "Authored overhaul candidate for exact refinement v02; static native art and course review only. Not installed or gameplay verified.",
+  "gyms": [
+    {
+      "slot": 4,
+      "id": "MnStPaulGym",
+      "constant": "MN_ST_PAUL_GYM",
+      "city": "ST PAUL",
+      "leader": "BRANNIC",
+      "trainer_class": "MN_LEADER_BRANNIC",
+      "leader_sprite": "SPRITE_MN_LEADER_BRANNIC",
+      "leader_at": [
+        13,
+        3
+      ],
+      "badge_flag": "ENGINE_FOGBADGE",
+      "requires": [
+        "BADGE_3"
+      ],
+      "reward": "TM_STEEL_WING",
+      "party": [
+        {
+          "species": "CARTICK",
+          "level": 23,
+          "moves": [
+            "METAL_CLAW",
+            "POISON_GAS",
+            "MUD_SLAP",
+            "SLUDGE"
+          ]
+        },
+        {
+          "species": "CLINKLAW",
+          "level": 24,
+          "moves": [
+            "LEER",
+            "METAL_CLAW",
+            "MUD_SLAP",
+            "CLAMP"
+          ]
+        },
+        {
+          "species": "BRISTUB",
+          "level": 25,
+          "moves": [
+            "HEADBUTT",
+            "BIND",
+            "HARDEN",
+            "TAKE_DOWN"
+          ]
+        }
+      ],
+      "rows": [
+        "AbbBIWCCW",
+        "L..RIaccz",
+        "Lb.RIIIGI",
+        "Lp.RIaccz",
+        "L.pRIpcpz",
+        "ABBBIUUUU",
+        "Lp.RIpfmz",
+        "L.tRIaffz",
+        "L.pRIafmz",
+        "L..RIaffz",
+        "L..RIafpz",
+        "esq######"
+      ],
+      "art": {
+        "#": [
+          "underground",
+          "00"
+        ],
+        "I": [
+          "tower",
+          "1b"
+        ],
+        "W": [
+          "underground",
+          "09"
+        ],
+        "L": [
+          "tower",
+          "08"
+        ],
+        "R": [
+          "tower",
+          "0a"
+        ],
+        "A": [
+          "tower",
+          "04"
+        ],
+        "B": [
+          "tower",
+          "05"
+        ],
+        "U": [
+          "lab",
+          "09"
+        ],
+        "a": [
+          "lab",
+          "1d"
+        ],
+        "z": [
+          "lab",
+          "1e"
+        ],
+        "b": [
+          "facility",
+          "06"
+        ],
+        ".": [
+          "tower",
+          "09"
+        ],
+        "c": [
+          "underground",
+          "0d"
+        ],
+        "f": [
+          "lab",
+          "01"
+        ],
+        "m": [
+          "facility",
+          "12"
+        ],
+        "p": [
+          "underground",
+          "0f"
+        ],
+        "G": [
+          "elite_four_room",
+          "14"
+        ],
+        "C": [
+          "lab",
+          "08"
+        ],
+        "e": [
+          "underground",
+          "10"
+        ],
+        "q": [
+          "underground",
+          "12"
+        ],
+        "s": [
+          "tower",
+          "26"
+        ],
+        "t": [
+          "underground",
+          "29"
+        ]
+      },
+      "trainers": [
+        {
+          "id": "MN_GYM_4_TRAINER_1",
+          "name": "BELVA",
+          "trainer_class": "COOLTRAINERF",
+          "sprite": "SPRITE_LASS",
+          "at": [
+            5,
+            3
+          ],
+          "party": [
+            {
+              "species": "CARTICK",
+              "level": 21,
+              "moves": [
+                "SMOG",
+                "METAL_CLAW",
+                "POISON_GAS",
+                "MUD_SLAP"
+              ]
+            }
+          ],
+          "optional": true,
+          "before_lines": [
+            "BELVA: I rode that",
+            "pad back by",
+            "accident my first",
+            "time. Stepped off",
+            "and straight back",
+            "on before I even",
+            "saw who was",
+            "waiting. Come over",
+            "here if you want a",
+            "match."
+          ],
+          "after_lines": [
+            "The archive route",
+            "is open. Take the",
+            "far pad. BRANNIC",
+            "waits beyond."
+          ],
+          "requires": []
+        },
+        {
+          "id": "MN_GYM_4_TRAINER_2",
+          "name": "ORVEN",
+          "trainer_class": "POKEFANM",
+          "sprite": "SPRITE_POKEFAN_M",
+          "at": [
+            13,
+            16
+          ],
+          "party": [
+            {
+              "species": "CLINKLAW",
+              "level": 22,
+              "moves": [
+                "LEER",
+                "METAL_CLAW",
+                "MUD_SLAP",
+                "CLAMP"
+              ]
+            },
+            {
+              "species": "CARTICK",
+              "level": 22,
+              "moves": [
+                "METAL_CLAW",
+                "POISON_GAS",
+                "MUD_SLAP",
+                "SLUDGE"
+              ]
+            }
+          ],
+          "optional": true,
+          "before_lines": [
+            "ORVEN: I used to",
+            "hold my breath all",
+            "the way across. My",
+            "partner sat down",
+            "and looked at the",
+            "ceiling. Try",
+            "battling us.",
+            "You'll see which",
+            "of us knows how to",
+            "settle in."
+          ],
+          "after_lines": [
+            "The workshop route",
+            "is open. Take the",
+            "far pad. BRANNIC",
+            "waits beyond."
+          ],
+          "requires": []
+        }
+      ],
+      "stations": [],
+      "gates": [
+        {
+          "at": [
+            7,
+            2
+          ],
+          "requires": [
+            "EVENT_MN_GYM_4_COURT_OPEN"
+          ],
+          "open_symbol": "c",
+          "event": "EVENT_MN_GYM_4_V2_GRILLE_OPEN"
+        }
+      ],
+      "guide": [
+        "Two ways through.",
+        "The north pad goes",
+        "to the archive.",
+        "The south pad goes",
+        "to the workshop.",
+        "Win either match",
+        "to face BRANNIC.",
+        "Both routes return",
+        "by the same pads."
+      ],
+      "walkthrough": [
+        "MN_GYM_4_TRAINER_1",
+        "MN_GYM_4_TRAINER_2"
+      ],
+      "dimensions_metatiles": [
+        9,
+        12
+      ],
+      "arrival_core": [
+        2,
+        21
+      ],
+      "exit_tiles_core": [
+        [
+          2,
+          23
+        ],
+        [
+          3,
+          23
+        ]
+      ],
+      "guide_at": [
+        6,
+        20
+      ],
+      "leader_court_locked": true,
+      "before_lines": [
+        "BRANNIC: You found",
+        "the middle court.",
+        "Now hold it.",
+        "Steel gives ground",
+        "only when it must."
+      ],
+      "victory_lines": [
+        "BRANNIC: I yield.",
+        "You held the line.",
+        "Take the CAPITOL",
+        "BADGE with pride."
+      ],
+      "after_lines": [
+        "BRANNIC: The CANOE",
+        "SHOP is in the",
+        "ANGLER HOUSE. If",
+        "you've already got",
+        "the boat, you can",
+        "ask there about HM",
+        "SURF too."
+      ],
+      "routers": [],
+      "lifts": [
+        {
+          "id": "WEST_ROOM",
+          "ends_core": [
+            [
+              3,
+              13
+            ],
+            [
+              3,
+              7
+            ]
+          ]
+        },
+        {
+          "id": "CROSS_ROOM",
+          "ends_core": [
+            [
+              5,
+              9
+            ],
+            [
+              11,
+              9
+            ]
+          ]
+        },
+        {
+          "id": "EAST_RETURN",
+          "ends_core": [
+            [
+              5,
+              17
+            ],
+            [
+              11,
+              13
+            ]
+          ]
+        },
+        {
+          "id": "MAIN_LIFT",
+          "ends_core": [
+            [
+              15,
+              21
+            ],
+            [
+              15,
+              9
+            ]
+          ]
+        }
+      ],
+      "court_requires": []
+    }
+  ]
+}

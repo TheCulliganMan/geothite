@@ -22,6 +22,12 @@ published. Minnesota remains native 2D. Builds, unit tests and static/content
 release checks passed; campaign balance was assessed statically, with no
 gameplay, controller or visual verification.
 
+The selected local [Gym and cave overhaul](docs/game-content.md#minnesota-gym-and-cave-overhaul)
+redesigns all eight Gyms and five cave rooms, adds native trainer sight encounters,
+strengthens the Gym teams, and adds six hidden cave items. Its compiled maps,
+native art, routes, reward preservation and bounded save migration have been
+checked without playing the game. Production publication is pending.
+
 The [Tamarack and Team ICE sprite revision](planning/minnesota/npcs/tamarack-ice/README.md)
 uses normal Crystal overworld proportions, woman Tamarack and eight additional
 trainer types, with private native art and local encounter checks.

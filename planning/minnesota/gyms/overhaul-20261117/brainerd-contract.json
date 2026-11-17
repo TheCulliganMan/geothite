@@ -1,0 +1,21 @@
+{
+  "sightlines": {
+    "MN_GYM_6_TRAINER_1": {
+      "direction": "right",
+      "radius": 1
+    },
+    "MN_GYM_6_TRAINER_2": {
+      "direction": "down",
+      "radius": 2
+    }
+  },
+  "court": {
+    "all": [
+      "EVENT_MN_GYM_6_TRAINER_1_DEFEATED"
+    ],
+    "any": [
+      "EVENT_MN_GYM_6_V2_WALK_LEFT",
+      "EVENT_MN_GYM_6_TRAINER_2_DEFEATED"
+    ]
+  }
+}

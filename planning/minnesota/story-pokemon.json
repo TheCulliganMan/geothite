@@ -2108,5 +2108,554 @@
       }
     ],
     "limits": "These are table, legality and availability conclusions. Static evidence does not establish how much grinding a player needs or how often each starter wins."
+  },
+  "gym_overhaul_teams": {
+    "schema_version": 1,
+    "parties": {
+      "MN_GYM_1": [
+        {
+          "species": "NIBBIN",
+          "level": 10,
+          "moves": [
+            "SCRATCH",
+            "TAIL_WHIP",
+            "QUICK_ATTACK"
+          ]
+        },
+        {
+          "species": "CROOKIT",
+          "level": 12,
+          "moves": [
+            "SCRATCH",
+            "TAIL_WHIP",
+            "QUICK_ATTACK",
+            "BITE"
+          ]
+        }
+      ],
+      "MN_GYM_2": [
+        {
+          "species": "SODCALF",
+          "level": 14,
+          "moves": [
+            "STOMP",
+            "TAIL_WHIP",
+            "HORN_ATTACK"
+          ]
+        },
+        {
+          "species": "BURRBUD",
+          "level": 15,
+          "moves": [
+            "MEGA_DRAIN",
+            "GROWTH",
+            "TACKLE"
+          ]
+        },
+        {
+          "species": "MUDNIP",
+          "level": 16,
+          "moves": [
+            "DIG",
+            "WATER_GUN",
+            "BITE",
+            "WITHDRAW"
+          ]
+        }
+      ],
+      "MN_GYM_3": [
+        {
+          "species": "PIPULSE",
+          "level": 19,
+          "moves": [
+            "SPARK",
+            "QUICK_ATTACK",
+            "FOCUS_ENERGY",
+            "ROCK_SMASH"
+          ]
+        },
+        {
+          "species": "SPARKVEIL",
+          "level": 20,
+          "moves": [
+            "THUNDERBOLT",
+            "CONFUSION",
+            "LIGHT_SCREEN",
+            "THUNDER_WAVE"
+          ]
+        },
+        {
+          "species": "TAPACITOR",
+          "level": 22,
+          "moves": [
+            "THUNDERBOLT",
+            "MEGA_DRAIN",
+            "GROWTH",
+            "THUNDER_WAVE"
+          ]
+        }
+      ],
+      "MN_GYM_4": [
+        {
+          "species": "PATCHEBEE",
+          "level": 23,
+          "moves": [
+            "METAL_CLAW",
+            "FURY_CUTTER",
+            "HEADBUTT",
+            "PROTECT"
+          ]
+        },
+        {
+          "species": "SKATUFF",
+          "level": 24,
+          "moves": [
+            "METAL_CLAW",
+            "ICE_SHARD",
+            "HEADBUTT",
+            "ROCK_SMASH"
+          ]
+        },
+        {
+          "species": "TROLLURE",
+          "level": 25,
+          "moves": [
+            "IRON_TAIL",
+            "WATER_PULSE",
+            "RAIN_DANCE",
+            "SWIFT"
+          ]
+        }
+      ],
+      "MN_GYM_5": [
+        {
+          "species": "DEEPULSE",
+          "level": 28,
+          "moves": [
+            "PSYBEAM",
+            "WING_ATTACK",
+            "LIGHT_SCREEN",
+            "SWIFT"
+          ]
+        },
+        {
+          "species": "BANKWING",
+          "level": 29,
+          "moves": [
+            "DIG",
+            "WING_ATTACK",
+            "QUICK_ATTACK",
+            "SWIFT"
+          ]
+        },
+        {
+          "species": "SILOHAWK",
+          "level": 30,
+          "moves": [
+            "WING_ATTACK",
+            "FAINT_ATTACK",
+            "LEER",
+            "ROAR"
+          ]
+        }
+      ],
+      "MN_GYM_6": [
+        {
+          "species": "TORROUT",
+          "level": 33,
+          "moves": [
+            "WATERFALL",
+            "LOW_KICK",
+            "RAIN_DANCE",
+            "AQUA_JET"
+          ]
+        },
+        {
+          "species": "BANKMAW",
+          "level": 34,
+          "moves": [
+            "WATERFALL",
+            "MAGNITUDE",
+            "BITE",
+            "PROTECT"
+          ]
+        },
+        {
+          "species": "HATCHRUSH",
+          "level": 35,
+          "moves": [
+            "SURF",
+            "SIGNAL_BEAM",
+            "QUICK_ATTACK",
+            "RAIN_DANCE"
+          ]
+        }
+      ],
+      "MN_GYM_7": [
+        {
+          "species": "ZIZALITH",
+          "level": 38,
+          "moves": [
+            "ENERGY_BALL",
+            "SURF",
+            "LEECH_SEED",
+            "GROWTH"
+          ]
+        },
+        {
+          "species": "BURROOT",
+          "level": 38,
+          "moves": [
+            "GIGA_DRAIN",
+            "EARTHQUAKE",
+            "GROWTH",
+            "HEADBUTT"
+          ]
+        },
+        {
+          "species": "SHEDSTAG",
+          "level": 39,
+          "moves": [
+            "RAZOR_LEAF",
+            "SHADOW_BALL",
+            "LEECH_SEED",
+            "HEADBUTT"
+          ]
+        },
+        {
+          "species": "CYPRIELLE",
+          "level": 40,
+          "moves": [
+            "ENERGY_BALL",
+            "SLIPPER_WALTZ",
+            "PSYCHIC_M",
+            "SYNTHESIS"
+          ]
+        }
+      ],
+      "MN_GYM_8": [
+        {
+          "species": "LUTEBRISK",
+          "level": 42,
+          "moves": [
+            "ICE_BEAM",
+            "SURF",
+            "BODY_SLAM",
+            "LIGHT_SCREEN"
+          ]
+        },
+        {
+          "species": "PLOWZER",
+          "level": 43,
+          "moves": [
+            "IRON_HEAD",
+            "ICE_SHARD",
+            "EARTHQUAKE",
+            "HAZE"
+          ]
+        },
+        {
+          "species": "RIMEGUARD",
+          "level": 44,
+          "moves": [
+            "ICE_PUNCH",
+            "VITAL_THROW",
+            "STRENGTH",
+            "COUNTER"
+          ]
+        },
+        {
+          "species": "VERNACAPE",
+          "level": 45,
+          "moves": [
+            "ICE_BEAM",
+            "PSYCHIC_M",
+            "GIGA_DRAIN",
+            "AMNESIA"
+          ]
+        }
+      ],
+      "MN_GYM_1_TRAINER_1": [
+        {
+          "species": "NIBBIN",
+          "level": 8,
+          "moves": [
+            "SCRATCH",
+            "TAIL_WHIP",
+            "QUICK_ATTACK"
+          ]
+        }
+      ],
+      "MN_GYM_1_TRAINER_2": [
+        {
+          "species": "PIPBOOM",
+          "level": 9,
+          "moves": [
+            "GROWL",
+            "GUST",
+            "FOCUS_ENERGY",
+            "STOMP"
+          ]
+        }
+      ],
+      "MN_GYM_2_TRAINER_1": [
+        {
+          "species": "SODCALF",
+          "level": 12,
+          "moves": [
+            "HORN_ATTACK",
+            "TAIL_WHIP",
+            "TACKLE"
+          ]
+        }
+      ],
+      "MN_GYM_2_TRAINER_2": [
+        {
+          "species": "MUDNIP",
+          "level": 13,
+          "moves": [
+            "DIG",
+            "WATER_GUN",
+            "BITE"
+          ]
+        }
+      ],
+      "MN_GYM_3_TRAINER_1": [
+        {
+          "species": "SPARKVEIL",
+          "level": 17,
+          "moves": [
+            "THUNDERSHOCK",
+            "CONFUSION",
+            "LIGHT_SCREEN",
+            "THUNDER_WAVE"
+          ]
+        }
+      ],
+      "MN_GYM_3_TRAINER_2": [
+        {
+          "species": "PIPULSE",
+          "level": 18,
+          "moves": [
+            "SPARK",
+            "QUICK_ATTACK",
+            "FOCUS_ENERGY"
+          ]
+        },
+        {
+          "species": "ZAPSAP",
+          "level": 18,
+          "moves": [
+            "THUNDERSHOCK",
+            "MEGA_DRAIN",
+            "GROWTH"
+          ]
+        }
+      ],
+      "MN_GYM_4_TRAINER_1": [
+        {
+          "species": "PATCHEBEE",
+          "level": 21,
+          "moves": [
+            "METAL_CLAW",
+            "FURY_CUTTER",
+            "HEADBUTT",
+            "HARDEN"
+          ]
+        }
+      ],
+      "MN_GYM_4_TRAINER_2": [
+        {
+          "species": "SKATUFF",
+          "level": 22,
+          "moves": [
+            "METAL_CLAW",
+            "ICE_SHARD",
+            "HEADBUTT",
+            "LEER"
+          ]
+        },
+        {
+          "species": "CARTICK",
+          "level": 22,
+          "moves": [
+            "SLUDGE",
+            "METAL_CLAW",
+            "POISON_GAS",
+            "HARDEN"
+          ]
+        }
+      ],
+      "MN_GYM_5_TRAINER_1": [
+        {
+          "species": "DEEPULSE",
+          "level": 25,
+          "moves": [
+            "PSYBEAM",
+            "WING_ATTACK",
+            "LIGHT_SCREEN",
+            "SWIFT"
+          ]
+        }
+      ],
+      "MN_GYM_5_TRAINER_2": [
+        {
+          "species": "SQUALLFIN",
+          "level": 25,
+          "moves": [
+            "ICY_WIND",
+            "WING_ATTACK",
+            "QUICK_ATTACK",
+            "MIST"
+          ]
+        },
+        {
+          "species": "BOOMRUFF",
+          "level": 26,
+          "moves": [
+            "STOMP",
+            "WING_ATTACK",
+            "FOCUS_ENERGY",
+            "ROAR"
+          ]
+        }
+      ],
+      "MN_GYM_6_TRAINER_1": [
+        {
+          "species": "YODELOON",
+          "level": 30,
+          "moves": [
+            "BUBBLEBEAM",
+            "SHADOW_BALL",
+            "RAIN_DANCE",
+            "ICY_WIND"
+          ]
+        },
+        {
+          "species": "TORROUT",
+          "level": 30,
+          "moves": [
+            "WATERFALL",
+            "LOW_KICK",
+            "AQUA_JET",
+            "COUNTER"
+          ]
+        }
+      ],
+      "MN_GYM_6_TRAINER_2": [
+        {
+          "species": "PIKEMAN",
+          "level": 31,
+          "moves": [
+            "WATERFALL",
+            "AQUA_JET",
+            "LOW_KICK",
+            "SLAM"
+          ]
+        },
+        {
+          "species": "LEECHURGE",
+          "level": 31,
+          "moves": [
+            "SURF",
+            "PURSUIT",
+            "SLUDGE_BOMB",
+            "HAZE"
+          ]
+        }
+      ],
+      "MN_GYM_7_TRAINER_1": [
+        {
+          "species": "BURROOT",
+          "level": 35,
+          "moves": [
+            "GIGA_DRAIN",
+            "MAGNITUDE",
+            "HEADBUTT",
+            "GROWTH"
+          ]
+        }
+      ],
+      "MN_GYM_7_TRAINER_2": [
+        {
+          "species": "CIDERMAW",
+          "level": 35,
+          "moves": [
+            "SLUDGE",
+            "GIGA_DRAIN",
+            "LEECH_SEED",
+            "SYNTHESIS"
+          ]
+        },
+        {
+          "species": "CYPRIELLE",
+          "level": 36,
+          "moves": [
+            "DAZZLING_GLEAM",
+            "PSYBEAM",
+            "GIGA_DRAIN",
+            "SYNTHESIS"
+          ]
+        }
+      ],
+      "MN_GYM_7_TRAINER_3": [
+        {
+          "species": "VERGLOOM",
+          "level": 36,
+          "moves": [
+            "RAZOR_LEAF",
+            "FAINT_ATTACK",
+            "LEECH_SEED",
+            "SCARY_FACE"
+          ]
+        }
+      ],
+      "MN_GYM_8_TRAINER_1": [
+        {
+          "species": "WHITEWHIRL",
+          "level": 39,
+          "moves": [
+            "ICE_BEAM",
+            "WING_ATTACK",
+            "ICY_WIND",
+            "HAZE"
+          ]
+        },
+        {
+          "species": "PLOWZER",
+          "level": 40,
+          "moves": [
+            "IRON_HEAD",
+            "ICE_SHARD",
+            "HAZE",
+            "HEADBUTT"
+          ]
+        }
+      ],
+      "MN_GYM_8_TRAINER_2": [
+        {
+          "species": "BUTTERMUSE",
+          "level": 40,
+          "moves": [
+            "ICE_BEAM",
+            "DAZZLING_GLEAM",
+            "ICY_WIND",
+            "ENCORE"
+          ]
+        }
+      ],
+      "MN_GYM_8_TRAINER_3": [
+        {
+          "species": "LUTEBRISK",
+          "level": 41,
+          "moves": [
+            "ICE_BEAM",
+            "SURF",
+            "BODY_SLAM",
+            "LIGHT_SCREEN"
+          ]
+        }
+      ]
+    }
   }
 }

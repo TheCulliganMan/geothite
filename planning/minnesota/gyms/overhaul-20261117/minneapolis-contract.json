@@ -1,0 +1,20 @@
+{
+  "sightlines": {
+    "MN_GYM_3_TRAINER_1": {
+      "direction": "left",
+      "radius": 1
+    },
+    "MN_GYM_3_TRAINER_2": {
+      "direction": "left",
+      "radius": 2
+    }
+  },
+  "court": {
+    "all": [
+      "EVENT_MN_GYM_3_V2_WEST_FEED_ON",
+      "EVENT_MN_GYM_3_V2_EAST_FEED_ON"
+    ],
+    "any": []
+  },
+  "victory_opens_gates": true
+}

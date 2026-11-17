@@ -1,0 +1,571 @@
+{
+  "schema_version": 1,
+  "status": "Authored overhaul candidate for exact refinement v02; static native art and course review only. Not installed or gameplay verified.",
+  "gyms": [
+    {
+      "slot": 6,
+      "id": "MnBrainerdGym",
+      "constant": "MN_BRAINERD_GYM",
+      "city": "BRAINERD",
+      "leader": "SIVREN",
+      "trainer_class": "MN_LEADER_SIVREN",
+      "leader_sprite": "SPRITE_MN_LEADER_SIVREN",
+      "leader_at": [
+        5,
+        3
+      ],
+      "badge_flag": "ENGINE_MINERALBADGE",
+      "requires": [
+        "BADGE_5"
+      ],
+      "reward": "TM_RAIN_DANCE",
+      "party": [
+        {
+          "species": "TORROUT",
+          "level": 33,
+          "moves": [
+            "LOW_KICK",
+            "WATER_PULSE",
+            "COUNTER",
+            "RAIN_DANCE"
+          ]
+        },
+        {
+          "species": "PIKEMAN",
+          "level": 34,
+          "moves": [
+            "WATERFALL",
+            "AQUA_JET",
+            "LOW_KICK",
+            "SLAM"
+          ]
+        },
+        {
+          "species": "PADDARRAY",
+          "level": 35,
+          "moves": [
+            "WATER_GUN",
+            "THUNDER_WAVE",
+            "SPARK",
+            "PSYBEAM"
+          ]
+        }
+      ],
+      "rows": [
+        "ttttt",
+        "awcwb",
+        "QHHAR",
+        "NFFdr",
+        "QBCXR",
+        "lh.Wr",
+        "lL.Sr",
+        "ffsff"
+      ],
+      "art": {
+        "#": [
+          "port",
+          "2a"
+        ],
+        "t": [
+          "port",
+          "2b"
+        ],
+        "a": [
+          "port",
+          "37"
+        ],
+        "w": [
+          "port",
+          "36"
+        ],
+        "c": [
+          "port",
+          "39"
+        ],
+        "b": [
+          "port",
+          "38"
+        ],
+        "l": [
+          "port",
+          "2e"
+        ],
+        "h": [
+          "port",
+          "27"
+        ],
+        "j": [
+          "port",
+          "29"
+        ],
+        "r": [
+          "port",
+          "2f"
+        ],
+        "u": [
+          "port",
+          "0c"
+        ],
+        "d": [
+          "port",
+          "2d"
+        ],
+        "v": [
+          "port",
+          "14"
+        ],
+        ".": [
+          "port",
+          "26"
+        ],
+        "W": [
+          "port",
+          "08"
+        ],
+        "A": [
+          "port",
+          "08"
+        ],
+        "B": [
+          "port",
+          "08"
+        ],
+        "C": [
+          "port",
+          "08"
+        ],
+        "L": [
+          "port",
+          "32"
+        ],
+        "f": [
+          "port",
+          "31"
+        ],
+        "s": [
+          "port",
+          "33"
+        ],
+        "S": [
+          "elite_four_room",
+          "37"
+        ],
+        "Q": [
+          "port",
+          "2e"
+        ],
+        "H": [
+          "port",
+          "27"
+        ],
+        "R": [
+          "port",
+          "2f"
+        ],
+        "X": [
+          "port",
+          "08"
+        ],
+        "F": [
+          "tower",
+          "09"
+        ],
+        "N": [
+          "elite_four_room",
+          "37"
+        ]
+      },
+      "trainers": [
+        {
+          "id": "MN_GYM_6_TRAINER_1",
+          "name": "LORLA",
+          "trainer_class": "SWIMMERF",
+          "sprite": "SPRITE_SWIMMER_GIRL",
+          "at": [
+            2,
+            10
+          ],
+          "party": [
+            {
+              "species": "CHORIP",
+              "level": 30,
+              "moves": [
+                "DISARMING_VOICE",
+                "WATER_GUN",
+                "PSYBEAM",
+                "SLUDGE"
+              ]
+            },
+            {
+              "species": "RILLBOW",
+              "level": 30,
+              "moves": [
+                "ENDURE",
+                "LOW_KICK",
+                "WATER_PULSE",
+                "COUNTER"
+              ]
+            }
+          ],
+          "optional": false,
+          "before_lines": [
+            "LORLA: Come all",
+            "the way onto the",
+            "pier first. I",
+            "tried to battle",
+            "with one foot on",
+            "the walk once. The",
+            "walk moved. I got",
+            "as far as my first",
+            "word."
+          ],
+          "after_lines": [
+            "Choose LEFT for",
+            "the leader pier.",
+            "CENTER takes you",
+            "to BRAVEL first."
+          ],
+          "requires": []
+        },
+        {
+          "id": "MN_GYM_6_TRAINER_2",
+          "name": "BRAVEL",
+          "trainer_class": "FISHER",
+          "sprite": "SPRITE_FISHER",
+          "at": [
+            4,
+            6
+          ],
+          "party": [
+            {
+              "species": "PIKEMAN",
+              "level": 31,
+              "moves": [
+                "WATER_GUN",
+                "AQUA_JET",
+                "LOW_KICK",
+                "SLAM"
+              ]
+            },
+            {
+              "species": "PINGLET",
+              "level": 31,
+              "moves": [
+                "THUNDERSHOCK",
+                "WATER_GUN",
+                "CONFUSION",
+                "SPARK"
+              ]
+            }
+          ],
+          "optional": true,
+          "before_lines": [
+            "BRAVEL: LORLA can",
+            "tell which BALL",
+            "I'm going for",
+            "before I open my",
+            "bag. I asked her",
+            "how. She said it's",
+            "the only one I",
+            "keep in reach.",
+            "Want a match?"
+          ],
+          "after_lines": [
+            "The leader pier",
+            "is open. Both",
+            "winches move the",
+            "one floating walk."
+          ],
+          "requires": []
+        }
+      ],
+      "stations": [],
+      "gates": [
+        {
+          "at": [
+            2,
+            4
+          ],
+          "requires": [
+            "EVENT_MN_GYM_6_TRAINER_1_DEFEATED",
+            "EVENT_MN_GYM_6_V2_WALK_CENTER"
+          ],
+          "open_symbol": "v",
+          "event": "EVENT_MN_GYM_6_V2_CENTER_WALK_OPEN"
+        },
+        {
+          "at": [
+            1,
+            4
+          ],
+          "requires": [
+            "EVENT_MN_GYM_6_TRAINER_1_DEFEATED",
+            "EVENT_MN_GYM_6_V2_WALK_LEFT"
+          ],
+          "open_symbol": "v",
+          "event": "EVENT_MN_GYM_6_V2_LEFT_WALK_OPEN"
+        },
+        {
+          "at": [
+            3,
+            2
+          ],
+          "requires": [
+            "EVENT_MN_GYM_6_COURT_OPEN"
+          ],
+          "open_symbol": "j",
+          "event": "EVENT_MN_GYM_6_V2_COURT_OPEN"
+        }
+      ],
+      "guide": [
+        "Battle LORLA, then",
+        "choose your route.",
+        "CENTER goes to",
+        "BRAVEL. His win",
+        "opens the court.",
+        "LEFT goes around",
+        "to SIVREN. Use the",
+        "north winch to",
+        "change your route."
+      ],
+      "walkthrough": [
+        "MN_GYM_6_TRAINER_1",
+        "CENTER",
+        "MN_GYM_6_TRAINER_2",
+        "LEFT"
+      ],
+      "dimensions_metatiles": [
+        5,
+        8
+      ],
+      "arrival_core": [
+        4,
+        14
+      ],
+      "exit_tiles_core": [
+        [
+          4,
+          15
+        ],
+        [
+          5,
+          15
+        ]
+      ],
+      "guide_at": [
+        7,
+        14
+      ],
+      "leader_court_locked": true,
+      "before_lines": [
+        "SIVREN: Watch",
+        "the water settle.",
+        "There. That is",
+        "when I move.",
+        "Let us see if",
+        "you can catch me."
+      ],
+      "victory_lines": [
+        "SIVREN: You read",
+        "that turn well.",
+        "Come up on the",
+        "pier. Your BADGE!"
+      ],
+      "after_lines": [
+        "SIVREN: Take your",
+        "LAKE BADGE to the",
+        "ranger by the pier",
+        "before you go",
+        "north. She was out",
+        "there when the",
+        "water fell. If you",
+        "need SURF, ask her",
+        "while you're",
+        "there."
+      ],
+      "routers": [
+        {
+          "id": "SOUTH_WINCH",
+          "operator": null,
+          "at": [
+            6,
+            13
+          ],
+          "prompt": [
+            "Which pier?",
+            "CENTER: training.",
+            "LEFT: leader."
+          ],
+          "modes": [
+            {
+              "id": "CENTER",
+              "label": "CENTER",
+              "requires": [
+                "EVENT_MN_GYM_6_TRAINER_1_DEFEATED"
+              ],
+              "event": "EVENT_MN_GYM_6_V2_WALK_CENTER",
+              "lines": [
+                "CENTER walk set.",
+                "Use either winch",
+                "to change routes."
+              ],
+              "denied_lines": [
+                "Beat LORLA first."
+              ]
+            },
+            {
+              "id": "LEFT",
+              "label": "LEFT",
+              "requires": [
+                "EVENT_MN_GYM_6_TRAINER_1_DEFEATED"
+              ],
+              "event": "EVENT_MN_GYM_6_V2_WALK_LEFT",
+              "lines": [
+                "LEFT walk set.",
+                "Use either winch",
+                "to change routes."
+              ],
+              "denied_lines": [
+                "Beat LORLA first."
+              ]
+            }
+          ],
+          "toggle": false
+        },
+        {
+          "id": "NORTH_WINCH",
+          "operator": null,
+          "at": [
+            1,
+            7
+          ],
+          "prompt": [
+            "Which pier?",
+            "CENTER: training.",
+            "LEFT: leader."
+          ],
+          "modes": [
+            {
+              "id": "CENTER",
+              "label": "CENTER",
+              "requires": [
+                "EVENT_MN_GYM_6_TRAINER_1_DEFEATED"
+              ],
+              "event": "EVENT_MN_GYM_6_V2_WALK_CENTER",
+              "lines": [
+                "CENTER walk set.",
+                "Use either winch",
+                "to change routes."
+              ],
+              "denied_lines": [
+                "Beat LORLA first."
+              ]
+            },
+            {
+              "id": "LEFT",
+              "label": "LEFT",
+              "requires": [
+                "EVENT_MN_GYM_6_TRAINER_1_DEFEATED"
+              ],
+              "event": "EVENT_MN_GYM_6_V2_WALK_LEFT",
+              "lines": [
+                "LEFT walk set.",
+                "Use either winch",
+                "to change routes."
+              ],
+              "denied_lines": [
+                "Beat LORLA first."
+              ]
+            }
+          ],
+          "toggle": false
+        }
+      ],
+      "enclosed_pool": true,
+      "wooden_port_deck": true,
+      "buoy_quadrants": {
+        "Q": [
+          1,
+          3
+        ],
+        "H": [
+          2,
+          3
+        ],
+        "A": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "R": [
+          0,
+          2
+        ],
+        "B": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "C": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "X": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "v": [
+          0,
+          2
+        ],
+        "j": [
+          2
+        ],
+        "a": [
+          1,
+          3
+        ],
+        "b": [
+          0,
+          2
+        ],
+        "l": [
+          1,
+          3
+        ],
+        "r": [
+          0,
+          2
+        ],
+        "w": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "c": [
+          0,
+          1
+        ],
+        "d": [
+          0
+        ],
+        "h": [
+          2,
+          3
+        ],
+        "W": [
+          0,
+          2
+        ]
+      },
+      "court_requires": []
+    }
+  ]
+}
