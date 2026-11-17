@@ -20,6 +20,74 @@ exports runtime catalogs, compiles and verifies the packs, and publishes local
 agent inputs. Source checkouts, ROMs, intermediate exports, PCM, and packs stay
 outside tracked source.
 
+## Runtime and authoring builds
+
+`crystal-assets` separates compiled-pack loading and gameplay support from pack
+creation through the `pack-authoring` feature. Workspace runtime dependencies
+disable that default feature; package-targeted client and server builds omit
+the hundreds of map, story, sprite and revision builder modules. Pack decoding,
+verification, native animation data and the server's convenience wrappers remain
+available. This does not change release optimization or the content in a pack.
+
+Existing authoring commands keep their defaults:
+
+```sh
+cargo build --locked -p crystal-assets --bin pack_northstar_adventure --bin verify_crystalpack
+```
+
+The runtime library boundary can be checked independently:
+
+```sh
+cargo check --locked -p crystal-assets --no-default-features --lib
+```
+
+Use `--features pack-authoring` when explicitly disabling defaults for a builder.
+New authoring tools should declare that required feature in `Cargo.toml` and put
+their leaf-module declarations and exports in `src/pack_authoring.rs`. That file
+is included at crate scope to preserve the builders' existing private helper
+paths. Shared runtime data and policies belong in separate always-compiled leaf
+modules, so a small gameplay helper does not pull a builder back into clients.
+
+Authoring remains enabled for asset unit tests and `test-fixtures`. Cargo merges
+features across selected packages: `--workspace` or selecting the authoring crate
+alongside a client also enables its builders. Build production packages and pack
+tools in separate commands; retain one target directory so common dependencies
+remain cached. The no-default-feature command above intentionally checks only
+the runtime library, rather than the authoring CLI targets.
+
+## Minnesota adventure revision
+
+The adventure recipe uses the selected integrated v03 pack directly. It adds
+forty native hidden items, eight optional Champion gym rematches, twelve party
+slot corrections, current dialogue and the eight leaders' already accepted
+native artwork. The builder preserves terrain, non-Minnesota maps and existing
+audio, rejects unstaged dialogue, and reads the written pack back for equality.
+It does not change selection or player saves.
+
+Verified build and content-check commands (choose a fresh output path):
+
+```sh
+CARGO_INCREMENTAL=0 cargo build --locked -p crystal-assets \
+  --bin pack_northstar_adventure --bin verify_crystalpack
+target/debug/pack_northstar_adventure \
+  content-packs/minnesota-integrated-campaign-v03.crystalpack \
+  planning/minnesota/story.json \
+  planning/minnesota/discoveries/hidden-items-v01.json \
+  content-packs/minnesota-adventure-v01.crystalpack
+target/debug/verify_crystalpack \
+  content-packs/minnesota-adventure-v01.crystalpack --audio --desktop
+```
+
+The verified candidate's content identity is
+`d4ce7998673f393e69771a36c3575878060f121102f6db840ddf197c583979dd`;
+its file SHA-256 is
+`36da6928a3aa0b0d75c9ad9a7abe353a9d79a7d3d1327eed2dc29d4fc4adb181`.
+It contains 743 maps, including 355 Minnesota maps and 42 total regional hidden
+items. All 602 audio programs pass PCM-hash, frame-count and loop-range checks.
+The hidden-item geometry checks establish local collision access from authored
+entries. They do not establish earned campaign access or measured game balance.
+Gameplay verification is excluded at the user's request.
+
 ## Minnesota campaign polish review
 
 The local campaign polish pack uses the selected Glacier Line revision as its

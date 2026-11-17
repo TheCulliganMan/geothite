@@ -257,6 +257,7 @@ fn pokemon_motion_geometry_review() {
 }
 
 #[test]
+#[cfg(not(target_arch = "wasm32"))]
 #[ignore = "explicit windowless GPU review of the production skin attributes and poses"]
 fn pokemon_motion_gpu_review() {
     use bevy::{

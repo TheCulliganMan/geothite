@@ -2993,27 +2993,22 @@
         "MnArcTamarackAfterText": [
           [
             "TAMARACK: IVY",
-            "called from the"
+            "called. They are"
           ],
           [
-            "shelter. The",
-            "crew's out. Down"
+            "out of the intake.",
+            "All of them."
           ],
           [
-            "at the nest I can",
-            "still see the old"
+            "At the nest, the",
+            "water is one"
           ],
           [
-            "water mark on the",
-            "roots. I've been"
+            "finger closer",
+            "to the old mark."
           ],
           [
-            "checking the gap",
-            "with my finger."
-          ],
-          [
-            "It's a little",
-            "smaller today."
+            "I checked twice."
           ]
         ],
         "MnNSEReedWonText": [
@@ -3066,20 +3061,24 @@
         ],
         "MnWTamarackGuideChampionText": [
           [
-            "TAMARACK: You made",
-            "the HALL OF FAME!"
+            "TAMARACK: Our",
+            "CHAMPION is home!"
           ],
           [
-            "Bring your team.",
-            "Let me meet them."
+            "Let me see the",
+            "whole team."
           ],
           [
-            "Our aide still",
-            "studies your DEX."
+            "The GYM LEADERS",
+            "have new teams"
           ],
           [
-            "Take your time.",
-            "The river is here."
+            "ready for you.",
+            "Five per team."
+          ],
+          [
+            "Visit when you",
+            "want a rematch."
           ]
         ],
         "MnWTamarackGuideRestoredText": [
@@ -3836,45 +3835,44 @@
         "MnArcRCPathsText": [
           [
             "REED: VOSS wants",
-            "a strong trainer."
+            "strong trainers."
           ],
           [
-            "ICE pays well.",
-            "They have badges."
+            "Paid work. A badge",
+            "with TEAM ICE."
           ],
           [
-            "A real job beats",
-            "carrying letters."
+            "You can keep",
+            "running letters."
           ]
         ],
         "MnArcRCChallengeText": [
           [
-            "REED: Before I go,",
-            "battle me again."
+            "REED: One battle",
+            "before I leave."
           ],
           [
-            "I want this win",
-            "to show VOSS."
+            "I want a win to",
+            "show VOSS."
           ]
         ],
         "MnArcRCAfterText": [
           [
             "REED: MINNEAPOLIS",
-            "is my next stop."
+            "next. VOSS is"
           ],
           [
-            "VOSS knows what",
-            "my work is worth."
+            "expecting me.",
+            "Try keeping up."
           ]
         ],
         "MnArcRCDeclinedText": [
           [
-            "REED: Afraid to",
-            "lose before VOSS?"
+            "REED: Fine. I will",
+            "tell VOSS you"
           ],
           [
-            "Come back when",
-            "you are ready."
+            "would not face me."
           ]
         ],
         "MnArcHabitatText": [
@@ -3916,12 +3914,12 @@
         ],
         "MnArcRCWonText": [
           [
-            "REED: Again? Fine.",
-            "VOSS has work."
+            "REED: Enjoy that.",
+            "I have a real job."
           ],
           [
-            "You can keep",
-            "your errand."
+            "VOSS is waiting.",
+            "Keep your errands."
           ]
         ],
         "MnArcRCBattleLostText": [
@@ -4664,12 +4662,15 @@
         ],
         "MnNICEReedAcceptText": [
           [
-            "REED: I heard him.",
-            "I want the job."
+            "REED: I heard",
+            "ELLIS. I want"
           ],
           [
-            "A full shift of",
-            "pay, as promised."
+            "the job. Full pay",
+            "for the shift."
+          ],
+          [
+            "That was the deal."
           ]
         ],
         "MnNICECaptainBadgeText": [
@@ -4695,12 +4696,12 @@
         ],
         "MnNICEReedPlayerText": [
           [
-            "REED: You heard",
-            "the captain."
+            "REED: The relay",
+            "is my post now."
           ],
           [
-            "I guard the relay.",
-            "Keep clear of me."
+            "You want ELLIS?",
+            "Go through me."
           ]
         ],
         "MnNICEEllisCallText": [
@@ -5002,20 +5003,20 @@
         ],
         "MnArcSPBeforeText": [
           [
-            "REED: HALE gave me",
-            "the next shift."
+            "REED: HALE put me",
+            "on the next shift."
           ],
           [
             "MINA: The last",
-            "crew barely lived."
+            "crew nearly died."
+          ],
+          [
+            "They need the",
+            "work stopped."
           ],
           [
             "REED: Then they",
             "needed my team."
-          ],
-          [
-            "MINA: They needed",
-            "him to stop."
           ]
         ],
         "MnArcSPReadyText": [
@@ -5090,12 +5091,15 @@
         ],
         "MnArcSPWonText": [
           [
-            "REED: You do not",
-            "get to fire me."
+            "REED: You won a",
+            "battle. You do not"
           ],
           [
-            "MINA: No. You get",
-            "to choose, REED."
+            "get to fire me.",
+            "MINA: Leave, REED."
+          ],
+          [
+            "You still can."
           ]
         ],
         "MnArcSPBattleLostText": [
@@ -6485,24 +6489,16 @@
             "from the shelter."
           ],
           [
-            "I had the shift",
-            "list in my hand"
+            "I read every name.",
+            "He had an answer."
           ],
           [
-            "before he got",
-            "through the first"
+            "The man who hurt",
+            "his foot?"
           ],
           [
-            "name. I asked",
-            "about the man who"
-          ],
-          [
-            "hurt his foot.",
-            "FINN said he'd"
-          ],
-          [
-            "gone up with the",
-            "medic."
+            "With the medic.",
+            "Safe."
           ]
         ],
         "MnNDrillScoutQuestText": [
@@ -7540,26 +7536,30 @@
       "MnBoundaryIntake": {
         "MnArcFinalBeforeText": [
           [
-            "REED: HALE put me",
-            "on the drive."
+            "REED: HALE gave me",
+            "the intake drive."
           ],
           [
-            "His best job yet.",
-            "You want my post?"
+            "My biggest job.",
+            "My best team."
+          ],
+          [
+            "You are not taking",
+            "this post too."
           ]
         ],
         "MnArcFinalReadyText": [
           [
-            "IVY: FINN is still",
-            "below. Move, REED."
+            "IVY: FINN is",
+            "below. Move!"
           ],
           [
-            "REED: I know.",
-            "This is my post."
+            "REED: I know",
+            "where he is."
           ],
           [
-            "Bring your partner",
-            "and try me."
+            "This is my post.",
+            "Want to take it?"
           ]
         ],
         "MnArcFinalAfterText": [
@@ -7704,31 +7704,19 @@
         ],
         "MnArcIntakeAfterText": [
           [
-            "IVY: Listen a",
-            "second. You can"
+            "IVY: Listen.",
+            "Just dripping."
           ],
           [
-            "hear water",
-            "dripping off the"
-          ],
-          [
-            "bottom step now.",
-            "Before, I had to"
-          ],
-          [
-            "shout for FINN to",
-            "hear me from"
-          ],
-          [
-            "there."
+            "I had to shout",
+            "for FINN before."
           ],
           [
             "The cage stays",
-            "open. I'll tell"
+            "open. No more"
           ],
           [
-            "the crew to leave",
-            "it that way."
+            "locks on it."
           ]
         ],
         "MnArcFinalDeclinedText": [
@@ -7750,12 +7738,12 @@
         ],
         "MnArcFinalWonText": [
           [
-            "REED: Not again!",
-            "Call them back."
+            "REED: Call them",
+            "back! You won."
           ],
           [
-            "I cannot hold you.",
-            "Take your switch."
+            "Take the switch.",
+            "I cannot stop you."
           ]
         ],
         "MnArcIntakeSeenText": [
@@ -8538,30 +8526,33 @@
       "MnIceRelayFloor": {
         "MnNICEReedSeenText": [
           [
-            "REED: ELLIS stays",
-            "on VOSS's orders."
+            "REED: Yes, that",
+            "switch opens the"
           ],
           [
-            "That switch opens",
-            "his cell."
+            "cell. VOSS pays me",
+            "to keep it shut."
           ],
           [
-            "Touch it and you",
-            "answer to me."
+            "You heard ELLIS.",
+            "I heard him too."
+          ],
+          [
+            "Now get back."
           ]
         ],
         "MnNICEReedAfterText": [
           [
-            "REED: LODE has",
-            "a shipment job."
+            "REED: VOSS can",
+            "guard it himself."
           ],
           [
-            "More pay. Better",
-            "partners."
+            "LODE has a job",
+            "in ST PAUL."
           ],
           [
-            "Try following me",
-            "to ST PAUL."
+            "Better pay. Better",
+            "partners. Move."
           ]
         ],
         "MnNICEReedWonText": [
@@ -8789,11 +8780,11 @@
         "MnNDrillReedSeenText": [
           [
             "REED: I can hear",
-            "FINN. So what?"
+            "FINN down there."
           ],
           [
-            "If I stop the bit,",
-            "I lose my place."
+            "Stop the bit and",
+            "I lose my post."
           ],
           [
             "You want the",
@@ -8822,12 +8813,16 @@
         ],
         "MnNDrillReedAfterText": [
           [
-            "REED: You cost me",
-            "that promotion."
+            "REED: Take it.",
+            "When HALE asks,"
           ],
           [
-            "Do not expect",
-            "my help."
+            "I am giving him",
+            "your name."
+          ],
+          [
+            "You cost me",
+            "that promotion."
           ]
         ],
         "MnNDrillPowerText": [
@@ -9225,12 +9220,12 @@
             "for the crew."
           ],
           [
-            "REED: I heard you.",
-            "You are coming."
+            "REED: Your shift",
+            "is not over."
           ],
           [
-            "SERA: Let me call",
-            "for help first."
+            "SERA: Neither is",
+            "his. Let me call."
           ]
         ],
         "MnArcSCChoiceText": [
@@ -9263,32 +9258,33 @@
         "MnArcSCStandText": [
           [
             "REED: You again.",
-            "Stay out of this."
+            "This costs me pay."
           ],
           [
-            "SERA: I am going",
-            "to that phone."
+            "SERA: Move. I am",
+            "calling for help."
           ],
           [
             "REED: HALE will",
-            "hear about this."
+            "hear who did this."
           ]
         ],
         "MnArcSCReleasedText": [
           [
-            "SERA: Thanks. I'll",
-            "try NELL first. If"
+            "SERA: Thanks.",
+            "NELL is at the"
           ],
           [
-            "she can't get the",
-            "cage moving, I'll"
+            "shaft. I will try",
+            "her first."
           ],
           [
-            "call the BRAINERD",
-            "ranger for a"
+            "If the lift stays",
+            "jammed, BRAINERD"
           ],
           [
-            "winch."
+            "has a ranger",
+            "with a winch."
           ]
         ],
         "MnArcSCAfterText": [
@@ -9808,16 +9804,16 @@
             "my last pay."
           ],
           [
-            "Said I lost him",
-            "a drill."
+            "He called it the",
+            "cost of the drill."
           ],
           [
-            "You cost me that.",
-            "You and your team."
+            "You broke it.",
+            "You owe me."
           ],
           [
-            "Next time, I will",
-            "collect from you."
+            "Do not expect me",
+            "to forget."
           ]
         ],
         "MN_ST_CLOUD_STATION_CLERKText": [
@@ -10449,20 +10445,20 @@
         ],
         "MnLeagueChampionAfterText": [
           [
-            "CASEY: The",
-            "recorder's through"
+            "CASEY: The north",
+            "door leads to the"
           ],
           [
-            "the north door.",
-            "They write down"
+            "HALL OF FAME.",
+            "Record your team."
           ],
           [
-            "everyone you",
-            "brought, even the"
+            "Then take them",
+            "home for a while."
           ],
           [
-            "ones who sat this",
-            "match out."
+            "A title can wait",
+            "for supper."
           ]
         ],
         "MnLeagueChampionNoRunText": [
@@ -13645,8 +13641,16 @@
             "has the low roof."
           ],
           [
-            "Keep the river in",
-            "sight to get home."
+            "I found a POTION",
+            "at a trail edge."
+          ],
+          [
+            "Face a bare patch",
+            "and press A."
+          ],
+          [
+            "Dropped things",
+            "are hard to see."
           ]
         ],
         "MnWHomeSignText": [
@@ -31677,18 +31681,11 @@
         "MN_GYM_1_TRAINER_1WonText": [
           [
             "TAVEL: Good match.",
-            "ELVIK's next. He"
+            "ELVIK is next."
           ],
           [
-            "gave me time to",
-            "think when I"
-          ],
-          [
-            "needed it. You can",
-            "take a minute here"
-          ],
-          [
-            "before you go."
+            "Take a breath.",
+            "He always let me."
           ]
         ],
         "MN_GYM_1_TRAINER_1LostText": [
@@ -31736,19 +31733,16 @@
         ],
         "MN_GYM_1_TRAINER_2WonText": [
           [
-            "ELVIK: Good match.",
-            "Come here, girl. I"
+            "ELVIK: Come here,",
+            "girl. We are done."
           ],
           [
-            "don't need you to",
-            "do anything else."
+            "VAREL is at",
+            "the far end."
           ],
           [
-            "VAREL's at the far",
-            "end, trainer. Go"
-          ],
-          [
-            "when you're ready."
+            "Go when your",
+            "team is ready."
           ]
         ],
         "MN_GYM_1_TRAINER_2LostText": [
@@ -32437,20 +32431,16 @@
         ],
         "MN_GYM_2_TRAINER_1WonText": [
           [
-            "CALDREN: You got",
-            "us. I can count"
+            "CALDREN: She knows",
+            "the landing better"
           ],
           [
-            "all I like. She's",
-            "still the one who"
-          ],
-          [
-            "knows where to",
-            "land."
+            "than I do. I ought",
+            "to let her lead."
           ],
           [
             "Take the left",
-            "stair and hop down"
+            "stair. Hop down"
           ],
           [
             "from the low edge",
@@ -32498,20 +32488,16 @@
         ],
         "MN_GYM_2_TRAINER_2WonText": [
           [
-            "JOREL: You got me.",
-            "I'm staying down"
+            "JOREL: Good match.",
+            "Time to breathe."
           ],
           [
-            "here till my",
-            "partner's got his"
+            "Take the upper",
+            "stair to TORVEN."
           ],
           [
-            "breath. Take the",
-            "upper stair to"
-          ],
-          [
-            "TORVEN. You don't",
-            "have to hop again."
+            "No more hops",
+            "needed."
           ]
         ],
         "MN_GYM_2_TRAINER_2LostText": [
@@ -32862,28 +32848,20 @@
         ],
         "MN_GYM_3_TRAINER_2WonText": [
           [
-            "JOSSA: You got me.",
-            "At practice I know"
+            "JOSSA: I know",
+            "LENVI too well."
           ],
           [
-            "LENVI's about to",
-            "start when he"
+            "Your next move",
+            "was hard to read."
           ],
           [
-            "leans in. I ought",
-            "to ask for a match"
+            "After the first",
+            "switch, press the"
           ],
           [
-            "with someone new",
-            "more often."
-          ],
-          [
-            "On the switches,",
-            "stay on the top"
-          ],
-          [
-            "row after the",
-            "first click."
+            "one just right",
+            "of it. Same row."
           ]
         ],
         "MN_GYM_3_TRAINER_2LostText": [
@@ -32907,19 +32885,15 @@
         "MN_GYM_3_TRAINER_1AfterText": [
           [
             "LENVI: Beat JOSSA",
-            "before you try the"
+            "too, then use the"
           ],
           [
-            "switches. Then",
-            "start at the far"
+            "far left switch",
+            "on the top row."
           ],
           [
-            "left of the top",
-            "row. That one"
-          ],
-          [
-            "opens the first",
-            "gate."
+            "That opens the",
+            "first gate."
           ]
         ],
         "MN_GYM_3_TRAINER_2AfterText": [
@@ -32999,30 +32973,31 @@
         ],
         "MnMinneapolisGymSwitchFirstText": [
           [
-            "A gate clicks open",
-            "at the far end of"
+            "The first gate",
+            "clicks open."
           ],
           [
-            "the room."
+            "One lock remains."
           ]
         ],
         "MnMinneapolisGymSwitchResetText": [
           [
-            "Both locks snap",
-            "shut. You'll have"
+            "Both gates shut.",
+            "The circuit reset."
           ],
           [
-            "to start again."
+            "Start again at the",
+            "first switch."
           ]
         ],
         "MnMinneapolisGymSwitchSecondText": [
           [
-            "Click! The second",
-            "lock opens."
+            "Click! Both gates",
+            "are open."
           ],
           [
-            "AVRIN's court is",
-            "open."
+            "The way to AVRIN",
+            "is clear."
           ]
         ],
         "MnMinneapolisGymSwitchSolvedText": [
@@ -33599,96 +33574,69 @@
         ],
         "MnMPExpansionMillTrailBagFullText": [
           [
-            "I've got the route",
-            "now. Your PACK's"
+            "You read all",
+            "three plaques."
           ],
           [
-            "full, so I'll keep",
-            "the MAGNET here."
+            "Make room in your",
+            "PACK and return"
           ],
           [
-            "Come back when",
-            "you've made room."
-          ],
-          [
-            "I won't send you",
-            "round the plaques"
-          ],
-          [
-            "again."
+            "here. I will keep",
+            "your MAGNET."
           ]
         ],
         "MnMPExpansionMillTrailDoneText": [
           [
-            "See where the",
-            "loading door is"
+            "The little rail",
+            "car fits at last."
           ],
           [
-            "now? The little",
-            "rail car sits"
+            "I kept the stairs.",
+            "They make a fine"
           ],
           [
-            "right beside it.",
-            "The floors line"
-          ],
-          [
-            "up. Nobody had to",
-            "carry a sack down"
-          ],
-          [
-            "steps and back up",
-            "again."
+            "stand for my tea."
           ]
         ],
         "MnMPExpansionMillTrailMissingText": [
           [
-            "I built the wheel,",
-            "but the loading"
+            "My model has a",
+            "loading door..."
           ],
           [
-            "door's on the",
-            "wrong wall. I put"
+            "and no way to get",
+            "the flour to it."
           ],
           [
-            "steps under it and",
-            "somebody who"
-          ],
-          [
-            "worked here",
-            "laughed. Check the"
-          ],
-          [
-            "three plaques",
-            "along the river."
+            "Read the three",
+            "river plaques."
           ],
           [
             "Follow the grain",
             "in and the flour"
           ],
           [
-            "out."
+            "out. Then come",
+            "back to me."
           ]
         ],
         "MnMPExpansionMillTrailRewardText": [
           [
-            "Straight into a",
-            "rail car. That's"
+            "Straight into",
+            "a rail car!"
           ],
           [
-            "why there weren't",
-            "any steps! I'll"
+            "The door belongs",
+            "beside the siding."
           ],
           [
-            "move the little",
-            "door over to the"
+            "This MAGNET is",
+            "yours. You saved"
           ],
           [
-            "siding. Here, take",
-            "this MAGNET for"
-          ],
-          [
-            "walking the whole",
-            "trail."
+            "me building a",
+            "ridiculous stair."
           ]
         ]
       },
@@ -36694,20 +36642,16 @@
         ],
         "MN_GYM_4_TRAINER_1WonText": [
           [
-            "BELVA: You got me.",
-            "Step off the pad,"
+            "BELVA: You win!",
+            "Now, step off the"
           ],
           [
-            "then step back on",
-            "to ride south."
+            "pad and back on",
+            "to return south."
           ],
           [
-            "Take the other",
-            "side pad if you"
-          ],
-          [
-            "haven't battled",
-            "ORVEN yet."
+            "The other side",
+            "pad goes to ORVEN."
           ]
         ],
         "MN_GYM_4_TRAINER_1LostText": [
@@ -36748,23 +36692,20 @@
         ],
         "MN_GYM_4_TRAINER_2WonText": [
           [
-            "ORVEN: You got us.",
-            "I can feel my"
+            "ORVEN: Ah. I can",
+            "breathe again."
           ],
           [
-            "shoulders coming",
-            "down now. Take"
+            "Take this pad",
+            "back south."
           ],
           [
-            "this pad back",
-            "south. The middle"
+            "Beat BELVA too,",
+            "then the middle"
           ],
           [
-            "one's for BRANNIC",
-            "once you've beaten"
-          ],
-          [
-            "BELVA too."
+            "pad takes you",
+            "to BRANNIC."
           ]
         ],
         "MN_GYM_4_TRAINER_2LostText": [
@@ -37714,33 +37655,26 @@
         ],
         "MN_SPX_RIVERDoneText": [
           [
-            "She kept her house",
-            "by the river. Then"
+            "She added her",
+            "aunt on the hill"
           ],
           [
-            "she drew her",
-            "aunt's place up on"
+            "and a path to",
+            "her front door."
           ],
           [
-            "the hill and a",
-            "path between them."
-          ],
-          [
-            "Her aunt says",
-            "they'd squeeze in"
-          ],
-          [
-            "somehow."
+            "Her aunt said:",
+            "Bring the dog too."
           ]
         ],
         "MN_SPX_RIVERFullText": [
           [
-            "I'll draw the",
-            "flood line while"
+            "Your readings",
+            "are all here."
           ],
           [
-            "you make room.",
-            "Come back to this"
+            "Make room and",
+            "return to this"
           ],
           [
             "desk for your",
@@ -37749,64 +37683,46 @@
         ],
         "MN_SPX_RIVERNeedText": [
           [
-            "One of the kids",
-            "drew her house"
+            "A child put her",
+            "house on my chart."
           ],
           [
-            "right by the",
-            "water. She asked"
+            "Would the old",
+            "flood reach it?"
           ],
           [
-            "if the old flood",
-            "would've reached"
+            "Read the NORTH",
+            "BANK GAUGE, then"
           ],
           [
-            "her door. Check",
-            "the NORTH BANK"
+            "the BRIDGE STATION",
+            "on the south"
           ],
           [
-            "GAUGE, the BRIDGE",
-            "STATION on the"
-          ],
-          [
-            "south bridge, and",
+            "bridge. Last is",
             "the HIGH WATER"
           ],
           [
-            "MARK up on the",
-            "bluff. I want to"
-          ],
-          [
-            "get it right",
-            "before she comes"
-          ],
-          [
-            "back."
+            "MARK on the bluff.",
+            "Bring those back."
           ]
         ],
         "MN_SPX_RIVERRewardText": [
           [
-            "It's below the",
-            "steps today. That"
+            "I drew the flood",
+            "too low. It went"
           ],
           [
-            "old flood went",
-            "clear over the"
+            "over the bridge!",
+            "Let me fix that."
           ],
           [
-            "bridge. I'd drawn",
-            "it stopping at the"
-          ],
-          [
-            "deck. Let me move",
-            "that line before"
-          ],
-          [
-            "she sees it. Here,",
-            "you've earned this"
-          ],
-          [
+            "Take this",
             "MYSTIC WATER."
+          ],
+          [
+            "Now I can answer",
+            "her properly."
           ]
         ]
       },
@@ -38510,32 +38426,28 @@
         ],
         "MnCanoeShopRepeatText": [
           [
-            "You can fish from",
-            "the CANOE. Face"
+            "Fish from the",
+            "CANOE. Face open"
           ],
           [
-            "open water and use",
-            "your rod from KEY"
+            "water and use a",
+            "rod in KEY ITEMS."
           ],
           [
-            "ITEMS. If you've",
-            "registered the"
+            "Registered it?",
+            "SELECT works too."
           ],
           [
-            "rod, SELECT works",
-            "out there too."
+            "Try small landing",
+            "spots on your way."
           ],
           [
-            "I like to cast",
-            "with the bank at"
+            "Step ashore and",
+            "check the ground."
           ],
           [
-            "my back. It keeps",
-            "me from putting"
-          ],
-          [
-            "the hook in the",
-            "reeds."
+            "Things wash up",
+            "where boats stop."
           ]
         ],
         "MnCanoeShopFullText": [
@@ -39329,20 +39241,16 @@
         ],
         "MN_GYM_5_TRAINER_1WonText": [
           [
-            "WYREL: You got me.",
-            "See the arrows"
+            "WYREL: There goes",
+            "my winning streak."
           ],
           [
-            "pointing east?",
-            "Step on those and"
+            "Take the east",
+            "arrows to HALLEN."
           ],
           [
-            "wait till the wind",
-            "sets you down."
-          ],
-          [
-            "HALLEN's on the",
-            "other side."
+            "Wait for stone",
+            "before you turn."
           ]
         ],
         "MN_GYM_5_TRAINER_1LostText": [
@@ -39389,27 +39297,19 @@
         ],
         "MN_GYM_5_TRAINER_2WonText": [
           [
-            "HALLEN: Good",
-            "match. I can make"
+            "HALLEN: He cannot",
+            "see my signal"
           ],
           [
-            "a sign all day,",
-            "but it only helps"
+            "from behind me.",
+            "My mistake."
           ],
           [
-            "if he's looking my",
-            "way. I'll go stand"
+            "Go north to the",
+            "west arrows."
           ],
           [
-            "where he can see",
-            "me."
-          ],
-          [
-            "The arrows just",
-            "north of here"
-          ],
-          [
-            "carry you west",
+            "They carry you",
             "toward SAVEN."
           ]
         ],
@@ -39735,20 +39635,16 @@
         ],
         "MN_GYM_6_TRAINER_1WonText": [
           [
-            "LORLA: Talk to me",
-            "again for CENTER."
+            "LORLA: Steady!",
+            "You have won."
           ],
           [
-            "That lines the",
-            "walk up with"
+            "Use the blue winch",
+            "on the south pier."
           ],
           [
-            "BRAVEL's pier.",
-            "Let it settle"
-          ],
-          [
-            "before you step",
-            "onto it."
+            "It moves the walk",
+            "to BRAVEL."
           ]
         ],
         "MN_GYM_6_TRAINER_1LostText": [
@@ -39795,24 +39691,16 @@
         ],
         "MN_GYM_6_TRAINER_2WonText": [
           [
-            "BRAVEL: I spent",
-            "all my time"
+            "BRAVEL: I planned",
+            "one turn too few."
           ],
           [
-            "thinking about",
-            "who'd go first."
+            "Use the blue winch",
+            "once more."
           ],
           [
-            "Should've saved",
-            "some thought for"
-          ],
-          [
-            "the rest of the",
-            "match. Go back"
-          ],
-          [
-            "to LORLA and pick",
-            "LEFT for SIVREN."
+            "It moves the walk",
+            "left to SIVREN."
           ]
         ],
         "MN_GYM_6_TRAINER_2LostText": [
@@ -39839,44 +39727,48 @@
         ],
         "MN_GYM_6_TRAINER_1AfterText": [
           [
-            "LORLA: I've got",
-            "the walk controls."
+            "LORLA: The blue",
+            "winch is on the"
           ],
           [
-            "Choose CENTER for",
-            "BRAVEL, or LEFT"
+            "south pier. Use it",
+            "to reach BRAVEL."
           ],
           [
-            "for SIVREN after",
-            "you beat BRAVEL."
+            "After both wins,",
+            "use it again to"
+          ],
+          [
+            "reach SIVREN",
+            "on the left."
           ]
         ],
         "MN_GYM_6_TRAINER_2AfterText": [
           [
-            "BRAVEL: Ask LORLA",
-            "on the first pier"
+            "BRAVEL: Use the",
+            "blue winch again."
           ],
           [
-            "to move the walk",
-            "LEFT for SIVREN."
+            "The walk moves",
+            "left to SIVREN."
           ]
         ],
         "MnBrainerdGymGuideText": [
           [
-            "Beat LORLA, then",
-            "turn the WINCH."
+            "Beat LORLA. Use",
+            "the blue winch on"
           ],
           [
-            "The center walk",
-            "leads to BRAVEL."
+            "the south pier.",
+            "It moves the walk"
           ],
           [
-            "Beat BRAVEL and",
-            "turn it again."
+            "to BRAVEL. Beat",
+            "him and use it"
           ],
           [
-            "The left walk",
-            "leads to SIVREN."
+            "again. SIVREN is",
+            "on the left."
           ]
         ],
         "MnBrainerdGymFLOAT_WALKRoutingPrompt": [
@@ -39963,22 +39855,19 @@
         ],
         "MnBrainerdGymRequirementsText": [
           [
-            "Bring your WIND",
+            "Bring the WIND",
             "BADGE from ST"
           ],
           [
-            "CLOUD. Battle",
-            "LORLA first, then"
+            "CLOUD. Beat LORLA,",
+            "then use the blue"
           ],
           [
-            "move the walk to",
-            "CENTER for BRAVEL."
+            "winch for BRAVEL.",
+            "Beat him and use"
           ],
           [
-            "After both wins,",
-            "use LEFT to reach"
-          ],
-          [
+            "it again for",
             "SIVREN."
           ]
         ]
@@ -40929,27 +40818,20 @@
         ],
         "MN_GYM_7_TRAINER_1WonText": [
           [
-            "MOSLEN: You got",
-            "us. On the way"
+            "MOSLEN: Your win.",
+            "She can choose our"
           ],
           [
-            "home I'm going to",
-            "let her choose"
+            "way home today.",
+            "I can follow."
           ],
           [
-            "which gap we use.",
-            "I can follow her"
+            "CUT the small tree",
+            "in the west hedge."
           ],
           [
-            "for once."
-          ],
-          [
-            "The little tree on",
-            "the west side is"
-          ],
-          [
-            "the one you can",
-            "CUT."
+            "ELVREN is",
+            "through there."
           ]
         ],
         "MN_GYM_7_TRAINER_1LostText": [
@@ -40997,23 +40879,19 @@
         ],
         "MN_GYM_7_TRAINER_2WonText": [
           [
-            "ELVREN: Good",
-            "match. The small"
+            "ELVREN: Well",
+            "fought. Mind your"
           ],
           [
-            "tree on the east",
-            "side is the one to"
+            "sleeves on the",
+            "way through."
           ],
           [
-            "CUT. There's a",
-            "branch at shoulder"
+            "CUT the small tree",
+            "in the east hedge"
           ],
           [
-            "height. You can",
-            "duck it. Take it"
-          ],
-          [
-            "from me."
+            "to reach ORLIS."
           ]
         ],
         "MN_GYM_7_TRAINER_2LostText": [
@@ -41748,23 +41626,19 @@
         ],
         "MN_GYM_8_TRAINER_1WonText": [
           [
-            "LIVRA: You got us.",
-            "The east course is"
+            "LIVRA: You win.",
+            "The east course"
           ],
           [
-            "open for TORDEL.",
-            "Pick where you'll"
+            "is open. TORDEL",
+            "is next."
           ],
           [
-            "stop before you",
-            "start. And if"
+            "Find your stopping",
+            "place before you"
           ],
           [
-            "somebody's",
-            "standing there,"
-          ],
-          [
-            "wait."
+            "step onto the ice."
           ]
         ],
         "MN_GYM_8_TRAINER_1LostText": [
@@ -41807,26 +41681,12 @@
         ],
         "MN_GYM_8_TRAINER_2WonText": [
           [
-            "TORDEL: You got",
-            "us. If somebody"
-          ],
-          [
-            "puts both hands up",
-            "out there, wait. I"
-          ],
-          [
-            "can tell you what",
-            "happens if you"
-          ],
-          [
-            "wave back."
+            "TORDEL: Both hands",
+            "up. I surrender!"
           ],
           [
             "The cross passage",
-            "is open. Take it"
-          ],
-          [
-            "to ANVER."
+            "is open to ANVER."
           ]
         ],
         "MN_GYM_8_TRAINER_2LostText": [
@@ -41874,19 +41734,12 @@
             "fought. The upper"
           ],
           [
-            "court is open now.",
-            "Before you take"
+            "court is open.",
+            "Find the rough"
           ],
           [
-            "the last slide,",
-            "find the rough"
-          ],
-          [
-            "patch below NOREK.",
-            "That's where your"
-          ],
-          [
-            "boots will catch."
+            "patch below NOREK",
+            "before you slide."
           ]
         ],
         "MN_GYM_8_TRAINER_3LostText": [
@@ -45447,62 +45300,48 @@
       "MnMississippiLowerWoodsC00R00": {
         "MN_RIVER_FUN_LOWER_REEDSeen": [
           [
-            "I teach paddling.",
-            "First thing I tell"
+            "ARNE: I teach",
+            "paddling."
           ],
           [
-            "people is to look",
-            "where they want to"
+            "Look where you",
+            "want to go."
           ],
           [
-            "go. My partner's",
-            "heard it from the"
+            "My partner knows",
+            "that one by heart."
           ],
           [
-            "bow a hundred",
-            "times. Want to see"
-          ],
-          [
-            "how well I take my",
-            "own advice in a"
-          ],
-          [
-            "battle?"
+            "Let us see how",
+            "I do in a battle."
           ]
         ],
         "MN_RIVER_FUN_LOWER_REEDWon": [
           [
-            "You got us. I",
-            "stared at the spot"
+            "ARNE: You got us.",
+            "I watched the rock"
           ],
           [
-            "I was trying to",
-            "avoid. Same thing"
+            "instead of the",
+            "way round it."
           ],
           [
-            "my pupils do with",
-            "a rock. I'll have"
-          ],
-          [
-            "to tell them how I",
-            "did."
+            "My pupils will",
+            "love that story."
           ]
         ],
         "MN_RIVER_FUN_LOWER_REEDLost": [
           [
-            "Good match. My",
-            "partner can have"
+            "ARNE: Good match.",
+            "My partner can"
           ],
           [
-            "the bow seat on",
-            "the way back. I"
+            "have the bow seat",
+            "on the way back."
           ],
           [
-            "won't tell it",
-            "where to look for"
-          ],
-          [
-            "once."
+            "I will let it",
+            "choose our course."
           ]
         ],
         "MN_RIVER_FUN_LOWER_RORYSeen": [
@@ -51898,6 +51737,615 @@
           ]
         ]
       }
+    }
+  },
+  "postgame_gym_rematches": {
+    "dialogue": {
+      "MnRochesterGym": {
+        "Offer": [
+          [
+            "VAREL: Welcome",
+            "back, CHAMPION."
+          ],
+          [
+            "We have had a rest",
+            "and some practice."
+          ],
+          [
+            "Five partners.",
+            "LV 55-57."
+          ],
+          [
+            "Ready for",
+            "a rematch?"
+          ]
+        ],
+        "Won": [
+          [
+            "VAREL: Well done.",
+            "Come here, team."
+          ],
+          [
+            "You have earned",
+            "a long rest."
+          ]
+        ],
+        "Lost": [
+          [
+            "VAREL: Rest first.",
+            "Then try again."
+          ],
+          [
+            "Even a CHAMPION",
+            "gets tired."
+          ]
+        ],
+        "After": [
+          [
+            "VAREL: Same court.",
+            "New challengers."
+          ],
+          [
+            "You are welcome",
+            "to battle again."
+          ]
+        ],
+        "Gift": [
+          [
+            "A RARE CANDY for",
+            "your first rematch"
+          ],
+          [
+            "win here. Enjoy!"
+          ]
+        ],
+        "Full": [
+          [
+            "Your PACK is full.",
+            "I will keep your"
+          ],
+          [
+            "RARE CANDY here.",
+            "Come back for it."
+          ]
+        ],
+        "Declined": [
+          [
+            "VAREL: Take your",
+            "time. We will too."
+          ]
+        ]
+      },
+      "MnMankatoGym": {
+        "Offer": [
+          [
+            "TORVEN: Feet set?",
+            "I know that look."
+          ],
+          [
+            "We have practiced",
+            "changing course."
+          ],
+          [
+            "Five partners.",
+            "LV 55-57."
+          ],
+          [
+            "Ready for",
+            "a rematch?"
+          ]
+        ],
+        "Won": [
+          [
+            "TORVEN: You found",
+            "your footing."
+          ],
+          [
+            "Time for us to",
+            "change course."
+          ]
+        ],
+        "Lost": [
+          [
+            "TORVEN: Set your",
+            "feet and breathe."
+          ],
+          [
+            "Come back with",
+            "another approach."
+          ]
+        ],
+        "After": [
+          [
+            "TORVEN: The ground",
+            "is still here."
+          ],
+          [
+            "So are we. Return",
+            "for another match."
+          ]
+        ],
+        "Gift": [
+          [
+            "A RARE CANDY for",
+            "your first rematch"
+          ],
+          [
+            "win here. Enjoy!"
+          ]
+        ],
+        "Full": [
+          [
+            "Your PACK is full.",
+            "I will keep your"
+          ],
+          [
+            "RARE CANDY here.",
+            "Come back for it."
+          ]
+        ],
+        "Declined": [
+          [
+            "TORVEN: No rush.",
+            "Find your footing."
+          ]
+        ]
+      },
+      "MnMinneapolisGym": {
+        "Offer": [
+          [
+            "AVRIN: CHAMPION!",
+            "Let us keep pace."
+          ],
+          [
+            "We have practiced",
+            "our next moves."
+          ],
+          [
+            "Five partners.",
+            "LV 55-57."
+          ],
+          [
+            "Ready for",
+            "a rematch?"
+          ]
+        ],
+        "Won": [
+          [
+            "AVRIN: You kept",
+            "that circuit live!"
+          ],
+          [
+            "Now I have a few",
+            "things to work on."
+          ]
+        ],
+        "Lost": [
+          [
+            "AVRIN: Catch",
+            "your breath."
+          ],
+          [
+            "Come back when",
+            "you are ready."
+          ]
+        ],
+        "After": [
+          [
+            "AVRIN: Practice",
+            "does not stop."
+          ],
+          [
+            "Come test us",
+            "again sometime."
+          ]
+        ],
+        "Gift": [
+          [
+            "A RARE CANDY for",
+            "your first rematch"
+          ],
+          [
+            "win here. Enjoy!"
+          ]
+        ],
+        "Full": [
+          [
+            "Your PACK is full.",
+            "I will keep your"
+          ],
+          [
+            "RARE CANDY here.",
+            "Come back for it."
+          ]
+        ],
+        "Declined": [
+          [
+            "AVRIN: We will",
+            "keep warming up."
+          ]
+        ]
+      },
+      "MnStPaulGym": {
+        "Offer": [
+          [
+            "BRANNIC: Welcome",
+            "back to my court."
+          ],
+          [
+            "We have practiced",
+            "holding ground."
+          ],
+          [
+            "Five partners.",
+            "LV 55-57."
+          ],
+          [
+            "Ready for",
+            "a rematch?"
+          ]
+        ],
+        "Won": [
+          [
+            "BRANNIC: The court",
+            "is yours again."
+          ],
+          [
+            "A good match.",
+            "Let us rest."
+          ]
+        ],
+        "Lost": [
+          [
+            "BRANNIC: Steel",
+            "can give ground."
+          ],
+          [
+            "Rest, then try",
+            "a new approach."
+          ]
+        ],
+        "After": [
+          [
+            "BRANNIC: You know",
+            "the way here."
+          ],
+          [
+            "My court is open",
+            "for another match."
+          ]
+        ],
+        "Gift": [
+          [
+            "A RARE CANDY for",
+            "your first rematch"
+          ],
+          [
+            "win here. Enjoy!"
+          ]
+        ],
+        "Full": [
+          [
+            "Your PACK is full.",
+            "I will keep your"
+          ],
+          [
+            "RARE CANDY here.",
+            "Come back for it."
+          ]
+        ],
+        "Declined": [
+          [
+            "BRANNIC: Another",
+            "day, then."
+          ]
+        ]
+      },
+      "MnStCloudGym": {
+        "Offer": [
+          [
+            "SAVEN: Welcome",
+            "back, CHAMPION."
+          ],
+          [
+            "My team has been",
+            "stretching wings."
+          ],
+          [
+            "Five partners.",
+            "LV 56-58."
+          ],
+          [
+            "Ready for",
+            "a rematch?"
+          ]
+        ],
+        "Won": [
+          [
+            "SAVEN: A fine",
+            "landing, CHAMPION."
+          ],
+          [
+            "We have more",
+            "practice to do."
+          ]
+        ],
+        "Lost": [
+          [
+            "SAVEN: Back to",
+            "solid ground."
+          ],
+          [
+            "Rest your team.",
+            "Then fly again."
+          ]
+        ],
+        "After": [
+          [
+            "SAVEN: When you",
+            "are ready, return."
+          ],
+          [
+            "We will be here,",
+            "watching the wind."
+          ]
+        ],
+        "Gift": [
+          [
+            "A RARE CANDY for",
+            "your first rematch"
+          ],
+          [
+            "win here. Enjoy!"
+          ]
+        ],
+        "Full": [
+          [
+            "Your PACK is full.",
+            "I will keep your"
+          ],
+          [
+            "RARE CANDY here.",
+            "Come back for it."
+          ]
+        ],
+        "Declined": [
+          [
+            "SAVEN: Find a",
+            "calm spot to rest."
+          ]
+        ]
+      },
+      "MnBrainerdGym": {
+        "Offer": [
+          [
+            "SIVREN: Back",
+            "for another cast?"
+          ],
+          [
+            "My team has had",
+            "lots of practice."
+          ],
+          [
+            "Five partners.",
+            "LV 56-58."
+          ],
+          [
+            "Ready for",
+            "a rematch?"
+          ]
+        ],
+        "Won": [
+          [
+            "SIVREN: That",
+            "settles it."
+          ],
+          [
+            "The pier is yours,",
+            "CHAMPION."
+          ]
+        ],
+        "Lost": [
+          [
+            "SIVREN: Call them",
+            "back to the pier."
+          ],
+          [
+            "Rest. There is",
+            "another day."
+          ]
+        ],
+        "After": [
+          [
+            "SIVREN: We can",
+            "battle again."
+          ],
+          [
+            "Let your team",
+            "catch its breath."
+          ]
+        ],
+        "Gift": [
+          [
+            "A RARE CANDY for",
+            "your first rematch"
+          ],
+          [
+            "win here. Enjoy!"
+          ]
+        ],
+        "Full": [
+          [
+            "Your PACK is full.",
+            "I will keep your"
+          ],
+          [
+            "RARE CANDY here.",
+            "Come back for it."
+          ]
+        ],
+        "Declined": [
+          [
+            "SIVREN: The lake",
+            "and I can wait."
+          ]
+        ]
+      },
+      "MnBemidjiGym": {
+        "Offer": [
+          [
+            "ORLIS: CHAMPION!",
+            "Look what grew"
+          ],
+          [
+            "while you were",
+            "away. A new team."
+          ],
+          [
+            "Five partners.",
+            "LV 56-58."
+          ],
+          [
+            "Ready for",
+            "a rematch?"
+          ]
+        ],
+        "Won": [
+          [
+            "ORLIS: A fine",
+            "match. Come here,"
+          ],
+          [
+            "team. There is",
+            "room in the shade."
+          ]
+        ],
+        "Lost": [
+          [
+            "ORLIS: A setback",
+            "is room to grow."
+          ],
+          [
+            "Rest your team,",
+            "then come back."
+          ]
+        ],
+        "After": [
+          [
+            "ORLIS: Practice",
+            "takes patience."
+          ],
+          [
+            "Return when you",
+            "want a rematch."
+          ]
+        ],
+        "Gift": [
+          [
+            "A RARE CANDY for",
+            "your first rematch"
+          ],
+          [
+            "win here. Enjoy!"
+          ]
+        ],
+        "Full": [
+          [
+            "Your PACK is full.",
+            "I will keep your"
+          ],
+          [
+            "RARE CANDY here.",
+            "Come back for it."
+          ]
+        ],
+        "Declined": [
+          [
+            "ORLIS: Enjoy",
+            "the garden."
+          ]
+        ]
+      },
+      "MnDuluthGym": {
+        "Offer": [
+          [
+            "NOREK: CHAMPION.",
+            "Back on the ice."
+          ],
+          [
+            "We have practiced",
+            "our next steps."
+          ],
+          [
+            "Five partners.",
+            "LV 58-60."
+          ],
+          [
+            "Ready for",
+            "a rematch?"
+          ]
+        ],
+        "Won": [
+          [
+            "NOREK: Well",
+            "fought. The ice"
+          ],
+          [
+            "is yours again,",
+            "CHAMPION."
+          ]
+        ],
+        "Lost": [
+          [
+            "NOREK: Come back",
+            "after a rest."
+          ],
+          [
+            "There is no need",
+            "to hurry the step."
+          ]
+        ],
+        "After": [
+          [
+            "NOREK: You know",
+            "where to find me."
+          ],
+          [
+            "Return when you",
+            "want a rematch."
+          ]
+        ],
+        "Gift": [
+          [
+            "A RARE CANDY for",
+            "your first rematch"
+          ],
+          [
+            "win here. Enjoy!"
+          ]
+        ],
+        "Full": [
+          [
+            "Your PACK is full.",
+            "I will keep your"
+          ],
+          [
+            "RARE CANDY here.",
+            "Come back for it."
+          ]
+        ],
+        "Declined": [
+          [
+            "NOREK: Steady.",
+            "There is time."
+          ]
+        ]
+      }
+    }
+  },
+  "native_presentation": {
+    "trainer_names": {
+      "MN_RIVER_FUN_LOWER_REED": "ARNE"
     }
   }
 }

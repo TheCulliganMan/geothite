@@ -135,7 +135,8 @@ repository = "https://github.com/TheCulliganMan/geothite"
 rust-version = "1.99"
 
 [workspace.dependencies]
-crystal-assets = { path = "crates/crystal-assets" }
+# Runtime clients load compiled packs; authoring tools opt into their builders.
+crystal-assets = { path = "crates/crystal-assets", default-features = false }
 crystal-audio = { path = "crates/crystal-audio" }
 crystal-tui-view = { path = "crates/crystal-tui-view" }
 crystal-bevy = { path = "crates/crystal-bevy" }

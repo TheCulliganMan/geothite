@@ -4,8 +4,10 @@ use anyhow::{Result, ensure};
 use crystal_core::battle::damage::MoveCategory;
 use serde::Deserialize;
 
+#[cfg(any(test, feature = "pack-authoring"))]
+use crate::GameDataSet;
 use crate::{
-    CompiledGamePack, GameDataSet, derive_compiled_game_pack_identity_from_manifest,
+    CompiledGamePack, derive_compiled_game_pack_identity_from_manifest,
     verify_compiled_game_pack_for_runtime,
 };
 
@@ -42,6 +44,7 @@ fn catalog() -> Result<BTreeMap<String, MoveCategory>> {
 }
 
 /// Northwoods balance is authored for this exact split, including native moves.
+#[cfg(any(test, feature = "pack-authoring"))]
 pub(crate) fn verify_modern_categories(data: &GameDataSet) -> Result<()> {
     for (id, category) in catalog()? {
         ensure!(

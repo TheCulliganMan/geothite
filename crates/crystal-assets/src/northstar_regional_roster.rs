@@ -4,11 +4,16 @@ use std::collections::{BTreeMap, BTreeSet};
 use anyhow::{Context, Result, ensure};
 use serde_json::Value;
 
+#[cfg(any(test, feature = "pack-authoring"))]
 use crate::CompiledGamePack;
 
 pub(crate) struct RegionalRoster {
     pub allowed: BTreeSet<String>,
+    #[cfg(any(test, feature = "pack-authoring"))]
     bindings: BTreeMap<String, String>,
+    // Runtime parsing still validates the complete evolution profile. Only
+    // authoring needs to retain that ancestry for level-aware substitutions.
+    #[cfg(any(test, feature = "pack-authoring"))]
     ancestors: BTreeMap<String, (u8, Option<String>)>,
 }
 
@@ -21,6 +26,7 @@ impl RegionalRoster {
         )
     }
 
+    #[cfg(any(test, feature = "pack-authoring"))]
     pub(crate) fn with_bindings(mut self, bindings: &[(&str, &str)]) -> Result<Self> {
         for &(original, target) in bindings {
             ensure!(
@@ -32,6 +38,7 @@ impl RegionalRoster {
         Ok(self)
     }
 
+    #[cfg(any(test, feature = "pack-authoring"))]
     pub fn parse(source: &str, roster: &str, curation: &str, profiles: &str) -> Result<Self> {
         let source: Value = serde_json::from_str(source)?;
         ensure!(
@@ -122,13 +129,16 @@ impl RegionalRoster {
         );
         Ok(Self {
             allowed,
+            #[cfg(any(test, feature = "pack-authoring"))]
             bindings: BTreeMap::new(),
+            #[cfg(any(test, feature = "pack-authoring"))]
             ancestors,
         })
     }
 
     /// Map a story appearance, walking back its own family when an evolved
     /// target would require a higher level. An unmapped legacy name is an error.
+    #[cfg(any(test, feature = "pack-authoring"))]
     pub fn target(
         &self,
         pack: &CompiledGamePack,

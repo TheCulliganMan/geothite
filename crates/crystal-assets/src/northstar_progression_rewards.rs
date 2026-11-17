@@ -6,11 +6,10 @@ use serde_json::Value;
 
 use crate::CompiledGamePack;
 use crate::grand_marais_modpack::authoring::{self, command as c};
+use crate::minnesota_runtime_policy::{DEX_CAUGHT_VARIABLE, DEX_MEMBER_PREFIX};
 use crate::northstar_rival_arc::{map, publish, put};
 
 const MANIFEST: &str = "northstar-progression-rewards-v1";
-pub(crate) const DEX_MEMBER_PREFIX: &str = "MN_DEX_MEMBER_";
-pub(crate) const DEX_CAUGHT_VARIABLE: &str = "VAR_MINNESOTA_DEX_CAUGHT";
 
 /// Adds once-only native rewards without changing terrain, teams or encounters.
 /// The field-station aide counts caught active Minnesota species, not seen
@@ -372,24 +371,6 @@ fn wrap(room: &mut crate::MapModule, actor: &str, label: &str) -> Result<()> {
     );
     put(room, actor, vec![c("sjump", &[label])]);
     Ok(())
-}
-
-/// Reads caught records against the authored active-region membership constants.
-/// This is recomputed on every query; save variables cannot spoof completion.
-pub(crate) fn caught_count(
-    data: &crate::GameDataSet,
-    state: &crystal_core::state::GameState,
-) -> usize {
-    state
-        .pokedex
-        .caught_species
-        .iter()
-        .filter(|id| {
-            data.story_event_script_constants
-                .global
-                .contains_key(&format!("{DEX_MEMBER_PREFIX}{id}"))
-        })
-        .count()
 }
 
 fn repair_machine_part_handoff(pack: &mut CompiledGamePack) -> Result<()> {

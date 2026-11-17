@@ -2,33 +2,10 @@
 use std::collections::{BTreeMap, BTreeSet};
 
 use anyhow::{Context, Result, ensure};
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
 
 use crate::minnesota_pokemon_pixel_art;
-use crate::{CompiledGamePack, MinnesotaTileCatalog, MinnesotaTilePixels};
-
-/// One packed native 8px glyph animation, using the production ambient clock.
-#[derive(Debug, Clone, Deserialize, Serialize)]
-#[serde(deny_unknown_fields)]
-pub struct AuthoredTileAnimation {
-    pub frame_ticks: u64,
-    pub frames: Vec<[u8; 16]>,
-}
-
-impl AuthoredTileAnimation {
-    /// Reject empty/unbounded clips or unsupported frame durations.
-    pub fn validate(&self) -> Result<()> {
-        ensure!(
-            (1..=120).contains(&self.frame_ticks),
-            "animation frame duration must be 1–120 ticks"
-        );
-        ensure!(
-            (2..=16).contains(&self.frames.len()),
-            "animation needs 2–16 frames"
-        );
-        Ok(())
-    }
-}
+use crate::{AuthoredTileAnimation, CompiledGamePack, MinnesotaTileCatalog, MinnesotaTilePixels};
 
 /// Reproducible original-source recipe. File paths are resolved by the CLI.
 #[derive(Debug, Deserialize)]

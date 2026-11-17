@@ -1108,5 +1108,747 @@
     "MN_LODE_ARC_INTAKE_EAST",
     "MN_ICE_ARC_INTAKE_RECORDS",
     "MN_LODE_ARC_INTAKE_CONTROL"
-  ]
+  ],
+  "campaign_team_adjustments": [
+    {
+      "trainer": "MN_GYM_6",
+      "party_slot": 2,
+      "original_species": "PIKEMAN",
+      "species": "PIKEMAN",
+      "level": 34,
+      "original_moves": [
+        "WATER_GUN",
+        "AQUA_JET",
+        "LOW_KICK",
+        "SLAM"
+      ],
+      "moves": [
+        "WATERFALL",
+        "AQUA_JET",
+        "LOW_KICK",
+        "SLAM"
+      ],
+      "rationale": "Use the reliable Water attack learned at level 24 rather than the opening Water Gun in the sixth Gym."
+    },
+    {
+      "trainer": "MN_GYM_7",
+      "party_slot": 1,
+      "original_species": "REEDRAFT",
+      "species": "ZIZALITH",
+      "level": 38,
+      "original_moves": [
+        "RAZOR_LEAF",
+        "RAIN_DANCE",
+        "GIGA_DRAIN",
+        "ENERGY_BALL"
+      ],
+      "moves": [
+        "ENERGY_BALL",
+        "BUBBLEBEAM",
+        "RAIN_DANCE",
+        "LEECH_SEED"
+      ],
+      "rationale": "At its level-38 evolution, Orlis gains a distinct Grass/Water lead and a rain payoff instead of three redundant Grass attacks."
+    },
+    {
+      "trainer": "MN_LEAGUE_1",
+      "party_slot": 2,
+      "original_species": "MOTHOSAIC",
+      "species": "MOTHOSAIC",
+      "level": 48,
+      "original_moves": [
+        "SAFEGUARD",
+        "PSYBEAM",
+        "WING_ATTACK",
+        "PSYCHIC_M"
+      ],
+      "moves": [
+        "SIGNAL_BEAM",
+        "PSYCHIC_M",
+        "SAFEGUARD",
+        "ANCIENTPOWER"
+      ],
+      "rationale": "Restore both native Bug and Rock attacks lost by taking only the last four learned moves."
+    },
+    {
+      "trainer": "MN_LEAGUE_1",
+      "party_slot": 3,
+      "original_species": "TRAPNACK",
+      "species": "TRAPNACK",
+      "level": 48,
+      "original_moves": [
+        "IRON_TAIL",
+        "SCREECH",
+        "CRABHAMMER",
+        "SWORDS_DANCE"
+      ],
+      "moves": [
+        "X_SCISSOR",
+        "IRON_TAIL",
+        "CRABHAMMER",
+        "SWORDS_DANCE"
+      ],
+      "rationale": "Restore native Bug STAB while retaining the Steel attack, coverage and setup."
+    },
+    {
+      "trainer": "MN_LEAGUE_1",
+      "party_slot": 4,
+      "original_species": "DAKOTASKIP",
+      "species": "DAKOTASKIP",
+      "level": 48,
+      "original_moves": [
+        "AGILITY",
+        "BATON_PASS",
+        "X_SCISSOR",
+        "RAZOR_WIND"
+      ],
+      "moves": [
+        "X_SCISSOR",
+        "WING_ATTACK",
+        "AGILITY",
+        "BATON_PASS"
+      ],
+      "rationale": "Replace inaccurate two-turn Normal coverage with learned Flying STAB; retain the speed-pass role."
+    },
+    {
+      "trainer": "MN_LEAGUE_2",
+      "party_slot": 2,
+      "original_species": "PELLETANK",
+      "species": "PELLETANK",
+      "level": 48,
+      "original_moves": [
+        "LOCK_ON",
+        "ROCK_SLIDE",
+        "ANCIENTPOWER",
+        "ZAP_CANNON"
+      ],
+      "moves": [
+        "LOCK_ON",
+        "ROCK_SLIDE",
+        "IRON_HEAD",
+        "ZAP_CANNON"
+      ],
+      "rationale": "Keep the deliberate Lock-On combination while replacing redundant Rock coverage with reliable Steel STAB."
+    },
+    {
+      "trainer": "MN_LEAGUE_3",
+      "party_slot": 4,
+      "original_species": "BOOMRUFF",
+      "species": "PRAIRONDO",
+      "level": 49,
+      "original_moves": [
+        "BODY_SLAM",
+        "MIRROR_MOVE",
+        "DRILL_PECK",
+        "EARTHQUAKE"
+      ],
+      "moves": [
+        "BODY_SLAM",
+        "MIRROR_MOVE",
+        "DRILL_PECK",
+        "EARTHQUAKE"
+      ],
+      "rationale": "Use the family evolution available since level 38 at level 49, retaining the authored coverage."
+    },
+    {
+      "trainer": "MN_LEAGUE_4",
+      "party_slot": 1,
+      "original_species": "LASSERP",
+      "species": "KNOTITAN",
+      "level": 50,
+      "original_moves": [
+        "SUBMISSION",
+        "VITAL_THROW",
+        "ENDURE",
+        "OUTRAGE"
+      ],
+      "moves": [
+        "SUBMISSION",
+        "VITAL_THROW",
+        "ENDURE",
+        "OUTRAGE"
+      ],
+      "rationale": "Use the family evolution available at level 44 in the final Elite Four battle at level 50."
+    },
+    {
+      "trainer": "MN_LEAGUE_4",
+      "party_slot": 3,
+      "original_species": "PIKEMAN",
+      "species": "PIKEMAN",
+      "level": 50,
+      "original_moves": [
+        "LOCK_ON",
+        "IRON_TAIL",
+        "CRUNCH",
+        "HYDRO_PUMP"
+      ],
+      "moves": [
+        "WATERFALL",
+        "LOW_KICK",
+        "CRUNCH",
+        "HYDRO_PUMP"
+      ],
+      "rationale": "Keep the Fighting-stage identity beside Musketunge with both STAB attacks and a reliable Water option."
+    },
+    {
+      "trainer": "MN_LEAGUE_4",
+      "party_slot": 4,
+      "original_species": "BARBELISK",
+      "species": "BARBELISK",
+      "level": 51,
+      "original_moves": [
+        "WATERFALL",
+        "LOCK_ON",
+        "HYDRO_PUMP",
+        "OUTRAGE"
+      ],
+      "moves": [
+        "WATERFALL",
+        "DRAGONBREATH",
+        "HYDRO_PUMP",
+        "OUTRAGE"
+      ],
+      "rationale": "Offer a reliable Dragon attack before committing to Outrage, replacing the unsupported accuracy setup."
+    },
+    {
+      "trainer": "MN_CHAMPION",
+      "party_slot": 2,
+      "original_species": "CHORIP",
+      "species": "CHOIRBOG",
+      "level": 51,
+      "original_moves": [
+        "SLUDGE_BOMB",
+        "PSYCHIC_M",
+        "BELLY_DRUM",
+        "PERISH_SONG"
+      ],
+      "moves": [
+        "SLUDGE_BOMB",
+        "PSYCHIC_M",
+        "DAZZLING_GLEAM",
+        "AMNESIA"
+      ],
+      "rationale": "Replace the level-51 unevolved Chorip and its low-Attack Belly Drum set with the legal evolved specialist and both native STAB types."
+    },
+    {
+      "trainer": "MN_CHAMPION",
+      "party_slot": 6,
+      "original_species": "TACONARCH",
+      "species": "TACONARCH",
+      "level": 53,
+      "original_moves": [
+        "ANCIENTPOWER",
+        "ZAP_CANNON",
+        "MAGNETIC_RAIL",
+        "OUTRAGE"
+      ],
+      "moves": [
+        "EARTHQUAKE",
+        "DRAGONBREATH",
+        "MAGNETIC_RAIL",
+        "OUTRAGE"
+      ],
+      "rationale": "Give the Champion ace reliable learned Dragon STAB and legal Ground coverage instead of unpaired 50-percent-accuracy Zap Cannon."
+    }
+  ],
+  "postgame_gym_rematches": {
+    "rules": {
+      "unlock": "EVENT_MN_LEAGUE_CHAMPION",
+      "party_size": 5,
+      "consent": "The leader states the party size and level range before YES/NO. Original Gym TM claims take priority.",
+      "first_win_reward": "One RARE_CANDY per leader. The victory receipt persists if the bag is full; collect without another battle.",
+      "repeats": "Optional unlimited battles award ordinary trainer prize money and experience; no repeated candy, badge or TM.",
+      "balance_scope": "Fixed authored teams and static legal-move checks. No claim of a complete campaign play balance pass."
+    },
+    "trainers": [
+      {
+        "gym_index": 1,
+        "map": "MnRochesterGym",
+        "level_range": [
+          55,
+          57
+        ],
+        "party": [
+          {
+            "species": "FURROWBANK",
+            "level": 55,
+            "moves": [
+              "EARTHQUAKE",
+              "CRUNCH",
+              "SUPER_FANG",
+              "QUICK_ATTACK"
+            ]
+          },
+          {
+            "species": "CASSEROGRE",
+            "level": 55,
+            "moves": [
+              "BODY_SLAM",
+              "FLAMETHROWER",
+              "ENCORE",
+              "ROLLOUT"
+            ]
+          },
+          {
+            "species": "LATCHQUILL",
+            "level": 56,
+            "moves": [
+              "IRON_HEAD",
+              "HEADBUTT",
+              "COUNTER",
+              "PROTECT"
+            ]
+          },
+          {
+            "species": "GREYTAG",
+            "level": 56,
+            "moves": [
+              "EXTREMESPEED",
+              "LOW_KICK",
+              "ENCORE",
+              "DETECT"
+            ]
+          },
+          {
+            "species": "CROOKVEIL",
+            "level": 57,
+            "moves": [
+              "CRUNCH",
+              "SLASH",
+              "QUICK_ATTACK",
+              "SCREECH"
+            ],
+            "item": "GOLD_BERRY"
+          }
+        ]
+      },
+      {
+        "gym_index": 2,
+        "map": "MnMankatoGym",
+        "level_range": [
+          55,
+          57
+        ],
+        "party": [
+          {
+            "species": "CASTOROAR",
+            "level": 55,
+            "moves": [
+              "ROCK_SLIDE",
+              "WATERFALL",
+              "CRUNCH",
+              "RAIN_DANCE"
+            ]
+          },
+          {
+            "species": "BURROOT",
+            "level": 55,
+            "moves": [
+              "EARTHQUAKE",
+              "GIGA_DRAIN",
+              "SYNTHESIS",
+              "RAZOR_LEAF"
+            ]
+          },
+          {
+            "species": "FORTIGARD",
+            "level": 56,
+            "moves": [
+              "ROCK_SLIDE",
+              "PSYCHIC_M",
+              "REFLECT",
+              "MIRROR_COAT"
+            ]
+          },
+          {
+            "species": "FURROWBANK",
+            "level": 56,
+            "moves": [
+              "EARTHQUAKE",
+              "CRUNCH",
+              "SUPER_FANG",
+              "QUICK_ATTACK"
+            ]
+          },
+          {
+            "species": "THUNDRAZE",
+            "level": 57,
+            "moves": [
+              "EARTHQUAKE",
+              "THUNDERBOLT",
+              "ROAR",
+              "DOUBLE_EDGE"
+            ],
+            "item": "GOLD_BERRY"
+          }
+        ]
+      },
+      {
+        "gym_index": 3,
+        "map": "MnMinneapolisGym",
+        "level_range": [
+          55,
+          57
+        ],
+        "party": [
+          {
+            "species": "WINDHOPPER",
+            "level": 55,
+            "moves": [
+              "THUNDERBOLT",
+              "X_SCISSOR",
+              "QUICK_ATTACK",
+              "AGILITY"
+            ]
+          },
+          {
+            "species": "HAULGEIST",
+            "level": 55,
+            "moves": [
+              "SHADOW_BALL",
+              "IRON_TAIL",
+              "SLUDGE_BOMB",
+              "HAZE"
+            ]
+          },
+          {
+            "species": "CANALARM",
+            "level": 56,
+            "moves": [
+              "THUNDERBOLT",
+              "SLUDGE_BOMB",
+              "LIGHT_SCREEN",
+              "HAZE"
+            ]
+          },
+          {
+            "species": "PADDARRAY",
+            "level": 56,
+            "moves": [
+              "THUNDERBOLT",
+              "PSYCHIC_M",
+              "SURF",
+              "THUNDER_WAVE"
+            ]
+          },
+          {
+            "species": "BEETYNAMO",
+            "level": 57,
+            "moves": [
+              "THUNDERBOLT",
+              "GIGA_DRAIN",
+              "SYNTHESIS",
+              "LIGHT_SCREEN"
+            ],
+            "item": "GOLD_BERRY"
+          }
+        ]
+      },
+      {
+        "gym_index": 4,
+        "map": "MnStPaulGym",
+        "level_range": [
+          55,
+          57
+        ],
+        "party": [
+          {
+            "species": "HAULGEIST",
+            "level": 55,
+            "moves": [
+              "SHADOW_BALL",
+              "IRON_TAIL",
+              "SLUDGE_BOMB",
+              "HAZE"
+            ]
+          },
+          {
+            "species": "TRAPNACK",
+            "level": 55,
+            "moves": [
+              "X_SCISSOR",
+              "IRON_TAIL",
+              "CRABHAMMER",
+              "SWORDS_DANCE"
+            ]
+          },
+          {
+            "species": "MESABLAST",
+            "level": 56,
+            "moves": [
+              "FLAMETHROWER",
+              "IRON_HEAD",
+              "ROCK_SLIDE",
+              "BARRIER"
+            ]
+          },
+          {
+            "species": "PLOWZER",
+            "level": 56,
+            "moves": [
+              "IRON_HEAD",
+              "ICE_BEAM",
+              "EARTHQUAKE",
+              "HAZE"
+            ]
+          },
+          {
+            "species": "LATCHQUILL",
+            "level": 57,
+            "moves": [
+              "IRON_HEAD",
+              "HEADBUTT",
+              "COUNTER",
+              "CURSE"
+            ],
+            "item": "GOLD_BERRY"
+          }
+        ]
+      },
+      {
+        "gym_index": 5,
+        "map": "MnStCloudGym",
+        "level_range": [
+          56,
+          58
+        ],
+        "party": [
+          {
+            "species": "DAKOTASKIP",
+            "level": 56,
+            "moves": [
+              "X_SCISSOR",
+              "WING_ATTACK",
+              "AGILITY",
+              "BATON_PASS"
+            ]
+          },
+          {
+            "species": "GLOAMOWL",
+            "level": 56,
+            "moves": [
+              "SHADOW_BALL",
+              "WING_ATTACK",
+              "HYPNOSIS",
+              "DREAM_EATER"
+            ]
+          },
+          {
+            "species": "SHAWLTER",
+            "level": 57,
+            "moves": [
+              "MOONBLAST",
+              "WING_ATTACK",
+              "SHADOW_BALL",
+              "WHIRLWIND"
+            ]
+          },
+          {
+            "species": "PRAIRONDO",
+            "level": 57,
+            "moves": [
+              "EARTHQUAKE",
+              "DRILL_PECK",
+              "BODY_SLAM",
+              "MIRROR_MOVE"
+            ]
+          },
+          {
+            "species": "SILOHAWK",
+            "level": 58,
+            "moves": [
+              "DRILL_PECK",
+              "CRUNCH",
+              "ROAR",
+              "SWAGGER"
+            ],
+            "item": "GOLD_BERRY"
+          }
+        ]
+      },
+      {
+        "gym_index": 6,
+        "map": "MnBrainerdGym",
+        "level_range": [
+          56,
+          58
+        ],
+        "party": [
+          {
+            "species": "TORROUT",
+            "level": 56,
+            "moves": [
+              "WATERFALL",
+              "LOW_KICK",
+              "AQUA_JET",
+              "RAIN_DANCE"
+            ]
+          },
+          {
+            "species": "BARBELISK",
+            "level": 56,
+            "moves": [
+              "WATERFALL",
+              "DRAGONBREATH",
+              "OUTRAGE",
+              "RAIN_DANCE"
+            ]
+          },
+          {
+            "species": "BANKMAW",
+            "level": 57,
+            "moves": [
+              "WATERFALL",
+              "EARTHQUAKE",
+              "CRUNCH",
+              "PROTECT"
+            ]
+          },
+          {
+            "species": "MUSKETUNGE",
+            "level": 57,
+            "moves": [
+              "WATERFALL",
+              "IRON_HEAD",
+              "CRUNCH",
+              "PIKE_DRILL"
+            ]
+          },
+          {
+            "species": "PADDARRAY",
+            "level": 58,
+            "moves": [
+              "THUNDER",
+              "PSYCHIC_M",
+              "SURF",
+              "THUNDER_WAVE"
+            ],
+            "item": "GOLD_BERRY"
+          }
+        ]
+      },
+      {
+        "gym_index": 7,
+        "map": "MnBemidjiGym",
+        "level_range": [
+          56,
+          58
+        ],
+        "party": [
+          {
+            "species": "ZIZALITH",
+            "level": 56,
+            "moves": [
+              "ENERGY_BALL",
+              "SURF",
+              "LEECH_SEED",
+              "RAIN_DANCE"
+            ]
+          },
+          {
+            "species": "PARAFLOSS",
+            "level": 56,
+            "moves": [
+              "SLUDGE_BOMB",
+              "GIGA_DRAIN",
+              "STUN_SPORE",
+              "WHIRLWIND"
+            ]
+          },
+          {
+            "species": "BURROOT",
+            "level": 57,
+            "moves": [
+              "EARTHQUAKE",
+              "GIGA_DRAIN",
+              "SYNTHESIS",
+              "RAZOR_LEAF"
+            ]
+          },
+          {
+            "species": "BEETYNAMO",
+            "level": 57,
+            "moves": [
+              "THUNDERBOLT",
+              "GIGA_DRAIN",
+              "SYNTHESIS",
+              "LIGHT_SCREEN"
+            ]
+          },
+          {
+            "species": "CYPRIELLE",
+            "level": 58,
+            "moves": [
+              "ENERGY_BALL",
+              "MOONBLAST",
+              "PSYCHIC_M",
+              "SYNTHESIS"
+            ],
+            "item": "GOLD_BERRY"
+          }
+        ]
+      },
+      {
+        "gym_index": 8,
+        "map": "MnDuluthGym",
+        "level_range": [
+          58,
+          60
+        ],
+        "party": [
+          {
+            "species": "LUTEBRISK",
+            "level": 58,
+            "moves": [
+              "ICE_BEAM",
+              "SURF",
+              "BODY_SLAM",
+              "LIGHT_SCREEN"
+            ]
+          },
+          {
+            "species": "CROOKVEIL",
+            "level": 58,
+            "moves": [
+              "CRUNCH",
+              "SLASH",
+              "QUICK_ATTACK",
+              "SCREECH"
+            ]
+          },
+          {
+            "species": "RIMEGUARD",
+            "level": 59,
+            "moves": [
+              "ICE_BEAM",
+              "VITAL_THROW",
+              "COUNTER",
+              "ENDURE"
+            ]
+          },
+          {
+            "species": "PLOWZER",
+            "level": 59,
+            "moves": [
+              "IRON_HEAD",
+              "ICE_BEAM",
+              "EARTHQUAKE",
+              "HAZE"
+            ]
+          },
+          {
+            "species": "VERNACAPE",
+            "level": 60,
+            "moves": [
+              "ICE_BEAM",
+              "PSYCHIC_M",
+              "GIGA_DRAIN",
+              "AMNESIA"
+            ],
+            "item": "GOLD_BERRY"
+          }
+        ]
+      }
+    ]
+  }
 }

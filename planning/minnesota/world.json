@@ -7956,7 +7956,7 @@
     "status": "Accepted current-parent terrain revision: source/native pixels, strict whole-pack preservation, directional grass/ledge proof, actual2D review, native encounters/trainerPP/resources/Continue and stdio pass. CurrentR12 work preserved.",
     "scope_limit": "Sequential Minnesota grass pass remains open beyond R01-R03. Explicit local fixtures do not prove an earned statewide campaign."
   },
-  "active_local_review_revision": "integrated_campaign_revision",
+  "active_local_review_revision": "adventure_revision",
   "script_command_repair_revision": {
     "kind": "missing_minnesota_map_command_records",
     "parent_revision": "field_hm_habitats_cyclists_revision",
@@ -12553,5 +12553,15 @@
     "hosted_release": "integrated-20261116",
     "hosted_pack_sha256": "8498ef8d685b32d468876dc46da069ab394f97dd9da3da73b4c40ac9afecec0e",
     "hosted_content_identity": "b5f8411db557d73a0a9c755243415a33342537f619e200f544233dffc8027c02"
+  },
+  "adventure_revision": {
+    "kind": "native_2d_adventure_revision",
+    "parent_revision": "integrated_campaign_revision",
+    "pack": "content-packs/minnesota-adventure-v01.crystalpack",
+    "pack_sha256": "36da6928a3aa0b0d75c9ad9a7abe353a9d79a7d3d1327eed2dc29d4fc4adb181",
+    "content_identity": "d4ce7998673f393e69771a36c3575878060f121102f6db840ddf197c583979dd",
+    "map_count": 743,
+    "runbook": "planning/minnesota/QUALITY.md",
+    "status": "Selected locally for publication. Pack build, native content checks, all 602 audio checks and static preservation checks passed. Client builds and release checks are pending. Gameplay verification is excluded by user instruction; existing saves are not migrated."
   }
 }

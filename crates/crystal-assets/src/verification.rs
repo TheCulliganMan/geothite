@@ -10946,6 +10946,7 @@ pub fn tileset_collision_from_definition(
     })
 }
 
+#[cfg(any(test, feature = "pack-authoring"))]
 fn is_walkable_validation_tile(
     map: &OverworldMapData,
     tileset: &TilesetCollision,
@@ -11049,6 +11050,7 @@ fn connection_source_boundary_tiles(
     }
 }
 
+#[cfg(any(test, feature = "pack-authoring"))]
 fn connection_source_tile_for_target(
     context: &MapPlayabilityContext,
     connection: &MapConnection,
@@ -11079,6 +11081,7 @@ fn connection_source_tile_for_target(
     })
 }
 
+#[cfg(any(test, feature = "pack-authoring"))]
 fn connection_source_tile_and_component_for_target(
     context: &MapPlayabilityContext,
     connection: &MapConnection,

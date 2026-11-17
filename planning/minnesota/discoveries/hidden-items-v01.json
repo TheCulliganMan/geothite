@@ -1,0 +1,1007 @@
+{
+  "schema_version": 1,
+  "id": "northstar-hidden-discoveries-v1",
+  "parent_content_hash": "cd81b377a9d08285dddba8568547e573827860f1ea41630e2301be4750296313",
+  "caches": [
+    {
+      "id": "R01",
+      "map": "MnR01C00R00",
+      "tile": [
+        14,
+        29
+      ],
+      "approach": [
+        15,
+        29
+      ],
+      "entry": [
+        17,
+        18
+      ],
+      "item": "POTION",
+      "landmark": "shore recess",
+      "access": "walk",
+      "neighbors": [
+        "WALL",
+        "FLOOR",
+        "FLOOR",
+        "WATER"
+      ]
+    },
+    {
+      "id": "R02",
+      "map": "MnR02C00R00",
+      "tile": [
+        46,
+        40
+      ],
+      "approach": [
+        47,
+        40
+      ],
+      "entry": [
+        51,
+        34
+      ],
+      "item": "ANTIDOTE",
+      "landmark": "grass verge",
+      "access": "walk",
+      "neighbors": [
+        "WALL",
+        "FLOOR",
+        "TALL_GRASS",
+        "WALL"
+      ]
+    },
+    {
+      "id": "R03",
+      "map": "MnR03C00R00",
+      "tile": [
+        28,
+        45
+      ],
+      "approach": [
+        29,
+        45
+      ],
+      "entry": [
+        8,
+        39
+      ],
+      "item": "POKE_BALL",
+      "landmark": "shore recess",
+      "access": "walk",
+      "neighbors": [
+        "WATER",
+        "FLOOR",
+        "FLOOR",
+        "WATER"
+      ]
+    },
+    {
+      "id": "R04",
+      "map": "MnR04C00R00",
+      "tile": [
+        39,
+        22
+      ],
+      "approach": [
+        38,
+        22
+      ],
+      "entry": [
+        55,
+        19
+      ],
+      "item": "REPEL",
+      "landmark": "grass verge",
+      "access": "walk",
+      "neighbors": [
+        "FLOOR",
+        "TALL_GRASS",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "id": "R05",
+      "map": "MnR05C00R00",
+      "tile": [
+        55,
+        17
+      ],
+      "approach": [
+        54,
+        17
+      ],
+      "entry": [
+        30,
+        26
+      ],
+      "item": "GREAT_BALL",
+      "landmark": "shore recess",
+      "access": "walk",
+      "neighbors": [
+        "FLOOR",
+        "WATER",
+        "WALL",
+        "WALL"
+      ]
+    },
+    {
+      "id": "R06",
+      "map": "MnR06C00R00",
+      "tile": [
+        44,
+        23
+      ],
+      "approach": [
+        43,
+        23
+      ],
+      "entry": [
+        37,
+        40
+      ],
+      "item": "PARLYZ_HEAL",
+      "landmark": "grass verge",
+      "access": "walk",
+      "neighbors": [
+        "FLOOR",
+        "HEADBUTT_TREE",
+        "HEADBUTT_TREE",
+        "TALL_GRASS"
+      ]
+    },
+    {
+      "id": "R07",
+      "map": "MnR07C00R00",
+      "tile": [
+        25,
+        25
+      ],
+      "approach": [
+        25,
+        26
+      ],
+      "entry": [
+        23,
+        47
+      ],
+      "item": "ETHER",
+      "landmark": "shore recess",
+      "access": "water_detour",
+      "neighbors": [
+        "HEADBUTT_TREE",
+        "WATER",
+        "HEADBUTT_TREE",
+        "FLOOR"
+      ]
+    },
+    {
+      "id": "R08",
+      "map": "MnR08C00R00",
+      "tile": [
+        23,
+        13
+      ],
+      "approach": [
+        22,
+        13
+      ],
+      "entry": [
+        24,
+        0
+      ],
+      "item": "SUPER_REPEL",
+      "landmark": "shore recess",
+      "access": "water_detour",
+      "neighbors": [
+        "FLOOR",
+        "WALL",
+        "FLOOR",
+        "WATER"
+      ]
+    },
+    {
+      "id": "R09",
+      "map": "MnR09C00R00",
+      "tile": [
+        49,
+        27
+      ],
+      "approach": [
+        48,
+        27
+      ],
+      "entry": [
+        40,
+        40
+      ],
+      "item": "RARE_CANDY",
+      "landmark": "shore recess",
+      "access": "water_detour",
+      "neighbors": [
+        "FLOOR",
+        "WATER",
+        "FLOOR",
+        "WATER"
+      ]
+    },
+    {
+      "id": "R10",
+      "map": "MnR10C00R00",
+      "tile": [
+        32,
+        12
+      ],
+      "approach": [
+        33,
+        12
+      ],
+      "entry": [
+        36,
+        16
+      ],
+      "item": "SUPER_POTION",
+      "landmark": "grass verge",
+      "access": "walk",
+      "neighbors": [
+        "TALL_GRASS",
+        "FLOOR",
+        "TALL_GRASS",
+        "WALL"
+      ]
+    },
+    {
+      "id": "R11",
+      "map": "MnR11C00R00",
+      "tile": [
+        22,
+        27
+      ],
+      "approach": [
+        23,
+        27
+      ],
+      "entry": [
+        23,
+        23
+      ],
+      "item": "ULTRA_BALL",
+      "landmark": "shore recess",
+      "access": "walk",
+      "neighbors": [
+        "WATER",
+        "FLOOR",
+        "FLOOR",
+        "WALL"
+      ]
+    },
+    {
+      "id": "R12",
+      "map": "MnR12C00R00",
+      "tile": [
+        33,
+        32
+      ],
+      "approach": [
+        32,
+        32
+      ],
+      "entry": [
+        40,
+        16
+      ],
+      "item": "PP_UP",
+      "landmark": "shore recess",
+      "access": "water_detour",
+      "neighbors": [
+        "FLOOR",
+        "WALL",
+        "WATER",
+        "FLOOR"
+      ]
+    },
+    {
+      "id": "R13",
+      "map": "MnR13C00R00",
+      "tile": [
+        47,
+        25
+      ],
+      "approach": [
+        47,
+        24
+      ],
+      "entry": [
+        33,
+        0
+      ],
+      "item": "HYPER_POTION",
+      "landmark": "grass verge",
+      "access": "walk",
+      "neighbors": [
+        "WALL",
+        "WALL",
+        "FLOOR",
+        "TALL_GRASS"
+      ]
+    },
+    {
+      "id": "R14",
+      "map": "MnR14C00R00",
+      "tile": [
+        18,
+        8
+      ],
+      "approach": [
+        19,
+        8
+      ],
+      "entry": [
+        6,
+        42
+      ],
+      "item": "FULL_HEAL",
+      "landmark": "shore recess",
+      "access": "walk",
+      "neighbors": [
+        "WATER",
+        "FLOOR",
+        "WALL",
+        "FLOOR"
+      ]
+    },
+    {
+      "id": "R15",
+      "map": "MnR15C00R00",
+      "tile": [
+        36,
+        17
+      ],
+      "approach": [
+        37,
+        17
+      ],
+      "entry": [
+        52,
+        12
+      ],
+      "item": "ETHER",
+      "landmark": "shore recess",
+      "access": "walk",
+      "neighbors": [
+        "WATER",
+        "FLOOR",
+        "FLOOR",
+        "WATER"
+      ]
+    },
+    {
+      "id": "R16",
+      "map": "MnR16C00R00",
+      "tile": [
+        61,
+        39
+      ],
+      "approach": [
+        60,
+        39
+      ],
+      "entry": [
+        63,
+        30
+      ],
+      "item": "GREAT_BALL",
+      "landmark": "shore recess",
+      "access": "walk",
+      "neighbors": [
+        "FLOOR",
+        "WATER",
+        "FLOOR",
+        "WATER"
+      ]
+    },
+    {
+      "id": "R17",
+      "map": "MnR17C00R00",
+      "tile": [
+        42,
+        39
+      ],
+      "approach": [
+        42,
+        38
+      ],
+      "entry": [
+        10,
+        42
+      ],
+      "item": "REPEL",
+      "landmark": "grass verge",
+      "access": "walk",
+      "neighbors": [
+        "TALL_GRASS",
+        "HEADBUTT_TREE",
+        "FLOOR",
+        "WALL"
+      ]
+    },
+    {
+      "id": "R18",
+      "map": "MnR18C00R00",
+      "tile": [
+        60,
+        39
+      ],
+      "approach": [
+        61,
+        39
+      ],
+      "entry": [
+        63,
+        39
+      ],
+      "item": "SUPER_POTION",
+      "landmark": "shore recess",
+      "access": "walk",
+      "neighbors": [
+        "WATER",
+        "FLOOR",
+        "FLOOR",
+        "WATER"
+      ]
+    },
+    {
+      "id": "R19",
+      "map": "MnR19C00R00",
+      "tile": [
+        49,
+        29
+      ],
+      "approach": [
+        48,
+        29
+      ],
+      "entry": [
+        63,
+        13
+      ],
+      "item": "GREAT_BALL",
+      "landmark": "shore recess",
+      "access": "walk",
+      "neighbors": [
+        "FLOOR",
+        "WALL",
+        "FLOOR",
+        "WATER"
+      ]
+    },
+    {
+      "id": "R20",
+      "map": "MnR20C00R00",
+      "tile": [
+        29,
+        29
+      ],
+      "approach": [
+        28,
+        29
+      ],
+      "entry": [
+        60,
+        32
+      ],
+      "item": "ELIXER",
+      "landmark": "shore recess",
+      "access": "water_detour",
+      "neighbors": [
+        "FLOOR",
+        "WATER",
+        "FLOOR",
+        "WALL"
+      ]
+    },
+    {
+      "id": "WINONA",
+      "map": "MnWinona",
+      "tile": [
+        25,
+        8
+      ],
+      "approach": [
+        24,
+        8
+      ],
+      "entry": [
+        18,
+        8
+      ],
+      "item": "POKE_BALL",
+      "landmark": "shore recess",
+      "access": "walk",
+      "neighbors": [
+        "FLOOR",
+        "WATER",
+        "WALL",
+        "FLOOR"
+      ]
+    },
+    {
+      "id": "ROCHESTER",
+      "map": "MnRochester",
+      "tile": [
+        27,
+        6
+      ],
+      "approach": [
+        26,
+        6
+      ],
+      "entry": [
+        24,
+        10
+      ],
+      "item": "ANTIDOTE",
+      "landmark": "wall nook",
+      "access": "walk",
+      "neighbors": [
+        "FLOOR",
+        "WALL",
+        "WALL",
+        "FLOOR"
+      ]
+    },
+    {
+      "id": "MANKATO",
+      "map": "MnMankato",
+      "tile": [
+        35,
+        23
+      ],
+      "approach": [
+        34,
+        23
+      ],
+      "entry": [
+        33,
+        23
+      ],
+      "item": "REPEL",
+      "landmark": "shore recess",
+      "access": "walk",
+      "neighbors": [
+        "FLOOR",
+        "WALL",
+        "FLOOR",
+        "WATER"
+      ]
+    },
+    {
+      "id": "STPAUL",
+      "map": "MnStPaul",
+      "tile": [
+        77,
+        51
+      ],
+      "approach": [
+        76,
+        51
+      ],
+      "entry": [
+        57,
+        47
+      ],
+      "item": "SUPER_REPEL",
+      "landmark": "shore recess",
+      "access": "water_detour",
+      "neighbors": [
+        "FLOOR",
+        "WALL",
+        "FLOOR",
+        "WATER"
+      ]
+    },
+    {
+      "id": "MINNEAPOLIS",
+      "map": "MnMinneapolis",
+      "tile": [
+        31,
+        11
+      ],
+      "approach": [
+        30,
+        11
+      ],
+      "entry": [
+        22,
+        11
+      ],
+      "item": "GREAT_BALL",
+      "landmark": "shore recess",
+      "access": "walk",
+      "neighbors": [
+        "FLOOR",
+        "WATER",
+        "FLOOR",
+        "WALL"
+      ]
+    },
+    {
+      "id": "STCLOUD",
+      "map": "MnStCloud",
+      "tile": [
+        45,
+        15
+      ],
+      "approach": [
+        44,
+        15
+      ],
+      "entry": [
+        37,
+        7
+      ],
+      "item": "SUPER_POTION",
+      "landmark": "shore recess",
+      "access": "walk",
+      "neighbors": [
+        "FLOOR",
+        "WALL",
+        "FLOOR",
+        "WATER"
+      ]
+    },
+    {
+      "id": "BRAINERD",
+      "map": "MnBrainerd",
+      "tile": [
+        39,
+        14
+      ],
+      "approach": [
+        38,
+        14
+      ],
+      "entry": [
+        24,
+        16
+      ],
+      "item": "SUPER_REPEL",
+      "landmark": "shore recess",
+      "access": "walk",
+      "neighbors": [
+        "FLOOR",
+        "WATER",
+        "WALL",
+        "FLOOR"
+      ]
+    },
+    {
+      "id": "BEMIDJI",
+      "map": "MnBemidji",
+      "tile": [
+        45,
+        21
+      ],
+      "approach": [
+        44,
+        21
+      ],
+      "entry": [
+        41,
+        21
+      ],
+      "item": "FULL_HEAL",
+      "landmark": "wall nook",
+      "access": "walk",
+      "neighbors": [
+        "FLOOR",
+        "WALL",
+        "FLOOR",
+        "WALL"
+      ]
+    },
+    {
+      "id": "DULUTH",
+      "map": "MnDuluth",
+      "tile": [
+        68,
+        81
+      ],
+      "approach": [
+        69,
+        81
+      ],
+      "entry": [
+        80,
+        72
+      ],
+      "item": "NUGGET",
+      "landmark": "shore recess",
+      "access": "water_detour",
+      "neighbors": [
+        "WATER",
+        "FLOOR",
+        "FLOOR",
+        "WALL"
+      ]
+    },
+    {
+      "id": "GRANDMARAIS",
+      "map": "MnGrandMarais",
+      "tile": [
+        37,
+        27
+      ],
+      "approach": [
+        36,
+        27
+      ],
+      "entry": [
+        27,
+        16
+      ],
+      "item": "HYPER_POTION",
+      "landmark": "shore recess",
+      "access": "walk",
+      "neighbors": [
+        "FLOOR",
+        "WATER",
+        "FLOOR",
+        "WATER"
+      ]
+    },
+    {
+      "id": "LAKEITASCA",
+      "map": "MnLakeItasca",
+      "tile": [
+        28,
+        39
+      ],
+      "approach": [
+        29,
+        39
+      ],
+      "entry": [
+        41,
+        25
+      ],
+      "item": "ETHER",
+      "landmark": "shore recess",
+      "access": "walk",
+      "neighbors": [
+        "WATER",
+        "FLOOR",
+        "FLOOR",
+        "WALL"
+      ]
+    },
+    {
+      "id": "LEECHLAKE",
+      "map": "MnLeechLake",
+      "tile": [
+        46,
+        31
+      ],
+      "approach": [
+        47,
+        31
+      ],
+      "entry": [
+        10,
+        36
+      ],
+      "item": "RARE_CANDY",
+      "landmark": "shore recess",
+      "access": "water_detour",
+      "neighbors": [
+        "WATER",
+        "FLOOR",
+        "FLOOR",
+        "WALL"
+      ]
+    },
+    {
+      "id": "DETROITLAKES",
+      "map": "MnDetroitLakes",
+      "tile": [
+        23,
+        23
+      ],
+      "approach": [
+        22,
+        23
+      ],
+      "entry": [
+        32,
+        28
+      ],
+      "item": "FULL_HEAL",
+      "landmark": "shore recess",
+      "access": "walk",
+      "neighbors": [
+        "FLOOR",
+        "WALL",
+        "FLOOR",
+        "WATER"
+      ]
+    },
+    {
+      "id": "R01CAVE1F",
+      "map": "MnR01Cave1F",
+      "tile": [
+        36,
+        9
+      ],
+      "approach": [
+        35,
+        9
+      ],
+      "entry": [
+        31,
+        12
+      ],
+      "item": "ESCAPE_ROPE",
+      "landmark": "wall nook",
+      "access": "walk",
+      "neighbors": [
+        "FLOOR",
+        "WALL",
+        "FLOOR",
+        "WALL"
+      ]
+    },
+    {
+      "id": "R03CAVE1F",
+      "map": "MnR03Cave1F",
+      "tile": [
+        4,
+        7
+      ],
+      "approach": [
+        5,
+        7
+      ],
+      "entry": [
+        6,
+        9
+      ],
+      "item": "POTION",
+      "landmark": "shore recess",
+      "access": "walk",
+      "neighbors": [
+        "WATER",
+        "FLOOR",
+        "FLOOR",
+        "WALL"
+      ]
+    },
+    {
+      "id": "R05ROCKCUT",
+      "map": "MnR05RockCut",
+      "tile": [
+        10,
+        9
+      ],
+      "approach": [
+        10,
+        8
+      ],
+      "entry": [
+        10,
+        5
+      ],
+      "item": "GREAT_BALL",
+      "landmark": "wall nook",
+      "access": "walk",
+      "neighbors": [
+        "WALL",
+        "WALL",
+        "FLOOR",
+        "WALL"
+      ]
+    },
+    {
+      "id": "R09CAVE1F",
+      "map": "MnR09Cave1F",
+      "tile": [
+        11,
+        16
+      ],
+      "approach": [
+        11,
+        17
+      ],
+      "entry": [
+        12,
+        19
+      ],
+      "item": "FULL_HEAL",
+      "landmark": "wall nook",
+      "access": "walk",
+      "neighbors": [
+        "WALL",
+        "WALL",
+        "WALL",
+        "FLOOR"
+      ]
+    },
+    {
+      "id": "R12CAVE1F",
+      "map": "MnR12Cave1F",
+      "tile": [
+        36,
+        19
+      ],
+      "approach": [
+        36,
+        18
+      ],
+      "entry": [
+        17,
+        22
+      ],
+      "item": "ETHER",
+      "landmark": "shore recess",
+      "access": "walk",
+      "neighbors": [
+        "WATER",
+        "WALL",
+        "FLOOR",
+        "FLOOR"
+      ]
+    },
+    {
+      "id": "R17CAVE1F",
+      "map": "MnR17Cave1F",
+      "tile": [
+        8,
+        8
+      ],
+      "approach": [
+        7,
+        8
+      ],
+      "entry": [
+        8,
+        13
+      ],
+      "item": "SUPER_POTION",
+      "landmark": "wall nook",
+      "access": "walk",
+      "neighbors": [
+        "FLOOR",
+        "WALL",
+        "FLOOR",
+        "WALL"
+      ]
+    },
+    {
+      "id": "R20CAVE1F",
+      "map": "MnR20Cave1F",
+      "tile": [
+        15,
+        15
+      ],
+      "approach": [
+        16,
+        15
+      ],
+      "entry": [
+        22,
+        19
+      ],
+      "item": "REVIVE",
+      "landmark": "shore recess",
+      "access": "walk",
+      "neighbors": [
+        "WALL",
+        "FLOOR",
+        "FLOOR",
+        "WATER"
+      ]
+    }
+  ]
+}

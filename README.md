@@ -970,6 +970,14 @@ Radio oracle replay cases are opt-in with `--ignored` and
 `CRYSTAL_RADIO_ORACLE_ROOT` pointing to the external source/capture workspace.
 Normal builds and self-contained radio tests require no oracle captures.
 
+Production clients depend on `crystal-assets` without its `pack-authoring`
+feature, so they compile the pack loader, validation, runtime rules and server
+wrappers without the regional map, art and story builders. Build the intended
+package (`-p geothite`, `-p crystal-bevy` or `-p crystal-web-server`) to retain
+that boundary. Direct `-p crystal-assets` builder commands keep authoring enabled
+by default; workspace-wide builds and `test-fixtures` enable it too through
+Cargo feature unification. See the [content build feature guide](docs/game-content.md#runtime-and-authoring-builds).
+
 For optional independent PC and Mailbox LCD comparisons, see the
 [menu reference capture guide](docs/menu-oracle.md). Its emulator environment
 and generated references remain external to the repository and game bundle.

@@ -9,7 +9,7 @@ tests. Finish the twenty implementation areas directly in source, then use
 compilation and static/content checks only. Earlier gameplay checks below are
 historical partial evidence, not instructions to resume or repeat them.
 
-The integration starts from `world.json`'s `glacier_rear_rail_revision`.
+The original integration started from `world.json`'s `glacier_rear_rail_revision`.
 Existing saves and the selected/hosted game stay intact while the candidate is
 assembled. Generated packs, captures and run receipts remain ignored. The final
 acceptance must identify the exact candidate and distinguish earned play from
@@ -210,3 +210,58 @@ explicit request. Deployment results and verification limits are recorded in
 `docs/deployment.md`. Existing saves remain
 untouched. No gameplay verification is being performed after the user's
 explicit instruction to stop it.
+
+## Adventure improvement goal (2026-11-16)
+
+The next accepted goal builds directly on the selected integrated v03 campaign,
+not on older review worlds. It covers battle balance, town activities, Reed,
+route discoveries and canoe returns, gym clarity, postgame, return dialogue,
+native presentation, progression safeguards and build speed. Hidden items are
+an explicit part of this goal. The no-gameplay verification instruction remains
+in force, including for final release checks.
+
+The `pack_northstar_adventure` recipe combines the following authored changes:
+
+- Forty native hidden items: one on each of the twenty routes, thirteen in
+  towns/lake areas and seven in caves. Eight occupy water detours. Each location
+  has an explicit tile, approach, entry and surrounding collision contract in
+  `discoveries/hidden-items-v01.json`. Native `hiddenitem` events supply
+  Itemfinder discovery, full-pocket handling and persistent collection flags.
+- Twelve late-campaign party-slot corrections preserve levels, prizes and
+  progression while replacing overleveled juvenile partners and ineffective
+  move selections with legal active-roster choices.
+- Eight optional Champion gym rematches, each with five distinct partners at
+  the advertised levels. Pending badge TMs retain priority; each first-win
+  Rare Candy has a separate receipt and a full-pocket retry before another
+  battle can be offered.
+- Sixty-two existing dialogue labels across twenty-four maps are revised,
+  including Reed's deliberate choices, real museum activities, gym victory
+  handoffs, restoration returns and discovery hints. Brainerd's obsolete
+  trainer/menu directions now identify the actual blue winch. The rematches
+  add fifty-six canonical text labels.
+- Production dependencies can omit pack-authoring modules while pack tools
+  retain their existing default feature. Shared gameplay methods and data
+  remain available in the runtime library.
+- All eight leaders receive their existing accepted native portraits and
+  repaired field poses through private trainer classes. This restores the
+  supported leader battle music as well. The unrelated river teacher REED is
+  renamed ARNE; the rival's name and identity remain intact.
+
+These are implementation records, not a claim of complete campaign balance or
+visual/gameplay verification. Existing numbered playtest reports remain open
+unless their own acceptance evidence has separately been recorded. Final build,
+content identity, selection and publication results are recorded below.
+
+The first adventure candidate builds and reads back identically at
+`content-packs/minnesota-adventure-v01.crystalpack`. Content identity:
+`d4ce7998673f393e69771a36c3575878060f121102f6db840ddf197c583979dd`.
+File SHA-256:
+`36da6928a3aa0b0d75c9ad9a7abe353a9d79a7d3d1327eed2dc29d4fc4adb181`.
+Independent static comparison confirms all forty new hidden items (forty-two
+total), eight rematch teams, forty-eight added native art files, exact original
+art/audio/event constants, identical terrain and unchanged non-Minnesota maps.
+The Rust verifier passes all 602 audio PCM hashes, frame counts and loop ranges.
+The canonical native-page compilation/protection test passes. Formatting and
+the initial all-target asset Clippy pass succeeded; existing warnings remain.
+The candidate is selected locally in `world.json` while client build and
+publication checks are completed. No gameplay has been run.

@@ -40,13 +40,8 @@ struct Encounter {
     scale_level: bool,
 }
 
-// Native slots are deliberately separate from challenge slots. This exact
-// namespace is authored only by this overlay, never by a runtime random roll.
-pub(crate) fn preserves_authored_level(map: &str, script: &str) -> bool {
-    matches!(map, "MnMinneapolis" | "MnStPaul" | "MnDuluth")
-        && script.starts_with("MnCityNote")
-        && script.ends_with("Native")
-}
+#[cfg(test)]
+use crate::minnesota_runtime_policy::preserves_city_note_level as preserves_authored_level;
 
 fn selected_notes(source: &Notes, city: &City) -> BTreeSet<usize> {
     let mut ranked = (0..city.notes.len())

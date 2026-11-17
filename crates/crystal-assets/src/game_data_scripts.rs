@@ -1472,7 +1472,7 @@ impl GameDataSet {
         let catch_tutorial = request.battle_type == "BATTLETYPE_TUTORIAL";
         if !catch_tutorial
             && self.wild_challenge.is_some()
-            && !crate::city_note_mimics::preserves_authored_level(map_name, source_script)
+            && !crate::minnesota_runtime_policy::preserves_city_note_level(map_name, source_script)
         {
             if request.battle_type == "BATTLETYPE_ROAMING" {
                 let slot = state.roaming_pokemon.iter().position(|r| r.species.as_deref() == Some(request.species.as_str())).context("challenge roaming species is inactive")?;
@@ -3667,9 +3667,9 @@ impl GameDataSet {
         // pack-authored active roster membership, never a saved variable mirror.
         if command.command == "readvar"
             && command.target.as_deref()
-                == Some(crate::northstar_progression_rewards::DEX_CAUGHT_VARIABLE)
+                == Some(crate::minnesota_runtime_policy::DEX_CAUGHT_VARIABLE)
         {
-            let count = crate::northstar_progression_rewards::caught_count(self, state);
+            let count = crate::minnesota_runtime_policy::caught_count(self, state);
             let variable = command.target.as_ref().context("regional Dex variable")?;
             state
                 .script_runtime

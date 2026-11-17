@@ -12,7 +12,7 @@ use crate::minnesota_biome_ecology;
 use crate::minnesota_region_field_ecology;
 use crate::minnesota_region_field_ecology::{PreserveHabitat, TreeSite, Trees};
 use crate::minnesota_region_rod_ecology;
-use crate::northstar_progression_rewards::DEX_MEMBER_PREFIX;
+use crate::minnesota_runtime_policy::DEX_MEMBER_PREFIX;
 use crate::northstar_regional_roster::RegionalRoster;
 
 const MANIFEST: &str = "minnesota-region-ecology-v1";

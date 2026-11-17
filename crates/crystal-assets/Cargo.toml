@@ -25,7 +25,14 @@ sha1 = "0.10.7"
 sha2 = { workspace = true, features = ["asm"] }
 
 [features]
-test-fixtures = ["crystal-core/test-fixtures"]
+# Keep direct pack-builder commands compatible while runtime dependencies opt out.
+default = ["pack-authoring"]
+pack-authoring = []
+test-fixtures = ["crystal-core/test-fixtures", "pack-authoring"]
 
 [dev-dependencies]
 crystal-core = { workspace = true, features = ["test-fixtures"] }
+
+[[bin]]
+name = "pack_northstar_adventure"
+required-features = ["pack-authoring"]
