@@ -7,6 +7,7 @@ use serde::Deserialize;
 
 use crate::authored_town_geometry::kind;
 use crate::authored_town_publication;
+use crate::grand_marais_modpack::authoring::refresh_event_section;
 use crate::northstar_cave_geometry::resting_tiles;
 use crate::{CompiledGamePack, MapModule};
 
@@ -67,6 +68,23 @@ pub(super) fn install(pack: &mut CompiledGamePack, source: &str) -> Result<Vec<S
         changed.insert(route.source_map);
         changed.insert(route.map_id);
     }
+    for id in &changed {
+        let room = &pack.data.maps[id];
+        let label = room
+            .attributes
+            .map_events_label
+            .as_deref()
+            .context("route event section")?;
+        let section = pack
+            .data
+            .map_scripts
+            .get(label)
+            .context("published route events")?;
+        ensure!(
+            crate::parse_map_events(id, section)?.bg_events == room.events.bg_events,
+            "split route events disagree with the published landmarks in {id}"
+        );
+    }
     Ok(changed.into_iter().collect())
 }
 
@@ -120,6 +138,7 @@ fn install_route(pack: &mut CompiledGamePack, route: &Route) -> Result<()> {
     let mut destination = if route.map_id == route.source_map {
         source
     } else {
+        refresh_event_section(&mut source);
         authored_town_publication::replace(pack, source)?;
         pack.data
             .maps
@@ -142,6 +161,7 @@ fn install_route(pack: &mut CompiledGamePack, route: &Route) -> Result<()> {
     destination.events.bg_events.push(bg);
     destination.scripts.insert(route.script.clone(), script);
     destination.script_field_pickups.push(pickup);
+    refresh_event_section(&mut destination);
     authored_town_publication::replace(pack, destination)
 }
 
