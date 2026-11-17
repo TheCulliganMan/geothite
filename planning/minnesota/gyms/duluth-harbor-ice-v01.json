@@ -1,0 +1,374 @@
+{
+  "schema_version": 1,
+  "status": "Unselected Duluth ice course study; source and runtime verification pending.",
+  "gyms": [
+    {
+      "slot": 8,
+      "id": "MnDuluthGym",
+      "constant": "MN_DULUTH_GYM",
+      "city": "DULUTH",
+      "leader": "NOREK",
+      "trainer_class": "SAILOR",
+      "leader_sprite": "SPRITE_SAILOR",
+      "leader_at": [
+        8,
+        3
+      ],
+      "badge_flag": "ENGINE_RISINGBADGE",
+      "requires": [
+        "BADGE_7"
+      ],
+      "reward": "TM_ICY_WIND",
+      "party": [
+        {
+          "species": "LUTEBRISK",
+          "level": 42,
+          "moves": [
+            "AMNESIA",
+            "REST",
+            "ICE_BEAM",
+            "LIGHT_SCREEN"
+          ]
+        },
+        {
+          "species": "PLOWZER",
+          "level": 43,
+          "moves": [
+            "IRON_HEAD",
+            "HAZE",
+            "IRON_TAIL",
+            "ICE_BEAM"
+          ]
+        },
+        {
+          "species": "CROOKVEIL",
+          "level": 44,
+          "moves": [
+            "SLASH",
+            "FAINT_ATTACK",
+            "AGILITY",
+            "SCREECH"
+          ]
+        },
+        {
+          "species": "VERNACAPE",
+          "level": 45,
+          "moves": [
+            "ICE_BEAM",
+            "PSYBEAM",
+            "FUTURE_SIGHT",
+            "AMNESIA"
+          ]
+        }
+      ],
+      "rows": [
+        "WWWWWWW",
+        "l.#...r",
+        "l..XWWW",
+        "BB.V.rr",
+        "lIaKlBr",
+        "lIrKbIB",
+        "lIrKlbr",
+        "BrYKBZB",
+        "..L.R..",
+        "...s..."
+      ],
+      "art": {
+        "#": [
+          "elite_four_room",
+          "17"
+        ],
+        "W": [
+          "elite_four_room",
+          "27"
+        ],
+        ".": [
+          "elite_four_room",
+          "2d"
+        ],
+        "B": [
+          "elite_four_room",
+          "14"
+        ],
+        "I": [
+          "elite_four_room",
+          "39"
+        ],
+        "a": [
+          "elite_four_room",
+          "31"
+        ],
+        "b": [
+          "elite_four_room",
+          "32"
+        ],
+        "l": [
+          "elite_four_room",
+          "36"
+        ],
+        "r": [
+          "elite_four_room",
+          "35"
+        ],
+        "X": [
+          "underground",
+          "0b"
+        ],
+        "Y": [
+          "underground",
+          "0b"
+        ],
+        "Z": [
+          "underground",
+          "0b"
+        ],
+        "V": [
+          "underground",
+          "0b"
+        ],
+        "L": [
+          "elite_four_room",
+          "1e"
+        ],
+        "R": [
+          "elite_four_room",
+          "1d"
+        ],
+        "s": [
+          "elite_four_room",
+          "1c"
+        ],
+        "K": [
+          "elite_four_room",
+          "27"
+        ]
+      },
+      "trainers": [
+        {
+          "id": "MN_GYM_8_TRAINER_1",
+          "name": "LIVRA",
+          "trainer_class": "COOLTRAINERF",
+          "sprite": "SPRITE_COOLTRAINER_F",
+          "at": [
+            3,
+            4
+          ],
+          "party": [
+            {
+              "species": "THAWBONNET",
+              "level": 39,
+              "moves": [
+                "ICY_WIND",
+                "PSYBEAM",
+                "AMNESIA",
+                "ICE_BEAM"
+              ]
+            },
+            {
+              "species": "SCRAPLOW",
+              "level": 40,
+              "moves": [
+                "TAKE_DOWN",
+                "HAZE",
+                "IRON_HEAD",
+                "IRON_TAIL"
+              ]
+            }
+          ],
+          "optional": false,
+          "before_lines": [
+            "Choose your line",
+            "before you move."
+          ],
+          "after_lines": [
+            "LIVRA: The east",
+            "launch is open. If",
+            "you're going back",
+            "to the door, take",
+            "the west return."
+          ]
+        },
+        {
+          "id": "MN_GYM_8_TRAINER_2",
+          "name": "TORDEL",
+          "trainer_class": "SAILOR",
+          "sprite": "SPRITE_SAILOR",
+          "at": [
+            9,
+            6
+          ],
+          "party": [
+            {
+              "species": "CROOKVEIL",
+              "level": 40,
+              "moves": [
+                "SLASH",
+                "FAINT_ATTACK",
+                "AGILITY",
+                "SCREECH"
+              ]
+            }
+          ],
+          "optional": false,
+          "before_lines": [
+            "A good landing",
+            "takes planning."
+          ],
+          "after_lines": [
+            "TORDEL: The gold",
+            "gate across the",
+            "ice is open. Go",
+            "through it to",
+            "reach ANVER."
+          ],
+          "requires": [
+            "EVENT_MN_GYM_8_TRAINER_1_DEFEATED"
+          ]
+        },
+        {
+          "id": "MN_GYM_8_TRAINER_3",
+          "name": "ANVER",
+          "trainer_class": "COOLTRAINERM",
+          "sprite": "SPRITE_COOLTRAINER_M",
+          "at": [
+            5,
+            6
+          ],
+          "party": [
+            {
+              "species": "LUTEBRISK",
+              "level": 41,
+              "moves": [
+                "AMNESIA",
+                "REST",
+                "ICE_BEAM",
+                "LIGHT_SCREEN"
+              ]
+            }
+          ],
+          "optional": false,
+          "requires": [
+            "EVENT_MN_GYM_8_TRAINER_2_DEFEATED"
+          ],
+          "before_lines": [
+            "One last bout",
+            "before NOREK."
+          ],
+          "after_lines": [
+            "ANVER: The last",
+            "gate's open. Pick",
+            "a rough patch",
+            "before you push",
+            "off toward NOREK."
+          ]
+        }
+      ],
+      "stations": [],
+      "gates": [
+        {
+          "at": [
+            2,
+            7
+          ],
+          "requires": [
+            "EVENT_MN_GYM_8_TRAINER_1_DEFEATED"
+          ],
+          "open_symbol": ".",
+          "event": "EVENT_MN_GYM_8_WEST_RETURN_OPEN"
+        },
+        {
+          "at": [
+            5,
+            7
+          ],
+          "requires": [
+            "EVENT_MN_GYM_8_TRAINER_1_DEFEATED"
+          ],
+          "open_symbol": "l",
+          "event": "EVENT_MN_GYM_8_EAST_ENTRY_OPEN"
+        },
+        {
+          "at": [
+            3,
+            3
+          ],
+          "requires": [
+            "EVENT_MN_GYM_8_TRAINER_2_DEFEATED"
+          ],
+          "open_symbol": ".",
+          "event": "EVENT_MN_GYM_8_EAST_RETURN_OPEN"
+        },
+        {
+          "at": [
+            3,
+            2
+          ],
+          "requires": [
+            "EVENT_MN_GYM_8_TRAINER_1_DEFEATED",
+            "EVENT_MN_GYM_8_TRAINER_2_DEFEATED",
+            "EVENT_MN_GYM_8_TRAINER_3_DEFEATED"
+          ],
+          "open_symbol": ".",
+          "event": "EVENT_MN_GYM_8_COURT_OPEN"
+        }
+      ],
+      "guide": [
+        "Start with LIVRA",
+        "on the west side.",
+        "Beat her to open",
+        "the east gate. On",
+        "the east ice, go",
+        "left at the first",
+        "rough patch, then",
+        "up twice to",
+        "TORDEL. Come back",
+        "across for ANVER."
+      ],
+      "walkthrough": [
+        "MN_GYM_8_TRAINER_1",
+        "MN_GYM_8_TRAINER_2",
+        "MN_GYM_8_TRAINER_3"
+      ],
+      "dimensions_metatiles": [
+        7,
+        10
+      ],
+      "arrival_core": [
+        6,
+        17
+      ],
+      "exit_tiles_core": [
+        [
+          6,
+          19
+        ],
+        [
+          7,
+          19
+        ]
+      ],
+      "guide_at": [
+        10,
+        17
+      ],
+      "leader_court_locked": true,
+      "before_lines": [
+        "The harbor froze.",
+        "The lake moves on.",
+        "Your last BADGE",
+        "is waiting here."
+      ],
+      "victory_lines": [
+        "You held your",
+        "course. Well done."
+      ],
+      "after_lines": [
+        "Eight BADGES.",
+        "The journey goes",
+        "on. Take the",
+        "instrument to",
+        "the workshop."
+      ]
+    }
+  ]
+}

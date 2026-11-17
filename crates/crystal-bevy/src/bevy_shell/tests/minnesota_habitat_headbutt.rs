@@ -16,25 +16,31 @@ use super::{checkpoint, verify_capture};
 #[test]
 #[ignore = "requires current Minnesota pack; declared local Headbutt partner and capture ball"]
 fn habitats_burrbud_current_r19_tree_capture_and_continue() {
-    replay_tree_capture("BURRBUD", None);
+    replay_tree_capture("MnR19C00R00", [34, 20], &["BURRBUD"], None);
 }
 
 #[test]
 #[ignore = "requires curated R19 forest Headbutt table"]
 fn ecology_forest_woodpecker_night_capture_and_continue() {
-    replay_tree_capture("NOTCHBILL", Some(22));
+    replay_tree_capture("MnR19C00R00", [34, 20], &["NOTCHBILL"], Some(22));
 }
 
-fn replay_tree_capture(target: &str, hour: Option<u8>) {
+#[test]
+#[ignore = "requires CRYSTAL_WINONA_TEST_PACK with the regional ecology revision"]
+fn region_ecology_headbutts_a_new_driftless_tree_habitat() {
+    replay_tree_capture("MnR01C00R00", [9, 20], &["RUSTLEBEE", "OWLETCH"], None);
+}
+
+fn replay_tree_capture(map: &str, [x, y]: [i16; 2], targets: &[&str], hour: Option<u8>) {
     let (root, runtime) = load();
     let shell = initialize_bevy_runtime_shell(
         root.clone(),
         runtime.clone(),
         BevyShellStart::NewGameAtRuntimeTile {
             spawn_identifier: runtime.title_new_game_spawn_identifier().expect("HOME"),
-            map_name: "MnR19C00R00".into(),
-            tile_x: 34,
-            tile_y: 20,
+            map_name: map.into(),
+            tile_x: x,
+            tile_y: y,
         },
         BevyShellConfig {
             smoke_player_name: Some("CHRIS".into()),
@@ -48,7 +54,7 @@ fn replay_tree_capture(target: &str, hour: Option<u8>) {
     {
         let mut pokemon = runtime
             .data()
-            .create_pokemon("NOTCHBILL", 60, Dv::default())
+            .create_pokemon("BRISTUB", 60, Dv::default())
             .expect("Minnesota Headbutt partner");
         assert!(
             pokemon
@@ -89,29 +95,27 @@ fn replay_tree_capture(target: &str, hour: Option<u8>) {
     controller.set_runtime_journal_enabled(false);
     mark_runtime_snapshot_dirty(&mut controller.shell);
     // No player-ID, RNG, divider, position, inventory or party writes follow.
-    let room = &runtime.data().maps["MnR19C00R00"];
-    let block = room.blocks[10 * room.attributes.width as usize + 16];
+    let room = &runtime.data().maps[map];
+    let (tree_x, tree_y) = ((x - 1) as usize, y as usize);
+    let block = room.blocks[tree_y / 2 * room.attributes.width as usize + tree_x / 2];
     assert_eq!(
         runtime.data().tilesets[&room.attributes.tileset_name].collision[&format!("{block:02x}")]
-            [1],
+            [(tree_y % 2) * 2 + tree_x % 2],
         "HEADBUTT_TREE"
     );
     press(&mut controller, GameButton::Left);
-    let prefix = if target == "BURRBUD" {
-        "burrbud-current-tree"
-    } else {
-        "ecology-woodpecker-night-tree"
-    };
+    let prefix = format!("{map}-{}-tree", targets[0]);
     checkpoint(&mut controller, &format!("{prefix}-start"));
     for _ in 0..16384 {
         let snapshot = controller.snapshot().expect("native tree selection");
         assert_eq!(
             (snapshot.overworld.tile.x, snapshot.overworld.tile.y),
-            (34, 20)
+            (x, y)
         );
         if let Some(battle) = snapshot.battle {
             assert_eq!(battle.battle_type, "BATTLETYPE_TREE");
-            if battle.enemy_pokemon.species.id == target {
+            let target = battle.enemy_pokemon.species.id.as_str();
+            if targets.contains(&target) {
                 assert!(try_recruit_with_ball(
                     &mut controller,
                     &runtime,
@@ -138,5 +142,5 @@ fn replay_tree_capture(target: &str, hour: Option<u8>) {
         };
         press(&mut controller, button);
     }
-    panic!("current R19 Headbutt tree did not select {target} through native rolls");
+    panic!("Headbutt in {map} did not select {targets:?} through native rolls");
 }

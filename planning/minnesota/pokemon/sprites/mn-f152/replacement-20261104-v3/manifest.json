@@ -1,0 +1,355 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F152",
+  "tool": "built-in image_gen",
+  "prompt_file": "sprites/mn-f152/replacement-20261104-v3/prompt-retry.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "status": "native-front-back-candidate-reviewed",
+  "sprites": [
+    {
+      "id": "mn-334-hushbat-v3",
+      "species_id": "MN_334",
+      "view": "front",
+      "source": "sprites/mn-f152/replacement-20261104-v3/front-back.imagegen.png",
+      "crop": [
+        0,
+        0,
+        300,
+        627
+      ],
+      "fit": [
+        33,
+        34
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        14935,
+        18762,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-334-hushbat-v3",
+      "species_id": "MN_334",
+      "view": "back",
+      "source": "sprites/mn-f152/replacement-20261104-v3/front-back.imagegen.png",
+      "crop": [
+        0,
+        627,
+        300,
+        627
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        14935,
+        18762,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-335-deepulse-v3",
+      "species_id": "MN_335",
+      "view": "front",
+      "source": "sprites/mn-f152/replacement-20261104-v3/front-back.imagegen.png",
+      "crop": [
+        300,
+        0,
+        425,
+        627
+      ],
+      "fit": [
+        43,
+        40
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        15958,
+        19753,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-335-deepulse-v3",
+      "species_id": "MN_335",
+      "view": "back",
+      "source": "sprites/mn-f152/replacement-20261104-v3/front-back.imagegen.png",
+      "crop": [
+        300,
+        627,
+        425,
+        627
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        15958,
+        19753,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-336-noctector-v3",
+      "species_id": "MN_336",
+      "view": "front",
+      "source": "sprites/mn-f152/replacement-20261104-v3/front-back.imagegen.png",
+      "crop": [
+        725,
+        0,
+        529,
+        627
+      ],
+      "fit": [
+        52,
+        46
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        17013,
+        20776,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-336-noctector-v3",
+      "species_id": "MN_336",
+      "view": "back",
+      "source": "sprites/mn-f152/replacement-20261104-v3/front-back.imagegen.png",
+      "crop": [
+        725,
+        627,
+        529,
+        627
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        17013,
+        20776,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    }
+  ],
+  "pokemon_palettes": {
+    "MN_334": {
+      "species_id": "MN_334",
+      "name": "Hushbat",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          23,
+          18,
+          14
+        ],
+        [
+          10,
+          10,
+          18
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        14935,
+        18762,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          189,
+          148,
+          115
+        ],
+        [
+          82,
+          82,
+          148
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#BD9473",
+        "#525294",
+        "#000000"
+      ]
+    },
+    "MN_335": {
+      "species_id": "MN_335",
+      "name": "Deepulse",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          22,
+          18,
+          15
+        ],
+        [
+          9,
+          9,
+          19
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        15958,
+        19753,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          181,
+          148,
+          123
+        ],
+        [
+          74,
+          74,
+          156
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#B5947B",
+        "#4A4A9C",
+        "#000000"
+      ]
+    },
+    "MN_336": {
+      "species_id": "MN_336",
+      "name": "Noctector",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          21,
+          19,
+          16
+        ],
+        [
+          8,
+          9,
+          20
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        17013,
+        20776,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          173,
+          156,
+          132
+        ],
+        [
+          66,
+          74,
+          165
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#AD9C84",
+        "#424AA5",
+        "#000000"
+      ]
+    }
+  },
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "a53cdd8304303a203e9c2e8b6575cea16cab8f8b66843aa3b449fce8b704d045",
+    "notes": "Native review: user-confirmed hibernation/suspended-time concept; tiny natural ears, tucked juvenile wings, deeper adolescent chest ruff and broad real adult membranes. Sleepy first front has deliberately closed eyes; later fronts retain focused slits, backs clear bounded near eyes. No ring/frame anatomy. Prior two rejected sheets preserved and excluded. Candidate for user feedback."
+  }
+}

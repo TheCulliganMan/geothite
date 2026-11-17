@@ -1,0 +1,94 @@
+{
+  "species_id": "MN_189",
+  "name": "Riffbit",
+  "family_id": "MN_F088",
+  "dex_number": 101,
+  "status": "accepted",
+  "generation_tool": "built-in image_gen",
+  "selected_manifest": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f088/riffbit.manifest-20261104-v3-features.json",
+    "sha256": "8f4be6321522a4805fca2779b59888675fdb2b7f7dd1788233be30c93e119361",
+    "bytes": 1923
+  },
+  "sources": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f088/riffbit.overworld.imagegen-20261104-v3.png",
+      "sha256": "bdad764946456396edc0d8c51e903a281b98ee80cd6ada8557c2d7b706dc6a75",
+      "bytes": 1164789
+    }
+  ],
+  "prompts": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f088/riffbit.overworld.prompt-20261104-v3.txt",
+      "sha256": "11d76c8f3b78917b999da70e308f8151a65079e1c52d5f0b9108e1531c0d7c46",
+      "bytes": 1482
+    }
+  ],
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/riffbit-20261104-v3-features",
+  "normal_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/riffbit-20261104-v3-features/review/riffbit.normal-8x.png",
+    "sha256": "d740bfa4f61ee28be348d6ebb0700fa67b978fb86a718b1075e3737a21597239",
+    "bytes": 8832
+  },
+  "shiny_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/riffbit-20261104-v3-features/review/riffbit.shiny-8x.png",
+    "sha256": "4ed6453e6fa0c9b9547dcee5b02b68ab71f3710c00ceecd82c7267ec27eb7af0",
+    "bytes": 8832
+  },
+  "compiled_index": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/riffbit-20261104-v3-features/compiled-index.json",
+    "sha256": "2a72ddb26ba2bb477474e915a018a49fd95427f16b5ad704afae22af206955d0",
+    "bytes": 7928
+  },
+  "source_feature_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f088/riffbit.source-feature-review-20261104-v3.json",
+    "sha256": "5e050dd04612d2f616905cb11fd95fbcf23efe02053831b0136a4462d4185ad2",
+    "bytes": 5082
+  },
+  "context_evidence": {
+    "directory": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-01",
+    "input_manifest": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-01/input-manifest.json",
+      "sha256": "ffeb8afcd879f59e506ec0338a37128e322b23baa7378c0a66b664db5564083e",
+      "bytes": 1152
+    },
+    "verification": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-01/verification.json",
+      "sha256": "1e9dd46aa7e66018650cac2a456e2935e6d8a7f28072d5fe36819d8991542a66",
+      "bytes": 16840
+    },
+    "test_log": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/verification/all225-20261104-v5-01.log",
+      "sha256": "0e1ad30a0d8e98e2431b49f4e9a8aff62a0352430d7171451425c4d742d8b942",
+      "bytes": 217
+    },
+    "normal_actor_poses": 8,
+    "all_six_shiny_native_poses_verified": true
+  },
+  "root_visual_review": {
+    "accepted": true,
+    "notes": "Downward facing scoop/wrist-runner/crest anatomy and curled paddle tail; side view keeps the snout and profile mark; back shows the dorsal crest and tail. Six distinct native poses, paired idle/step articulation and both palettes reviewed alongside the trainer on terrain."
+  },
+  "runtime_files": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/riffbit/overworld.2bpp",
+      "sha256": "0775e1e4bbe2018d8cf480f207fb3b40e18f46df3c9316df4e7d22ad7537d7c2",
+      "bytes": 384
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/riffbit/overworld.png",
+      "sha256": "3e3364bd68e6763ea63a57dcb3791a1765c0bd9916825beea72d2b49f6b96f21",
+      "bytes": 797
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/riffbit/overworld.gbcpal",
+      "sha256": "9fba1550976955123c337814b10ea66af9ae850abcccf1ffcf10df9c3c37c2aa",
+      "bytes": 8
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/riffbit/overworld-shiny.gbcpal",
+      "sha256": "eae78f29cd79e627b232ce6b31bb31fe95de3fba067bf9eaaa376f4e99dbb669",
+      "bytes": 8
+    }
+  ]
+}

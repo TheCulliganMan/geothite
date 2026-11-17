@@ -5,6 +5,7 @@ use anyhow::{Context, Result, ensure};
 use crystal_core::world::encounters::{WildEncounter, WildEncounterData, WildEncounterTable};
 use serde_json::json;
 
+use crate::authored_dialogue;
 use crate::authored_river_connections_design::Manifest;
 use crate::authored_route_design::{Facing, RouteTrainer};
 use crate::authored_town_geometry::kind;
@@ -103,20 +104,21 @@ pub(crate) fn install(
                 "sight_range":0,"defeated_flag":actor.event_flag,"party":actor.party.iter().map(|p| json!({"species":p.species,"level":p.level})).collect::<Vec<_>>(),
                 "before_lines":actor.text,"after_lines":["Safe travels!"],"loss_lines":["A strong current!"]
             }))?;
-            crate::authored_city_expansion_events::activities(
-                pack,
-                maps.get_mut(&actor.map).context("river trainer map")?,
-                &[trainer],
-                &[],
-            )?;
+            let map = maps.get_mut(&actor.map).context("river trainer map")?;
+            crate::authored_city_expansion_events::activities(pack, map, &[trainer], &[])?;
+            authored_dialogue::install_canonical_trainer(map, &actor.id)?;
         } else {
             let map = maps.get_mut(&actor.map).context("river speaker map")?;
             let label = format!("{}Text", actor.id);
-            authoring::text(
-                map,
-                &label,
-                &actor.text.iter().map(String::as_str).collect::<Vec<_>>(),
-            );
+            if crate::northstar_story_revision::owns_text(&map.id, &label) {
+                authored_dialogue::install_canonical(map, &label)?;
+            } else {
+                authoring::text(
+                    map,
+                    &label,
+                    &actor.text.iter().map(String::as_str).collect::<Vec<_>>(),
+                );
+            }
             map.scripts.insert(
                 actor.id.clone(),
                 json!([authoring::command("jumptextfaceplayer", &[&label])]),

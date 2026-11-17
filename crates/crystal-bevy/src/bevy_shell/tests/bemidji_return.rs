@@ -147,3 +147,72 @@ fn bemidji_return_literal_ordinary_party_native_cut_both_trainers_and_short_retu
     assert!(event(&c, "EVENT_MN_GYM_7_CUT_SOUTH_HEDGE_PRUNED"));
     assert!(event(&c, "EVENT_MN_GYM_7_CUT_NORTH_HEDGE_PRUNED"));
 }
+
+#[test]
+#[ignore = "requires the northwoods seven-gym review pack via CRYSTAL_GYM_TEST_PACK"]
+fn bemidji_northwoods_literal_cut_victory_gate_and_city_returns() {
+    let (root, r, _) = load();
+    let design: serde_json::Value = serde_json::from_str(include_str!(
+        "../../../../../planning/minnesota/gyms/bemidji-northwoods-v01.json"
+    ))
+    .expect("northwoods source");
+    // Explicit Mew100 with Cut and six prior badges; no gym events are seeded.
+    let mut c = controller(&root, &r, &design["gyms"][0], false);
+    assert_eq!(gym_collision(&mut c, &r, (7, 12)), "WALL");
+    assert!(!can_approach(&mut c, &r, (8, 9)));
+    assert!(!can_approach(&mut c, &r, (5, 3)));
+    walk(&mut c, "UUURR");
+    talk(&mut c, GameButton::Right);
+    battle(&mut c, false);
+    finish(&mut c);
+    walk(&mut c, "LLLU");
+    prune(
+        &mut c,
+        &r,
+        (3, 13),
+        (3, 12),
+        "EVENT_MN_GYM_7_CUT_SOUTH_HEDGE_PRUNED",
+    );
+    c = continue_save(&mut c, &root, &r);
+    walk(&mut c, "ULUUURRRRRR");
+    talk(&mut c, GameButton::Down);
+    battle(&mut c, false);
+    finish(&mut c);
+    walk(&mut c, "LU");
+    prune(
+        &mut c,
+        &r,
+        (7, 7),
+        (7, 6),
+        "EVENT_MN_GYM_7_CUT_NORTH_HEDGE_PRUNED",
+    );
+    c = continue_save(&mut c, &root, &r);
+    assert_eq!(gym_collision(&mut c, &r, (7, 12)), "WALL");
+    walk(&mut c, "ULLU");
+    talk(&mut c, GameButton::Up);
+    battle(&mut c, false);
+    finish(&mut c);
+    assert!(event(&c, "EVENT_MN_GYM_7_RETURN_OPEN"));
+    assert!(c.shell.shell.session().state().badges.johto[6]);
+    assert_eq!(gym_collision(&mut c, &r, (7, 12)), "FLOOR");
+    assert_eq!(
+        c.shell
+            .shell
+            .session()
+            .state()
+            .bag
+            .quantity(&r.data().items["TM_GIGA_DRAIN"]),
+        1
+    );
+    c = continue_save(&mut c, &root, &r);
+    let walked = walk(&mut c, concat!("RR", "DDDDDDDDD", "L", "DD", "LL", "DD"));
+    assert_eq!(walked.len() - 1, 18);
+    assert_eq!(at(&mut c), (4, 17));
+    walk(&mut c, "D");
+    travel(&mut c, GameButton::Down, "MnBemidji", (10, 10));
+    travel(&mut c, GameButton::Up, "MnBemidjiGym", (4, 17));
+    walk(&mut c, "DR");
+    travel(&mut c, GameButton::Down, "MnBemidji", (10, 10));
+    assert!(event(&c, "EVENT_MN_GYM_7_CUT_SOUTH_HEDGE_PRUNED"));
+    assert!(event(&c, "EVENT_MN_GYM_7_CUT_NORTH_HEDGE_PRUNED"));
+}

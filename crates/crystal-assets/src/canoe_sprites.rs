@@ -14,20 +14,14 @@ pub(crate) fn install(pack: &mut CompiledGamePack) -> Result<()> {
         let bank = canoe_bank(source)?;
         pack.runtime_files
             .insert(format!("gfx/sprites/mn_canoe_{trainer}.png"), bank);
-        // Dedicated four-color cedar/cream palette, independent of trainer NPC banks.
-        pack.runtime_files.insert(
-            format!("gfx/sprites/mn_canoe_{trainer}.gbcpal"),
-            [0x7fffu16, 0x3b5f, 0x15d3, 0x0842]
-                .into_iter()
-                .flat_map(u16::to_le_bytes)
-                .collect(),
-        );
+        pack.runtime_files
+            .remove(&format!("gfx/sprites/mn_canoe_{trainer}.gbcpal"));
     }
     pack.runtime_files
         .insert("gfx/sprites/mn_canoe_rack.png".into(), display_bank()?);
     pack.runtime_files.insert(
         "gfx/sprites/mn_canoe_rack.gbcpal".into(),
-        [0x7fffu16, 0x3b5f, 0x15d3, 0x0842]
+        [0x7fffu16, 0x2d9f, 0x10d9, 0x0842]
             .into_iter()
             .flat_map(u16::to_le_bytes)
             .collect(),
@@ -76,7 +70,7 @@ fn display_bank() -> Result<Vec<u8>> {
 
 // Hand-authored hulls: down/up/left, followed by their paddle-stroke frames.
 // White is transparent in the native sprite loader; all remaining pixels use
-// the standard four-shade source indices. Retain the actual trainer's head.
+// the trainer’s native palette for grayscale pixels. The hull carries its own red.
 fn canoe_bank(trainer: &[u8]) -> Result<Vec<u8>> {
     let source = decode_overworld_bitplanes(trainer)?;
     let mut pixels = vec![[255, 255, 255, 255]; 16 * 96];
@@ -127,8 +121,12 @@ fn canoe_bank(trainer: &[u8]) -> Result<Vec<u8>> {
         for (y, row) in hulls[facing].iter().enumerate() {
             for (x, byte) in row.bytes().enumerate() {
                 if byte != b'.' {
-                    let value = gray[usize::from(byte - b'0')];
-                    pixels[(frame * 16 + y + 5) * 16 + x] = [value, value, value, 255];
+                    let color = match byte {
+                        b'1' => [255, 107, 90, 255],
+                        b'2' => [206, 49, 33, 255],
+                        _ => [0, 0, 0, 255],
+                    };
+                    pixels[(frame * 16 + y + 5) * 16 + x] = color;
                 }
             }
         }
@@ -201,7 +199,10 @@ mod tests {
         assert_eq!((image.width, image.height), (16, 96));
         assert_eq!(image.pixel(4, 4), Some([0; 3]));
         assert_eq!(image.pixel(4, 52), Some([0; 3]));
-        assert_ne!(image.pixel(13, 10), image.pixel(13, 58));
+        assert_eq!(image.pixel(7, 6), Some([206, 49, 33]));
+        assert_eq!(image.pixel(15, 13), Some([85; 3]));
+        assert_eq!(image.pixel(15, 61), Some([255; 3]));
+        assert_eq!(image.pixel(0, 61), Some([85; 3]));
         assert!(canoe_bank(&source[..383]).is_err());
     }
 }

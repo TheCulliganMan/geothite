@@ -1,0 +1,94 @@
+{
+  "species_id": "MN_084",
+  "name": "Muffiend",
+  "family_id": "MN_F035",
+  "dex_number": 82,
+  "status": "accepted",
+  "generation_tool": "built-in image_gen",
+  "selected_manifest": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f035/muffiend.manifest-20261104-v3-features.json",
+    "sha256": "7b711297f8deb7f73ee6fca096f1518d250b8d38f054528ca6598cf131e88b6f",
+    "bytes": 1929
+  },
+  "sources": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f035/muffiend.overworld.imagegen-20261104-v1.png",
+      "sha256": "a909b77f7fb285987e01c616fe5b47b7ec1698f4f50ac0b53a59d07bee447900",
+      "bytes": 1323070
+    }
+  ],
+  "prompts": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f035/muffiend.overworld.prompt-20261104-v1.txt",
+      "sha256": "55e9553e414c1303ff17ea0c3838546fcf863b5d2c072b232b6f808a000fbc7f",
+      "bytes": 2532
+    }
+  ],
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/muffiend-20261104-v3-features",
+  "normal_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/muffiend-20261104-v3-features/review/muffiend.normal-8x.png",
+    "sha256": "4b4b701764d5b3d0c89b516f81b1242150ba467e58a8b54f9660c78f91f203f7",
+    "bytes": 9561
+  },
+  "shiny_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/muffiend-20261104-v3-features/review/muffiend.shiny-8x.png",
+    "sha256": "c75715f110d62924701e1bcbffefa4adcef578517073f4c144a566fa9ab32bcd",
+    "bytes": 9561
+  },
+  "compiled_index": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/muffiend-20261104-v3-features/compiled-index.json",
+    "sha256": "ef6d2ad07eb8812c20929569a7e0b2e5147338bcfb54a6f52619ad5ce9b69fba",
+    "bytes": 7935
+  },
+  "source_feature_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f035/muffiend.source-feature-review-20261104-v3.json",
+    "sha256": "2f35c8b5b6c060b45794003ed386d1d528f7f74d21602e4b6f0269703abd1465",
+    "bytes": 5316
+  },
+  "context_evidence": {
+    "directory": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-00",
+    "input_manifest": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-00/input-manifest.json",
+      "sha256": "c4a930dd2097722d52d79f2a1033531b0a00b0dd036abde21f959dfaa19f4800",
+      "bytes": 1158
+    },
+    "verification": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-00/verification.json",
+      "sha256": "757ed1ef7ca038c0007a704d39be0eb5ae590f1e41a84c1dc377d8dec9966208",
+      "bytes": 16870
+    },
+    "test_log": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/verification/all225-20261104-v5-00.log",
+      "sha256": "59265f6f08266b94db09c6c0ddde3af257a8cfbea003fe8d079186efecfdfa9a",
+      "bytes": 217
+    },
+    "normal_actor_poses": 8,
+    "all_six_shiny_native_poses_verified": true
+  },
+  "root_visual_review": {
+    "accepted": true,
+    "notes": "Species-specific head, dark facial marks and themed body silhouette retained in front/profile. Rear poses show backs of ears/crest/head and the actual back/tail, without a pasted frontal face. Six distinct native poses, paired idle/step articulation and both palettes reviewed alongside the trainer on terrain."
+  },
+  "runtime_files": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/muffiend/overworld.2bpp",
+      "sha256": "0b25a0d57a7cdf60fc4e332686c99e5c065f8028881dd8aac44f0f953691a62c",
+      "bytes": 384
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/muffiend/overworld.png",
+      "sha256": "99b1e91e30f06a9fc550149705409a8bf2da194bc9d0ba45f675c933ff712796",
+      "bytes": 862
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/muffiend/overworld.gbcpal",
+      "sha256": "9b645505e11cee606d5d0b6fe69d18da0a6d267cfdd7e7048bea27935b326301",
+      "bytes": 8
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/muffiend/overworld-shiny.gbcpal",
+      "sha256": "48c56ba4def13858c97d63987d3fde9860a76b1747dd1fa311469b0c9f7d758d",
+      "bytes": 8
+    }
+  ]
+}

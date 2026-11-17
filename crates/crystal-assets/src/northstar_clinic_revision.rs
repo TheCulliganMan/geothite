@@ -1,9 +1,12 @@
 //! Keep Ivy, her aide and their advice consistent with the investigation.
+use std::collections::BTreeMap;
+
 use anyhow::{Context, Result};
 use serde_json::json;
 
-use crate::CompiledGamePack;
+use crate::authored_dialogue::{self, AuthoredDialoguePage};
 use crate::grand_marais_modpack::authoring::command as c;
+use crate::{CompiledGamePack, MapModule};
 
 pub(crate) fn install(pack: &mut CompiledGamePack) -> Result<()> {
     let mut room = pack
@@ -12,94 +15,18 @@ pub(crate) fn install(pack: &mut CompiledGamePack) -> Result<()> {
         .get("MnRochesterPokecenter1F")
         .context("Rochester clinic")?
         .clone();
-    // Ivy leaves for the intake after the harbor crew is called. Her aide
-    // remains beside the displaced Pokemon and carries the return update.
-    for (script, flag) in [
-        ("MN_ROCHESTER_RECIPIENT", "EVENT_MN_LIGHTHOUSE_SIGNAL"),
-        ("MN_RC_PATIENT", "-1"),
+    apply_clinic_speakers(&mut room)?;
+    for (script, sprite) in [
+        ("MN_ROCHESTER_RECIPIENT", "SPRITE_TEACHER"),
+        ("MN_RC_PATIENT", "SPRITE_SCIENTIST"),
     ] {
         room.objects
             .iter_mut()
             .find(|object| object.script == script)
             .context("clinic speaker")?
-            .event_flag = flag.into();
+            .sprite = sprite.into();
     }
-    room.objects
-        .iter_mut()
-        .find(|object| object.script == "MN_ROCHESTER_RECIPIENT")
-        .context("Ivy's clinic actor")?
-        .sprite = "SPRITE_TEACHER".into();
-    room.objects
-        .iter_mut()
-        .find(|object| object.script == "MN_RC_PATIENT")
-        .context("clinic aide actor")?
-        .sprite = "SPRITE_SCIENTIST".into();
-    room.scripts.insert(
-        "MN_RC_PATIENT".into(),
-        json!([
-            c("faceplayer", &[]),
-            c("checkevent", &["EVENT_MN_SURVEY_RESTORED"]),
-            c("iftrue", &["MnOverhaulAideAfter"]),
-            c("checkevent", &["EVENT_MN_LIGHTHOUSE_SIGNAL"]),
-            c("iftrue", &["MnOverhaulAideAway"]),
-            c("jumptext", &["MnArcHabitatText"]),
-        ]),
-    );
-    for (root, text) in [
-        ("MnOverhaulAideAfter", "MnArcHabitatAfterText"),
-        ("MnOverhaulAideAway", "MnOverhaulClinicAideAwayText"),
-    ] {
-        room.scripts
-            .insert(root.into(), json!([c("jumptext", &[text])]));
-    }
-    room.scripts.insert(
-        "MN_ARC_GILLPUP".into(),
-        json!([
-            c("cry", &["GILLPUP"]),
-            c("waitsfx", &[]),
-            c("jumptext", &["MnOverhaulGillpupText"]),
-        ]),
-    );
-    let mut reminder = Vec::new();
-    for (flag, root, text) in [
-        (
-            "EVENT_MN_DEPOT_CLEARED",
-            "MnOverhaulIvyHarbor",
-            "MnOverhaulIvyHarborText",
-        ),
-        (
-            "EVENT_MN_MINE_INSTRUMENT_RECOVERED",
-            "MnOverhaulIvyMeter",
-            "MnOverhaulIvyMeterText",
-        ),
-        (
-            "EVENT_MN_HEADWATERS_REPORT",
-            "MnOverhaulIvyMine",
-            "MnOverhaulIvyMineText",
-        ),
-        (
-            "EVENT_MN_BRAINERD_REPORT",
-            "MnOverhaulIvyBrainerd",
-            "MnOverhaulIvyBrainerdText",
-        ),
-        (
-            "EVENT_MN_DEEP_BORE_MANIFEST_READ",
-            "MnOverhaulIvyNorth",
-            "MnOverhaulIvyNorthText",
-        ),
-        (
-            "EVENT_MN_ICE_CAPTIVE_RESCUED",
-            "MnOverhaulIvyEllisSafe",
-            "MnOverhaulIvyEllisSafeText",
-        ),
-    ] {
-        reminder.extend([c("checkevent", &[flag]), c("iftrue", &[root])]);
-        room.scripts
-            .insert(root.into(), json!([c("jumptext", &[text])]));
-    }
-    reminder.push(c("jumptext", &["MnRCDeliveryAfterText"]));
-    room.scripts
-        .insert("MnRCDeliveryAfter".into(), json!(reminder));
+    apply_ivy_reminders(&mut room, None)?;
     let mut offer = vec![
         c("checkevent", &["EVENT_MN_REED_ROCHESTER_MET"]),
         c("iftrue", &["MnArcRCChoice"]),
@@ -157,4 +84,136 @@ pub(crate) fn install(pack: &mut CompiledGamePack) -> Result<()> {
             });
     }
     crate::northstar_story_revision::publish(pack, room)
+}
+
+fn apply_clinic_speakers(room: &mut MapModule) -> Result<()> {
+    // Ivy leaves for the intake after the harbor crew is called. Her aide
+    // remains beside the displaced Pokemon and carries the return update.
+    for (script, flag) in [
+        ("MN_ROCHESTER_RECIPIENT", "EVENT_MN_LIGHTHOUSE_SIGNAL"),
+        ("MN_RC_PATIENT", "-1"),
+    ] {
+        room.objects
+            .iter_mut()
+            .find(|object| object.script == script)
+            .context("clinic speaker")?
+            .event_flag = flag.into();
+    }
+    room.scripts.insert(
+        "MN_RC_PATIENT".into(),
+        json!([
+            c("faceplayer", &[]),
+            c("checkevent", &["EVENT_MN_SURVEY_RESTORED"]),
+            c("iftrue", &["MnOverhaulAideAfter"]),
+            c("checkevent", &["EVENT_MN_LIGHTHOUSE_SIGNAL"]),
+            c("iftrue", &["MnOverhaulAideAway"]),
+            c("jumptext", &["MnArcHabitatText"]),
+        ]),
+    );
+    for (root, text) in [
+        ("MnOverhaulAideAfter", "MnArcHabitatAfterText"),
+        ("MnOverhaulAideAway", "MnOverhaulClinicAideAwayText"),
+    ] {
+        room.scripts
+            .insert(root.into(), json!([c("jumptext", &[text])]));
+    }
+    room.scripts.insert(
+        "MN_ARC_GILLPUP".into(),
+        json!([
+            c("cry", &["GILLPUP"]),
+            c("waitsfx", &[]),
+            c("jumptext", &["MnOverhaulGillpupText"]),
+        ]),
+    );
+    Ok(())
+}
+
+pub(crate) fn install_ivy_reminders(
+    pack: &mut CompiledGamePack,
+    texts: &BTreeMap<String, Vec<AuthoredDialoguePage>>,
+) -> Result<()> {
+    let mut room = pack
+        .data
+        .maps
+        .get("MnRochesterPokecenter1F")
+        .context("Rochester clinic")?
+        .clone();
+    let mut changed = apply_ivy_reminders(&mut room, Some(texts))?;
+    if let (Some(away), Some(gillpup)) = (
+        texts.get("MnOverhaulClinicAideAwayText"),
+        texts.get("MnOverhaulGillpupText"),
+    ) {
+        apply_clinic_speakers(&mut room)?;
+        for (label, pages) in [
+            ("MnOverhaulClinicAideAwayText", away),
+            ("MnOverhaulGillpupText", gillpup),
+        ] {
+            room.scripts
+                .insert(label.into(), authored_dialogue::compile(pages)?);
+        }
+        changed = true;
+    }
+    if changed {
+        crate::northstar_story_revision::publish(pack, room)?;
+    }
+    Ok(())
+}
+
+fn apply_ivy_reminders(
+    room: &mut MapModule,
+    texts: Option<&BTreeMap<String, Vec<AuthoredDialoguePage>>>,
+) -> Result<bool> {
+    let stages = [
+        (
+            "EVENT_MN_DEPOT_CLEARED",
+            "MnOverhaulIvyHarbor",
+            "MnOverhaulIvyHarborText",
+        ),
+        (
+            "EVENT_MN_MINE_INSTRUMENT_RECOVERED",
+            "MnOverhaulIvyMeter",
+            "MnOverhaulIvyMeterText",
+        ),
+        (
+            "EVENT_MN_HEADWATERS_REPORT",
+            "MnOverhaulIvyMine",
+            "MnOverhaulIvyMineText",
+        ),
+        (
+            "EVENT_MN_BRAINERD_REPORT",
+            "MnOverhaulIvyBrainerd",
+            "MnOverhaulIvyBrainerdText",
+        ),
+        (
+            "EVENT_MN_DEEP_BORE_MANIFEST_READ",
+            "MnOverhaulIvyNorth",
+            "MnOverhaulIvyNorthText",
+        ),
+        (
+            "EVENT_MN_ICE_CAPTIVE_RESCUED",
+            "MnOverhaulIvyEllisSafe",
+            "MnOverhaulIvyEllisSafeText",
+        ),
+    ];
+    if texts.is_some_and(|texts| {
+        stages
+            .iter()
+            .any(|(_, _, label)| !texts.contains_key(*label))
+    }) {
+        return Ok(false);
+    }
+    let mut reminder = Vec::new();
+    for (flag, root, text) in stages {
+        if let Some(texts) = texts {
+            room.scripts
+                .insert(text.into(), authored_dialogue::compile(&texts[text])?);
+        }
+        reminder.extend([c("checkevent", &[flag]), c("iftrue", &[root])]);
+        room.scripts
+            .insert(root.into(), json!([c("jumptext", &[text])]));
+    }
+    reminder.push(c("jumptext", &["MnRCDeliveryAfterText"]));
+    room.scripts
+        .insert("MnRCDeliveryAfter".into(), json!(reminder));
+    Ok(true)
 }

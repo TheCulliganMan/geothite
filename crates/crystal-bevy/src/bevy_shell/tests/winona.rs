@@ -291,6 +291,61 @@ fn declined_starter(
     (root, r, c)
 }
 
+pub(super) struct CampaignStarter {
+    pub index: usize,
+    pub legacy_species: &'static str,
+    pub family: &'static [&'static str],
+}
+
+/// Selects an actual lab choice; it never changes a party or saved progression.
+/// Run each choice in its own process with a separate checkpoint directory.
+pub(super) fn campaign_starter() -> CampaignStarter {
+    match std::env::var("CRYSTAL_NORTHSTAR_STARTER")
+        .as_deref()
+        .unwrap_or("KINDLIT")
+    {
+        "POUCHID" => CampaignStarter {
+            index: 0,
+            legacy_species: "CHIKORITA",
+            family: &[
+                "POUCHID",
+                "SLIPPERINA",
+                "CYPRIELLE",
+                "CHIKORITA",
+                "BAYLEEF",
+                "MEGANIUM",
+            ],
+        },
+        "KINDLIT" => CampaignStarter {
+            index: 1,
+            legacy_species: "CYNDAQUIL",
+            family: &[
+                "KINDLIT",
+                "RIMEPELT",
+                "BOREALYNX",
+                "CYNDAQUIL",
+                "QUILAVA",
+                "TYPHLOSION",
+            ],
+        },
+        "BIRCHIT" => CampaignStarter {
+            index: 2,
+            legacy_species: "TOTODILE",
+            family: &[
+                "BIRCHIT",
+                "PORTABEAU",
+                "VOYAGEAR",
+                "TOTODILE",
+                "CROCONAW",
+                "FERALIGATR",
+            ],
+        },
+        other => {
+            panic!("unknown CRYSTAL_NORTHSTAR_STARTER {other}; choose POUCHID, KINDLIT or BIRCHIT")
+        }
+    }
+}
+
 pub(super) fn opening(
     index: usize,
     species: &str,

@@ -2753,8 +2753,11 @@ fn fast_forward_text_client_battle_visuals(shell: &mut BevyRuntimeShell) {
         || shell.battle_exp_tween.as_ref().is_some_and(|tween| tween.started)
         || shell.battle_level_stats.front().is_some_and(|stats| stats.active && stats.frames_before_input > 0);
     if let Some(animation) = shell.visible_move_animations.front_mut()
-        && animation.started {
-        animation.frame = animation.total_frames.saturating_sub(1);
+        && animation.started
+    {
+        // A move can already be on its final frame while its source audio
+        // finishes. Rewinding that frame would start the audio wait again.
+        animation.frame = animation.frame.max(animation.total_frames.saturating_sub(1));
     }
     if let Some(animation) = shell.visible_capture_animation.as_mut()
         && animation.started {

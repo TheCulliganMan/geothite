@@ -5,12 +5,44 @@ use serde_json::Value;
 use crate::CompiledGamePack;
 use crate::grand_marais_modpack::authoring;
 use crate::northstar_lair_authoring as a;
+use crate::northstar_regional_roster::RegionalRoster;
 use crate::northstar_rival_arc as arc;
 
 const HALL: &str = "MnStPaulFairExhibitionHall";
 const SERVICE: &str = "MnIcemythServicePassage";
 const CONSTANT: &str = "MN_ICEMYTH_SERVICE_PASSAGE";
 const MARKER: &str = "minnesota-icemyth-exhibition-v1";
+
+/// Removes the retired encounter and its exhibit while retaining both rooms'
+/// stairs and arrivals.
+pub(crate) fn retire_exhibit(pack: &mut CompiledGamePack) -> Result<()> {
+    let exhibit_script = |label: &str| {
+        label.starts_with("MnIcemyth")
+            || matches!(label, "MN_EXHIBIT_FROZEN_CASE" | "MN_EXHIBIT_ICEMYTH")
+    };
+    for name in [HALL, SERVICE] {
+        let Some(mut room) = pack.data.maps.get(name).cloned() else {
+            continue;
+        };
+        if !room.scripts.keys().any(|label| exhibit_script(label)) {
+            continue;
+        }
+        room.objects.retain(|actor| !exhibit_script(&actor.script));
+        room.events
+            .bg_events
+            .retain(|event| !exhibit_script(&event.script));
+        room.map_script_section_commands.retain(|row| {
+            row.command != "callback" || !row.args.get(1).is_some_and(|label| exhibit_script(label))
+        });
+        for (index, row) in room.map_script_section_commands.iter_mut().enumerate() {
+            row.command_index = index;
+        }
+        room.scripts.retain(|label, _| !exhibit_script(label));
+        room.scripted_wild_battles = crate::parse_scripted_wild_battles(&room.id, &room.scripts)?;
+        arc::publish(pack, room)?;
+    }
+    Ok(())
+}
 
 /// Adds the optional exhibit investigation and a native service-room staircase.
 /// The existing fairgrounds receives no new actors. The hall keeps its original
@@ -21,7 +53,7 @@ const MARKER: &str = "minnesota-icemyth-exhibition-v1";
 /// and actual native presentation still require acceptance by the caller.
 ///
 /// # Errors
-/// Rejects duplicate publication, noncanonical layout/anchors, missing active
+/// Rejects a retired Icemyth, duplicate publication, noncanonical layout/anchors, missing active
 /// species/art, occupied arrivals/reads, changed native geometry, script-name
 /// collisions, invalid map publication or an invalid resulting runtime pack.
 pub fn build_icemyth_discovery_pack(
@@ -29,6 +61,10 @@ pub fn build_icemyth_discovery_pack(
     quests: &str,
     site: &str,
 ) -> Result<CompiledGamePack> {
+    ensure!(
+        RegionalRoster::current()?.allowed.contains("ICEMYTH"),
+        "Icemyth is retired from the Minnesota roster"
+    );
     crate::verify_compiled_game_pack_for_runtime(base)?;
     crate::verify_northstar_publication_geometry(base)?;
     ensure!(

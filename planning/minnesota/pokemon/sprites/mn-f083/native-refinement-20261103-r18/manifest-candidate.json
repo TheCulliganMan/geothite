@@ -1,0 +1,235 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F083",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_180": {
+      "species_id": "MN_180",
+      "name": "Cinderfin",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          31,
+          18,
+          11
+        ],
+        [
+          11,
+          7,
+          8
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        11871,
+        8427,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          148,
+          90
+        ],
+        [
+          90,
+          57,
+          66
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#FF945A",
+        "#5A3942",
+        "#000000"
+      ]
+    },
+    "MN_181": {
+      "species_id": "MN_181",
+      "name": "Brinebraze",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          27,
+          18,
+          10
+        ],
+        [
+          8,
+          6,
+          7
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        10843,
+        7368,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          222,
+          148,
+          82
+        ],
+        [
+          66,
+          49,
+          57
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#DE9452",
+        "#423139",
+        "#000000"
+      ]
+    }
+  },
+  "sprites": [
+    {
+      "id": "mn-180-cinderfin-v2",
+      "species_id": "MN_180",
+      "view": "front",
+      "source": "sprites/mn-f083/redesign-v2/front-back.imagegen-v2.png",
+      "crop": [
+        0,
+        0,
+        700,
+        538
+      ],
+      "fit": [
+        42,
+        36
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        11871,
+        8427,
+        0
+      ],
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 12,
+      "exterior_contour": "solid"
+    },
+    {
+      "id": "mn-180-cinderfin-v2",
+      "species_id": "MN_180",
+      "view": "back",
+      "source": "sprites/mn-f083/redesign-v2/front-back.imagegen-v2.png",
+      "crop": [
+        0,
+        538,
+        700,
+        486
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        11871,
+        8427,
+        0
+      ],
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 12,
+      "exterior_contour": "solid"
+    },
+    {
+      "id": "mn-181-brinebraze-v3",
+      "species_id": "MN_181",
+      "view": "front",
+      "source": "sprites/mn-f083/native-refinement-20261103-r18/front-back.imagegen.png",
+      "crop": [
+        0,
+        0,
+        946,
+        831
+      ],
+      "fit": [
+        54,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        10843,
+        7368,
+        0
+      ],
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "exterior_contour": "source_backed",
+      "sampling": "source_center"
+    },
+    {
+      "id": "mn-181-brinebraze-v3",
+      "species_id": "MN_181",
+      "view": "back",
+      "source": "sprites/mn-f083/native-refinement-20261103-r18/front-back.imagegen.png",
+      "crop": [
+        946,
+        0,
+        947,
+        831
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        10843,
+        7368,
+        0
+      ],
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "exterior_contour": "source_backed",
+      "sampling": "source_center"
+    }
+  ],
+  "status": "native-review-pending",
+  "original_manifest": "sprites/mn-f083/manifest.json",
+  "prompt_file": "sprites/mn-f083/native-refinement-20261103-r18/prompt.txt",
+  "back_framing": "gen2-close-rear-portrait"
+}

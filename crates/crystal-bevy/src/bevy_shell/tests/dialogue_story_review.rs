@@ -58,21 +58,7 @@ fn story_review_cousin_fresh_game_greeting_preserves_progress() {
     );
     press(&mut c, GameButton::Left);
     press(&mut c, GameButton::A);
-    for expected in [
-        "COUSIN: One more\ngame? Just one?",
-        "Your mom's waiting\ndownstairs.",
-    ] {
-        let page = c
-            .snapshot()
-            .expect("cousin greeting")
-            .ui
-            .text
-            .expect("page");
-        assert_eq!(page.label, "MN_SMALL_INTERIOR_WINONA_COUSINInteriorText");
-        assert_eq!(page.asm_text.as_deref(), Some(expected));
-        press(&mut c, GameButton::A);
-    }
-    assert!(c.snapshot().expect("greeting finished").ui.text.is_none());
+    read(&mut c, "MN_SMALL_INTERIOR_WINONA_COUSINInteriorText");
     let after = c.shell.shell.session().state();
     assert_eq!(after.flags, before.flags);
     assert_eq!(after.bag, before.bag);
@@ -159,10 +145,10 @@ fn story_review_tamarack_returns_show_the_current_lead_after_continue() {
             (4, 2),
             &[
                 "EVENT_MN_HOME_INTRO",
-                "EVENT_MN_TAMARACK_INTRO",
                 "EVENT_MN_STARTER_RECEIVED",
                 "EVENT_MN_R01_PARCEL_RECEIVED",
                 "EVENT_MN_DELIVERED_ROCHESTER_PARCEL",
+                "EVENT_MN_WINONA_BALLS_RECEIVED",
                 "EVENT_MN_TAMARACK_EGG_RECEIVED",
                 event,
             ],

@@ -57,7 +57,8 @@ impl GameDataSet {
         if matches!(
             session.player.mode,
             MovementMode::Surf | MovementMode::SurfPika
-        ) {
+        ) && !self.is_canoe_mounted(state, &session.map.name, session.player.mode)
+        {
             anyhow::bail!(crystal_core::world::fishing::FishingError::CannotFishWhileSurfing);
         }
         let target = checked_move_by_stride(

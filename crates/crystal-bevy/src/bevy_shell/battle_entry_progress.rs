@@ -2810,6 +2810,8 @@ fn queue_visible_current_music(runtime_shell: &mut BevyRuntimeShell) -> Result<(
     }
     if visible_non_overworld_screen_active(runtime_shell)
         || runtime_shell.battle_message_scene.is_some()
+        || runtime_shell.pending_trainer_sight.is_some()
+        || runtime_shell.pending_trainer_intro.is_some()
         || runtime_shell.visible_heal_machine.is_some()
         || runtime_shell.visible_magnet_train.is_some()
         || runtime_shell.visible_unown_words.is_some()

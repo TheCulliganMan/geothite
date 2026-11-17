@@ -146,7 +146,7 @@ pub(super) fn try_trail_with(
 ) -> bool {
     let s = c.snapshot().expect("route start");
     let start = (s.overworld.tile.x, s.overworld.tile.y);
-    let mut grid = RouteGrid::new_with_grass(
+    let mut grid = RouteGrid::new_for_battles(
         r,
         RouteSpec {
             prefix: "MnR01",
@@ -196,9 +196,27 @@ pub(super) fn try_trail_with(
         let button = *path.first().expect("remaining R01 step");
         let old = c.snapshot().expect("before trail tile").overworld.tile;
         for _ in 0..8 {
-            press(c, button);
-            if c.snapshot().expect("trail battle").battle.is_some() {
-                encounter(c);
+            let input = if c.shell.field_notice.is_some()
+                || c.shell.pending_trainer_intro.is_some()
+                || c.shell.visible_blackout_phase.is_some()
+                || !c.shell.battle_messages.is_empty()
+            {
+                GameButton::A
+            } else {
+                button
+            };
+            press(c, input);
+            if let Some(battle) = c.snapshot().expect("trail battle").battle {
+                if let RuntimeBattleKind::Trainer {
+                    trainer_id,
+                    event_flag,
+                    ..
+                } = battle.kind
+                {
+                    super::rochester_earned::try_battle(c, r, &trainer_id, &event_flag);
+                } else {
+                    encounter(c);
+                }
             }
             let now = c.snapshot().expect("trail tile");
             if now.overworld.map_name != "MnR01C00R00" {
@@ -223,39 +241,9 @@ pub(super) fn try_trail_with(
         }
         let after = c.snapshot().expect("native trail step outcome");
         if after.overworld.tile == old {
-            if after.ui.text.as_ref().is_some_and(|text| {
-                text.label == "visible-shell:field-notice"
-                    && text
-                        .asm_text
-                        .as_deref()
-                        .is_some_and(|body| body.contains("My partners like"))
-            }) {
-                assert!(super::rochester_earned::try_battle(
-                    c,
-                    r,
-                    "MN_R01_T02",
-                    "EVENT_MN_R01_TRAINER_02"
-                ));
-                continue;
-            }
             blocked_attempts += 1;
             if blocked_attempts < 32 {
                 c.wait_frames(24).expect("wait for moving route actor");
-                continue;
-            }
-            if after.ui.text.as_ref().is_some_and(|text| {
-                text.label == "visible-shell:field-notice"
-                    && text
-                        .asm_text
-                        .as_deref()
-                        .is_some_and(|body| body.contains("We climbed up"))
-            }) {
-                assert!(super::rochester_earned::try_battle(
-                    c,
-                    r,
-                    "MN_R01_T03",
-                    "EVENT_MN_R01_TRAINER_03"
-                ));
                 continue;
             }
             if let Some(directory) = std::env::var_os("CRYSTAL_WINONA_SAVE_DIR") {
@@ -283,6 +271,7 @@ pub(super) fn delivery() -> (
     crystal_runtime::CrystalRuntime,
     VisibleShellController,
 ) {
+    let starter = super::winona::campaign_starter();
     if load()
         .1
         .data()
@@ -290,9 +279,9 @@ pub(super) fn delivery() -> (
         .global
         .contains_key("EVENT_MN_TAMARACK_INTRO")
     {
-        return super::dialogue_overhaul::delivery(1);
+        return super::dialogue_overhaul::delivery(starter.index);
     }
-    let (root, r, mut c) = opening(1, "CYNDAQUIL");
+    let (root, r, mut c) = opening(starter.index, starter.legacy_species);
     travel(&mut c, GameButton::Down, "MnWinona", (7, 8));
     indoor_walk(&mut c, &r, (4, 18));
     travel(&mut c, GameButton::Left, "MnR01C00R00", (63, 24));
@@ -307,13 +296,22 @@ pub(super) fn delivery() -> (
     // Its separate parcel guard is retained by the local prerequisite cases.
     indoor_walk(&mut c, &r, gym_front(&r));
     let selected = northstar_earned_gyms::selected(&r);
+    let reviewed_hall = r
+        .pack_identity()
+        .runtime_modpack_id
+        .split('+')
+        .any(|id| id == "minnesota-rochester-training-hall-review-v1");
     let arrival = if selected {
         northstar_earned_gyms::arrival(&r, 1)
     } else {
         (6, 17)
     };
     travel(&mut c, GameButton::Up, "MnRochesterGym", arrival);
-    if selected {
+    if reviewed_hall {
+        super::minnesota_gyms::interact(&mut c, &r, (10, 17));
+        assert!(c.snapshot().expect("gym guide").ui.text.is_some());
+        finish(&mut c);
+    } else if selected {
         northstar_earned_gyms::rochester_preview(&mut c, &r);
     } else {
         indoor_walk(&mut c, &r, (6, 4));
@@ -337,7 +335,15 @@ pub(super) fn delivery() -> (
     press(&mut c, GameButton::A);
     assert!(!delivered(&c));
     let before = c.snapshot().expect("delivery page");
-    let expected = super::northstar_dialogue::canonical_pages("MS01", "MnRCDeliveryText");
+    let expected = if reviewed_hall {
+        // This review pack predates the newer canonical clinic dialogue.
+        vec![
+            "IVY: You made it.\nNo meters, though.".to_owned(),
+            "ELLIS was bringing\nthe last case.".to_owned(),
+        ]
+    } else {
+        super::northstar_dialogue::canonical_pages("MS01", "MnRCDeliveryText")
+    };
     assert_eq!(
         before.ui.text.as_ref().and_then(|t| t.asm_text.as_ref()),
         Some(&expected[0])

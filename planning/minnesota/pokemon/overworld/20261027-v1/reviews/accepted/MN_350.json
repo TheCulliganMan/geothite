@@ -1,0 +1,94 @@
+{
+  "species_id": "MN_350",
+  "name": "Riftmaul",
+  "family_id": "MN_F159",
+  "dex_number": 222,
+  "status": "accepted",
+  "generation_tool": "built-in image_gen",
+  "selected_manifest": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f159/riftmaul.manifest-20261104-v3-features.json",
+    "sha256": "fb2ce712fd1787edb0b8260d0b0ec1fbe5a255cb85ed1b0a051314939ea3ae48",
+    "bytes": 1928
+  },
+  "sources": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f159/riftmaul.overworld.imagegen-20261104-v1.png",
+      "sha256": "0229e18d1dc4881fbd5cd794403c9ad0b82341e409619e98c4d657a9aec135e8",
+      "bytes": 1237166
+    }
+  ],
+  "prompts": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f159/riftmaul.overworld.prompt-20261104-v1.txt",
+      "sha256": "a78f846b7bc82488c828de357fbf16d5933f8bdd50313de76e1ce8bbebcc2ed4",
+      "bytes": 2490
+    }
+  ],
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/riftmaul-20261104-v3-features",
+  "normal_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/riftmaul-20261104-v3-features/review/riftmaul.normal-8x.png",
+    "sha256": "81fcd18f29071ba2bc1458a1bfef1556387558da18a1853cb4ed6012c318be64",
+    "bytes": 8832
+  },
+  "shiny_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/riftmaul-20261104-v3-features/review/riftmaul.shiny-8x.png",
+    "sha256": "a18ae9d331392ff3fabac6047ad9a3192b01f6ff7d163099b6a0d377c274d9b9",
+    "bytes": 8842
+  },
+  "compiled_index": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/riftmaul-20261104-v3-features/compiled-index.json",
+    "sha256": "38f0dac86fa2ef60214703ff585bbc519b517a44b738c66439114a9dfddc1f8c",
+    "bytes": 7941
+  },
+  "source_feature_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f159/riftmaul.source-feature-review-20261104-v3.json",
+    "sha256": "55759c02706d71a197b982086bd034ce5aa5173e35ae90d4f44299f3706058f9",
+    "bytes": 5319
+  },
+  "context_evidence": {
+    "directory": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-06",
+    "input_manifest": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-06/input-manifest.json",
+      "sha256": "d19452fb4c890c8bcb71bad9b5c6d4e94277d8bfec08f657fd1f1e9a76edc13f",
+      "bytes": 1150
+    },
+    "verification": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-06/verification.json",
+      "sha256": "548d32ab6f3d28e0e8ebc9f69bf933a351951542aae6aff5c75a26214afa90a9",
+      "bytes": 16830
+    },
+    "test_log": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/verification/all225-20261104-v5-06.log",
+      "sha256": "b415c9ea82d9f3cf79ae941c1f9e72d153011d023e0c673b6b5f5687ac26449f",
+      "bytes": 217
+    },
+    "normal_actor_poses": 8,
+    "all_six_shiny_native_poses_verified": true
+  },
+  "root_visual_review": {
+    "accepted": true,
+    "notes": "Species-specific head, dark facial marks and themed body silhouette retained in front/profile. Rear poses show backs of ears/crest/head and the actual back/tail, without a pasted frontal face. Six distinct native poses, paired idle/step articulation and both palettes reviewed alongside the trainer on terrain."
+  },
+  "runtime_files": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/riftmaul/overworld.2bpp",
+      "sha256": "e27d252cb65de6ef81dde570e9959d2938bc6e1eeb1a46c2a27be51386eaec45",
+      "bytes": 384
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/riftmaul/overworld.png",
+      "sha256": "80f122a0fe6506afe6a87e13d1a3f18ce966db9c29584f308e41482cdeb36340",
+      "bytes": 746
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/riftmaul/overworld.gbcpal",
+      "sha256": "f7101b1dd166e531dc5fc9a643245bc6e4e7ae3809aa3e8b6b6816e8265ffd27",
+      "bytes": 8
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/riftmaul/overworld-shiny.gbcpal",
+      "sha256": "975ba8a60f050e3400466b85f5d41b027ccec7a2c0366c7c56a76a1be2524a2f",
+      "bytes": 8
+    }
+  ]
+}

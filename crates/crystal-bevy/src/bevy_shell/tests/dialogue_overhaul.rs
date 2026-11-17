@@ -42,7 +42,18 @@ fn enter(c: &mut VisibleShellController, button: GameButton, map: &str) {
 
 fn answer(c: &mut VisibleShellController, yes: bool) {
     for _ in 0..48 {
-        if c.snapshot().expect("question").ui.pending_yes_no.is_some() {
+        let snapshot = c.snapshot().expect("question");
+        // The controller snapshot projects only the current text page. The
+        // printer predicate needs the complete source stream to recognize its
+        // last page, exactly as the production renderer does.
+        let presentation = c
+            .shell
+            .shell
+            .presentation_snapshot()
+            .expect("source question");
+        if snapshot.ui.pending_yes_no.is_some()
+            && super::super::scene_dialog_yes_no_active(&presentation, &c.shell)
+        {
             let cursor = c
                 .shell
                 .yes_no_cursor
@@ -296,7 +307,13 @@ pub(super) fn delivery(index: usize) -> (AssetRoot, CrystalRuntime, VisibleShell
     super::rochester::trail(&mut c, &r, (0, 24));
     travel(&mut c, GameButton::Left, "MnRochester", (39, 18));
     indoor_walk(&mut c, &r, (15, 8));
-    travel(&mut c, GameButton::Up, "MnRochesterPokecenter1F", (3, 3));
+    travel(
+        &mut c,
+        GameButton::Up,
+        "MnRochesterPokecenter1F",
+        super::rochester_earned::clinic_arrival(&r),
+    );
+    indoor_walk(&mut c, &r, (3, 3));
     press(&mut c, GameButton::Left);
     press(&mut c, GameButton::A);
     assert!(!event(&c, "EVENT_MN_DELIVERED_ROCHESTER_PARCEL"));
@@ -557,6 +574,7 @@ fn overhaul_earned_campaign_through_hall_of_fame() {
         "earned campaign cannot use review boosts"
     );
     for variable in [
+        "CRYSTAL_NORTHSTAR_CARE_SAVE",
         "CRYSTAL_NORTHSTAR_EARNED_SAVE",
         "CRYSTAL_NORTHSTAR_PRAIRIE_EXIT_SAVE",
         "CRYSTAL_NORTHSTAR_CURRENT_SAVE",
@@ -565,6 +583,7 @@ fn overhaul_earned_campaign_through_hall_of_fame() {
         "CRYSTAL_NORTHSTAR_ICE_SAVE",
         "CRYSTAL_NORTHSTAR_RELAY_SAVE",
         "CRYSTAL_NORTHSTAR_WIND_SAVE",
+        "CRYSTAL_NORTHSTAR_WIND_EXIT_SAVE",
         "CRYSTAL_NORTHSTAR_LAKE_SAVE",
         "CRYSTAL_NORTHSTAR_PINE_SAVE",
         "CRYSTAL_NORTHSTAR_IRON_SAVE",
@@ -612,6 +631,7 @@ fn earned_continue(verify_service_return: bool) {
         "earned Continue cannot use review boosts"
     );
     let checkpoints = [
+        "CRYSTAL_NORTHSTAR_CARE_SAVE",
         "CRYSTAL_NORTHSTAR_EARNED_SAVE",
         "CRYSTAL_NORTHSTAR_PRAIRIE_EXIT_SAVE",
         "CRYSTAL_NORTHSTAR_CURRENT_SAVE",
@@ -620,6 +640,7 @@ fn earned_continue(verify_service_return: bool) {
         "CRYSTAL_NORTHSTAR_ICE_SAVE",
         "CRYSTAL_NORTHSTAR_RELAY_SAVE",
         "CRYSTAL_NORTHSTAR_WIND_SAVE",
+        "CRYSTAL_NORTHSTAR_WIND_EXIT_SAVE",
         "CRYSTAL_NORTHSTAR_LAKE_SAVE",
         "CRYSTAL_NORTHSTAR_PINE_SAVE",
         "CRYSTAL_NORTHSTAR_IRON_SAVE",

@@ -1,0 +1,240 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F083",
+  "status": "rejected-as-general-fix",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_180": {
+      "species_id": "MN_180",
+      "name": "Cinderfin",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          31,
+          18,
+          11
+        ],
+        [
+          11,
+          7,
+          8
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        11871,
+        8427,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          148,
+          90
+        ],
+        [
+          90,
+          57,
+          66
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#FF945A",
+        "#5A3942",
+        "#000000"
+      ]
+    },
+    "MN_181": {
+      "species_id": "MN_181",
+      "name": "Brinebraze",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          27,
+          18,
+          10
+        ],
+        [
+          8,
+          6,
+          7
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        10843,
+        7368,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          222,
+          148,
+          82
+        ],
+        [
+          66,
+          49,
+          57
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#DE9452",
+        "#423139",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f083/redesign-v2/prompt-v2.txt",
+  "reference_mapping": "sprites/mn-f083/reference-mapping-v1.json",
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-180-cinderfin-v2",
+      "species_id": "MN_180",
+      "view": "front",
+      "source": "sprites/mn-f083/redesign-v2/front-back.imagegen-v2.png",
+      "crop": [
+        0,
+        0,
+        700,
+        538
+      ],
+      "fit": [
+        50,
+        42
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        11871,
+        8427,
+        0
+      ],
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 12,
+      "exterior_contour": "source_backed",
+      "sampling": "source_center"
+    },
+    {
+      "id": "mn-180-cinderfin-v2",
+      "species_id": "MN_180",
+      "view": "back",
+      "source": "sprites/mn-f083/redesign-v2/front-back.imagegen-v2.png",
+      "crop": [
+        0,
+        538,
+        700,
+        486
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        11871,
+        8427,
+        0
+      ],
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 12,
+      "exterior_contour": "source_backed",
+      "sampling": "source_center"
+    },
+    {
+      "id": "mn-181-brinebraze-v3",
+      "species_id": "MN_181",
+      "view": "front",
+      "source": "sprites/mn-f083/redesign-v2/front-back.imagegen-collar-v3.png",
+      "crop": [
+        730,
+        0,
+        806,
+        538
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        10843,
+        7368,
+        0
+      ],
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 12,
+      "exterior_contour": "source_backed",
+      "sampling": "source_center"
+    },
+    {
+      "id": "mn-181-brinebraze-v3",
+      "species_id": "MN_181",
+      "view": "back",
+      "source": "sprites/mn-f083/redesign-v2/front-back.imagegen-collar-v3.png",
+      "crop": [
+        730,
+        538,
+        806,
+        486
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        10843,
+        7368,
+        0
+      ],
+      "white_detail_min_samples": 4,
+      "interior_black_min_samples": 12,
+      "exterior_contour": "source_backed",
+      "sampling": "source_center"
+    }
+  ],
+  "conversion_revision": "Original selected source; source-center sampling with source-backed contours. Compare before selecting; preserve species palettes and front/back orientation.",
+  "original_manifest": "sprites/mn-f083/manifest.json",
+  "review_note": "User found this 23-family source-center conversion batch did not resolve the sprite defects. Do not select automatically. Preserve original sources; improve detail-preserving downscaling."
+}

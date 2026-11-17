@@ -959,6 +959,102 @@ fn full_redraw_mid_walk_retains_the_active_camera_origin() {
 }
 
 #[test]
+fn connected_walk_translates_camera_into_destination_coordinates() {
+    use crate::core::world::session::{
+        ConnectionDestination, ConnectionTransition, ConnectionTrigger,
+    };
+
+    for (direction, source, destination) in [
+        ("east", (64, 25), (0, 19)),
+        ("west", (-1, 19), (63, 25)),
+        ("north", (25, -1), (19, 47)),
+        ("south", (19, 48), (25, 0)),
+    ] {
+        let connection = ConnectionTransition {
+            trigger: ConnectionTrigger {
+                map_name: "source".into(),
+                tile: TilePosition::new(source.0, source.1),
+                connection: crate::core::map::MapConnection {
+                    direction: direction.into(),
+                    target_map: "destination".into(),
+                    offset: 3,
+                },
+            },
+            destination: ConnectionDestination {
+                map_name: "destination".into(),
+                tile: TilePosition::new(destination.0, destination.1),
+            },
+        };
+        let source_origin = (source.0 * RENDER_TILES_PER_RUNTIME_TILE - 10,
+                             source.1 * RENDER_TILES_PER_RUNTIME_TILE - 9);
+        let translated = translate_connection_viewport_origin(source_origin, &connection)
+            .expect("connected origin fits viewport coordinates");
+        assert_eq!(
+            translated,
+            (destination.0 * RENDER_TILES_PER_RUNTIME_TILE - 10,
+             destination.1 * RENDER_TILES_PER_RUNTIME_TILE - 9),
+            "{direction} must retain the same physical camera position"
+        );
+        let target = match direction {
+            "east" => (translated.0 + RENDER_TILES_PER_RUNTIME_TILE, translated.1),
+            "west" => (translated.0 - RENDER_TILES_PER_RUNTIME_TILE, translated.1),
+            "north" => (translated.0, translated.1 - RENDER_TILES_PER_RUNTIME_TILE),
+            _ => (translated.0, translated.1 + RENDER_TILES_PER_RUNTIME_TILE),
+        };
+        let origin = next_walk_viewport_origin(Some(translated), None, Some(target), true);
+        assert_eq!(origin, Some(translated), "{direction} retains the crossing step");
+        assert_eq!(next_walk_viewport_origin(Some(target), origin, Some(target), true), origin);
+    }
+}
+
+#[test]
+#[ignore = "requires the hosted Northstar pack in CRYSTAL_RENDER_TEST_PACK"]
+fn connected_northstar_walk_retains_the_scrolling_camera() {
+    let root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("../..")
+        .canonicalize()
+        .expect("repository root");
+    let asset_root = AssetRoot::new(root);
+    let runtime = workspace_desktop_runtime(&asset_root);
+    let shell = initialize_bevy_runtime_shell(
+        asset_root,
+        runtime,
+        BevyShellStart::NewGameAtRuntimeTile {
+            spawn_identifier: 14,
+            map_name: "MnR01C00R00".into(),
+            tile_x: 1,
+            tile_y: 24,
+        },
+        BevyShellConfig::default(),
+    )
+    .expect("connected route fixture");
+    let mut app = integrated_shell_test_app(shell);
+    app.update();
+    app.world_mut()
+        .resource_mut::<ButtonInput<KeyCode>>()
+        .press(KeyCode::ArrowLeft);
+    for _ in 0..64 {
+        app.update();
+        let world = app.world();
+        let shell = world.resource::<BevyRuntimeShell>();
+        assert_eq!(shell.last_error, None);
+        if shell.shell.session().overworld().map.name != "MnRochester" {
+            continue;
+        }
+        let rendered = world.resource::<RenderedViewport>();
+        assert_eq!(rendered.map_name.as_deref(), Some("MnRochester"));
+        assert!(shell.player_walk_frame_ticks > 0, "crossing must still be walking");
+        assert!(rendered.walk_viewport_origin.is_some(), "crossing retains the camera origin");
+        let offset = visible_overworld_camera_offset(rendered, shell, 0.0);
+        assert!(offset.length() > 0.0, "the destination must begin at the source camera position");
+        assert!(offset.length() <= TILE_SIZE * f32::from(RENDER_TILES_PER_RUNTIME_TILE),
+            "a crossing must scroll by at most one step: {offset:?}");
+        return;
+    }
+    panic!("held movement did not cross the Rochester connection");
+}
+
+#[test]
 fn forced_full_redraw_does_not_jump_the_walking_player_transform() {
     let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
         .join("../../..")

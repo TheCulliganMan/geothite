@@ -1,0 +1,94 @@
+{
+  "species_id": "MN_326",
+  "name": "Hollowl",
+  "family_id": "MN_F148",
+  "dex_number": 198,
+  "status": "accepted",
+  "generation_tool": "built-in image_gen",
+  "selected_manifest": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f148/hollowl.manifest-20261104-v3-features.json",
+    "sha256": "1f28d22d847b7d3da2e95772b6503be11a5367ca8402fabd4ed1640085c79106",
+    "bytes": 1922
+  },
+  "sources": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f148/hollowl.overworld.imagegen-20261104-v1.png",
+      "sha256": "70d8b7286c2dab0d788c0d96adb1ada45906c8be6b798ee94db7ea783b8fa363",
+      "bytes": 1344204
+    }
+  ],
+  "prompts": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f148/hollowl.overworld.prompt-20261104-v1.txt",
+      "sha256": "a4df25dd13551e22465fbbc99608001331d42902b614216c443852eaf7e4e005",
+      "bytes": 2611
+    }
+  ],
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/hollowl-20261104-v3-features",
+  "normal_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/hollowl-20261104-v3-features/review/hollowl.normal-8x.png",
+    "sha256": "061f4a73d39ba611dac6463674ad2a91b80687a3d9478b5044d080c4f18c61aa",
+    "bytes": 9936
+  },
+  "shiny_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/hollowl-20261104-v3-features/review/hollowl.shiny-8x.png",
+    "sha256": "cf715b3406e297a2d12d510a8776741203d6286b3f67e343f835f1d653cbd006",
+    "bytes": 9933
+  },
+  "compiled_index": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/hollowl-20261104-v3-features/compiled-index.json",
+    "sha256": "fdc41b08230f1cfb80c368063f5636489d4a047c9b3ae6b3e4d7f567246c0cd3",
+    "bytes": 7932
+  },
+  "source_feature_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f148/hollowl.source-feature-review-20261104-v3.json",
+    "sha256": "f97f64aec2ddcb094f36aa8f260b8a3311662685f7d22c10b1140b499d1d8f2b",
+    "bytes": 5313
+  },
+  "context_evidence": {
+    "directory": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-03",
+    "input_manifest": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-03/input-manifest.json",
+      "sha256": "e18330a1160c1ece35186004be00d5d3d6e7d59798289e301da0f3620c213c6c",
+      "bytes": 1150
+    },
+    "verification": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-03/verification.json",
+      "sha256": "fd365fe28b700321d3026b15de005ddbb61889bdecdeccdca8cf9024edafa081",
+      "bytes": 16830
+    },
+    "test_log": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/verification/all225-20261104-v5-03.log",
+      "sha256": "f556fa7ae716d6343c6f13c13cc8280e9824956caf11f5ceb4bd49a856570873",
+      "bytes": 217
+    },
+    "normal_actor_poses": 8,
+    "all_six_shiny_native_poses_verified": true
+  },
+  "root_visual_review": {
+    "accepted": true,
+    "notes": "Species-specific head, dark facial marks and themed body silhouette retained in front/profile. Rear poses show backs of ears/crest/head and the actual back/tail, without a pasted frontal face. Six distinct native poses, paired idle/step articulation and both palettes reviewed alongside the trainer on terrain."
+  },
+  "runtime_files": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/hollowl/overworld.2bpp",
+      "sha256": "39749d386ab6ff3e0b941fd8160d289d415f7f5afb0254c9d14165fe7ffaf58e",
+      "bytes": 384
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/hollowl/overworld.png",
+      "sha256": "309f9f9d395e729ff4ae52654ec80dce7a71aeb0eda45216996a1900bd6d1797",
+      "bytes": 843
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/hollowl/overworld.gbcpal",
+      "sha256": "1da5ffff8e8f1d2d49c14565276d24ab35001f2c3cdfef01869de45861b922e1",
+      "bytes": 8
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/hollowl/overworld-shiny.gbcpal",
+      "sha256": "7656bb1e2e8256735ea75d43394da8dbb65ca2d8a95d2e0b3d0787d0cc1b0380",
+      "bytes": 8
+    }
+  ]
+}

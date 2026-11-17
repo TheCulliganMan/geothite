@@ -414,14 +414,25 @@ pub(super) fn validate_species(
     species: &str,
     level: u8,
 ) -> Result<()> {
+    validate_active_species(pack, policy, species, level)?;
     ensure!(
-        (1..=100).contains(&level)
-            && policy.target(pack, species, Some(level))? == species
-            && pack
-                .data
-                .story_event_script_constants
-                .global
-                .contains_key(&format!("MN_DEX_MEMBER_{species}")),
+        pack.data
+            .story_event_script_constants
+            .global
+            .contains_key(&format!("MN_DEX_MEMBER_{species}")),
+        "regional research membership required: {species}"
+    );
+    Ok(())
+}
+
+pub(super) fn validate_active_species(
+    pack: &CompiledGamePack,
+    policy: &crate::northstar_regional_roster::RegionalRoster,
+    species: &str,
+    level: u8,
+) -> Result<()> {
+    ensure!(
+        (1..=100).contains(&level) && policy.target(pack, species, Some(level))? == species,
         "active regional species at a legal level required: {species}@{level}"
     );
     Ok(())

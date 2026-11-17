@@ -1,10 +1,13 @@
 //! Accept evidence promptly while retaining the region's travel safeguards.
+use std::collections::BTreeMap;
+
 use anyhow::{Context, Result, ensure};
 use serde_json::Value;
 
+use crate::CompiledGamePack;
+use crate::authored_dialogue::{self, AuthoredDialoguePage};
 use crate::grand_marais_modpack::authoring::command as c;
 use crate::northstar_rival_arc::{LINK, RESTORED};
-use crate::{CompiledGamePack, MapModule};
 
 pub(crate) const MANIFEST: &str = "northstar-story-pacing-v1";
 
@@ -15,22 +18,17 @@ pub(crate) fn install(pack: &mut CompiledGamePack) -> Result<()> {
         !pack.report.manifests.iter().any(|m| m == MANIFEST),
         "investigation pacing already installed"
     );
-    let mut park = pack.data.maps["MnLakeItasca"].clone();
-    remove_badge_gate(&mut park, "MN_ITASCA_MARKER", 0, "MnItascaMarkerBefore")?;
-    crate::northstar_story_revision::publish(pack, park)?;
-
-    let mut officer = pack.data.maps["MnBemidji"].clone();
-    remove_badge_gate(&mut officer, "MN_BEMIDJI_OFFICER", 1, "MnBemidjiNeedPine")?;
-    crate::northstar_story_revision::publish(pack, officer)?;
-
-    harbor(pack)?;
-    chief(pack)?;
-    returns(pack)?;
+    install_headwaters(pack)?;
+    install_harbor(pack)?;
+    install_returns(pack, None)?;
     pack.report.manifests.push(MANIFEST.into());
     Ok(())
 }
 
-fn returns(pack: &mut CompiledGamePack) -> Result<()> {
+pub(crate) fn install_returns(
+    pack: &mut CompiledGamePack,
+    reviewed_texts: Option<&BTreeMap<String, BTreeMap<String, Vec<AuthoredDialoguePage>>>>,
+) -> Result<()> {
     const REPORT: &str = "EVENT_MN_HEADWATERS_REPORT";
     const SIGNAL: &str = "EVENT_MN_LIGHTHOUSE_SIGNAL";
     const DEPOT: &str = "EVENT_MN_DEPOT_CLEARED";
@@ -47,6 +45,16 @@ fn returns(pack: &mut CompiledGamePack) -> Result<()> {
                 (SIGNAL, "MnOverhaulOfficerNorthText"),
                 (DEPOT, "MnOverhaulOfficerHarborText"),
                 (METER, "MnOverhaulOfficerMeterText"),
+            ],
+        ),
+        (
+            "MnBoundaryWatersSurveyShelter",
+            "MnBoundarySurveyChiefAfter",
+            "jumptextfaceplayer",
+            "MnBoundarySurveyChiefAfterText",
+            vec![
+                (RESTORED, "MnOverhaulChiefStoppedText"),
+                (LINK, "MnOverhaulChiefExposedText"),
             ],
         ),
         (
@@ -75,13 +83,43 @@ fn returns(pack: &mut CompiledGamePack) -> Result<()> {
             ],
         ),
     ] {
-        let mut map = pack.data.maps[name].clone();
+        let original_body = serde_json::json!([c(command, &[original])]);
+        let texts = if let Some(reviewed) = reviewed_texts {
+            let Some(texts) = reviewed.get(name) else {
+                continue;
+            };
+            if branches
+                .iter()
+                .any(|(_, label)| !texts.contains_key(*label))
+                || pack
+                    .data
+                    .maps
+                    .get(name)
+                    .and_then(|map| map.scripts.get(root))
+                    != Some(&original_body)
+            {
+                continue;
+            }
+            Some(texts)
+        } else {
+            None
+        };
+        let mut map = pack
+            .data
+            .maps
+            .get(name)
+            .with_context(|| format!("return map {name}"))?
+            .clone();
         ensure!(
-            map.scripts.get(root) == Some(&serde_json::json!([c(command, &[original])])),
+            map.scripts.get(root) == Some(&original_body),
             "changed investigation return preimage: {name}/{root}"
         );
         let mut body = Vec::new();
         for (event, text) in branches {
+            if let Some(texts) = texts {
+                map.scripts
+                    .insert(text.into(), authored_dialogue::compile(&texts[text])?);
+            }
             ensure!(
                 map.scripts.contains_key(text),
                 "canonical investigation return: {text}"
@@ -98,23 +136,103 @@ fn returns(pack: &mut CompiledGamePack) -> Result<()> {
     Ok(())
 }
 
-fn remove_badge_gate(map: &mut MapModule, script: &str, at: usize, branch: &str) -> Result<()> {
-    let body = map
-        .scripts
-        .get_mut(script)
-        .and_then(Value::as_array_mut)
-        .context("investigation program")?;
-    ensure!(
-        body.get(at) == Some(&c("checkflag", &["ENGINE_GLACIERBADGE"]))
-            && body.get(at + 1) == Some(&c("iffalse", &[branch])),
-        "changed investigation badge preimage: {script}"
-    );
-    body.drain(at..at + 2);
+pub(crate) fn install_headwaters(pack: &mut CompiledGamePack) -> Result<()> {
+    for (name, script, at, denied, event, after) in [
+        (
+            "MnLakeItasca",
+            "MN_ITASCA_MARKER",
+            0,
+            "MnItascaMarkerBefore",
+            "EVENT_MN_HEADWATERS_READING",
+            "MnItascaMarkerAfter",
+        ),
+        (
+            "MnBemidji",
+            "MN_BEMIDJI_OFFICER",
+            1,
+            "MnBemidjiNeedPine",
+            "EVENT_MN_HEADWATERS_REPORT",
+            "MnBemidjiReportAfter",
+        ),
+    ] {
+        let Some(mut map) = pack.data.maps.get(name).cloned() else {
+            continue;
+        };
+        let body = map
+            .scripts
+            .get_mut(script)
+            .and_then(Value::as_array_mut)
+            .context("headwaters investigation program")?;
+        let completed = [c("checkevent", &[event]), c("iftrue", &[after])];
+        let remove_gate = body.get(at..at + 2) != Some(completed.as_slice());
+        if remove_gate {
+            let gate = [
+                c("checkflag", &["ENGINE_GLACIERBADGE"]),
+                c("iffalse", &[denied]),
+            ];
+            ensure!(
+                body.get(at..at + 2) == Some(gate.as_slice())
+                    && body.get(at + 2..at + 4) == Some(completed.as_slice()),
+                "changed investigation badge preimage: {script}"
+            );
+            body.drain(at..at + 2);
+        }
+        let removed_denial = map.scripts.remove(denied).is_some();
+        let removed_text = map.scripts.remove(&format!("{denied}Text")).is_some();
+        if remove_gate || removed_denial || removed_text {
+            crate::northstar_story_revision::publish(pack, map)?;
+        }
+    }
     Ok(())
 }
 
-fn harbor(pack: &mut CompiledGamePack) -> Result<()> {
-    let mut map = pack.data.maps["MnDuluthHarborWorkshop"].clone();
+pub(crate) fn install_harbor_missing_log(
+    pack: &mut CompiledGamePack,
+    pages: &[AuthoredDialoguePage],
+) -> Result<()> {
+    const MAP: &str = "MnDuluthHarborWorkshop";
+    const TEXT: &str = "MnOverhaulHarborMissingLogText";
+    const BRANCH: &str = "MnOverhaulHarborMissingLog";
+    let Some(mut room) = pack.data.maps.get(MAP).cloned() else {
+        return Ok(());
+    };
+    let Some(body) = room
+        .scripts
+        .get_mut("MN_HARBOR_RECEIVER")
+        .and_then(Value::as_array_mut)
+    else {
+        return Ok(());
+    };
+    let depot_gate = [
+        c("checkevent", &["EVENT_MN_DEPOT_CLEARED"]),
+        c("iffalse", &["MN_HARBOR_RECEIVERDenied"]),
+    ];
+    let badge_gate = c("checkflag", &["ENGINE_ZEPHYRBADGE"]);
+    let return_gate = [
+        c("checkevent", &["EVENT_MN_LIGHTHOUSE_SIGNAL"]),
+        c("iftrue", &["MN_HARBOR_RECEIVERDone"]),
+    ];
+    if body.get(1..3) != Some(return_gate.as_slice()) || body.get(3) != Some(&badge_gate) {
+        return Ok(());
+    }
+    let Some(at) = body.windows(2).position(|commands| commands == depot_gate) else {
+        return Ok(());
+    };
+    body.drain(at..at + 2);
+    body.splice(3..3, [depot_gate[0].clone(), c("iffalse", &[BRANCH])]);
+    room.scripts.insert(
+        BRANCH.into(),
+        serde_json::json!([c("jumptextfaceplayer", &[TEXT])]),
+    );
+    room.scripts
+        .insert(TEXT.into(), authored_dialogue::compile(pages)?);
+    crate::northstar_story_revision::publish(pack, room)
+}
+
+pub(crate) fn install_harbor(pack: &mut CompiledGamePack) -> Result<()> {
+    let Some(mut map) = pack.data.maps.get("MnDuluthHarborWorkshop").cloned() else {
+        return Ok(());
+    };
     let body = map
         .scripts
         .get_mut("MN_HARBOR_RECEIVER")
@@ -130,15 +248,27 @@ fn harbor(pack: &mut CompiledGamePack) -> Result<()> {
             ]
         })
         .collect::<Vec<_>>();
-    ensure!(
-        body.get(3..19) == Some(expected.as_slice()),
-        "changed harbor badge gates"
-    );
-    ensure!(
-        body.get(19) == Some(&c("checkevent", &["EVENT_MN_DEPOT_CLEARED"])),
-        "harbor must still require the recovered pump log"
-    );
-    body.drain(3..19);
+    let custody = [
+        c("checkevent", &["EVENT_MN_DEPOT_CLEARED"]),
+        c("iffalse", &["MnOverhaulHarborMissingLog"]),
+    ];
+    let badge_at = if body.get(3..5) == Some(custody.as_slice()) {
+        5
+    } else {
+        ensure!(
+            body.get(19..21) == Some(custody.as_slice()),
+            "harbor must still require the recovered pump log"
+        );
+        3
+    };
+    let already_open = badge_at == 5 && body.get(5) == Some(&c("opentext", &[]));
+    if !already_open {
+        ensure!(
+            body.get(badge_at..badge_at + expected.len()) == Some(expected.as_slice()),
+            "changed harbor badge gates"
+        );
+        body.drain(badge_at..badge_at + expected.len());
+    }
 
     // A crew accepts the log and starts planning before the final Gym. Its
     // later advice can distinguish travel preparation from missing evidence.
@@ -149,53 +279,24 @@ fn harbor(pack: &mut CompiledGamePack) -> Result<()> {
         .context("harbor return program")?;
     ensure!(
         done.first() == Some(&c("checkevent", &[RESTORED]))
-            && done.get(1) == Some(&c("iftrue", &["MnHarborSurveyReturn"]))
-            && done.get(2) == Some(&c("jumptextfaceplayer", &["MN_HARBOR_RECEIVERDoneText"])),
+            && done.get(1) == Some(&c("iftrue", &["MnHarborSurveyReturn"])),
         "changed completed-action harbor branch"
     );
-    done.splice(
-        2..2,
-        [
-            c("checkflag", &["ENGINE_RISINGBADGE"]),
-            c("iffalse", &["MN_HARBOR_RECEIVERDenied"]),
-        ],
-    );
-    crate::northstar_story_revision::publish(pack, map)
-}
-
-fn chief(pack: &mut CompiledGamePack) -> Result<()> {
-    let mut map = pack.data.maps["MnBoundaryWatersSurveyShelter"].clone();
-    let label = "MnBoundarySurveyChiefAfter";
+    let reminder = [
+        c("checkflag", &["ENGINE_RISINGBADGE"]),
+        c("iffalse", &["MN_HARBOR_RECEIVERDenied"]),
+    ];
+    let has_reminder = done.get(2..4) == Some(reminder.as_slice());
     ensure!(
-        map.scripts.get(label)
-            == Some(&serde_json::json!([c(
-                "jumptextfaceplayer",
-                &["MnBoundarySurveyChiefAfterText"]
-            )])),
-        "changed defeated-chief return program"
+        done.get(if has_reminder { 4 } else { 2 })
+            == Some(&c("jumptextfaceplayer", &["MN_HARBOR_RECEIVERDoneText"])),
+        "changed harbor return reply"
     );
-    map.scripts.insert(
-        label.into(),
-        serde_json::json!([
-            c("checkevent", &[RESTORED]),
-            c("iftrue", &["MnOverhaulChiefStopped"]),
-            c("checkevent", &[LINK]),
-            c("iftrue", &["MnOverhaulChiefExposed"]),
-            c("jumptextfaceplayer", &["MnBoundarySurveyChiefAfterText"])
-        ]),
-    );
-    for (script, text) in [
-        ("MnOverhaulChiefStopped", "MnOverhaulChiefStoppedText"),
-        ("MnOverhaulChiefExposed", "MnOverhaulChiefExposedText"),
-    ] {
-        ensure!(
-            map.scripts.contains_key(text),
-            "canonical chief aftermath text: {text}"
-        );
-        map.scripts.insert(
-            script.into(),
-            serde_json::json!([c("jumptextfaceplayer", &[text])]),
-        );
+    if !has_reminder {
+        done.splice(2..2, reminder);
     }
-    crate::northstar_story_revision::publish(pack, map)
+    if !already_open || !has_reminder {
+        crate::northstar_story_revision::publish(pack, map)?;
+    }
+    Ok(())
 }

@@ -1,0 +1,94 @@
+{
+  "species_id": "MN_344",
+  "name": "Tactunnel",
+  "family_id": "MN_F156",
+  "dex_number": 216,
+  "status": "accepted",
+  "generation_tool": "built-in image_gen",
+  "selected_manifest": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f156/tactunnel.manifest-20261104-v2-features.json",
+    "sha256": "87309f7fe3299899f07495f59c4f0f6697f961416a4d843167d2e0f7c5afcbbb",
+    "bytes": 1881
+  },
+  "sources": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f156/tactunnel.overworld.imagegen-v1.png",
+      "sha256": "21ac61a7857f782a7531a5985c51d9850f155d324ef0946b873e1ae0760af0f9",
+      "bytes": 1261351
+    }
+  ],
+  "prompts": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f156/tactunnel.overworld.prompt-20261104-v1.txt",
+      "sha256": "686ba9aceb314d346be548dc5334fb9ce797a1ced32090d35283d736a8eab91a",
+      "bytes": 2493
+    }
+  ],
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/tactunnel-20261104-v3-features",
+  "normal_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/tactunnel-20261104-v3-features/review/tactunnel.normal-8x.png",
+    "sha256": "0a54e46d671fa9164b2c4d83d1f53e08c990f936d499e959fe96efbb8379f04e",
+    "bytes": 8499
+  },
+  "shiny_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/tactunnel-20261104-v3-features/review/tactunnel.shiny-8x.png",
+    "sha256": "7f3e479e94194be977d29e8749efbd16fe6fb4938f4c02d12d3f5b501f342724",
+    "bytes": 8470
+  },
+  "compiled_index": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/tactunnel-20261104-v3-features/compiled-index.json",
+    "sha256": "50127df2da5d0cf2f456943ff46732d6b20aa7414459258556f2fe1cd588095c",
+    "bytes": 7890
+  },
+  "source_feature_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f156/tactunnel.source-feature-review-20261104-v3.json",
+    "sha256": "29930638ea51d792544156a04ce2d92a2c00aacaa74429fcf689ba21c6415dfb",
+    "bytes": 5276
+  },
+  "context_evidence": {
+    "directory": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-08",
+    "input_manifest": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-08/input-manifest.json",
+      "sha256": "e6e475ca6f660e5270261229b96924bd0a1eef2981809e511dfccba1ddcf3fc9",
+      "bytes": 213
+    },
+    "verification": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-08/verification.json",
+      "sha256": "24d2a8d175d7728379fff98d76cedaa109d11347f52af8c7035dd8ecdfaf1e3f",
+      "bytes": 3007
+    },
+    "test_log": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/verification/all225-20261104-v5-08.log",
+      "sha256": "526f7d419116dcfc0064f6db104f7d2822668fb2e08f6d4ecbaa6ad1d7827021",
+      "bytes": 217
+    },
+    "normal_actor_poses": 8,
+    "all_six_shiny_native_poses_verified": true
+  },
+  "root_visual_review": {
+    "accepted": true,
+    "notes": "Species-specific head, dark facial marks and themed body silhouette retained in front/profile. Rear poses show backs of ears/crest/head and the actual back/tail, without a pasted frontal face. Six distinct native poses, paired idle/step articulation and both palettes reviewed alongside the trainer on terrain."
+  },
+  "runtime_files": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/tactunnel/overworld.2bpp",
+      "sha256": "76d6ff63d908317fc948086e334600bcedda218de0ce4bb8d9be6a7e18aced6f",
+      "bytes": 384
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/tactunnel/overworld.png",
+      "sha256": "9d7fe956ed7f533b8d21e02fa1eb9e2deda7cc3178c4a678b710c97adfb49bc8",
+      "bytes": 716
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/tactunnel/overworld.gbcpal",
+      "sha256": "2fcc065108afb8b593a2850b401e0894904489ecb67a624f72aa2142b9830d65",
+      "bytes": 8
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/tactunnel/overworld-shiny.gbcpal",
+      "sha256": "871f6d8a49548cc7df32501bd842091c8de44f752b8ab309479ea1deccfca967",
+      "bytes": 8
+    }
+  ]
+}

@@ -5,8 +5,8 @@ use crystal_runtime::CrystalRuntime;
 
 use super::super::super::authored_route_fixture::indoor_walk;
 use super::super::super::native_city_ports::city_port;
-use super::super::super::rochester::flee;
-use super::super::super::rochester_earned::{checkout, try_recruit};
+use super::super::super::rochester::{flee, try_trail_with};
+use super::super::super::rochester_earned::{checkout, try_recruit, try_recruit_without_weakening};
 use super::super::super::winona::{continue_in_place, press, travel};
 use super::{VisibleShellController, care, enter_road, leave_road, try_road_with};
 
@@ -53,15 +53,16 @@ pub(super) fn cut_partner(c: &mut VisibleShellController, r: &CrystalRuntime, ro
         .grass
         .as_ref()
         .expect("installed R02 grass table");
-    assert!(
-        grass.slots(period).iter().any(|slot| {
-            r.data().pokemon[&slot.species]
-                .tmhm_learnset
-                .iter()
-                .any(|name| name == "CUT")
-        }),
-        "the selected R02 habitat must contain a Cut learner at the actual game time"
-    );
+    let r02_has_partner = grass.slots(period).iter().any(|slot| {
+        r.data().pokemon[&slot.species]
+            .tmhm_learnset
+            .iter()
+            .any(|name| name == "CUT")
+    });
+    if !r02_has_partner {
+        return_to_r01_for_cut_partner(c, r, root);
+        return;
+    }
     assert!(
         c.snapshot()
             .expect("room for a field partner")
@@ -119,6 +120,84 @@ pub(super) fn cut_partner(c: &mut VisibleShellController, r: &CrystalRuntime, ro
         }
     }
     panic!("ordinary R02 recruitment did not catch a native Cut learner");
+}
+
+fn return_to_r01_for_cut_partner(
+    c: &mut VisibleShellController,
+    r: &CrystalRuntime,
+    root: &AssetRoot,
+) {
+    let period = c.shell.shell.session().state().time.time_of_day;
+    let grass = r.data().wild_encounters["MnR01C00R00"]
+        .grass
+        .as_ref()
+        .expect("installed R01 habitat");
+    assert!(
+        grass
+            .slots(period)
+            .iter()
+            .any(|slot| r.data().pokemon[&slot.species]
+                .tmhm_learnset
+                .iter()
+                .any(|name| name == "CUT")),
+        "R01 must offer an actual Cut learner at this game time"
+    );
+    care(c, r);
+    buy_balls(c, r);
+    assert!(
+        c.snapshot()
+            .expect("capture supplies")
+            .bag
+            .balls
+            .iter()
+            .any(|slot| slot.quantity > 0),
+        "the earned party needs a carried ball"
+    );
+    enter_road(c, r);
+    super::super::super::prairie_story::road(c, r, (59, 14));
+    travel(c, GameButton::Right, "MnRochester", (4, 18));
+    indoor_walk(c, r, (38, 18));
+    travel(c, GameButton::Right, "MnR01C00R00", (0, 24));
+    for step in 0..256 {
+        let tile = if step % 2 == 0 { (54, 24) } else { (57, 24) };
+        let arrived = try_trail_with(c, r, tile, |c| {
+            let snapshot = c.snapshot().expect("real R01 encounter");
+            let battle = snapshot.battle.as_ref().expect("wild encounter");
+            if battle
+                .enemy_pokemon
+                .species
+                .tmhm_learnset
+                .iter()
+                .any(|name| name == "CUT")
+                && snapshot.bag.balls.iter().any(|slot| slot.quantity > 0)
+            {
+                // The native R01 partner is far below the earned lead's level.
+                // Throwing immediately avoids fabricating HP or a weak move.
+                let _ = try_recruit_without_weakening(c, r);
+            } else {
+                flee(c);
+            }
+        });
+        assert!(arrived, "the real return trip ended outside R01");
+        if has_cut_partner(c) {
+            break;
+        }
+    }
+    assert!(
+        has_cut_partner(c),
+        "ordinary R01 recruitment did not catch a Cut learner"
+    );
+    assert!(
+        try_trail_with(c, r, (0, 24), flee),
+        "the actual return to Rochester must remain playable"
+    );
+    travel(c, GameButton::Left, "MnRochester", (39, 18));
+    indoor_walk(c, r, (4, 18));
+    travel(c, GameButton::Left, "MnR02C00R00", (59, 14));
+    super::super::super::prairie_story::road(c, r, (0, 30));
+    travel(c, GameButton::Left, "MnMankato", (47, 18));
+    travel(c, GameButton::Left, "MnMankato", (46, 18));
+    continue_in_place(c, root, r, "campaign-r01-cut-partner");
 }
 
 #[test]

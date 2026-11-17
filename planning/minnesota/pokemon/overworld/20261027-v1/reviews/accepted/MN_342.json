@@ -1,0 +1,94 @@
+{
+  "species_id": "MN_342",
+  "name": "Skimnymph",
+  "family_id": "MN_F155",
+  "dex_number": 214,
+  "status": "accepted",
+  "generation_tool": "built-in image_gen",
+  "selected_manifest": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f155/skimnymph.manifest-20261104-v3-features.json",
+    "sha256": "e266b3aed1bb4b946d8aec24d6418b393827dd6e90061ef1e3239b373a161063",
+    "bytes": 1937
+  },
+  "sources": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f155/skimnymph.overworld.imagegen-20261104-v1.png",
+      "sha256": "a3188602146138ebf6095f2c5a343c1cbd3e7681b8e836f58af3bc087cf93d69",
+      "bytes": 1308728
+    }
+  ],
+  "prompts": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f155/skimnymph.overworld.prompt-20261104-v1.txt",
+      "sha256": "bec764433c01c63e7a023b5417eed6bcc2d919e6582b4af8e12ebaacc5294124",
+      "bytes": 2781
+    }
+  ],
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/skimnymph-20261104-v3-features",
+  "normal_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/skimnymph-20261104-v3-features/review/skimnymph.normal-8x.png",
+    "sha256": "999d518539d5369dccfd8ae3c8d4dfe5ebab342ae2c8e9b74ef41516e9beb437",
+    "bytes": 8744
+  },
+  "shiny_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/skimnymph-20261104-v3-features/review/skimnymph.shiny-8x.png",
+    "sha256": "5209e53b132ab3c5a044bdff004de862a426c989c73ab5db948ec96768d27eb7",
+    "bytes": 8747
+  },
+  "compiled_index": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/skimnymph-20261104-v3-features/compiled-index.json",
+    "sha256": "68cde52b2c58ce387da37a7dc9b131719e7a7f5aeaea6ec6d5d30e52c6af6a9f",
+    "bytes": 7946
+  },
+  "source_feature_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f155/skimnymph.source-feature-review-20261104-v3.json",
+    "sha256": "f96e675d1e67ed46243e9745e31ab977bdf944b3fb159204ec3f8ed4f2c95e69",
+    "bytes": 5323
+  },
+  "context_evidence": {
+    "directory": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-05",
+    "input_manifest": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-05/input-manifest.json",
+      "sha256": "9efc1305914df9abe4e36f5d10257a688c67a51bab71364393eacc20fd08a6ee",
+      "bytes": 1162
+    },
+    "verification": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-05/verification.json",
+      "sha256": "d58139eab686235056245767e379b61320861ad7e417f794ae6231a933f6cd09",
+      "bytes": 16890
+    },
+    "test_log": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/verification/all225-20261104-v5-05.log",
+      "sha256": "9235be84259714cc6a7497dd8fd0819a62bdeee8349ef95f4f154ac8b0d7d78d",
+      "bytes": 217
+    },
+    "normal_actor_poses": 8,
+    "all_six_shiny_native_poses_verified": true
+  },
+  "root_visual_review": {
+    "accepted": true,
+    "notes": "Species-specific head, dark facial marks and themed body silhouette retained in front/profile. Rear poses show backs of ears/crest/head and the actual back/tail, without a pasted frontal face. Six distinct native poses, paired idle/step articulation and both palettes reviewed alongside the trainer on terrain."
+  },
+  "runtime_files": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/skimnymph/overworld.2bpp",
+      "sha256": "0d544f7c90f24bc5dc9eeec8344c45332aaf99df7b0678976d7c36d28d01a462",
+      "bytes": 384
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/skimnymph/overworld.png",
+      "sha256": "9fdb9e315fa713be95dd3a4a895ce439d31b6d8166cfc61347f36460b4f936f0",
+      "bytes": 793
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/skimnymph/overworld.gbcpal",
+      "sha256": "6acdeb84e5d4d253925354bca5757c4a9e5cbc369905e90aa4cd24d95027651d",
+      "bytes": 8
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/skimnymph/overworld-shiny.gbcpal",
+      "sha256": "0216c344cf5b36f6d39f45d886effcfd800e5d77ce5ec6b1deeab1a272cae006",
+      "bytes": 8
+    }
+  ]
+}

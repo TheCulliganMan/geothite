@@ -7,7 +7,7 @@ use anyhow::{Context, Result, ensure};
 use crate::{GameDataSet, SafariZone};
 
 pub(crate) fn validate_safari_roster(data: &GameDataSet, zone: &SafariZone) -> Result<()> {
-    let policy = crate::authored_regional_approach::policy()?;
+    let policy = crate::northstar_regional_roster::RegionalRoster::current()?;
     let mut used = BTreeSet::new();
     for habitat in &zone.habitats {
         used.extend(

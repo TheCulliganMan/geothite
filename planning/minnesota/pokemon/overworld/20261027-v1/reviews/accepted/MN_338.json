@@ -1,0 +1,94 @@
+{
+  "species_id": "MN_338",
+  "name": "Bankwing",
+  "family_id": "MN_F153",
+  "dex_number": 210,
+  "status": "accepted",
+  "generation_tool": "built-in image_gen",
+  "selected_manifest": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f153/bankwing.manifest-20261104-v3-features.json",
+    "sha256": "fba0a4a1b0731e4ad33af0385bbbb4fbee65f1ed735ba1679e1b4ecc3b2cdb9f",
+    "bytes": 1929
+  },
+  "sources": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f153/bankwing.overworld.imagegen-20261104-v1.png",
+      "sha256": "d8cbd6cbff5088546941e8c4e9780a8ae1c374672b81999dc202358374ec6d87",
+      "bytes": 1314144
+    }
+  ],
+  "prompts": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f153/bankwing.overworld.prompt-20261104-v1.txt",
+      "sha256": "9df7f31726d7b77f6085948a9a557b32b586a265cfb6138455604767bb872ff1",
+      "bytes": 2680
+    }
+  ],
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/bankwing-20261104-v3-features",
+  "normal_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/bankwing-20261104-v3-features/review/bankwing.normal-8x.png",
+    "sha256": "f3fdd45ac0b741871bbecff8cb5e2905a5a7d284d3050002982c72dc7e2c0f11",
+    "bytes": 10048
+  },
+  "shiny_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/bankwing-20261104-v3-features/review/bankwing.shiny-8x.png",
+    "sha256": "7865faf26ce6ecaa2b62a6aa15232bc25dd8a10b77970f241c3a73f5116e4b0f",
+    "bytes": 9591
+  },
+  "compiled_index": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/bankwing-20261104-v3-features/compiled-index.json",
+    "sha256": "ccdd39769a660b0042f76f67b5ae698c6aeaad40decadcc5027c8147380c8d4a",
+    "bytes": 7936
+  },
+  "source_feature_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f153/bankwing.source-feature-review-20261104-v3.json",
+    "sha256": "7632af9a8dd557120ea248f1a69b2e435d09c67e2a3e911faf6a1bc19918d512",
+    "bytes": 5317
+  },
+  "context_evidence": {
+    "directory": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-05",
+    "input_manifest": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-05/input-manifest.json",
+      "sha256": "9efc1305914df9abe4e36f5d10257a688c67a51bab71364393eacc20fd08a6ee",
+      "bytes": 1162
+    },
+    "verification": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-05/verification.json",
+      "sha256": "d58139eab686235056245767e379b61320861ad7e417f794ae6231a933f6cd09",
+      "bytes": 16890
+    },
+    "test_log": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/verification/all225-20261104-v5-05.log",
+      "sha256": "9235be84259714cc6a7497dd8fd0819a62bdeee8349ef95f4f154ac8b0d7d78d",
+      "bytes": 217
+    },
+    "normal_actor_poses": 8,
+    "all_six_shiny_native_poses_verified": true
+  },
+  "root_visual_review": {
+    "accepted": true,
+    "notes": "Species-specific head, dark facial marks and themed body silhouette retained in front/profile. Rear poses show backs of ears/crest/head and the actual back/tail, without a pasted frontal face. Six distinct native poses, paired idle/step articulation and both palettes reviewed alongside the trainer on terrain."
+  },
+  "runtime_files": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/bankwing/overworld.2bpp",
+      "sha256": "86a02223e180b01c046af0b7f6efc426c9a04ec07b62b4f555d68fcb8b60041b",
+      "bytes": 384
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/bankwing/overworld.png",
+      "sha256": "8e55019fc9fbe03b0beb761472f8314878276bb42d12a5bcd95989d09f17d03d",
+      "bytes": 850
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/bankwing/overworld.gbcpal",
+      "sha256": "aa017df0bbdf93e4bf737324f2854721f0384daa3a4a4fc9b9135253926c2e76",
+      "bytes": 8
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/bankwing/overworld-shiny.gbcpal",
+      "sha256": "26fcbb8bf3861d23562bdc6acddcc3b8425a8cdf3d345a69149641558bce10df",
+      "bytes": 8
+    }
+  ]
+}

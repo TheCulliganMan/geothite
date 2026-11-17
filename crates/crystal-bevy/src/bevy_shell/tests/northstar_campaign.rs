@@ -10,7 +10,7 @@ use super::super::northstar_earned_gyms;
 use super::super::prairie_story::{mankato_arrival, road, try_road_with};
 use super::super::rochester::flee;
 use super::super::rochester_earned::{checkout, try_battle};
-use super::super::winona::{at as location, continue_in_place, finish, load, press, travel};
+use super::super::winona::{at as location, continue_in_place, load, press, travel};
 use super::{VisibleShellController, event, interact, mankato_leave, walk_to};
 
 #[path = "northstar_prairie_recruitment.rs"]
@@ -91,10 +91,56 @@ fn depart_prairie(c: &mut VisibleShellController, r: &CrystalRuntime, root: &Ass
     enter_minneapolis(c, r);
 }
 
+fn mankato_clinic_arrival(r: &CrystalRuntime) -> (i16, i16) {
+    let warp = r.data().maps["MnMankatoPokecenter1F"]
+        .events
+        .warps
+        .iter()
+        .find(|warp| warp.index == 3)
+        .expect("Mankato clinic arrival");
+    (
+        i16::try_from(warp.x).expect("arrival x"),
+        i16::try_from(warp.y).expect("arrival y"),
+    )
+}
+
+fn select_prairie_lead(c: &mut VisibleShellController, species: &str) {
+    let slot = c
+        .snapshot()
+        .expect("earned party")
+        .party
+        .slots
+        .iter()
+        .position(|slot| slot.pokemon.species.id == species)
+        .unwrap_or_else(|| panic!("earned party does not contain {species}"));
+    super::northstar_arc_campaign::switch_lead(c, slot);
+}
+
+fn restore_starter_lead(c: &mut VisibleShellController) {
+    let starter = super::super::winona::campaign_starter();
+    let snapshot = c.snapshot().expect("earned starter family");
+    let species = snapshot
+        .party
+        .slots
+        .iter()
+        .find(|slot| starter.family.contains(&slot.pokemon.species.id.as_str()))
+        .expect("selected starter remains in the carried party")
+        .pokemon
+        .species
+        .id
+        .clone();
+    select_prairie_lead(c, &species);
+}
+
 fn care(c: &mut VisibleShellController, r: &CrystalRuntime) {
     if c.snapshot().expect("care approach").overworld.map_name == "MnMankato" {
         indoor_walk(c, r, (21, 12));
-        travel(c, GameButton::Up, "MnMankatoPokecenter1F", (3, 5));
+        travel(
+            c,
+            GameButton::Up,
+            "MnMankatoPokecenter1F",
+            mankato_clinic_arrival(r),
+        );
     }
     super::super::rochester_earned::heal_party(c, r);
     assert!(
@@ -121,7 +167,8 @@ fn care(c: &mut VisibleShellController, r: &CrystalRuntime) {
             .as_deref(),
         Some("MN_MANKATO_POKECENTER_1F")
     );
-    indoor_walk(c, r, (3, 4));
+    let (x, y) = mankato_clinic_arrival(r);
+    indoor_walk(c, r, (x, y + 1));
     travel(c, GameButton::Down, "MnMankato", (21, 12));
 }
 
@@ -140,7 +187,12 @@ fn supplies(c: &mut VisibleShellController, r: &CrystalRuntime) {
         return;
     }
     indoor_walk(c, r, (33, 22));
-    travel(c, GameButton::Up, "MnMankatoMart", (6, 5));
+    travel(
+        c,
+        GameButton::Up,
+        "MnMankatoMart",
+        super::super::rochester_earned::mart_arrival(r, "MnMankatoMart"),
+    );
     indoor_walk(c, r, (3, 3));
     press(c, GameButton::Left);
     press(c, GameButton::A);
@@ -379,7 +431,7 @@ fn leave_road(c: &mut VisibleShellController, r: &CrystalRuntime) {
         travel(c, GameButton::Left, "MnMankato", (47, 18));
         travel(c, GameButton::Left, "MnMankato", (46, 18));
     } else {
-        location(c, "MnMankatoPokecenter1F", (3, 5));
+        location(c, "MnMankatoPokecenter1F", mankato_clinic_arrival(r));
     }
 }
 
@@ -435,7 +487,13 @@ pub(super) fn prairie() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
             VisibleShellController::load_save(root.clone(), r.clone(), PathBuf::from(path), None)
                 .expect("actual same-pack earned Prairie victory checkpoint");
         c.set_runtime_journal_enabled(false);
-        location(&mut c, "MnMankato", (10, 12));
+        assert_eq!(
+            c.snapshot()
+                .expect("earned Prairie exit")
+                .overworld
+                .map_name,
+            "MnMankato"
+        );
         assert_eq!(
             c.shell.shell.session().state().badges.johto,
             [true, true, false, false, false, false, false, false]
@@ -486,9 +544,13 @@ pub(super) fn prairie() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
             care(&mut c, &r);
             enter_road(&mut c, &r);
             road(&mut c, &r, tile);
-            press(&mut c, facing);
-            press(&mut c, GameButton::A);
-            let won = try_battle(&mut c, &r, id, flag);
+            let won = if event(&c, flag) {
+                true
+            } else {
+                press(&mut c, facing);
+                press(&mut c, GameButton::A);
+                try_battle(&mut c, &r, id, flag)
+            };
             leave_road(&mut c, &r);
             continue_in_place(&mut c, &root, &r, &format!("campaign-{id}-{attempt}"));
             if won {
@@ -502,6 +564,10 @@ pub(super) fn prairie() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
         ((11, 11), "MN_GYM_2_TRAINER_2"),
         ((11, 3), "MN_GYM_2"),
     ] {
+        let flag = format!("EVENT_{id}_DEFEATED");
+        if event(&c, &flag) {
+            continue;
+        }
         if id == "MN_GYM_2" {
             train(
                 &mut c,
@@ -513,21 +579,47 @@ pub(super) fn prairie() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
                     14
                 },
             );
-            assert!(matches!(
-                c.snapshot().expect("native starter evolution").party.slots[0]
-                    .pokemon
-                    .species
-                    .id
-                    .as_str(),
-                "QUILAVA" | "RIMEPELT"
-            ));
+            assert!(
+                super::super::winona::campaign_starter().family.contains(
+                    &c.snapshot()
+                        .expect("native starter progression")
+                        .party
+                        .slots[0]
+                        .pokemon
+                        .species
+                        .id
+                        .as_str()
+                )
+            );
         }
-        let flag = format!("EVENT_{id}_DEFEATED");
         for attempt in 0..4 {
             care(&mut c, &r);
             supplies(&mut c, &r);
+            let sand_strategy =
+                id == "MN_GYM_2" && std::env::var_os("CRYSTAL_PRAIRIE_SAND_STRATEGY").is_some();
+            if sand_strategy {
+                select_prairie_lead(&mut c, "NIBBIN");
+            }
             indoor_walk(&mut c, &r, (10, 12));
             travel(&mut c, GameButton::Up, "MnMankatoGym", (6, 17));
+            if id == "MN_GYM_2" {
+                let snapshot = c.snapshot().expect("earned leader party");
+                for slot in snapshot.party.slots {
+                    let pokemon = slot.pokemon;
+                    eprintln!(
+                        "Prairie party: {} level {} HP {}/{} moves {:?}",
+                        pokemon.species.id,
+                        pokemon.level,
+                        pokemon.hp,
+                        pokemon.max_hp,
+                        pokemon
+                            .moves
+                            .iter()
+                            .map(|m| m.name.as_str())
+                            .collect::<Vec<_>>()
+                    );
+                }
+            }
             interact(&mut c, &r, tile);
             if try_battle(&mut c, &r, id, &flag) {
                 if northstar_earned_gyms::selected(&r) {
@@ -535,15 +627,21 @@ pub(super) fn prairie() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
                 } else {
                     mankato_leave(&mut c, &r, (6, 19), (10, 12));
                 }
+                if sand_strategy {
+                    restore_starter_lead(&mut c);
+                }
                 continue_in_place(&mut c, &root, &r, &format!("campaign-{id}-win"));
                 break;
             }
-            location(&mut c, "MnMankatoPokecenter1F", (3, 5));
+            location(&mut c, "MnMankatoPokecenter1F", mankato_clinic_arrival(&r));
             assert!(
                 !c.shell.shell.session().state().badges.johto[1],
                 "a loss cannot award Prairie"
             );
             continue_in_place(&mut c, &root, &r, &format!("campaign-{id}-loss-{attempt}"));
+            if sand_strategy {
+                restore_starter_lead(&mut c);
+            }
             train(&mut c, &r, &root, 14 + attempt);
         }
         assert!(event(&c, &flag));

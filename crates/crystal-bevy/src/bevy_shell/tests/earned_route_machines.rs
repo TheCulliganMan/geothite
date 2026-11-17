@@ -5,7 +5,7 @@ use crystal_runtime::CrystalRuntime;
 
 use super::super::VisibleShellController;
 use super::earned_rod_visits::encounter;
-use super::interior_life::{target_name, walk};
+use super::interior_life::{target_name, walk, walk_with_encounters};
 use super::minnesota_hm_progression::talk;
 use super::winona::{continue_in_place, press, travel};
 
@@ -47,7 +47,7 @@ fn gift(
         room,
         (arrival.x as i16, arrival.y as i16),
     );
-    walk(c, r, stand);
+    walk_with_encounters(c, r, stand, |c| encounter(c, r));
     talk(c, actor);
     assert_eq!(
         c.shell
@@ -76,7 +76,7 @@ fn gift(
         .iter()
         .find(|warp| target_name(r, &warp.target_map_constant) == outside)
         .expect("original route return");
-    walk(c, r, (exit.x as i16, exit.y as i16));
+    walk_with_encounters(c, r, (exit.x as i16, exit.y as i16), |c| encounter(c, r));
     for _ in 0..8 {
         if c.snapshot().expect("machine return").overworld.map_name == outside {
             break;

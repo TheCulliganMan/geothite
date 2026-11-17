@@ -13,16 +13,54 @@ pub(crate) struct RegionalRoster {
 }
 
 impl RegionalRoster {
+    pub(crate) fn current() -> Result<Self> {
+        Self::active(
+            include_str!("../../../planning/minnesota/pokemon/roster.json"),
+            include_str!("../../../planning/minnesota/pokemon/roster-curation.json"),
+            include_str!("../../../planning/minnesota/pokemon/species-profiles.json"),
+        )
+    }
+
+    pub(crate) fn with_bindings(mut self, bindings: &[(&str, &str)]) -> Result<Self> {
+        for &(original, target) in bindings {
+            ensure!(
+                self.allowed.contains(target),
+                "inactive replacement {target}"
+            );
+            self.bindings.insert(original.into(), target.into());
+        }
+        Ok(self)
+    }
+
     pub fn parse(source: &str, roster: &str, curation: &str, profiles: &str) -> Result<Self> {
         let source: Value = serde_json::from_str(source)?;
+        ensure!(
+            source["schema_version"] == 1 && source["id"] == "northstar-minnesota-only-v1",
+            "supported regional story policy required"
+        );
+        let mut policy = Self::active(roster, curation, profiles)?;
+        let bindings: BTreeMap<String, String> =
+            serde_json::from_value(source["legacy_species_bindings"].clone())?;
+        ensure!(
+            bindings.values().all(|n| policy.allowed.contains(n)),
+            "a story binding uses a cut or non-Minnesota species"
+        );
+        let starters: Vec<String> = serde_json::from_value(source["starters"].clone())?;
+        ensure!(
+            starters == ["POUCHID", "KINDLIT", "BIRCHIT"] && source["egg"]["species"] == "LOOBIT",
+            "use the canonical regional starters and nursery egg"
+        );
+        policy.bindings = bindings;
+        Ok(policy)
+    }
+
+    pub(crate) fn active(roster: &str, curation: &str, profiles: &str) -> Result<Self> {
         let roster: Value = serde_json::from_str(roster)?;
         let curation: Value = serde_json::from_str(curation)?;
         let profiles: Value = serde_json::from_str(profiles)?;
         ensure!(
-            source["schema_version"] == 1
-                && source["id"] == "northstar-minnesota-only-v1"
-                && curation["schema_version"] == 1,
-            "supported regional story policy required"
+            curation["schema_version"] == 1,
+            "supported roster curation required"
         );
         let retired = curation["retired_families"]
             .as_array()
@@ -82,20 +120,9 @@ impl RegionalRoster {
                         .context("curated family count")?,
             "regional source and active curation differ"
         );
-        let bindings: BTreeMap<String, String> =
-            serde_json::from_value(source["legacy_species_bindings"].clone())?;
-        ensure!(
-            bindings.values().all(|n| allowed.contains(n)),
-            "a story binding uses a cut or non-Minnesota species"
-        );
-        let starters: Vec<String> = serde_json::from_value(source["starters"].clone())?;
-        ensure!(
-            starters == ["POUCHID", "KINDLIT", "BIRCHIT"] && source["egg"]["species"] == "GILLPUP",
-            "use the canonical regional starters and nursery egg"
-        );
         Ok(Self {
             allowed,
-            bindings,
+            bindings: BTreeMap::new(),
             ancestors,
         })
     }

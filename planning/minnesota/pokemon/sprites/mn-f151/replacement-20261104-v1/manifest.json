@@ -1,0 +1,355 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F151",
+  "tool": "built-in image_gen",
+  "prompt_file": "sprites/mn-f151/replacement-20261104-v1/prompt.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "status": "native-front-back-candidate-reviewed",
+  "sprites": [
+    {
+      "id": "mn-331-trailpup-v1",
+      "species_id": "MN_331",
+      "view": "front",
+      "source": "sprites/mn-f151/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        0,
+        0,
+        430,
+        512
+      ],
+      "fit": [
+        34,
+        33
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        18135,
+        15819,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-331-trailpup-v1",
+      "species_id": "MN_331",
+      "view": "back",
+      "source": "sprites/mn-f151/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        0,
+        512,
+        430,
+        512
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        18135,
+        15819,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-332-pathfang-v1",
+      "species_id": "MN_332",
+      "view": "front",
+      "source": "sprites/mn-f151/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        430,
+        0,
+        500,
+        512
+      ],
+      "fit": [
+        44,
+        38
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        19158,
+        15818,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-332-pathfang-v1",
+      "species_id": "MN_332",
+      "view": "back",
+      "source": "sprites/mn-f151/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        430,
+        512,
+        500,
+        512
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        19158,
+        15818,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-333-waywolf-v1",
+      "species_id": "MN_333",
+      "view": "front",
+      "source": "sprites/mn-f151/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        930,
+        0,
+        606,
+        512
+      ],
+      "fit": [
+        52,
+        42
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        19189,
+        15817,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-333-waywolf-v1",
+      "species_id": "MN_333",
+      "view": "back",
+      "source": "sprites/mn-f151/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        930,
+        512,
+        606,
+        512
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        19189,
+        15817,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    }
+  ],
+  "pokemon_palettes": {
+    "MN_331": {
+      "species_id": "MN_331",
+      "name": "Trailpup",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          23,
+          22,
+          17
+        ],
+        [
+          11,
+          14,
+          15
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        18135,
+        15819,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          189,
+          181,
+          140
+        ],
+        [
+          90,
+          115,
+          123
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#BDB58C",
+        "#5A737B",
+        "#000000"
+      ]
+    },
+    "MN_332": {
+      "species_id": "MN_332",
+      "name": "Pathfang",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          22,
+          22,
+          18
+        ],
+        [
+          10,
+          14,
+          15
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        19158,
+        15818,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          181,
+          181,
+          148
+        ],
+        [
+          82,
+          115,
+          123
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#B5B594",
+        "#52737B",
+        "#000000"
+      ]
+    },
+    "MN_333": {
+      "species_id": "MN_333",
+      "name": "Waywolf",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          21,
+          23,
+          18
+        ],
+        [
+          9,
+          14,
+          15
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        19189,
+        15817,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          173,
+          189,
+          148
+        ],
+        [
+          74,
+          115,
+          123
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#ADBD94",
+        "#4A737B",
+        "#000000"
+      ]
+    }
+  },
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "293cf9b49a21e4180472e48cdc210ef410da9b2f7db1592741cc3be60f39adc0",
+    "notes": "Native review: real four-legged wolves with progressively longer limbs/muzzles, natural tails and pale forked trail bands. Near eyes retain bounded white and dark pupils; far eyes follow source occlusion. Backs retain shoulder/trail pattern progression and body shadows. Candidate for user feedback."
+  }
+}

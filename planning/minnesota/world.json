@@ -912,7 +912,7 @@
       ],
       "role": "gym_4",
       "tileset": "kanto",
-      "composition": "Dense fair lanes, attached Capitol and Summit blocks, three-floor Lowertown Exchange, short shared south-bank streets, and unchanged Union Depot story interior; exact native40\u00d734 composition.",
+      "composition": "Dense fair lanes, attached Capitol and Summit blocks, three-floor Lowertown Exchange, short shared south-bank streets, and unchanged Union Depot story interior; exact native40×34 composition.",
       "ports": [
         {
           "route": "MN_R04",
@@ -1456,7 +1456,7 @@
       "door_contract": "Native source DOOR quadrants, exterior active/passive indices, reciprocal room carpets and safe passive Floor arrivals are explicit; production lowering/roundtrip proof pending.",
       "authoring_file": "towns/MnStPaul.json",
       "layout_file": "towns/MnStPaul.layout.json",
-      "native_status": "Published660-map compact40\u00d734 StPaul in twin-cities-compact-v01; nine local controller cases and15native GPU captures passed. No earned progression or final user visual approval claimed.",
+      "native_status": "Published660-map compact40×34 StPaul in twin-cities-compact-v01; nine local controller cases and15native GPU captures passed. No earned progression or final user visual approval claimed.",
       "compiled_tileset": "kanto",
       "expansion_contract_file": "towns/MnStPaul.expansion.contract.json",
       "recomposition_contract_file": "towns/MnStPaul.recomposition.contract.json"
@@ -3773,7 +3773,7 @@
       ],
       "role": "landmark",
       "tileset": "johto",
-      "composition": "A quiet reference site: pine banks, a northern lake feeding a narrow brook, one short railed crossing and a dry-land survey plaque. Visiting is possible after Lake; only the Pine-qualified, acknowledged marker records the independent reading. The future western trail remains visibly closed. The eastern arrival passes through the authentic Ilex Forest\u2013Azalea gatehouse floorplan, with two native side-carpet lanes and separate safe arrivals on both sides.",
+      "composition": "A quiet reference site: pine banks, a northern lake feeding a narrow brook, one short railed crossing and a dry-land survey plaque. Visiting is possible after Lake; only the Pine-qualified, acknowledged marker records the independent reading. The future western trail remains visibly closed. The eastern arrival passes through the authentic Ilex Forest–Azalea gatehouse floorplan, with two native side-carpet lanes and separate safe arrivals on both sides.",
       "ports": [
         {
           "route": "MN_R14",
@@ -7507,7 +7507,7 @@
       "id": "MN_BOUNDARY_WATERS_SAFARI",
       "hub": "MnBoundaryWaters",
       "file": "zones/boundary-waters-safari.json",
-      "status": "Expanded v17 source contract reserves six preserve chunks (group61 exterior IDs1\u20134 and6\u20137) and the unchanged cabin map5. Record the actual 505-map native publication and controller evidence separately. Free regional basecamp/story access is independent; Safari admission stays closed without fees and session/capture rules remain unimplemented."
+      "status": "Expanded v17 source contract reserves six preserve chunks (group61 exterior IDs1–4 and6–7) and the unchanged cabin map5. Record the actual 505-map native publication and controller evidence separately. Free regional basecamp/story access is independent; Safari admission stays closed without fees and session/capture rules remain unimplemented."
     }
   ],
   "standalone_dungeons": [
@@ -7956,7 +7956,7 @@
     "status": "Accepted current-parent terrain revision: source/native pixels, strict whole-pack preservation, directional grass/ledge proof, actual2D review, native encounters/trainerPP/resources/Continue and stdio pass. CurrentR12 work preserved.",
     "scope_limit": "Sequential Minnesota grass pass remains open beyond R01-R03. Explicit local fixtures do not prove an earned statewide campaign."
   },
-  "active_local_review_revision": "r06_pine_fork_revision",
+  "active_local_review_revision": "integrated_campaign_revision",
   "script_command_repair_revision": {
     "kind": "missing_minnesota_map_command_records",
     "parent_revision": "field_hm_habitats_cyclists_revision",
@@ -12132,7 +12132,7 @@
     "audio_programs_verified": 602,
     "source_web_release": "20261031-progression-32",
     "presentation": "native_2d_only",
-    "status": "Verified full-roster acquisition and rising progression, preserving the reviewed title and current geography. Live Pok\u00e9dex release 20261031-progression-32 has all 225 paths, exact verification of 2203 files, and passing desktop/mobile checks. Local mechanics and earned opening verified; complete campaign and earned full collection remain unclaimed.",
+    "status": "Verified full-roster acquisition and rising progression, preserving the reviewed title and current geography. Live Pokédex release 20261031-progression-32 has all 225 paths, exact verification of 2203 files, and passing desktop/mobile checks. Local mechanics and earned opening verified; complete campaign and earned full collection remain unclaimed.",
     "scope_limit": "Local input fixtures and an earned opening return establish acquisition mechanics and source conditions; no uninterrupted full campaign or earned capture of all 225 is claimed."
   },
   "north_shore_passing_width_revision": {
@@ -12445,5 +12445,110 @@
     "regional_review": "planning/minnesota/revisions/reviewed-maps-v01/REGIONAL-REVIEW.md",
     "verification": "planning/minnesota/renders/selected-r06-pine-fork-v1485/receipt.json",
     "status": "Verified and selected local Pine Country fork: native two-lane dry drop, closed pine flanks, six-grass uphill choices, pine cover and continuous lookout rim. Both new and retained northern hops, grassy returns, bridge lanes, cabin approaches, actual wild Run/Continue and both lanes of both town seams pass. Existing Cut denial/Ether/reset/inside return and early fishing pass. Seven native courses, three actual stdio processes/938calls, ten exact complete native frames and four played views bind current bytes. All742other maps, existing actors/programs/parties/encounters/fishing/rooms/art/audio/attributes remain exact. The22stage master reproduces v10. Broader quality and earned progression remain open; no deployment or saved-terrain migration."
+  },
+  "spawn_locations_revision": {
+    "kind": "native_2d_walking_encounter_revision",
+    "parent_revision": "r06_pine_fork_revision",
+    "parent_pack": "content-packs/minnesota-reviewed-maps-v11.crystalpack",
+    "parent_pack_sha256": "d3c16929aade3df2e4b26406dd1bd1c0ac61f05b05be5f569c41e1657c3899d9",
+    "pack": "content-packs/minnesota-spawn-locations-v01.crystalpack",
+    "pack_sha256": "4bb44b1a96dcea87f53498e842ba47b4739bd68cfe1ddba326948bb6dea2d761",
+    "content_identity": "43aa04cc441cdf766a0c4d95663284a60a07534ffd77303bd1be46de556dc4c4",
+    "map_count": 743,
+    "source_file": "planning/minnesota/pokemon/acquisition-v01/spawn-locations-v01.json",
+    "source_sha256": "293b28652104429eafd14a567ce8f4e2ea6234ffb6a1308ecc5526fd259daa34",
+    "runbook": "docs/game-content.md#minnesota-walking-encounters",
+    "status": "The six walking tables use the active roster and change 53 species slots. Each habitat passed a native walking encounter, capture and Continue from a local fixture. Other game data and resources match v11. The canoe successor retains the six tables."
+  },
+  "spawn_canoe_revision": {
+    "kind": "native_2d_canoe_shop_and_travel_revision",
+    "parent_revision": "spawn_locations_revision",
+    "parent_pack": "content-packs/minnesota-spawn-locations-v01.crystalpack",
+    "parent_pack_sha256": "4bb44b1a96dcea87f53498e842ba47b4739bd68cfe1ddba326948bb6dea2d761",
+    "pack": "content-packs/minnesota-spawn-canoe-v02.crystalpack",
+    "pack_sha256": "b273295968dba62d3eecc97e691875c4222d005969f96dcf28e267781d6ccaa5",
+    "content_identity": "8900a1fbf9bf54d41a6f7f4fd8c74a6275b53285d803ca76ccd2e951642329bb",
+    "map_count": 743,
+    "audio_programs_verified": 602,
+    "build_recipe": "planning/minnesota/canoe/spawn-canoe-v02.recipe.json",
+    "build_recipe_sha256": "07f8257a6c5a8b2a55f8c806427b191b98d0d34d47f38985839256988180c706",
+    "runbook": "planning/minnesota/canoe/README.md",
+    "status": "Selected for local review. Native St. Paul shop and Surf HM handoff, paddling, portaging, afloat Continue, and paid Safari admission and crossings pass controller checks. Retired species on affected maps and in Safari have active replacements. Existing saves and hosted content have not been migrated."
+  },
+  "current_roster_native_revision": {
+    "kind": "native_species_catalog_expansion",
+    "parent_revision": "spawn_canoe_revision",
+    "parent_pack": "content-packs/minnesota-spawn-canoe-v02.crystalpack",
+    "parent_pack_sha256": "b273295968dba62d3eecc97e691875c4222d005969f96dcf28e267781d6ccaa5",
+    "pack": "content-packs/minnesota-current-roster-native-v01.crystalpack",
+    "pack_sha256": "982a72b1e429454be2d9c56309b6f1263bad358c382f36880fa0af83079f842d",
+    "content_identity": "c249d7e009407e0e9f1ea5be570554a0945af2abca75aa884770df558cfbcc22",
+    "map_count": 743,
+    "added_active_species": 43,
+    "runbook": "planning/minnesota/pokemon/acquisition-v01/region-ecology-v01/README.md",
+    "status": "Compiled 19 active families using reviewed native assets. Existing species, maps, encounters and audio are preserved. Regional research registration and encounter placement are in the ecology child."
+  },
+  "region_ecology_revision": {
+    "kind": "native_2d_region_wild_encounter_revision",
+    "previous_local_review_revision": "spawn_canoe_revision",
+    "parent_revision": "current_roster_native_revision",
+    "parent_pack": "content-packs/minnesota-current-roster-native-v01.crystalpack",
+    "parent_pack_sha256": "982a72b1e429454be2d9c56309b6f1263bad358c382f36880fa0af83079f842d",
+    "pack": "content-packs/minnesota-region-ecology-v02.crystalpack",
+    "pack_sha256": "76ca3bcb10e27790c407157cad60b0d240745781c1233635b3fd596971f82b42",
+    "content_identity": "33ab8e734a076c4031fbd021cae3632be7f254b7cf138980ece756c19876990c",
+    "map_count": 743,
+    "regional_maps_audited": 355,
+    "wild_table_maps": 111,
+    "encounter_zones": 36,
+    "headbutt_maps": 41,
+    "fishing_headers": 50,
+    "safari_habitats": 7,
+    "active_research_species": 225,
+    "audio_programs_verified": 602,
+    "source_file": "planning/minnesota/pokemon/acquisition-v01/region-ecology-v01/habitats.json",
+    "source_sha256": "c72a39aa5636c9bd8821b7ce0a936f34beb45efbbb88f280665d75c6860d93ad",
+    "runbook": "planning/minnesota/pokemon/acquisition-v01/region-ecology-v01/README.md",
+    "status": "Audited the full Minnesota roster and repeatable encounter surfaces. All 225 active species have acquisition or evolution paths without paid Safari. Production inputs verified 14 walking courses, Surf, fishing, both new and established Headbutt, Safari capture, and Continue. The red canoe successor retains this game data exactly."
+  },
+  "red_canoe_revision": {
+    "kind": "native_2d_canoe_sprite_refresh",
+    "parent_revision": "region_ecology_revision",
+    "parent_pack": "content-packs/minnesota-region-ecology-v02.crystalpack",
+    "parent_pack_sha256": "76ca3bcb10e27790c407157cad60b0d240745781c1233635b3fd596971f82b42",
+    "pack": "content-packs/minnesota-region-ecology-red-canoe-v01.crystalpack",
+    "pack_sha256": "5929b5802f64b95455408659fda6483e191a08e72227b69bc204c5736d18269c",
+    "content_identity": "1617613135709cc0cf538fbcd1446524dd929fd16c59911700599669226a6902",
+    "map_count": 743,
+    "audio_programs_verified": 602,
+    "build_recipe": "planning/minnesota/canoe/red-canoe-v01.recipe.json",
+    "build_recipe_sha256": "01314d8c38a41dd1e40878749f39c2ebf120aff6c283e2ef28b96fde2828859d",
+    "runbook": "planning/minnesota/canoe/README.md",
+    "status": "Selected for local review. The canoe hull stays red while Chris and Kris retain their bike palettes. Actual canoe movement triggered an ordinary water encounter, capture, afloat Continue and further paddling. The ecology game data and audio remain identical."
+  },
+  "glacier_rear_rail_revision": {
+    "kind": "native_2d_glacier_line_rear_edge_stations",
+    "parent_revision": "red_canoe_revision",
+    "parent_pack": "content-packs/minnesota-region-ecology-red-canoe-v01.crystalpack",
+    "parent_pack_sha256": "5929b5802f64b95455408659fda6483e191a08e72227b69bc204c5736d18269c",
+    "pack": "content-packs/minnesota-glacier-rear-rail-v01.crystalpack",
+    "pack_sha256": "8af676f7344a7a5d9a3656058f8ca7930919dbd9e86b6788cc10047923162c99",
+    "content_identity": "38ef157b041a1809cc0aa89cdf4fa3080f46994b56c0dcc1e15365055e6eb693",
+    "map_count": 743,
+    "audio_programs_verified": 602,
+    "source_file": "planning/minnesota/transit/glacier-rear-rail-v01/stations.json",
+    "source_sha256": "8b271ea3d7df085298df0cf6d1845b4533d5347558091a41913e4a336d43a083",
+    "runbook": "planning/minnesota/transit/glacier-rear-rail-v01/README.md",
+    "status": "Selected for local review. Four depots moved to the north edge and Staples tracks extended. All five road approaches, hall visits, Continue, door returns and 20 directed rides passed. Other maps and audio match the parent. Existing saves and hosted content have not been migrated."
+  },
+  "integrated_campaign_revision": {
+    "kind": "native_2d_integrated_campaign",
+    "parent_revision": "glacier_rear_rail_revision",
+    "pack": "content-packs/minnesota-integrated-campaign-v03.crystalpack",
+    "pack_sha256": "6d4cca148a5e277442a714fd1474d84bd315a1c63aea0ff80dd2a1003437e3a7",
+    "content_identity": "cd81b377a9d08285dddba8568547e573827860f1ea41630e2301be4750296313",
+    "map_count": 743,
+    "runbook": "planning/minnesota/QUALITY.md",
+    "status": "Selected for publication at user request. Native client and pack builds, formatting, Clippy, dialogue and content checks passed. No gameplay verification after explicit user instruction; existing saves are not migrated."
   }
 }

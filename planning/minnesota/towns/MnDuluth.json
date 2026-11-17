@@ -1162,11 +1162,24 @@
           "facing": "south",
           "activation": "talk_to_battle",
           "seen_lines": [
-            "A friendly match?",
-            "Show your teamwork!"
+            "My partner heard",
+            "my echo and turned",
+            "right back. I've",
+            "been trying hand",
+            "signals since.",
+            "Let's battle. If I",
+            "forget and shout,",
+            "you'll hear it",
+            "twice."
           ],
           "won_lines": [
-            "You read the field!"
+            "You got us. I",
+            "called out before",
+            "I put my hand up.",
+            "She turned around",
+            "and the quarry",
+            "called her right",
+            "back again."
           ],
           "after_lines": [
             "These hill walks",
@@ -3469,11 +3482,28 @@
           "facing": "south",
           "activation": "talk_to_battle",
           "seen_lines": [
-            "A friendly match?",
-            "Show your teamwork!"
+            "My partner hears",
+            "the watch click",
+            "and starts before",
+            "I call. That's",
+            "what happens when",
+            "you time every",
+            "drill for a week.",
+            "Want a match",
+            "without the watch?"
           ],
           "won_lines": [
-            "You read the field!"
+            "You got us. I left",
+            "the watch alone",
+            "and still reached",
+            "for my pocket. She",
+            "saw my hand go",
+            "down and went",
+            "without a word.",
+            "Guess I was",
+            "training that hand",
+            "as much as I was",
+            "training her."
           ],
           "after_lines": [
             "These hill walks",
@@ -3942,11 +3972,22 @@
           "facing": "south",
           "activation": "talk_to_battle",
           "seen_lines": [
-            "A friendly match?",
-            "Show your teamwork!"
+            "I got off the boat",
+            "an hour ago and",
+            "I'm still bending",
+            "my knees for a",
+            "swell. Give me a",
+            "battle. Maybe my",
+            "feet will believe",
+            "we're on land."
           ],
           "won_lines": [
-            "You read the field!"
+            "I nearly blamed",
+            "the deck. Look at",
+            "me. I'm standing",
+            "on a floor that's",
+            "been nailed down",
+            "for twenty years."
           ],
           "after_lines": [
             "These hill walks",
@@ -3978,11 +4019,25 @@
           "facing": "south",
           "activation": "talk_to_battle",
           "seen_lines": [
-            "A friendly match?",
-            "Show your teamwork!"
+            "The cook sent me",
+            "upstairs. Said I",
+            "could find",
+            "somebody to battle",
+            "or come back down",
+            "and peel onions.",
+            "You up for a",
+            "match? I'd be",
+            "grateful."
           ],
           "won_lines": [
-            "You read the field!"
+            "I'd better get",
+            "back to the cook.",
+            "I came up here to",
+            "get out of peeling",
+            "onions. Now I've",
+            "got a match to",
+            "tell him about",
+            "while I peel them."
           ],
           "after_lines": [
             "These hill walks",
@@ -5577,11 +5632,22 @@
           "facing": "south",
           "activation": "talk_to_battle",
           "seen_lines": [
-            "A friendly match?",
-            "Show your teamwork!"
+            "I said one more",
+            "cast before lunch.",
+            "Then the fish",
+            "started jumping.",
+            "I've been here an",
+            "hour. Battle me so",
+            "I have a reason to",
+            "put this rod down."
           ],
           "won_lines": [
-            "You read the field!"
+            "I said one more",
+            "cast and stayed an",
+            "hour. Next time",
+            "I'm having lunch",
+            "before I come",
+            "down."
           ],
           "after_lines": [
             "These hill walks",
@@ -6044,11 +6110,25 @@
       "facing": "south",
       "activation": "talk_to_battle",
       "seen_lines": [
-        "A friendly match?",
-        "Show your teamwork!"
+        "I've got ten",
+        "minutes before the",
+        "bell. If I can get",
+        "these gloves off,",
+        "that's time for",
+        "one match. There.",
+        "You're on if you",
+        "want it."
       ],
       "won_lines": [
-        "You read the field!"
+        "I take these",
+        "gloves off to",
+        "battle and put",
+        "them on to work.",
+        "If I ever turn up",
+        "for my shift with",
+        "a BALL in each",
+        "hand, you'll know",
+        "why."
       ],
       "after_lines": [
         "These hill walks",
@@ -6079,11 +6159,26 @@
       "facing": "south",
       "activation": "talk_to_battle",
       "seen_lines": [
-        "A friendly match?",
-        "Show your teamwork!"
+        "I raced my team up",
+        "the hill and won.",
+        "Then I turned",
+        "round and found",
+        "out they'd stopped",
+        "to wait for each",
+        "other. Hold on",
+        "till the last one",
+        "gets here. Then",
+        "we'll battle."
       ],
       "won_lines": [
-        "You read the field!"
+        "I looked back to",
+        "see if they were",
+        "ready and you were",
+        "already moving.",
+        "Come on, team.",
+        "We'll go down at",
+        "the pace of",
+        "whoever's last."
       ],
       "after_lines": [
         "These hill walks",
@@ -6114,11 +6209,23 @@
       "facing": "south",
       "activation": "talk_to_battle",
       "seen_lines": [
-        "A friendly match?",
-        "Show your teamwork!"
+        "I've got my collar",
+        "up over both ears.",
+        "If you want a",
+        "match, wave. I'll",
+        "keep my hands out",
+        "of my pockets so",
+        "my partner can see",
+        "what I mean, too."
       ],
       "won_lines": [
-        "You read the field!"
+        "You got me. My",
+        "partner couldn't",
+        "see my hands past",
+        "the cuffs. Next",
+        "time I'll roll",
+        "them up before I",
+        "ask her to watch."
       ],
       "after_lines": [
         "These hill walks",
@@ -8440,11 +8547,25 @@
         "facing": "south",
         "activation": "talk_to_battle",
         "seen_lines": [
-          "A friendly match?",
-          "Show your teamwork!"
+          "I've got ten",
+          "minutes before the",
+          "bell. If I can get",
+          "these gloves off,",
+          "that's time for",
+          "one match. There.",
+          "You're on if you",
+          "want it."
         ],
         "won_lines": [
-          "You read the field!"
+          "I take these",
+          "gloves off to",
+          "battle and put",
+          "them on to work.",
+          "If I ever turn up",
+          "for my shift with",
+          "a BALL in each",
+          "hand, you'll know",
+          "why."
         ],
         "after_lines": [
           "These hill walks",
@@ -8475,11 +8596,24 @@
         "facing": "south",
         "activation": "talk_to_battle",
         "seen_lines": [
-          "A friendly match?",
-          "Show your teamwork!"
+          "My partner heard",
+          "my echo and turned",
+          "right back. I've",
+          "been trying hand",
+          "signals since.",
+          "Let's battle. If I",
+          "forget and shout,",
+          "you'll hear it",
+          "twice."
         ],
         "won_lines": [
-          "You read the field!"
+          "You got us. I",
+          "called out before",
+          "I put my hand up.",
+          "She turned around",
+          "and the quarry",
+          "called her right",
+          "back again."
         ],
         "after_lines": [
           "These hill walks",
@@ -8510,11 +8644,28 @@
         "facing": "south",
         "activation": "talk_to_battle",
         "seen_lines": [
-          "A friendly match?",
-          "Show your teamwork!"
+          "My partner hears",
+          "the watch click",
+          "and starts before",
+          "I call. That's",
+          "what happens when",
+          "you time every",
+          "drill for a week.",
+          "Want a match",
+          "without the watch?"
         ],
         "won_lines": [
-          "You read the field!"
+          "You got us. I left",
+          "the watch alone",
+          "and still reached",
+          "for my pocket. She",
+          "saw my hand go",
+          "down and went",
+          "without a word.",
+          "Guess I was",
+          "training that hand",
+          "as much as I was",
+          "training her."
         ],
         "after_lines": [
           "These hill walks",
@@ -8545,11 +8696,22 @@
         "facing": "south",
         "activation": "talk_to_battle",
         "seen_lines": [
-          "A friendly match?",
-          "Show your teamwork!"
+          "I got off the boat",
+          "an hour ago and",
+          "I'm still bending",
+          "my knees for a",
+          "swell. Give me a",
+          "battle. Maybe my",
+          "feet will believe",
+          "we're on land."
         ],
         "won_lines": [
-          "You read the field!"
+          "I nearly blamed",
+          "the deck. Look at",
+          "me. I'm standing",
+          "on a floor that's",
+          "been nailed down",
+          "for twenty years."
         ],
         "after_lines": [
           "These hill walks",
@@ -8580,11 +8742,25 @@
         "facing": "south",
         "activation": "talk_to_battle",
         "seen_lines": [
-          "A friendly match?",
-          "Show your teamwork!"
+          "The cook sent me",
+          "upstairs. Said I",
+          "could find",
+          "somebody to battle",
+          "or come back down",
+          "and peel onions.",
+          "You up for a",
+          "match? I'd be",
+          "grateful."
         ],
         "won_lines": [
-          "You read the field!"
+          "I'd better get",
+          "back to the cook.",
+          "I came up here to",
+          "get out of peeling",
+          "onions. Now I've",
+          "got a match to",
+          "tell him about",
+          "while I peel them."
         ],
         "after_lines": [
           "These hill walks",
@@ -8615,11 +8791,22 @@
         "facing": "south",
         "activation": "talk_to_battle",
         "seen_lines": [
-          "A friendly match?",
-          "Show your teamwork!"
+          "I said one more",
+          "cast before lunch.",
+          "Then the fish",
+          "started jumping.",
+          "I've been here an",
+          "hour. Battle me so",
+          "I have a reason to",
+          "put this rod down."
         ],
         "won_lines": [
-          "You read the field!"
+          "I said one more",
+          "cast and stayed an",
+          "hour. Next time",
+          "I'm having lunch",
+          "before I come",
+          "down."
         ],
         "after_lines": [
           "These hill walks",
@@ -8650,11 +8837,26 @@
         "facing": "south",
         "activation": "talk_to_battle",
         "seen_lines": [
-          "A friendly match?",
-          "Show your teamwork!"
+          "I raced my team up",
+          "the hill and won.",
+          "Then I turned",
+          "round and found",
+          "out they'd stopped",
+          "to wait for each",
+          "other. Hold on",
+          "till the last one",
+          "gets here. Then",
+          "we'll battle."
         ],
         "won_lines": [
-          "You read the field!"
+          "I looked back to",
+          "see if they were",
+          "ready and you were",
+          "already moving.",
+          "Come on, team.",
+          "We'll go down at",
+          "the pace of",
+          "whoever's last."
         ],
         "after_lines": [
           "These hill walks",
@@ -8685,11 +8887,23 @@
         "facing": "south",
         "activation": "talk_to_battle",
         "seen_lines": [
-          "A friendly match?",
-          "Show your teamwork!"
+          "I've got my collar",
+          "up over both ears.",
+          "If you want a",
+          "match, wave. I'll",
+          "keep my hands out",
+          "of my pockets so",
+          "my partner can see",
+          "what I mean, too."
         ],
         "won_lines": [
-          "You read the field!"
+          "You got me. My",
+          "partner couldn't",
+          "see my hands past",
+          "the cuffs. Next",
+          "time I'll roll",
+          "them up before I",
+          "ask her to watch."
         ],
         "after_lines": [
           "These hill walks",

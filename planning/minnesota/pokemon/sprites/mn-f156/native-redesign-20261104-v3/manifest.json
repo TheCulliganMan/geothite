@@ -1,0 +1,124 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F156",
+  "tool": "built-in image_gen",
+  "prompt_file": "sprites/mn-f156/native-redesign-20261104-v3/prompt.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "status": "native-candidate",
+  "sprites": [
+    {
+      "id": "mn-344-native-redesign-v3",
+      "species_id": "MN_344",
+      "view": "front",
+      "source": "sprites/mn-f156/native-redesign-20261104-v3/front-back.imagegen.png",
+      "crop": [
+        0,
+        0,
+        1120,
+        724
+      ],
+      "fit": [
+        46,
+        38
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        3775,
+        25870,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-344-native-redesign-v3",
+      "species_id": "MN_344",
+      "view": "back",
+      "source": "sprites/mn-f156/native-redesign-20261104-v3/front-back.imagegen.png",
+      "crop": [
+        1120,
+        0,
+        1052,
+        724
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        3775,
+        25870,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    }
+  ],
+  "pokemon_palettes": {
+    "MN_344": {
+      "species_id": "MN_344",
+      "name": "Tactunnel",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          31,
+          21,
+          3
+        ],
+        [
+          14,
+          8,
+          25
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        3775,
+        25870,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          173,
+          24
+        ],
+        [
+          115,
+          66,
+          206
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#FFAD18",
+        "#7342CE",
+        "#000000"
+      ]
+    }
+  }
+}

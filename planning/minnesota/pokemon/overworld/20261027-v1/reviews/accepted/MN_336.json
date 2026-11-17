@@ -1,0 +1,94 @@
+{
+  "species_id": "MN_336",
+  "name": "Noctector",
+  "family_id": "MN_F152",
+  "dex_number": 208,
+  "status": "accepted",
+  "generation_tool": "built-in image_gen",
+  "selected_manifest": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f152/noctector.manifest-20261104-v3-features.json",
+    "sha256": "3d5d7b04c0396862a1ae1cf1be8a7a4ec12efd5486231bd6d78b061951c5c450",
+    "bytes": 1936
+  },
+  "sources": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f152/noctector.overworld.imagegen-20261104-v1.png",
+      "sha256": "d2244cce2e0f2ac1c65a8c099c64e3cd99634b861f9594eccf39699b3e438805",
+      "bytes": 1345416
+    }
+  ],
+  "prompts": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f152/noctector.overworld.prompt-20261104-v1.txt",
+      "sha256": "7bd50a415b1f812ee264683d706b503de1b406134ea386123d950e64fee3fa38",
+      "bytes": 2674
+    }
+  ],
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/noctector-20261104-v3-features",
+  "normal_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/noctector-20261104-v3-features/review/noctector.normal-8x.png",
+    "sha256": "ee08df470d850ef442440f9de3a342013827623282ff4c474386af85bb8c6ffd",
+    "bytes": 9845
+  },
+  "shiny_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/noctector-20261104-v3-features/review/noctector.shiny-8x.png",
+    "sha256": "c1568d38e5ea611c901525e54792e6927e1a78b38c7b5c70a9f476dba5e859df",
+    "bytes": 9842
+  },
+  "compiled_index": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/noctector-20261104-v3-features/compiled-index.json",
+    "sha256": "01dcda770ba753d5be44929a28cd3cf7ba994489a36f71cb8675f26ab69ce525",
+    "bytes": 7940
+  },
+  "source_feature_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f152/noctector.source-feature-review-20261104-v3.json",
+    "sha256": "8779ba8e19aee8feae0aa70de8074d7f420a916281aa1d08302aa30c2d3894b6",
+    "bytes": 5319
+  },
+  "context_evidence": {
+    "directory": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-04",
+    "input_manifest": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-04/input-manifest.json",
+      "sha256": "ad2427a342ed663a1aa814c037373b011972061c47a527c47cb3c1de0f60daca",
+      "bytes": 1158
+    },
+    "verification": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-04/verification.json",
+      "sha256": "2427fc9d12b1d395b8166e2777e32b9e8d302c008e12c90f2fd041deda63b8f2",
+      "bytes": 16870
+    },
+    "test_log": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/verification/all225-20261104-v5-04.log",
+      "sha256": "75961a34a8cca452ce397f6fc7777d0f2b58681e228ede1064f86b7e24edbe36",
+      "bytes": 217
+    },
+    "normal_actor_poses": 8,
+    "all_six_shiny_native_poses_verified": true
+  },
+  "root_visual_review": {
+    "accepted": true,
+    "notes": "Species-specific head, dark facial marks and themed body silhouette retained in front/profile. Rear poses show backs of ears/crest/head and the actual back/tail, without a pasted frontal face. Six distinct native poses, paired idle/step articulation and both palettes reviewed alongside the trainer on terrain."
+  },
+  "runtime_files": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/noctector/overworld.2bpp",
+      "sha256": "926fdcfd6f67c6d80e004c60efc0ec52f1d0765a64b0ca87ee36d822cead4558",
+      "bytes": 384
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/noctector/overworld.png",
+      "sha256": "e051f0b544dd993fd8b7fa5e46aee27b73e32055889ef36117ac89b348832026",
+      "bytes": 899
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/noctector/overworld.gbcpal",
+      "sha256": "85abd78d5b1d65f7975b05e5994ee41271895e2a199363f27ba5ab5273097d53",
+      "bytes": 8
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/noctector/overworld-shiny.gbcpal",
+      "sha256": "af0516cc14c570195fe70d353d992805545f8e7fbdb8afbd7148816342a13cfd",
+      "bytes": 8
+    }
+  ]
+}

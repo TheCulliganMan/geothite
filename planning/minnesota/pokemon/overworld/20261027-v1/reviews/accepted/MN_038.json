@@ -1,0 +1,94 @@
+{
+  "species_id": "MN_038",
+  "name": "Aurorill",
+  "family_id": "MN_F013",
+  "dex_number": 179,
+  "status": "accepted",
+  "generation_tool": "built-in image_gen",
+  "selected_manifest": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f013/aurorill.manifest-20261104-v3-features.json",
+    "sha256": "1b0e48d8a70fddd6d03010dbc94a496a628e305d65c795f82a54605a24256024",
+    "bytes": 1929
+  },
+  "sources": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f013/aurorill.overworld.imagegen-20261104-v3.png",
+      "sha256": "f3e110370e502be0be2653da4aa6ed0a37f867fb7dca95815d59119c190b8463",
+      "bytes": 1191927
+    }
+  ],
+  "prompts": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f013/aurorill.overworld.prompt-20261104-v3.txt",
+      "sha256": "5ab606499b76b15ebe48f60de4ebb257463123a1c22243a18c44694750ae1fee",
+      "bytes": 1528
+    }
+  ],
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/aurorill-20261104-v3-features",
+  "normal_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/aurorill-20261104-v3-features/review/aurorill.normal-8x.png",
+    "sha256": "7ded4f6ef21a7dc3017918cd2d7ddc28199478622b89a8876eebb111a74b5ddd",
+    "bytes": 9668
+  },
+  "shiny_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/aurorill-20261104-v3-features/review/aurorill.shiny-8x.png",
+    "sha256": "fb1091d4b0d66cb0cd03fc600b9f9958f0c24882653028f6718b6ed7dfd6584f",
+    "bytes": 9668
+  },
+  "compiled_index": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/aurorill-20261104-v3-features/compiled-index.json",
+    "sha256": "bd3ad27521659c00966ea4465c0e7a0aed101273af328d7ebe2071fd3fddcf36",
+    "bytes": 7937
+  },
+  "source_feature_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f013/aurorill.source-feature-review-20261104-v3.json",
+    "sha256": "db4aefe1f76f0330affc8afe8ddb2b9d137166831cd68e6d914ce3139cdc1a4a",
+    "bytes": 4951
+  },
+  "context_evidence": {
+    "directory": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-00",
+    "input_manifest": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-00/input-manifest.json",
+      "sha256": "c4a930dd2097722d52d79f2a1033531b0a00b0dd036abde21f959dfaa19f4800",
+      "bytes": 1158
+    },
+    "verification": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-00/verification.json",
+      "sha256": "757ed1ef7ca038c0007a704d39be0eb5ae590f1e41a84c1dc377d8dec9966208",
+      "bytes": 16870
+    },
+    "test_log": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/verification/all225-20261104-v5-00.log",
+      "sha256": "59265f6f08266b94db09c6c0ddde3af257a8cfbea003fe8d079186efecfdfa9a",
+      "bytes": 217
+    },
+    "normal_actor_poses": 8,
+    "all_six_shiny_native_poses_verified": true
+  },
+  "root_visual_review": {
+    "accepted": true,
+    "notes": "Star mask, separately sampled dark facial marks, two curtain fins and floating tail; rear crown and fin backs have no frontal face. Six distinct native poses, paired idle/step articulation and both palettes reviewed alongside the trainer on terrain."
+  },
+  "runtime_files": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/aurorill/overworld.2bpp",
+      "sha256": "a7e5b454a678d5e2ea9ae9f6247e3ce4fb76b4724e91cfa0a9704524f5561b7a",
+      "bytes": 384
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/aurorill/overworld.png",
+      "sha256": "5ac0701d60e819f599004df293d9bf5c3e7ebf172509c7d43b5fdd3e0da342a7",
+      "bytes": 835
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/aurorill/overworld.gbcpal",
+      "sha256": "4e7aa49f7111d0d96b63b1ba3f5c5d0ad2a90fd4a8bf5586aea0a83ea1079476",
+      "bytes": 8
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/aurorill/overworld-shiny.gbcpal",
+      "sha256": "e1909d040a3f64a5b2a80856c95db701c48f3b03f8a190efb201ee82bf7cadbb",
+      "bytes": 8
+    }
+  ]
+}

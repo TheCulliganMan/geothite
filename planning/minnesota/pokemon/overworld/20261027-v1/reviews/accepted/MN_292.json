@@ -1,0 +1,94 @@
+{
+  "species_id": "MN_292",
+  "name": "Bankmaw",
+  "family_id": "MN_F132",
+  "dex_number": 49,
+  "status": "accepted",
+  "generation_tool": "built-in image_gen",
+  "selected_manifest": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f132/bankmaw.manifest-20261104-v3-features.json",
+    "sha256": "f24960f18be58adcd08f99d5b96961111e3e4194a5905497de81b392c587b033",
+    "bytes": 1923
+  },
+  "sources": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f132/bankmaw.overworld.imagegen-20261104-v3.png",
+      "sha256": "e7a8ceb00cb4c49fa8294a56264488050bdaeecf7f51121574a4aef71a40e9fb",
+      "bytes": 1231339
+    }
+  ],
+  "prompts": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f132/bankmaw.overworld.prompt-20261104-v3.txt",
+      "sha256": "6adbab675d7468f7146bfea70e8dc3f25a3ff337dafab18e48942b3c2f9daa5f",
+      "bytes": 1523
+    }
+  ],
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/bankmaw-20261104-v3-features",
+  "normal_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/bankmaw-20261104-v3-features/review/bankmaw.normal-8x.png",
+    "sha256": "8c54d147120a976674036f1a0210af2274e21cf5e948098ff6fb1d7ed7697ce5",
+    "bytes": 8850
+  },
+  "shiny_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/bankmaw-20261104-v3-features/review/bankmaw.shiny-8x.png",
+    "sha256": "246afd8fa0b0a41df520dba05ac7c9be69da1d49a688075a6feede1fc44f20e5",
+    "bytes": 8853
+  },
+  "compiled_index": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/bankmaw-20261104-v3-features/compiled-index.json",
+    "sha256": "5e9d5115a099ed2e742bd14f39f279d30265f26db998cd68f0db2268af24960c",
+    "bytes": 7932
+  },
+  "source_feature_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f132/bankmaw.source-feature-review-20261104-v3.json",
+    "sha256": "8b88b5fa4ff6f628fd2b1e39b0d2944dc44005932313874c9ed09914f8dbc82f",
+    "bytes": 5007
+  },
+  "context_evidence": {
+    "directory": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-01",
+    "input_manifest": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-01/input-manifest.json",
+      "sha256": "ffeb8afcd879f59e506ec0338a37128e322b23baa7378c0a66b664db5564083e",
+      "bytes": 1152
+    },
+    "verification": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-01/verification.json",
+      "sha256": "1e9dd46aa7e66018650cac2a456e2935e6d8a7f28072d5fe36819d8991542a66",
+      "bytes": 16840
+    },
+    "test_log": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/verification/all225-20261104-v5-01.log",
+      "sha256": "0e1ad30a0d8e98e2431b49f4e9a8aff62a0352430d7171451425c4d742d8b942",
+      "bytes": 217
+    },
+    "normal_actor_poses": 8,
+    "all_six_shiny_native_poses_verified": true
+  },
+  "root_visual_review": {
+    "accepted": true,
+    "notes": "Low snapping-turtle face beneath a terraced shell overhang, splayed forefeet and distinct true rear shell; side has hooked beak and saw tail. Six distinct native poses, paired idle/step articulation and both palettes reviewed alongside the trainer on terrain."
+  },
+  "runtime_files": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/bankmaw/overworld.2bpp",
+      "sha256": "beda53430202b9b9d51cfc4dc15154065d216ef9c0cc3d2e4b5a3d078844e53e",
+      "bytes": 384
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/bankmaw/overworld.png",
+      "sha256": "4944854fe4f21b616783e898f0df32a0b33936a34a0c1db6621ed8e30d5c4951",
+      "bytes": 754
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/bankmaw/overworld.gbcpal",
+      "sha256": "c6f0f9bd93eb60224fb015be000a21279aad300ca2bf9a3f39b6922fa87d555c",
+      "bytes": 8
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/bankmaw/overworld-shiny.gbcpal",
+      "sha256": "58575c9643cedd303d9a8b33941d7e3d6625e6fea72cb5565cdb938d1790d5bc",
+      "bytes": 8
+    }
+  ]
+}

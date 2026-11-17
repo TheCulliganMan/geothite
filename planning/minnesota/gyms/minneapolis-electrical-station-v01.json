@@ -1,0 +1,395 @@
+{
+  "schema_version": 1,
+  "status": "Unselected review candidate; compiled terrain and local controller course pass, including all six controls. Existing-save migration and broader regional review remain open.",
+  "gyms": [
+    {
+      "slot": 3,
+      "id": "MnMinneapolisGym",
+      "constant": "MN_MINNEAPOLIS_GYM",
+      "city": "MINNEAPOLIS",
+      "leader": "AVRIN",
+      "trainer_class": "COOLTRAINERF",
+      "leader_sprite": "SPRITE_LASS",
+      "leader_at": [
+        6,
+        3
+      ],
+      "badge_flag": "ENGINE_PLAINBADGE",
+      "requires": [
+        "BADGE_2"
+      ],
+      "reward": "TM_THUNDERPUNCH",
+      "party": [
+        {
+          "species": "ZAPSAP",
+          "level": 19,
+          "moves": [
+            "THUNDERSHOCK",
+            "ABSORB",
+            "THUNDER_WAVE",
+            "MEGA_DRAIN"
+          ]
+        },
+        {
+          "species": "CARTICK",
+          "level": 20,
+          "moves": [
+            "SMOG",
+            "METAL_CLAW",
+            "POISON_GAS",
+            "MUD_SLAP"
+          ]
+        },
+        {
+          "species": "ZAPSAP",
+          "level": 21,
+          "moves": [
+            "THUNDERSHOCK",
+            "ABSORB",
+            "THUNDER_WAVE",
+            "MEGA_DRAIN"
+          ]
+        }
+      ],
+      "rows": [
+        "ZLTTTRZ",
+        "Zl...rZ",
+        "ZuvBuvZ",
+        "ZuvAuvZ",
+        "X.....Y",
+        "X.cde.Y",
+        "X.....Y",
+        "X.ecd.Y",
+        "X.....Y",
+        "Z.S.E.Z",
+        "Z..s..Z"
+      ],
+      "art": {
+        "#": [
+          "game_corner",
+          "00"
+        ],
+        "L": [
+          "game_corner",
+          "22"
+        ],
+        "T": [
+          "game_corner",
+          "26"
+        ],
+        "R": [
+          "game_corner",
+          "24"
+        ],
+        "l": [
+          "game_corner",
+          "23"
+        ],
+        "r": [
+          "game_corner",
+          "25"
+        ],
+        "u": [
+          "game_corner",
+          "20"
+        ],
+        "v": [
+          "game_corner",
+          "21"
+        ],
+        ".": [
+          "game_corner",
+          "01"
+        ],
+        "c": [
+          "facility",
+          "02"
+        ],
+        "S": [
+          "game_corner",
+          "1d"
+        ],
+        "E": [
+          "game_corner",
+          "1e"
+        ],
+        "s": [
+          "game_corner",
+          "0c"
+        ],
+        "A": [
+          "facility",
+          "0b"
+        ],
+        "B": [
+          "facility",
+          "0b"
+        ],
+        "X": [
+          "facility",
+          "12"
+        ],
+        "Y": [
+          "facility",
+          "13"
+        ],
+        "Z": [
+          "game_corner",
+          "00"
+        ],
+        "d": [
+          "facility",
+          "12"
+        ],
+        "e": [
+          "facility",
+          "13"
+        ]
+      },
+      "trainers": [
+        {
+          "id": "MN_GYM_3_TRAINER_1",
+          "name": "LENVI",
+          "trainer_class": "SCIENTIST",
+          "sprite": "SPRITE_SCIENTIST",
+          "at": [
+            3,
+            17
+          ],
+          "party": [
+            {
+              "species": "ZAPSAP",
+              "level": 17,
+              "moves": [
+                "THUNDERSHOCK",
+                "ABSORB",
+                "THUNDER_WAVE",
+                "MEGA_DRAIN"
+              ]
+            }
+          ],
+          "optional": false,
+          "before_lines": [
+            "A spark is enough.",
+            "Watch my MAREEP!"
+          ],
+          "after_lines": [
+            "First, beat JOSSA.",
+            "Then try the left",
+            "can in the top row"
+          ]
+        },
+        {
+          "id": "MN_GYM_3_TRAINER_2",
+          "name": "JOSSA",
+          "trainer_class": "SUPER_NERD",
+          "sprite": "SPRITE_SUPER_NERD",
+          "at": [
+            10,
+            14
+          ],
+          "party": [
+            {
+              "species": "CARTICK",
+              "level": 18,
+              "moves": [
+                "SMOG",
+                "METAL_CLAW",
+                "POISON_GAS",
+                "MUD_SLAP"
+              ]
+            },
+            {
+              "species": "PIPULSE",
+              "level": 18,
+              "moves": [
+                "THUNDERSHOCK",
+                "FOCUS_ENERGY",
+                "SPARK",
+                "QUICK_ATTACK"
+              ]
+            }
+          ],
+          "optional": false,
+          "before_lines": [
+            "My team is wired",
+            "for this battle!"
+          ],
+          "after_lines": [
+            "The second switch",
+            "is right beside",
+            "the first one.",
+            "Stay in that row."
+          ],
+          "requires": [
+            "EVENT_MN_GYM_3_TRAINER_1_DEFEATED"
+          ]
+        }
+      ],
+      "stations": [],
+      "gates": [
+        {
+          "at": [
+            3,
+            3
+          ],
+          "requires": [
+            "EVENT_MN_GYM_3_TRAINER_1_DEFEATED",
+            "EVENT_MN_GYM_3_TRAINER_2_DEFEATED",
+            "EVENT_MN_GYM_3_FIRST_SWITCH_ON"
+          ],
+          "open_symbol": ".",
+          "event": "EVENT_MN_GYM_3_FIRST_GATE_OPEN"
+        },
+        {
+          "at": [
+            3,
+            2
+          ],
+          "requires": [
+            "EVENT_MN_GYM_3_TRAINER_1_DEFEATED",
+            "EVENT_MN_GYM_3_TRAINER_2_DEFEATED",
+            "EVENT_MN_GYM_3_FIRST_SWITCH_ON",
+            "EVENT_MN_GYM_3_SECOND_SWITCH_ON"
+          ],
+          "open_symbol": ".",
+          "event": "EVENT_MN_GYM_3_COURT_OPEN"
+        }
+      ],
+      "guide": [
+        "Beat both trainers.",
+        "Then use the",
+        "control consoles.",
+        "Two linked switches",
+        "open the way."
+      ],
+      "walkthrough": [
+        "MN_GYM_3_TRAINER_1",
+        "MN_GYM_3_TRAINER_2",
+        "UPPER_LEFT",
+        "UPPER_MIDDLE"
+      ],
+      "dimensions_metatiles": [
+        7,
+        11
+      ],
+      "arrival_core": [
+        6,
+        19
+      ],
+      "exit_tiles_core": [
+        [
+          6,
+          21
+        ],
+        [
+          7,
+          21
+        ]
+      ],
+      "guide_at": [
+        9,
+        19
+      ],
+      "leader_court_locked": true,
+      "before_lines": [
+        "I am AVRIN.",
+        "A spark can change",
+        "the whole battle!"
+      ],
+      "victory_lines": [
+        "You kept the spark",
+        "alive to the end."
+      ],
+      "after_lines": [
+        "Before ST. PAUL,",
+        "read the note at",
+        "the dispatch desk."
+      ],
+      "routers": [],
+      "switch_puzzle": {
+        "controls": [
+          {
+            "id": "UPPER_LEFT",
+            "at": [
+              5,
+              11
+            ]
+          },
+          {
+            "id": "UPPER_MIDDLE",
+            "at": [
+              7,
+              11
+            ]
+          },
+          {
+            "id": "UPPER_RIGHT",
+            "at": [
+              9,
+              11
+            ]
+          },
+          {
+            "id": "LOWER_LEFT",
+            "at": [
+              5,
+              15
+            ]
+          },
+          {
+            "id": "LOWER_MIDDLE",
+            "at": [
+              7,
+              15
+            ]
+          },
+          {
+            "id": "LOWER_RIGHT",
+            "at": [
+              9,
+              15
+            ]
+          }
+        ],
+        "sequence": [
+          "UPPER_LEFT",
+          "UPPER_MIDDLE"
+        ],
+        "events": [
+          "EVENT_MN_GYM_3_FIRST_SWITCH_ON",
+          "EVENT_MN_GYM_3_SECOND_SWITCH_ON"
+        ],
+        "requires": [
+          "EVENT_MN_GYM_3_TRAINER_1_DEFEATED",
+          "EVENT_MN_GYM_3_TRAINER_2_DEFEATED"
+        ],
+        "denied_lines": [
+          "Beat LENVI and",
+          "JOSSA first."
+        ],
+        "first_lines": [
+          "Click! First lock",
+          "released. Find the",
+          "switch beside it."
+        ],
+        "second_lines": [
+          "Click! Both locks",
+          "are released."
+        ],
+        "reset_lines": [
+          "No switch here.",
+          "Both locks reset."
+        ],
+        "solved_lines": [
+          "Both locks are",
+          "already released."
+        ]
+      },
+      "barriers": [
+        "A",
+        "B"
+      ]
+    }
+  ]
+}

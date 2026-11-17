@@ -637,8 +637,8 @@ fn safari_native_mutation_replays_real_rng_and_rejects_bad_traces_atomically() {
 #[test]
 #[ignore = "requires CRYSTAL_SAFARI_TEST_PACK with CANOE"]
 fn canoe_safari_admission_needs_no_surf_partner_and_still_charges_once() {
-    let data = configured();
-    let (mut state, mut map) = ranger_fixture(&data);
+    let data = &base().data;
+    let (mut state, mut map) = ranger_fixture(data);
     for pokemon in state.storage.party.pokemon.iter_mut().flatten() {
         pokemon.moves.clear();
     }

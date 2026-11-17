@@ -144,6 +144,23 @@ pub(super) fn collision<'a>(r: &'a CrystalRuntime, m: &MapModule, p: Point) -> O
 }
 
 pub(super) fn walk(c: &mut VisibleShellController, r: &CrystalRuntime, target: Point) {
+    walk_with_encounters(c, r, target, |c| {
+        panic!(
+            "unexpected interior battle: {:?}",
+            c.snapshot().expect("battle").battle
+        );
+    });
+}
+
+pub(super) fn walk_with_encounters(
+    c: &mut VisibleShellController,
+    r: &CrystalRuntime,
+    target: Point,
+    mut encounter: impl FnMut(&mut VisibleShellController),
+) {
+    if c.snapshot().expect("walk input owner").battle.is_some() {
+        encounter(c);
+    }
     let snapshot = c.snapshot().expect("walk origin");
     let name = snapshot.overworld.map_name;
     let m = &r.data().maps[&name];
@@ -202,6 +219,13 @@ pub(super) fn walk(c: &mut VisibleShellController, r: &CrystalRuntime, target: P
     for (from, to) in route.into_iter().rev() {
         for _ in 0..8 {
             press(c, face(from, to));
+            if c.snapshot()
+                .expect("native walking encounter")
+                .battle
+                .is_some()
+            {
+                encounter(c);
+            }
             if c.snapshot().expect("walking map").overworld.map_name != name {
                 return;
             }
@@ -209,7 +233,14 @@ pub(super) fn walk(c: &mut VisibleShellController, r: &CrystalRuntime, target: P
                 break;
             }
         }
-        assert_eq!(at(c), to, "{name} native step");
+        let snapshot = c.snapshot().expect("native walking state");
+        assert_eq!(
+            at(c),
+            to,
+            "{name} native step; text {:?}; phase {:?}",
+            snapshot.ui.text,
+            snapshot.phase
+        );
     }
     // A native exit carpet owns the following outward step, not merely the
     // approach onto its painted tile. Keep that final step on the same input path.

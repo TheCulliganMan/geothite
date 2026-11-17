@@ -82,10 +82,10 @@
     "caught_event": "EVENT_MN_DEVILS_KETTLE_CAUGHT"
   },
   "discovery_text": "The two falls divide around a dark rock. One current slips into the hollow. Beyond it, another curls back toward the pool.",
-  "before_restoration_text": "There is a hollow in the current. Something should be here.",
-  "encounter_text": "KETTLURK rises between the two currents. Approach it?",
-  "retry_text": "KETTLURK slips below the falls. The current may bring it back when you return.",
-  "caught_text": "The two falls keep flowing. KETTLURK was recorded in the POKEDEX.",
+  "before_restoration_text": "Spray hides the far side of the rock. For a moment it clears. There's nothing in the hollow but water.",
+  "encounter_text": "KETTLURK rises behind the rock. You recognize the fin that caught in the bars. It opens the fin all the way and lets the water carry it closer. Step toward the bank?",
+  "retry_text": "KETTLURK folds its fin and slips behind the falls. A leaf comes back around the rock after it's gone.",
+  "caught_text": "The BALL goes still. A leaf circles the rock and drifts back to your feet.",
   "contracts": [
     "The main story never requires encountering or capturing Kettlurk.",
     "The optional trail is accessible before restoration; only the creature is gated.",

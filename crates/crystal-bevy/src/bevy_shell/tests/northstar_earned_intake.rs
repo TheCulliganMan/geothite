@@ -5,14 +5,18 @@ use crystal_runtime::CrystalRuntime;
 
 use super::{VisibleShellController, choice, continue_in_place, event, finish, talk, walk};
 
-pub(super) fn present(r: &CrystalRuntime) -> bool {
+pub(in crate::bevy_shell::tests) fn present(r: &CrystalRuntime) -> bool {
     r.data()
         .maps
         .get("MnBoundaryIntake")
         .is_some_and(|room| room.scripts.contains_key("MnVerdigrimBypass"))
 }
 
-pub(super) fn restore(c: &mut VisibleShellController, root: &AssetRoot, r: &CrystalRuntime) {
+pub(in crate::bevy_shell::tests) fn restore(
+    c: &mut VisibleShellController,
+    root: &AssetRoot,
+    r: &CrystalRuntime,
+) {
     assert!(event(c, "EVENT_MN_VERDIGRIM_EXPOSED"));
     assert!(event(c, "EVENT_MN_VERDIGRIM_COUNTER_CURRENT"));
     assert!(event(c, "EVENT_MN_REED_BOUNDARY_DEFEATED"));

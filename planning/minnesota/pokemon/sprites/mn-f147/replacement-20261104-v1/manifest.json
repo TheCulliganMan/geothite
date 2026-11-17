@@ -1,0 +1,243 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F147",
+  "tool": "built-in image_gen",
+  "prompt_file": "sprites/mn-f147/replacement-20261104-v1/prompt.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "status": "native-front-back-candidate-reviewed",
+  "sprites": [
+    {
+      "id": "mn-323-flurrit-v1",
+      "species_id": "MN_323",
+      "view": "front",
+      "source": "sprites/mn-f147/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        0,
+        0,
+        550,
+        627
+      ],
+      "fit": [
+        34,
+        38
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        31607,
+        24043,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-323-flurrit-v1",
+      "species_id": "MN_323",
+      "view": "back",
+      "source": "sprites/mn-f147/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        0,
+        627,
+        550,
+        627
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        31607,
+        24043,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-324-hareskift-v1",
+      "species_id": "MN_324",
+      "view": "front",
+      "source": "sprites/mn-f147/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        550,
+        0,
+        704,
+        627
+      ],
+      "fit": [
+        52,
+        42
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        32632,
+        22954,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-324-hareskift-v1",
+      "species_id": "MN_324",
+      "view": "back",
+      "source": "sprites/mn-f147/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        550,
+        627,
+        704,
+        627
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        32632,
+        22954,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    }
+  ],
+  "pokemon_palettes": {
+    "MN_323": {
+      "species_id": "MN_323",
+      "name": "Flurrit",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          23,
+          27,
+          30
+        ],
+        [
+          11,
+          15,
+          23
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        31607,
+        24043,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          189,
+          222,
+          247
+        ],
+        [
+          90,
+          123,
+          189
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#BDDEF7",
+        "#5A7BBD",
+        "#000000"
+      ]
+    },
+    "MN_324": {
+      "species_id": "MN_324",
+      "name": "Hareskift",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          24,
+          27,
+          31
+        ],
+        [
+          10,
+          13,
+          22
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        32632,
+        22954,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          198,
+          222,
+          255
+        ],
+        [
+          82,
+          107,
+          181
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#C6DEFF",
+        "#526BB5",
+        "#000000"
+      ]
+    }
+  },
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "ea90f66208fd82950d54b207223e6803f2d38ed22b1181127ef5e308421fe549",
+    "notes": "Native review: long ears and broad sweeping hind feet retain natural quadruped hare anatomy; small face and eye ink remain separate from white muzzle. Juvenile/adult proportions differ. Close rear portraits retain ear, nape and shoulder shadows. Candidate for user feedback."
+  }
+}

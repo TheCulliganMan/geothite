@@ -141,6 +141,16 @@ fn encounter_and_capture(
     a: [i16; 2],
     b: [i16; 2],
 ) {
+    encounter_and_capture_one_of(c, r, &[target], a, b);
+}
+
+fn encounter_and_capture_one_of(
+    c: &mut VisibleShellController,
+    r: &CrystalRuntime,
+    targets: &[&str],
+    a: [i16; 2],
+    b: [i16; 2],
+) -> String {
     let mut seen = std::collections::BTreeMap::<String, usize>::new();
     // A 4% slot needs more walking than the common-resident smoke checks.
     for step in 0..4096 {
@@ -149,12 +159,12 @@ fn encounter_and_capture(
             *seen
                 .entry(battle.enemy_pokemon.species.id.clone())
                 .or_default() += 1;
-            if battle.enemy_pokemon.species.id == target {
+            if targets.contains(&battle.enemy_pokemon.species.id.as_str()) {
                 assert!(
                     super::rochester_earned::try_recruit_with_ball(c, r, "MASTER_BALL"),
                     "actual target capture"
                 );
-                return;
+                return battle.enemy_pokemon.species.id;
             }
             super::rochester::flee(c);
             continue;
@@ -175,7 +185,9 @@ fn encounter_and_capture(
         press(c, direction);
         c.wait_frames(17 + step % 11).expect("ordinary idle frames");
     }
-    panic!("did not naturally encounter {target} through production movement; observed {seen:?}");
+    panic!(
+        "did not naturally encounter {targets:?} through production movement; observed {seen:?}"
+    );
 }
 
 fn checkpoint(c: &mut VisibleShellController, name: &str) {
@@ -367,3 +379,84 @@ mod water_caves;
 
 #[path = "minnesota_ecology.rs"]
 mod ecology;
+
+#[test]
+#[ignore = "requires CRYSTAL_WINONA_TEST_PACK with the spawn location revision"]
+fn spawn_locations_native_walking_capture_and_continue() {
+    for (map, from, to, hour, species) in [
+        ("MnR01Cave1F", [5, 3], [6, 3], 12, "TESSLARV"),
+        ("MnR03Cave1F", [5, 3], [6, 3], 12, "CHORIP"),
+        ("MnR03C00R01", [20, 2], [21, 2], 22, "CHORIP"),
+        ("MnR06C00R01", [52, 6], [53, 6], 12, "PITCHWICK"),
+        ("MnR08C01R00", [2, 28], [3, 28], 12, "BRISTUB"),
+        ("MnR19C00R01", [22, 2], [23, 2], 12, "TAPACITOR"),
+    ] {
+        let (root, runtime, mut controller) = fixture_at_hour(map, from, false, false, hour);
+        encounter_and_capture(&mut controller, &runtime, species, from, to);
+        verify_capture(&controller, &runtime, species);
+        controller = super::r10_gallery::continue_save(root, runtime.clone(), &mut controller);
+        verify_capture(&controller, &runtime, species);
+    }
+}
+
+#[test]
+#[ignore = "requires CRYSTAL_WINONA_TEST_PACK with the regional ecology revision"]
+fn region_ecology_walks_catches_and_continues_throughout_minnesota() {
+    // Northstar follows the host clock, so the cases with a day/night turnover
+    // accept authored targets across all periods.
+    type Course<'a> = (&'a str, [i16; 2], [i16; 2], &'a [&'a str]);
+    let courses: [Course<'_>; 14] = [
+        ("MnR01Cave1F", [5, 3], [6, 3], &["HUSHBAT", "TACTUNNEL"]),
+        ("MnR02C00R00", [6, 8], [7, 8], &["NIBBIN"]),
+        ("MnR03C00R01", [20, 2], [21, 2], &["TESSLARV"]),
+        ("MnR04C00R00", [10, 26], [11, 26], &["BURRBUD"]),
+        ("MnR06C00R01", [52, 6], [53, 6], &["TRAILPUP", "BITTERRY"]),
+        ("MnR08C01R00", [2, 28], [3, 28], &["LATCHQUILL"]),
+        ("MnR09Cave1F", [5, 3], [6, 3], &["CARTICK", "DEEPULSE"]),
+        (
+            "MnR11C00R01",
+            [16, 2],
+            [17, 2],
+            &["CUBLUFF", "LOOMLET", "TALURSA"],
+        ),
+        ("MnR12C00R00", [2, 28], [3, 28], &["RAKEHORN"]),
+        ("MnR13C00R01", [32, 18], [33, 18], &["FORTIGARD"]),
+        (
+            "MnR16C00R00",
+            [2, 32],
+            [3, 32],
+            &["STEMBOLT", "REKINK", "PENDULOP"],
+        ),
+        (
+            "MnR17C00R01",
+            [19, 30],
+            [19, 31],
+            &["SHEDSTAG", "LATCHQUILL", "CROOKIT", "BRISTUB", "DRIFTPEG"],
+        ),
+        ("MnR18C00R00", [6, 30], [7, 30], &["HISSIP"]),
+        (
+            "MnR19C00R01",
+            [22, 2],
+            [23, 2],
+            &["REKINK", "PENDULOP", "SETTKIT"],
+        ),
+    ];
+    for (map, from, to, targets) in courses {
+        let (root, runtime, mut controller) = fixture(map, from, false, false);
+        let species = encounter_and_capture_one_of(&mut controller, &runtime, targets, from, to);
+        verify_capture(&controller, &runtime, &species);
+        controller = super::r10_gallery::continue_save(root, runtime.clone(), &mut controller);
+        verify_capture(&controller, &runtime, &species);
+    }
+}
+
+#[test]
+#[ignore = "requires CRYSTAL_WINONA_TEST_PACK with the regional ecology revision"]
+fn region_ecology_surfs_catches_and_continues_in_the_river_valley() {
+    let (root, runtime, mut controller) = fixture("MnR03C00R00", [11, 6], true, false);
+    super::north_shore::mount_surf(&mut controller, GameButton::Right, (12, 6));
+    encounter_and_capture(&mut controller, &runtime, "CHORIP", [12, 6], [12, 7]);
+    verify_capture(&controller, &runtime, "CHORIP");
+    controller = super::r10_gallery::continue_save(root, runtime.clone(), &mut controller);
+    verify_capture(&controller, &runtime, "CHORIP");
+}

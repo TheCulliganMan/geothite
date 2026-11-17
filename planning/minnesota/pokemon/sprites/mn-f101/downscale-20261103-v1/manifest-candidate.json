@@ -1,0 +1,352 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F101",
+  "status": "rejected-as-general-fix",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_218": {
+      "species_id": "MN_218",
+      "name": "Zapsap",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          28,
+          28,
+          15
+        ],
+        [
+          8,
+          14,
+          7
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        16284,
+        7624,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          231,
+          231,
+          123
+        ],
+        [
+          66,
+          115,
+          57
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#E7E77B",
+        "#427339",
+        "#000000"
+      ]
+    },
+    "MN_219": {
+      "species_id": "MN_219",
+      "name": "Tapacitor",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          30,
+          26,
+          13
+        ],
+        [
+          6,
+          12,
+          9
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        14174,
+        9606,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          247,
+          214,
+          107
+        ],
+        [
+          49,
+          99,
+          74
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#F7D66B",
+        "#31634A",
+        "#000000"
+      ]
+    },
+    "MN_220": {
+      "species_id": "MN_220",
+      "name": "Beetynamo",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          25,
+          27,
+          12
+        ],
+        [
+          10,
+          6,
+          14
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        13177,
+        14538,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          206,
+          222,
+          99
+        ],
+        [
+          82,
+          49,
+          115
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#CEDE63",
+        "#523173",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f101/prompt-v1.txt",
+  "reference_mapping": "sprites/mn-f101/reference-mapping-v1.json",
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-218-zapsap-v1",
+      "species_id": "MN_218",
+      "view": "front",
+      "source": "sprites/mn-f101/mn-218-220.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        430,
+        550
+      ],
+      "fit": [
+        42,
+        42
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        16284,
+        7624,
+        0
+      ],
+      "white_detail_min_samples": 32,
+      "sampling": "source_center",
+      "exterior_contour": "source_backed"
+    },
+    {
+      "id": "mn-218-zapsap-v1",
+      "species_id": "MN_218",
+      "view": "back",
+      "source": "sprites/mn-f101/mn-218-220.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        550,
+        430,
+        474
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        16284,
+        7624,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed"
+    },
+    {
+      "id": "mn-219-tapacitor-v1",
+      "species_id": "MN_219",
+      "view": "front",
+      "source": "sprites/mn-f101/mn-218-220.front-back.imagegen-v1.png",
+      "crop": [
+        430,
+        0,
+        525,
+        550
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        14174,
+        9606,
+        0
+      ],
+      "white_detail_min_samples": 8,
+      "sampling": "source_center",
+      "exterior_contour": "source_backed"
+    },
+    {
+      "id": "mn-219-tapacitor-v1",
+      "species_id": "MN_219",
+      "view": "back",
+      "source": "sprites/mn-f101/mn-218-220.front-back.imagegen-v1.png",
+      "crop": [
+        430,
+        550,
+        525,
+        474
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        14174,
+        9606,
+        0
+      ],
+      "white_detail_min_samples": 8,
+      "sampling": "source_center",
+      "exterior_contour": "source_backed"
+    },
+    {
+      "id": "mn-220-beetynamo-v1",
+      "species_id": "MN_220",
+      "view": "front",
+      "source": "sprites/mn-f101/mn-218-220.front-back.imagegen-v1.png",
+      "crop": [
+        955,
+        0,
+        581,
+        550
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13177,
+        14538,
+        0
+      ],
+      "white_detail_min_samples": 8,
+      "sampling": "source_center",
+      "exterior_contour": "source_backed"
+    },
+    {
+      "id": "mn-220-beetynamo-v1",
+      "species_id": "MN_220",
+      "view": "back",
+      "source": "sprites/mn-f101/mn-218-220.front-back.imagegen-v1.png",
+      "crop": [
+        955,
+        550,
+        581,
+        474
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13177,
+        14538,
+        0
+      ],
+      "white_detail_min_samples": 8,
+      "sampling": "source_center",
+      "exterior_contour": "source_backed"
+    }
+  ],
+  "source_sha256": "72373dc427ae02315c267a51df31e9213187eff6825bf23b56987e9f6902faa5",
+  "conversion_note": "Front white-detail threshold32 chosen for large eye whites to preserve pupil contrast; earlier default16 native render retained in versions. Target palettes and source anatomy unchanged.",
+  "conversion_revision": "Original selected source; source-center sampling with source-backed contours. Compare before selecting; preserve species palettes and front/back orientation.",
+  "original_manifest": "sprites/mn-f101/manifest.json",
+  "original_style_reference": {
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png"
+    ]
+  },
+  "review_note": "User found this 23-family source-center conversion batch did not resolve the sprite defects. Do not select automatically. Preserve original sources; improve detail-preserving downscaling."
+}

@@ -1,0 +1,643 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F101",
+  "status": "later-evolutions-rejected-by-user",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_218": {
+      "species_id": "MN_218",
+      "name": "Zapsap",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          28,
+          28,
+          15
+        ],
+        [
+          8,
+          14,
+          7
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        16284,
+        7624,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          231,
+          231,
+          123
+        ],
+        [
+          66,
+          115,
+          57
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#E7E77B",
+        "#427339",
+        "#000000"
+      ]
+    },
+    "MN_219": {
+      "species_id": "MN_219",
+      "name": "Tapacitor",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          30,
+          26,
+          13
+        ],
+        [
+          6,
+          12,
+          9
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        14174,
+        9606,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          247,
+          214,
+          107
+        ],
+        [
+          49,
+          99,
+          74
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#F7D66B",
+        "#31634A",
+        "#000000"
+      ]
+    },
+    "MN_220": {
+      "species_id": "MN_220",
+      "name": "Beetynamo",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          25,
+          27,
+          12
+        ],
+        [
+          10,
+          6,
+          14
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        13177,
+        14538,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          206,
+          222,
+          99
+        ],
+        [
+          82,
+          49,
+          115
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#CEDE63",
+        "#523173",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f101/native-refinement-20261103-r3/prompt-mn-218-front.txt",
+  "reference_mapping": "sprites/mn-f101/reference-mapping-v1.json",
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-218-native-refinement-20261103-r3",
+      "species_id": "MN_218",
+      "view": "front",
+      "source": "sprites/mn-f101/native-refinement-20261103-r3/mn-218.front.imagegen.png",
+      "crop": [
+        0,
+        0,
+        1254,
+        1254
+      ],
+      "fit": [
+        40,
+        40
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        16284,
+        7624,
+        0
+      ],
+      "white_detail_min_samples": 32,
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "pixel_edits": [
+        {
+          "x": 19,
+          "y": 37,
+          "from": 1,
+          "to": 3
+        },
+        {
+          "x": 26,
+          "y": 37,
+          "from": 1,
+          "to": 3
+        },
+        {
+          "x": 27,
+          "y": 37,
+          "from": 1,
+          "to": 3
+        },
+        {
+          "x": 17,
+          "y": 38,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 18,
+          "y": 39,
+          "from": 0,
+          "to": 3
+        },
+        {
+          "x": 25,
+          "y": 39,
+          "from": 2,
+          "to": 3
+        },
+        {
+          "x": 18,
+          "y": 40,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 25,
+          "y": 40,
+          "from": 2,
+          "to": 3
+        },
+        {
+          "x": 17,
+          "y": 41,
+          "from": 0,
+          "to": 3
+        },
+        {
+          "x": 18,
+          "y": 41,
+          "from": 1,
+          "to": 3
+        },
+        {
+          "x": 19,
+          "y": 41,
+          "from": 1,
+          "to": 3
+        },
+        {
+          "x": 26,
+          "y": 41,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 27,
+          "y": 41,
+          "from": 1,
+          "to": 3
+        },
+        {
+          "x": 24,
+          "y": 42,
+          "from": 1,
+          "to": 3
+        },
+        {
+          "x": 26,
+          "y": 42,
+          "from": 1,
+          "to": 3
+        },
+        {
+          "x": 27,
+          "y": 42,
+          "from": 1,
+          "to": 3
+        }
+      ]
+    },
+    {
+      "id": "mn-218-zapsap-v1",
+      "species_id": "MN_218",
+      "view": "back",
+      "source": "sprites/mn-f101/mn-218-220.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        550,
+        430,
+        474
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        16284,
+        7624,
+        0
+      ]
+    },
+    {
+      "id": "mn-219-native-refinement-20261103-r3",
+      "species_id": "MN_219",
+      "view": "front",
+      "source": "sprites/mn-f101/native-refinement-20261103-r3/mn-219.front.imagegen.png",
+      "crop": [
+        0,
+        0,
+        1312,
+        1199
+      ],
+      "fit": [
+        48,
+        48
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        14174,
+        9606,
+        0
+      ],
+      "white_detail_min_samples": 8,
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "pixel_edits": [
+        {
+          "x": 29,
+          "y": 20,
+          "from": 2,
+          "to": 3
+        },
+        {
+          "x": 31,
+          "y": 20,
+          "from": 1,
+          "to": 3
+        },
+        {
+          "x": 32,
+          "y": 20,
+          "from": 1,
+          "to": 3
+        },
+        {
+          "x": 31,
+          "y": 21,
+          "from": 1,
+          "to": 0
+        },
+        {
+          "x": 32,
+          "y": 21,
+          "from": 1,
+          "to": 3
+        },
+        {
+          "x": 30,
+          "y": 22,
+          "from": 0,
+          "to": 3
+        },
+        {
+          "x": 31,
+          "y": 22,
+          "from": 1,
+          "to": 0
+        },
+        {
+          "x": 32,
+          "y": 22,
+          "from": 1,
+          "to": 3
+        },
+        {
+          "x": 29,
+          "y": 23,
+          "from": 1,
+          "to": 3
+        },
+        {
+          "x": 30,
+          "y": 23,
+          "from": 1,
+          "to": 0
+        },
+        {
+          "x": 31,
+          "y": 23,
+          "from": 1,
+          "to": 0
+        },
+        {
+          "x": 32,
+          "y": 23,
+          "from": 1,
+          "to": 3
+        },
+        {
+          "x": 29,
+          "y": 24,
+          "from": 1,
+          "to": 3
+        },
+        {
+          "x": 30,
+          "y": 24,
+          "from": 1,
+          "to": 3
+        },
+        {
+          "x": 31,
+          "y": 24,
+          "from": 1,
+          "to": 3
+        },
+        {
+          "x": 32,
+          "y": 24,
+          "from": 2,
+          "to": 3
+        }
+      ]
+    },
+    {
+      "id": "mn-219-tapacitor-v1",
+      "species_id": "MN_219",
+      "view": "back",
+      "source": "sprites/mn-f101/mn-218-220.front-back.imagegen-v1.png",
+      "crop": [
+        430,
+        550,
+        525,
+        474
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        14174,
+        9606,
+        0
+      ],
+      "white_detail_min_samples": 8
+    },
+    {
+      "id": "mn-220-native-refinement-20261103-r3",
+      "species_id": "MN_220",
+      "view": "front",
+      "source": "sprites/mn-f101/native-refinement-20261103-r3/mn-220.front.imagegen.png",
+      "crop": [
+        0,
+        0,
+        1275,
+        1234
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13177,
+        14538,
+        0
+      ],
+      "white_detail_min_samples": 8,
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "pixel_edits": [
+        {
+          "x": 27,
+          "y": 11,
+          "from": 1,
+          "to": 3
+        },
+        {
+          "x": 29,
+          "y": 11,
+          "from": 1,
+          "to": 3
+        },
+        {
+          "x": 30,
+          "y": 11,
+          "from": 1,
+          "to": 3
+        },
+        {
+          "x": 29,
+          "y": 12,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 30,
+          "y": 12,
+          "from": 1,
+          "to": 3
+        },
+        {
+          "x": 28,
+          "y": 13,
+          "from": 0,
+          "to": 3
+        },
+        {
+          "x": 29,
+          "y": 13,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 30,
+          "y": 13,
+          "from": 1,
+          "to": 3
+        },
+        {
+          "x": 29,
+          "y": 14,
+          "from": 1,
+          "to": 0
+        },
+        {
+          "x": 30,
+          "y": 14,
+          "from": 1,
+          "to": 3
+        },
+        {
+          "x": 27,
+          "y": 15,
+          "from": 1,
+          "to": 3
+        },
+        {
+          "x": 28,
+          "y": 15,
+          "from": 1,
+          "to": 3
+        },
+        {
+          "x": 29,
+          "y": 15,
+          "from": 1,
+          "to": 3
+        },
+        {
+          "x": 30,
+          "y": 15,
+          "from": 1,
+          "to": 3
+        }
+      ]
+    },
+    {
+      "id": "mn-220-beetynamo-v1",
+      "species_id": "MN_220",
+      "view": "back",
+      "source": "sprites/mn-f101/mn-218-220.front-back.imagegen-v1.png",
+      "crop": [
+        955,
+        550,
+        581,
+        474
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        13177,
+        14538,
+        0
+      ],
+      "white_detail_min_samples": 8
+    }
+  ],
+  "source_sha256": "72373dc427ae02315c267a51df31e9213187eff6825bf23b56987e9f6902faa5",
+  "conversion_note": "Front white-detail threshold32 chosen for large eye whites to preserve pupil contrast; earlier default16 native render retained in versions. Target palettes and source anatomy unchanged.",
+  "original_manifest": "sprites/mn-f101/manifest.json",
+  "original_style_reference": {
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png"
+    ]
+  },
+  "front_prompt_files": [
+    "sprites/mn-f101/native-refinement-20261103-r3/prompt-mn-218-front.txt",
+    "sprites/mn-f101/native-refinement-20261103-r3/prompt-mn-219-front.txt",
+    "sprites/mn-f101/native-refinement-20261103-r3/prompt-mn-220-front.txt"
+  ],
+  "native_authoring_note": "Large-render downsizes rejected for eye loss. Eyes are now authored directly in the56x56 indexed grid with guarded palette-index edits: small connected whites, separate black pupils and dark socket boundaries. All non-face pixels, root/leaf shading and source images are unchanged.",
+  "user_review": {
+    "feedback": "redo. NOT good, regenerate entirely; just the later2evos",
+    "targets": [
+      "MN_219",
+      "MN_220"
+    ],
+    "preserve": [
+      "MN_218"
+    ],
+    "note": "Do not select the prior Tapacitor/Beetynamo fronts or patched eye versions. Fresh constructions use native-only references and native-size detail budgets."
+  }
+}

@@ -1,0 +1,521 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F123",
+  "status": "native-candidate-reviewed-awaiting-user-feedback",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_263": {
+      "species_id": "MN_263",
+      "name": "Pikeling",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          20,
+          25,
+          15
+        ],
+        [
+          7,
+          12,
+          9
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        16180,
+        9607,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          165,
+          206,
+          123
+        ],
+        [
+          57,
+          99,
+          74
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#A5CE7B",
+        "#39634A",
+        "#000000"
+      ]
+    },
+    "MN_264": {
+      "species_id": "MN_264",
+      "name": "Pikeman",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          23,
+          21,
+          12
+        ],
+        [
+          5,
+          11,
+          12
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        12983,
+        12645,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          189,
+          173,
+          99
+        ],
+        [
+          41,
+          90,
+          99
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#BDAD63",
+        "#295A63",
+        "#000000"
+      ]
+    },
+    "MN_265": {
+      "species_id": "MN_265",
+      "name": "Musketunge",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          20,
+          23,
+          25
+        ],
+        [
+          9,
+          10,
+          8
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        26356,
+        8521,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          165,
+          189,
+          206
+        ],
+        [
+          74,
+          82,
+          66
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#A5BDCE",
+        "#4A5242",
+        "#000000"
+      ]
+    }
+  },
+  "source_sha256": "266e1f80791add68051b49bf780732742aacd9c6b3a03bbbe8472aca242aef16",
+  "style_reference": {
+    "identity": "sprites/mn-f123/mn-263-265.front-back.imagegen-v1.png",
+    "rendering": "Choirbog native-refinement-20261103-r3; viewed locally, pixel volume and dithering only."
+  },
+  "sprites": [
+    {
+      "id": "mn-263-theme-v3",
+      "species_id": "MN_263",
+      "view": "front",
+      "source": "sprites/mn-f123/theme-redesign-20261104-v3/front-back.imagegen.png",
+      "crop": [
+        0,
+        80,
+        430,
+        430
+      ],
+      "fit": [
+        39,
+        34
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        16180,
+        9607,
+        0
+      ],
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "sampling": "source_center",
+      "exterior_contour": "source_backed"
+    },
+    {
+      "id": "mn-263-theme-v3",
+      "species_id": "MN_263",
+      "view": "back",
+      "source": "sprites/mn-f123/theme-redesign-20261104-v3/front-back.imagegen.png",
+      "crop": [
+        0,
+        550,
+        430,
+        460
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        16180,
+        9607,
+        0
+      ],
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "sampling": "source_center",
+      "exterior_contour": "source_backed"
+    },
+    {
+      "id": "mn-264-theme-v3",
+      "species_id": "MN_264",
+      "view": "front",
+      "source": "sprites/mn-f123/theme-redesign-20261104-v3/front-back.imagegen.png",
+      "crop": [
+        430,
+        40,
+        536,
+        470
+      ],
+      "fit": [
+        49,
+        43
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        12983,
+        12645,
+        0
+      ],
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "pixel_edits": [
+        {
+          "x": 51,
+          "y": 49,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 51,
+          "y": 50,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 50,
+          "y": 50,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 51,
+          "y": 51,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 51,
+          "y": 52,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 50,
+          "y": 52,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 51,
+          "y": 53,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 49,
+          "y": 52,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 50,
+          "y": 53,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 49,
+          "y": 51,
+          "from": 3,
+          "to": 0
+        }
+      ]
+    },
+    {
+      "id": "mn-264-theme-v3",
+      "species_id": "MN_264",
+      "view": "back",
+      "source": "sprites/mn-f123/theme-redesign-20261104-v3/front-back.imagegen.png",
+      "crop": [
+        440,
+        550,
+        510,
+        450
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        12983,
+        12645,
+        0
+      ],
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "sampling": "source_center",
+      "exterior_contour": "source_backed"
+    },
+    {
+      "id": "mn-265-theme-v3",
+      "species_id": "MN_265",
+      "view": "front",
+      "source": "sprites/mn-f123/theme-redesign-20261104-v3/front-back.imagegen.png",
+      "crop": [
+        930,
+        20,
+        606,
+        490
+      ],
+      "fit": [
+        53,
+        45
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        26356,
+        8521,
+        0
+      ],
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "pixel_edits": [
+        {
+          "x": 1,
+          "y": 17,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 2,
+          "y": 17,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 3,
+          "y": 17,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 1,
+          "y": 18,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 2,
+          "y": 18,
+          "from": 1,
+          "to": 0
+        },
+        {
+          "x": 3,
+          "y": 18,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 1,
+          "y": 19,
+          "from": 1,
+          "to": 0
+        },
+        {
+          "x": 2,
+          "y": 19,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 3,
+          "y": 19,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 1,
+          "y": 20,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 2,
+          "y": 20,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 1,
+          "y": 21,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 2,
+          "y": 21,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 1,
+          "y": 22,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 2,
+          "y": 22,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 1,
+          "y": 23,
+          "from": 3,
+          "to": 0
+        }
+      ]
+    },
+    {
+      "id": "mn-265-theme-v3",
+      "species_id": "MN_265",
+      "view": "back",
+      "source": "sprites/mn-f123/theme-redesign-20261104-v3/front-back.imagegen.png",
+      "crop": [
+        960,
+        550,
+        576,
+        450
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        26356,
+        8521,
+        0
+      ],
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32,
+      "sampling": "source_center",
+      "exterior_contour": "source_backed"
+    }
+  ],
+  "prompt_file": "sprites/mn-f123/theme-redesign-20261104-v3/prompt.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "manual_refinement": "Guarded native edits erase detached neighboring-frame fragments at crop edges; creature pixels untouched.",
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "709cdbee79952e05698e9c5d328f9c906b03333af23cce3f88cc09531e9cdb73",
+    "notes": "Reviewed native front/back pixels: separate connected eye whites and dark pupils, spearhead fry, lancer jaw/visor and broad shield fins, squat adult with enlarged three-fold pressure gills and braced pectoral fins. Dither survives on broad fins/flanks and chamber shoulders. All fronts face down-left, rear portraits up-right. Detached neighboring sheet fragments removed by guarded native edits; body pixels preserved. User feedback pending."
+  }
+}

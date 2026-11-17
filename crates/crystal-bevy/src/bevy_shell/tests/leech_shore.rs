@@ -10,6 +10,8 @@ use crystal_runtime::{CrystalRuntime, RuntimeBattleKind, RuntimeBattleSnapshot};
 use serde_json::{Value, json};
 
 use super::super::authored_route_fixture::{RouteGrid, RouteSpec, position};
+use super::super::northstar_dialogue::acknowledge;
+use super::super::northstar_ice_lair::walk;
 use super::super::rochester::flee;
 use super::super::winona::{at, continued, travel};
 use super::{
@@ -367,12 +369,21 @@ fn leech_shore_controller_care_witness_both_room_carpets_and_persistence() {
     ] {
         for (index, carpet) in carpets.into_iter().enumerate() {
             if room != CARE || index > 0 {
+                // The shore has a dry path between the cabins. Replan along
+                // it so grass encounters cannot interrupt the dialogue check.
+                walk(&mut c, &r, (door.0 as i16, door.1 as i16));
                 city_enter_from_north(&mut c, &r, door, room, arrival);
             }
             if room != CARE {
                 walk_to(&mut c, &r, (6, 4));
                 press(&mut c, GameButton::Up);
                 press(&mut c, GameButton::A);
+                acknowledge(
+                    &mut c,
+                    "",
+                    "MN_LEECH_SHORE_DIARISTText",
+                    "EVENT_MN_HEADWATERS_REPORT",
+                );
                 finish(&mut c);
             }
             walk_to(&mut c, &r, (carpet.0, carpet.1 - 1));

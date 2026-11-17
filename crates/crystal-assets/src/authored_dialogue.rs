@@ -28,6 +28,17 @@ pub(crate) fn install_canonical(map: &mut MapModule, label: &str) -> Result<()> 
     Ok(())
 }
 
+/// Applies reviewed challenge and outcome text to a trainer already on the map.
+pub(crate) fn install_canonical_trainer(map: &mut MapModule, trainer: &str) -> Result<()> {
+    for suffix in ["Seen", "Won", "Lost"] {
+        let label = format!("{trainer}{suffix}");
+        if crate::northstar_story_revision::owns_text(&map.id, &label) {
+            install_canonical(map, &label)?;
+        }
+    }
+    Ok(())
+}
+
 pub(crate) fn compile(pages: &[AuthoredDialoguePage]) -> Result<Value> {
     ensure!(!pages.is_empty(), "dialogue needs at least one page");
     let mut commands = Vec::new();

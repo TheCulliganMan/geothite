@@ -1,0 +1,94 @@
+{
+  "species_id": "MN_345",
+  "name": "Rekink",
+  "family_id": "MN_F157",
+  "dex_number": 217,
+  "status": "accepted",
+  "generation_tool": "built-in image_gen",
+  "selected_manifest": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f157/rekink.manifest-20261104-v3-features.json",
+    "sha256": "5c47136ad148f880e19065285a61951045ea469141c9c876e46e2c0c4b42c7a2",
+    "bytes": 1915
+  },
+  "sources": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f157/rekink.overworld.imagegen-20261104-v1.png",
+      "sha256": "52d6fc2d4cf723c349e712619c846a3a2be1c63169a89032792f5a75e51aafe7",
+      "bytes": 1109314
+    }
+  ],
+  "prompts": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f157/rekink.overworld.prompt-20261104-v1.txt",
+      "sha256": "875eac33be347926e1ff3f608e9bcbea4c57b81cfa2b18ae8de03b8405f12633",
+      "bytes": 2492
+    }
+  ],
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/rekink-20261104-v3-features",
+  "normal_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/rekink-20261104-v3-features/review/rekink.normal-8x.png",
+    "sha256": "0d4680ff9612d37475be9ebe3a5217e3a710c407a890816431f446790e61be04",
+    "bytes": 9051
+  },
+  "shiny_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/rekink-20261104-v3-features/review/rekink.shiny-8x.png",
+    "sha256": "f0199ee2f110422a4e759ede3a9614bb57989815956e843b950eb7f5021bfff2",
+    "bytes": 8596
+  },
+  "compiled_index": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/rekink-20261104-v3-features/compiled-index.json",
+    "sha256": "da838458d82290070004251a295b9c13a819335e156e270df4fefa548f4b79bb",
+    "bytes": 7920
+  },
+  "source_feature_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f157/rekink.source-feature-review-20261104-v3.json",
+    "sha256": "98c2d305f13239079748182910ad0461e2a4c5ce5e701aa90e1cb9d01f920758",
+    "bytes": 5305
+  },
+  "context_evidence": {
+    "directory": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-06",
+    "input_manifest": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-06/input-manifest.json",
+      "sha256": "d19452fb4c890c8bcb71bad9b5c6d4e94277d8bfec08f657fd1f1e9a76edc13f",
+      "bytes": 1150
+    },
+    "verification": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-06/verification.json",
+      "sha256": "548d32ab6f3d28e0e8ebc9f69bf933a351951542aae6aff5c75a26214afa90a9",
+      "bytes": 16830
+    },
+    "test_log": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/verification/all225-20261104-v5-06.log",
+      "sha256": "b415c9ea82d9f3cf79ae941c1f9e72d153011d023e0c673b6b5f5687ac26449f",
+      "bytes": 217
+    },
+    "normal_actor_poses": 8,
+    "all_six_shiny_native_poses_verified": true
+  },
+  "root_visual_review": {
+    "accepted": true,
+    "notes": "Species-specific head, dark facial marks and themed body silhouette retained in front/profile. Rear poses show backs of ears/crest/head and the actual back/tail, without a pasted frontal face. Six distinct native poses, paired idle/step articulation and both palettes reviewed alongside the trainer on terrain."
+  },
+  "runtime_files": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/rekink/overworld.2bpp",
+      "sha256": "e7da9539fa6cc3e1a171dfaa9608971e88a9fe0d2c4e9aa474c221c605a9f6ab",
+      "bytes": 384
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/rekink/overworld.png",
+      "sha256": "af5f144b228cbdcab444fcd15de90b510fd8b2bc7ecbc4a05f5232a02ac7604c",
+      "bytes": 755
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/rekink/overworld.gbcpal",
+      "sha256": "cb20803c74c1f2fd065493b9971344d88c3d536fd6ee1ffe6c208ccf4541021a",
+      "bytes": 8
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/rekink/overworld-shiny.gbcpal",
+      "sha256": "d0359845c110a9c01f8d263ff81e61da6fdfaddb7ddf4fe8b434dfdabaaf4c3e",
+      "bytes": 8
+    }
+  ]
+}

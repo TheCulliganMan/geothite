@@ -1,4 +1,4 @@
-//! Native rod-table wildlife with an explicit, saved shore/water contact.
+//! Native rod-table wildlife with an explicit, saved casting position and water contact.
 
 use anyhow::{Context, Result, ensure};
 use crystal_core::battle::start::{
@@ -100,11 +100,12 @@ impl GameDataSet {
             anyhow::bail!("Safari fishing source is missing");
         };
         let OverworldMemory::Active { facing, mode, .. } = &state.overworld else {
-            anyhow::bail!("Safari fishing has no native shore position");
+            anyhow::bail!("Safari fishing has no native casting position");
         };
         ensure!(
-            !matches!(mode, MovementMode::Surf | MovementMode::SurfPika),
-            "Safari fishing origin cannot be surfing"
+            !matches!(mode, MovementMode::Surf | MovementMode::SurfPika)
+                || self.is_canoe_mounted(state, &wild.origin_map_name, *mode),
+            "Safari fishing afloat requires a mounted canoe"
         );
         ensure!(
             checked_move_by_stride(

@@ -2,9 +2,10 @@
 use std::collections::BTreeSet;
 
 use crystal_core::input::GameButton;
-use crystal_runtime::RuntimeBattleKind;
+use crystal_runtime::CrystalRuntime;
 use serde_json::Value;
 
+use super::super::super::rochester_earned::try_battle;
 use super::{
     Point, VisibleShellController, at, continue_save, event, finish, fixture_at,
     mark_runtime_snapshot_dirty, press,
@@ -57,67 +58,16 @@ fn enter(c: &mut VisibleShellController, button: GameButton) {
     panic!("fixture did not enter trainer sight");
 }
 
-fn win(c: &mut VisibleShellController, id: &str, flag: &str) {
-    let before = c.snapshot().expect("challenge");
-    let pp = |s: &crystal_runtime::RuntimeShellSnapshot| {
-        s.party
-            .slots
-            .iter()
-            .flat_map(|p| &p.pokemon.moves)
-            .map(|m| u32::from(m.current_pp))
-            .sum::<u32>()
-    };
-    let before_pp = pp(&before);
+fn win(c: &mut VisibleShellController, runtime: &CrystalRuntime, id: &str, flag: &str) {
     let money = c.shell.shell.session().state().money;
-    let mut observed = false;
-    for _ in 0..768 {
-        let s = c.snapshot().expect("native crowd battle");
-        if let Some(b) = &s.battle {
-            let RuntimeBattleKind::Trainer { trainer_id, .. } = &b.kind else {
-                panic!("expected fair trainer");
-            };
-            assert_eq!(trainer_id, id);
-            observed = true;
-        } else if observed
-            && event(c, flag)
-            && !s.ui.text_window_open
-            && !c.has_pending_script_work()
-        {
-            assert!(pp(&s) < before_pp, "actual selected moves spend PP");
-            assert!(
-                c.shell.shell.session().state().money > money,
-                "native trainer reward"
-            );
-            return;
-        }
-        let button = if s.ui.menu.is_none() && s.ui.text.is_some() {
-            GameButton::A
-        } else if let Some(cursor) = &c.shell.battle_move_cursor {
-            let b = s.battle.as_ref().expect("move menu battle");
-            let target = b
-                .player_moves
-                .iter()
-                .position(|m| m.name == "SURF")
-                .expect("legal review move");
-            if cursor.option_index < target {
-                GameButton::Down
-            } else if cursor.option_index > target {
-                GameButton::Up
-            } else {
-                GameButton::A
-            }
-        } else if let Some(cursor) = &c.shell.battle_action_cursor {
-            match cursor.option_index {
-                0 => GameButton::A,
-                1 => GameButton::Left,
-                _ => GameButton::Up,
-            }
-        } else {
-            GameButton::A
-        };
-        press(c, button);
-    }
-    panic!("trainer {id} did not finish a native battle");
+    assert!(
+        try_battle(c, runtime, id, flag),
+        "native Fair victory: {id}"
+    );
+    assert!(
+        c.shell.shell.session().state().money > money,
+        "native trainer reward"
+    );
 }
 
 #[test]
@@ -143,7 +93,7 @@ fn state_fair_crowd_all_35_trainers_battle_reward_and_remember_defeat() {
             press(&mut c, toward);
             press(&mut c, GameButton::A);
         }
-        win(&mut c, id, flag);
+        win(&mut c, &r, id, flag);
         assert!(event(&c, flag));
         if range > 0 {
             enter(&mut c, away);
@@ -163,13 +113,13 @@ fn state_fair_crowd_all_35_trainers_battle_reward_and_remember_defeat() {
 fn state_fair_crowd_overlapping_midway_sight_gives_two_real_battles() {
     let a = "MN_FAIR_MIDWAY_A_TRAINER";
     let b = "MN_FAIR_MIDWAY_B_TRAINER";
-    let (_, _, mut c) = fixture_at(false, (13, 28), true);
+    let (_, r, mut c) = fixture_at(false, (13, 28), true);
     prior_battles(&mut c, &[a, b]);
     enter(&mut c, GameButton::Up);
-    win(&mut c, a, "EVENT_MN_FAIR_MIDWAY_A_DEFEATED");
+    win(&mut c, &r, a, "EVENT_MN_FAIR_MIDWAY_A_DEFEATED");
     enter(&mut c, GameButton::Down);
     enter(&mut c, GameButton::Up);
-    win(&mut c, b, "EVENT_MN_FAIR_MIDWAY_B_DEFEATED");
+    win(&mut c, &r, b, "EVENT_MN_FAIR_MIDWAY_B_DEFEATED");
 }
 
 fn tile(c: &VisibleShellController, id: &str) -> Point {

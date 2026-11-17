@@ -9,11 +9,16 @@ mod map_catalog;
 mod music_catalog;
 mod northstar_save_migration;
 pub use northstar_save_migration::migrate_northstar_reviewed_save;
+mod gym_review_save_migration;
+pub use gym_review_save_migration::migrate_gym_review_save;
 mod outdoor_mods;
 mod regional_item_descriptions;
 mod runtime_presentation_text;
 mod runtime_safari;
-pub use runtime_safari::{safari_catch_presentation_lines, safari_result_lines};
+pub use runtime_safari::{
+    safari_catch_presentation_lines, safari_ending_lines, safari_ranger_prompt_lines,
+    safari_result_lines,
+};
 
 use std::collections::{BTreeMap, BTreeSet};
 use std::path::Path;

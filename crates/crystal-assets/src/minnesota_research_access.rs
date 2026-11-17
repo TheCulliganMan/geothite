@@ -1,6 +1,7 @@
 //! Free early research partners and both restored fossil families in one run.
 use anyhow::{Context, Result, ensure};
 
+use crate::authored_dialogue;
 use crate::grand_marais_modpack::authoring::{self, command as c};
 use crate::northstar_lair_authoring::flag;
 use crate::northstar_rival_arc::{map, publish, put};
@@ -9,27 +10,6 @@ use crate::{CompiledGamePack, MapModule};
 const MANIFEST: &str = "minnesota-early-research-access-v1";
 const DELIVERED: &str = "EVENT_MN_DELIVERED_ROCHESTER_PARCEL";
 const EXCHANGED: &str = "EVENT_MN_FOSSIL_EXCHANGED";
-const LAB_ASSISTANT: &[&str] = &[
-    "We study fossils.",
-    "Bring one if you",
-    "find a specimen.",
-    "Our researcher can",
-    "try to restore it.",
-];
-const LAB_NEED_SPECIMEN: &[&str] = &[
-    "If you find a",
-    "fossil, bring it",
-    "here. I'd love to",
-    "take a look.",
-];
-const LAB_SECOND_THANKS: &[&str] = &[
-    "Take good care of",
-    "that fossil. Our",
-    "scientist can help",
-    "restore it, too.",
-    "Leave room in your",
-    "party first.",
-];
 
 /// Rewrites the existing Rochester lab conversations on a completed pack.
 ///
@@ -47,13 +27,13 @@ pub fn revise_minnesota_fossil_lab_dialogue(base: &CompiledGamePack) -> Result<C
     );
     let mut pack = base.clone();
     let mut lab = map(&pack, "MnRochesterFossilLab")?;
-    for (label, lines) in [
-        ("MnRochesterFossilLabAssistantText", LAB_ASSISTANT),
-        ("MnLabFossilNeedSpecimenText", LAB_NEED_SPECIMEN),
-        ("MnLabSecondThanksText", LAB_SECOND_THANKS),
+    for label in [
+        "MnRochesterFossilLabAssistantText",
+        "MnLabFossilNeedSpecimenText",
+        "MnLabSecondThanksText",
     ] {
         ensure!(lab.scripts.contains_key(label), "missing lab text {label}");
-        text(&mut lab, label, lines)?;
+        authored_dialogue::install_canonical(&mut lab, label)?;
     }
     publish(&mut pack, lab)?;
     pack.report
@@ -106,6 +86,7 @@ pub fn build_minnesota_research_access(base: &CompiledGamePack) -> Result<Compil
     starters(&mut pack)?;
     fossils(&mut pack)?;
     pack.report.manifests.push(MANIFEST.into());
+    crate::northstar_reward_receipts::install(&mut pack)?;
     pack.identity = crate::derive_compiled_game_pack_identity_from_manifest(
         pack.format_version,
         &pack.data,
@@ -330,32 +311,9 @@ fn fossils(pack: &mut CompiledGamePack) -> Result<()> {
     );
     put(&mut bluff, "MnFossilExchange", revised);
     put(&mut bluff, "MnFossilEarlyExchangeOffer", offer);
-    text(
-        &mut bluff,
-        "MnFossilExchangeText",
-        &[
-            "We found two",
-            "fossils here.",
-            "The other is",
-            "still here.",
-            "Would you like it?",
-        ],
-    )?;
-    text(
-        &mut bluff,
-        "MnFossilDirectionsText",
-        &[
-            "FOSSIL LAB beside",
-            "ROCHESTER clinic.",
-            "Earn the CARE",
-            "BADGE first.",
-            "Leave room in your",
-            "party for it. Then",
-            "ask the assistant",
-            "for the other free",
-            "fossil specimen.",
-        ],
-    )?;
+    for label in ["MnFossilExchangeText", "MnFossilDirectionsText"] {
+        authored_dialogue::install_canonical(&mut bluff, label)?;
+    }
     publish(pack, bluff)?;
 
     let mut lab = map(pack, "MnRochesterFossilLab")?;
@@ -446,40 +404,16 @@ fn fossils(pack: &mut CompiledGamePack) -> Result<()> {
         "MnLabSecondDirections",
         vec![c("jumptext", &["MnLabSecondThanksText"])],
     );
-    text(&mut lab, "MnRochesterFossilLabAssistantText", LAB_ASSISTANT)?;
-    text(&mut lab, "MnLabFossilNeedSpecimenText", LAB_NEED_SPECIMEN)?;
-    text(
-        &mut lab,
+    for label in [
+        "MnRochesterFossilLabAssistantText",
+        "MnLabFossilNeedSpecimenText",
         "MnLabSecondOfferText",
-        &[
-            "Your first fossil",
-            "is alive! We have",
-            "the other specimen",
-            "ready for you.",
-            "Take it for free?",
-        ],
-    )?;
-    text(&mut lab, "MnLabSecondThanksText", LAB_SECOND_THANKS)?;
-    text(
-        &mut lab,
+        "MnLabSecondThanksText",
         "MnLabSecondFullText",
-        &[
-            "Your KEY ITEMS",
-            "pocket is full.",
-            "The fossil will",
-            "wait here for you.",
-        ],
-    )?;
-    text(
-        &mut lab,
         "MnLabFossilRestoredText",
-        &[
-            "An ancient friend!",
-            "Ask our assistant",
-            "for the other free",
-            "fossil specimen.",
-        ],
-    )?;
+    ] {
+        authored_dialogue::install_canonical(&mut lab, label)?;
+    }
     publish(pack, lab)
 }
 

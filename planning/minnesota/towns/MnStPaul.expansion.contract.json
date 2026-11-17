@@ -2075,15 +2075,33 @@
             }
           ],
           "before_lines": [
-            "A friendly match?",
-            "Speak when ready!"
+            "Oh, you're here to",
+            "battle? I thought",
+            "they'd called our",
+            "number. Let me put",
+            "the brush down. We",
+            "could use a",
+            "practice match",
+            "before the ring."
           ],
           "after_lines": [
-            "Good preparation!",
-            "Enjoy the city."
+            "I keep looking at",
+            "the door every",
+            "time someone calls",
+            "a number. Next",
+            "time we'll wait",
+            "where we can see",
+            "the ring. That'll",
+            "be easier on both",
+            "of us."
           ],
           "loss_lines": [
-            "A fine exhibition!"
+            "Good match. I",
+            "forgot about the",
+            "brush for a whole",
+            "round. Let's leave",
+            "it there, bud.",
+            "You're ready."
           ]
         }
       ],
@@ -3253,15 +3271,35 @@
             }
           ],
           "before_lines": [
-            "A friendly match?",
-            "Speak when ready!"
+            "Same three of us",
+            "at practice every",
+            "week. I know who",
+            "the others lead",
+            "with before I see",
+            "a BALL. Want a",
+            "match? I haven't",
+            "had to guess in a",
+            "while."
           ],
           "after_lines": [
-            "Good preparation!",
-            "Enjoy the city."
+            "I'd usually ask",
+            "for another try",
+            "before you'd put",
+            "your BALL away.",
+            "This time I want",
+            "to think about the",
+            "first match before",
+            "I start a second."
           ],
           "loss_lines": [
-            "A fine exhibition!"
+            "I want to remember",
+            "what I was",
+            "thinking before",
+            "you sent your team",
+            "out. If we go",
+            "again now, I'll",
+            "already know who",
+            "to expect."
           ]
         }
       ],
@@ -4100,15 +4138,33 @@
             }
           ],
           "before_lines": [
-            "A friendly match?",
-            "Speak when ready!"
+            "The pin on that",
+            "door won't budge.",
+            "I've been at it",
+            "since lunch and I",
+            "can feel myself",
+            "getting stupid.",
+            "Give me a reason",
+            "to put this wrench",
+            "down. Battle?"
           ],
           "after_lines": [
-            "Good preparation!",
-            "Enjoy the city."
+            "I kept pushing",
+            "even when you had",
+            "me beat. That's",
+            "what I was doing",
+            "to that poor door.",
+            "I'll get someone",
+            "to lift it while I",
+            "tap the pin out."
           ],
           "loss_lines": [
-            "A fine exhibition!"
+            "My partner's worn",
+            "out. Come to think",
+            "of it, so am I.",
+            "That door can stay",
+            "on the blocks till",
+            "morning."
           ]
         }
       ],
@@ -4518,15 +4574,34 @@
             }
           ],
           "before_lines": [
-            "A friendly match?",
-            "Speak when ready!"
+            "My partner's",
+            "watched that float",
+            "since breakfast. I",
+            "think he'd take a",
+            "battle over",
+            "another minute of",
+            "this. Let me reel",
+            "in first."
           ],
           "after_lines": [
-            "Good preparation!",
-            "Enjoy the city."
+            "You got us. Come",
+            "on, pal. You pick",
+            "the spot next",
+            "time. I kept",
+            "moving the float",
+            "and you kept",
+            "looking at the",
+            "same piling."
           ],
           "loss_lines": [
-            "A fine exhibition!"
+            "Good match. I told",
+            "them I'd bring",
+            "supper home. I'd",
+            "better stop at the",
+            "shop on the way.",
+            "Come on, pal.",
+            "Leave the float",
+            "alone."
           ]
         }
       ],
@@ -4788,15 +4863,34 @@
             }
           ],
           "before_lines": [
-            "A friendly match?",
-            "Speak when ready!"
+            "My brother says",
+            "he'll battle me at",
+            "home if I go first",
+            "here. He's the one",
+            "trying to look",
+            "like he isn't",
+            "watching. Will you",
+            "take me on?"
           ],
           "after_lines": [
-            "Good preparation!",
-            "Enjoy the city."
+            "My brother",
+            "promised me a",
+            "match at home if I",
+            "went first here. I",
+            "think he figured",
+            "I'd back out. I'm",
+            "looking forward to",
+            "reminding him what",
+            "he said."
           ],
           "loss_lines": [
-            "A fine exhibition!"
+            "Good match. Now my",
+            "brother has to go",
+            "through with his",
+            "half of the deal.",
+            "I bet he's been",
+            "practicing in his",
+            "room all week."
           ]
         }
       ],
@@ -5210,14 +5304,32 @@
             }
           ],
           "before_lines": [
-            "A rooftop club",
-            "match indoors?"
+            "Want a match? The",
+            "clerk says we can",
+            "battle as long as",
+            "I keep my voice",
+            "down. If you hear",
+            "two bells, that's",
+            "for me."
           ],
           "after_lines": [
-            "Well flown!"
+            "I nearly shouted",
+            "near the end. The",
+            "clerk said she'd",
+            "ring twice if she",
+            "could hear me",
+            "upstairs. I'm",
+            "going to ask",
+            "whether she heard",
+            "the battle at all."
           ],
           "loss_lines": [
-            "A fine contest!"
+            "YES! Oh. There",
+            "goes the bell. And",
+            "there's the second",
+            "one. Give me a",
+            "second. I owe her",
+            "an apology."
           ]
         }
       ],
@@ -5423,15 +5535,34 @@
         }
       ],
       "before_lines": [
-        "A friendly match?",
-        "Speak when ready!"
+        "My sister took the",
+        "lemonade money and",
+        "left me watching",
+        "the blanket. I've",
+        "been here long",
+        "enough for the",
+        "shade to move.",
+        "Want to battle",
+        "before it gets",
+        "away from me?"
       ],
       "after_lines": [
-        "Good preparation!",
-        "Enjoy the city."
+        "You got me. I'm",
+        "keeping this patch",
+        "of shade till my",
+        "sister gets back.",
+        "If she brings one",
+        "lemonade, I'm",
+        "taking the first",
+        "sip."
       ],
       "loss_lines": [
-        "A fine exhibition!"
+        "We won and the",
+        "blanket's still",
+        "here. When my",
+        "sister gets back,",
+        "I'm asking what",
+        "took HER so long."
       ]
     },
     {
@@ -5457,15 +5588,33 @@
         }
       ],
       "before_lines": [
-        "A friendly match?",
-        "Speak when ready!"
+        "The neighbors come",
+        "over for tea after",
+        "I battle. One of",
+        "them keeps telling",
+        "me I go easy on",
+        "visitors. Come on.",
+        "I'll give her",
+        "something to talk",
+        "about."
       ],
       "after_lines": [
-        "Good preparation!",
-        "Enjoy the city."
+        "I'll tell the",
+        "neighbors you beat",
+        "me before I even",
+        "put the kettle on.",
+        "That'll get them",
+        "here faster than",
+        "telling them",
+        "there's cake."
       ],
       "loss_lines": [
-        "A fine exhibition!"
+        "That was closer",
+        "than it looked.",
+        "I'll tell them so",
+        "over tea. They",
+        "always know when I",
+        "leave a part out."
       ]
     }
   ],

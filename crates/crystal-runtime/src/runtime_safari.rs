@@ -1,6 +1,35 @@
 //! Capture expeditions use the shared native mutation/replay path.
 
 use anyhow::{Context, Result};
+use crystal_core::systems::safari::{ADMISSION_FEE, BALL_BUDGET, STEP_BUDGET, SafariEndReason};
+use crystal_core::systems::safari_prompt::SafariPromptKind;
+
+/// Returns the ranger's confirmation text for both graphical and text clients.
+pub fn safari_ranger_prompt_lines(kind: SafariPromptKind) -> [String; 3] {
+    match kind {
+        SafariPromptKind::Admission => [
+            "Going on Safari?".into(),
+            format!("{BALL_BUDGET} BALLS {STEP_BUDGET} STEPS"),
+            format!("It's {ADMISSION_FEE} to go in."),
+        ],
+        SafariPromptKind::Retire => [
+            "Had enough?".into(),
+            "Keep your catches.".into(),
+            "Back to basecamp?".into(),
+        ],
+    }
+}
+
+/// Returns the field notice explaining why the current Safari trip ended.
+pub fn safari_ending_lines(reason: SafariEndReason) -> [&'static str; 2] {
+    let cause = match reason {
+        SafariEndReason::BallsExhausted => "No BALLS left.",
+        SafariEndReason::StepsExhausted => "That's your steps.",
+        SafariEndReason::Retired => "Done for the day.",
+        SafariEndReason::LeftPreserve => "You left the park.",
+    };
+    [cause, "Back to basecamp."]
+}
 
 /// Read-only text for the same saved post-catch boundary as native graphics.
 pub fn safari_catch_presentation_lines(

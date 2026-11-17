@@ -176,6 +176,52 @@ fn trainer_encounter_music_transitions_to_pack_battle_music() {
 }
 
 #[test]
+fn trainer_sight_keeps_encounter_music_until_battle_starts() {
+    let mut app = menu_render_test_app(trainer_anchor_fresh_shell());
+    app.update();
+    app.update();
+    press_key_for_runtime_hotkey_app(&mut app, KeyCode::ArrowUp);
+    for _ in 0..32 {
+        if app.world().resource::<BevyRuntimeShell>().pending_trainer_sight.is_some() {
+            break;
+        }
+        app.update();
+    }
+    let expected = {
+        let shell = app.world().resource::<BevyRuntimeShell>();
+        assert!(shell.pending_trainer_sight.is_some());
+        shell.active_music.clone().expect("trainer encounter music")
+    };
+    assert!(expected.contains("ENCOUNTER"), "actual track: {expected}");
+    let mut reached_intro = false;
+    for _ in 0..240 {
+        app.update();
+        let shell = app.world().resource::<BevyRuntimeShell>();
+        assert!(shell.last_error.is_none(), "{:?}", shell.last_error);
+        assert_eq!(shell.active_music.as_deref(), Some(expected.as_str()));
+        if shell.pending_trainer_intro.is_some() {
+            reached_intro = true;
+            break;
+        }
+    }
+    assert!(reached_intro, "trainer must reach their seen dialogue");
+    for _ in 0..5 {
+        app.update();
+        assert_eq!(app.world().resource::<BevyRuntimeShell>().active_music.as_deref(), Some(expected.as_str()));
+    }
+    for _ in 0..600 {
+        if app.world().resource::<BevyRuntimeShell>().shell.has_active_battle() {
+            break;
+        }
+        press_key_for_runtime_hotkey_app(&mut app, KeyCode::KeyZ);
+    }
+    app.update();
+    let shell = app.world().resource::<BevyRuntimeShell>();
+    assert!(shell.shell.has_active_battle(), "seen dialogue must start battle");
+    assert_eq!(shell.active_music.as_deref(), Some("MUSIC_JOHTO_TRAINER_BATTLE"));
+}
+
+#[test]
 #[ignore = "requires CRYSTAL_NORTHSTAR_AUDIO_PACK review candidate"]
 fn trainer_encounter_music_transitions_in_northstar_pack() {
     let path =

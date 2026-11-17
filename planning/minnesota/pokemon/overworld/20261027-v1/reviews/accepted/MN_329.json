@@ -1,0 +1,94 @@
+{
+  "species_id": "MN_329",
+  "name": "Cubluff",
+  "family_id": "MN_F150",
+  "dex_number": 201,
+  "status": "accepted",
+  "generation_tool": "built-in image_gen",
+  "selected_manifest": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f150/cubluff.manifest-20261104-v3-features.json",
+    "sha256": "db2c12fb098aaae561a2c5890277b60f7bf48d87b12d91a2c336e8abbb814b43",
+    "bytes": 1921
+  },
+  "sources": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f150/cubluff.overworld.imagegen-20261104-v1.png",
+      "sha256": "3859834985a85a47088c440a22c7ffcde7ee18a4d98ee23eb52d91de5f66522c",
+      "bytes": 1293600
+    }
+  ],
+  "prompts": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f150/cubluff.overworld.prompt-20261104-v1.txt",
+      "sha256": "1bbdc3d2d1c66539176213090b896f3b868fc97e0d920c36627c1189db09cb54",
+      "bytes": 2654
+    }
+  ],
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/cubluff-20261104-v3-features",
+  "normal_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/cubluff-20261104-v3-features/review/cubluff.normal-8x.png",
+    "sha256": "f0d2603aefa0983c087ed29f1f65942615d9776226cad9d2709b03a2ed137895",
+    "bytes": 9693
+  },
+  "shiny_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/cubluff-20261104-v3-features/review/cubluff.shiny-8x.png",
+    "sha256": "7af9dd3e748c3720f413d0c6a5092a723eaadbd03dd8c6695871a6c1518e084d",
+    "bytes": 9710
+  },
+  "compiled_index": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/cubluff-20261104-v3-features/compiled-index.json",
+    "sha256": "7735f53aec2f410b2da7a4b38e1fd5c0209900191e79d5c11696c992eaab98e6",
+    "bytes": 7930
+  },
+  "source_feature_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f150/cubluff.source-feature-review-20261104-v3.json",
+    "sha256": "5e195507999a55fa6902ec151a91243ffda9c668b72ca2d0d40781717ab38970",
+    "bytes": 5312
+  },
+  "context_evidence": {
+    "directory": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-03",
+    "input_manifest": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-03/input-manifest.json",
+      "sha256": "e18330a1160c1ece35186004be00d5d3d6e7d59798289e301da0f3620c213c6c",
+      "bytes": 1150
+    },
+    "verification": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-03/verification.json",
+      "sha256": "fd365fe28b700321d3026b15de005ddbb61889bdecdeccdca8cf9024edafa081",
+      "bytes": 16830
+    },
+    "test_log": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/verification/all225-20261104-v5-03.log",
+      "sha256": "f556fa7ae716d6343c6f13c13cc8280e9824956caf11f5ceb4bd49a856570873",
+      "bytes": 217
+    },
+    "normal_actor_poses": 8,
+    "all_six_shiny_native_poses_verified": true
+  },
+  "root_visual_review": {
+    "accepted": true,
+    "notes": "Species-specific head, dark facial marks and themed body silhouette retained in front/profile. Rear poses show backs of ears/crest/head and the actual back/tail, without a pasted frontal face. Six distinct native poses, paired idle/step articulation and both palettes reviewed alongside the trainer on terrain."
+  },
+  "runtime_files": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/cubluff/overworld.2bpp",
+      "sha256": "20567328af7c7543163a471f9cf28057533be7635ee3e180e70118acc4256f9d",
+      "bytes": 384
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/cubluff/overworld.png",
+      "sha256": "b8c75415c8709b63d5f5610e66d957b7eaf85a3b5dd33d2d71dc7acd7f6141fc",
+      "bytes": 866
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/cubluff/overworld.gbcpal",
+      "sha256": "d93a9d1fd3c5b2361be370db7e4f1b18c9037b840cadded91f73dd52303ed66a",
+      "bytes": 8
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/cubluff/overworld-shiny.gbcpal",
+      "sha256": "5782ab56104292982ba9e1d5317652f90e4fe9795a8884bbd2f0a2c12ad84ac1",
+      "bytes": 8
+    }
+  ]
+}

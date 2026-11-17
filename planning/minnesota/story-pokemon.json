@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "id": "northstar-minnesota-only-v1",
-  "status": "Active regional binding policy. Earlier story publication remains archived; extended geography binding and trainer expansion verification are in progress.",
+  "status": "Current active-roster campaign authoring. Candidate integration, move legality, earned balance and presentation remain to be verified.",
   "roster": "pokemon/roster.json",
   "curation": "pokemon/roster-curation.json",
   "policy": "Only active Minnesota original Pokemon may appear in the authored Minnesota campaign. Retain unrelated Johto/Kanto source content. No species fallback and no legendary substitutes for ordinary teams or gifts.",
@@ -11,7 +11,7 @@
     "BIRCHIT"
   ],
   "egg": {
-    "species": "GILLPUP",
+    "species": "LOOBIT",
     "level": 5
   },
   "rival_parties": {
@@ -33,45 +33,59 @@
     "ABRA": "JOTLET",
     "AMPHAROS": "BEETYNAMO",
     "ARIADOS": "BARRICANT",
-    "AZUMARILL": "SLIDEWAKE",
+    "AUGRUB": "SODCALF",
+    "AZUMARILL": "PORTABEAU",
     "BELLOSSOM": "CYPRIELLE",
     "BELLSPROUT": "POUCHID",
-    "BUTTERFREE": "REGALARCH",
-    "CATERPIE": "STRIPILLAR",
+    "BOBCAST": "PINGLET",
+    "BOUGHLASH": "CROOKVEIL",
+    "BUOYOSTIC": "AURORILL",
+    "BUTTERFREE": "DAKOTASKIP",
+    "CATERPIE": "DEWDANT",
     "CHIKORITA": "POUCHID",
-    "CHINCHOU": "BOBCAST",
+    "CHINCHOU": "PINGLET",
     "CLOYSTER": "LATCHUSK",
     "CORSOLA": "SCUTLET",
     "CROBAT": "SILOHAWK",
     "CYNDAQUIL": "KINDLIT",
     "DELIBIRD": "DRIFTPEG",
+    "DENSY": "TOTLIT",
+    "DENUMBRA": "CASSEROGRE",
     "DEWGONG": "LUTEBRISK",
-    "DITTO": "DRIFTILE",
+    "DITTO": "JOTLET",
+    "DOZEBEAR": "STACKAJACK",
     "DRAGONAIR": "LASSERP",
     "DRAGONITE": "TACONARCH",
     "DRATINI": "KNOTLET",
+    "DRIFTILE": "JOTLET",
     "DROWZEE": "MEMOFOLD",
     "ESPEON": "RECALLISK",
     "EXEGGCUTE": "BURRBUD",
-    "FARFETCH_D": "NOTCHBILL",
-    "FEAROW": "GOUGECREST",
+    "FARFETCH_D": "BOOMRUFF",
+    "FEAROW": "GREYTAG",
     "FLAAFFY": "TAPACITOR",
+    "FLARKINDLE": "MITWIST",
     "FORRETRESS": "TRAPNACK",
     "FURRET": "CROOKVEIL",
     "GENGAR": "FLOURGEIST",
     "GEODUDE": "AGATOT",
-    "GIRAFARIG": "SOLSTORT",
-    "GLIGAR": "WHIRLNUT",
+    "GILLPUP": "LOOBIT",
+    "GIRAFARIG": "CHORIP",
+    "GLIGAR": "FLAPIP",
+    "GLISNARE": "MUFFIEND",
     "GLOOM": "SLIPPERINA",
     "GOLBAT": "SKEETEREX",
     "GOLDEEN": "RILLBOW",
     "GOLEM": "FORTIGARD",
-    "GRANBULL": "DENUMBRA",
+    "GOOSNIDE": "VANECHICK",
+    "GOUGECREST": "GREYTAG",
+    "GRANBULL": "CASSEROGRE",
     "GRAVELER": "BANDRAKE",
     "GROWLITHE": "HISSIP",
     "GYARADOS": "MUSKETUNGE",
     "HAUNTER": "DOUBLEHEX",
-    "HERACROSS": "GOUGECREST",
+    "HELIKNOCK": "RIFTMAUL",
+    "HERACROSS": "GREYTAG",
     "HITMONTOP": "GREYTAG",
     "HOOTHOOT": "PIPBOOM",
     "HOPPIP": "PODLET",
@@ -82,30 +96,34 @@
     "KINGDRA": "BARBELISK",
     "KINGLER": "TRAPNACK",
     "KRABBY": "CLINKLAW",
-    "LANTURN": "BUOYOSTIC",
-    "LAPRAS": "TIPULORD",
+    "LANTURN": "AURORILL",
+    "LAPRAS": "MUSKETUNGE",
     "LEDYBA": "RUSTLEBEE",
-    "MACHOKE": "HELIKNOCK",
-    "MACHOP": "AUGRUB",
+    "MACHOKE": "RIFTMAUL",
+    "MACHOP": "SODCALF",
     "MAGCARGO": "CINDERFEN",
     "MAGIKARP": "SCUTLET",
     "MAGNEMITE": "CARTICK",
     "MAGNETON": "MESABLAST",
-    "MANTINE": "DRIFTILE",
+    "MANTINE": "JOTLET",
     "MAREEP": "ZAPSAP",
-    "MARILL": "RIVVIT",
+    "MARILL": "CHORIP",
     "MILTANK": "RUMBLEHIDE",
     "MISDREAVUS": "MITWIST",
-    "MURKROW": "GOOSNIDE",
+    "MUDMENDER": "CHORIP",
+    "MURKROW": "VANECHICK",
     "NIDORINO": "BRISTUB",
     "NOCTOWL": "BOOMRUFF",
+    "NOTCHBILL": "BOOMRUFF",
     "OCTILLERY": "PADDARRAY",
     "ODDISH": "RICELING",
     "ONIX": "PELLETANK",
+    "PECKIT": "TAPDUCK",
+    "PEPIVERN": "BARBELISK",
     "PHANPY": "SODCALF",
     "PIDGEOT": "PRAIRONDO",
-    "PIDGEOTTO": "NOTCHBILL",
-    "PIDGEY": "PECKIT",
+    "PIDGEOTTO": "BOOMRUFF",
+    "PIDGEY": "TAPDUCK",
     "PILOSWINE": "PLOWZER",
     "PINECO": "CLINKLAW",
     "PINSIR": "TRAPNACK",
@@ -113,53 +131,64 @@
     "POLIWHIRL": "TORROUT",
     "POLIWRATH": "TORROUT",
     "PORYGON": "PADDARRAY",
-    "PRIMEAPE": "BOUGHLASH",
+    "PRIMEAPE": "CROOKVEIL",
     "PSYDUCK": "TAPDUCK",
-    "QUAGSIRE": "MUDMENDER",
+    "QUAGSIRE": "CHORIP",
     "QWILFISH": "POTHOLLOW",
     "RATICATE": "CACHEEK",
     "RATTATA": "NIBBIN",
+    "REGALARCH": "DAKOTASKIP",
     "REMORAID": "PINGLET",
-    "SANDSHREW": "AUGRUB",
+    "RIVVIT": "CHORIP",
+    "SANDSHREW": "SODCALF",
     "SANDSLASH": "FURROWBANK",
     "SCYTHER": "DAKOTASKIP",
     "SEADRA": "PIKEMAN",
     "SEAKING": "TORROUT",
-    "SEEL": "WINKFIN",
+    "SEEL": "SCUTLET",
     "SENTRET": "NIBBIN",
     "SHELLDER": "KEYPOUT",
     "SHUCKLE": "TESSLARV",
     "SKARMORY": "LATCHQUILL",
     "SKIPLOOM": "FLOSSAIL",
-    "SLOWPOKE": "TICKLET",
+    "SLIDEWAKE": "PORTABEAU",
+    "SLOWPOKE": "SCUTLET",
     "SLUGMA": "EMBERM",
     "SNEASEL": "CROOKVEIL",
-    "SNUBBULL": "DENSY",
+    "SNUBBULL": "TOTLIT",
+    "SOLSTORT": "CHORIP",
     "SPEAROW": "VANECHICK",
     "SPINARAK": "DEWDANT",
     "STANTLER": "SHEDSTAG",
-    "STARMIE": "SOLSTORT",
-    "STARYU": "TICKLET",
+    "STARMIE": "CHORIP",
+    "STARYU": "SCUTLET",
+    "STRANDRAK": "KENSIGARD",
+    "STRIPILLAR": "DEWDANT",
     "SUDOWOODO": "BURROOT",
     "SUNFLORA": "PYROPINE",
     "SUNKERN": "PINIT",
     "SWINUB": "SCRAPLOW",
     "TANGELA": "REEDRAFT",
     "TAUROS": "RUMBLEHIDE",
-    "TEDDIURSA": "DENSY",
+    "TEDDIURSA": "TOTLIT",
     "TENTACOOL": "LEECHIMP",
     "TENTACRUEL": "LEECHURGE",
+    "TICKLET": "SCUTLET",
+    "TILTAWISP": "RIFFBIT",
+    "TIPULORD": "MUSKETUNGE",
     "TOTODILE": "BIRCHIT",
     "TYROGUE": "CURDLET",
-    "URSARING": "DOZEBEAR",
+    "URSARING": "STACKAJACK",
     "VENOMOTH": "MOTHOSAIC",
     "VENONAT": "TESSLARV",
     "VOLTORB": "PIPULSE",
     "VULPIX": "KINDLIT",
-    "WEEPINBELL": "GLISNARE",
+    "WEEPINBELL": "MUFFIEND",
     "WEEZING": "HAULGEIST",
-    "WOOPER": "GILLPUP",
-    "XATU": "SOLSTORT",
+    "WHIRLNUT": "FLAPIP",
+    "WINKFIN": "SCUTLET",
+    "WOOPER": "LOOBIT",
+    "XATU": "CHORIP",
     "YANMA": "WINDHOPPER"
   },
   "faction_teams": {
@@ -219,13 +248,13 @@
         ]
       },
       {
-        "species": "GOOSNIDE",
+        "species": "VANECHICK",
         "level": 21,
         "moves": [
           "WING_ATTACK",
           "PURSUIT",
-          "SWAGGER",
-          "CHARM"
+          "THIEF",
+          "SAND_ATTACK"
         ]
       },
       {
@@ -294,13 +323,13 @@
         ]
       },
       {
-        "species": "SLUDGESKI",
+        "species": "SILOHAWK",
         "level": 35,
         "moves": [
-          "ICY_WIND",
-          "SLUDGE",
-          "MUD_SLAP",
-          "HAZE"
+          "DRILL_PECK",
+          "FAINT_ATTACK",
+          "THIEF",
+          "ROAR"
         ]
       },
       {
@@ -400,13 +429,13 @@
         ]
       },
       {
-        "species": "GOOSNIDE",
+        "species": "VANECHICK",
         "level": 25,
         "moves": [
           "WING_ATTACK",
-          "BITE",
-          "PURSUIT",
-          "CHARM"
+          "FAINT_ATTACK",
+          "THIEF",
+          "SWAGGER"
         ]
       },
       {
@@ -433,13 +462,13 @@
         ]
       },
       {
-        "species": "GOOSNIDE",
+        "species": "SILOHAWK",
         "level": 43,
         "moves": [
-          "WING_ATTACK",
+          "DRILL_PECK",
           "CRUNCH",
-          "CHARM",
-          "MIRROR_MOVE"
+          "PURSUIT",
+          "ROAR"
         ]
       },
       {
@@ -458,7 +487,7 @@
         "moves": [
           "BUBBLEBEAM",
           "GIGA_DRAIN",
-          "SIGNAL_BEAM",
+          "FURY_CUTTER",
           "SLUDGE"
         ],
         "item": "GOLD_BERRY"
@@ -491,10 +520,10 @@
         "species": "CARTICK",
         "level": 19,
         "moves": [
-          "SLUDGE_BOMB",
           "METAL_CLAW",
-          "SHADOW_BALL",
-          "MUD_SLAP"
+          "MUD_SLAP",
+          "POISON_GAS",
+          "HARDEN"
         ]
       },
       {
@@ -545,10 +574,10 @@
         "species": "CARTICK",
         "level": 20,
         "moves": [
-          "SLUDGE_BOMB",
           "METAL_CLAW",
-          "SHADOW_BALL",
-          "MUD_SLAP"
+          "MUD_SLAP",
+          "POISON_GAS",
+          "HARDEN"
         ]
       }
     ],
@@ -589,10 +618,10 @@
         "species": "CARTICK",
         "level": 21,
         "moves": [
-          "SLUDGE_BOMB",
           "METAL_CLAW",
-          "SHADOW_BALL",
-          "MUD_SLAP"
+          "MUD_SLAP",
+          "POISON_GAS",
+          "HARDEN"
         ]
       }
     ],
@@ -633,10 +662,10 @@
         "species": "CARTICK",
         "level": 21,
         "moves": [
-          "SLUDGE_BOMB",
           "METAL_CLAW",
-          "SHADOW_BALL",
-          "MUD_SLAP"
+          "MUD_SLAP",
+          "POISON_GAS",
+          "HARDEN"
         ]
       }
     ],
@@ -762,13 +791,13 @@
         ]
       },
       {
-        "species": "GOOSNIDE",
+        "species": "SILOHAWK",
         "level": 38,
         "moves": [
-          "WING_ATTACK",
-          "CRUNCH",
+          "DRILL_PECK",
+          "FAINT_ATTACK",
           "PURSUIT",
-          "CHARM"
+          "ROAR"
         ]
       }
     ],
@@ -818,13 +847,13 @@
     ],
     "MN_LODE_ARC_VENT": [
       {
-        "species": "GOOSNIDE",
+        "species": "SILOHAWK",
         "level": 39,
         "moves": [
-          "WING_ATTACK",
-          "CRUNCH",
+          "DRILL_PECK",
+          "FAINT_ATTACK",
           "PURSUIT",
-          "CHARM"
+          "ROAR"
         ]
       },
       {
@@ -894,13 +923,13 @@
         ]
       },
       {
-        "species": "GOOSNIDE",
+        "species": "SILOHAWK",
         "level": 40,
         "moves": [
-          "WING_ATTACK",
-          "CRUNCH",
+          "DRILL_PECK",
+          "FAINT_ATTACK",
           "PURSUIT",
-          "CHARM"
+          "ROAR"
         ]
       }
     ],
@@ -992,13 +1021,13 @@
         ]
       },
       {
-        "species": "GOOSNIDE",
+        "species": "SILOHAWK",
         "level": 42,
         "moves": [
-          "WING_ATTACK",
+          "DRILL_PECK",
           "CRUNCH",
           "PURSUIT",
-          "CHARM"
+          "ROAR"
         ]
       },
       {
@@ -1034,7 +1063,9 @@
       "PUPUMP": 30,
       "MOSQUITAN": 55
     },
-    "balance": "Distinct guards cover Fire/Rock and Steel/Water. Bosses mix Water, Steel, Ice/Poison and Bug support with the Wrigglet line. Preserve early Crookit identity; no underlevel Mosquitan, blanket evasion or legendary padding. Test native battles at expected player levels, not the overlevelled geometry fixture."
+    "balance": "Distinct guards cover Fire/Rock and Steel/Water. Bosses mix Water, Steel, Ice/Poison and Bug support with the Wrigglet line. Preserve early Crookit identity; no underlevel Mosquitan, blanket evasion or legendary padding. Test native battles at expected player levels, not the overlevelled geometry fixture.",
+    "reed_continuity": "Crookit stays with Reed from Winona and evolves into Crookveil. Vanechick and Wrigglet join at the relay and remain as Silohawk and Pupump through the mine and intake. The fourth slot reflects his industrial assignment. Levels and team sizes still require earned campaign verification.",
+    "early_counterplay": "Early Cartick guards use Metal Claw, Mud-Slap and Poison Gas. Reserve their high-power Sludge Bomb and Shadow Ball coverage for later chapters. Do not require players to own rare species or machine-only counters."
   },
   "faction_ai_templates": {
     "MN_REED_RELAY": "EXECUTIVEM_1",

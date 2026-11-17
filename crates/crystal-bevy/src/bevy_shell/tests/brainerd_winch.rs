@@ -1,13 +1,83 @@
 //! Literal pool course with a physical control, ordinary partners and real exits.
 use crystal_core::input::GameButton;
 use crystal_core::models::Dv;
+use crystal_core::systems::field_moves::{CANOE_ACTIVE_MEMORY, CANOE_ITEM};
+use crystal_core::world::movement::MovementMode;
 
 use super::super::winona::travel;
 use super::rochester_readable::{talk, walk};
 use super::{
     VisibleShellController, at, battle, battle_with_partner, can_approach, continue_save,
-    controller, event, finish, gym_collision, load, mark_runtime_snapshot_dirty, press,
+    controller, event, exit_and_reenter, finish, gym_collision, load, mark_runtime_snapshot_dirty,
+    press, walk_to,
 };
+
+#[test]
+#[ignore = "requires the canoe-equipped Brainerd review pack via CRYSTAL_GYM_TEST_PACK"]
+fn brainerd_winch_canoe_and_surf_cannot_bypass_closed_piers() {
+    let (root, runtime, _) = load();
+    let design: serde_json::Value = serde_json::from_str(include_str!(
+        "../../../../../planning/minnesota/gyms/brainerd-wooden-docks-v01.json"
+    ))
+    .expect("dock source");
+    for canoe in [false, true] {
+        let mut c = controller(&root, &runtime, &design["gyms"][0], false);
+        if canoe {
+            let item = &runtime.data().items[CANOE_ITEM];
+            assert!(
+                c.shell
+                    .shell
+                    .session_mut()
+                    .state_mut()
+                    .bag
+                    .add_item(item, 1)
+                    .expect("canoe fixture")
+            );
+            mark_runtime_snapshot_dirty(&mut c.shell);
+        }
+        walk_to(&mut c, &runtime, (3, 10));
+        assert_eq!(gym_collision(&mut c, &runtime, (3, 9)), "WATER");
+        assert_eq!(gym_collision(&mut c, &runtime, (3, 8)), "BUOY");
+        press(&mut c, GameButton::Up);
+        if canoe {
+            press(&mut c, GameButton::Up);
+        } else {
+            press(&mut c, GameButton::A);
+            for _ in 0..128 {
+                if c.snapshot().expect("mount state").overworld.mode == MovementMode::Surf {
+                    break;
+                }
+                press(&mut c, GameButton::A);
+                c.wait_frames(16).expect("Surf dialogue");
+            }
+        }
+        c.wait_frames(80).expect("settle water launch");
+        let launched = c.snapshot().expect("launched");
+        assert_eq!(
+            launched.overworld.mode,
+            MovementMode::Surf,
+            "canoe={canoe}, position={:?}, ui={:?}",
+            launched.overworld.tile,
+            launched.ui
+        );
+        assert_eq!(at(&mut c), (3, 9));
+        assert_eq!(
+            launched
+                .script_events
+                .memory
+                .get(CANOE_ACTIVE_MEMORY)
+                .map(String::as_str),
+            canoe.then_some("1")
+        );
+        for _ in 0..3 {
+            press(&mut c, GameButton::Up);
+            c.wait_frames(16).expect("blocked buoy");
+        }
+        assert_eq!(at(&mut c), (3, 9), "closed pier must stop water travel");
+        assert!(!event(&c, "EVENT_MN_GYM_6_TRAINER_2_DEFEATED"));
+        assert!(!event(&c, "EVENT_MN_GYM_6_COURT_OPEN"));
+    }
+}
 
 fn pool_battle(c: &mut VisibleShellController) {
     let choose: fn(&str) -> Option<&'static str> = |enemy| match enemy {
@@ -201,4 +271,50 @@ fn brainerd_winch_solved_piers_still_require_fifth_badge() {
             .quantity(&r.data().items["TM_RAIN_DANCE"]),
         0
     );
+}
+
+#[test]
+#[ignore = "requires the canoe-equipped Brainerd review pack via CRYSTAL_GYM_TEST_PACK"]
+fn brainerd_winch_review_course_victory_and_city_return() {
+    let (root, r, _) = load();
+    let design: serde_json::Value = serde_json::from_str(include_str!(
+        "../../../../../planning/minnesota/gyms/brainerd-wooden-docks-v01.json"
+    ))
+    .expect("dock source");
+    // Explicit Mew100 and prior badges isolate the physical course and scripts.
+    let mut c = controller(&root, &r, &design["gyms"][0], false);
+    walk(&mut c, "UUUUL");
+    talk(&mut c, GameButton::Left);
+    battle(&mut c, false);
+    finish(&mut c);
+    walk(&mut c, "RRDDD");
+    toggle(&mut c);
+    mode(&mut c, true, false, false);
+    toggle(&mut c);
+    mode(&mut c, false, true, false);
+    toggle(&mut c);
+    mode(&mut c, true, false, false);
+    walk(&mut c, "UUUUUULL");
+    talk(&mut c, GameButton::Left);
+    battle(&mut c, false);
+    finish(&mut c);
+    walk(&mut c, "RRDDDDDD");
+    toggle(&mut c);
+    mode(&mut c, false, true, true);
+    toggle(&mut c);
+    mode(&mut c, true, false, false);
+    toggle(&mut c);
+    mode(&mut c, false, true, true);
+    walk(&mut c, "UUULLUUURRRRUUULL");
+    talk(&mut c, GameButton::Up);
+    battle(&mut c, false);
+    finish(&mut c);
+    assert!(event(&c, "EVENT_MN_GYM_6_DEFEATED"));
+    assert!(c.shell.shell.session().state().badges.johto[5]);
+    c = continue_save(&mut c, &root, &r);
+    walk(&mut c, "RRDDDLLLLDDDRRDDDD");
+    travel(&mut c, GameButton::Down, "MnBrainerd", (12, 36));
+    travel(&mut c, GameButton::Up, "MnBrainerdGym", (4, 14));
+    exit_and_reenter(&mut c, &r, &design["gyms"][0], (5, 15));
+    travel(&mut c, GameButton::Down, "MnBrainerd", (12, 36));
 }

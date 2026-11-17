@@ -1,0 +1,94 @@
+{
+  "species_id": "MN_331",
+  "name": "Trailpup",
+  "family_id": "MN_F151",
+  "dex_number": 203,
+  "status": "accepted",
+  "generation_tool": "built-in image_gen",
+  "selected_manifest": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f151/trailpup.manifest-20261104-v3-features.json",
+    "sha256": "90e08aef8f24b25d3a41a41690f546fbd9d232430ce1b2b41195189606040b1c",
+    "bytes": 1929
+  },
+  "sources": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f151/trailpup.overworld.imagegen-20261104-v1.png",
+      "sha256": "0a3bdd5371b8cd383d07f23b47213de7c6dcae2de95a4aa9495b6adb533adb39",
+      "bytes": 1307432
+    }
+  ],
+  "prompts": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f151/trailpup.overworld.prompt-20261104-v1.txt",
+      "sha256": "0ab45a8d98e7ca625ac12fe05752f7791067b7fa582953114509d38c6a7ba0a0",
+      "bytes": 2734
+    }
+  ],
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/trailpup-20261104-v3-features",
+  "normal_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/trailpup-20261104-v3-features/review/trailpup.normal-8x.png",
+    "sha256": "0d33d33148bebd13cc3585f77be7eb5603531706aa820428d500a56d7a9c0562",
+    "bytes": 9697
+  },
+  "shiny_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/trailpup-20261104-v3-features/review/trailpup.shiny-8x.png",
+    "sha256": "7cfebb4763f29302d1261b616f1c3b308fb5ca2f3cded84daf60158c1fd5480b",
+    "bytes": 9511
+  },
+  "compiled_index": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/trailpup-20261104-v3-features/compiled-index.json",
+    "sha256": "c1513b598f9580cdf6446c85d66f34b14ca7cff88196df9aedce386548f9e0a4",
+    "bytes": 7935
+  },
+  "source_feature_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f151/trailpup.source-feature-review-20261104-v3.json",
+    "sha256": "91334f46c34d6a6f13a5f8ce9966bac04279d9f8f6c1b252bb4e327788930aea",
+    "bytes": 5316
+  },
+  "context_evidence": {
+    "directory": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-03",
+    "input_manifest": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-03/input-manifest.json",
+      "sha256": "e18330a1160c1ece35186004be00d5d3d6e7d59798289e301da0f3620c213c6c",
+      "bytes": 1150
+    },
+    "verification": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-03/verification.json",
+      "sha256": "fd365fe28b700321d3026b15de005ddbb61889bdecdeccdca8cf9024edafa081",
+      "bytes": 16830
+    },
+    "test_log": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/verification/all225-20261104-v5-03.log",
+      "sha256": "f556fa7ae716d6343c6f13c13cc8280e9824956caf11f5ceb4bd49a856570873",
+      "bytes": 217
+    },
+    "normal_actor_poses": 8,
+    "all_six_shiny_native_poses_verified": true
+  },
+  "root_visual_review": {
+    "accepted": true,
+    "notes": "Species-specific head, dark facial marks and themed body silhouette retained in front/profile. Rear poses show backs of ears/crest/head and the actual back/tail, without a pasted frontal face. Six distinct native poses, paired idle/step articulation and both palettes reviewed alongside the trainer on terrain."
+  },
+  "runtime_files": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/trailpup/overworld.2bpp",
+      "sha256": "1fec126348d54c3d2fc6ae1ff974432fd2ba4cd5aab840b4f6ed7eebf16bbef6",
+      "bytes": 384
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/trailpup/overworld.png",
+      "sha256": "190feebf8250e4ff8e039069a8d0cf540cf2d7366c80960b4775d6d7107c3e11",
+      "bytes": 808
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/trailpup/overworld.gbcpal",
+      "sha256": "ebbe910f6ecef7e8d32c6cf9261104a93720d5ccf06f31122b76f188a328bb21",
+      "bytes": 8
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/trailpup/overworld-shiny.gbcpal",
+      "sha256": "101c4fdaf309d0fa27ea015a1143b2cb548f6ff66df50c6fc4e79bb9956a4596",
+      "bytes": 8
+    }
+  ]
+}

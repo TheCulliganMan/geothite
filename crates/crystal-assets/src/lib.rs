@@ -672,19 +672,30 @@ mod northstar_supplies;
 pub use northstar_supplies::build_northstar_supplies;
 mod authored_dialogue;
 mod northstar_clinic_revision;
+mod northstar_club_dialogue;
 mod northstar_courier_revision;
 mod northstar_current_story;
 mod northstar_dispatch_revision;
 mod northstar_holding_fence;
+mod northstar_lighthouse_reward;
+mod northstar_marais_part;
 mod northstar_opening_revision;
 mod northstar_report_revision;
+mod northstar_shared_dialogue;
 mod northstar_story_cast;
 mod northstar_story_connections;
 mod northstar_story_pacing;
 mod northstar_story_revision;
 mod northstar_story_staff;
 pub use northstar_story_connections::align_northstar_league_entrance;
-pub use northstar_story_revision::revise_northstar_story;
+mod northstar_campaign_polish;
+pub use northstar_campaign_polish::polish_northstar_campaign;
+mod northstar_gym_integration;
+pub use northstar_gym_integration::integrate_northstar_gyms;
+mod northstar_campaign_integration;
+pub use northstar_campaign_integration::integrate_northstar_campaign;
+mod northstar_reward_receipts;
+pub use northstar_story_revision::{refresh_installed_northstar_story, revise_northstar_story};
 mod northstar_dialogue;
 pub use northstar_current_story::{
     build_northstar_current_story, build_northstar_current_story_from_composition,
@@ -782,6 +793,11 @@ mod minnesota_ecology_coverage;
 mod minnesota_ecology_fishing;
 mod minnesota_encounter_progression;
 mod minnesota_habitat_review;
+pub use minnesota_habitat_review::build_minnesota_spawn_locations;
+mod minnesota_region_ecology;
+mod minnesota_region_field_ecology;
+mod minnesota_region_rod_ecology;
+pub use minnesota_region_ecology::build_minnesota_region_ecology;
 mod minnesota_sweet_scent_source;
 mod minnesota_water_cave_access;
 mod minnesota_water_cave_habitats;
@@ -1135,6 +1151,8 @@ mod haulage_rock_clearance;
 pub use haulage_rock_clearance::revise_haulage_rock_clearance;
 mod rochester_care_green;
 pub use rochester_care_green::revise_rochester_care_green;
+mod glacier_rear_rail;
+pub use glacier_rear_rail::revise_glacier_rear_rail;
 mod grand_rapids_depot_quay;
 pub use grand_rapids_depot_quay::revise_grand_rapids_depot_quay;
 mod mankato_terrace_pond;
@@ -1189,7 +1207,7 @@ pub use root_beer_cabin::{
 mod iron_range_art;
 pub use iron_range_art::build_iron_range_art_pack;
 mod prairie_grass_art;
-pub use prairie_grass_art::build_prairie_grass_art_pack;
+pub use prairie_grass_art::{build_prairie_grass_art_pack, repair_prairie_lawn_art};
 mod winter_outdoor_art;
 pub use winter_outdoor_art::build_winter_outdoor_art_pack;
 mod winter_mixed_edges_art;
@@ -1367,10 +1385,12 @@ pub use ely_shore_pass::build_ely_shore_pass_pack;
 mod ely_snow_art;
 
 mod canoe_modpack;
+mod canoe_roster;
 mod canoe_sprites;
 mod canoe_story_hints;
 mod canoe_travel;
-pub use canoe_modpack::build_canoe_modpack;
+pub use canoe_modpack::{build_canoe_art_refresh, build_canoe_modpack};
+pub use canoe_story_hints::build_canoe_dialogue_refresh;
 
 mod verdigrim_intake_art;
 mod verdigrim_scene;
@@ -1597,3 +1617,27 @@ pub use northstar_driftless_passage::add_northstar_driftless_passage;
 
 mod minnesota_typing_revision;
 pub use minnesota_typing_revision::build_minnesota_typing_revision;
+
+mod rochester_training_hall;
+pub use rochester_training_hall::build_rochester_training_hall;
+
+mod mankato_ground_terraces;
+pub use mankato_ground_terraces::build_mankato_ground_terraces;
+
+mod minneapolis_electrical_station;
+pub use minneapolis_electrical_station::build_minneapolis_electrical_station;
+
+mod st_paul_civic_loop;
+pub use st_paul_civic_loop::build_st_paul_civic_loop;
+
+mod st_cloud_airworks;
+pub use st_cloud_airworks::build_st_cloud_airworks;
+
+mod brainerd_wooden_docks;
+pub use brainerd_wooden_docks::build_brainerd_wooden_docks;
+mod bemidji_northwoods_garden;
+pub use bemidji_northwoods_garden::build_bemidji_northwoods_garden;
+mod duluth_harbor_ice;
+pub use duluth_harbor_ice::build_duluth_harbor_ice;
+mod gym_active_roster_repair;
+pub use gym_active_roster_repair::repair_gym_active_roster;

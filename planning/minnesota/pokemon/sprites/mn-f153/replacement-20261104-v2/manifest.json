@@ -1,0 +1,243 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F153",
+  "tool": "built-in image_gen",
+  "prompt_file": "sprites/mn-f153/replacement-20261104-v2/prompt.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "status": "native-front-back-candidate-reviewed",
+  "sprites": [
+    {
+      "id": "mn-337-burrowbill-v1",
+      "species_id": "MN_337",
+      "view": "front",
+      "source": "sprites/mn-f153/replacement-20261104-v2/front-back.imagegen.png",
+      "crop": [
+        0,
+        0,
+        510,
+        627
+      ],
+      "fit": [
+        34,
+        35
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        16056,
+        18891,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-337-burrowbill-v1",
+      "species_id": "MN_337",
+      "view": "back",
+      "source": "sprites/mn-f153/replacement-20261104-v2/front-back.imagegen.png",
+      "crop": [
+        0,
+        627,
+        510,
+        627
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        16056,
+        18891,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-338-bankwing-v1",
+      "species_id": "MN_338",
+      "view": "front",
+      "source": "sprites/mn-f153/replacement-20261104-v2/front-back.imagegen.png",
+      "crop": [
+        510,
+        0,
+        744,
+        627
+      ],
+      "fit": [
+        52,
+        43
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        17079,
+        18857,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-338-bankwing-v1",
+      "species_id": "MN_338",
+      "view": "back",
+      "source": "sprites/mn-f153/replacement-20261104-v2/front-back.imagegen.png",
+      "crop": [
+        510,
+        627,
+        744,
+        627
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        17079,
+        18857,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    }
+  ],
+  "pokemon_palettes": {
+    "MN_337": {
+      "species_id": "MN_337",
+      "name": "Burrowbill",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          24,
+          21,
+          15
+        ],
+        [
+          11,
+          14,
+          18
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        16056,
+        18891,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          198,
+          173,
+          123
+        ],
+        [
+          90,
+          115,
+          148
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#C6AD7B",
+        "#5A7394",
+        "#000000"
+      ]
+    },
+    "MN_338": {
+      "species_id": "MN_338",
+      "name": "Bankwing",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          23,
+          21,
+          16
+        ],
+        [
+          9,
+          13,
+          18
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        17079,
+        18857,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          189,
+          173,
+          132
+        ],
+        [
+          74,
+          107,
+          148
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#BDAD84",
+        "#4A6B94",
+        "#000000"
+      ]
+    }
+  },
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "9c838e9f34ea9d283a813e2a22bebc3245d8edddc55ed6ff2e70ce61f8274187",
+    "notes": "Native review: short strong beaks, two digging bird feet, forked tails and dark root-wing folds. Juvenile tucked pose and adult banking wings differ; close rears preserve wing-root depth and bounded eye. Body dither survives palette conversion. Candidate for user feedback."
+  }
+}

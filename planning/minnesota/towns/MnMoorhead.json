@@ -570,34 +570,42 @@
     "reward_quantity": 1,
     "purpose": "Read the actual high-water marker, then let a neighbor explain whose names were kept in the levee notebook. A full Pack must retain the unclaimed kit.",
     "notebook_lines": [
-      "Dad's flood notes",
-      "kept names. Folks",
-      "who carried soup.",
-      "Folks whose steps",
-      "needed a shovel.",
-      "He gauged water.",
-      "This part kept me",
-      "from feeling",
-      "alone."
+      "That's the line,",
+      "all right. Dad",
+      "went back at first",
+      "light with a",
+      "blanket for MRS.",
+      "LIND. She wrapped",
+      "it around his",
+      "hands. He'd gone",
+      "out without his",
+      "mittens both",
+      "times."
     ],
     "reward_lines": [
-      "Here, a FULL HEAL.",
-      "One to keep dry",
-      "for the next muddy",
-      "trip."
+      "Here. Take a FULL",
+      "HEAL. MRS. LIND",
+      "taught me to keep",
+      "one where I can",
+      "get at it with",
+      "mittens on."
     ],
     "full_lines": [
-      "Your PACK is full.",
-      "Make room and come",
-      "back. The kit will",
-      "stay dry here."
+      "Your PACK's full.",
+      "Come back when",
+      "you've got room.",
+      "I'll keep the FULL",
+      "HEAL here."
     ],
     "repeat_lines": [
-      "The notebook is",
-      "not a scorecard.",
-      "Dad wrote every",
-      "name with the same",
-      "pen."
+      "MRS. LIND comes in",
+      "after she reads",
+      "the gauge. I leave",
+      "a blanket on her",
+      "chair. Some",
+      "mornings she folds",
+      "it over mine",
+      "first."
     ]
   },
   "viewpoints": [

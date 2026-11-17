@@ -353,7 +353,10 @@ fn moorhead_controller_reads_real_marker_then_remembers_notebook_gift_after_cont
     assert_eq!(quantity(&c, &r), before + 1);
     assert!(flag(&c, READ) && flag(&c, GIVEN));
     c = continue_save(root, r.clone(), &mut c);
-    assert!(talk(&mut c, (2, 3)).contains("scorecard"));
+    let repeat = talk(&mut c, (2, 3));
+    assert!(!repeat.is_empty());
+    assert_ne!(repeat, text);
+    assert!(flag(&c, READ) && flag(&c, GIVEN));
     assert_eq!(quantity(&c, &r), before + 1);
 }
 

@@ -183,7 +183,12 @@ fn return_and_claim(c: &mut VisibleShellController, r: &CrystalRuntime, root: &A
         .as_array()
         .expect("research gift program")
         .iter()
-        .find(|row| row["command"] == "verbosegiveitem")
+        .find(|row| {
+            matches!(
+                row["command"].as_str(),
+                Some("giveitem" | "verbosegiveitem")
+            )
+        })
         .expect("reviewed fifty-caught gift");
     let (fifty_item, fifty_amount) = match (fifty["args"][0].as_str(), fifty["args"][1].as_str()) {
         (Some("EXP_SHARE"), Some("1")) => ("EXP_SHARE", 1),

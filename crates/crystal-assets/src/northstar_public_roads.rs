@@ -243,8 +243,11 @@ const GATES: &[Gate] = &[
 pub fn open_northstar_public_roads(base: &CompiledGamePack) -> Result<CompiledGamePack> {
     crate::verify_compiled_game_pack_for_runtime(base)?;
     ensure!(
-        base.report.manifests.iter().any(|m| m == STORY),
-        "full consolidated story required before opening public roads"
+        base.report
+            .manifests
+            .iter()
+            .any(|m| { m == STORY || m == "northstar-current-eight-gyms-v1" }),
+        "consolidated story or exact-current gym integration required before opening public roads"
     );
     ensure!(
         !base.report.manifests.iter().any(|m| m == MARKER),
@@ -572,7 +575,7 @@ fn river(maps: &mut Changes, base: &CompiledGamePack) -> Result<()> {
         "MnMPUpperPoolBuoyDeniedText",
         &[
             &["The river runs", "north to ST CLOUD."],
-            &["Use SURF at the", "open landing."],
+            &["Launch a CANOE at", "the open landing."],
         ],
     )?;
     text(
@@ -667,16 +670,14 @@ fn railway(maps: &mut Changes, base: &CompiledGamePack) -> Result<()> {
         &[&["NORTH SHORE PATH", "GRAND MARAIS"]],
     )?;
     let (map, changed, _) = entry(maps, base, "MnLeagueLobby")?;
-    text(
-        map,
-        changed,
-        "MnElySurveyDeniedText",
-        &[
-            &["REGISTRAR: Finish", "the rescue first."],
-            &["Help the crews in", "BOUNDARY WATERS."],
-            &["Then return here", "to register."],
-        ],
-    )?;
+    let label = "MnElySurveyDeniedText";
+    ensure!(
+        map.scripts.contains_key(label),
+        "reviewed League text missing: {}/{label}",
+        map.id
+    );
+    authored_dialogue::install_canonical(map, label)?;
+    changed.insert(label.into());
     Ok(())
 }
 

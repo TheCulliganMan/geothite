@@ -151,8 +151,12 @@ fn canoe_pack_preserves_audio_roster_existing_art_and_unrelated_maps() {
     assert_eq!(result.compiled_audio, base.compiled_audio);
     assert_eq!(result.audio_manifest, base.audio_manifest);
     assert_eq!(result.data.pokemon, base.data.pokemon);
-    assert_eq!(result.data.wild_encounters, base.data.wild_encounters);
     assert_eq!(result.data.field_moves, base.data.field_moves);
+    for (name, group) in &base.data.fishing.groups {
+        if !name.starts_with("FISHGROUP_MN_") {
+            assert_eq!(result.data.fishing.groups.get(name), Some(group));
+        }
+    }
     for (id, bytes) in &base.runtime_files {
         assert_eq!(
             result.runtime_files.get(id),
@@ -160,7 +164,7 @@ fn canoe_pack_preserves_audio_roster_existing_art_and_unrelated_maps() {
             "existing art {id}"
         );
     }
-    assert_eq!(result.runtime_files.len(), base.runtime_files.len() + 6);
+    assert_eq!(result.runtime_files.len(), base.runtime_files.len() + 4);
     for (id, old) in &base.data.maps {
         let new = &result.data.maps[id];
         if ![
@@ -172,18 +176,34 @@ fn canoe_pack_preserves_audio_roster_existing_art_and_unrelated_maps() {
             "MnBrainerdOutfitter",
             "MnDuluth",
             "MnGrandMaraisFisherHouse",
+            "MnMinneapolis",
+            "MnMississippiLowerWoodsC01R01",
+            "MnMoorhead",
+            "MnR07C00R00",
             "MnR10C01R00",
             "MnR18C00R00",
+            "MnStPaulGym",
         ]
         .contains(&id.as_str())
         {
             assert_eq!(new, old, "unrelated map {id}");
+            assert_eq!(
+                result.data.wild_encounters.get(id),
+                base.data.wild_encounters.get(id)
+            );
+            assert_eq!(
+                result.data.field_encounters.get(id),
+                base.data.field_encounters.get(id)
+            );
         } else {
             if id != "MnStPaul" {
                 assert_eq!(new.blocks, old.blocks, "unchanged terrain {id}");
             }
             assert_eq!(new.attributes, old.attributes, "connections {id}");
             assert_eq!(new.events.warps, old.events.warps, "warps {id}");
+            if id != "MnStPaulAnglerHouse" {
+                assert_eq!(new.objects, old.objects, "actors {id}");
+            }
         }
     }
     let item = &result.data.items["CANOE"];
@@ -209,4 +229,88 @@ fn canoe_cannot_launch_from_a_bridge_deck_or_into_a_special_water_obstacle() {
     let frame = canoe_input(&data, &mut state, &mut session, GameButton::Right);
     assert!(!matches!(frame.movement, Some(StepOutcome::Moved { .. })));
     assert_eq!(session.player.mode, MovementMode::Normal);
+}
+
+#[test]
+fn canoe_fishing_requires_a_mounted_canoe_and_water_ahead() {
+    use crystal_core::systems::field_moves::CANOE_ACTIVE_MEMORY;
+    use crystal_core::world::fishing::FishingError;
+
+    let (data, mut state, mut session) = canoe_fixture("MnCanoeTest", true, false);
+    session.player.mode = MovementMode::Surf;
+    let before = state.clone();
+    let mut divider = ReplayDivider::new([0; 8]);
+    let error = data
+        .cast_fishing_rod_in_session_with_divider(&mut state, &session, "GOOD_ROD", &mut divider)
+        .expect_err("owning a canoe does not allow fishing from a Surf Pokémon");
+    assert!(matches!(
+        error.downcast_ref::<FishingError>(),
+        Some(FishingError::CannotFishWhileSurfing)
+    ));
+    assert_eq!(state, before);
+
+    state
+        .script_runtime
+        .memory
+        .insert(CANOE_ACTIVE_MEMORY.into(), "1".into());
+    session.player.tile = TilePosition::new(3, 0);
+    let before = state.clone();
+    let error = data
+        .cast_fishing_rod_in_session_with_divider(&mut state, &session, "GOOD_ROD", &mut divider)
+        .expect_err("canoe must face water");
+    assert!(matches!(
+        error.downcast_ref::<FishingError>(),
+        Some(FishingError::FacingTileIsNotWater)
+    ));
+    assert_eq!(state, before);
+}
+
+#[test]
+#[ignore = "requires CRYSTAL_CANOE_TEST_PACK"]
+fn canoe_shop_grant_rejects_a_full_key_pocket_and_can_retry() {
+    use crystal_core::models::bag::KEY_ITEM_POCKET_CAPACITY;
+    use crystal_core::systems::script_items::ScriptItemGrantOutcome;
+
+    const SHOP: &str = "MnStPaulAnglerHouse";
+    const OWNER: &str = "MnCanoeShopOwner";
+    let pack = read_verified_compiled_game_pack(std::path::PathBuf::from(
+        std::env::var_os("CRYSTAL_CANOE_TEST_PACK").expect("canoe pack"),
+    ))
+    .expect("verified canoe pack");
+    let mut data = pack.data;
+    let grant = data.maps[SHOP]
+        .script_item_grants
+        .iter()
+        .find(|grant| grant.source_script == OWNER && grant.item_id == "CANOE")
+        .expect("compiled canoe grant");
+    let command = grant.command_index;
+    // Add one fixture-only key item to exercise a rejection the shipped
+    // catalog cannot normally reach before the player owns the canoe.
+    let mut extra = test_item("CANOE_TEST_KEY_ITEM");
+    extra.pocket = "KEY_ITEM".into();
+    data.items.insert(extra.script_name.clone(), extra.clone());
+    let mut state = GameState::default();
+    for item in data
+        .items
+        .values()
+        .filter(|item| item.pocket == "KEY_ITEM" && item.script_name != "CANOE")
+        .take(KEY_ITEM_POCKET_CAPACITY)
+    {
+        assert!(state.bag.add_item(item, 1).expect("fill key pocket"));
+    }
+    assert_eq!(state.bag.key_items.len(), KEY_ITEM_POCKET_CAPACITY);
+    let before = state.bag.clone();
+    assert!(matches!(
+        data.grant_script_item(&mut state, SHOP, SHOP, OWNER, command)
+            .expect("attempt actual shop grant"),
+        ScriptItemGrantOutcome::BagFull { .. }
+    ));
+    assert_eq!(state.bag, before);
+    assert!(state.bag.remove_item(&extra, 1).expect("free a slot"));
+    assert!(matches!(
+        data.grant_script_item(&mut state, SHOP, SHOP, OWNER, command)
+            .expect("retry actual shop grant"),
+        ScriptItemGrantOutcome::Granted { .. }
+    ));
+    assert_eq!(state.bag.quantity(&data.items["CANOE"]), 1);
 }

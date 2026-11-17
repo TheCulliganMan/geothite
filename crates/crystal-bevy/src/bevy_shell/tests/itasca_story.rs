@@ -230,6 +230,42 @@ pub(super) fn acknowledge_report(c: &mut VisibleShellController, r: &CrystalRunt
 }
 
 #[test]
+#[ignore = "requires the local campaign polish pack via CRYSTAL_GYM_TEST_PACK"]
+fn campaign_polish_itasca_and_harbor_hints_use_installed_branches() {
+    let (_, runtime, _, mut c) = fixture(PARK, [19, 22], 7, true);
+    marker(&mut c, &runtime);
+    super::super::northstar_dialogue::acknowledge(&mut c, "MS06", "MN_ITASCA_MARKERText", READING);
+    finish(&mut c);
+    assert!(event(&c, READING));
+    assert!(!event(&c, REPORT));
+    marker(&mut c, &runtime);
+    assert_current_hint(&mut c, "MS06", "MnItascaMarkerAfterText");
+    assert!(!event(&c, REPORT));
+
+    let (_, _, _, mut c) = fixture("MnDuluthHarborWorkshop", [11, 6], 8, true);
+    press(&mut c, GameButton::Up);
+    press(&mut c, GameButton::A);
+    assert_current_hint(&mut c, "MS10", "MnOverhaulHarborMissingLogText");
+    assert!(!event(&c, "EVENT_MN_LIGHTHOUSE_SIGNAL"));
+}
+
+fn assert_current_hint(c: &mut VisibleShellController, milestone: &str, label: &str) {
+    let snapshot = c.snapshot().expect("native return hint");
+    assert_eq!(snapshot.ui.text.expect("visible hint").label, label);
+    let presentation = c
+        .shell
+        .shell
+        .presentation_snapshot()
+        .expect("visible pages");
+    assert_eq!(
+        crate::bevy_shell::visible_field_dialog_pages(&presentation, &c.shell)
+            .expect("actual authored hint"),
+        super::super::northstar_dialogue::canonical_pages(milestone, label),
+    );
+    finish(c);
+}
+
+#[test]
 #[ignore = "external Itasca pack; explicit prior badges/empty party"]
 fn itasca_story_controller_native_gatehouse_both_lanes_free_returns_and_continue() {
     for lane in 0..2 {

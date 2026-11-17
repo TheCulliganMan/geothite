@@ -1,0 +1,94 @@
+{
+  "species_id": "MN_328",
+  "name": "Bitterry",
+  "family_id": "MN_F149",
+  "dex_number": 200,
+  "status": "accepted",
+  "generation_tool": "built-in image_gen",
+  "selected_manifest": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f149/bitterry.manifest-20261104-v3-features.json",
+    "sha256": "4dd51ed073188f23dc426157d51aa5f561f7f49834f208d478741e0d09092ee4",
+    "bytes": 1929
+  },
+  "sources": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f149/bitterry.overworld.imagegen-20261104-v1.png",
+      "sha256": "6c6d805f98448f641e62ab1bfa7df32d2a6dac09276899c976c53e3f844d6c5b",
+      "bytes": 1293674
+    }
+  ],
+  "prompts": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f149/bitterry.overworld.prompt-20261104-v1.txt",
+      "sha256": "c9b51819fc1fff6e27faac78b988f4708260c4b72679b9012a8a9204d1b79f84",
+      "bytes": 2674
+    }
+  ],
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/bitterry-20261104-v3-features",
+  "normal_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/bitterry-20261104-v3-features/review/bitterry.normal-8x.png",
+    "sha256": "7f1bd5f5a7ed193a5985e21325037c2e69aff314a6ad1a69da415b25cad5ba97",
+    "bytes": 9253
+  },
+  "shiny_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/bitterry-20261104-v3-features/review/bitterry.shiny-8x.png",
+    "sha256": "cb4a46dd9eb6e77d9234f4f84d80e4f7ebe749ce5605dac975ca718facd0cb23",
+    "bytes": 9248
+  },
+  "compiled_index": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/bitterry-20261104-v3-features/compiled-index.json",
+    "sha256": "e8b9d3d72716062357c18dc29912b356ac5b2e436bd85ca87f160a250be0734f",
+    "bytes": 7935
+  },
+  "source_feature_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f149/bitterry.source-feature-review-20261104-v3.json",
+    "sha256": "eee8e4b6ea51694f9c9e93a679ab8e73c29791a10de6eb1b480219cfbbc3bba3",
+    "bytes": 5316
+  },
+  "context_evidence": {
+    "directory": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-03",
+    "input_manifest": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-03/input-manifest.json",
+      "sha256": "e18330a1160c1ece35186004be00d5d3d6e7d59798289e301da0f3620c213c6c",
+      "bytes": 1150
+    },
+    "verification": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-03/verification.json",
+      "sha256": "fd365fe28b700321d3026b15de005ddbb61889bdecdeccdca8cf9024edafa081",
+      "bytes": 16830
+    },
+    "test_log": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/verification/all225-20261104-v5-03.log",
+      "sha256": "f556fa7ae716d6343c6f13c13cc8280e9824956caf11f5ceb4bd49a856570873",
+      "bytes": 217
+    },
+    "normal_actor_poses": 8,
+    "all_six_shiny_native_poses_verified": true
+  },
+  "root_visual_review": {
+    "accepted": true,
+    "notes": "Species-specific head, dark facial marks and themed body silhouette retained in front/profile. Rear poses show backs of ears/crest/head and the actual back/tail, without a pasted frontal face. Six distinct native poses, paired idle/step articulation and both palettes reviewed alongside the trainer on terrain."
+  },
+  "runtime_files": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/bitterry/overworld.2bpp",
+      "sha256": "6418fdf37a80f62790f45a48572afde2b3e41bdb9c2120391557890d938f99ac",
+      "bytes": 384
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/bitterry/overworld.png",
+      "sha256": "8a9c748483e43bcefa635fdf983e3832a14bbedcd3cc9f5bfb54bc08fcd0d4ca",
+      "bytes": 809
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/bitterry/overworld.gbcpal",
+      "sha256": "014bde6f24d59db4ca453dbaea7219e1665dd479a23cc069057ce1b8da5e40eb",
+      "bytes": 8
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/bitterry/overworld-shiny.gbcpal",
+      "sha256": "c334d344279f5bf7691ddc507341a556f447cd8a8bd60006c69aaa3d16dffa99",
+      "bytes": 8
+    }
+  ]
+}

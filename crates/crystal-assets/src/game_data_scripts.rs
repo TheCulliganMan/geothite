@@ -4888,7 +4888,11 @@ impl GameDataSet {
                     || next_state.last_spawn_map_constant.as_deref().is_some_and(|previous| {
                         self.minnesota_clinic_for_constant(previous).is_some()
                     }));
-            if !preserve_clinic {
+            // Signing in for a League run designates the Ely clinic for recovery.
+            let league_registration = current_map == "MnLeagueLobby"
+                && command.source_script == "MnElyRegister"
+                && map_constant == "MN_ELY_POKECENTER_1F";
+            if league_registration || !preserve_clinic {
                 next_state.last_spawn_map_constant = Some(map_constant.clone());
             }
         }

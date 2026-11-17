@@ -4,6 +4,7 @@ use serde::Deserialize;
 use serde_json::json;
 use sha2::{Digest, Sha256};
 
+use crate::authored_dialogue;
 use crate::authored_town_geometry::kind;
 use crate::grand_marais_modpack::authoring::{self, command as c};
 use crate::northstar_lair_authoring;
@@ -47,10 +48,6 @@ struct Reward {
     event_flag: String,
     requires_badge: bool,
     requires_field_move: bool,
-    text: Vec<String>,
-    full_text: Vec<String>,
-    received_text: Vec<String>,
-    repeat_text: Vec<String>,
 }
 
 fn hash(bytes: &[u8]) -> String {
@@ -87,19 +84,13 @@ fn add_grower(pack: &CompiledGamePack, map: &mut MapModule, plan: &Proposal) -> 
         &plan.new_actor.sprite,
         plan.new_actor.tile,
     )?;
-    let reward = &plan.reward;
-    for (label, lines) in [
-        ("MnR02GardenOfferText", &reward.text),
-        ("MnR02GardenFullText", &reward.full_text),
-        ("MnR02GardenReceivedText", &reward.received_text),
-        ("MnR02GardenRepeatText", &reward.repeat_text),
+    for label in [
+        "MnR02GardenOfferText",
+        "MnR02GardenFullText",
+        "MnR02GardenReceivedText",
+        "MnR02GardenRepeatText",
     ] {
-        ensure!(!lines.is_empty(), "nonempty grower text required");
-        authoring::text(
-            &mut extra,
-            label,
-            &lines.iter().map(String::as_str).collect::<Vec<_>>(),
-        );
+        authored_dialogue::install_canonical(&mut extra, label)?;
     }
     extra.scripts.insert(
         ACTOR.into(),

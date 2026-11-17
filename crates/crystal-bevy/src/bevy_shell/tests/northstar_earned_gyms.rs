@@ -12,14 +12,25 @@ use super::minnesota_gyms::{interact, walk_to};
 use super::winona::{at, finish, press, travel};
 
 pub(super) fn selected(r: &CrystalRuntime) -> bool {
-    r.pack_identity()
-        .runtime_modpack_id
-        .split('+')
-        .any(|id| id == "minnesota-current-eight-gyms-v1")
+    r.pack_identity().runtime_modpack_id.split('+').any(|id| {
+        matches!(
+            id,
+            "minnesota-current-eight-gyms-v1" | "northstar-current-eight-gyms-v1"
+        )
+    })
 }
 
 pub(super) fn design(r: &CrystalRuntime, slot: usize) -> &'static Value {
     let current = selected(r);
+    let lineage = &r.pack_identity().runtime_modpack_id;
+    let reviewed_airworks = slot == 5
+        && lineage
+            .split('+')
+            .any(|id| id == "minnesota-st-cloud-airworks-review-v1");
+    let reviewed_docks = slot == 6
+        && lineage
+            .split('+')
+            .any(|id| id == "minnesota-brainerd-wooden-docks-review-v1");
     let reviewed_base = r
         .pack_identity()
         .runtime_modpack_id
@@ -31,19 +42,59 @@ pub(super) fn design(r: &CrystalRuntime, slot: usize) -> &'static Value {
     );
     static CURRENT: OnceLock<Value> = OnceLock::new();
     static BASE: OnceLock<Value> = OnceLock::new();
-    let cache = if current { &CURRENT } else { &BASE };
-    let design = cache.get_or_init(|| {
-        let path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-            .join("../../planning/minnesota/gyms")
-            .join(if current {
-                "current.json"
+    static AIRWORKS: OnceLock<Value> = OnceLock::new();
+    static DOCKS: OnceLock<Value> = OnceLock::new();
+    static INTEGRATED: OnceLock<Value> = OnceLock::new();
+    let integrated = lineage
+        .split('+')
+        .any(|id| id == "northstar-current-eight-gyms-v1");
+    let (cache, filename, index) = if reviewed_airworks {
+        (&AIRWORKS, "st-cloud-airworks-v01.json", 0)
+    } else if reviewed_docks {
+        (&DOCKS, "brainerd-wooden-docks-v01.json", 0)
+    } else if current {
+        (&CURRENT, "current.json", slot - 1)
+    } else {
+        (&BASE, "interiors.json", slot - 1)
+    };
+    let design = if integrated {
+        INTEGRATED.get_or_init(|| {
+            let root =
+                PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../planning/minnesota/gyms");
+            let gyms = [
+                "rochester-training-hall-v01.json",
+                "mankato-ground-terraces-v01.json",
+                "minneapolis-electrical-station-v01.json",
+                "st-paul-civic-loop-v01.json",
+                "st-cloud-airworks-v01.json",
+                "brainerd-wooden-docks-v01.json",
+                "bemidji-northwoods-v01.json",
+                "duluth-harbor-ice-v01.json",
+            ]
+            .iter()
+            .map(|filename| {
+                let source =
+                    std::fs::read_to_string(root.join(filename)).expect("integrated gym source");
+                let value: Value = serde_json::from_str(&source).expect("integrated room JSON");
+                value["gyms"][0].clone()
+            })
+            .collect::<Vec<_>>();
+            serde_json::json!({"gyms": gyms})
+        })
+    } else {
+        cache.get_or_init(|| {
+            let path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+                .join("../../planning/minnesota/gyms")
+                .join(filename);
+            let source = if reviewed_airworks || reviewed_docks {
+                std::fs::read_to_string(path).expect("reviewed gym source")
             } else {
-                "interiors.json"
-            });
-        serde_json::from_str(&read_minnesota_gym_design(path).expect("current gym source"))
-            .expect("selected gym JSON")
-    });
-    let gym = &design["gyms"][slot - 1];
+                read_minnesota_gym_design(path).expect("current gym source")
+            };
+            serde_json::from_str(&source).expect("selected gym JSON")
+        })
+    };
+    let gym = &design["gyms"][if integrated { slot - 1 } else { index }];
     let room = &r.data().maps[gym["id"].as_str().expect("native gym id")];
     assert_eq!(
         room.attributes.width,

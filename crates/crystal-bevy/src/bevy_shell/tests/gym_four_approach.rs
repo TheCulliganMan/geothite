@@ -1,7 +1,7 @@
 //! Current Badge, dispatch evidence and the actual river approach to Gym4.
 use crystal_core::input::GameButton;
 use crystal_core::models::{Dv, LearnedMove};
-use crystal_runtime::CrystalRuntime;
+use crystal_runtime::{CrystalRuntime, RuntimeBattleKind};
 use serde_json::{Value, json};
 
 use super::super::authored_route_fixture::{RouteGrid, RouteSpec};
@@ -54,25 +54,71 @@ pub(super) fn try_crossing(
     r: &CrystalRuntime,
     to: (i16, i16),
 ) -> bool {
-    let tile = c.snapshot().expect("R04 start").overworld.tile;
-    let start = (tile.x, tile.y);
-    let grid = RouteGrid::new_with_grass(
-        r,
-        RouteSpec {
-            prefix: "MnR04",
-            columns: 1,
-            rows: 1,
-            tileset: "mn_river_park",
-            start,
-            doors: Default::default(),
-        },
-    );
-    for button in grid.path(start, to) {
-        let old = c.snapshot().expect("crossing tile").overworld.tile;
+    let snapshot = c.snapshot().expect("R04 start");
+    let tile = snapshot.overworld.tile;
+    let spec = RouteSpec {
+        prefix: "MnR04",
+        columns: 1,
+        rows: 1,
+        tileset: "mn_river_park",
+        start: (tile.x, tile.y),
+        doors: Default::default(),
+    };
+    let mut grid = if snapshot.party.slots.is_empty() {
+        RouteGrid::new_with_grass(r, spec)
+    } else {
+        RouteGrid::new_for_battles(r, spec)
+    };
+    let original_blocked = grid.blocked.clone();
+    let mut unexpected_blocks = std::collections::BTreeSet::new();
+    for _ in 0..4096 {
+        let snapshot = c.snapshot().expect("live R04 position");
+        let here = (snapshot.overworld.tile.x, snapshot.overworld.tile.y);
+        if here == to {
+            return true;
+        }
+        grid.blocked.clone_from(&original_blocked);
+        grid.blocked.extend(&unexpected_blocks);
+        for object in &snapshot.visible_objects {
+            let id = object
+                .object_identifier
+                .as_deref()
+                .expect("visible actor id");
+            let position = c
+                .shell
+                .shell
+                .session()
+                .overworld()
+                .object_runtime_tile_by_id(id)
+                .expect("live actor position");
+            grid.blocked.insert((position.x, position.y));
+        }
+        let path = grid
+            .try_path(here, to)
+            .unwrap_or_else(|| panic!("R04 route blocked at {here:?} toward {to:?}"));
+        let button = *path.first().expect("remaining R04 step");
+        let old = snapshot.overworld.tile;
         for _ in 0..8 {
             press(c, button);
-            if c.snapshot().expect("wild encounter").battle.is_some() {
-                flee(c);
+            if let Some(battle) = c.snapshot().expect("route encounter").battle {
+                match battle.kind {
+                    RuntimeBattleKind::Wild { .. } => flee(c),
+                    RuntimeBattleKind::Trainer {
+                        trainer_id,
+                        event_flag,
+                        ..
+                    } => {
+                        if !super::super::rochester_earned::try_battle(
+                            c,
+                            r,
+                            &trainer_id,
+                            &event_flag,
+                        ) {
+                            return false;
+                        }
+                    }
+                    other => panic!("unexpected R04 encounter {other:?}"),
+                }
             }
             let now = c.snapshot().expect("played route step");
             if now.overworld.map_name != "MnR04C00R00" {
@@ -82,10 +128,32 @@ pub(super) fn try_crossing(
                 break;
             }
         }
-        assert_ne!(c.snapshot().expect("completed step").overworld.tile, old);
+        if c.snapshot().expect("completed step").overworld.tile == old {
+            if let Some(intro) = &c.shell.pending_trainer_intro
+                && intro.origin_map_name == "MnR04C00R00"
+            {
+                let (trainer, flag) = match intro.source_script.as_str() {
+                    "MN_R04_T01" => ("MN_R04_T01", "EVENT_MN_R04_TRAINER_01"),
+                    "MN_R04_T02" => ("MN_R04_T02", "EVENT_MN_R04_TRAINER_02"),
+                    other => panic!("unexpected R04 trainer challenge: {other}"),
+                };
+                if !super::super::rochester_earned::try_battle(c, r, trainer, flag) {
+                    return false;
+                }
+                unexpected_blocks.clear();
+                continue;
+            }
+            let (dx, dy) = match button {
+                GameButton::Up => (0, -1),
+                GameButton::Down => (0, 1),
+                GameButton::Left => (-1, 0),
+                GameButton::Right => (1, 0),
+                _ => unreachable!("route planner uses directional buttons"),
+            };
+            unexpected_blocks.insert((here.0 + dx, here.1 + dy));
+        }
     }
-    location(c, "MnR04C00R00", to);
-    true
+    panic!("bounded R04 walk did not reach {to:?}")
 }
 
 #[test]

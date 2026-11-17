@@ -589,42 +589,66 @@
     ],
     "arrival_facing": "RIGHT",
     "denied_lines": [
-      "The winter loop",
-      "needs eight",
-      "BADGES,",
-      "our ranger",
-      "check-in",
-      "and harbor signal."
+      "WARDEN: I need",
+      "eight BADGES, the",
+      "all clear from",
+      "DULUTH harbor, and",
+      "your name in the",
+      "clinic book. If",
+      "you haven't signed",
+      "in, the ranger's",
+      "at the",
+      "INTERNATIONAL",
+      "FALLS clinic."
     ],
     "register_lines": [
-      "I write down",
-      "names,",
-      "not just a number.",
-      "Check in for the",
-      "border loop?"
+      "RANGER: Going",
+      "round the loop?",
+      "Cross RAINY RIVER",
+      "and follow the",
+      "VOYAGEURS shore",
+      "east to BOUNDARY",
+      "WATERS. The west",
+      "watch there will",
+      "call when they see",
+      "you. Come back",
+      "here when you're",
+      "done. Shall I put",
+      "your name down?"
     ],
     "registered_lines": [
-      "You are on our",
-      "list.",
-      "Bring eight BADGES",
-      "and harbor signal.",
-      "Reach the far",
-      "camp,",
-      "then report here."
+      "RANGER: I've got",
+      "your name. Before",
+      "you go out, the",
+      "crossing warden",
+      "still needs eight",
+      "BADGES and the all",
+      "clear from DULUTH",
+      "harbor."
     ],
     "waiting_lines": [
-      "The far camp is",
-      "still in your",
-      "route",
-      "notebook. Return",
-      "after the",
-      "crossing."
+      "RANGER: I haven't",
+      "heard from the",
+      "west watch yet.",
+      "Follow the",
+      "VOYAGEURS shore",
+      "east until you",
+      "reach their post",
+      "in BOUNDARY",
+      "WATERS. Then come",
+      "back here."
     ],
     "complete_lines": [
-      "You made the loop.",
-      "That is good news",
-      "for everyone who",
-      "waited up for you."
+      "RANGER: The west",
+      "watch called when",
+      "you came through.",
+      "I left your name",
+      "in the book till I",
+      "saw you walk back",
+      "in. Here you are.",
+      "Sit by the stove",
+      "while I cross it",
+      "off."
     ],
     "reward_lines": [
       "Take this PP UP.",
@@ -675,15 +699,16 @@
       45
     ],
     "warden_lines": [
-      "Checking the wind?",
-      "Leave your name",
-      "with the FALLS",
-      "ranger first.",
-      "All eight BADGES",
-      "and harbor signal",
-      "for the east loop.",
-      "Coming home? Our",
-      "lamp stays lit."
+      "WARDEN: The clinic",
+      "ranger knows when",
+      "you set out. The",
+      "west watch calls",
+      "when you pass. If",
+      "you don't come",
+      "back, we know",
+      "which end of the",
+      "trail to start",
+      "looking from."
     ]
   },
   "compact_rebase": "One physical R17 southern road; the old direct icefield shortcut is geographically inconsistent and visibly closed. The guarded circuit uses the existing road through Bemidji/Ely and the actual Rainy River eastern outlet."

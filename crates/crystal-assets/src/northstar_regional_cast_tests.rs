@@ -228,7 +228,7 @@ fn regional_story_preserves_source_regions_audio_and_native_party_contracts() {
         "a boss cannot use an underlevel final mosquito"
     );
     let mut missing = base.clone();
-    missing.data.pokemon.remove("GILLPUP");
+    missing.data.pokemon.remove("LOOBIT");
     assert!(
         regional.target(&missing, "GILLPUP", Some(5)).is_err(),
         "no missing-species fallback"

@@ -14,6 +14,91 @@ fn quantity(c: &super::super::VisibleShellController, item: &str) -> u16 {
 }
 
 #[test]
+#[ignore = "requires the integrated CRYSTAL_WINONA_TEST_PACK with committed reward receipts"]
+fn research_reward_commits_claim_before_first_receipt_and_continues_once() {
+    use super::super::VisibleShellController;
+    use super::winona::press;
+    use crystal_core::input::GameButton;
+
+    let (root, r) = load();
+    let mut c = fixture(&root, &r, "MnWinonaFieldStation", (2, 8));
+    let active: Vec<_> = r
+        .data()
+        .story_event_script_constants
+        .global
+        .keys()
+        .filter_map(|name| name.strip_prefix("MN_DEX_MEMBER_"))
+        .take(10)
+        .collect();
+    assert_eq!(active.len(), 10);
+    let state = c.shell.shell.session_mut().state_mut();
+    for flag in [
+        "EVENT_MN_STARTER_RECEIVED",
+        "EVENT_MN_WINONA_BALLS_RECEIVED",
+    ] {
+        state
+            .flags
+            .set_event_flag(flag, true)
+            .expect("declared opening fixture");
+    }
+    for species in active {
+        state.pokedex.record_caught(&r.data().pokemon[species]);
+    }
+    mark_runtime_snapshot_dirty(&mut c.shell);
+    press(&mut c, GameButton::Down);
+    press(&mut c, GameButton::A);
+    for _ in 0..100 {
+        if quantity(&c, "GREAT_BALL") > 0 {
+            break;
+        }
+        press(&mut c, GameButton::A);
+    }
+    assert_eq!(quantity(&c, "GREAT_BALL"), 10);
+    assert!(
+        c.shell
+            .shell
+            .session()
+            .state()
+            .flags
+            .is_event_flag_set("EVENT_MN_DEX_REWARD_0")
+            .expect("research claim flag")
+    );
+    assert!(c.snapshot().expect("receipt boundary").ui.text_window_open);
+    // Save at the first visible boundary after the actual grant, without the
+    // usual settle helper that would acknowledge the receipt before saving.
+    let path = super::authored_route_fixture::reached_save_path(&format!(
+        "research-receipt-{}.crystalsave",
+        std::process::id()
+    ));
+    c.save(&path).expect("save during reward receipt");
+    c = VisibleShellController::load_save(root, r, path.clone(), None)
+        .expect("Continue during reward receipt");
+    super::authored_route_fixture::cleanup_reached_save(&path);
+    for _ in 0..100 {
+        let snapshot = c.snapshot().expect("continued receipt");
+        if !snapshot.ui.text_window_open
+            && !c.has_pending_script_work()
+            && c.shell.field_notice.is_none()
+            && c.shell.special_boundary.is_none()
+        {
+            break;
+        }
+        press(&mut c, GameButton::A);
+    }
+    talk(&mut c, (2, 9));
+    assert_eq!(
+        quantity(&c, "GREAT_BALL"),
+        10,
+        "receipt Continue cannot award twice"
+    );
+    press(&mut c, GameButton::Start);
+    assert!(
+        c.shell.start_menu_cursor.is_some(),
+        "reward returns input ownership"
+    );
+}
+
+#[test]
 #[ignore = "requires CRYSTAL_WINONA_TEST_PACK with progression rewards"]
 fn progression_rewards_master_ball_requires_restoration_and_survives_continue_once() {
     let (root, r) = load();
@@ -122,7 +207,12 @@ fn progression_rewards_dex_counts_caught_native_species_not_seen_foreign_or_save
         .as_array()
         .expect("native research award")
         .iter()
-        .find(|row| row["command"] == "verbosegiveitem")
+        .find(|row| {
+            matches!(
+                row["command"].as_str(),
+                Some("giveitem" | "verbosegiveitem")
+            )
+        })
         .expect("reviewed fifty-caught gift");
     let (fifty_item, fifty_amount) = match (fifty["args"][0].as_str(), fifty["args"][1].as_str()) {
         (Some("ULTRA_BALL"), Some("10")) => ("ULTRA_BALL", 10),

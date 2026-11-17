@@ -1,0 +1,194 @@
+{
+  "parent_content_hash": "834d4be07c45079fdc81f1777856a37058d064b4188f548e31616684436da5e3",
+  "relocations": [
+    {
+      "map": "MnR01Cave1F",
+      "slot": 1,
+      "before": "DRIPTIP",
+      "after": "TESSLARV",
+      "slots": 3,
+      "reason": "Pebble-cased Tesslarv is a common find near the limestone seep.",
+      "sample": [5, 3],
+      "loop": [6, 3],
+      "time": "day"
+    },
+    {
+      "map": "MnR01Cave1F",
+      "slot": 4,
+      "before": "DRIPTIP",
+      "after": "HUSHISS",
+      "slots": 3,
+      "reason": "Give the timber rattlesnake a second slot on the rocky cave floor.",
+      "sample": [5, 3],
+      "loop": [6, 3],
+      "time": "day"
+    },
+    {
+      "map": "MnR03Cave1F",
+      "slot": 1,
+      "before": "DRIPTIP",
+      "after": "CHORIP",
+      "slots": 3,
+      "reason": "A wetland chorus toad distinguishes the damp river-valley cave from the opening limestone floor.",
+      "sample": [5, 3],
+      "loop": [6, 3],
+      "time": "day"
+    },
+    {
+      "map": "MnR03Cave1F",
+      "slot": 4,
+      "before": "DRIPTIP",
+      "after": "TESSLARV",
+      "slots": 3,
+      "reason": "Increase the share of pebble-cased caddisfly larvae near the river seep.",
+      "sample": [5, 3],
+      "loop": [6, 3],
+      "time": "day"
+    },
+    {
+      "map": "MnR03C00R01",
+      "slot": 2,
+      "before": "PODLET",
+      "after": "CHORIP",
+      "slots": 3,
+      "reason": "The wet riverbank grass supports the chorus toad after dark as well as during the day.",
+      "sample": [20, 2],
+      "loop": [21, 2],
+      "time": "day"
+    },
+    {
+      "map": "MnR06C00R01",
+      "slot": 2,
+      "before": "DEWDANT",
+      "after": "PITCHWICK",
+      "slots": 3,
+      "reason": "Red pine resin Pok\u00e9mon give the uphill pine-country grass its own common encounter.",
+      "sample": [52, 6],
+      "loop": [53, 6],
+      "time": "day"
+    },
+    {
+      "map": "MnR08C01R00",
+      "before": "NOTCHBILL",
+      "after": "BRISTUB",
+      "slots": 3,
+      "reason": "A native porcupine forages along the northern woodland edge.",
+      "sample": [2, 28],
+      "loop": [3, 28],
+      "time": "day",
+      "slot": 2
+    },
+    {
+      "map": "MnR19C00R01",
+      "slot": 5,
+      "before": "SOLSTORT",
+      "after": "TAPACITOR",
+      "slots": 3,
+      "reason": "The prairie-side grass supports the Red River sugarbeet family.",
+      "sample": [22, 2],
+      "loop": [23, 2],
+      "time": "day"
+    },
+    {
+      "map": "MnR03C00R01",
+      "before": "GILLPUP",
+      "after": "CLINKLAW",
+      "slots": 2,
+      "reason": "Replace a retired encounter with an active species suited to this habitat.",
+      "sample": [20, 2],
+      "loop": [21, 2],
+      "time": "day"
+    },
+    {
+      "map": "MnR03C00R01",
+      "before": "PECKIT",
+      "after": "VELVAWN",
+      "slots": 3,
+      "reason": "Replace a retired encounter with an active species suited to this habitat.",
+      "sample": [20, 2],
+      "loop": [21, 2],
+      "time": "day"
+    },
+    {
+      "map": "MnR03C00R01",
+      "before": "TICKLET",
+      "after": "TUSSNIP",
+      "slots": 3,
+      "reason": "Replace a retired encounter with an active species suited to this habitat.",
+      "sample": [20, 2],
+      "loop": [21, 2],
+      "time": "day"
+    },
+    {
+      "map": "MnR06C00R01",
+      "before": "NOTCHBILL",
+      "after": "BRISTUB",
+      "slots": 3,
+      "reason": "Replace a retired encounter with an active species suited to this habitat.",
+      "sample": [52, 6],
+      "loop": [53, 6],
+      "time": "day"
+    },
+    {
+      "map": "MnR08C01R00",
+      "before": "GLISNARE",
+      "after": "REEDRAFT",
+      "slots": 2,
+      "reason": "Replace a retired encounter with an active species suited to this habitat.",
+      "sample": [2, 28],
+      "loop": [3, 28],
+      "time": "day"
+    },
+    {
+      "map": "MnR08C01R00",
+      "before": "MUDMENDER",
+      "after": "HISSIP",
+      "slots": 3,
+      "reason": "Replace a retired encounter with an active species suited to this habitat.",
+      "sample": [2, 28],
+      "loop": [3, 28],
+      "time": "day"
+    },
+    {
+      "map": "MnR08C01R00",
+      "before": "SOLSTORT",
+      "after": "CROSSPOUT",
+      "slots": 3,
+      "reason": "Replace a retired encounter with an active species suited to this habitat.",
+      "sample": [2, 28],
+      "loop": [3, 28],
+      "time": "day"
+    },
+    {
+      "map": "MnR19C00R01",
+      "before": "MUDMENDER",
+      "after": "POTHOLLOW",
+      "slots": 3,
+      "reason": "Replace a retired encounter with an active species suited to this habitat.",
+      "sample": [22, 2],
+      "loop": [23, 2],
+      "time": "day"
+    },
+    {
+      "map": "MnR19C00R01",
+      "before": "NOTCHBILL",
+      "after": "VANECHICK",
+      "slots": 4,
+      "reason": "Replace a retired encounter with an active species suited to this habitat.",
+      "sample": [22, 2],
+      "loop": [23, 2],
+      "time": "day"
+    },
+    {
+      "map": "MnR08C01R00",
+      "before": "NOTCHBILL",
+      "after": "PITCHWICK",
+      "slots": 3,
+      "reason": "Resin Pok\u00e9mon give the pine understory a second local resident.",
+      "sample": [2, 28],
+      "loop": [3, 28],
+      "time": "day",
+      "slot": 5
+    }
+  ]
+}

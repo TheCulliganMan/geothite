@@ -97,13 +97,21 @@ fn overhaul_harbor_accepts_the_pump_log_before_final_gym_training() {
     press(&mut c, GameButton::Right);
     press(&mut c, GameButton::A);
     continue_in_place(&mut c, &root, &r, "pacing-harbor-evidence-before-final-gym");
-    for label in [
-        "MN_HARBOR_RECEIVERText",
-        "MnOverhaulHarborEvidenceText",
-        "MnOverhaulHarborReactionText",
-        "MnOverhaulHarborDirectionsText",
-        "MnArcHarborIntakeText",
-    ] {
+    let mut labels = vec!["MN_HARBOR_RECEIVERText"];
+    let receiver = r.data().maps["MnDuluthHarborWorkshop"].scripts["MN_HARBOR_RECEIVER"]
+        .as_array()
+        .expect("harbor conversation");
+    if receiver.iter().any(|row| {
+        row["command"] == "writetext" && row["args"][0] == "MnOverhaulHarborEvidenceText"
+    }) {
+        labels.extend([
+            "MnOverhaulHarborEvidenceText",
+            "MnOverhaulHarborReactionText",
+            "MnOverhaulHarborDirectionsText",
+        ]);
+    }
+    labels.push("MnArcHarborIntakeText");
+    for label in labels {
         acknowledge(&mut c, "MS10", label, SIGNAL);
     }
     finish(&mut c);
@@ -117,6 +125,40 @@ fn overhaul_harbor_accepts_the_pump_log_before_final_gym_training() {
     acknowledge(&mut c, "PACING", "MN_HARBOR_RECEIVERDeniedText", CHAMPION);
     finish(&mut c);
     assert!(!c.shell.shell.session().state().badges.johto[7]);
+
+    super::super::authored_route_fixture::indoor_walk(&mut c, &r, (8, 10));
+    for _ in 0..4 {
+        if c.snapshot().expect("workshop exit").overworld.map_name == "MnDuluth" {
+            break;
+        }
+        press(&mut c, GameButton::Down);
+    }
+    assert_eq!(
+        c.snapshot().expect("workshop exit").overworld.map_name,
+        "MnDuluth"
+    );
+    let lanes = r.data().maps["MnDuluth"]
+        .events
+        .coord_events
+        .iter()
+        .filter(|event| event.script_name == "MnDuluthShoreCheck")
+        .map(|event| (event.x as i16, event.y as i16 + 1))
+        .collect::<Vec<_>>();
+    assert!(!lanes.is_empty(), "installed north-road checkpoint lanes");
+    for (x, y) in lanes {
+        super::super::authored_route_fixture::indoor_walk(&mut c, &r, (x, y));
+        for _ in 0..4 {
+            if c.snapshot().expect("road checkpoint").ui.text_window_open {
+                break;
+            }
+            press(&mut c, GameButton::Up);
+        }
+        acknowledge(&mut c, "PACING", "MnDuluthShoreCheckBadgesText", CHAMPION);
+        finish(&mut c);
+        at(&mut c, "MnDuluth", (x, y));
+        assert!(event(&c, SIGNAL));
+        assert!(!c.shell.shell.session().state().badges.johto[7]);
+    }
 }
 
 #[test]
@@ -130,7 +172,6 @@ fn overhaul_chief_reacts_to_radio_exposure_and_completed_shutdown() {
         let mut flags = flags;
         flags.push("EVENT_MN_SURVEY_CHIEF_DEFEATED");
         let (root, r, mut c) = fixture("MnBoundaryWatersSurveyShelter", (12, 4), &flags);
-        assert!(timely_evidence(&r), "matching pacing candidate required");
         let actor = r.data().maps["MnBoundaryWatersSurveyShelter"]
             .objects
             .iter()

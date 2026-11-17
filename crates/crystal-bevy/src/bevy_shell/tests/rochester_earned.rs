@@ -137,19 +137,19 @@ pub(super) fn try_battle(
     id: &str,
     win: &str,
 ) -> bool {
-    play_battle(c, r, id, Victory::Event(win), false, true, None)
+    play_battle(c, r, id, Victory::Event(win), None, true)
 }
 
 /// Train the chosen lead through ordinary battles and carried-partner switches.
 /// The battle engine determines participation and awards all experience.
 pub(super) fn train_wild(c: &mut VisibleShellController, r: &CrystalRuntime) -> bool {
-    play_battle(c, r, "WILD", Victory::Wild, false, true, None)
+    play_battle(c, r, "WILD", Victory::Wild, None, true)
 }
 
 /// Train an already suitable lead without an automatic higher-level switch.
 /// Ordinary forced switches and authoritative experience awards still apply.
 pub(super) fn train_wild_with_lead(c: &mut VisibleShellController, r: &CrystalRuntime) -> bool {
-    play_battle(c, r, "WILD", Victory::Wild, false, false, None)
+    play_battle(c, r, "WILD", Victory::Wild, None, false)
 }
 
 enum Victory<'a> {
@@ -164,14 +164,23 @@ pub(super) fn try_league_battle(
     id: &str,
     completed: u8,
 ) -> bool {
-    play_battle(c, r, id, Victory::League(completed), false, false, None)
+    play_battle(c, r, id, Victory::League(completed), None, false)
 }
 
 /// Attempt an ordinary wild capture, weakening it with a carried basic move
 /// when available, then throwing actual purchased balls.
 /// Returns whether the native capture actually adds a party member.
 pub(super) fn try_recruit(c: &mut VisibleShellController, r: &CrystalRuntime) -> bool {
-    recruit_with_ball(c, r, None)
+    recruit_with_ball(c, r, None, false)
+}
+
+/// Throw a carried ball immediately when an ordinary attack would risk
+/// knocking out a much weaker wild partner.
+pub(super) fn try_recruit_without_weakening(
+    c: &mut VisibleShellController,
+    r: &CrystalRuntime,
+) -> bool {
+    recruit_with_ball(c, r, None, true)
 }
 
 /// Attempt capture using an explicitly chosen carried ball, including Master Ball.
@@ -181,13 +190,20 @@ pub(super) fn try_recruit_with_ball(
     r: &CrystalRuntime,
     ball: &str,
 ) -> bool {
-    recruit_with_ball(c, r, Some(ball))
+    recruit_with_ball(c, r, Some(ball), false)
+}
+
+#[derive(Clone, Copy)]
+struct Recruitment<'a> {
+    ball: Option<&'a str>,
+    throw_immediately: bool,
 }
 
 fn recruit_with_ball(
     c: &mut VisibleShellController,
     r: &CrystalRuntime,
     ball: Option<&str>,
+    throw_immediately: bool,
 ) -> bool {
     let before = c.snapshot().expect("wild recruitment");
     assert!(before.party.slots.len() < 6);
@@ -206,7 +222,17 @@ fn recruit_with_ball(
             "explicit capture ball must already be carried: {item_id}"
         );
     }
-    let _ = play_battle(c, r, "WILD", Victory::Wild, true, false, ball);
+    let _ = play_battle(
+        c,
+        r,
+        "WILD",
+        Victory::Wild,
+        Some(Recruitment {
+            ball,
+            throw_immediately,
+        }),
+        false,
+    );
     c.snapshot()
         .expect("actual recruitment outcome")
         .party
@@ -220,11 +246,12 @@ fn play_battle(
     r: &CrystalRuntime,
     id: &str,
     victory: Victory<'_>,
-    recruit: bool,
+    recruitment: Option<Recruitment<'_>>,
     allow_training_switch: bool,
-    requested_ball: Option<&str>,
 ) -> bool {
     let initial = c.snapshot().expect("before earned battle");
+    let recruit = recruitment.is_some();
+    let requested_ball = recruitment.and_then(|options| options.ball);
     let mine = matches!(
         id,
         "MN_LODE_FOREMAN" | "MN_REED_MINE" | "MN_LODE_CHIEF" | "MN_REED_BOUNDARY"
@@ -232,7 +259,7 @@ fn play_battle(
         || id.starts_with("MN_ICE_HQ_");
     let mut saw_battle = false;
     let mut spent_pp = false;
-    let mut used_struggle = false;
+    let mut executed_move = false;
     let mut lowered_accuracy = false;
     let mut switched_since_attack = false;
     let mut last_league_enemy = None;
@@ -246,6 +273,12 @@ fn play_battle(
         .sum();
     for step in 0..1024 {
         let s = c.snapshot().expect("earned battle");
+        spent_pp |= spent_move_pp(&initial, &s);
+        if let Some(battle) = &s.battle {
+            // A learned move can replace the spent slot before the party view
+            // updates. The native turn still records the move that executed.
+            executed_move |= battle.player_turns_taken > 0 && battle.player_last_move.is_some();
+        }
         if let Some(button) = learning_button(c, r) {
             press(c, button);
             continue;
@@ -265,8 +298,6 @@ fn play_battle(
         }
         if let Some(b) = &s.battle {
             saw_battle = true;
-            used_struggle |=
-                b.player_turns_taken > 0 && b.player_last_move.as_deref() == Some("STRUGGLE");
             lowered_accuracy |= b.enemy_pokemon.stat_boosts[&Stat::Accuracy] < 0;
             let potions = c
                 .shell
@@ -277,7 +308,12 @@ fn play_battle(
                 .quantity(&r.data().items["POTION"]);
             if (matches!(
                 id,
-                "MN_GYM_1" | "MN_ICE_ENFORCER" | "MN_GYM_5" | "MN_GYM_6" | "MN_LODE_FOREMAN"
+                "MN_GYM_1"
+                    | "MN_GYM_2"
+                    | "MN_ICE_ENFORCER"
+                    | "MN_GYM_5"
+                    | "MN_GYM_6"
+                    | "MN_LODE_FOREMAN"
             ) || matches!(&victory, Victory::League(_)))
                 && traced_turn != Some(b.player_turns_taken)
             {
@@ -310,13 +346,14 @@ fn play_battle(
                     matches!(&b.kind, RuntimeBattleKind::Trainer { trainer_id, .. } if trainer_id == id)
                 );
             }
-            spent_pp |= spent_move_pp(&initial, &s);
         } else if saw_battle {
             break;
         }
         let b = s.battle.as_ref();
         let active = b.and_then(|b| b.active_player_party_index).unwrap_or(0);
         let p = &s.party.slots[active].pokemon;
+        let prairie_sand =
+            id == "MN_GYM_2" && std::env::var_os("CRYSTAL_PRAIRIE_SAND_STRATEGY").is_some();
         let league = matches!(&victory, Victory::League(_));
         let react_to_enemy_change = league || id == "MN_ICE_ENFORCER" || id.starts_with("MN_R13_T");
         let sleep_talk = league
@@ -445,7 +482,8 @@ fn play_battle(
         let catch = !heal
             && !retreat
             && capture
-            && (requested_ball == Some("MASTER_BALL")
+            && (recruitment.is_some_and(|options| options.throw_immediately)
+                || requested_ball == Some("MASTER_BALL")
                 || weak_attack.is_none()
                 || b.is_some_and(|b| {
                     if recruit {
@@ -464,7 +502,24 @@ fn play_battle(
         });
         // The enforcer's mixed team also requires defensive matchups: selecting
         // a strong attack alone can strand a frail partner in repeated healing.
-        let mine_partner = if react_to_enemy_change {
+        let prairie_switch = prairie_sand
+            && p.species.id == "NIBBIN"
+            && b.is_some_and(|battle| {
+                battle.enemy_pokemon.species.id != "CASTOROCK"
+                    || battle.enemy_pokemon.stat_boosts[&Stat::Accuracy] <= -2
+            });
+        let mine_partner = if prairie_switch {
+            s.party
+                .slots
+                .iter()
+                .find(|slot| {
+                    super::winona::campaign_starter()
+                        .family
+                        .contains(&slot.pokemon.species.id.as_str())
+                        && slot.pokemon.hp > 0
+                })
+                .map(|slot| slot.index)
+        } else if react_to_enemy_change {
             league_choices::partner(r, &s)
         } else {
             mine.then(|| mine_choices::partner(r, &s)).flatten()
@@ -579,18 +634,23 @@ fn play_battle(
             });
             let support = sustain.or_else(|| {
                 b.player_moves.iter().position(|m| {
-                    matches!(id, "MN_GYM_1" | "MN_ICE_ENFORCER")
-                        && m.current_pp > 0
-                        && ((m.name == "MUD_SLAP"
-                            && id == "MN_ICE_ENFORCER"
-                            && b.enemy_pokemon.stat_boosts[&Stat::Accuracy] > -3)
-                            || (m.name == "SMOKESCREEN"
-                                && !b.player_moves.iter().any(|m| m.name == "MUD_SLAP")
+                    (prairie_sand
+                        && m.name == "SAND_ATTACK"
+                        && b.enemy_pokemon.species.id == "CASTOROCK"
+                        && b.enemy_pokemon.stat_boosts[&Stat::Accuracy] > -2
+                        && m.current_pp > 0)
+                        || (matches!(id, "MN_GYM_1" | "MN_ICE_ENFORCER")
+                            && m.current_pp > 0
+                            && ((m.name == "MUD_SLAP"
+                                && id == "MN_ICE_ENFORCER"
                                 && b.enemy_pokemon.stat_boosts[&Stat::Accuracy] > -3)
-                            || (m.name == "LEER"
-                                && id == "MN_GYM_1"
-                                && b.enemy_pokemon.stat_boosts[&Stat::Accuracy] <= -3
-                                && b.enemy_pokemon.stat_boosts[&Stat::Defense] > -1))
+                                || (m.name == "SMOKESCREEN"
+                                    && !b.player_moves.iter().any(|m| m.name == "MUD_SLAP")
+                                    && b.enemy_pokemon.stat_boosts[&Stat::Accuracy] > -3)
+                                || (m.name == "LEER"
+                                    && id == "MN_GYM_1"
+                                    && b.enemy_pokemon.stat_boosts[&Stat::Accuracy] <= -3
+                                    && b.enemy_pokemon.stat_boosts[&Stat::Defense] > -1)))
                 })
             });
             let target = if capture && !catch {
@@ -724,8 +784,8 @@ fn play_battle(
         return false;
     }
     assert!(
-        spent_pp || capture || (saw_battle && used_struggle),
-        "{id}: actual PP spending, executed native Struggle or capture required"
+        spent_pp || capture || executed_move,
+        "{id}: actual PP spending, an executed native move or capture required"
     );
     if id == "WILD" {
         assert_eq!(
@@ -949,10 +1009,41 @@ pub(super) fn learning_button(
 }
 
 pub(super) fn heal_party(c: &mut VisibleShellController, r: &CrystalRuntime) {
-    indoor_walk(c, r, (3, 3));
+    let clinic = c.snapshot().expect("clinic location").overworld.map_name;
+    let map = &r.data().maps[&clinic];
+    let direct_regional_heal = [
+        "MN_RC_NURSE",
+        "MN_MK_NURSE",
+        "MN_MP_NURSE",
+        "MN_ST_CLOUD_NURSE",
+        "MN_BRAINERD_NURSE",
+    ]
+    .iter()
+    .filter_map(|label| map.scripts.get(*label))
+    .any(|program| {
+        program.as_array().is_some_and(|body| {
+            body.iter()
+                .any(|row| row["command"] == "special" && row["args"][0] == "HealParty")
+        })
+    });
+    let counter = if direct_regional_heal { (7, 5) } else { (3, 3) };
+    for _ in 0..8 {
+        indoor_walk(c, r, counter);
+        // A field-poison notice can interrupt the walk to the counter.
+        finish(c);
+        let tile = c
+            .snapshot()
+            .expect("clinic counter approach")
+            .overworld
+            .tile;
+        if (tile.x, tile.y) == counter {
+            break;
+        }
+    }
+    at(c, &clinic, counter);
     press(c, GameButton::Up);
     press(c, GameButton::A);
-    for _ in 0..48 {
+    for _ in 0..if direct_regional_heal { 0 } else { 48 } {
         if c.snapshot()
             .expect("nurse question")
             .ui
@@ -973,11 +1064,12 @@ pub(super) fn heal_party(c: &mut VisibleShellController, r: &CrystalRuntime) {
         press(c, GameButton::A);
     }
     assert!(
-        c.snapshot()
-            .expect("nurse choice")
-            .ui
-            .pending_yes_no
-            .is_some()
+        direct_regional_heal
+            || c.snapshot()
+                .expect("nurse choice")
+                .ui
+                .pending_yes_no
+                .is_some()
     );
     let mut released = false;
     for _ in 0..256 {
@@ -1002,14 +1094,24 @@ pub(super) fn heal_party(c: &mut VisibleShellController, r: &CrystalRuntime) {
     }
     assert!(released, "nurse recovery did not release input");
     let s = c.snapshot().expect("earned clinic recovery");
-    assert!(s.party.slots.iter().all(|slot| {
+    for slot in &s.party.slots {
         let p = &slot.pokemon;
-        p.hp == p.max_hp
-            && p.status.is_none()
-            && p.moves
-                .iter()
-                .all(|m| m.current_pp == r.data().moves[&m.name].pp)
-    }));
+        assert_eq!(
+            (p.hp, p.status.as_deref()),
+            (p.max_hp, None),
+            "clinic recovery for {}",
+            p.species.id
+        );
+        for m in &p.moves {
+            assert_eq!(
+                m.current_pp,
+                crystal_core::models::max_move_pp(r.data().moves[&m.name].pp, m.pp_ups),
+                "clinic PP recovery for {} using {}",
+                p.species.id,
+                m.name
+            );
+        }
+    }
 }
 
 pub(super) fn heal(c: &mut VisibleShellController, r: &CrystalRuntime) {
@@ -1025,8 +1127,23 @@ pub(super) fn heal(c: &mut VisibleShellController, r: &CrystalRuntime) {
     );
 }
 
+pub(super) fn clinic_arrival(r: &CrystalRuntime) -> (i16, i16) {
+    let clinic = &r.data().maps["MnRochesterPokecenter1F"];
+    let arrival = clinic
+        .events
+        .warps
+        .iter()
+        .find(|warp| warp.index == 3)
+        .expect("Rochester clinic arrival warp");
+    (
+        i16::try_from(arrival.x).expect("clinic arrival x"),
+        i16::try_from(arrival.y).expect("clinic arrival y"),
+    )
+}
+
 pub(super) fn clinic_exit(c: &mut VisibleShellController, r: &CrystalRuntime) {
-    indoor_walk(c, r, (3, 4));
+    let (x, y) = clinic_arrival(r);
+    indoor_walk(c, r, (x, y + 1));
     travel(c, GameButton::Down, "MnRochester", (15, 8));
 }
 
@@ -1034,9 +1151,27 @@ pub(super) fn supplies(c: &mut VisibleShellController, r: &CrystalRuntime, quant
     buy(c, r, "POTION", quantity);
 }
 
+pub(super) fn mart_arrival(r: &CrystalRuntime, map: &str) -> (i16, i16) {
+    let arrival = r.data().maps[map]
+        .events
+        .warps
+        .iter()
+        .find(|warp| warp.index == 3)
+        .expect("Mart passive arrival");
+    (
+        i16::try_from(arrival.x).expect("Mart arrival x"),
+        i16::try_from(arrival.y).expect("Mart arrival y"),
+    )
+}
+
 pub(super) fn buy(c: &mut VisibleShellController, r: &CrystalRuntime, id: &str, quantity: u16) {
     indoor_walk(c, r, (29, 10));
-    travel(c, GameButton::Up, "MnRochesterMart", (6, 5));
+    travel(
+        c,
+        GameButton::Up,
+        "MnRochesterMart",
+        mart_arrival(r, "MnRochesterMart"),
+    );
     indoor_walk(c, r, (3, 3));
     press(c, GameButton::Left);
     press(c, GameButton::A);
@@ -1070,7 +1205,22 @@ pub(super) fn checkout(
         .iter()
         .position(|s| s == id)
         .unwrap_or_else(|| panic!("native mart does not stock {id}"));
-    press(c, GameButton::A);
+    for _ in 0..32 {
+        if c.shell.shop_top_cursor.is_none() && c.shell.menu_cursor.is_some() {
+            break;
+        }
+        let button = if c
+            .shell
+            .shop_top_cursor
+            .as_ref()
+            .is_some_and(|cursor| cursor.option_index > 0)
+        {
+            GameButton::Up
+        } else {
+            GameButton::A
+        };
+        press(c, button);
+    }
     for _ in 0..32 {
         let index = c
             .shell
@@ -1127,14 +1277,6 @@ pub(super) fn checkout(
         }
         let button = if s.pending_shop.is_none() || c.shell.shop_notice.is_some() {
             GameButton::A
-        } else if c.shell.shop_quantity.is_some() {
-            GameButton::B
-        } else if let Some(cursor) = &c.shell.shop_top_cursor {
-            if cursor.option_index == 2 {
-                GameButton::A
-            } else {
-                GameButton::Down
-            }
         } else {
             GameButton::B
         };
@@ -1145,7 +1287,12 @@ pub(super) fn checkout(
 
 fn recruit(c: &mut VisibleShellController, r: &CrystalRuntime, root: &crystal_assets::AssetRoot) {
     indoor_walk(c, r, (15, 8));
-    travel(c, GameButton::Up, "MnRochesterPokecenter1F", (3, 3));
+    travel(
+        c,
+        GameButton::Up,
+        "MnRochesterPokecenter1F",
+        clinic_arrival(r),
+    );
     heal(c, r);
     clinic_exit(c, r);
     indoor_walk(c, r, (38, 18));
@@ -1170,7 +1317,7 @@ fn recruit(c: &mut VisibleShellController, r: &CrystalRuntime, root: &crystal_as
             }
         });
         if !arrived {
-            at(c, "MnRochesterPokecenter1F", (3, 5));
+            at(c, "MnRochesterPokecenter1F", clinic_arrival(r));
             continue_in_place(c, root, r, "fresh-recruit-blackout");
             heal(c, r);
             clinic_exit(c, r);
@@ -1219,7 +1366,12 @@ fn train_for_care(
         if c.snapshot().expect("training recovery").overworld.map_name != "MnRochesterPokecenter1F"
         {
             indoor_walk(c, r, (15, 8));
-            travel(c, GameButton::Up, "MnRochesterPokecenter1F", (3, 3));
+            travel(
+                c,
+                GameButton::Up,
+                "MnRochesterPokecenter1F",
+                clinic_arrival(r),
+            );
         }
         heal(c, r);
         clinic_exit(c, r);
@@ -1327,6 +1479,11 @@ pub(super) fn care_badge() -> (
     );
     trail(&mut c, &r, (0, 24));
     travel(&mut c, GameButton::Left, "MnRochester", (39, 18));
+    let reviewed_hall = r
+        .pack_identity()
+        .runtime_modpack_id
+        .split('+')
+        .any(|id| id == "minnesota-rochester-training-hall-review-v1");
     for (tile, facing, id, win) in [
         (
             (6, 16),
@@ -1368,11 +1525,21 @@ pub(super) fn care_badge() -> (
                     != "MnRochesterPokecenter1F"
                 {
                     indoor_walk(&mut c, &r, (15, 8));
-                    travel(&mut c, GameButton::Up, "MnRochesterPokecenter1F", (3, 3));
+                    travel(
+                        &mut c,
+                        GameButton::Up,
+                        "MnRochesterPokecenter1F",
+                        clinic_arrival(&r),
+                    );
                 }
                 heal(&mut c, &r);
-                indoor_walk(&mut c, &r, (4, 4));
-                super::northstar_ice_lair::talk(&mut c, GameButton::Right);
+                let (tile, facing) = if clinic_arrival(&r) == (10, 13) {
+                    ((9, 9), GameButton::Down)
+                } else {
+                    ((4, 4), GameButton::Right)
+                };
+                indoor_walk(&mut c, &r, tile);
+                super::northstar_ice_lair::talk(&mut c, facing);
                 super::northstar_ice_lair::choice(&mut c, true);
                 assert!(try_battle(
                     &mut c,
@@ -1413,7 +1580,12 @@ pub(super) fn care_badge() -> (
                 != "MnRochesterPokecenter1F"
             {
                 indoor_walk(&mut c, &r, (15, 8));
-                travel(&mut c, GameButton::Up, "MnRochesterPokecenter1F", (3, 3));
+                travel(
+                    &mut c,
+                    GameButton::Up,
+                    "MnRochesterPokecenter1F",
+                    clinic_arrival(&r),
+                );
             }
             heal(&mut c, &r);
             clinic_exit(&mut c, &r);
@@ -1425,7 +1597,20 @@ pub(super) fn care_badge() -> (
                 (6, 17)
             };
             travel(&mut c, GameButton::Up, "MnRochesterGym", arrival);
-            if selected {
+            if reviewed_hall {
+                let room = &r.data().maps["MnRochesterGym"];
+                let script = if id == "MN_GYM_1" {
+                    "MnRochesterGymLeader"
+                } else {
+                    id
+                };
+                let actor = room
+                    .objects
+                    .iter()
+                    .find(|object| object.script == script)
+                    .unwrap_or_else(|| panic!("reviewed gym actor {id} is missing"));
+                super::minnesota_gyms::interact(&mut c, &r, (actor.x, actor.y));
+            } else if selected {
                 northstar_earned_gyms::rochester_challenge(&mut c, &r, id);
             } else {
                 indoor_walk(&mut c, &r, tile);
@@ -1435,7 +1620,7 @@ pub(super) fn care_badge() -> (
             if try_battle(&mut c, &r, id, win) {
                 break;
             }
-            at(&mut c, "MnRochesterPokecenter1F", (3, 5));
+            at(&mut c, "MnRochesterPokecenter1F", clinic_arrival(&r));
             c = continued(c, &root, &r, &format!("fresh-{id}-loss-{attempt}"));
             if id == "MN_GYM_1" && attempt < 3 {
                 train_for_care(&mut c, &r, &root, 13 + attempt);
@@ -1470,10 +1655,12 @@ pub(super) fn care_badge() -> (
         1
     );
     assert_eq!(s.party.slots.len(), 2);
-    assert!(matches!(
-        s.party.slots[0].pokemon.species.id.as_str(),
-        "CYNDAQUIL" | "QUILAVA" | "KINDLIT" | "RIMEPELT"
-    ));
+    assert!(
+        super::winona::campaign_starter()
+            .family
+            .contains(&s.party.slots[0].pokemon.species.id.as_str()),
+        "the selected starter remains the earned lead"
+    );
     c = continued(c, &root, &r, "rochester-earned-care-badge");
     assert!(event(&c, "EVENT_MN_GYM_1_DEFEATED"));
     at(&mut c, "MnRochester", gym_front(&r));

@@ -8,6 +8,7 @@ use super::super::{
     complete_visible_smoke_player_name_if_needed, initialize_bevy_runtime_shell,
     mark_runtime_snapshot_dirty,
 };
+use super::minnesota_gyms::northstar_arc_campaign::intake_controls;
 use super::northstar_ice_lair::{choice, event, page, save, talk, walk};
 use super::winona::{at, finish, load, press, travel};
 
@@ -362,7 +363,14 @@ fn rival_arc_chief_link_rival_local_release_creature_crew_and_continue() {
     );
     walk(&mut c, &r, (17, 12));
     talk(&mut c, GameButton::Up);
-    page(&mut c, "MnArcIntakeDeniedText");
+    let has_three_controls = intake_controls::present(&r);
+    let denial = if has_three_controls {
+        assert!(event(&c, "EVENT_MN_VERDIGRIM_COUNTER_CURRENT"));
+        "MnVerdigrimDeniedText"
+    } else {
+        "MnArcIntakeDeniedText"
+    };
+    page(&mut c, denial);
     finish(&mut c);
     walk(&mut c, &r, (14, 9));
     talk(&mut c, GameButton::Right);
@@ -372,62 +380,66 @@ fn rival_arc_chief_link_rival_local_release_creature_crew_and_continue() {
     choice(&mut c, true);
     won(&mut c, &r, "MN_REED_BOUNDARY");
     assert!(!event(&c, "EVENT_MN_KETTLURK_RELEASED") && !event(&c, "EVENT_MN_SURVEY_RESTORED"));
-    walk(&mut c, &r, (17, 12));
-    talk(&mut c, GameButton::Up);
-    choice(&mut c, false);
-    finish(&mut c);
-    c = save(&mut c, &root, &r, "arc-intake-declined");
-    talk(&mut c, GameButton::Up);
-    choice(&mut c, true);
-    page(&mut c, "MnArcIntakeOpenText");
-    assert!(!event(&c, "EVENT_MN_KETTLURK_RELEASED"));
-    let m = &c.shell.shell.session().overworld().map;
-    assert_eq!(m.metatile_ids[4 * m.width as usize + 10], 7);
-    press(&mut c, GameButton::Down);
-    at(&mut c, "MnBoundaryIntake", (18, 12));
-    if let Some(dir) = std::env::var_os("CRYSTAL_NORTHSTAR_EVENTS_SAVE_DIR") {
-        c.save(std::path::PathBuf::from(dir).join("arc-intake-open-frame.crystalsave"))
-            .expect("actual held frame");
-    }
-    page(&mut c, "MnArcIntakeEscapeText");
-    let live = c
-        .shell
-        .shell
-        .session()
-        .overworld()
-        .object_runtime_tile_by_id("MN_ARC_KETTLURK")
-        .expect("visible escaped creature");
-    assert_eq!((live.x, live.y), (22, 13));
-    assert!(
-        c.snapshot()
-            .expect("escaped creature remains in view")
-            .visible_objects
-            .iter()
-            .any(|o| o.object_identifier.as_deref() == Some("MN_ARC_KETTLURK"))
-    );
-    if let Some(dir) = std::env::var_os("CRYSTAL_NORTHSTAR_EVENTS_SAVE_DIR") {
-        c.save(std::path::PathBuf::from(dir).join("arc-kettlurk-current-frame.crystalsave"))
-            .expect("actual creature in water");
-    }
-    page(&mut c, "MnArcIntakeCrewText");
-    at(&mut c, "MnBoundaryIntake", (13, 15));
-    if let Some(dir) = std::env::var_os("CRYSTAL_NORTHSTAR_EVENTS_SAVE_DIR") {
-        c.save(std::path::PathBuf::from(dir).join("arc-intake-crew-frame.crystalsave"))
-            .expect("held crew clearance");
-    }
-    for id in ["MN_ARC_INTAKE_IVY", "MN_ARC_INTAKE_FINN"] {
+    if has_three_controls {
+        intake_controls::restore(&mut c, &root, &r);
+    } else {
+        walk(&mut c, &r, (17, 12));
+        talk(&mut c, GameButton::Up);
+        choice(&mut c, false);
+        finish(&mut c);
+        c = save(&mut c, &root, &r, "arc-intake-declined");
+        talk(&mut c, GameButton::Up);
+        choice(&mut c, true);
+        page(&mut c, "MnArcIntakeOpenText");
+        assert!(!event(&c, "EVENT_MN_KETTLURK_RELEASED"));
+        let m = &c.shell.shell.session().overworld().map;
+        assert_eq!(m.metatile_ids[4 * m.width as usize + 10], 7);
+        press(&mut c, GameButton::Down);
+        at(&mut c, "MnBoundaryIntake", (18, 12));
+        if let Some(dir) = std::env::var_os("CRYSTAL_NORTHSTAR_EVENTS_SAVE_DIR") {
+            c.save(std::path::PathBuf::from(dir).join("arc-intake-open-frame.crystalsave"))
+                .expect("actual held frame");
+        }
+        page(&mut c, "MnArcIntakeEscapeText");
+        let live = c
+            .shell
+            .shell
+            .session()
+            .overworld()
+            .object_runtime_tile_by_id("MN_ARC_KETTLURK")
+            .expect("visible escaped creature");
+        assert_eq!((live.x, live.y), (22, 13));
         assert!(
             c.snapshot()
-                .expect("crew clearance in view")
+                .expect("escaped creature remains in view")
                 .visible_objects
                 .iter()
-                .any(|o| o.object_identifier.as_deref() == Some(id))
+                .any(|o| o.object_identifier.as_deref() == Some("MN_ARC_KETTLURK"))
         );
+        if let Some(dir) = std::env::var_os("CRYSTAL_NORTHSTAR_EVENTS_SAVE_DIR") {
+            c.save(std::path::PathBuf::from(dir).join("arc-kettlurk-current-frame.crystalsave"))
+                .expect("actual creature in water");
+        }
+        page(&mut c, "MnArcIntakeCrewText");
+        at(&mut c, "MnBoundaryIntake", (13, 15));
+        if let Some(dir) = std::env::var_os("CRYSTAL_NORTHSTAR_EVENTS_SAVE_DIR") {
+            c.save(std::path::PathBuf::from(dir).join("arc-intake-crew-frame.crystalsave"))
+                .expect("held crew clearance");
+        }
+        for id in ["MN_ARC_INTAKE_IVY", "MN_ARC_INTAKE_FINN"] {
+            assert!(
+                c.snapshot()
+                    .expect("crew clearance in view")
+                    .visible_objects
+                    .iter()
+                    .any(|o| o.object_identifier.as_deref() == Some(id))
+            );
+        }
+        assert!(event(&c, "EVENT_MN_KETTLURK_RELEASED"));
+        assert!(!event(&c, "EVENT_MN_SURVEY_RESTORED"));
+        finish(&mut c);
+        assert!(event(&c, "EVENT_MN_SURVEY_RESTORED"));
     }
-    assert!(event(&c, "EVENT_MN_KETTLURK_RELEASED"));
-    assert!(!event(&c, "EVENT_MN_SURVEY_RESTORED"));
-    finish(&mut c);
-    assert!(event(&c, "EVENT_MN_SURVEY_RESTORED"));
     c = save(&mut c, &root, &r, "arc-intake-complete");
     for id in ["MN_ARC_KETTLURK", "MN_ARC_INTAKE_REED"] {
         assert!(

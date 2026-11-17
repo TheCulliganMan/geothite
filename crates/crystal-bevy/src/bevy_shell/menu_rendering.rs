@@ -4283,8 +4283,12 @@ fn update_player_facing_art_in_place(
                 } else {
                     "mn_canoe_chris"
                 },
-                "SPRITE_SURF",
-                1,
+                if female {
+                    "SPRITE_KRIS_BIKE"
+                } else {
+                    "SPRITE_CHRIS_BIKE"
+                },
+                snapshot.trainer.player_palette_id,
             )
         }
         MovementMode::Surf => ("surf", "SPRITE_SURF", 1),
@@ -6694,7 +6698,18 @@ Transform::from_xyz(0.0, 0.0, 2.7),),
             }
         }
     }
-    let previous_viewport_origin = rendered.viewport_origin;
+    let connection_viewport_origin = runtime_shell
+        .shell
+        .last_frame()
+        .and_then(|frame| frame.connection.as_ref())
+        .filter(|connection| {
+            rendered.map_name.as_deref() == Some(connection.trigger.map_name.as_str())
+                && snapshot.overworld.map_name == connection.destination.map_name
+        })
+        .and_then(|connection| {
+            translate_connection_viewport_origin(rendered.viewport_origin?, connection)
+        });
+    let previous_viewport_origin = connection_viewport_origin.or(rendered.viewport_origin);
     let tile_frame_key = {
         let mut hasher = std::collections::hash_map::DefaultHasher::new();
         for handle in &viewport_tile_handles {
@@ -6726,7 +6741,8 @@ Transform::from_xyz(0.0, 0.0, 2.7),),
     let retained_texture_content = rendered.map_texture.is_some()
         && rendered.map_priority_texture.is_some()
         && rendered.tile_frame_key == Some(tile_frame_key);
-    let active_camera_walk = rendered.map_name.as_ref() == Some(&snapshot.overworld.map_name)
+    let active_camera_walk = (rendered.map_name.as_ref() == Some(&snapshot.overworld.map_name)
+        || connection_viewport_origin.is_some())
         && (runtime_shell.player_walk_frame_ticks > 0
             || runtime_shell.visible_ledge_jump.is_some());
     let next_walk_viewport_origin = next_walk_viewport_origin(
@@ -7853,8 +7869,12 @@ Transform::from_xyz(emote_x, emote_y, 3.2),),
                     } else {
                         "mn_canoe_chris"
                     },
-                    "SPRITE_SURF",
-                    1,
+                    if female {
+                        "SPRITE_KRIS_BIKE"
+                    } else {
+                        "SPRITE_CHRIS_BIKE"
+                    },
+                    snapshot.trainer.player_palette_id,
                 )
             }
             MovementMode::Surf => ("surf", "SPRITE_SURF", 1),
@@ -7934,7 +7954,10 @@ Transform::from_xyz(emote_x, emote_y, 3.2),),
             Some((standing.handle, walking.handle))
         })
         .collect();
-        let fishing_frame = if runtime_shell.visible_fishing_animation.is_some() {
+        // The existing rod and bite effects render over the mounted canoe.
+        let fishing_frame = if runtime_shell.visible_fishing_animation.is_some()
+            && !matches!(player_sprite_id, "mn_canoe_chris" | "mn_canoe_kris")
+        {
             match fishing_player_frame(
                 &mut tileset_art,
                 &runtime_shell.asset_root,
@@ -8378,6 +8401,8 @@ Transform::from_xyz(0.0, 0.0, z),),
         if runtime_shell.battle_switch_cursor.is_none()
             && runtime_shell.battle_pack_target_mode.is_none()
             && !runtime_shell.battle_party_summary_open
+            && !(snapshot.pending_move_learn.is_some()
+                && runtime_shell.move_learn_forget_menu_open)
             && !visible_wild_entrance_animation_active(&runtime_shell)
             && let Err(error) = spawn_battle_hud(
                 &mut commands,
@@ -8471,7 +8496,9 @@ Transform::from_xyz(0.0, 0.0, z),),
                 record_visible_render_error(&mut commands, &mut runtime_shell, error);
                 return;
             }
-            if !visible_wild_entrance_animation_active(&runtime_shell)
+            if !(snapshot.pending_move_learn.is_some()
+                && runtime_shell.move_learn_forget_menu_open)
+                && !visible_wild_entrance_animation_active(&runtime_shell)
                 && let Err(error) = spawn_battle_hud(
                     &mut commands,
                     scene,
@@ -8507,7 +8534,7 @@ Transform::from_xyz(0.0, 0.0, z),),
             spawn_visible_move_animation_overlay(&mut commands, &runtime_shell);
             if let Err(error) = spawn_battle_command_menu(
                 &mut commands,
-                scene,
+                if snapshot.pending_move_learn.is_some() { &snapshot } else { scene },
                 &runtime_shell,
                 battle,
                 &mut tileset_art,
@@ -8529,6 +8556,9 @@ Transform::from_xyz(0.0, 0.0, z),),
             }
         }
     } else if visible_pokegear_screen_active(&runtime_shell)
+        || (snapshot.pending_move_learn.is_some()
+            && runtime_shell.battle_messages.is_empty()
+            && runtime_shell.special_boundary.is_none())
         || !scene_dialog_surface_active(&snapshot, &runtime_shell)
     {
         if runtime_debug_overlays_enabled() {
@@ -8670,6 +8700,25 @@ fn next_walk_viewport_origin(
     } else {
         active_walk_viewport_origin
     }
+}
+
+// The connection trigger and destination are the same physical tile in two
+// map coordinate systems. Translate the previous camera into the new system
+// before interpolating the step; retaining raw source coordinates would pan
+// across an entire map, while dropping them makes the scenery jump.
+fn translate_connection_viewport_origin(
+    origin: (i16, i16),
+    connection: &crate::core::world::session::ConnectionTransition,
+) -> Option<(i16, i16)> {
+    let scale = i32::from(RENDER_TILES_PER_RUNTIME_TILE);
+    let translate = |value: i16, source: i16, destination: i16| {
+        i16::try_from(i32::from(value) + (i32::from(destination) - i32::from(source)) * scale)
+            .ok()
+    };
+    Some((
+        translate(origin.0, connection.trigger.tile.x, connection.destination.tile.x)?,
+        translate(origin.1, connection.trigger.tile.y, connection.destination.tile.y)?,
+    ))
 }
 
 #[derive(Clone, Copy)]

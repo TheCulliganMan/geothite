@@ -29,7 +29,11 @@ pub(super) fn play(
     match snapshot.overworld.map_name.as_str() {
         "MnRochester" => {}
         "MnRochesterPokecenter1F" => {
-            at(controller, "MnRochesterPokecenter1F", (3, 5));
+            at(
+                controller,
+                "MnRochesterPokecenter1F",
+                super::clinic_arrival(runtime),
+            );
             continue_in_place(controller, root, runtime, checkpoint);
         }
         other => panic!("unexpected native training recovery map {other}"),

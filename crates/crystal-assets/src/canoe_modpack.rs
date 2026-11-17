@@ -4,9 +4,31 @@ use crystal_core::systems::field_moves::CANOE_ITEM;
 use serde_json::json;
 
 use crate::CompiledGamePack;
+use crate::authored_dialogue;
 use crate::grand_marais_modpack::authoring;
 
 const MANIFEST: &str = "minnesota-canoe-v1";
+const ART_REFRESH: &str = "minnesota-canoe-red-art-v1";
+
+/// Refresh the mounted canoe and display on a verified canoe-equipped pack.
+///
+/// # Errors
+/// Rejects an invalid pack, missing canoe or native trainer art, or a repeat refresh.
+pub fn build_canoe_art_refresh(base: &CompiledGamePack) -> Result<CompiledGamePack> {
+    crate::verify_compiled_game_pack_for_runtime(base)?;
+    ensure!(
+        base.data.items.contains_key(CANOE_ITEM)
+            && base.report.manifests.iter().any(|id| id == MANIFEST),
+        "installed Minnesota canoe required"
+    );
+    ensure!(
+        !base.report.manifests.iter().any(|id| id == ART_REFRESH),
+        "canoe art already refreshed"
+    );
+    let mut pack = base.clone();
+    crate::canoe_sprites::install(&mut pack)?;
+    finish_pack(pack, ART_REFRESH)
+}
 
 /// Add a reusable canoe at St. Paul's existing water-travel story handoff.
 /// The Capitol Badge gates the gift. Existing fishing, Surf HM and story
@@ -105,66 +127,31 @@ pub fn build_canoe_modpack(base: &CompiledGamePack) -> Result<CompiledGamePack> 
             c("end", &[]),
         ]),
     );
-    for (label, lines) in [
-        (
-            "MnCanoeShopWelcomeText",
-            &[
-                "ST PAUL CANOE SHOP",
-                "A CAPITOL BADGE!",
-                "The river awaits.",
-                "I saved this cedar",
-                "canoe for you.",
-            ][..],
-        ),
-        (
-            "MnCanoeShopLaunchText",
-            &[
-                "Walk toward water",
-                "to launch. Step on",
-                "land to portage.",
-                "No move or PP is",
-                "needed to paddle.",
-                "SURF still works",
-                "from your party.",
-            ][..],
-        ),
-        (
-            "MnCanoeShopBeforeText",
-            &[
-                "ST PAUL CANOE SHOP",
-                "Earn the CAPITOL",
-                "BADGE. Then I'll",
-                "fit your first",
-                "canoe for free.",
-            ][..],
-        ),
-        (
-            "MnCanoeShopRepeatText",
-            &[
-                "Carry your CANOE",
-                "to any open shore.",
-                "Watch for rocks",
-                "and strong falls.",
-            ][..],
-        ),
-        (
-            "MnCanoeShopFullText",
-            &["Your KEY POCKET", "is full. I'll keep", "your canoe here."][..],
-        ),
+    for label in [
+        "MnCanoeShopWelcomeText",
+        "MnCanoeShopLaunchText",
+        "MnCanoeShopBeforeText",
+        "MnCanoeShopRepeatText",
+        "MnCanoeShopFullText",
+        "MnStPaulAnglerHouseCedarDisplayText",
     ] {
-        ensure!(
-            lines.iter().all(|line| line.chars().count() <= 18),
-            "canoe text overflow: {label}"
-        );
-        authoring::text(&mut shop, label, lines);
+        authored_dialogue::install_canonical(&mut shop, label)?;
     }
-    authoring::speech(
+    let display_script = "MnStPaulAnglerHouseCedarDisplay";
+    shop.scripts.insert(
+        display_script.into(),
+        json!([c(
+            "jumptextfaceplayer",
+            &["MnStPaulAnglerHouseCedarDisplayText"],
+        )]),
+    );
+    authoring::npc(
         &pack,
         &mut shop,
-        "CedarDisplay",
+        display_script,
         "SPRITE_MN_CANOE_RACK",
-        (11, 5),
-        &["A cedar canoe.", "The ribs are bent", "and tied by hand."],
+        11,
+        5,
     )?;
     let display = shop.objects.last_mut().context("canoe display")?;
     display.sprite_has_facings = false;
@@ -192,7 +179,9 @@ pub fn build_canoe_modpack(base: &CompiledGamePack) -> Result<CompiledGamePack> 
         street.attributes.tileset_name == "kanto",
         "canoe shop needs native Kanto sign art"
     );
-    let sign_tile = (door.x + 3, door.y);
+    // The compact-city revisions moved the door by one tile. Keep the sign
+    // on the native sign block's bottom-right quadrant in either layout.
+    let sign_tile = (door.x + if door.x % 2 == 0 { 3 } else { 4 }, door.y);
     ensure!(
         sign_tile.0 % 2 == 1 && sign_tile.1 % 2 == 1,
         "Kanto sign must occupy the bottom-right metatile quadrant"
@@ -221,11 +210,7 @@ pub fn build_canoe_modpack(base: &CompiledGamePack) -> Result<CompiledGamePack> 
             event_type: "BGEVENT_READ".into(),
             script: "MnCanoeShopSign".into(),
         });
-    authoring::text(
-        &mut street,
-        "MnCanoeShopSignText",
-        &["ST PAUL CANOE SHOP", "Cedar boats and", "river advice."],
-    );
+    authored_dialogue::install_canonical(&mut street, "MnCanoeShopSignText")?;
     street.scripts.insert(
         "MnCanoeShopSign".into(),
         json!([c("jumptext", &["MnCanoeShopSignText"]),]),
@@ -233,7 +218,12 @@ pub fn build_canoe_modpack(base: &CompiledGamePack) -> Result<CompiledGamePack> 
     authoring::finish(&pack, &mut street)?;
     crate::authored_town_publication::replace(&mut pack, street)?;
     crate::canoe_story_hints::install(&mut pack)?;
-    pack.report.manifests.push(MANIFEST.into());
+    crate::canoe_roster::install(base, &mut pack)?;
+    finish_pack(pack, MANIFEST)
+}
+
+fn finish_pack(mut pack: CompiledGamePack, manifest: &str) -> Result<CompiledGamePack> {
+    pack.report.manifests.push(manifest.into());
     pack.identity = crate::derive_compiled_game_pack_identity_from_manifest(
         pack.format_version,
         &pack.data,

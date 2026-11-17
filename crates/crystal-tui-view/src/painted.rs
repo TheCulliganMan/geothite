@@ -568,7 +568,7 @@ impl PaintedRenderer {
                         } else {
                             "SPRITE_MN_CANOE_CHRIS"
                         },
-                        1,
+                        s.trainer.player_palette_id,
                     )
                 }
                 MovementMode::Surf => ("SPRITE_SURF", 1),
@@ -579,7 +579,15 @@ impl PaintedRenderer {
                 s.overworld.facing,
                 true,
                 &actors_bank,
-                actor_palette(s, sprite, override_id),
+                actor_palette(
+                    s,
+                    match sprite {
+                        "SPRITE_MN_CANOE_KRIS" => "SPRITE_KRIS_BIKE",
+                        "SPRITE_MN_CANOE_CHRIS" => "SPRITE_CHRIS_BIKE",
+                        _ => sprite,
+                    },
+                    override_id,
+                ),
             ) {
                 actors.insert((s.overworld.tile.x, s.overworld.tile.y), pixels);
             }
@@ -729,7 +737,7 @@ impl PaintedRenderer {
             });
             self.actors.insert(name.clone(), actor);
         }
-        let authored_palette = if name.starts_with("mn_canoe_") {
+        let authored_palette = if name == "mn_canoe_rack" {
             self.bytes(&format!("gfx/sprites/{name}.gbcpal"))
                 .and_then(|bytes| {
                     let bytes: [u8; 8] = bytes.try_into().ok()?;
@@ -744,6 +752,7 @@ impl PaintedRenderer {
         } else {
             None
         };
+        let canoe_rider = matches!(name.as_str(), "mn_canoe_chris" | "mn_canoe_kris");
         let actor = self.actors.get(&name)?.as_ref()?;
         let frame = if has_facings {
             match facing {
@@ -768,7 +777,9 @@ impl PaintedRenderer {
                     .pixels
                     .get((sy * actor.width + sx) * 4..(sy * actor.width + sx) * 4 + 4)?;
                 let index = shade(p[0]);
-                if p[3] != 0 && index != 0 {
+                if p[3] != 0 && canoe_rider && p[0] != p[1] {
+                    pixels[y * 16 + x] = Some([p[0], p[1], p[2]]);
+                } else if p[3] != 0 && index != 0 {
                     pixels[y * 16 + x] = Some(
                         authored_palette
                             .as_ref()
@@ -1333,6 +1344,37 @@ fn parse_palettes(text: &str, group: &str) -> Vec<Palette> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    #[ignore = "requires CRYSTAL_CANOE_TEST_PACK"]
+    fn painted_canoe_hull_stays_red_across_trainer_palettes() {
+        let path = std::env::var_os("CRYSTAL_CANOE_TEST_PACK").expect("red canoe pack");
+        let pack = crystal_assets::read_loaded_verified_compiled_game_pack(path)
+            .expect("verified red canoe pack");
+        let files = pack.pack().runtime_files();
+        let bank = parse_palettes(
+            std::str::from_utf8(&files["gfx/overworld/npc_sprites.pal"]).expect("palette text"),
+            "day",
+        );
+        let mut painter = PaintedRenderer::from_pack_assets(files);
+        for token in ["SPRITE_MN_CANOE_CHRIS", "SPRITE_MN_CANOE_KRIS"] {
+            let draw = |painter: &mut PaintedRenderer, palette| {
+                painter
+                    .actor(token, Direction::Down, true, &bank, palette)
+                    .expect("mounted actor")
+            };
+            let red = draw(&mut painter, 0);
+            let blue = draw(&mut painter, 1);
+            assert_eq!(red[13 * 16 + 6], Some([206, 49, 33]));
+            assert_eq!(red[13 * 16 + 6], blue[13 * 16 + 6]);
+            assert!(
+                red.iter()
+                    .zip(blue)
+                    .any(|(a, b)| { *a == Some(bank[0][2]) && b == Some(bank[1][2]) }),
+                "{token} must keep the selected clothing palette"
+            );
+        }
+    }
 
     #[test]
     fn northstar_starter_pictures_use_pack_front_art_in_painted_views() {

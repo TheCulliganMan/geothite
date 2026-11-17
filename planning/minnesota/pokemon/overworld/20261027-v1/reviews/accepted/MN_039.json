@@ -1,0 +1,94 @@
+{
+  "species_id": "MN_039",
+  "name": "Polarisma",
+  "family_id": "MN_F013",
+  "dex_number": 180,
+  "status": "accepted",
+  "generation_tool": "built-in image_gen",
+  "selected_manifest": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f013/polarisma.manifest-20261104-v3-features.json",
+    "sha256": "5778ce24169a50191cf4bdb5145b0fc931dce7a90029c4f925993bf295444384",
+    "bytes": 1936
+  },
+  "sources": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f013/polarisma.overworld.imagegen-20261104-v4.png",
+      "sha256": "339f19e917217f05e89b0449442f4922ddc15bf69dbd30cb347f17d53b750018",
+      "bytes": 1307464
+    }
+  ],
+  "prompts": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f013/polarisma.overworld.prompt-20261104-v4.txt",
+      "sha256": "a4b68644c2a6208561c9ac3f3d02cc987a30b83fcdf5f02b9657e320b1991304",
+      "bytes": 762
+    }
+  ],
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/polarisma-20261104-v3-features",
+  "normal_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/polarisma-20261104-v3-features/review/polarisma.normal-8x.png",
+    "sha256": "163c3be04d214abed2785459ff745584f37d9df674e0a0335fbc4b7e9d749036",
+    "bytes": 10149
+  },
+  "shiny_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/polarisma-20261104-v3-features/review/polarisma.shiny-8x.png",
+    "sha256": "85beeea01946f26d651023066c6b41bedcebeb5ba8f6b53e841a9daf581b933b",
+    "bytes": 10149
+  },
+  "compiled_index": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/polarisma-20261104-v3-features/compiled-index.json",
+    "sha256": "5d3346a8be7f3e65e381c6890d9ee6a37eb95ab1223880f0e9fdf2c6623dfc47",
+    "bytes": 7941
+  },
+  "source_feature_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f013/polarisma.source-feature-review-20261104-v3.json",
+    "sha256": "3692f4d1fffd6bb17d2d59bb8b0eac8f5a5e94ac3cd1b3b01264edbccb6239aa",
+    "bytes": 4954
+  },
+  "context_evidence": {
+    "directory": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-00",
+    "input_manifest": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-00/input-manifest.json",
+      "sha256": "c4a930dd2097722d52d79f2a1033531b0a00b0dd036abde21f959dfaa19f4800",
+      "bytes": 1158
+    },
+    "verification": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-00/verification.json",
+      "sha256": "757ed1ef7ca038c0007a704d39be0eb5ae590f1e41a84c1dc377d8dec9966208",
+      "bytes": 16870
+    },
+    "test_log": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/verification/all225-20261104-v5-00.log",
+      "sha256": "59265f6f08266b94db09c6c0ddde3af257a8cfbea003fe8d079186efecfdfa9a",
+      "bytes": 217
+    },
+    "normal_actor_poses": 8,
+    "all_six_shiny_native_poses_verified": true
+  },
+  "root_visual_review": {
+    "accepted": true,
+    "notes": "Star mask, separately sampled dark facial marks, two curtain fins and floating tail; rear crown and fin backs have no frontal face. Six distinct native poses, paired idle/step articulation and both palettes reviewed alongside the trainer on terrain."
+  },
+  "runtime_files": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/polarisma/overworld.2bpp",
+      "sha256": "c26b3fd6b0e381f833c08094495be6f1882100814ec9d1faf9a40a1b7c50e8ca",
+      "bytes": 384
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/polarisma/overworld.png",
+      "sha256": "4a448f42072ba117afae363c14f6c0057d67bd58cb4cd0b905779fab8822a8b9",
+      "bytes": 847
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/polarisma/overworld.gbcpal",
+      "sha256": "785fbf95492e60339cef820f817933290871471b3ff602a8cbef5197bad10e4a",
+      "bytes": 8
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/polarisma/overworld-shiny.gbcpal",
+      "sha256": "10f4437282cd7ae90882415a8a0b2b5dd81e0ff15cd9fbf4bd0d1841d17397a3",
+      "bytes": 8
+    }
+  ]
+}

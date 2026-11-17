@@ -1,0 +1,94 @@
+{
+  "species_id": "MN_322",
+  "name": "Cloisterra",
+  "family_id": "MN_F146",
+  "dex_number": 194,
+  "status": "accepted",
+  "generation_tool": "built-in image_gen",
+  "selected_manifest": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f146/cloisterra.manifest-20261104-v3-features.json",
+    "sha256": "798292e3741c96a4af2a5eb32561bfc50e02863322aaf779f7141c091bcdd386",
+    "bytes": 1943
+  },
+  "sources": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f146/cloisterra.overworld.imagegen-20261104-v1.png",
+      "sha256": "529cf8f291f0a78847355959d11272e199c5d7ee075a16736b999dd261da3026",
+      "bytes": 1378185
+    }
+  ],
+  "prompts": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f146/cloisterra.overworld.prompt-20261104-v1.txt",
+      "sha256": "1aa20efea09370ef415187654583cd321018f4e3556440a4b4d6b055bb9309e9",
+      "bytes": 2629
+    }
+  ],
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/cloisterra-20261104-v3-features",
+  "normal_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/cloisterra-20261104-v3-features/review/cloisterra.normal-8x.png",
+    "sha256": "6becb30fdb20be13f33af5674cbb464bbd026e433834032e6d8ce206b06b93bc",
+    "bytes": 9646
+  },
+  "shiny_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/cloisterra-20261104-v3-features/review/cloisterra.shiny-8x.png",
+    "sha256": "11ede60107618258425b32218b2d366f26fddfc5f8673339c168346b2702d814",
+    "bytes": 9646
+  },
+  "compiled_index": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/cloisterra-20261104-v3-features/compiled-index.json",
+    "sha256": "21b40f465b2a376f101d50285bc99ad03dfad50958556722bc365cc02071ad45",
+    "bytes": 7955
+  },
+  "source_feature_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f146/cloisterra.source-feature-review-20261104-v3.json",
+    "sha256": "62319277ca52acadbadd8e5d2dd0c89ee451aa015f11a80ed4ac43e7cc3fae0f",
+    "bytes": 5329
+  },
+  "context_evidence": {
+    "directory": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-02",
+    "input_manifest": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-02/input-manifest.json",
+      "sha256": "29b454a90f5a4f38bcceeb39dc97d11f0cd1c27cd6d4fa38949eb31fa5ba8f7c",
+      "bytes": 1162
+    },
+    "verification": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-02/verification.json",
+      "sha256": "3642ade68fbdbffa8f955efc82f661d8cf5d1151cbf998007c0d5ecdb00b02a0",
+      "bytes": 16890
+    },
+    "test_log": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/verification/all225-20261104-v5-02.log",
+      "sha256": "bd25bbc4ffb3d01568ea6d0477559f41aef603c464b90b555117ecde2de2d25f",
+      "bytes": 217
+    },
+    "normal_actor_poses": 8,
+    "all_six_shiny_native_poses_verified": true
+  },
+  "root_visual_review": {
+    "accepted": true,
+    "notes": "Species-specific head, dark facial marks and themed body silhouette retained in front/profile. Rear poses show backs of ears/crest/head and the actual back/tail, without a pasted frontal face. Six distinct native poses, paired idle/step articulation and both palettes reviewed alongside the trainer on terrain."
+  },
+  "runtime_files": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/cloisterra/overworld.2bpp",
+      "sha256": "c9c1596ced50ca6480c16497ce68f3371ceedfb59724558a6b7e8370cdef5526",
+      "bytes": 384
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/cloisterra/overworld.png",
+      "sha256": "4e088dd7924c014e7a777dfc0ce5cf574420658e6e2a70051d36d352971355ff",
+      "bytes": 833
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/cloisterra/overworld.gbcpal",
+      "sha256": "45a7df04bbb107f869ec2913ebdfbef7a76b7ad3610b65d8a930018a7cc25686",
+      "bytes": 8
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/cloisterra/overworld-shiny.gbcpal",
+      "sha256": "95f7922ac9d05c82ee232934d537b9a3b86bde9c42d7691d2f22529beb1b1afb",
+      "bytes": 8
+    }
+  ]
+}

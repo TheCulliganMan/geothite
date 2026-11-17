@@ -9,7 +9,13 @@ use super::duluth_story::press;
 pub(super) fn timely_evidence(runtime: &CrystalRuntime) -> bool {
     runtime.data().maps["MnLakeItasca"]
         .scripts
-        .contains_key("MnOverhaulItascaCompared")
+        .get("MN_ITASCA_MARKER")
+        .and_then(serde_json::Value::as_array)
+        .is_some_and(|commands| {
+            !commands.iter().any(|command| {
+                command["command"] == "checkflag" && command["args"][0] == "ENGINE_GLACIERBADGE"
+            })
+        })
 }
 
 pub(super) fn canonical_pages(id: &str, label: &str) -> Vec<String> {

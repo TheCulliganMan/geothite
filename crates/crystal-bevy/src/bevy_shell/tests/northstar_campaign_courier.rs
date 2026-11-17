@@ -123,6 +123,25 @@ fn northstar_campaign_earned_courier_manifest_capitol_and_return() {
 }
 
 pub(super) fn capitol() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
+    if let Some(path) = std::env::var_os("CRYSTAL_NORTHSTAR_CAPITOL_EXIT_SAVE") {
+        let (root, r) = load();
+        let mut c =
+            VisibleShellController::load_save(root.clone(), r.clone(), PathBuf::from(path), None)
+                .expect("actual same-pack earned Capitol victory");
+        c.set_runtime_journal_enabled(false);
+        location(&mut c, CITY, city_port(&r, CITY, "MnStPaulGym").0);
+        for flag in [
+            "EVENT_MN_GYM_1_DEFEATED",
+            "EVENT_MN_GYM_2_DEFEATED",
+            "EVENT_MN_GYM_3_DEFEATED",
+            "EVENT_MN_GYM_4_DEFEATED",
+            COURIER,
+            MANIFEST,
+        ] {
+            assert!(event(&c, flag), "earned Capitol prerequisite {flag}");
+        }
+        return after_capitol(root, r, c);
+    }
     let (root, r, mut c) = arrival();
     let staged = r.data().maps[DEPOT]
         .scripts
@@ -230,13 +249,31 @@ pub(super) fn capitol() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
         ((11, 12), "MN_GYM_4_TRAINER_2"),
         ((11, 2), "MN_GYM_4"),
     ] {
+        let reviewed_gym = r
+            .pack_identity()
+            .runtime_modpack_id
+            .split('+')
+            .any(|part| part == "minnesota-st-paul-civic-loop-review-v1");
         let flag = format!("EVENT_{id}_DEFEATED");
         for attempt in 0..4 {
             care(&mut c, &r);
             supplies(&mut c, &r);
-            indoor_walk(&mut c, &r, city_port(&r, CITY, "MnStPaulGym").0);
-            travel(&mut c, GameButton::Up, "MnStPaulGym", (2, 17));
-            let tile = if northstar_earned_gyms::selected(&r) {
+            let (door, arrival) = city_port(&r, CITY, "MnStPaulGym");
+            indoor_walk(&mut c, &r, door);
+            travel(&mut c, GameButton::Up, "MnStPaulGym", arrival);
+            let tile = if reviewed_gym {
+                let script = if id == "MN_GYM_4" {
+                    "MnStPaulGymLeader"
+                } else {
+                    id
+                };
+                let actor = r.data().maps["MnStPaulGym"]
+                    .objects
+                    .iter()
+                    .find(|actor| actor.script == script)
+                    .expect("reviewed St Paul trainer");
+                (actor.x, actor.y)
+            } else if northstar_earned_gyms::selected(&r) {
                 northstar_earned_gyms::opponent(&r, 4, id)
             } else {
                 tile
@@ -251,6 +288,9 @@ pub(super) fn capitol() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
                         CITY,
                         city_port(&r, CITY, "MnStPaulGym").0,
                     );
+                } else if reviewed_gym {
+                    walk_to(&mut c, &r, (2, 22));
+                    travel(&mut c, GameButton::Down, CITY, door);
                 } else {
                     walk_to(&mut c, &r, (2, 18));
                     travel(
@@ -270,6 +310,14 @@ pub(super) fn capitol() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
         }
         assert!(event(&c, &flag));
     }
+    after_capitol(root, r, c)
+}
+
+fn after_capitol(
+    root: AssetRoot,
+    r: CrystalRuntime,
+    mut c: VisibleShellController,
+) -> (AssetRoot, CrystalRuntime, VisibleShellController) {
     assert_eq!(
         c.shell.shell.session().state().badges.johto,
         [true, true, true, true, false, false, false, false]

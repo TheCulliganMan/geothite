@@ -6,6 +6,7 @@ use crystal_core::world::encounters::{FieldEncounterData, FieldEncounterKind};
 use serde::Deserialize;
 use serde_json::{Value, json};
 
+use crate::authored_dialogue;
 use crate::grand_marais_modpack::authoring;
 use crate::{CompiledGamePack, MapModule};
 
@@ -259,7 +260,9 @@ pub(crate) fn bind_prairie_forest_link(
         .zip(sign_modules)
         .zip(SIGNS.map(|id| expected[id].clone()))
     {
-        modules[index].scripts.insert(sign.into(), commands);
+        let module = &mut modules[index];
+        authored_dialogue::install_canonical(module, &format!("{sign}Text"))?;
+        module.scripts.insert(sign.into(), commands);
     }
     for module in modules {
         authoring::finish(pack, module)?;

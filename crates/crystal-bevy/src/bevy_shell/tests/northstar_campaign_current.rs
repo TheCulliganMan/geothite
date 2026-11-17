@@ -52,9 +52,23 @@ fn arrival() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
     (root, r, c)
 }
 
+fn reviewed_station(r: &CrystalRuntime) -> bool {
+    r.pack_identity()
+        .runtime_modpack_id
+        .split('+')
+        .any(|id| id == "minnesota-minneapolis-electrical-station-review-v1")
+}
+
 fn design(r: &CrystalRuntime) -> Value {
     if northstar_earned_gyms::selected(r) {
         return northstar_earned_gyms::design(r, 3).clone();
+    }
+    if reviewed_station(r) {
+        let source: Value = serde_json::from_str(include_str!(
+            "../../../../../planning/minnesota/gyms/minneapolis-electrical-station-v01.json"
+        ))
+        .expect("reviewed station source");
+        return source["gyms"][0].clone();
     }
     let path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
         .join("../../planning/minnesota/gyms/interiors.json");
@@ -125,7 +139,20 @@ pub(super) fn current() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
             if id == "MN_GYM_3" {
                 assert!(event(&c, "EVENT_MN_GYM_3_COURT_OPEN"));
             }
-            let tile = if selected {
+            let tile = if reviewed_station(&r) {
+                if id == "MN_GYM_3" {
+                    point(&gym["leader_at"])
+                } else {
+                    point(
+                        &gym["trainers"]
+                            .as_array()
+                            .expect("station trainers")
+                            .iter()
+                            .find(|trainer| trainer["id"] == id)
+                            .expect("station trainer")["at"],
+                    )
+                }
+            } else if selected {
                 northstar_earned_gyms::opponent(&r, 3, id)
             } else {
                 tile
@@ -134,12 +161,17 @@ pub(super) fn current() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
             if try_battle(&mut c, &r, id, &flag) {
                 // Native move-learning choices remain in force. Victory and
                 // the saved trainer flag below establish the earned battle.
-                walk_to(&mut c, &r, (4, 16));
+                let exit = point(&gym["exit_tiles_core"][0]);
+                walk_to(&mut c, &r, (exit.0, exit.1 - 1));
                 travel(&mut c, GameButton::Down, "MnMinneapolis", door);
                 continue_in_place(&mut c, &root, &r, &format!("campaign-{id}-win"));
                 break;
             }
-            location(&mut c, "MnMinneapolisPokecenter1F", (3, 5));
+            location(
+                &mut c,
+                "MnMinneapolisPokecenter1F",
+                city_port(&r, "MnMinneapolis", "MnMinneapolisPokecenter1F").1,
+            );
             assert!(!c.shell.shell.session().state().badges.johto[2]);
             continue_in_place(&mut c, &root, &r, &format!("campaign-{id}-loss-{attempt}"));
             if attempt < 3 {
@@ -196,7 +228,11 @@ fn depart(
             travel(&mut c, GameButton::Right, "MnStPaul", arrival);
             break;
         }
-        location(&mut c, "MnMinneapolisPokecenter1F", (3, 5));
+        location(
+            &mut c,
+            "MnMinneapolisPokecenter1F",
+            city_port(&r, "MnMinneapolis", "MnMinneapolisPokecenter1F").1,
+        );
         continue_in_place(&mut c, &root, &r, &format!("campaign-r04-loss-{attempt}"));
     }
     location(&mut c, "MnStPaul", st_paul_arrival(&r));
@@ -205,6 +241,13 @@ fn depart(
     assert!(!event(&c, "EVENT_MN_GYM_4_DEFEATED"));
     continue_in_place(&mut c, &root, &r, "campaign-earned-st-paul-arrival");
     // Verify the actual contract used here still names the frozen room.
-    assert_eq!(point(&gym["arrival_core"]), (4, 15));
+    assert_eq!(
+        point(&gym["arrival_core"]),
+        if reviewed_station(&r) {
+            (6, 19)
+        } else {
+            (4, 15)
+        }
+    );
     (root, r, c)
 }

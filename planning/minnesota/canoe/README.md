@@ -11,36 +11,116 @@ St. Paul's existing `MnStPaulAnglerHouse` becomes the canoe shop. Its owner at
 launching and portages, then resumes the existing angler/HM/story program. The
 bag must accept delivery before the gift is owned; repeat conversations do not
 issue another boat. A cedar display at `(11,5)` is inspectable. The exterior
-entrance and return warps remain intact. A native Kanto sign at `(9,63)` names
-the shop, using metatile `79` at `(4,31)`; its bottom-right quadrant blocks
+entrance and return warps remain intact. A native Kanto sign at `(15,63)` in
+the current St. Paul layout names the shop. Its bottom-right quadrant blocks
 walking and the other three quadrants remain floor.
 
 Water travel continues through the existing movement transaction and production
 `VisibleShellController`. Collision, occupied tiles, shore walls, bridge layers,
 water obstacles, encounters, connections and ordinary dismount stay authoritative.
-The canoe cannot launch from an elevated bridge deck. Boundary Waters admission
+Face water while seated in the canoe to use a rod from the Pack or with Select
+if the rod is registered. Fishing uses the local rod tables and leaves you
+afloat after the encounter. The canoe cannot launch from an elevated bridge
+deck. Boundary Waters admission
 accepts canoe ownership as an alternative to native Surf permission and keeps
-its normal money, storage and expedition checks.
+its normal money, storage and expedition checks. Fishing there uses the
+expedition’s capture rules and does not spend movement steps.
 
 `canoe_sprites.rs` authors six native frames for Chris and Kris using the local
-pack's original trainer heads, explicit cedar hulls and alternating paddle
+pack's original trainer heads, red hulls and alternating paddle
 strokes. The right view mirrors the authored left view, following the native
-sprite contract. A separate static bank depicts the shop's canoe display.
+sprite contract. The rider uses the same palette as on the bike, including any
+outfit color override. The hull has its own fixed red. A separate static bank
+depicts the red canoe on display.
 All PNG/palette generation stays inside the Rust pack builder. Original sprite
 banks, audio programs, Pokémon, encounters and unrelated maps are preserved.
-Eight existing regional shore signs and NPC hints now describe paddling and
+Regional shore signs and NPC hints now describe paddling and
 portaging instead of requiring Surf. Brainerd's actual Surf HM gift remains.
 Native trainer PNGs use packed grayscale; the publisher reads their original
 2bpp banks through the existing Rust decoder instead of converting the PNGs.
 
+The separate `pack_canoe_dialogue` publisher refreshes these hints on a pack
+that already contains the canoe, including later Gym overlays. The unselected
+`minnesota-eight-gyms-canoe-dialogue-review-v01.crystalpack` applies it to the
+eight-gym roster review candidate. Its content hash is
+`a4bb4b8069988d50d389606ff9e30ce4fc18bc5b6a634a76c5d7a0af5ddeec59`.
+A written-pack text audit found Surf mentions only in the HM gift and the
+canoe-shop explanation. This review pack has a different save identity and is
+not the selected world; existing saves have not been migrated to it. The checked
+migration helper accepts this exact candidate and passes eight-room and shop
+fixtures. A separate controller regression earns a Rochester trainer victory,
+saves, migrates to this candidate, and completes the Gym using a declared strong
+test party. This does not establish full-campaign balance or integrate migration
+into a client.
+
 The publisher is `pack_canoe BASE OUTPUT`. Use a fresh ignored output beneath
 `content-packs/`; the source and generated pack must differ. The source needs the
 verified compact Minnesota coast, St. Paul room/owner and native Chris/Kris art.
-No original source export is needed for this additive stage.
+With an existing canoe-equipped pack, it refreshes just the canoe art.
+No original source export is needed.
 
-## Verified publication
+## Current local build
 
-The current candidate is `content-packs/minnesota-canoe-v04.crystalpack`, built
+The original installation in `../world.json` layers the canoe over the
+spawn-locations revision and preserves its six updated walking tables. It
+repairs retired species on the maps touched by canoe dialogue and in the
+installed Safari habitats.
+Regional rod groups retain their original bite chances, slot weights, levels,
+and swarm routing. Safari validates the current roster directly. The current
+selection refreshes only the canoe artwork on the newer regional ecology pack.
+
+```sh
+CARGO_INCREMENTAL=0 cargo build --locked -p crystal-assets \
+  --bin pack_canoe --bin verify_crystalpack
+target/debug/pack_canoe content-packs/minnesota-region-ecology-v02.crystalpack \
+  content-packs/minnesota-region-ecology-red-canoe-v01.crystalpack
+target/debug/verify_crystalpack content-packs/minnesota-region-ecology-red-canoe-v01.crystalpack \
+  --audio --desktop
+```
+
+The pack contains 743 maps and 519 species across all regions. All 602 audio
+programs pass their PCM, frame-count and loop checks. The pack has its own
+save identity.
+
+Launch the native client with an explicit save slot for this pack.
+
+```sh
+cargo run --locked -p crystal-bevy -- \
+  --pack content-packs/minnesota-region-ecology-red-canoe-v01.crystalpack \
+  --save-path content-packs/minnesota-region-ecology-red-canoe-v01.crystalsave
+```
+
+Run the regression suites with the pack's absolute path.
+
+```sh
+export RUST_MIN_STACK=67108864 CARGO_INCREMENTAL=0
+export CRYSTAL_CANOE_BASE_PACK="$PWD/content-packs/minnesota-spawn-locations-v01.crystalpack"
+export CRYSTAL_CANOE_TEST_PACK="$PWD/content-packs/minnesota-region-ecology-red-canoe-v01.crystalpack"
+export CRYSTAL_SAFARI_TEST_PACK="$CRYSTAL_CANOE_TEST_PACK"
+cargo test --locked -p crystal-assets --lib canoe -- --include-ignored --test-threads=1
+cargo test --locked -p crystal-bevy --lib -- --include-ignored --test-threads=1 \
+  canoe_controller canoe_fishing_controller
+cargo test --locked -p crystal-tui-view painted_canoe_hull -- --include-ignored
+```
+
+The native tests use local starting positions and a Capitol Badge fixture.
+Controller inputs cover the exterior sign and door, the badge gate, both gifts,
+the display, the exit, launch, portage, afloat Continue, and paid Safari
+crossings in both directions. The capacity regression fills the last real key
+slot. The asset test adds a fixture key to verify that the compiled grant
+rejects a full pocket and succeeds on retry after a slot is freed.
+Fishing tests cover a Route 3 catch and Continue afloat, plus resuming a hooked
+fish during a paid Boundary Waters expedition.
+
+The red canoe controller regression paddles through the ordinary water
+encounter table on Route 3 with no Surf move in the party. It catches the wild
+Pokémon, continues from a save afloat and paddles again. The shop, display and
+both riders were inspected in native 2D captures. The painted browser WASM
+also opened the afloat save and paddled to the next tile in Chrome.
+
+## Historical v04 publication
+
+The original candidate was `content-packs/minnesota-canoe-v04.crystalpack`, built
 from `content-packs/minnesota-current-grass-r12-v01.crystalpack` (705 maps,
 475 total species). Packs and renders remain ignored.
 

@@ -28,6 +28,78 @@ const OBSERVATIONS: [(Point, &str); 3] = [
     ((22, 44), "FLOWER PRAIRIE"),
 ];
 
+#[test]
+#[ignore = "current external story pack; prepared regional party, then native walking and battles"]
+fn prairie_forest_story_observations_follow_trainer_battles_and_continue() {
+    let (root, runtime, mut controller, _) = fixture((56, 12), false);
+    let state = controller.shell.shell.session_mut().state_mut();
+    for species in ["BOREALYNX", "PORTABEAU"] {
+        let pokemon = runtime
+            .data()
+            .create_pokemon(species, 60, Dv::default())
+            .expect("regional story review partner");
+        assert!(state.storage.party.add_pokemon(pokemon));
+    }
+    state.sync_party_from_storage();
+    mark_runtime_snapshot_dirty(&mut controller.shell);
+    let grid = RouteGrid::new_for_battles(
+        &runtime,
+        RouteSpec {
+            prefix: "MnR19",
+            columns: 1,
+            rows: 2,
+            tileset: "johto",
+            start: (56, 12),
+            doors: BTreeMap::new(),
+        },
+    )
+    .with_battle_handler(super::authored_route_fixture::play_route_encounter);
+    grid.walk(&mut controller, (56, 13));
+    if !event(&controller, "EVENT_MN_R19_TRAINER_02") {
+        press(&mut controller, GameButton::Right);
+        press(&mut controller, GameButton::A);
+        assert!(super::rochester_earned::try_battle(
+            &mut controller,
+            &runtime,
+            "MN_R19_T02",
+            "EVENT_MN_R19_TRAINER_02",
+        ));
+    }
+    finish_text(&mut controller);
+    let labels = [
+        "MN_R19_OBSERVE_PINEText",
+        "MN_R19_OBSERVE_WETLANDText",
+        "MN_R19_OBSERVE_PRAIRIEText",
+    ];
+    for (index, (at, _)) in OBSERVATIONS.into_iter().enumerate() {
+        talk_open(&mut controller, &grid, at);
+        assert!(!event(&controller, LAKE_OBSERVATION_EVENTS[index]));
+        let bag = controller.snapshot().expect("before observation").bag;
+        super::northstar_dialogue::acknowledge(
+            &mut controller,
+            "",
+            labels[index],
+            LAKE_OBSERVATION_EVENTS[index],
+        );
+        finish_text(&mut controller);
+        assert!(event(&controller, LAKE_OBSERVATION_EVENTS[index]));
+        assert_eq!(controller.snapshot().expect("after observation").bag, bag);
+    }
+    assert!(
+        (1..=6).any(|index| event(&controller, &format!("EVENT_MN_R19_TRAINER_{index:02}"))),
+        "the populated route must actually play a trainer battle"
+    );
+    let path = super::authored_route_fixture::reached_save_path(
+        "prairie-forest-story-observations.crystalsave",
+    );
+    controller.save(&path).expect("save reached observations");
+    let mut loaded = VisibleShellController::load_save(root, runtime, path.clone(), None)
+        .expect("Continue reached observations");
+    assert_eq!(observations(&loaded), [true; 3]);
+    assert!(speak(&mut loaded, &grid, OBSERVATIONS[2].0).has_text("FLOWER PRAIRIE"));
+    super::authored_route_fixture::cleanup_reached_save(&path);
+}
+
 fn fixture(
     at: Point,
     headbutt: bool,

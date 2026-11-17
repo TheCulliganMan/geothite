@@ -306,6 +306,7 @@ pub fn build_minnesota_fossils(base: &CompiledGamePack) -> Result<CompiledGamePa
     publish(&mut pack, city)?;
     pack.report.manifests.push(MANIFEST.into());
     pack.report.items = pack.data.items.len();
+    crate::northstar_reward_receipts::install(&mut pack)?;
     pack.identity = crate::derive_compiled_game_pack_identity_from_manifest(
         pack.format_version,
         &pack.data,

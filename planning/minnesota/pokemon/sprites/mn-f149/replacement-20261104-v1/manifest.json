@@ -1,0 +1,125 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F149",
+  "tool": "built-in image_gen",
+  "prompt_file": "sprites/mn-f149/replacement-20261104-v1/prompt.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "status": "native-candidate-not-selected",
+  "sprites": [
+    {
+      "id": "mn-328-bitterry-v1",
+      "species_id": "MN_328",
+      "view": "front",
+      "source": "sprites/mn-f149/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        0,
+        0,
+        550,
+        627
+      ],
+      "fit": [
+        42,
+        38
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        21881,
+        14505,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-328-bitterry-v1",
+      "species_id": "MN_328",
+      "view": "back",
+      "source": "sprites/mn-f149/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        0,
+        627,
+        550,
+        627
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        21881,
+        14505,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    }
+  ],
+  "pokemon_palettes": {
+    "MN_328": {
+      "species_id": "MN_328",
+      "name": "Bitterry",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          25,
+          11,
+          21
+        ],
+        [
+          9,
+          5,
+          14
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        21881,
+        14505,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          206,
+          90,
+          173
+        ],
+        [
+          74,
+          41,
+          115
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#CE5AAD",
+        "#4A2973",
+        "#000000"
+      ]
+    }
+  },
+  "palette_candidate_note": "Testing violet lowlight instead of green lowlight: preserve dark berry shading rather than quantizing purple berry shadows into green. Original manifest/source retained. Not selected."
+}

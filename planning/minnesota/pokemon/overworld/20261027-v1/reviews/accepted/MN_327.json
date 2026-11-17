@@ -1,0 +1,94 @@
+{
+  "species_id": "MN_327",
+  "name": "Gloamowl",
+  "family_id": "MN_F148",
+  "dex_number": 199,
+  "status": "accepted",
+  "generation_tool": "built-in image_gen",
+  "selected_manifest": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f148/gloamowl.manifest-20261104-v3-features.json",
+    "sha256": "ed29322ac884417e4f905ea46479aa27ae0cea9722096ad8228c9f7da74a5961",
+    "bytes": 1929
+  },
+  "sources": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f148/gloamowl.overworld.imagegen-20261104-v1.png",
+      "sha256": "b26ccdf843a6e2dc05807398389dde630271bc4a6518bd5645ee3182cdb53326",
+      "bytes": 1404542
+    }
+  ],
+  "prompts": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f148/gloamowl.overworld.prompt-20261104-v1.txt",
+      "sha256": "c561c5b768eb461adb8f6d8c16e78d76c6a2df7475e942f7e7aa7bf0361a56a1",
+      "bytes": 2612
+    }
+  ],
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/gloamowl-20261104-v3-features",
+  "normal_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/gloamowl-20261104-v3-features/review/gloamowl.normal-8x.png",
+    "sha256": "cab9f5248fb9bcc0d1dbacb26b2745e51ed18a0dc739ac8bba41eada0b5e1b62",
+    "bytes": 9852
+  },
+  "shiny_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/gloamowl-20261104-v3-features/review/gloamowl.shiny-8x.png",
+    "sha256": "cf3079bd3159e963598d0ec90756c5d339fa1865de5dec6d84dd791391d24736",
+    "bytes": 9857
+  },
+  "compiled_index": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/gloamowl-20261104-v3-features/compiled-index.json",
+    "sha256": "6cdd91317226ccdd54b6713d2eafc40e7d8e13a435e7b49996ec23828d1db498",
+    "bytes": 7935
+  },
+  "source_feature_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f148/gloamowl.source-feature-review-20261104-v3.json",
+    "sha256": "33cf287add29782fded9da318dff35d118313c040fdb13b39caab61e3169907c",
+    "bytes": 5315
+  },
+  "context_evidence": {
+    "directory": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-03",
+    "input_manifest": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-03/input-manifest.json",
+      "sha256": "e18330a1160c1ece35186004be00d5d3d6e7d59798289e301da0f3620c213c6c",
+      "bytes": 1150
+    },
+    "verification": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-03/verification.json",
+      "sha256": "fd365fe28b700321d3026b15de005ddbb61889bdecdeccdca8cf9024edafa081",
+      "bytes": 16830
+    },
+    "test_log": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/verification/all225-20261104-v5-03.log",
+      "sha256": "f556fa7ae716d6343c6f13c13cc8280e9824956caf11f5ceb4bd49a856570873",
+      "bytes": 217
+    },
+    "normal_actor_poses": 8,
+    "all_six_shiny_native_poses_verified": true
+  },
+  "root_visual_review": {
+    "accepted": true,
+    "notes": "Species-specific head, dark facial marks and themed body silhouette retained in front/profile. Rear poses show backs of ears/crest/head and the actual back/tail, without a pasted frontal face. Six distinct native poses, paired idle/step articulation and both palettes reviewed alongside the trainer on terrain."
+  },
+  "runtime_files": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/gloamowl/overworld.2bpp",
+      "sha256": "b64b2c7fc0bd8817116cd5481da83d161ba6ed72b0ba54da03ea031f8deb6dc8",
+      "bytes": 384
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/gloamowl/overworld.png",
+      "sha256": "dcc20154fd11ea5418ecbfa09cd050f4357a35de111c7fa1c4154f802a9d99df",
+      "bytes": 875
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/gloamowl/overworld.gbcpal",
+      "sha256": "81e6a801be7d5fb3b3f55b3ff3080f4bfabcbaee38a40e2d7279f3fb496e4e7d",
+      "bytes": 8
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/gloamowl/overworld-shiny.gbcpal",
+      "sha256": "e4be58dc8bd07cc9cab3d07eadcc364d3f8b88c53320be6c43eef103806a4bd0",
+      "bytes": 8
+    }
+  ]
+}

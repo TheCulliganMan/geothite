@@ -41,7 +41,7 @@ fn arrival() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
                 assert!(event(&c, "EVENT_MN_GYM_5_TRAINER_1_DEFEATED"));
             }
         }
-        CLINIC => location(&mut c, CLINIC, (3, 5)),
+        CLINIC => location(&mut c, CLINIC, city_port(&r, CITY, CLINIC).1),
         _ => panic!("expected an actual four-badge return or earned R05 checkpoint"),
     }
     assert_eq!(
@@ -81,7 +81,7 @@ pub(super) fn care(c: &mut VisibleShellController, r: &CrystalRuntime) {
         indoor_walk(c, r, door);
         travel(c, GameButton::Up, CLINIC, arrival);
     }
-    location(c, CLINIC, (3, 5));
+    location(c, CLINIC, arrival);
     let money = c.shell.shell.session().state().money;
     super::super::rochester_earned::heal_party(c, r);
     assert!(
@@ -109,7 +109,7 @@ pub(super) fn care(c: &mut VisibleShellController, r: &CrystalRuntime) {
             .as_deref(),
         Some("MN_ST_CLOUD_POKECENTER_1F")
     );
-    indoor_walk(c, r, (3, 4));
+    indoor_walk(c, r, (arrival.0, arrival.1 + 1));
     travel(c, GameButton::Down, CITY, door);
 }
 
@@ -133,7 +133,7 @@ pub(super) fn return_to_city(c: &mut VisibleShellController, r: &CrystalRuntime)
         travel(c, GameButton::Up, CITY, (24, 35));
         travel(c, GameButton::Up, CITY, (24, 34));
     } else {
-        location(c, CLINIC, (3, 5));
+        location(c, CLINIC, city_port(r, CITY, CLINIC).1);
     }
 }
 
@@ -177,7 +177,7 @@ fn road_trainers(c: &mut VisibleShellController, r: &CrystalRuntime, root: &Asse
             care(c, r);
             supplies(c, r);
             enter_road(c, r);
-            if try_road_with(c, r, 5, tile, flee) {
+            if try_road_with(c, r, 5, tile, flee) && !event(c, flag) {
                 press(c, facing);
                 press(c, GameButton::A);
                 let _ = try_battle(c, r, id, flag);
@@ -285,6 +285,25 @@ fn northstar_campaign_earned_r05_recruitment() {
 }
 
 pub(super) fn wind() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
+    if let Some(path) = std::env::var_os("CRYSTAL_NORTHSTAR_WIND_EXIT_SAVE") {
+        let (root, r) = load();
+        let mut c =
+            VisibleShellController::load_save(root.clone(), r.clone(), PathBuf::from(path), None)
+                .expect("actual same-pack earned Wind victory");
+        c.set_runtime_journal_enabled(false);
+        location(&mut c, CITY, (8, 28));
+        for flag in [
+            "EVENT_MN_GYM_1_DEFEATED",
+            "EVENT_MN_GYM_2_DEFEATED",
+            "EVENT_MN_GYM_3_DEFEATED",
+            "EVENT_MN_GYM_4_DEFEATED",
+            "EVENT_MN_GYM_5_DEFEATED",
+            "EVENT_MN_DEEP_BORE_MANIFEST_READ",
+        ] {
+            assert!(event(&c, flag), "earned Wind prerequisite {flag}");
+        }
+        return after_wind(root, r, c);
+    }
     let (root, r, mut c) = arrival();
     super::northstar_campaign_review::boost(&mut c, &r);
     // Validate the actually published room. Current regional descendants can
@@ -372,8 +391,7 @@ pub(super) fn wind() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
                 .expect("specific missing leader")
                 .ui
                 .text
-                .and_then(|t| t.asm_text)
-                .is_some_and(|t| t.contains("SAVEN"))
+                .is_some_and(|text| text.label == "MnSCWindCheckBadgesText")
         );
         press(&mut c, GameButton::Up);
         location(&mut c, CITY, (24, 3));
@@ -406,7 +424,7 @@ pub(super) fn wind() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
                 continue_in_place(&mut c, &root, &r, &format!("campaign-{id}-win"));
                 break;
             }
-            location(&mut c, CLINIC, (3, 5));
+            location(&mut c, CLINIC, city_port(&r, CITY, CLINIC).1);
             assert!(!c.shell.shell.session().state().badges.johto[4]);
             continue_in_place(&mut c, &root, &r, &format!("campaign-{id}-loss-{attempt}"));
             let level = c.snapshot().expect("prepared party").party.slots[0]
@@ -426,6 +444,14 @@ pub(super) fn wind() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
         }
         assert!(event(&c, &flag), "earned Wind opponent {id}");
     }
+    after_wind(root, r, c)
+}
+
+fn after_wind(
+    root: AssetRoot,
+    r: CrystalRuntime,
+    mut c: VisibleShellController,
+) -> (AssetRoot, CrystalRuntime, VisibleShellController) {
     assert_eq!(
         c.shell.shell.session().state().badges.johto,
         [true, true, true, true, true, false, false, false]

@@ -7,6 +7,7 @@ use serde_json::json;
 use crate::authored_checkpoint::{Checkpoint, install as checkpoint};
 use crate::authored_city_expansion::merge_new_content;
 use crate::authored_city_expansion_events as events;
+use crate::authored_dialogue;
 use crate::authored_route_design::RouteTrainer;
 use crate::authored_town_geometry::kind;
 use crate::grand_marais_modpack::authoring;
@@ -102,6 +103,7 @@ pub(crate) fn install(
                 "before_lines":actor.text,"after_lines":["Safe travels!"],"loss_lines":["A good forest walk!"]
             }))?;
             events::activities(pack, map, &[trainer], &[])?;
+            authored_dialogue::install_canonical_trainer(map, &actor.id)?;
             let object = map.objects.last_mut().context("new optional trainer")?;
             object.object_identifier = Some(actor.id.clone());
         }

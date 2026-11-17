@@ -11,6 +11,7 @@ use crate::{CompiledGamePack, MapModule};
 
 const CURRENT: &str = "544539b3c51802c03cc284ae7ec3d683ea251596af80c71ef6f886ef4888aa16";
 const CURRENT_V11: &str = "834d4be07c45079fdc81f1777856a37058d064b4188f548e31616684436da5e3";
+const CURRENT_GLACIER: &str = "38ef157b041a1809cc0aa89cdf4fa3080f46994b56c0dcc1e15365055e6eb693";
 const COMMON: &str = "a7f6270ac5c7cdc83fe0f7484fd8485990ceb9749a0fde803dc43cbd22b90bad";
 const DONOR: &str = "ccf84221d047e958736a4ca5cbecc917713a4496e03ffe89527e72e2d2593914";
 const MARKER: &str = "northstar-current-v27-consolidation-v1";
@@ -107,8 +108,8 @@ pub fn consolidate_northstar_story(
 ) -> Result<CompiledGamePack> {
     let current_hash = current.identity()?.content_hash;
     ensure!(
-        current_hash == CURRENT || current_hash == CURRENT_V11,
-        "exact story consolidation input required: {CURRENT} or {CURRENT_V11}"
+        [CURRENT, CURRENT_V11, CURRENT_GLACIER].contains(&current_hash.as_str()),
+        "exact reviewed story consolidation input required"
     );
     crate::verify_compiled_game_pack_for_runtime(current)?;
     for (pack, identity) in [(common, COMMON), (donor, DONOR)] {
@@ -203,6 +204,15 @@ pub fn consolidate_northstar_story(
         let mut map = original.clone();
         let mut changed = BTreeSet::new();
         for (label, body) in delta {
+            if current_hash == CURRENT_GLACIER
+                && name == "MnMinneapolis"
+                && label == "MnMPNorthCheckBadgesText"
+            {
+                // Glacier's later road guidance belongs to the current world.
+                // The integrated public-road stage removes this checkpoint;
+                // importing the historical badge instruction would regress it.
+                continue;
+            }
             if name == "MnBoundaryIntake" && label == "MnArcIntakeStop" {
                 // This now leads to the persisted Verdigrim drill/outlet/bypass
                 // sequence. The older single-motor program must never replace it.
@@ -910,6 +920,7 @@ pub fn apply_minnesota_story_and_scene_fixes(
 
     // 7. Overhaul town and interior dialogue across Minnesota to replace truncated,
     // repetitive, robotic or boundary-checking lines with natural NPC dialogue.
+    crate::northstar_shared_dialogue::install(&mut pack, &story_root)?;
     if let Some(texts) = story_root["dialogue_overhaul"]["texts"].as_object() {
         for map_name in texts.keys() {
             if map_name == "MnWinonaHome1F" || map_name == "MnWinonaFieldStation" {

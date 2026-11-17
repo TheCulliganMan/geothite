@@ -1,0 +1,94 @@
+{
+  "species_id": "MN_341",
+  "name": "Whitewhirl",
+  "family_id": "MN_F154",
+  "dex_number": 213,
+  "status": "accepted",
+  "generation_tool": "built-in image_gen",
+  "selected_manifest": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f154/whitewhirl.manifest-20261104-v3-features.json",
+    "sha256": "e1ae344a23bd6b55fb1e210ba9366fd65420c1b9b4582d51f224ffaf1d7c1f21",
+    "bytes": 1943
+  },
+  "sources": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f154/whitewhirl.overworld.imagegen-20261104-v1.png",
+      "sha256": "e51b457dfa3b34d6d01e99787bd31f7c35c8bd33ba542b73836ff3ce044b76d5",
+      "bytes": 1345992
+    }
+  ],
+  "prompts": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f154/whitewhirl.overworld.prompt-20261104-v1.txt",
+      "sha256": "94f6c038b37a169b02af0d938c63b7678c005b222984102fb70ff683fba9aedf",
+      "bytes": 2737
+    }
+  ],
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/whitewhirl-20261104-v3-features",
+  "normal_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/whitewhirl-20261104-v3-features/review/whitewhirl.normal-8x.png",
+    "sha256": "fadcd74bd5aae8c640d44d30fbb3590c99b1ef83a4c2b8e192ab38a0b54b4e76",
+    "bytes": 9748
+  },
+  "shiny_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/whitewhirl-20261104-v3-features/review/whitewhirl.shiny-8x.png",
+    "sha256": "9b0c7b6105407f9c3da4e7ad8f68f590d6ddf21a78a2600b279594f433a76ac4",
+    "bytes": 9801
+  },
+  "compiled_index": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/whitewhirl-20261104-v3-features/compiled-index.json",
+    "sha256": "f7a63dc54768bf9b07eaccf071cd06e85388932b19f34733edde496a5d2f47ed",
+    "bytes": 7947
+  },
+  "source_feature_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f154/whitewhirl.source-feature-review-20261104-v3.json",
+    "sha256": "1cbf5db18ec452f16fb4e78fe285fffbdb6397ec779d172a39866ef55312a5e8",
+    "bytes": 5324
+  },
+  "context_evidence": {
+    "directory": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-05",
+    "input_manifest": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-05/input-manifest.json",
+      "sha256": "9efc1305914df9abe4e36f5d10257a688c67a51bab71364393eacc20fd08a6ee",
+      "bytes": 1162
+    },
+    "verification": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-05/verification.json",
+      "sha256": "d58139eab686235056245767e379b61320861ad7e417f794ae6231a933f6cd09",
+      "bytes": 16890
+    },
+    "test_log": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/verification/all225-20261104-v5-05.log",
+      "sha256": "9235be84259714cc6a7497dd8fd0819a62bdeee8349ef95f4f154ac8b0d7d78d",
+      "bytes": 217
+    },
+    "normal_actor_poses": 8,
+    "all_six_shiny_native_poses_verified": true
+  },
+  "root_visual_review": {
+    "accepted": true,
+    "notes": "Species-specific head, dark facial marks and themed body silhouette retained in front/profile. Rear poses show backs of ears/crest/head and the actual back/tail, without a pasted frontal face. Six distinct native poses, paired idle/step articulation and both palettes reviewed alongside the trainer on terrain."
+  },
+  "runtime_files": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/whitewhirl/overworld.2bpp",
+      "sha256": "4b24313486984b0c11957f9e62436320d5df316a37ff67971b36541fa265c338",
+      "bytes": 384
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/whitewhirl/overworld.png",
+      "sha256": "a884bf1cf603dbe9a8f1b48c9e3046ec8c58d230ece64a07b9b2175c9c3e671e",
+      "bytes": 887
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/whitewhirl/overworld.gbcpal",
+      "sha256": "208e3987f6c152639fc1cbbc4a247d5a66e82618f030f84d59a10f5879e16533",
+      "bytes": 8
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/whitewhirl/overworld-shiny.gbcpal",
+      "sha256": "8970600e39ca60ff1d7b50bdf69944662f44d34a83075c4edef419dddc895968",
+      "bytes": 8
+    }
+  ]
+}

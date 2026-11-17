@@ -1,0 +1,94 @@
+{
+  "species_id": "MN_349",
+  "name": "Braclaw",
+  "family_id": "MN_F159",
+  "dex_number": 221,
+  "status": "accepted",
+  "generation_tool": "built-in image_gen",
+  "selected_manifest": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f159/braclaw.manifest-20261104-v3-features.json",
+    "sha256": "50c2495a9d60f7b3152416103cfabf046e08a8236a68f38ac203b2a3b1ea565b",
+    "bytes": 1921
+  },
+  "sources": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f159/braclaw.overworld.imagegen-20261104-v1.png",
+      "sha256": "24ed498242285a239e59a86f77910ccfa7f74680bfd764690e69643b812fc1d4",
+      "bytes": 1233663
+    }
+  ],
+  "prompts": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f159/braclaw.overworld.prompt-20261104-v1.txt",
+      "sha256": "b98ada2830d72a725c59fa07e01f5dfc99948d8fe5ba857936ee195b041298bf",
+      "bytes": 2489
+    }
+  ],
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/braclaw-20261104-v3-features",
+  "normal_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/braclaw-20261104-v3-features/review/braclaw.normal-8x.png",
+    "sha256": "7ba485bb24dfff85e2ff3c09e17743d7bcd49626aa37bc3bf0e8a8872140aa62",
+    "bytes": 8697
+  },
+  "shiny_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/braclaw-20261104-v3-features/review/braclaw.shiny-8x.png",
+    "sha256": "f65593b19762ad9e877a7277057fa7cfa8f6f1a97cb3d5768b1206d8dd5df2ee",
+    "bytes": 8611
+  },
+  "compiled_index": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/braclaw-20261104-v3-features/compiled-index.json",
+    "sha256": "f5cbc67741683a7e807b2d6e28d0aeebddffa59484a58cd3430847b6201cbbb6",
+    "bytes": 7929
+  },
+  "source_feature_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f159/braclaw.source-feature-review-20261104-v3.json",
+    "sha256": "ec1ab5d648241b1a4b4475de7f8c148901bee974ce2706b2c7e2871baee5a9ba",
+    "bytes": 5312
+  },
+  "context_evidence": {
+    "directory": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-06",
+    "input_manifest": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-06/input-manifest.json",
+      "sha256": "d19452fb4c890c8bcb71bad9b5c6d4e94277d8bfec08f657fd1f1e9a76edc13f",
+      "bytes": 1150
+    },
+    "verification": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-06/verification.json",
+      "sha256": "548d32ab6f3d28e0e8ebc9f69bf933a351951542aae6aff5c75a26214afa90a9",
+      "bytes": 16830
+    },
+    "test_log": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/verification/all225-20261104-v5-06.log",
+      "sha256": "b415c9ea82d9f3cf79ae941c1f9e72d153011d023e0c673b6b5f5687ac26449f",
+      "bytes": 217
+    },
+    "normal_actor_poses": 8,
+    "all_six_shiny_native_poses_verified": true
+  },
+  "root_visual_review": {
+    "accepted": true,
+    "notes": "Species-specific head, dark facial marks and themed body silhouette retained in front/profile. Rear poses show backs of ears/crest/head and the actual back/tail, without a pasted frontal face. Six distinct native poses, paired idle/step articulation and both palettes reviewed alongside the trainer on terrain."
+  },
+  "runtime_files": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/braclaw/overworld.2bpp",
+      "sha256": "0d489e2a71df49cefe69ebc7bd05e41bc57667423a0fc89d69fb78c0bfa9ad6d",
+      "bytes": 384
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/braclaw/overworld.png",
+      "sha256": "5350ed5ab5440c8a4ce7ecc341932b1b74b0e75cbb623fead097c2a70b7e5b41",
+      "bytes": 751
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/braclaw/overworld.gbcpal",
+      "sha256": "90b75ef144f1927748badd5f5b4a525adffd896e4930d87c79c875f086ae3111",
+      "bytes": 8
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/braclaw/overworld-shiny.gbcpal",
+      "sha256": "76f07e8366c38f1964402fcaac66646ae64283e8ebc1c11a57f1d03b3aafdcad",
+      "bytes": 8
+    }
+  ]
+}

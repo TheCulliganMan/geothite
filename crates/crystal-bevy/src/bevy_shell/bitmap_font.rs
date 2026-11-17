@@ -4214,7 +4214,9 @@ fn load_sprite_art(
     let frame_size = width as usize;
     let frame_count = (height / width) as usize;
     let authored_palette_path = sprite_path.with_extension("gbcpal");
+    let canoe_rider = matches!(sprite_id, "mn_canoe_chris" | "mn_canoe_kris");
     let palette = if sprite_id.starts_with("mn_")
+        && !canoe_rider
         && crate::runtime_asset_exists(&authored_palette_path)
     {
         load_gbcpal_palette(&authored_palette_path)?
@@ -4229,6 +4231,11 @@ fn load_sprite_art(
     } else {
         frame_count
     };
+    if canoe_rider && effective_frame_count == 6 {
+        return Ok(moving_sprite_art(|frame, mirror| {
+            create_sprite_frame_inner(&source, frame_size, frame, &palette, mirror, images, true)
+        }));
+    }
     map_sprite_sheet_frames(
         sprite_id,
         &source,
@@ -5002,6 +5009,20 @@ fn create_sprite_frame(
     mirror_x: bool,
     images: &mut Assets<Image>,
 ) -> SpriteFrame {
+    create_sprite_frame_inner(
+        source, frame_size, frame_index, palette, mirror_x, images, false,
+    )
+}
+
+fn create_sprite_frame_inner(
+    source: &image::RgbaImage,
+    frame_size: usize,
+    frame_index: usize,
+    palette: &Palette,
+    mirror_x: bool,
+    images: &mut Assets<Image>,
+    keep_color: bool,
+) -> SpriteFrame {
     let mut data = vec![0_u8; frame_size * frame_size * 4];
     copy_source_sprite_rgba(
         source,
@@ -5011,6 +5032,19 @@ fn create_sprite_frame(
         mirror_x,
         &mut data,
     );
+    if keep_color {
+        for row in 0..frame_size {
+            for col in 0..frame_size {
+                let source_col = if mirror_x { frame_size - 1 - col } else { col };
+                let pixel =
+                    source.get_pixel(source_col as u32, (frame_index * frame_size + row) as u32);
+                if pixel[3] != 0 && pixel[0] != pixel[1] {
+                    let offset = (row * frame_size + col) * 4;
+                    data[offset..offset + 4].copy_from_slice(&pixel.0);
+                }
+            }
+        }
+    }
     let mut image = Image::new(
         Extent3d {
             width: frame_size as u32,
@@ -5152,32 +5186,9 @@ fn map_sprite_sheet_frames(
     images: &mut Assets<Image>,
 ) -> Result<SpriteArt> {
     match frame_count {
-        6 => Ok(SpriteArt {
-            down: OverworldDirectionArt {
-                standing: create_sprite_frame(source, frame_size, 0, palette, false, images),
-                walking: Some(create_sprite_frame(
-                    source, frame_size, 3, palette, false, images,
-                )),
-            },
-            up: OverworldDirectionArt {
-                standing: create_sprite_frame(source, frame_size, 1, palette, false, images),
-                walking: Some(create_sprite_frame(
-                    source, frame_size, 4, palette, false, images,
-                )),
-            },
-            left: OverworldDirectionArt {
-                standing: create_sprite_frame(source, frame_size, 2, palette, false, images),
-                walking: Some(create_sprite_frame(
-                    source, frame_size, 5, palette, false, images,
-                )),
-            },
-            right: OverworldDirectionArt {
-                standing: create_sprite_frame(source, frame_size, 2, palette, true, images),
-                walking: Some(create_sprite_frame(
-                    source, frame_size, 5, palette, true, images,
-                )),
-            },
-        }),
+        6 => Ok(moving_sprite_art(|frame, mirror| {
+            create_sprite_frame(source, frame_size, frame, palette, mirror, images)
+        })),
         3 => Ok(SpriteArt {
             down: static_overworld_direction(source, frame_size, 0, palette, false, images),
             up: static_overworld_direction(source, frame_size, 1, palette, false, images),
@@ -5201,6 +5212,19 @@ fn map_sprite_sheet_frames(
             sprite_id,
             count
         ),
+    }
+}
+
+fn moving_sprite_art(mut frame: impl FnMut(usize, bool) -> SpriteFrame) -> SpriteArt {
+    let mut direction = |index, mirror| OverworldDirectionArt {
+        standing: frame(index, mirror),
+        walking: Some(frame(index + 3, mirror)),
+    };
+    SpriteArt {
+        down: direction(0, false),
+        up: direction(1, false),
+        left: direction(2, false),
+        right: direction(2, true),
     }
 }
 

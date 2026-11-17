@@ -38,6 +38,12 @@ pub(crate) struct Gym {
     /// Full native electric-grid art used as a solid charged barrier.
     #[serde(default)]
     pub barriers: BTreeSet<char>,
+    /// Replace Port brick deck glyphs with native tower planks for Brainerd.
+    #[serde(default)]
+    pub wooden_port_deck: bool,
+    /// Water quadrants replaced with native floating barriers in the dock room.
+    #[serde(default)]
+    pub buoy_quadrants: BTreeMap<char, BTreeSet<u8>>,
     /// A contained indoor pool may have native walk-to-water access like Cerulean.
     #[serde(default)]
     pub enclosed_pool: bool,

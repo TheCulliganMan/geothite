@@ -1,0 +1,94 @@
+{
+  "species_id": "MN_333",
+  "name": "Waywolf",
+  "family_id": "MN_F151",
+  "dex_number": 205,
+  "status": "accepted",
+  "generation_tool": "built-in image_gen",
+  "selected_manifest": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f151/waywolf.manifest-20261104-v3-features.json",
+    "sha256": "2874edd41879a53ce2a46bf93ebe6973a58fd26ec8b283ceb8e410ac5a92a6e1",
+    "bytes": 1920
+  },
+  "sources": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f151/waywolf.overworld.imagegen-20261104-v1.png",
+      "sha256": "1bd553b11f42235c490b0066bc89ec2f0f6a115bfdfd17022033c8b31f3e0a7e",
+      "bytes": 1430946
+    }
+  ],
+  "prompts": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f151/waywolf.overworld.prompt-20261104-v1.txt",
+      "sha256": "2f00d1903dbed43fb61a434a341f3f048e24483994209363a2332c1cc34bcead",
+      "bytes": 2733
+    }
+  ],
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/waywolf-20261104-v3-features",
+  "normal_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/waywolf-20261104-v3-features/review/waywolf.normal-8x.png",
+    "sha256": "6a7b9a1d586846d9a5281dccd8d9c5f083f650ae39bb73cb55f822b0aebb442c",
+    "bytes": 8204
+  },
+  "shiny_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/waywolf-20261104-v3-features/review/waywolf.shiny-8x.png",
+    "sha256": "1c7206eddd9f408cff4ffe1fad20f5022c4780483ca33c65309ba0a1208cfd8b",
+    "bytes": 8382
+  },
+  "compiled_index": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/waywolf-20261104-v3-features/compiled-index.json",
+    "sha256": "0e54ea27289a81f240ceae23b63288037050a41bdd6a0d55e7b1269d6c2db3aa",
+    "bytes": 7923
+  },
+  "source_feature_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f151/waywolf.source-feature-review-20261104-v3.json",
+    "sha256": "542ccc93192a02dabff914c64a760a1a0681274d67e1e08ec1393660300af1aa",
+    "bytes": 5308
+  },
+  "context_evidence": {
+    "directory": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-04",
+    "input_manifest": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-04/input-manifest.json",
+      "sha256": "ad2427a342ed663a1aa814c037373b011972061c47a527c47cb3c1de0f60daca",
+      "bytes": 1158
+    },
+    "verification": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-04/verification.json",
+      "sha256": "2427fc9d12b1d395b8166e2777e32b9e8d302c008e12c90f2fd041deda63b8f2",
+      "bytes": 16870
+    },
+    "test_log": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/verification/all225-20261104-v5-04.log",
+      "sha256": "75961a34a8cca452ce397f6fc7777d0f2b58681e228ede1064f86b7e24edbe36",
+      "bytes": 217
+    },
+    "normal_actor_poses": 8,
+    "all_six_shiny_native_poses_verified": true
+  },
+  "root_visual_review": {
+    "accepted": true,
+    "notes": "Species-specific head, dark facial marks and themed body silhouette retained in front/profile. Rear poses show backs of ears/crest/head and the actual back/tail, without a pasted frontal face. Six distinct native poses, paired idle/step articulation and both palettes reviewed alongside the trainer on terrain."
+  },
+  "runtime_files": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/waywolf/overworld.2bpp",
+      "sha256": "7058844b95e21ca3737f6dc21a1d342c28b71b44e67ac6dd2a16ec936ff7bf14",
+      "bytes": 384
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/waywolf/overworld.png",
+      "sha256": "3c6f68f3527bbfba9935b9223055a652223f9b876c9402e0be34f977745bb286",
+      "bytes": 708
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/waywolf/overworld.gbcpal",
+      "sha256": "3e478e16d1063acf5bc8b8f954c4e53b4d8a14ac01e8c650982a524573e85d18",
+      "bytes": 8
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/waywolf/overworld-shiny.gbcpal",
+      "sha256": "165f526949d2d77d42dc45e0e654d52129dd484dce72fe11f4cd462cc95a1a81",
+      "bytes": 8
+    }
+  ]
+}

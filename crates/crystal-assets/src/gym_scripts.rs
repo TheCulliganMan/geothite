@@ -25,7 +25,7 @@ fn command(name: &str, args: &[&str]) -> Value {
     authoring::command(name, args)
 }
 
-fn event(pack: &mut CompiledGamePack, name: &str) -> Result<()> {
+pub(crate) fn event(pack: &mut CompiledGamePack, name: &str) -> Result<()> {
     let globals = &mut pack.data.story_event_script_constants.global;
     if let Some(id) = globals.get(name) {
         ensure!(

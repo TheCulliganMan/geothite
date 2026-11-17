@@ -1,0 +1,243 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F150",
+  "tool": "built-in image_gen",
+  "prompt_file": "sprites/mn-f150/replacement-20261104-v1/prompt.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "status": "native-front-back-candidate-reviewed",
+  "sprites": [
+    {
+      "id": "mn-329-cubluff-v1",
+      "species_id": "MN_329",
+      "view": "front",
+      "source": "sprites/mn-f150/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        0,
+        0,
+        560,
+        627
+      ],
+      "fit": [
+        36,
+        34
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        21139,
+        14698,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-329-cubluff-v1",
+      "species_id": "MN_329",
+      "view": "back",
+      "source": "sprites/mn-f150/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        0,
+        627,
+        560,
+        627
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        21139,
+        14698,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-330-talursa-v1",
+      "species_id": "MN_330",
+      "view": "front",
+      "source": "sprites/mn-f150/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        560,
+        0,
+        694,
+        627
+      ],
+      "fit": [
+        52,
+        43
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        21105,
+        13640,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-330-talursa-v1",
+      "species_id": "MN_330",
+      "view": "back",
+      "source": "sprites/mn-f150/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        560,
+        627,
+        694,
+        627
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        21105,
+        13640,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    }
+  ],
+  "pokemon_palettes": {
+    "MN_329": {
+      "species_id": "MN_329",
+      "name": "Cubluff",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          19,
+          20,
+          20
+        ],
+        [
+          10,
+          11,
+          14
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        21139,
+        14698,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          156,
+          165,
+          165
+        ],
+        [
+          82,
+          90,
+          115
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#9CA5A5",
+        "#525A73",
+        "#000000"
+      ]
+    },
+    "MN_330": {
+      "species_id": "MN_330",
+      "name": "Talursa",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          17,
+          19,
+          20
+        ],
+        [
+          8,
+          10,
+          13
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        21105,
+        13640,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          140,
+          156,
+          165
+        ],
+        [
+          66,
+          82,
+          107
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#8C9CA5",
+        "#42526B",
+        "#000000"
+      ]
+    }
+  },
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "e82aaa6ffd5ce31ae66c3e9670eb15a1942b9f0c203fa498eb91ea3b5be57e2a",
+    "notes": "Native review: natural four-pawed bear silhouettes, round ears, blunt snouts and integrated basalt shoulder columns. Native eyes retain white and dark centers. Column planes and shoulder dither differ from both archived bear lines. Close backs preserve neck/shoulder bulk. Candidate for user feedback."
+  }
+}

@@ -1,10 +1,95 @@
 # Build and run game content
 
+The local Minnesota typing child `content-packs/minnesota-typing-continuity-v02.crystalpack`
+was built over the selected R06 reviewed-map v11 pack. Its 22 installed species
+typing changes match the roster; all other game data matches the parent, all 602
+audio programs pass their PCM hash/frame/loop checks, and the native client
+opens the new pack. It has not replaced the selected world revision or hosted game.
+
+```sh
+CARGO_INCREMENTAL=0 cargo build --locked -p crystal-assets --bin pack_minnesota_typing
+target/debug/pack_minnesota_typing content-packs/minnesota-reviewed-maps-v11.crystalpack \
+  planning/minnesota/pokemon/roster.json content-packs/minnesota-typing-continuity-v02.crystalpack
+target/debug/verify_crystalpack content-packs/minnesota-typing-continuity-v02.crystalpack --audio --desktop
+```
+
+
 Geothite's Rust builders generate the game content from the source and toolchain
 pinned in `pret-source.lock.json`. The initialization script assembles that source,
 exports runtime catalogs, compiles and verifies the packs, and publishes local
 agent inputs. Source checkouts, ROMs, intermediate exports, PCM, and packs stay
 outside tracked source.
+
+## Minnesota campaign polish review
+
+The local campaign polish pack uses the selected Glacier Line revision as its
+parent. It installs current authored dialogue, replaces retired Pokémon in
+regional trainer parties and remaining optional discoveries, and lowers the
+first Old Rod catches in Winona, Route 1, and Rochester to levels 4–6. The
+local candidate uses the parent’s map geometry, warps, art, and audio. The
+Itasca and Duluth handoffs keep their existing badge requirements.
+
+Run these commands from the repository root. The output path must be fresh.
+
+```sh
+CARGO_INCREMENTAL=0 cargo build --locked -p crystal-assets --bin revise_northstar_story --bin verify_crystalpack
+target/debug/revise_northstar_story \
+  content-packs/minnesota-glacier-rear-rail-v01.crystalpack \
+  planning/minnesota/story.json \
+  content-packs/minnesota-campaign-polish-v04.crystalpack --campaign-polish
+target/debug/verify_crystalpack content-packs/minnesota-campaign-polish-v04.crystalpack --audio --desktop
+CARGO_INCREMENTAL=0 cargo build --locked -p geothite --bin geothite
+target/debug/geothite play content-packs/minnesota-campaign-polish-v04.crystalpack \
+  --save target/minnesota-campaign-polish-v04.crystalsave
+```
+
+The parent’s SHA-256 is
+`8af676f7344a7a5d9a3656058f8ca7930919dbd9e86b6788cc10047923162c99`.
+The verified candidate’s SHA-256 is
+`21596bfe673401248894049f01f14012c96facac2fd43076c70ef71b1128261d`.
+The dialogue pass brought 2,722 authored entries into agreement with the pack
+and reported 50 authored labels absent from the candidate. Those labels had
+no references in its map programs or event bindings. The roster audit checked
+6,036 references across 355 regional maps and 323 trainers.
+All 602 audio programs passed PCM, frame count, and loop verification. The
+native Minneapolis shop test covers its authored greeting, purchase, exit,
+and return to movement. The standard shop regression also passed in all
+thirteen original rooms. Controller checks passed for a level-5 starter’s
+first Old Rod catch and Continue, fishing and Continue afloat, all twenty
+Glacier Line rides, and the installed Itasca and Duluth hint branches.
+
+The earned replay continued across same-pack saves from New Game through the
+Wind Badge, the Minneapolis rescue, the St. Paul return trip, and both Lake
+Gym trainers. The first Lake leader attempt exhausted five Super Potions
+and blacked out. The later retry also blacked out. Hall of Fame coverage
+remains open. The earned recovery saves and replay logs are under the ignored
+`target/northstar-audit-repairs/` directory.
+
+The unselected v05 follow-up names the Field Station by the river in Mom's
+opening conversation. To reproduce it, use the same builder command with
+`content-packs/minnesota-campaign-polish-v05.crystalpack` as the fresh output.
+The v05 SHA-256 is
+`c31aa18cb074ae2bf092095250f04fa6b2e3c4e5a63a3a8ee10b724815188a5c`.
+Use a fresh save path for v05. The badge counter is a terminal client change
+and requires rebuilding the client.
+
+The unselected v06 follow-up keeps that opening and identifies Lorla as the
+floating-walk operator in Brainerd. After beating Lorla, talk to her again
+and choose CENTER for Bravel. Return to Lorla after beating Bravel and choose
+LEFT for Sivren. The gym guide and both trainers' post-battle directions
+describe that sequence. Reuse the builder command above with
+`content-packs/minnesota-campaign-polish-v06.crystalpack` as the fresh output
+and a separate save path for play.
+
+The v06 SHA-256 is
+`9dc64eb4469b0393dc58c9b977d0aefa85c52b0cfff12e45c52d434f44ccebdd`.
+The v05 and v06 payloads differ only in the five Brainerd dialogue entries
+and the content identity. The desktop verifier passed all 602 audio programs.
+Production terminal inputs verified Mom's opening in a fresh game. A separate
+v06 gym fixture with both trainer wins verified the guide, Bravel's reminder,
+Lorla's LEFT option and the resulting approach to Sivren. A healed, earned
+v04 checkpoint lost to Sivren on the same battle data. Lake Badge and League
+completion remain open.
 
 ## Minnesota startup and Tamarack welcome
 
@@ -415,12 +500,21 @@ change existing saves' content identity. Packs and compiled tools remain ignored
 
 The [canoe publication runbook](../planning/minnesota/canoe/README.md) records
 `pack_canoe BASE OUTPUT`, its verified Rust build, native 2bpp source inputs and
-current gameplay acceptance status. It publishes a separate ignored overlay
+current gameplay acceptance status. It publishes an ignored successor
 with a St. Paul canoe-shop handoff, passive key item, paddling sprite banks and
-updated shore directions. The candidate uses
-`content-packs/minnesota-current-grass-r12-v01.crystalpack` as its parent and
-writes `content-packs/minnesota-canoe-v04.crystalpack`. All 377 original audio
-programs pass PCM hash, frame-count and loop-range verification.
+updated shore directions. The red canoe refresh takes
+`content-packs/minnesota-region-ecology-v02.crystalpack` as its parent and
+writes `content-packs/minnesota-region-ecology-red-canoe-v01.crystalpack`.
+The rider keeps the bike palette and the red hull has its own colors. Canoeing
+uses the ordinary Surf encounter tables. All 602 audio programs pass PCM hash,
+frame-count and loop-range verification.
+
+## Glacier Line rear-edge stations
+
+The [station runbook](../planning/minnesota/transit/glacier-rear-rail-v01/README.md)
+records the Rust publisher, exact red-canoe parent and local review commands.
+It puts the Winona, Detroit Lakes, St. Cloud and St. Paul station doors along
+their northern edges and extends the existing rear tracks at Staples.
 
 ## Short coast and compact Gunflint
 
@@ -2640,8 +2734,9 @@ existing programs, regional fauna, fishing, art/audio and attributes stay exact.
 The twenty-one-stage source build reproduces v09 as well. Broader map quality
 and earned regional progression remain open.
 
-The [Pine Country fork revision](../planning/minnesota/routes/r06-pine-fork-v01/README.md) is the current local selection,
-`content-packs/minnesota-reviewed-maps-v11.crystalpack`. Its native dry downhill
+The [Pine Country fork revision](../planning/minnesota/routes/r06-pine-fork-v01/README.md) built
+`content-packs/minnesota-reviewed-maps-v11.crystalpack`, the parent of the current
+local spawn revision. Its native dry downhill
 hop, closed pine flanks and six-grass uphill choices give the lake road a distinct
 return trip. The original northern hop, Cut-gated Ether/stair, cabins, Super Rod
 guru, bridge and pier remain intact; the lookout rim is continuous. Seven native
@@ -2649,3 +2744,44 @@ courses, 938 actual stdio calls, ten exact complete native frames and four playe
 views pass. All 742 other maps and existing programs, fauna/fishing, rooms,
 attributes and art/audio stay exact. The twenty-two-stage source build reproduces
 v10 as well. Broader map quality and earned regional progression remain open.
+
+## Minnesota walking encounters
+
+The [spawn location plan](../planning/minnesota/pokemon/acquisition-v01/spawn-locations-v01.json)
+first targeted six existing grass and cave tables on the R06 v11 lineage.
+That stage built `content-packs/minnesota-spawn-locations-v01.crystalpack`. Tesslarv and
+Hushiss are easier to find in the opening limestone cave. The river valley has
+Chorip on the cave floor and in the eastern grass after dark. Pine Country
+has Pitchwick, the northern woodland edge has Bristub, and the Prairie Forest
+Link has Tapacitor. The six tables use the active roster and retain their levels,
+rates, slot weights and terrain.
+
+```sh
+RUST_MIN_STACK=67108864 CARGO_INCREMENTAL=0 cargo run --locked -p crystal-assets \
+  --bin pack_minnesota_spawn_locations -- \
+  "$PWD/content-packs/minnesota-reviewed-maps-v11.crystalpack" \
+  planning/minnesota/pokemon/acquisition-v01/spawn-locations-v01.json \
+  "$PWD/content-packs/minnesota-spawn-locations-v01.crystalpack"
+```
+
+Each habitat passed an encounter, capture and Continue using the production
+controller from a local position and party fixture. The pack audit matched
+all game data outside the 53 edited slots and verified all 602 audio programs.
+The hosted game and existing saves were not migrated.
+
+## Region-wide Minnesota encounters
+
+The [regional ecology runbook](../planning/minnesota/pokemon/acquisition-v01/region-ecology-v01/README.md)
+records the native species installation, 47 journey habitat assignments, and
+walk, Surf, rod, Headbutt, and Safari verification. The full 225-species active
+roster has an authored acquisition path outside paid Safari. The selected local
+pack is `content-packs/minnesota-region-ecology-v02.crystalpack`.
+
+## November 3 Minnesota sprite candidate
+
+The [native-art integration runbook](../planning/minnesota/pokemon/NATIVE-ART-20261103.md)
+records the executed local build and verification for 52 revised species. It
+explicitly restores Mudnip/Bankmaw before refreshing graphics for 26 installed
+families, preserving maps, scripts and audio. The ignored candidate is
+`target/native-integration-20261103/reviewed-sprites.crystalpack`; it is not the
+current `world.json` selection or a public deployment.

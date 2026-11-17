@@ -1,0 +1,131 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F156",
+  "tool": "built-in image_gen",
+  "prompt_file": "sprites/mn-f156/replacement-20261104-v1/prompt.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "status": "native-front-back-candidate-reviewed",
+  "sprites": [
+    {
+      "id": "mn-344-tactunnel-v1",
+      "species_id": "MN_344",
+      "view": "front",
+      "source": "sprites/mn-f156/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        0,
+        0,
+        890,
+        887
+      ],
+      "fit": [
+        43,
+        36
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        16024,
+        16713,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-344-tactunnel-v1",
+      "species_id": "MN_344",
+      "view": "back",
+      "source": "sprites/mn-f156/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        890,
+        0,
+        884,
+        887
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        16024,
+        16713,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    }
+  ],
+  "pokemon_palettes": {
+    "MN_344": {
+      "species_id": "MN_344",
+      "name": "Tactunnel",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          24,
+          20,
+          15
+        ],
+        [
+          9,
+          10,
+          16
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        16024,
+        16713,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          198,
+          165,
+          123
+        ],
+        [
+          74,
+          82,
+          132
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#C6A57B",
+        "#4A5284",
+        "#000000"
+      ]
+    }
+  },
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "2d6ba74be875dd8c52a97105343cf2f5be8ed3cd9bba36886fbc10f3be992f14",
+    "notes": "Native front/back candidate inspected: low star-nosed mole with broad digging forepaws, small dark-bounded eye, tactile cheek bands and dithered rounded back. Original generated source preserved. Awaiting user feedback."
+  }
+}

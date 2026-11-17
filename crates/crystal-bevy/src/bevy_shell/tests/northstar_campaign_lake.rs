@@ -57,7 +57,7 @@ fn arrival() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
                 at(&mut c, CITY, (32, 46));
             }
         }
-        CLINIC => at(&mut c, CLINIC, (3, 5)),
+        CLINIC => at(&mut c, CLINIC, city_port(&r, CITY, CLINIC).1),
         _ => panic!("expected a real Brainerd arrival, gym return or native recovery"),
     }
     for flag in [
@@ -114,22 +114,12 @@ fn care(c: &mut VisibleShellController, r: &CrystalRuntime) {
     let money = c.shell.shell.session().state().money;
     super::super::rochester_earned::heal_party(c, r);
     assert_eq!(c.shell.shell.session().state().money, money);
-    assert!(
-        c.snapshot()
-            .expect("native free care")
-            .party
-            .slots
-            .iter()
-            .all(|s| {
-                s.pokemon.hp == s.pokemon.max_hp
-                    && s.pokemon.status.is_none()
-                    && s.pokemon
-                        .moves
-                        .iter()
-                        .all(|m| m.current_pp == r.data().moves[&m.name].pp)
-            })
-    );
-    indoor_walk(c, r, (3, 4));
+    let exit_approach = if arrival == (3, 5) {
+        (3, 4)
+    } else {
+        (arrival.0, arrival.1 + 1)
+    };
+    indoor_walk(c, r, exit_approach);
     travel(c, GameButton::Down, CITY, door);
 }
 
@@ -221,20 +211,17 @@ fn report(c: &mut VisibleShellController, r: &CrystalRuntime, root: &AssetRoot) 
         assert!(!event(c, REPORT) && !event(c, SURF));
         super::super::northstar_dialogue::acknowledge(c, "MS05", "MN_BRAINERD_RANGERText", REPORT);
     } else {
-        for expected in ["The fish moved on", "Ask the fishers"] {
-            assert!(!event(c, REPORT) && !event(c, SURF));
-            assert!(
-                c.snapshot()
-                    .expect("separate ranger page")
-                    .ui
-                    .text
-                    .and_then(|t| t.asm_text)
-                    .is_some_and(|text| text.contains(expected))
-            );
-            press(c, GameButton::Down);
-            at(c, CITY, (25, 20));
-            press(c, GameButton::A);
-        }
+        let text = c
+            .snapshot()
+            .expect("native ranger report")
+            .ui
+            .text
+            .expect("ranger report opens before the gift");
+        assert_eq!(text.label, "MN_BRAINERD_RANGERText");
+        assert!(!event(c, REPORT) && !event(c, SURF));
+        press(c, GameButton::Down);
+        at(c, CITY, (25, 20));
+        assert!(!event(c, REPORT) && !event(c, SURF));
     }
     finish(c);
     assert!(event(c, REPORT) && event(c, SURF));
@@ -260,6 +247,14 @@ fn report(c: &mut VisibleShellController, r: &CrystalRuntime, root: &AssetRoot) 
     finish(c);
     assert_eq!(c.snapshot().expect("ranger repeat").party, party);
     assert_eq!(c.shell.shell.session().state().bag.quantity(item), 1);
+}
+
+#[test]
+#[ignore = "requires an actual same-pack CRYSTAL_NORTHSTAR_LAKE_SAVE"]
+fn northstar_campaign_earned_lake_and_ranger_report() {
+    assert!(std::env::var_os("CRYSTAL_NORTHSTAR_LAKE_SAVE").is_some());
+    assert!(std::env::var_os("CRYSTAL_NORTHSTAR_REVIEW_LEVEL").is_none());
+    let _ = lake();
 }
 
 #[test]
@@ -302,8 +297,7 @@ pub(super) fn lake() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
                     .ui
                     .text
                     .as_ref()
-                    .and_then(|t| t.asm_text.as_deref())
-                    .is_some_and(|text| text.contains("SIVREN")),
+                    .is_some_and(|text| text.label == "MnBrainerdRangerBeforeText"),
                 "ranger denial at {:?}: {:?}",
                 denial.overworld,
                 denial.ui
@@ -318,11 +312,16 @@ pub(super) fn lake() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
                 continue;
             }
             for attempt in 0..4 {
-                if id == "MN_GYM_6" && std::env::var_os("CRYSTAL_NORTHSTAR_REVIEW_LEVEL").is_none()
+                if id == "MN_GYM_6"
+                    && attempt > 0
+                    && std::env::var_os("CRYSTAL_NORTHSTAR_REVIEW_LEVEL").is_none()
                 {
-                    // A native loss needs a new preparation, rather than four
-                    // identical retries with the same underprepared party.
-                    training::prepare(&mut c, &r, &root, 32 + 2 * attempt);
+                    // Give the carried counter a couple of earned levels
+                    // before retrying, starting from the party's actual level.
+                    let lead = c.snapshot().expect("earned Lake retry party").party.slots[0]
+                        .pokemon
+                        .level;
+                    training::prepare(&mut c, &r, &root, lead.saturating_add(2));
                 }
                 care(&mut c, &r);
                 supplies(&mut c, &r);

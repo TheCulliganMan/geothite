@@ -1,0 +1,7 @@
+{
+  "parent_pack": "content-packs/minnesota-region-ecology-v02.crystalpack",
+  "parent_pack_sha256": "76ca3bcb10e27790c407157cad60b0d240745781c1233635b3fd596971f82b42",
+  "builder": "pack_canoe",
+  "output": "content-packs/minnesota-region-ecology-red-canoe-v01.crystalpack",
+  "expected_pack_sha256": "5929b5802f64b95455408659fda6483e191a08e72227b69bc204c5736d18269c"
+}

@@ -1,6 +1,6 @@
 //! Earned-campaign bridges for the acted rival/lair revision; no state writes.
 #[path = "northstar_earned_intake.rs"]
-mod intake_controls;
+pub(in crate::bevy_shell::tests) mod intake_controls;
 use crystal_assets::AssetRoot;
 use crystal_core::input::GameButton;
 use crystal_runtime::CrystalRuntime;

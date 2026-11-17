@@ -7,7 +7,7 @@ use bevy::prelude::{Assets, Color, Commands, Image, Sprite, Transform, Vec2, Vec
 use crystal_assets::{AssetRoot, RuntimeSafariOutcome, SafariAdmissionOutcome};
 use crystal_core::input::GameButton;
 use crystal_core::systems::safari::{self, SafariError, SafariPhase};
-use crystal_core::systems::safari_prompt::{self, SafariPromptKind};
+use crystal_core::systems::safari_prompt;
 use crystal_core::world::map::Direction;
 use crystal_runtime::RuntimeShellSnapshot;
 
@@ -69,6 +69,10 @@ pub(super) fn render_key(snapshot: &RuntimeShellSnapshot, base: u64) -> u64 {
             SafariPhase::Presenting { encounter, result } => {
                 crystal_runtime::safari_result_lines(encounter, result).hash(&mut key);
                 Some(encounter)
+            }
+            SafariPhase::Ending(reason) => {
+                crystal_runtime::safari_ending_lines(*reason).hash(&mut key);
+                None
             }
             _ => None,
         };
@@ -308,12 +312,7 @@ pub(super) fn render(
     const Z: f32 = 3.6;
     if let Some(prompt) = prompt {
         spawn_battle_window(commands, art, root, images, 0.0, 12.0, 20.0, 6.0, Z);
-        let lines = match prompt.kind {
-            SafariPromptKind::Admission => ["Enter preserve?", "30 BALLS 500 STEPS", "Fee: 500"],
-            SafariPromptKind::Retire => {
-                ["End expedition?", "Your catches stay.", "Back to basecamp?"]
-            }
-        };
+        let lines = crystal_runtime::safari_ranger_prompt_lines(prompt.kind);
         for (i, line) in lines.iter().enumerate() {
             text(
                 commands,
@@ -349,7 +348,7 @@ pub(super) fn render(
     let Some(capture) = capture else {
         return Ok(());
     };
-    if matches!(capture.phase, SafariPhase::Ending(_)) {
+    if let SafariPhase::Ending(reason) = &capture.phase {
         // Budget exhaustion and ranger retirement are field dialogue. There
         // is no wildlife left to justify a blank trainer-backed battle LCD.
         // Use the field presenter so the window and glyphs dock together.
@@ -365,7 +364,10 @@ pub(super) fn render(
             Z,
         );
         commands.entity(background).insert(BattleCommandMarker);
-        for (i, line) in ["Expedition over!", "Back to basecamp."].iter().enumerate() {
+        for (i, line) in crystal_runtime::safari_ending_lines(*reason)
+            .iter()
+            .enumerate()
+        {
             let (x, y) = super::battle_hud_tile_origin(
                 super::FIELD_TEXT_BOX_TEXT_LEFT_TILE,
                 super::FIELD_TEXT_BOX_TEXT_TOP_TILE

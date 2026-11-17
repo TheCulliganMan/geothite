@@ -1,0 +1,256 @@
+{
+  "schema_version": 1,
+  "status": "Unselected review candidate; source and native terrain match, and local controller course passes on the separately repaired child. Existing-save migration and broader regional review remain open.",
+  "gyms": [
+    {
+      "slot": 1,
+      "id": "MnRochesterGym",
+      "constant": "MN_ROCHESTER_GYM",
+      "city": "ROCHESTER",
+      "leader": "VAREL",
+      "trainer_class": "COOLTRAINERF",
+      "leader_sprite": "SPRITE_COOLTRAINER_F",
+      "leader_at": [
+        6,
+        3
+      ],
+      "badge_flag": "ENGINE_ZEPHYRBADGE",
+      "requires": [
+        "EVENT_MN_DELIVERED_ROCHESTER_PARCEL"
+      ],
+      "reward": "TM_HEADBUTT",
+      "party": [
+        {
+          "species": "NIBBIN",
+          "level": 10,
+          "moves": [
+            "SCRATCH",
+            "TAIL_WHIP",
+            "QUICK_ATTACK",
+            "SAND_ATTACK"
+          ]
+        },
+        {
+          "species": "CROOKIT",
+          "level": 12,
+          "moves": [
+            "SCRATCH",
+            "TAIL_WHIP",
+            "QUICK_ATTACK",
+            "BITE"
+          ]
+        }
+      ],
+      "rows": [
+        "AWXWYWB",
+        "L.....R",
+        "L.iii.R",
+        "L.....R",
+        "Lx.i.yR",
+        "L..z..R",
+        "Lx...yR",
+        "L.....R",
+        "L.....R",
+        ".P.D.Q."
+      ],
+      "art": {
+        "#": [
+          "tower",
+          "00"
+        ],
+        "A": [
+          "tower",
+          "04"
+        ],
+        "W": [
+          "tower",
+          "05"
+        ],
+        "B": [
+          "tower",
+          "06"
+        ],
+        "L": [
+          "tower",
+          "08"
+        ],
+        "R": [
+          "tower",
+          "0a"
+        ],
+        ".": [
+          "tower",
+          "09"
+        ],
+        "i": [
+          "tower",
+          "0d"
+        ],
+        "z": [
+          "tower",
+          "05"
+        ],
+        "P": [
+          "tower",
+          "13"
+        ],
+        "Q": [
+          "tower",
+          "12"
+        ],
+        "D": [
+          "tower",
+          "26"
+        ],
+        "x": [
+          "tower",
+          "2e"
+        ],
+        "y": [
+          "tower",
+          "2f"
+        ],
+        "X": [
+          "tower",
+          "22"
+        ],
+        "Y": [
+          "tower",
+          "21"
+        ]
+      },
+      "trainers": [
+        {
+          "id": "MN_GYM_1_TRAINER_1",
+          "name": "TAVEL",
+          "trainer_class": "SCHOOLBOY",
+          "sprite": "SPRITE_YOUNGSTER",
+          "at": [
+            4,
+            15
+          ],
+          "party": [
+            {
+              "species": "NIBBIN",
+              "level": 8,
+              "moves": [
+                "SCRATCH",
+                "TAIL_WHIP",
+                "QUICK_ATTACK"
+              ]
+            }
+          ],
+          "optional": false,
+          "before_lines": [
+            "I found the path!",
+            "Can you keep up?"
+          ],
+          "after_lines": [
+            "Look for the gap",
+            "at each turn."
+          ],
+          "requires": []
+        },
+        {
+          "id": "MN_GYM_1_TRAINER_2",
+          "name": "ELVIK",
+          "trainer_class": "SCHOOLBOY",
+          "sprite": "SPRITE_YOUNGSTER",
+          "at": [
+            9,
+            9
+          ],
+          "party": [
+            {
+              "species": "PIPBOOM",
+              "level": 9,
+              "moves": [
+                "GROWL",
+                "GUST",
+                "FOCUS_ENERGY",
+                "STOMP"
+              ]
+            }
+          ],
+          "optional": false,
+          "before_lines": [
+            "You made it here.",
+            "Now get past me!"
+          ],
+          "after_lines": [
+            "Go right around",
+            "the last planter.",
+            "VAREL is ahead!"
+          ],
+          "requires": [
+            "EVENT_MN_GYM_1_TRAINER_1_DEFEATED"
+          ]
+        }
+      ],
+      "stations": [],
+      "gates": [],
+      "guide": [
+        "A good training",
+        "hall has room to",
+        "choose your path.",
+        "Beat TAVEL, then",
+        "ELVIK."
+      ],
+      "walkthrough": [
+        "MN_GYM_1_TRAINER_1",
+        "MN_GYM_1_TRAINER_2"
+      ],
+      "dimensions_metatiles": [
+        7,
+        10
+      ],
+      "arrival_core": [
+        6,
+        17
+      ],
+      "exit_tiles_core": [
+        [
+          6,
+          19
+        ],
+        [
+          7,
+          19
+        ]
+      ],
+      "guide_at": [
+        10,
+        17
+      ],
+      "leader_court_locked": false,
+      "before_lines": [
+        "I am VAREL.",
+        "No fancy tricks.",
+        "Show me how well",
+        "you use your team!"
+      ],
+      "victory_lines": [
+        "You noticed when",
+        "the battle turned.",
+        "You earned this!"
+      ],
+      "after_lines": [
+        "Prairie Farm Road",
+        "leads to MANKATO.",
+        "Let your partners",
+        "rest on the way."
+      ],
+      "pads": [],
+      "routers": [],
+      "court_requires": [
+        "EVENT_MN_GYM_1_TRAINER_1_DEFEATED",
+        "EVENT_MN_GYM_1_TRAINER_2_DEFEATED"
+      ],
+      "court_denied_lines": [
+        "Beat TAVEL and",
+        "ELVIK first. Then",
+        "show me your team!"
+      ]
+    }
+  ]
+}

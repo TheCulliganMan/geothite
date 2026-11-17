@@ -1,7 +1,8 @@
 //! A depot worker gives the next quest after witnessing the courier's violence.
-use anyhow::{Context, Result};
+use anyhow::{Context, Result, ensure};
 use serde_json::{Value, json};
 
+use crate::authored_dialogue::{self, AuthoredDialoguePage};
 use crate::grand_marais_modpack::authoring::command as c;
 use crate::northstar_lair_authoring as a;
 use crate::{CompiledGamePack, MapModule};
@@ -93,13 +94,47 @@ pub(crate) fn install(pack: &mut CompiledGamePack, source: &Value) -> Result<()>
     ] {
         put(&mut map, label, vec![c("jumptext", &[text])]);
     }
-    put(
-        &mut map,
-        "MnNSTPMinaDeclined",
-        vec![c("closetext", &[]), c("end", &[])],
-    );
+    put(&mut map, "MnNSTPMinaDeclined", refusal_commands());
+    authored_dialogue::install_canonical(&mut map, "MnNSTPMinaDeclinedText")?;
     crate::ely_league_rooms::finish(pack, &mut map)?;
     crate::authored_town_publication::replace(pack, map)
+}
+
+/// Refresh the repeatable refusal without granting Mina's acknowledged lead.
+pub(crate) fn install_mina_refusal(
+    pack: &mut CompiledGamePack,
+    pages: &[AuthoredDialoguePage],
+) -> Result<()> {
+    let mut map = pack
+        .data
+        .maps
+        .get("MnStPaulUnionDepot")
+        .context("Mina's depot")?
+        .clone();
+    let expected = json!(refusal_commands());
+    let before = map
+        .scripts
+        .get("MnNSTPMinaDeclined")
+        .context("Mina refusal branch")?;
+    ensure!(
+        before == &json!([c("closetext", &[]), c("end", &[])]) || before == &expected,
+        "Mina refusal staging changed"
+    );
+    map.scripts.insert("MnNSTPMinaDeclined".into(), expected);
+    map.scripts.insert(
+        "MnNSTPMinaDeclinedText".into(),
+        authored_dialogue::compile(pages)?,
+    );
+    crate::northstar_story_revision::publish(pack, map)
+}
+
+fn refusal_commands() -> Vec<Value> {
+    vec![
+        c("writetext", &["MnNSTPMinaDeclinedText"]),
+        c("waitbutton", &[]),
+        c("closetext", &[]),
+        c("end", &[]),
+    ]
 }
 
 fn put(map: &mut MapModule, label: &str, commands: Vec<Value>) {

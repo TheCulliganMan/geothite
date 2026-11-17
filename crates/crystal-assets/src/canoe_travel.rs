@@ -2,7 +2,7 @@
 //! occupancy, encounters, connections, dismount and rollback.
 use anyhow::Result;
 use crystal_core::state::GameState;
-use crystal_core::systems::field_moves::CANOE_ITEM;
+use crystal_core::systems::field_moves::{CANOE_ACTIVE_MEMORY, CANOE_ITEM};
 use crystal_core::world::collision::{
     Terrain, describe_collision, is_direction_blocked_leaving, sample_collision,
 };
@@ -13,6 +13,26 @@ use crystal_core::world::session::OverworldSession;
 use crate::GameDataSet;
 
 impl GameDataSet {
+    pub(crate) fn is_canoe_mounted(
+        &self,
+        state: &GameState,
+        map_name: &str,
+        mode: MovementMode,
+    ) -> bool {
+        mode == MovementMode::Surf
+            && map_name.starts_with("Mn")
+            && state
+                .script_runtime
+                .memory
+                .get(CANOE_ACTIVE_MEMORY)
+                .map(String::as_str)
+                == Some("1")
+            && self
+                .items
+                .get(CANOE_ITEM)
+                .is_some_and(|item| state.bag.has_item(item))
+    }
+
     pub(crate) fn prepare_canoe_step(
         &self,
         state: &GameState,

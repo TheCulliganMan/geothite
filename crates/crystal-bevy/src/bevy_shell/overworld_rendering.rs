@@ -5822,6 +5822,16 @@ fn spawn_scene_dialog(
 ) -> Result<()> {
     if runtime_shell.kurt_apricorn_cursor.is_some() { return Ok(()); }
 
+    // The move-learning chooser draws its own complete window. The generic
+    // scene dialog would otherwise draw its semantic menu entries over it.
+    if snapshot.battle.is_some()
+        && snapshot.pending_move_learn.is_some()
+        && runtime_shell.battle_messages.is_empty()
+        && runtime_shell.special_boundary.is_none()
+    {
+        return Ok(());
+    }
+
     if scene_dialog_surface_active(snapshot, runtime_shell) {
         require_bitmap_font_art(rendered_art, asset_root, images)?;
     }
@@ -11981,6 +11991,9 @@ fn visible_field_dialog_pages(
         if let Some(notice) = runtime_shell.shop_notice.as_ref() {
             return Some(vec![notice.clone()]);
         }
+        // The shop menu owns input after its welcome. The originating
+        // clerk script may still retain its completed greeting underneath.
+        return None;
     }
     // Script text events are retained as execution history after `closetext`.
     // They are not a visible textbox. Requiring the authoritative window bit

@@ -3804,7 +3804,8 @@ fn post_battle_move_learning_renders_full_choice_and_move_list() {
     let mut shell = route36_overworld_shell_for_battle_render_regression();
     {
         let state = shell.shell.session_mut().state_mut();
-        let pokemon = state.storage.party.pokemon[0].as_mut().expect("learner");
+        state.storage.party.pokemon[1] = state.storage.party.pokemon[0].clone();
+        let pokemon = state.storage.party.pokemon[1].as_mut().expect("learner");
         pokemon.moves = ["TACKLE", "LEER", "SMOKESCREEN", "EMBER"]
             .into_iter()
             .map(|name| crate::core::models::LearnedMove {
@@ -3814,7 +3815,7 @@ fn post_battle_move_learning_renders_full_choice_and_move_list() {
             })
             .collect();
         state.pending_move_learn = Some(crate::core::state::PendingMoveLearn {
-            party_index: 0,
+            party_index: 1,
             species_id: "CYNDAQUIL".to_string(),
             level: 10,
             learned_move: crate::core::models::LearnedMove {
@@ -3839,7 +3840,15 @@ fn post_battle_move_learning_renders_full_choice_and_move_list() {
         .count();
     assert!(
         command_count > 20,
-        "the question and both choices need a rendered chooser"
+        "the question and both choices need a rendered chooser: count={command_count}, error={:?}, pending={:?}, decision={:?}, battle={:?}, notice={:?}, boundary={:?}, messages={:?}, transition={:?}",
+        app.world().resource::<BevyRuntimeShell>().last_error,
+        app.world().resource::<BevyRuntimeShell>().shell.snapshot().expect("snapshot").pending_move_learn,
+        app.world().resource::<BevyRuntimeShell>().move_learn_decision,
+        app.world().resource::<BevyRuntimeShell>().shell.snapshot().expect("snapshot").battle,
+        app.world().resource::<BevyRuntimeShell>().field_notice,
+        app.world().resource::<BevyRuntimeShell>().special_boundary,
+        app.world().resource::<BevyRuntimeShell>().battle_messages,
+        app.world().resource::<BevyRuntimeShell>().visible_battle_transition,
     );
     press_key_for_runtime_hotkey_app(&mut app, KeyCode::KeyZ);
     assert!(
@@ -3877,15 +3886,16 @@ fn post_battle_move_learning_renders_full_choice_and_move_list() {
             .resource::<BevyRuntimeShell>()
             .move_learn_forget_menu_open
     );
+    press_key_for_runtime_hotkey_app(&mut app, KeyCode::ArrowDown);
     press_key_for_runtime_hotkey_app(&mut app, KeyCode::KeyZ);
     let shell = app.world().resource::<BevyRuntimeShell>();
     let state = shell.shell.session().state();
     assert!(state.pending_move_learn.is_none());
     assert_eq!(
-        state.storage.party.pokemon[0]
+        state.storage.party.pokemon[1]
             .as_ref()
             .expect("learner")
-            .moves[0]
+            .moves[1]
             .name,
         "HEADBUTT"
     );

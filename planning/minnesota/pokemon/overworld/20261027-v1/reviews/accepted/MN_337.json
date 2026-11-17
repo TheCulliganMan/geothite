@@ -1,0 +1,94 @@
+{
+  "species_id": "MN_337",
+  "name": "Burrowbill",
+  "family_id": "MN_F153",
+  "dex_number": 209,
+  "status": "accepted",
+  "generation_tool": "built-in image_gen",
+  "selected_manifest": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f153/burrowbill.manifest-20261104-v3-features.json",
+    "sha256": "b5fe5b8d9fd98443f2e243a09feb1056c76d19d2921ab825308712939a8969f5",
+    "bytes": 1943
+  },
+  "sources": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f153/burrowbill.overworld.imagegen-20261104-v1.png",
+      "sha256": "9ff90795446b8b5fba269dee13aa29c25434f54e23f9112d84435d3fb57d1b4a",
+      "bytes": 1156349
+    }
+  ],
+  "prompts": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f153/burrowbill.overworld.prompt-20261104-v1.txt",
+      "sha256": "f0f3636df7c141d9551655f39d8c113e11ea717e342b5310fd88a03cd0d9254f",
+      "bytes": 2682
+    }
+  ],
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/burrowbill-20261104-v3-features",
+  "normal_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/burrowbill-20261104-v3-features/review/burrowbill.normal-8x.png",
+    "sha256": "1d1db0eea48250cf68bd0220c1f847862e931c939b4acb6970d84f8eabe35902",
+    "bytes": 9918
+  },
+  "shiny_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/burrowbill-20261104-v3-features/review/burrowbill.shiny-8x.png",
+    "sha256": "d5898347a29a94a404464a14fc7ba7f49356a03fa6f08f61ad9cb9d0b34dc2cb",
+    "bytes": 9746
+  },
+  "compiled_index": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/burrowbill-20261104-v3-features/compiled-index.json",
+    "sha256": "c9bedb1faafc5abf08ba0ee57b4716801c6d1d21c2557d1c7a3f6e7f74a7e6aa",
+    "bytes": 7955
+  },
+  "source_feature_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f153/burrowbill.source-feature-review-20261104-v3.json",
+    "sha256": "8d772f402d1b92dd77b2a4f15e6be281dc24e5ed99e1828185cb631b86fb71bd",
+    "bytes": 5329
+  },
+  "context_evidence": {
+    "directory": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-04",
+    "input_manifest": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-04/input-manifest.json",
+      "sha256": "ad2427a342ed663a1aa814c037373b011972061c47a527c47cb3c1de0f60daca",
+      "bytes": 1158
+    },
+    "verification": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-04/verification.json",
+      "sha256": "2427fc9d12b1d395b8166e2777e32b9e8d302c008e12c90f2fd041deda63b8f2",
+      "bytes": 16870
+    },
+    "test_log": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/verification/all225-20261104-v5-04.log",
+      "sha256": "75961a34a8cca452ce397f6fc7777d0f2b58681e228ede1064f86b7e24edbe36",
+      "bytes": 217
+    },
+    "normal_actor_poses": 8,
+    "all_six_shiny_native_poses_verified": true
+  },
+  "root_visual_review": {
+    "accepted": true,
+    "notes": "Species-specific head, dark facial marks and themed body silhouette retained in front/profile. Rear poses show backs of ears/crest/head and the actual back/tail, without a pasted frontal face. Six distinct native poses, paired idle/step articulation and both palettes reviewed alongside the trainer on terrain."
+  },
+  "runtime_files": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/burrowbill/overworld.2bpp",
+      "sha256": "46253b38f79b77ec72685aa014f1b5aeab64e776a1bd6385f73e7ae2e546bda3",
+      "bytes": 384
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/burrowbill/overworld.png",
+      "sha256": "5fc0337a3f58f66b82e483272a82f4fa25063dd3b0d48b047ada397735afc998",
+      "bytes": 885
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/burrowbill/overworld.gbcpal",
+      "sha256": "c9928a72bc33533ec7c5e7b1bb6254941d5e8f48c65f037f53da02d268a570f1",
+      "bytes": 8
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/burrowbill/overworld-shiny.gbcpal",
+      "sha256": "d36679cb3748eb545f77325ca840d83d43dc1c6d9b78de9a944d5247beace787",
+      "bytes": 8
+    }
+  ]
+}

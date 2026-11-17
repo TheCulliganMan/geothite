@@ -171,6 +171,9 @@ pub(crate) fn install(pack: &mut CompiledGamePack) -> Result<()> {
         let mut programs = std::collections::BTreeMap::new();
         crate::minnesota_fishing_rods::add_handoff(&mut room, &mut programs, &guru, &after, tier)?;
         room.scripts.extend(programs);
+        for label in [format!("{guru}Text"), format!("{guru}FullText"), after_text] {
+            crate::authored_dialogue::install_canonical(&mut room, &label)?;
+        }
         authoring::finish(pack, &mut room)?;
         room.script_object_commands = crate::parse_script_object_commands(room_id, &room.scripts)?;
         for tile in [[5, 3], [5, 4], [2, 6]] {

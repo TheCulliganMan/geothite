@@ -6,6 +6,7 @@ use serde::Deserialize;
 use serde_json::Value;
 
 use crate::CompiledGamePack;
+use crate::northstar_regional_roster::RegionalRoster;
 
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -33,6 +34,7 @@ struct Relocation {
     before: String,
     after: String,
     slots: usize,
+    slot: Option<usize>,
     reason: String,
     sample: Option<[u16; 2]>,
     #[serde(rename = "loop")]
@@ -54,13 +56,50 @@ pub(super) fn install(pack: &mut CompiledGamePack, review: &Review) -> Result<()
         "habitat review rationale required"
     );
     let policy = crate::authored_regional_approach::policy()?;
+    install_grass_relocations(pack, &review.relocations, &policy)?;
+    for edit in &review.field_relocations {
+        let mut field = pack
+            .data
+            .field_encounters
+            .get(&edit.map)
+            .context("field habitat")?
+            .clone();
+        let table = field
+            .tables
+            .get_mut("headbutt")
+            .context("native tree habitat")?;
+        let mut count = 0;
+        for slot in table.common.iter_mut().chain(&mut table.rare) {
+            if slot.species == edit.before {
+                crate::minnesota_biome_ecology::validate_species(
+                    pack,
+                    &policy,
+                    &edit.after,
+                    slot.level,
+                )?;
+                slot.species.clone_from(&edit.after);
+                count += 1;
+            }
+        }
+        ensure!(count == edit.slots && count > 0, "field habitat preimage");
+        pack.data.field_encounters.insert(edit.map.clone(), field);
+    }
+    validate(pack, &review.restrictions)
+}
+
+fn install_grass_relocations(
+    pack: &mut CompiledGamePack,
+    relocations: &[Relocation],
+    policy: &RegionalRoster,
+) -> Result<()> {
     let mut owned = BTreeSet::new();
-    for edit in &review.relocations {
+    for edit in relocations {
         ensure!(
             !edit.reason.is_empty()
                 && edit.slots > 0
                 && edit.before != edit.after
-                && owned.insert((&edit.map, &edit.zone, &edit.before)),
+                && edit.map.starts_with("Mn")
+                && owned.insert((&edit.map, &edit.zone, &edit.before, edit.slot)),
             "unique explicit habitat relocation required"
         );
         let mut data = pack
@@ -133,21 +172,19 @@ pub(super) fn install(pack: &mut CompiledGamePack, review: &Review) -> Result<()
             "habitat replay preimage"
         );
         let mut count = 0;
-        for slot in table
-            .morning
-            .iter_mut()
-            .chain(&mut table.day)
-            .chain(&mut table.night)
-        {
-            if slot.species == edit.before {
-                crate::minnesota_biome_ecology::validate_species(
-                    pack,
-                    &policy,
-                    &edit.after,
-                    slot.level,
-                )?;
-                slot.species.clone_from(&edit.after);
-                count += 1;
+        for period in [&mut table.morning, &mut table.day, &mut table.night] {
+            for (index, slot) in period.iter_mut().enumerate() {
+                if edit.slot.is_none_or(|selected| selected == index) && slot.species == edit.before
+                {
+                    crate::minnesota_biome_ecology::validate_species(
+                        pack,
+                        policy,
+                        &edit.after,
+                        slot.level,
+                    )?;
+                    slot.species.clone_from(&edit.after);
+                    count += 1;
+                }
             }
         }
         ensure!(
@@ -158,34 +195,72 @@ pub(super) fn install(pack: &mut CompiledGamePack, review: &Review) -> Result<()
         );
         pack.data.wild_encounters.insert(edit.map.clone(), data);
     }
-    for edit in &review.field_relocations {
-        let mut field = pack
-            .data
-            .field_encounters
-            .get(&edit.map)
-            .context("field habitat")?
-            .clone();
-        let table = field
-            .tables
-            .get_mut("headbutt")
-            .context("native tree habitat")?;
-        let mut count = 0;
-        for slot in table.common.iter_mut().chain(&mut table.rare) {
-            if slot.species == edit.before {
-                crate::minnesota_biome_ecology::validate_species(
-                    pack,
-                    &policy,
-                    &edit.after,
-                    slot.level,
-                )?;
-                slot.species.clone_from(&edit.after);
-                count += 1;
-            }
+    Ok(())
+}
+
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct SpawnPlan {
+    parent_content_hash: String,
+    relocations: Vec<Relocation>,
+}
+
+/// Updates selected walking slots in the current Minnesota pack.
+///
+/// The plan binds the parent identity and verifies native habitat tiles, slot
+/// preimages and species eligibility. Encounter levels and rates are preserved.
+///
+/// # Errors
+/// Returns an error for stale source data, invalid habitats or invalid packs.
+pub fn build_minnesota_spawn_locations(
+    base: &CompiledGamePack,
+    source: &str,
+) -> Result<CompiledGamePack> {
+    crate::verify_compiled_game_pack_for_runtime(base)?;
+    crate::verify_northstar_publication_geometry(base)?;
+    let plan: SpawnPlan = serde_json::from_str(source)?;
+    ensure!(
+        plan.parent_content_hash == base.identity()?.content_hash
+            && !plan.relocations.is_empty()
+            && plan.relocations.iter().all(|edit| edit.zone.is_none()),
+        "spawn plan must match its reviewed parent"
+    );
+    let policy = RegionalRoster::active(
+        include_str!("../../../planning/minnesota/pokemon/roster.json"),
+        include_str!("../../../planning/minnesota/pokemon/roster-curation.json"),
+        include_str!("../../../planning/minnesota/pokemon/species-profiles.json"),
+    )?;
+    let mut pack = base.clone();
+    install_grass_relocations(&mut pack, &plan.relocations, &policy)?;
+    let maps: BTreeSet<_> = plan.relocations.iter().map(|edit| &edit.map).collect();
+    for name in maps {
+        let table = pack.data.wild_encounters[name]
+            .grass
+            .as_ref()
+            .context("ordinary grass or cave table required")?;
+        for slot in table.morning.iter().chain(&table.day).chain(&table.night) {
+            crate::minnesota_biome_ecology::validate_species(
+                &pack,
+                &policy,
+                &slot.species,
+                slot.level,
+            )
+            .with_context(|| format!("walking encounter in {name}"))?;
         }
-        ensure!(count == edit.slots && count > 0, "field habitat preimage");
-        pack.data.field_encounters.insert(edit.map.clone(), field);
     }
-    validate(pack, &review.restrictions)
+    crate::minnesota_ecology_coverage::preserve(base, &pack)?;
+    pack.report
+        .manifests
+        .push("minnesota-spawn-locations-v1".into());
+    pack.identity = crate::derive_compiled_game_pack_identity_from_manifest(
+        pack.format_version,
+        &pack.data,
+        &pack.audio_manifest,
+        &pack.runtime_files,
+        &pack.report,
+    )?;
+    crate::verify_compiled_game_pack_for_runtime(&pack)?;
+    Ok(pack)
 }
 
 fn validate(pack: &CompiledGamePack, restrictions: &[Restriction]) -> Result<()> {

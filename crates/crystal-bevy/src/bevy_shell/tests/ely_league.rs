@@ -437,10 +437,20 @@ fn ely_league_controller_five_wins_native_hall_of_fame_and_postgame_continue() {
     prior(&mut c, true);
     let mut partner = r
         .data()
-        .create_pokemon("MEW", 100, Dv::default())
+        .create_pokemon(
+            "VOYAGEAR",
+            100,
+            Dv {
+                attack: 15,
+                defense: 15,
+                speed: 15,
+                special: 15,
+                hp: 15,
+            },
+        )
         .expect("explicit battle partner fixture");
     partner.hp = partner.max_hp - 10;
-    partner.moves = ["PSYCHIC_M", "FLAMETHROWER", "SURF", "THUNDERBOLT"]
+    partner.moves = ["WATERFALL", "DRAIN_PUNCH", "CRUNCH", "ROCK_SMASH"]
         .into_iter()
         .map(|name| LearnedMove {
             name: name.into(),
@@ -497,12 +507,13 @@ fn ely_league_controller_five_wins_native_hall_of_fame_and_postgame_continue() {
                 here
             );
         }
+        let lead = c.snapshot().expect("League lead").party.slots[0]
+            .pokemon
+            .clone();
         interact(&mut c, &r, (5, 7));
-        play_with_selected_move(&mut c, |b| match b.enemy_pokemon.species.id.as_str() {
-            "ARIADOS" | "VENOMOTH" | "PINSIR" | "SCYTHER" | "HERACROSS" => "FLAMETHROWER",
-            "GRAVELER" | "ONIX" | "SUDOWOODO" | "GOLEM" | "HOUNDOOM" => "SURF",
-            "NOCTOWL" | "GYARADOS" | "SEADRA" | "KINGDRA" | "LAPRAS" => "THUNDERBOLT",
-            _ => "PSYCHIC_M",
+        play_with_selected_move(&mut c, |b| {
+            let index = super::super::rochester_earned::best_attack(&r, b, &lead);
+            lead.moves[index].name.as_str()
         });
         finish(&mut c);
         assert_eq!(run(&c), index, "only actual win advances the run");

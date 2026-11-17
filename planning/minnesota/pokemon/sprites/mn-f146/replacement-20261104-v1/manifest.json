@@ -1,0 +1,355 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F146",
+  "tool": "built-in image_gen",
+  "prompt_file": "sprites/mn-f146/replacement-20261104-v1/prompt.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "status": "native-front-back-candidate-reviewed",
+  "sprites": [
+    {
+      "id": "mn-320-snugslug-v1",
+      "species_id": "MN_320",
+      "view": "front",
+      "source": "sprites/mn-f146/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        0,
+        0,
+        470,
+        512
+      ],
+      "fit": [
+        34,
+        34
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        19225,
+        16908,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-320-snugslug-v1",
+      "species_id": "MN_320",
+      "view": "back",
+      "source": "sprites/mn-f146/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        0,
+        512,
+        470,
+        512
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        19225,
+        16908,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-321-mantlsnail-v1",
+      "species_id": "MN_321",
+      "view": "front",
+      "source": "sprites/mn-f146/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        470,
+        0,
+        460,
+        512
+      ],
+      "fit": [
+        43,
+        40
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        17112,
+        17933,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-321-mantlsnail-v1",
+      "species_id": "MN_321",
+      "view": "back",
+      "source": "sprites/mn-f146/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        470,
+        512,
+        460,
+        512
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        17112,
+        17933,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-322-cloisterra-v1",
+      "species_id": "MN_322",
+      "view": "front",
+      "source": "sprites/mn-f146/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        930,
+        0,
+        606,
+        512
+      ],
+      "fit": [
+        52,
+        43
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        19191,
+        16874,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-322-cloisterra-v1",
+      "species_id": "MN_322",
+      "view": "back",
+      "source": "sprites/mn-f146/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        930,
+        512,
+        606,
+        512
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        19191,
+        16874,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    }
+  ],
+  "pokemon_palettes": {
+    "MN_320": {
+      "species_id": "MN_320",
+      "name": "Snugslug",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          25,
+          24,
+          18
+        ],
+        [
+          12,
+          16,
+          16
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        19225,
+        16908,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          206,
+          198,
+          148
+        ],
+        [
+          99,
+          132,
+          132
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#CEC694",
+        "#638484",
+        "#000000"
+      ]
+    },
+    "MN_321": {
+      "species_id": "MN_321",
+      "name": "Mantlsnail",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          24,
+          22,
+          16
+        ],
+        [
+          13,
+          16,
+          17
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        17112,
+        17933,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          198,
+          181,
+          132
+        ],
+        [
+          107,
+          132,
+          140
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#C6B584",
+        "#6B848C",
+        "#000000"
+      ]
+    },
+    "MN_322": {
+      "species_id": "MN_322",
+      "name": "Cloisterra",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          23,
+          23,
+          18
+        ],
+        [
+          10,
+          15,
+          16
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        19191,
+        16874,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          189,
+          189,
+          148
+        ],
+        [
+          82,
+          123,
+          132
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#BDBD94",
+        "#527B84",
+        "#000000"
+      ]
+    }
+  },
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "89fa597905344bb6824b3269d1ee5c8ffcc5bf2a136091749f7010ca6cb7cf9a",
+    "notes": "Native review: two separate eye stalks and readable shell curl on juveniles; adult low shelter hood and dark recesses remain distinct. Close backs retain shell volume; sparse white shell light and tan/blue-grey dither. Candidate, not user approval or roster activation."
+  }
+}

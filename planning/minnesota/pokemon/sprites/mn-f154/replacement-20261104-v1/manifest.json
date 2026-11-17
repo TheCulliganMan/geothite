@@ -1,0 +1,355 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F154",
+  "tool": "built-in image_gen",
+  "prompt_file": "sprites/mn-f154/replacement-20261104-v1/prompt.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "status": "native-front-back-candidate-reviewed",
+  "sprites": [
+    {
+      "id": "mn-339-snowpip-v1",
+      "species_id": "MN_339",
+      "view": "front",
+      "source": "sprites/mn-f154/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        0,
+        0,
+        340,
+        627
+      ],
+      "fit": [
+        30,
+        32
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        32632,
+        24074,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-339-snowpip-v1",
+      "species_id": "MN_339",
+      "view": "back",
+      "source": "sprites/mn-f154/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        0,
+        627,
+        340,
+        627
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        32632,
+        24074,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-340-squallfin-v1",
+      "species_id": "MN_340",
+      "view": "front",
+      "source": "sprites/mn-f154/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        340,
+        0,
+        430,
+        627
+      ],
+      "fit": [
+        44,
+        44
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        32631,
+        24009,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-340-squallfin-v1",
+      "species_id": "MN_340",
+      "view": "back",
+      "source": "sprites/mn-f154/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        340,
+        627,
+        430,
+        627
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        32631,
+        24009,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-341-whitewhirl-v1",
+      "species_id": "MN_341",
+      "view": "front",
+      "source": "sprites/mn-f154/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        770,
+        0,
+        484,
+        627
+      ],
+      "fit": [
+        52,
+        48
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        32630,
+        22952,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-341-whitewhirl-v1",
+      "species_id": "MN_341",
+      "view": "back",
+      "source": "sprites/mn-f154/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        770,
+        627,
+        484,
+        627
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        32630,
+        22952,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    }
+  ],
+  "pokemon_palettes": {
+    "MN_339": {
+      "species_id": "MN_339",
+      "name": "Snowpip",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          24,
+          27,
+          31
+        ],
+        [
+          10,
+          16,
+          23
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        32632,
+        24074,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          198,
+          222,
+          255
+        ],
+        [
+          82,
+          132,
+          189
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#C6DEFF",
+        "#5284BD",
+        "#000000"
+      ]
+    },
+    "MN_340": {
+      "species_id": "MN_340",
+      "name": "Squallfin",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          23,
+          27,
+          31
+        ],
+        [
+          9,
+          14,
+          23
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        32631,
+        24009,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          189,
+          222,
+          255
+        ],
+        [
+          74,
+          115,
+          189
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#BDDEFF",
+        "#4A73BD",
+        "#000000"
+      ]
+    },
+    "MN_341": {
+      "species_id": "MN_341",
+      "name": "Whitewhirl",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          22,
+          27,
+          31
+        ],
+        [
+          8,
+          13,
+          22
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        32630,
+        22952,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          181,
+          222,
+          255
+        ],
+        [
+          66,
+          107,
+          181
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#B5DEFF",
+        "#426BB5",
+        "#000000"
+      ]
+    }
+  },
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "3fdada3d48077c3d4a256d9c1088e9a65e71ecea58ac7f83b620274205665950",
+    "notes": "Native review: round first snow bunting, lifting adolescent and C-shaped banking adult retain different silhouettes. Dark eye ink separates from pale cheek; three attached tail feathers survive. Native close rear portraits retain broad wing shadows and dither. Candidate for user feedback."
+  }
+}

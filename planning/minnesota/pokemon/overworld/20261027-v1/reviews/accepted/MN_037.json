@@ -1,0 +1,94 @@
+{
+  "species_id": "MN_037",
+  "name": "Sparkveil",
+  "family_id": "MN_F013",
+  "dex_number": 178,
+  "status": "accepted",
+  "generation_tool": "built-in image_gen",
+  "selected_manifest": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f013/sparkveil.manifest-20261104-v3-features.json",
+    "sha256": "49c6520c8d271787a75af6a0349c5b6390125430d110bf0d8339748900d581ff",
+    "bytes": 1937
+  },
+  "sources": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f013/sparkveil.overworld.imagegen-20261104-v3.png",
+      "sha256": "5acdeda854ee7b3a66d68a9c15bf8fd739040d55a058c4787e6f702b4ecc1bab",
+      "bytes": 1121890
+    }
+  ],
+  "prompts": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f013/sparkveil.overworld.prompt-20261104-v3.txt",
+      "sha256": "e3b60a584352fc930f1eb33830f059f194829adfd75d477ba91920062cdf3e15",
+      "bytes": 1549
+    }
+  ],
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/sparkveil-20261104-v3-features",
+  "normal_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/sparkveil-20261104-v3-features/review/sparkveil.normal-8x.png",
+    "sha256": "ffef0cf46a7b2abe27b47d48649e9dde0662208c82c4579b3b6f1bc0014ec755",
+    "bytes": 8880
+  },
+  "shiny_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/sparkveil-20261104-v3-features/review/sparkveil.shiny-8x.png",
+    "sha256": "87e52e23dd8b23855e69babe517adac8d9105ad41d2dbbd4e8b8e674ce6e176c",
+    "bytes": 8880
+  },
+  "compiled_index": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/sparkveil-20261104-v3-features/compiled-index.json",
+    "sha256": "567bac4a35e54ee673ff4c83bbd094a81b67ba8063a040d8d6080878e91e6c05",
+    "bytes": 7946
+  },
+  "source_feature_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f013/sparkveil.source-feature-review-20261104-v3.json",
+    "sha256": "b7228def738e58b9bd0e1755083126a2b07905e4409920e92cfad28b98d74a81",
+    "bytes": 4957
+  },
+  "context_evidence": {
+    "directory": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-00",
+    "input_manifest": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-00/input-manifest.json",
+      "sha256": "c4a930dd2097722d52d79f2a1033531b0a00b0dd036abde21f959dfaa19f4800",
+      "bytes": 1158
+    },
+    "verification": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-00/verification.json",
+      "sha256": "757ed1ef7ca038c0007a704d39be0eb5ae590f1e41a84c1dc377d8dec9966208",
+      "bytes": 16870
+    },
+    "test_log": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/verification/all225-20261104-v5-00.log",
+      "sha256": "59265f6f08266b94db09c6c0ddde3af257a8cfbea003fe8d079186efecfdfa9a",
+      "bytes": 217
+    },
+    "normal_actor_poses": 8,
+    "all_six_shiny_native_poses_verified": true
+  },
+  "root_visual_review": {
+    "accepted": true,
+    "notes": "Star mask, separately sampled dark facial marks, two curtain fins and floating tail; rear crown and fin backs have no frontal face. Six distinct native poses, paired idle/step articulation and both palettes reviewed alongside the trainer on terrain."
+  },
+  "runtime_files": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/sparkveil/overworld.2bpp",
+      "sha256": "12fb8a195c4ed45ef12c467101be06672e8e353cc59112f464ccca0a3b5d5ce3",
+      "bytes": 384
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/sparkveil/overworld.png",
+      "sha256": "12920f4cfd17a014b46a7d1de8962bd3c645ea80bf6a74b5877b2222f89d489c",
+      "bytes": 807
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/sparkveil/overworld.gbcpal",
+      "sha256": "270170e1782a834cf18ea36de21c4579666b93c560ac252be4211b82e4f7b9e4",
+      "bytes": 8
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/sparkveil/overworld-shiny.gbcpal",
+      "sha256": "98a6db38194d6627b37f0b0419f416b9e35ceaca17cf40bd5d68d14d1f90332f",
+      "bytes": 8
+    }
+  ]
+}

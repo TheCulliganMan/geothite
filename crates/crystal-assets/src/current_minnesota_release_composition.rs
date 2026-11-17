@@ -256,7 +256,7 @@ fn merge_manifests(current: &[String], before: &[String], after: &[String]) -> R
     Ok(result)
 }
 
-fn merge_value(
+pub(crate) fn merge_value(
     current: Option<&Value>,
     before: Option<&Value>,
     after: Option<&Value>,

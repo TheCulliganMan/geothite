@@ -1,0 +1,236 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F016",
+  "status": "rejected-native-face-detail",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_045": {
+      "species_id": "MN_045",
+      "name": "Flapip",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          30,
+          24,
+          11
+        ],
+        [
+          17,
+          10,
+          5
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        12062,
+        5457,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          247,
+          198,
+          90
+        ],
+        [
+          140,
+          82,
+          41
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#F7C65A",
+        "#8C5229",
+        "#000000"
+      ]
+    },
+    "MN_046": {
+      "species_id": "MN_046",
+      "name": "Stackajack",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          31,
+          22,
+          8
+        ],
+        [
+          16,
+          7,
+          4
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        8927,
+        4336,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          181,
+          66
+        ],
+        [
+          132,
+          57,
+          33
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#FFB542",
+        "#843921",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f016/native-refinement-20261103-r6/prompt-front.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-045-flapip-v1",
+      "species_id": "MN_045",
+      "view": "front",
+      "source": "sprites/mn-f016/mn-045-046.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        846,
+        443
+      ],
+      "fit": [
+        40,
+        40
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        12062,
+        5457,
+        0
+      ]
+    },
+    {
+      "id": "mn-045-flapip-v1",
+      "species_id": "MN_045",
+      "view": "back",
+      "source": "sprites/mn-f016/mn-045-046.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        443,
+        846,
+        444
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        12062,
+        5457,
+        0
+      ]
+    },
+    {
+      "id": "mn-046-stackajack-native-refinement-20261103-r6",
+      "species_id": "MN_046",
+      "view": "front",
+      "source": "sprites/mn-f016/native-refinement-20261103-r6/mn-046.front.imagegen.png",
+      "crop": [
+        0,
+        0,
+        1254,
+        1254
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        8927,
+        4336,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "prompt_file": "sprites/mn-f016/native-refinement-20261103-r6/prompt-front.txt"
+    },
+    {
+      "id": "mn-046-stackajack-native-refinement-20261103-r6",
+      "species_id": "MN_046",
+      "view": "back",
+      "source": "sprites/mn-f016/native-refinement-20261103-r6/mn-046.back.imagegen.png",
+      "crop": [
+        0,
+        0,
+        1199,
+        1312
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        8927,
+        4336,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "prompt_file": "sprites/mn-f016/native-refinement-20261103-r6/prompt-back.txt"
+    }
+  ],
+  "original_manifest": "sprites/mn-f016/manifest.json",
+  "original_style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "generator": "crates/crystal-assets/examples/minnesota_gen2_reference.rs",
+    "board": "target/minnesota-pokemon/gen2-reference/starters.png"
+  },
+  "rejection": {
+    "reason": "User: eyes disappear, detail lost; too much highlighting, too close to eyes. Native face fails fidelity despite recognizable design.",
+    "next_action": "Preserve original selected art. Reduce highlights near sockets; preserve native white/pupil/dark boundary before any selection. Conversion comparisons alone did not establish a fix."
+  }
+}

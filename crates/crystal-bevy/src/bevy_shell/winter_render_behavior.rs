@@ -32,6 +32,10 @@ fn authored_parent(tileset: &str) -> Option<&str> {
     }
     match tileset {
         "mn_grand_rapids_riverfront" => Some("johto_modern"),
+        "johto_glacier_rail" => Some("johto"),
+        "kanto_glacier_rail" => Some("kanto"),
+        "mn_detroit_lakes_glacier_rail" => Some("mn_detroit_lakes"),
+        "mn_outdoor_modern_stairs_glacier_rail" => Some("mn_outdoor_modern_stairs"),
         "mn_iron_sump_rock" => Some("cave"),
         "mn_winter_north_shore" => Some("mn_north_shore"),
         "mn_winter_outdoor" => Some("mn_border_pines"),

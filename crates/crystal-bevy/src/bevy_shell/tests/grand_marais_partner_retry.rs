@@ -48,6 +48,17 @@ fn marais_partner_controller_full_party_retains_offer_and_success_survives_conti
         let original_storage = c.shell.shell.session().state().storage.clone();
         // No state, party, inventory, flag, position or RNG writes below.
         talk(&mut c, GameButton::Up, &[]);
+        let state = c.shell.shell.session().state();
+        assert!(
+            !state
+                .flags
+                .is_event_flag_set(WELCOME)
+                .expect("part precedes partner")
+        );
+        assert_eq!(state.storage, original_storage);
+        assert_eq!(state.bag.quantity(&runtime.data().items["MACHINE_PART"]), 1);
+        c = continue_save(root.clone(), runtime.clone(), &mut c);
+        talk(&mut c, GameButton::Up, &[]);
         let received = !full_box;
         let party_received = received && count < 6;
         let state = c.shell.shell.session().state();
@@ -55,10 +66,7 @@ fn marais_partner_controller_full_party_retains_offer_and_success_survives_conti
             state.flags.is_event_flag_set(WELCOME).expect("welcome"),
             received
         );
-        assert_eq!(
-            state.bag.quantity(&runtime.data().items["MACHINE_PART"]),
-            u16::from(received)
-        );
+        assert_eq!(state.bag.quantity(&runtime.data().items["MACHINE_PART"]), 1);
         assert_eq!(
             state.storage.party.filled_slots(),
             count + usize::from(party_received)
@@ -106,8 +114,37 @@ fn marais_partner_controller_full_party_retains_offer_and_success_survives_conti
             assert!(state.pokedex.has_caught("BIRCHIT"));
         }
         if full_box {
-            native_box_space_and_station_return(&mut c, &runtime);
+            // The full selected box cannot delay repairing the lighthouse.
+            leave_to_town(&mut c, &runtime);
+            enter_from_town(&mut c, &runtime, "MnGrandMaraisLighthouse");
+            native_walk_with_dialogue(&mut c, &runtime, (5, 4));
             talk(&mut c, GameButton::Up, &[]);
+            assert!(
+                c.shell
+                    .shell
+                    .session()
+                    .state()
+                    .flags
+                    .is_event_flag_set(SIGNAL)
+                    .expect("repair with no Pokemon storage space")
+            );
+            assert_eq!(c.shell.shell.session().state().storage, original_storage);
+            c = continue_save(root.clone(), runtime.clone(), &mut c);
+            leave_to_town(&mut c, &runtime);
+            enter_from_town(&mut c, &runtime, "MnGrandMaraisFieldStation");
+            native_walk_with_dialogue(&mut c, &runtime, (5, 4));
+            talk_after_repair(&mut c);
+            assert!(
+                !c.shell
+                    .shell
+                    .session()
+                    .state()
+                    .flags
+                    .is_event_flag_set(WELCOME)
+                    .expect("gift still pending while full")
+            );
+            native_box_space_and_station_return(&mut c, &runtime);
+            talk_after_repair(&mut c);
             let state = c.shell.shell.session().state();
             assert!(
                 state
@@ -130,7 +167,7 @@ fn marais_partner_controller_full_party_retains_offer_and_success_survives_conti
                     .count(),
                 1
             );
-            assert_eq!(state.bag.quantity(&runtime.data().items["MACHINE_PART"]), 1);
+            assert_eq!(state.bag.quantity(&runtime.data().items["MACHINE_PART"]), 0);
             let granted = state.storage.clone();
             c = continue_save(root.clone(), runtime.clone(), &mut c);
             talk(&mut c, GameButton::Up, &[]);
@@ -194,6 +231,13 @@ fn marais_partner_controller_full_party_retains_offer_and_success_survives_conti
             );
         }
     }
+}
+
+fn talk_after_repair(c: &mut super::super::VisibleShellController) {
+    press(c, GameButton::Up);
+    press(c, GameButton::A);
+    super::northstar_dialogue::acknowledge(c, "", "MnMaraisGiftAfterRepairText", WELCOME);
+    finish_room_dialogue(c);
 }
 
 fn native_box_space_and_station_return(

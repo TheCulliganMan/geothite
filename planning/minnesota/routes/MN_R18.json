@@ -588,15 +588,15 @@
       ],
       "facing": "south",
       "lines": [
-        "Reed watch here.",
-        "The small fliers",
-        "are feeding well.",
-        "Try the ROD GURU!",
-        "His house is above",
-        "the lakeside deck",
-        "on PINE COUNTRY RD",
-        "south of BRAINERD.",
-        "A free SUPER ROD!"
+        "The bird with the",
+        "food disappears",
+        "through that gap.",
+        "When a wave comes",
+        "she waits on the",
+        "stem above it. I",
+        "can't see the",
+        "nest. I'd leave",
+        "her that gap."
       ]
     },
     {
@@ -608,9 +608,16 @@
       ],
       "facing": "west",
       "lines": [
-        "Meadow watch here.",
-        "The nesting ground",
-        "is undisturbed."
+        "I thought the",
+        "chicks had run up",
+        "the bank. Then one",
+        "popped out from",
+        "under a bent stem",
+        "right at the",
+        "water. There were",
+        "two. I backed off",
+        "and they came out",
+        "again."
       ]
     },
     {
@@ -622,9 +629,15 @@
       ],
       "facing": "south",
       "lines": [
-        "Beach watch here.",
-        "The shore is clear",
-        "after the wind."
+        "I walked down to",
+        "the sand. It's",
+        "clear past the",
+        "last clump of",
+        "grass. There's",
+        "room for a boat to",
+        "turn there without",
+        "putting its stern",
+        "into the bank."
       ]
     },
     {
@@ -636,10 +649,17 @@
       ],
       "facing": "west",
       "lines": [
-        "Talk to all three",
-        "shore volunteers.",
-        "Bring their news",
-        "back to this pier."
+        "RANGER: A wake",
+        "broke right over",
+        "that little strip",
+        "of grass this",
+        "morning. I've",
+        "asked the boats to",
+        "wait here. See",
+        "what the watchers",
+        "found at the",
+        "meadow, the reeds",
+        "and the beach."
       ]
     }
   ],
@@ -1358,39 +1378,90 @@
     },
     "text_labels": {
       "MN_R18_WatchBadgeDeniedText": [
-        "The shore watch",
-        "opens after your",
-        "sixth gym badge."
+        "RANGER: See the",
+        "wet line halfway",
+        "up the grass?",
+        "That's from one",
+        "boat. I'm keeping",
+        "them tied for now.",
+        "Come see me once",
+        "you've got",
+        "SIVREN's LAKE",
+        "BADGE."
       ],
       "MN_R18_WatchAlreadyRewardedText": [
-        "The GOOD ROD is",
-        "yours to keep.",
-        "Thank you again."
+        "RANGER: I told",
+        "them to turn at",
+        "the sand. I'll",
+        "stay here till",
+        "they're back. The",
+        "reed watcher can",
+        "tell me if the",
+        "bird's still",
+        "coming in with",
+        "food."
       ],
       "MN_R18_WatchNeedsNewsText": [
-        "Talk to all three",
-        "shore volunteers.",
-        "Meadow, reed, sand"
+        "RANGER: A wake",
+        "broke over the",
+        "grass this",
+        "morning. Before I",
+        "send the boats",
+        "out, I need to",
+        "know where the",
+        "chicks are and",
+        "where a boat can",
+        "turn. Ask at the",
+        "meadow, the reeds",
+        "and the sandy",
+        "beach. You can",
+        "walk to all three."
       ],
       "MN_R18_WatchRewardIntroText": [
-        "All three reports!",
-        "Take this GOOD ROD",
-        "from the watch."
+        "RANGER: Leave the",
+        "meadow bank alone.",
+        "Keep the wake down",
+        "past the reeds. If",
+        "you need to turn,",
+        "go all the way to",
+        "the sand. Did",
+        "everybody hear me?"
       ],
       "MN_R18_WatchRewardGivenText": [
-        "A GOOD ROD draws",
-        "a different catch.",
-        "Try it at the pier"
+        "RANGER: Take the",
+        "GOOD ROD from",
+        "under the bench.",
+        "Use it from KEY",
+        "ITEMS when you're",
+        "facing the water.",
+        "At the end of the",
+        "pier you can cast",
+        "clear of the",
+        "grass."
       ],
       "MN_R18_WatchHasRodText": [
-        "Your fishing rod",
-        "already does the",
-        "job. Many thanks!"
+        "RANGER: I'll send",
+        "them to the sand",
+        "to turn. Keep",
+        "clear of the",
+        "meadow and go slow",
+        "past the reeds.",
+        "You've got a good",
+        "rod already. Try a",
+        "cast from the pier",
+        "and leave the",
+        "grass to the",
+        "chicks."
       ],
       "MN_R18_WatchBagFullText": [
-        "Make room for the",
-        "GOOD ROD and then",
-        "come see me again."
+        "RANGER: The boats",
+        "can go. Your KEY",
+        "ITEMS pocket's",
+        "full, so I'll keep",
+        "the GOOD ROD under",
+        "the bench. Come",
+        "back when you've",
+        "got room."
       ]
     }
   },

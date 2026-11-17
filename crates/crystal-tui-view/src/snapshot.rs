@@ -497,20 +497,23 @@ fn status_suffix(status: Option<&str>) -> String {
 }
 
 fn info_lines(source: &RuntimeShellSnapshot) -> Vec<SnapshotLine> {
-    let badges = source
-        .progression
-        .badges
-        .johto
-        .iter()
-        .filter(|value| **value)
-        .count()
-        + source
-            .progression
-            .badges
-            .kanto
-            .iter()
-            .filter(|value| **value)
-            .count();
+    let minnesota = source
+        .boot
+        .modpack_id
+        .split('+')
+        .any(|id| id.starts_with("minnesota"))
+        || source.maps.iter().any(|map| map.map_name.starts_with("Mn"));
+    let badges = &source.progression.badges;
+    let johto_badges = badges.johto.iter().filter(|earned| **earned).count();
+    let (earned_badges, total_badges) = if minnesota {
+        (johto_badges, badges.johto.len())
+    } else {
+        let kanto_badges = badges.kanto.iter().filter(|earned| **earned).count();
+        (
+            johto_badges + kanto_badges,
+            badges.johto.len() + badges.kanto.len(),
+        )
+    };
     let mut lines = vec![
         SnapshotLine::new(
             format!("{} · ${}", source.trainer.player_name, source.trainer.money),
@@ -518,7 +521,7 @@ fn info_lines(source: &RuntimeShellSnapshot) -> Vec<SnapshotLine> {
         ),
         SnapshotLine::new(
             format!(
-                "Badges {badges}/16 · Dex {}/{}",
+                "Badges {earned_badges}/{total_badges} · Dex {}/{}",
                 source.progression.pokedex_owned, source.progression.pokedex_seen
             ),
             LineKind::Normal,

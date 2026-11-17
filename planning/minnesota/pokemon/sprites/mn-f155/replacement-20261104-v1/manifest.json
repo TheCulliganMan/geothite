@@ -1,0 +1,243 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F155",
+  "tool": "built-in image_gen",
+  "prompt_file": "sprites/mn-f155/replacement-20261104-v1/prompt.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "status": "native-front-back-candidate-reviewed",
+  "sprites": [
+    {
+      "id": "mn-342-skimnymph-v1",
+      "species_id": "MN_342",
+      "view": "front",
+      "source": "sprites/mn-f155/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        0,
+        0,
+        580,
+        627
+      ],
+      "fit": [
+        38,
+        32
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        29587,
+        22985,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-342-skimnymph-v1",
+      "species_id": "MN_342",
+      "view": "back",
+      "source": "sprites/mn-f155/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        0,
+        627,
+        580,
+        627
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        29587,
+        22985,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-343-rimefoil-v1",
+      "species_id": "MN_343",
+      "view": "front",
+      "source": "sprites/mn-f155/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        580,
+        0,
+        674,
+        627
+      ],
+      "fit": [
+        52,
+        48
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        31604,
+        23976,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-343-rimefoil-v1",
+      "species_id": "MN_343",
+      "view": "back",
+      "source": "sprites/mn-f155/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        580,
+        627,
+        674,
+        627
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        31604,
+        23976,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    }
+  ],
+  "pokemon_palettes": {
+    "MN_342": {
+      "species_id": "MN_342",
+      "name": "Skimnymph",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          19,
+          28,
+          28
+        ],
+        [
+          9,
+          14,
+          22
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        29587,
+        22985,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          156,
+          231,
+          231
+        ],
+        [
+          74,
+          115,
+          181
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#9CE7E7",
+        "#4A73B5",
+        "#000000"
+      ]
+    },
+    "MN_343": {
+      "species_id": "MN_343",
+      "name": "Rimefoil",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          20,
+          27,
+          30
+        ],
+        [
+          8,
+          13,
+          23
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        31604,
+        23976,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          165,
+          222,
+          247
+        ],
+        [
+          66,
+          107,
+          189
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#A5DEF7",
+        "#426BBD",
+        "#000000"
+      ]
+    }
+  },
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "3696888fa63d0db21662d90b2dc4a50509750a6ff97633c256eb7b8b04b69bf8",
+    "notes": "Native review: six-legged low dragonfly nymph develops four pale sail wings and long abdomen. Native compound eyes remain distinct; dark wing leading edges separate all four wings and six legs. Rear shoulders/head and wing roots retained. Candidate for user feedback."
+  }
+}

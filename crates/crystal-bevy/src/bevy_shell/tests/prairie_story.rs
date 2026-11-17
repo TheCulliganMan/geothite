@@ -75,17 +75,19 @@ pub(super) fn try_road_with(
 ) -> bool {
     let s = c.snapshot().expect("R02 start");
     let start = (s.overworld.tile.x, s.overworld.tile.y);
-    let mut grid = RouteGrid::new_with_grass(
-        r,
-        RouteSpec {
-            prefix: "MnR02",
-            columns: 1,
-            rows: 1,
-            tileset: "mn_prairie_kanto",
-            start,
-            doors: BTreeMap::from([((11, 11), "MnR02Farmhouse"), ((52, 33), "MnR02ToolShed")]),
-        },
-    );
+    let spec = RouteSpec {
+        prefix: "MnR02",
+        columns: 1,
+        rows: 1,
+        tileset: "mn_prairie_kanto",
+        start,
+        doors: BTreeMap::from([((11, 11), "MnR02Farmhouse"), ((52, 33), "MnR02ToolShed")]),
+    };
+    let mut grid = if s.party.slots.is_empty() {
+        RouteGrid::new_with_grass(r, spec)
+    } else {
+        RouteGrid::new_for_battles(r, spec)
+    };
     let original_blocked = grid.blocked.clone();
     let mut blocked_attempts = 0;
     for _ in 0..4096 {
@@ -121,9 +123,27 @@ pub(super) fn try_road_with(
         let button = *path.first().expect("remaining R02 step");
         let old = snapshot.overworld.tile;
         for _ in 0..8 {
-            press(c, button);
-            if c.snapshot().expect("road encounter").battle.is_some() {
-                encounter(c);
+            let input = if c.shell.field_notice.is_some()
+                || c.shell.pending_trainer_intro.is_some()
+                || c.shell.visible_blackout_phase.is_some()
+                || !c.shell.battle_messages.is_empty()
+            {
+                GameButton::A
+            } else {
+                button
+            };
+            press(c, input);
+            if let Some(battle) = c.snapshot().expect("road encounter").battle {
+                if let crystal_runtime::RuntimeBattleKind::Trainer {
+                    trainer_id,
+                    event_flag,
+                    ..
+                } = battle.kind
+                {
+                    super::rochester_earned::try_battle(c, r, &trainer_id, &event_flag);
+                } else {
+                    encounter(c);
+                }
             }
             let state = c.snapshot().expect("road movement");
             if state.overworld.map_name != "MnR02C00R00" {
@@ -153,7 +173,24 @@ fn read_notebook(c: &mut VisibleShellController, r: &CrystalRuntime) {
     let before = c.snapshot().expect("before notebook");
     press(c, GameButton::A);
     assert!(!event(c, NOTE));
-    let expected = super::northstar_dialogue::canonical_pages("MS02", "MnMKNotebookText");
+    let reviewed_hall = r
+        .pack_identity()
+        .runtime_modpack_id
+        .split('+')
+        .any(|id| id == "minnesota-rochester-training-hall-review-v1");
+    let integrated = r
+        .pack_identity()
+        .runtime_modpack_id
+        .split('+')
+        .any(|id| id == "northstar-current-eight-gyms-v1");
+    let expected = if reviewed_hall && !integrated {
+        vec![
+            "Same ink blot.\nThree lake names.".to_owned(),
+            "Someone copied\none sheet twice.".to_owned(),
+        ]
+    } else {
+        super::northstar_dialogue::canonical_pages("MS02", "MnMKNotebookText")
+    };
     assert_eq!(
         c.snapshot()
             .expect("first page")
@@ -191,8 +228,7 @@ fn read_notebook(c: &mut VisibleShellController, r: &CrystalRuntime) {
             .expect("notebook repeat")
             .ui
             .text
-            .and_then(|t| t.asm_text)
-            .is_some_and(|s| s.contains("same numbers"))
+            .is_some_and(|text| text.label == "MnMKNotebookAfterText")
     );
     finish(c);
     assert_eq!(c.snapshot().expect("repeat").bag, before.bag);
@@ -229,7 +265,12 @@ fn prairie_story_local_care_gate_refuses_both_lanes_and_inbound_return_is_free()
         travel(&mut c, GameButton::Right, "MnRochester", (0, y));
         travel(&mut c, GameButton::Right, "MnRochester", (4, y));
         indoor_walk(&mut c, &r, (15, 8));
-        travel(&mut c, GameButton::Up, "MnRochesterPokecenter1F", (3, 3));
+        travel(
+            &mut c,
+            GameButton::Up,
+            "MnRochesterPokecenter1F",
+            super::rochester_earned::clinic_arrival(&r),
+        );
         assert!(!c.shell.shell.session().state().badges.johto[0]);
         assert!(!event(&c, NOTE));
     }
@@ -313,9 +354,40 @@ fn prairie_story_earned_new_game_care_r02_notebook_and_return() {
 }
 
 pub(super) fn mankato_arrival() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
-    let (root, r, mut c) = super::rochester_earned::care_badge();
+    let (root, r, mut c) = if let Some(path) = std::env::var_os("CRYSTAL_NORTHSTAR_CARE_SAVE") {
+        // Resume an actual same-pack earned checkpoint; never synthesize the
+        // party, location, badge, or story flags for the next chapter.
+        let (root, runtime) = load();
+        let mut controller = VisibleShellController::load_save(
+            root.clone(),
+            runtime.clone(),
+            std::path::PathBuf::from(path),
+            None,
+        )
+        .expect("actual earned Care Badge save");
+        controller.set_runtime_journal_enabled(false);
+        assert!(event(&controller, "EVENT_MN_DELIVERED_ROCHESTER_PARCEL"));
+        assert!(event(&controller, "EVENT_MN_GYM_1_DEFEATED"));
+        assert_eq!(
+            controller.shell.shell.session().state().badges.johto,
+            [true, false, false, false, false, false, false, false]
+        );
+        at(
+            &mut controller,
+            "MnRochester",
+            super::rochester::gym_front(&runtime),
+        );
+        (root, runtime, controller)
+    } else {
+        super::rochester_earned::care_badge()
+    };
     indoor_walk(&mut c, &r, (15, 8));
-    travel(&mut c, GameButton::Up, "MnRochesterPokecenter1F", (3, 3));
+    travel(
+        &mut c,
+        GameButton::Up,
+        "MnRochesterPokecenter1F",
+        super::rochester_earned::clinic_arrival(&r),
+    );
     super::rochester_earned::heal_party(&mut c, &r);
     super::rochester_earned::clinic_exit(&mut c, &r);
     super::earned_rod_visits::old_rod(&mut c, &r, &root);

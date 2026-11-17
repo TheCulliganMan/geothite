@@ -64,7 +64,7 @@ fn fixture(start: Point, populated: bool) -> (AssetRoot, CrystalRuntime, Visible
     if populated {
         // Explicit setup only: native-created partners and eight obedience badge
         // bits, not an earned badge/team claim. No state is rewritten afterward.
-        let partners = ["TYPHLOSION", "FERALIGATR"].map(|species| {
+        let partners = ["BOREALYNX", "PORTABEAU"].map(|species| {
             runtime
                 .data()
                 .create_pokemon(species, 60, Dv::default())
@@ -583,6 +583,34 @@ fn battle_note(
     )
 }
 
+fn trainer_pages(controller: &mut VisibleShellController, label: &str) {
+    let expected = super::northstar_dialogue::canonical_pages("", label);
+    let raw = controller
+        .shell
+        .shell
+        .presentation_snapshot()
+        .expect("native trainer conversation");
+    assert_eq!(
+        super::super::visible_field_dialog_pages(&raw, &controller.shell)
+            .expect("native trainer pages"),
+        expected
+    );
+    for page in expected {
+        let snapshot = controller.snapshot().expect("displayed trainer page");
+        let text = snapshot.ui.text.expect("trainer owns the text window");
+        assert_eq!(text.asm_text, Some(page));
+        assert!(text.label == label || text.label == "visible-shell:field-notice");
+        let before = position(controller);
+        controller
+            .press(GameButton::Down)
+            .expect("movement during trainer speech");
+        assert_eq!(position(controller), before);
+        controller
+            .press(GameButton::A)
+            .expect("acknowledge one trainer page");
+    }
+}
+
 #[test]
 #[ignore = "requires the published external Voyageurs Border Loop pack"]
 fn voyageurs_controller_wins_real_officer_battle_mutates_pp_and_continues_party_flags() {
@@ -594,6 +622,7 @@ fn voyageurs_controller_wins_real_officer_battle_mutates_pp_and_continues_party_
     controller
         .press(GameButton::A)
         .expect("native trainer interaction");
+    trainer_pages(&mut controller, "MN_R20_T01Seen");
     let mut entered = false;
     let mut opponents_seen = BTreeSet::new();
     let mut selected = None;
@@ -689,6 +718,7 @@ fn voyageurs_controller_wins_real_officer_battle_mutates_pp_and_continues_party_
     loaded
         .press(GameButton::A)
         .expect("defeated native trainer dialogue");
+    trainer_pages(&mut loaded, "MN_R20_T01Won");
     assert!(
         loaded
             .snapshot()

@@ -1,4 +1,6 @@
 //! Bind the authored Minnesota campaign to its active original-species roster.
+use std::collections::BTreeSet;
+
 use anyhow::{Context, Result, ensure};
 use serde_json::Value;
 
@@ -122,103 +124,7 @@ fn bind(
         })
         .cloned()
         .collect::<Vec<_>>();
-    for name in maps {
-        let mut map = pack.data.maps[&name].clone();
-        let mut changed = false;
-        let mut text_changes = Vec::new();
-        for object in &mut map.objects {
-            if let Some(original) = object.sprite.strip_prefix("SPRITE_")
-                && pack.data.pokemon.contains_key(original)
-                && !policy.allowed.contains(original)
-            {
-                let replacement = policy.target(&pack, original, None)?;
-                object.sprite = format!("SPRITE_{replacement}");
-                changed = true;
-            }
-        }
-        for (label, program) in &mut map.scripts {
-            let Some(rows) = program.as_array_mut() else {
-                continue;
-            };
-            let is_text = rows.iter().all(|r| {
-                matches!(
-                    r["command"].as_str(),
-                    Some("text" | "line" | "para" | "cont" | "done" | "prompt")
-                )
-            });
-            if is_text {
-                let mut lines = Vec::new();
-                let mut text_changed = false;
-                for row in rows {
-                    if let Some(line) = row["args"]
-                        .as_array()
-                        .and_then(|a| a.first())
-                        .and_then(Value::as_str)
-                    {
-                        let original = line.trim_matches('"');
-                        let updated = rewrite_line(&pack, &policy, original)?;
-                        text_changed |= updated != original;
-                        lines.push(updated);
-                    }
-                }
-                if text_changed {
-                    text_changes.push((label.clone(), lines));
-                }
-                continue;
-            }
-            for row in rows {
-                let command = row["command"].as_str().unwrap_or("").to_owned();
-                if !matches!(
-                    command.as_str(),
-                    "givepoke" | "giveegg" | "loadwildmon" | "cry" | "pokepic" | "checkpoke"
-                ) {
-                    continue;
-                }
-                let args = row["args"]
-                    .as_array_mut()
-                    .context("native species command arguments")?;
-                let original = args
-                    .first()
-                    .and_then(Value::as_str)
-                    .context("native species argument")?;
-                if !pack.data.pokemon.contains_key(original) {
-                    continue;
-                }
-                let level = if matches!(command.as_str(), "givepoke" | "giveegg" | "loadwildmon") {
-                    Some(
-                        args.get(1)
-                            .and_then(Value::as_str)
-                            .context("native species level")?
-                            .parse::<u8>()?,
-                    )
-                } else {
-                    None
-                };
-                let replacement = policy.target(&pack, original, level)?;
-                if replacement != original {
-                    args[0] = Value::String(replacement);
-                    changed = true;
-                }
-            }
-        }
-        for (label, lines) in text_changes {
-            authoring::text(
-                &mut map,
-                &label,
-                &lines.iter().map(String::as_str).collect::<Vec<_>>(),
-            );
-            changed = true;
-        }
-        let audio = crate::parse_script_audio_commands(&name, &map.scripts)?;
-        if map.script_audio_commands != audio {
-            map.script_audio_commands = audio;
-            changed = true;
-        }
-        if changed {
-            crate::ely_league_rooms::finish(&pack, &mut map)?;
-            crate::authored_town_publication::replace(&mut pack, map)?;
-        }
-    }
+    bind_map_species(&mut pack, &policy, maps)?;
     if previous.is_none() {
         for name in pack
             .data
@@ -272,6 +178,112 @@ fn bind(
     Ok(pack)
 }
 
+pub(crate) fn bind_map_species(
+    pack: &mut CompiledGamePack,
+    policy: &RegionalRoster,
+    maps: Vec<String>,
+) -> Result<()> {
+    for name in maps {
+        let mut map = pack.data.maps[&name].clone();
+        let mut changed = false;
+        let mut text_changes = Vec::new();
+        for object in &mut map.objects {
+            if let Some(original) = object.sprite.strip_prefix("SPRITE_")
+                && pack.data.pokemon.contains_key(original)
+                && !policy.allowed.contains(original)
+            {
+                let replacement = policy.target(pack, original, None)?;
+                object.sprite = format!("SPRITE_{replacement}");
+                changed = true;
+            }
+        }
+        for (label, program) in &mut map.scripts {
+            let Some(rows) = program.as_array_mut() else {
+                continue;
+            };
+            let is_text = rows.iter().all(|r| {
+                matches!(
+                    r["command"].as_str(),
+                    Some("text" | "line" | "para" | "cont" | "done" | "prompt")
+                )
+            });
+            if is_text {
+                let mut lines = Vec::new();
+                let mut text_changed = false;
+                for row in rows {
+                    if let Some(line) = row["args"]
+                        .as_array()
+                        .and_then(|a| a.first())
+                        .and_then(Value::as_str)
+                    {
+                        let original = line.trim_matches('"');
+                        let updated = rewrite_line(pack, policy, original)?;
+                        text_changed |= updated != original;
+                        lines.push(updated);
+                    }
+                }
+                if text_changed {
+                    text_changes.push((label.clone(), lines));
+                }
+                continue;
+            }
+            for row in rows {
+                let command = row["command"].as_str().unwrap_or("").to_owned();
+                if !matches!(
+                    command.as_str(),
+                    "givepoke" | "giveegg" | "loadwildmon" | "cry" | "pokepic" | "checkpoke"
+                ) {
+                    continue;
+                }
+                let args = row["args"]
+                    .as_array_mut()
+                    .context("native species command arguments")?;
+                let original = args
+                    .first()
+                    .and_then(Value::as_str)
+                    .context("native species argument")?;
+                if !pack.data.pokemon.contains_key(original) {
+                    continue;
+                }
+                let level = if matches!(command.as_str(), "givepoke" | "giveegg" | "loadwildmon") {
+                    Some(
+                        args.get(1)
+                            .and_then(Value::as_str)
+                            .context("native species level")?
+                            .parse::<u8>()?,
+                    )
+                } else {
+                    None
+                };
+                let replacement = policy.target(pack, original, level)?;
+                if replacement != original {
+                    args[0] = Value::String(replacement);
+                    changed = true;
+                }
+            }
+        }
+        for (label, lines) in text_changes {
+            authoring::text(
+                &mut map,
+                &label,
+                &lines.iter().map(String::as_str).collect::<Vec<_>>(),
+            );
+            changed = true;
+        }
+        let audio = crate::parse_script_audio_commands(&name, &map.scripts)?;
+        if map.script_audio_commands != audio {
+            map.script_audio_commands = audio;
+            changed = true;
+        }
+        if changed {
+            map.scripted_wild_battles = crate::parse_scripted_wild_battles(&name, &map.scripts)?;
+            crate::ely_league_rooms::finish(pack, &mut map)?;
+            crate::authored_town_publication::replace(pack, map)?;
+        }
+    }
+    Ok(())
+}
+
 fn rewrite_line(pack: &CompiledGamePack, policy: &RegionalRoster, line: &str) -> Result<String> {
     let mut result = String::new();
     let mut word = String::new();
@@ -296,7 +308,7 @@ fn rewrite_line(pack: &CompiledGamePack, policy: &RegionalRoster, line: &str) ->
     Ok(result)
 }
 
-fn rewrite_encounters(
+pub(crate) fn rewrite_encounters(
     pack: &CompiledGamePack,
     policy: &RegionalRoster,
     value: &mut Value,
@@ -494,7 +506,7 @@ fn rewrite_intro(
     Ok(())
 }
 
-fn audit(pack: &CompiledGamePack, policy: &RegionalRoster) -> Result<()> {
+pub(crate) fn audit(pack: &CompiledGamePack, policy: &RegionalRoster) -> Result<()> {
     let check = |name: &str| -> Result<()> {
         ensure!(
             policy.allowed.contains(name),
@@ -572,25 +584,61 @@ fn audit(pack: &CompiledGamePack, policy: &RegionalRoster) -> Result<()> {
             }
         }
     }
-    // Re-running the same strict field transform must have no work left in
-    // every reachable regional encounter table, including time fish and swarms.
-    for (kind, values) in [
-        ("wild", serde_json::to_value(&pack.data.wild_encounters)?),
-        ("field", serde_json::to_value(&pack.data.field_encounters)?),
-        ("fishing", serde_json::to_value(&pack.data.fishing.groups)?),
-        (
-            "time fish",
-            serde_json::to_value(&pack.data.fishing.time_groups)?,
-        ),
+    // Legacy groups stay in the catalog for other maps and old content.
+    // Check groups that a Minnesota map can actually activate.
+    let mut groups: BTreeSet<&str> = pack
+        .data
+        .maps
+        .values()
+        .filter(|map| map.id.starts_with("Mn"))
+        .filter_map(|map| map.attributes.fishing_group.as_deref())
+        .filter(|group| *group != "FISHGROUP_NONE")
+        .collect();
+    loop {
+        let count = groups.len();
+        for rule in pack.data.fishing.swarm_rules.values() {
+            if groups.contains(rule.base_group.as_str()) {
+                groups.insert(&rule.swarm_group);
+            }
+        }
+        if groups.len() == count {
+            break;
+        }
+    }
+    let mut times = BTreeSet::new();
+    for name in groups {
+        let group = pack
+            .data
+            .fishing
+            .groups
+            .get(name)
+            .context("regional fishing group")?;
+        audit_encounter_value(pack, policy, name, serde_json::to_value(group)?)?;
+        for table in group.rod_tables.values() {
+            times.extend(
+                table
+                    .slots
+                    .iter()
+                    .filter_map(|slot| slot.time_group.as_deref()),
+            );
+        }
+    }
+    for name in times {
+        let table = pack
+            .data
+            .fishing
+            .time_groups
+            .get(name)
+            .context("regional fishing time group")?;
+        audit_encounter_value(pack, policy, name, serde_json::to_value(table)?)?;
+    }
+    for values in [
+        serde_json::to_value(&pack.data.wild_encounters)?,
+        serde_json::to_value(&pack.data.field_encounters)?,
     ] {
         for (name, value) in values.as_object().context("encounter catalog")? {
-            if name.starts_with("Mn")
-                || name.starts_with("FISHGROUP_MN_")
-                || name.starts_with("MN_TIME_")
-            {
-                let mut checked = value.clone();
-                rewrite_encounters(pack, policy, &mut checked)?;
-                ensure!(&checked == value, "unbound regional {kind} table {name}");
+            if name.starts_with("Mn") {
+                audit_encounter_value(pack, policy, name, value.clone())?;
             }
         }
     }
@@ -598,6 +646,18 @@ fn audit(pack: &CompiledGamePack, policy: &RegionalRoster) -> Result<()> {
     let mut intro = original_intro.clone();
     rewrite_intro(pack, policy, &mut intro)?;
     ensure!(intro == original_intro, "unbound introductory Pokemon");
+    Ok(())
+}
+
+fn audit_encounter_value(
+    pack: &CompiledGamePack,
+    policy: &RegionalRoster,
+    name: &str,
+    value: Value,
+) -> Result<()> {
+    let mut checked = value.clone();
+    rewrite_encounters(pack, policy, &mut checked)?;
+    ensure!(checked == value, "unbound regional encounter table {name}");
     Ok(())
 }
 

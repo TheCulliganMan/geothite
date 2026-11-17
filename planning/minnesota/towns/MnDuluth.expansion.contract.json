@@ -1278,15 +1278,34 @@
             }
           ],
           "before_lines": [
-            "A friendly match?",
-            "Show your teamwork!"
+            "My partner heard",
+            "my echo and turned",
+            "right back. I've",
+            "been trying hand",
+            "signals since.",
+            "Let's battle. If I",
+            "forget and shout,",
+            "you'll hear it",
+            "twice."
           ],
           "after_lines": [
-            "You read the field!"
+            "You got us. I",
+            "called out before",
+            "I put my hand up.",
+            "She turned around",
+            "and the quarry",
+            "called her right",
+            "back again."
           ],
           "loss_lines": [
-            "We train here",
-            "every windy day."
+            "Good match. I",
+            "almost called out",
+            "at the end. She",
+            "was already",
+            "looking at my",
+            "hand. I think I",
+            "can keep quiet",
+            "next time."
           ]
         }
       ],
@@ -3017,15 +3036,39 @@
             }
           ],
           "before_lines": [
-            "A friendly match?",
-            "Show your teamwork!"
+            "My partner hears",
+            "the watch click",
+            "and starts before",
+            "I call. That's",
+            "what happens when",
+            "you time every",
+            "drill for a week.",
+            "Want a match",
+            "without the watch?"
           ],
           "after_lines": [
-            "You read the field!"
+            "You got us. I left",
+            "the watch alone",
+            "and still reached",
+            "for my pocket. She",
+            "saw my hand go",
+            "down and went",
+            "without a word.",
+            "Guess I was",
+            "training that hand",
+            "as much as I was",
+            "training her."
           ],
           "loss_lines": [
-            "We train here",
-            "every windy day."
+            "Good match. I",
+            "couldn't tell you",
+            "how long it took.",
+            "I can tell you she",
+            "looked right at me",
+            "before I called.",
+            "I'd like to try",
+            "that again without",
+            "the watch."
           ]
         }
       ],
@@ -3401,15 +3444,30 @@
             }
           ],
           "before_lines": [
-            "A friendly match?",
-            "Show your teamwork!"
+            "I got off the boat",
+            "an hour ago and",
+            "I'm still bending",
+            "my knees for a",
+            "swell. Give me a",
+            "battle. Maybe my",
+            "feet will believe",
+            "we're on land."
           ],
           "after_lines": [
-            "You read the field!"
+            "I nearly blamed",
+            "the deck. Look at",
+            "me. I'm standing",
+            "on a floor that's",
+            "been nailed down",
+            "for twenty years."
           ],
           "loss_lines": [
-            "We train here",
-            "every windy day."
+            "Good match. For a",
+            "second I forgot to",
+            "brace for the deck",
+            "moving. I might be",
+            "getting my land",
+            "legs back."
           ]
         },
         {
@@ -3435,15 +3493,35 @@
             }
           ],
           "before_lines": [
-            "A friendly match?",
-            "Show your teamwork!"
+            "The cook sent me",
+            "upstairs. Said I",
+            "could find",
+            "somebody to battle",
+            "or come back down",
+            "and peel onions.",
+            "You up for a",
+            "match? I'd be",
+            "grateful."
           ],
           "after_lines": [
-            "You read the field!"
+            "I'd better get",
+            "back to the cook.",
+            "I came up here to",
+            "get out of peeling",
+            "onions. Now I've",
+            "got a match to",
+            "tell him about",
+            "while I peel them."
           ],
           "loss_lines": [
-            "We train here",
-            "every windy day."
+            "Thanks for the",
+            "match. The onions",
+            "will still be",
+            "there when I go",
+            "down. I don't know",
+            "why I thought",
+            "winning would",
+            "change that."
           ]
         }
       ],
@@ -4766,15 +4844,31 @@
             }
           ],
           "before_lines": [
-            "A friendly match?",
-            "Show your teamwork!"
+            "I said one more",
+            "cast before lunch.",
+            "Then the fish",
+            "started jumping.",
+            "I've been here an",
+            "hour. Battle me so",
+            "I have a reason to",
+            "put this rod down."
           ],
           "after_lines": [
-            "You read the field!"
+            "I said one more",
+            "cast and stayed an",
+            "hour. Next time",
+            "I'm having lunch",
+            "before I come",
+            "down."
           ],
           "loss_lines": [
-            "We train here",
-            "every windy day."
+            "I reached for the",
+            "bait tin before",
+            "I'd even called my",
+            "partner back.",
+            "Here, bud. You can",
+            "sit with me while",
+            "I put it all away."
           ]
         }
       ],
@@ -5038,15 +5132,33 @@
         }
       ],
       "before_lines": [
-        "A friendly match?",
-        "Show your teamwork!"
+        "I've got ten",
+        "minutes before the",
+        "bell. If I can get",
+        "these gloves off,",
+        "that's time for",
+        "one match. There.",
+        "You're on if you",
+        "want it."
       ],
       "after_lines": [
-        "You read the field!"
+        "I take these",
+        "gloves off to",
+        "battle and put",
+        "them on to work.",
+        "If I ever turn up",
+        "for my shift with",
+        "a BALL in each",
+        "hand, you'll know",
+        "why."
       ],
       "loss_lines": [
-        "We train here",
-        "every windy day."
+        "Good match. I've",
+        "got to get back",
+        "before the bell.",
+        "Now which pocket",
+        "did I put that",
+        "other glove in?"
       ]
     },
     {
@@ -5072,15 +5184,35 @@
         }
       ],
       "before_lines": [
-        "A friendly match?",
-        "Show your teamwork!"
+        "I raced my team up",
+        "the hill and won.",
+        "Then I turned",
+        "round and found",
+        "out they'd stopped",
+        "to wait for each",
+        "other. Hold on",
+        "till the last one",
+        "gets here. Then",
+        "we'll battle."
       ],
       "after_lines": [
-        "You read the field!"
+        "I looked back to",
+        "see if they were",
+        "ready and you were",
+        "already moving.",
+        "Come on, team.",
+        "We'll go down at",
+        "the pace of",
+        "whoever's last."
       ],
       "loss_lines": [
-        "We train here",
-        "every windy day."
+        "I told them we'd",
+        "race back down.",
+        "Look at them.",
+        "Every single one",
+        "sat down. All",
+        "right, then. We'll",
+        "sit till the bell."
       ]
     },
     {
@@ -5106,15 +5238,33 @@
         }
       ],
       "before_lines": [
-        "A friendly match?",
-        "Show your teamwork!"
+        "I've got my collar",
+        "up over both ears.",
+        "If you want a",
+        "match, wave. I'll",
+        "keep my hands out",
+        "of my pockets so",
+        "my partner can see",
+        "what I mean, too."
       ],
       "after_lines": [
-        "You read the field!"
+        "You got me. My",
+        "partner couldn't",
+        "see my hands past",
+        "the cuffs. Next",
+        "time I'll roll",
+        "them up before I",
+        "ask her to watch."
       ],
       "loss_lines": [
-        "We train here",
-        "every windy day."
+        "Good match. I",
+        "could see my",
+        "partner's ears",
+        "above her collar.",
+        "Next time I'll",
+        "pull mine down so",
+        "she can see me",
+        "too."
       ]
     }
   ],

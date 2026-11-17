@@ -1,0 +1,468 @@
+{
+  "schema_version": 1,
+  "parent_content_hash": "c249d7e009407e0e9f1ea5be570554a0945af2abca75aa884770df558cfbcc22",
+  "walking_profiles": {
+    "driftless-woods": {
+      "residents": ["NIBBIN", "PODLET", "TESSLARV", "RUSTLEBEE"],
+      "night": ["DEWDANT", "MIDGEBIT"],
+      "specialists": ["PINIT", "HUSHISS", "DRIPTIP"]
+    },
+    "limestone-seep": {
+      "residents": ["DRIPTIP", "HUSHBAT", "TESSLARV", "HUSHISS"],
+      "night": ["HUSHBAT", "HUSHISS", "TESSLARV"],
+      "specialists": ["CHORIP", "CLINKLAW", "TACTUNNEL"]
+    },
+    "prairie-farm": {
+      "residents": ["NIBBIN", "PODLET", "PIPBOOM", "TUSSNIP"],
+      "night": ["DEWDANT", "VANECHICK"],
+      "specialists": ["OATLET", "ZAPSAP", "BLUESTIP", "CRISPIP"]
+    },
+    "river-floodplain": {
+      "residents": ["CHORIP", "TESSLARV", "VELVAWN", "RICELING", "BURROWBILL"],
+      "night": ["MIDGEBIT", "HUSHISS"],
+      "specialists": ["CLINKLAW", "POTHOLLOW", "TAPDUCK", "HISSIP", "MUDNIP"]
+    },
+    "metro-greenway": {
+      "residents": ["CACHEEK", "PODLET", "CLICKIT", "TAPDUCK"],
+      "night": ["DEWDANT", "MIDGEBIT"],
+      "specialists": ["JOTLET", "MILLIMP", "RUSTLEBEE", "BURRBUD"]
+    },
+    "oak-bluffs": {
+      "residents": ["BURRBUD", "FLOSSAIL", "TESSLARV", "VELVAWN", "SNUGSLUG"],
+      "night": ["DEWDANT", "HUSHISS", "CROOKIT", "OWLETCH"],
+      "specialists": ["BRISTUB", "PATCHEBEE", "HISSIP", "PINIT"]
+    },
+    "pine-country": {
+      "residents": ["PINIT", "PITCHWICK", "BRISTUB", "VELVAWN"],
+      "night": ["HATCHIT", "CROOKIT", "DEWDANT"],
+      "specialists": ["FLAPIP", "LATCHQUILL", "SHEDSTAG", "PASQUIB", "TRAILPUP", "BITTERRY"]
+    },
+    "lakeshore": {
+      "residents": ["REEDRAFT", "TAPDUCK", "CHORIP", "VELVAWN"],
+      "night": ["MIDGEBIT", "BARRICANT", "LEECHIMP"],
+      "specialists": ["CLINKLAW", "TRAPNACK", "DARTDUCK", "HISSIP", "MOTHOSAIC"]
+    },
+    "mire": {
+      "residents": ["REEDRAFT", "WRIGGLET", "TESSLARV", "EMBERM"],
+      "night": ["LEECHURGE", "SKEETEREX", "PUPUMP"],
+      "specialists": ["POTHOLLOW", "CROSSPOUT", "WADEBUD", "SMOULDEN"]
+    },
+    "iron-woods": {
+      "residents": ["AGATOT", "TACONIB", "PITCHWICK", "BRISTUB"],
+      "night": ["HATCHIT", "BARRICANT", "CROOKIT"],
+      "specialists": ["PELLETOR", "BANDRAKE", "CANALARM", "LATCHQUILL"]
+    },
+    "iron-workings": {
+      "residents": ["CARTICK", "TACONIB", "PELLETOR", "CANALARM"],
+      "night": ["HAULGEIST", "CARTICK"],
+      "specialists": ["BANDRAKE", "PELLETANK", "FORTIGARD"]
+    },
+    "superior-cedar": {
+      "residents": ["PITCHWICK", "BRISTUB", "TESSLARV", "VELVAWN"],
+      "night": ["CROOKVEIL", "LATCHQUILL", "HATCHIT", "OWLETCH"],
+      "specialists": ["SLIPPERINA", "SHEDSTAG", "MOTHOSAIC", "BANDRAKE"]
+    },
+    "superior-basalt": {
+      "residents": ["AGATOT", "BANDRAKE", "TESSLARV", "PINIT", "CUBLUFF"],
+      "night": ["MISPAIR", "CROOKVEIL"],
+      "specialists": ["FORTIGARD", "MOTHOSAIC", "LATCHQUILL", "LOOMLET"]
+    },
+    "gunflint-portage": {
+      "residents": ["PITCHWICK", "LATCHQUILL", "SHEDSTAG", "REEDRAFT"],
+      "night": ["DOUBLEHEX", "CROOKVEIL", "SKEETEREX"],
+      "specialists": ["ZIZALITH", "MOTHOSAIC", "BANDRAKE", "RAKEHORN"]
+    },
+    "ely-ridges": {
+      "residents": ["LATCHQUILL", "PITCHWICK", "BANDRAKE", "SHEDSTAG"],
+      "night": ["CROOKVEIL", "SHAWLTER", "DOUBLEHEX"],
+      "specialists": ["FORTIGARD", "PYROPINE", "MARSHRACK", "RIMEPELT"]
+    },
+    "headwaters": {
+      "residents": ["REEDRAFT", "PINIT", "BRISTUB", "TAPDUCK"],
+      "night": ["LEECHIMP", "DEWDANT", "CROOKIT"],
+      "specialists": ["TRAPNACK", "POTHOLLOW", "HISSIP", "WADEBUD"]
+    },
+    "western-prairie": {
+      "residents": ["CACHEEK", "BOOMRUFF", "FLOSSAIL", "SILKSOD"],
+      "night": ["CROWSCARE", "DEWDANT", "VANECHICK"],
+      "specialists": ["TAPACITOR", "SILOHAWK", "RUMBLEHIDE", "STEMBOLT", "REKINK", "PENDULOP", "SETTKIT"]
+    },
+    "border-woods": {
+      "residents": ["BRISTUB", "SHEDSTAG", "PITCHWICK", "CROOKIT"],
+      "night": ["CROOKVEIL", "LATCHQUILL", "HATCHIT"],
+      "specialists": ["DRIFTPEG", "WADEBUD", "RIMEPELT", "BANDRAKE"]
+    },
+    "icefields": {
+      "residents": ["DRIFTPEG", "MITWIST", "RIMEPELT", "SLUDGESKI", "FLURRIT", "SNOWPIP"],
+      "night": ["MISPAIR", "LATCHQUILL", "SHAWLTER", "SPARKVEIL"],
+      "specialists": ["FENCICLE", "SKATUFF", "RIMEGUARD", "SKIMNYMPH"]
+    },
+    "western-oaks": {
+      "residents": ["BURRBUD", "BURROOT", "VELVAWN", "BRISTUB"],
+      "night": ["CROOKIT", "BARRICANT"],
+      "specialists": ["TAPACITOR", "LATCHQUILL", "PATCHEBEE", "SHEDSTAG"]
+    },
+    "fair-exhibits": {
+      "residents": ["CURDLET", "DOUGHLIN", "PIPCORN", "CRISPIP", "BERRYBOO"],
+      "night": ["TOTLIT", "CHISLET", "CINDERFIN"],
+      "specialists": ["SQUEAKURD", "PUFFLARE", "CRUMCONE", "FLAPIP", "BERRYBOO"]
+    },
+    "mississippi-bottomland": {
+      "residents": ["TESSLARV", "TAPDUCK", "CHORIP", "RICELING", "BURROWBILL"],
+      "night": ["MIDGEBIT", "HUSHISS", "DEWDANT"],
+      "specialists": ["MAYQUIP", "POTHOLLOW", "BRISTUB", "BURRBUD", "SNUGSLUG"]
+    },
+    "river-valley-cave": {
+      "residents": ["HUSHBAT", "CHORIP", "TESSLARV", "BURROWBILL"],
+      "night": ["HUSHBAT", "HUSHISS", "CHORIP"],
+      "specialists": ["TACTUNNEL", "DRIPTIP", "SNUGSLUG", "MUDNIP"]
+    },
+    "north-shore-talus": {
+      "residents": ["CUBLUFF", "AGATOT", "BANDRAKE", "LOOMLET"],
+      "night": ["LOOMLET", "CROOKVEIL", "HOLLOWL"],
+      "specialists": ["TALURSA", "INVERVEIL", "MANTLSNAIL", "LATCHQUILL"]
+    },
+    "western-field-edge": {
+      "residents": ["REKINK", "SETTKIT", "PENDULOP", "TUSSNIP"],
+      "night": ["SETTKIT", "DEWDANT", "PENDULOP"],
+      "specialists": ["BRACLAW", "REVERTAIL", "KNOTLET", "TAPACITOR"]
+    },
+    "cold-northwoods": {
+      "residents": ["FLURRIT", "TRAILPUP", "OWLETCH", "PITCHWICK"],
+      "night": ["HOLLOWL", "PATHFANG", "SPARKVEIL"],
+      "specialists": ["HARESKIFT", "BITTERRY", "SNOWPIP", "SKIMNYMPH"]
+    }
+  },
+  "water_profiles": {
+    "limestone-stream": ["RILLBOW", "CLINKLAW", "TESSLARV", "RONDIVE", "CHORIP", "MUDNIP"],
+    "mississippi-channel": ["PINGLET", "PADDARRAY", "RILLBOW", "SCUTLET", "BARBELISK", "TRAPNACK"],
+    "river-backwater": ["CLINKLAW", "CHORIP", "HISSIP", "RONDIVE", "RICELING", "REEDRAFT", "LEECHIMP", "MUDNIP"],
+    "central-lake": ["LOOBIT", "PIKELING", "JIGLET", "SCUTLET", "TROLLURE", "TAPDUCK", "SKIMNYMPH"],
+    "peat-water": ["LEECHIMP", "LEECHURGE", "HISSIP", "CROSSPOUT", "PIKELING", "RONDIVE", "REEDRAFT"],
+    "superior-current": ["RILLBOW", "TORROUT", "SCUTLET", "BARBELISK", "KEYPOUT", "LATCHUSK"],
+    "northwoods-lake": ["LOOBIT", "YODELOON", "PIKELING", "PIKEMAN", "KEYPOUT", "SCUTLET", "LATCHUSK"],
+    "cold-water": ["KEYPOUT", "LATCHUSK", "PIKELING", "PIKEMAN", "SCUTLET", "SKIMNYMPH", "RIMEFOIL"],
+    "prairie-pond": ["CHORIP", "CHOIRBOG", "CLINKLAW", "TAPDUCK", "RONDIVE", "POTHOLLOW", "HISSIP"],
+    "metropolitan-falls": ["RIFFBIT", "PINGLET", "RILLBOW", "SCUTLET", "DYNARILL", "PADDARRAY"]
+  },
+  "journey_habitats": {
+    "opening-woodland": ["driftless-woods", "limestone-stream"],
+    "driftless-gallery": ["limestone-seep", "limestone-stream"],
+    "prairie-farms": ["prairie-farm", "prairie-pond"],
+    "river-valley": ["river-floodplain", "river-backwater"],
+    "twin-cities": ["metro-greenway", "mississippi-channel"],
+    "metro-woodland": ["oak-bluffs", "river-backwater"],
+    "pine-country": ["pine-country", "central-lake"],
+    "lake-road": ["lakeshore", "central-lake"],
+    "peat-country": ["mire", "peat-water"],
+    "iron-range": ["iron-woods", "northwoods-lake"],
+    "harbor-road": ["iron-woods", "superior-current"],
+    "north-shore": ["superior-cedar", "superior-current"],
+    "north-shore-pines": ["superior-cedar", "superior-current"],
+    "north-shore-basalt": ["superior-basalt", "superior-current"],
+    "gunflint": ["gunflint-portage", "northwoods-lake"],
+    "league-approach": ["ely-ridges", "northwoods-lake"],
+    "itasca-circuit": ["headwaters", "river-backwater"],
+    "detroit-lakes-circuit": ["lakeshore", "central-lake"],
+    "western-prairie": ["western-prairie", "prairie-pond"],
+    "border-road": ["border-woods", "cold-water"],
+    "mille-lacs-circuit": ["lakeshore", "central-lake"],
+    "western-woods-oaks": ["western-oaks", "river-backwater"],
+    "western-woods-road": ["western-prairie", "prairie-pond"],
+    "northern-preserve": ["gunflint-portage", "northwoods-lake"],
+    "grand-marais": ["superior-cedar", "superior-current"],
+    "fair-food-and-exhibits": ["fair-exhibits", "prairie-pond"],
+    "bemidji-woods": ["pine-country", "peat-water"],
+    "tall-tale-trail": ["pine-country", "northwoods-lake"],
+    "cedar-and-kettle": ["superior-cedar", "superior-current"],
+    "ely-shore": ["ely-ridges", "northwoods-lake"],
+    "iron-workings": ["iron-workings", "northwoods-lake"],
+    "icefield-branch": ["icefields", "cold-water"],
+    "voyageurs-upper": ["icefields", "cold-water"],
+    "voyageurs-lower": ["icefields", "cold-water"],
+    "opening-water-return": [null, "mississippi-channel"],
+    "metro-water": [null, "mississippi-channel"],
+    "capitol-water": [null, "mississippi-channel"],
+    "st-cloud-water": [null, "mississippi-channel"],
+    "brainerd-water": [null, "central-lake"],
+    "lake-town-water": [null, "central-lake"],
+    "leech-lake": ["pine-country", "central-lake"],
+    "grand-rapids-water": [null, "northwoods-lake"],
+    "duluth-water": [null, "superior-current"],
+    "boundary-water": [null, "northwoods-lake"],
+    "lower-mississippi": ["mississippi-bottomland", "mississippi-channel"],
+    "mississippi-confluence": ["river-floodplain", "mississippi-channel"],
+    "upstream-mississippi": ["oak-bluffs", "mississippi-channel"]
+  },
+  "map_overrides": {
+    "MnR01Cave1F": ["limestone-seep", "limestone-stream"],
+    "MnR03Cave1F": ["river-valley-cave", "limestone-stream"],
+    "MnR08C01R00": ["pine-country", "peat-water"],
+    "MnR09Cave1F": ["iron-workings", "northwoods-lake"],
+    "MnR10Cave1F": ["iron-workings", "superior-current"],
+    "MnLayeredFen": ["mire", "peat-water"],
+    "MnMoorhead": [null, "river-backwater"],
+    "MnR17Cave1F": ["border-woods", "cold-water"],
+    "MnR20Cave1F": ["icefields", "cold-water"],
+    "MnMinneapolis": [null, "metropolitan-falls"],
+    "MnR11C00R01": ["north-shore-talus", "superior-current"],
+    "MnR16C01R00": ["western-field-edge", "prairie-pond"],
+    "MnR17C00R02": ["cold-northwoods", "cold-water"],
+    "MnR20C01R00": ["cold-northwoods", "northwoods-lake"]
+  },
+  "zone_specialists": {
+    "MN_LEECH_PINE_ISLAND": ["VELVAWN", "SHEDSTAG", "PINIT", "YODELOON"],
+    "MN_LEECH_CABIN_PINES": ["PATCHEBEE", "MOTHOSAIC", "HATCHRUSH", "PITCHWICK"],
+    "MN_HABITAT_CEDAR_CUTOVER": ["LATCHQUILL", "SNUGSLUG", "HOLLOWL", "PITCHWICK"],
+    "MN_HABITAT_DRIFTLESS_SEEP": ["DRIPTIP", "TESSLARV", "MIDGEBIT", "HUSHISS"],
+    "MN_HABITAT_PRAIRIE_STITCH": ["TUSSNIP", "BLUESTIP", "PODLET", "RUSTLEBEE"],
+    "MN_HABITAT_HARVEST_WIND": ["CLICKIT", "KNOTLET", "SODCALF", "PIPBOOM"],
+    "MN_HABITAT_HARVEST_OATS_NORTH": ["OATLET", "NIBBIN", "PODLET", "TUSSNIP"],
+    "MN_HABITAT_HARVEST_OATS_SOUTH": ["OATLET", "VANECHICK", "RUSTLEBEE", "ZAPSAP"],
+    "MN_HABITAT_RIVER_HATCH": ["TESSLARV", "MAYQUIP", "CHORIP", "POUCHID", "BURROWBILL"],
+    "MN_HABITAT_BLUFF_WARNING": ["HUSHISS", "VELVAWN", "BURRBUD", "NIBBIN"],
+    "MN_HABITAT_TERRITORIAL_GEESE": ["TAPDUCK", "DARTDUCK", "VELVAWN", "CHORIP"],
+    "MN_HABITAT_ROADSIDE_RINK": ["PUCKLET", "MITWIST", "JOTLET", "ZAPSAP"],
+    "MN_HABITAT_ECHO_LOGS": ["LOOBIT", "BRISTUB", "PINIT", "LATCHQUILL"],
+    "MN_HABITAT_PEAT_PUMP": ["EMBERM", "SMOULDEN", "WRIGGLET", "PUPUMP"],
+    "MN_HABITAT_ORE_AIR": ["CINDORE", "CANALARM", "TACONIB", "PELLETOR"],
+    "MN_HABITAT_LIFT_APPROACH": ["BANDRAKE", "BRISTUB", "LATCHQUILL", "TESSLARV"],
+    "MN_HABITAT_LIGHTHOUSE_HEATH": ["WICKIT", "SPLITBEAM", "TESSLARV", "BANDRAKE"],
+    "MN_HABITAT_SMOKEHOUSE_BACK": ["CINDERFIN", "BRINEBRAZE", "TESSLARV", "CROOKVEIL"],
+    "MN_HABITAT_SMOKEHOUSE_WEST": ["CINDERFIN", "BRINEBRAZE", "BRISTUB", "AGATOT"],
+    "MN_HABITAT_SMOKEHOUSE_EAST": ["CINDERFIN", "BRINEBRAZE", "BANDRAKE", "HATCHIT"],
+    "MN_HABITAT_SMOKEHOUSE_PORCH": ["CINDERFIN", "BRINEBRAZE", "PITCHWICK", "MISPAIR"],
+    "MN_HABITAT_MOOSE_REEDS": ["WADEBUD", "RAKEHORN", "CLINKLAW", "SKEETEREX"],
+    "growers": ["OATLET", "RICELING", "MILLIMP", "REEDRAFT"],
+    "cookie-side": ["DOUGHLIN", "BERRYBOO", "FLAPIP", "PIPCORN"],
+    "cookie-back": ["BERRYBOO", "CRUMCONE", "FLAPIP", "CRISPIP"],
+    "midway-meadow": ["PIPCORN", "PUFFLARE", "PUCKLET", "TOTLIT"],
+    "midway-lawn": ["PIPCORN", "PUFFLARE", "JOTLET", "PUCKLET"],
+    "breakfast": ["FLAPIP", "DOUGHLIN", "CRUMCONE", "CRISPIP"],
+    "cheese": ["CURDLET", "SQUEAKURD", "CHISLET", "LUTEBRISK"],
+    "dairy": ["CHISLET", "BUTTERMUSE", "CURDLET", "SQUEAKURD"],
+    "orchard-east": ["CRISPIP", "ZAPSAP", "TAPACITOR", "RUSTLEBEE"],
+    "orchard-north": ["CRISPIP", "ZAPSAP", "TAPACITOR", "PATCHEBEE"],
+    "grain": ["OATLET", "MILLIMP", "PIPCORN", "PUFFLARE"],
+    "rice": ["RICELING", "REEDRAFT", "OATLET", "MILLIMP"],
+    "popcorn": ["PIPCORN", "PUFFLARE", "TOTLIT", "FLAPIP"],
+    "smokehouse": ["CINDERFIN", "TOTLIT", "LUTEBRISK", "PIPCORN"]
+  },
+  "walking_signatures": {
+    "MnR01C00R00": ["PINIT"],
+    "MnR05C00R00": ["SINKNOOK"],
+    "MnLakeItasca": ["WINDHOPPER"],
+    "MnRainyRiverIcefields": ["VERNACAPE", "PLOWZER", "SCRAPLOW", "SPARKVEIL", "SNOWPIP"],
+    "MnPreservePineEntry": ["REVERLOON"],
+    "MnBemidjiNorthwoods": ["HATCHIT"],
+    "MnDetroitLakesApproach": ["HATCHRUSH"],
+    "MnDevilsKettle": ["CROSSPOUT"],
+    "MnElyShorePass": ["MOTHOSAIC"],
+    "MnGrandMarais": ["MITWIST"],
+    "MnMaraisCedarApproach": ["PYROPINE"],
+    "MnLayeredFen": ["POTHOLLOW"],
+    "MnMississippiConfluenceC01R00": ["RONDIVE"],
+    "MnMississippiLowerWoodsC01R01": ["MAYQUIP"],
+    "MnMississippiLowerWoodsC01R02": ["HISSIP"],
+    "MnMississippiUpstreamWoodsC01R01": ["PATCHEBEE"],
+    "MnMississippiUpstreamWoodsC01R02": ["BURRBUD"],
+    "MnMississippiUpstreamWoodsC00R02": ["HATCHRUSH"],
+    "MnR07C00R00": ["YODELOON"],
+    "MnR15C00R00": ["LOOBIT"],
+    "MnR10C00R00": ["CINDORE"],
+    "MnR10C01R00": ["TACONIB"],
+    "MnR20C00R00": ["WADEBUD"],
+    "MnR20C00R01": ["RIMEPELT"],
+    "MnR16C00R00": ["LASSERP"],
+    "MnR03C00R00": ["BURROWBILL"],
+    "MnR05C00R02": ["SNUGSLUG"],
+    "MnR06C00R00": ["OWLETCH", "TRAILPUP"],
+    "MnR09Cave1F": ["DEEPULSE"],
+    "MnR11C00R00": ["CUBLUFF", "LOOMLET"],
+    "MnR13C00R00": ["GLOAMOWL", "WAYWOLF"],
+    "MnR14C00R01": ["BITTERRY"],
+    "MnR16C01R00": ["PENDULOP", "REKINK"],
+    "MnR20C01R01": ["AURORILL", "SQUALLFIN"],
+    "MnVoyageursIce1F": ["SLUDGESKI"]
+  },
+  "surf_signatures": {
+    "MnR09C00R01": ["TUGGET"],
+    "MnR11C00R02": ["WRECKQUIEM"],
+    "MnR13C00R01": ["MUSKETUNGE"],
+    "MnMinneapolis": ["RIFFBIT"],
+    "MnR03C00R01": ["MUDNIP"],
+    "MnR08C00R01": ["BANKMAW"],
+    "MnR20C00R00": ["RIMEFOIL"]
+  },
+  "headbutt": {
+    "MnR19C00R00": {
+      "common": ["BURRBUD", "DEWDANT", "RUSTLEBEE", "BRISTUB", "TESSLARV", "PATCHEBEE"],
+      "rare": ["BURROOT", "CROOKIT", "BARRICANT", "BRISTUB", "BURRBUD", "OWLETCH"]
+    },
+    "MnTallTaleTrail": {
+      "common": ["PINIT", "BRISTUB", "HATCHIT"],
+      "rare": ["LATCHQUILL", "PITCHWICK", "HOLLOWL"]
+    }
+  },
+  "safari": {
+    "REED_MARSH": {
+      "grass": ["WRIGGLET", "CHORIP", "TAPDUCK", "MAYQUIP", "CLINKLAW", "PUPUMP", "MOSQUITAN"],
+      "water": ["MUDNIP", "LEECHIMP", "RONDIVE", "REEDRAFT", "CROSSPOUT"]
+    },
+    "PINE_PORTAGE": {
+      "grass": ["PINIT", "BRISTUB", "VELVAWN", "BARRICANT", "SHEDSTAG", "LATCHQUILL"],
+      "water": ["LOOBIT", "PIKELING", "SCUTLET", "CLINKLAW", "YODELOON"]
+    },
+    "PINE_THICKET": {
+      "grass": ["PINIT", "TRAILPUP", "CROOKVEIL", "LATCHQUILL"],
+      "water": ["LOOBIT", "PIKELING", "SCUTLET", "CLINKLAW", "YODELOON"]
+    },
+    "PINE_PORTAGE_MIDDLE": {
+      "grass": ["BRISTUB", "PITCHWICK", "SNUGSLUG", "BARRICANT", "HATCHIT", "DOUBLEHEX"],
+      "water": ["RILLBOW", "PIKELING", "CLINKLAW", "SCUTLET", "TRAPNACK"]
+    },
+    "PINE_PORTAGE_SOUTH": {
+      "grass": ["VELVAWN", "PINIT", "REEDRAFT", "OWLETCH", "SHEDSTAG", "WADEBUD"],
+      "water": ["PIKELING", "SCUTLET", "KEYPOUT", "JIGLET", "TROLLURE"]
+    },
+    "GRANITE_SHORE": {
+      "grass": ["TESSLARV", "AGATOT", "CLINKLAW", "CUBLUFF", "BANDRAKE", "LATCHQUILL"],
+      "water": ["RILLBOW", "CLINKLAW", "SCUTLET", "TORROUT"]
+    },
+    "QUIET_WATER": {
+      "grass": ["TESSLARV", "MAYQUIP", "TAPDUCK", "PINIT", "SHEDSTAG", "HISSIP"],
+      "water": ["JIGLET", "SCUTLET", "SKIMNYMPH", "PIKELING", "YODELOON", "LATCHUSK"]
+    }
+  },
+  "rod_habitats": {
+    "FISHGROUP_MN_ECO_MNMILLELACS": "central-lake",
+    "FISHGROUP_MN_ECO_MNR01C00R00": "limestone-stream",
+    "FISHGROUP_MN_ECO_MNR03C00R00": "river-backwater",
+    "FISHGROUP_MN_ECO_MNR03C00R01": "river-backwater",
+    "FISHGROUP_MN_ECO_MNR05C00R00": "river-backwater",
+    "FISHGROUP_MN_ECO_MNR05C00R01": "river-backwater",
+    "FISHGROUP_MN_ECO_MNR05C00R02": "river-backwater",
+    "FISHGROUP_MN_ECO_MNR06C00R00": "central-lake",
+    "FISHGROUP_MN_ECO_MNR06C00R01": "central-lake",
+    "FISHGROUP_MN_ECO_MNR07C00R00": "central-lake",
+    "FISHGROUP_MN_ECO_MNR07C00R01": "central-lake",
+    "FISHGROUP_MN_ECO_MNR08C00R00": "peat-water",
+    "FISHGROUP_MN_ECO_MNR08C00R01": "peat-water",
+    "FISHGROUP_MN_ECO_MNR08C01R00": "peat-water",
+    "FISHGROUP_MN_ECO_MNR08C01R01": "peat-water",
+    "FISHGROUP_MN_ECO_MNR09C00R00": "northwoods-lake",
+    "FISHGROUP_MN_ECO_MNR09C00R01": "northwoods-lake",
+    "FISHGROUP_MN_ECO_MNR09C01R00": "northwoods-lake",
+    "FISHGROUP_MN_ECO_MNR10C00R00": "superior-current",
+    "FISHGROUP_MN_ECO_MNR10C01R00": "superior-current",
+    "FISHGROUP_MN_ECO_MNR11C00R00": "superior-current",
+    "FISHGROUP_MN_ECO_MNR11C00R01": "superior-current",
+    "FISHGROUP_MN_ECO_MNR11C00R02": "superior-current",
+    "FISHGROUP_MN_ECO_MNR11C00R03": "superior-current",
+    "FISHGROUP_MN_ECO_MNR11C01R00": "superior-current",
+    "FISHGROUP_MN_ECO_MNR11C01R01": "superior-current",
+    "FISHGROUP_MN_ECO_MNR11C01R02": "superior-current",
+    "FISHGROUP_MN_ECO_MNR11C01R03": "superior-current",
+    "FISHGROUP_MN_ECO_MNR12C00R00": "northwoods-lake",
+    "FISHGROUP_MN_ECO_MNR12C00R01": "northwoods-lake",
+    "FISHGROUP_MN_ECO_MNR13C00R00": "northwoods-lake",
+    "FISHGROUP_MN_ECO_MNR13C00R01": "northwoods-lake",
+    "FISHGROUP_MN_ECO_MNR14C00R00": "river-backwater",
+    "FISHGROUP_MN_ECO_MNR14C00R01": "river-backwater",
+    "FISHGROUP_MN_ECO_MNR14C01R00": "river-backwater",
+    "FISHGROUP_MN_ECO_MNR14C01R01": "river-backwater",
+    "FISHGROUP_MN_ECO_MNR15C00R00": "central-lake",
+    "FISHGROUP_MN_ECO_MNR17C00R01": "cold-water",
+    "FISHGROUP_MN_ECO_MNR18C00R00": "central-lake",
+    "FISHGROUP_MN_ECO_MNR18C01R00": "central-lake",
+    "FISHGROUP_MN_ECO_MNR20C00R00": "northwoods-lake",
+    "FISHGROUP_MN_ECO_MNR20C00R01": "northwoods-lake",
+    "FISHGROUP_MN_ECO_MNR20C01R00": "northwoods-lake",
+    "FISHGROUP_MN_ECO_MNR20C01R01": "northwoods-lake",
+    "FISHGROUP_MN_ECO_MNWINONA": "mississippi-channel",
+    "FISHGROUP_MN_HABITAT_MNR19C00R00": "river-backwater",
+    "FISHGROUP_MN_LAKE": "central-lake",
+    "FISHGROUP_MN_POND": "prairie-pond",
+    "FISHGROUP_MN_QWILFISH": "northwoods-lake",
+    "FISHGROUP_MN_SHORE": "river-backwater"
+  },
+  "tree_profiles": {
+    "driftless": {
+      "common": ["RUSTLEBEE", "DEWDANT", "TESSLARV"],
+      "rare": ["OWLETCH", "SNUGSLUG", "BURRBUD"]
+    },
+    "river-bluff": {
+      "common": ["BURROWBILL", "MAYQUIP", "RUSTLEBEE"],
+      "rare": ["BURRBUD", "OWLETCH", "MOTHOSAIC"]
+    },
+    "central-pine": {
+      "common": ["PINIT", "BRISTUB", "PATCHEBEE"],
+      "rare": ["OWLETCH", "PITCHWICK", "TRAILPUP"]
+    },
+    "lake-woods": {
+      "common": ["TESSLARV", "PITCHWICK", "LOOBIT"],
+      "rare": ["HATCHRUSH", "BRISTUB", "HOLLOWL"]
+    },
+    "wet-cedar": {
+      "common": ["TESSLARV", "PITCHWICK", "MAYQUIP"],
+      "rare": ["MOTHOSAIC", "OWLETCH", "BITTERRY"]
+    },
+    "superior-cedar": {
+      "common": ["PITCHWICK", "BRISTUB", "HOLLOWL"],
+      "rare": ["GLOAMOWL", "SNUGSLUG", "TALURSA"]
+    },
+    "winter-pine": {
+      "common": ["LATCHQUILL", "HOLLOWL", "PITCHWICK"],
+      "rare": ["GLOAMOWL", "HARESKIFT", "BITTERRY"]
+    },
+    "boundary-portage": {
+      "common": ["LATCHQUILL", "HOLLOWL", "MOTHOSAIC"],
+      "rare": ["GLOAMOWL", "PATHFANG", "MANTLSNAIL"]
+    },
+    "prairie-shelterbelt": {
+      "common": ["BURRBUD", "PATCHEBEE", "CACHEEK"],
+      "rare": ["BURROOT", "SILOHAWK", "OWLETCH"]
+    }
+  },
+  "new_headbutt": {
+    "MnBemidji": { "level": 32, "profile": "central-pine" },
+    "MnBoundaryWaters": { "level": 44, "profile": "boundary-portage" },
+    "MnDetroitLakes": { "level": 32, "profile": "lake-woods" },
+    "MnGrandMarais": { "level": 42, "profile": "superior-cedar" },
+    "MnLayeredFen": { "level": 34, "profile": "wet-cedar" },
+    "MnLeechLake": { "level": 33, "profile": "lake-woods" },
+    "MnMississippiConfluenceC01R00": { "level": 24, "profile": "river-bluff" },
+    "MnR01C00R00": { "level": 4, "profile": "driftless" },
+    "MnR03C00R00": { "level": 15, "profile": "river-bluff" },
+    "MnR05C00R01": { "level": 23, "profile": "river-bluff" },
+    "MnR06C00R00": { "level": 28, "profile": "central-pine" },
+    "MnR07C00R00": { "level": 31, "profile": "lake-woods" },
+    "MnR07C00R01": { "level": 32, "profile": "lake-woods" },
+    "MnR08C00R00": { "level": 33, "profile": "wet-cedar" },
+    "MnR08C00R01": { "level": 34, "profile": "wet-cedar" },
+    "MnR08C01R00": { "level": 34, "profile": "wet-cedar" },
+    "MnR08C01R01": { "level": 35, "profile": "wet-cedar" },
+    "MnR09C00R01": { "level": 36, "profile": "superior-cedar" },
+    "MnR11C00R00": { "level": 41, "profile": "superior-cedar" },
+    "MnR11C00R03": { "level": 42, "profile": "superior-cedar" },
+    "MnR12C00R00": { "level": 43, "profile": "winter-pine" },
+    "MnR12C00R01": { "level": 44, "profile": "winter-pine" },
+    "MnR13C00R00": { "level": 45, "profile": "boundary-portage" },
+    "MnR13C00R01": { "level": 45, "profile": "boundary-portage" },
+    "MnR13C00R02": { "level": 46, "profile": "boundary-portage" },
+    "MnR14C00R00": { "level": 32, "profile": "wet-cedar" },
+    "MnR14C00R01": { "level": 33, "profile": "wet-cedar" },
+    "MnR14C01R00": { "level": 34, "profile": "wet-cedar" },
+    "MnR14C01R01": { "level": 34, "profile": "wet-cedar" },
+    "MnR16C00R00": { "level": 32, "profile": "prairie-shelterbelt" },
+    "MnR16C01R00": { "level": 33, "profile": "prairie-shelterbelt" },
+    "MnR17C00R00": { "level": 36, "profile": "winter-pine" },
+    "MnR17C00R01": { "level": 37, "profile": "winter-pine" },
+    "MnR17C00R02": { "level": 38, "profile": "winter-pine" },
+    "MnR20C00R00": { "level": 44, "profile": "boundary-portage" },
+    "MnR20C01R00": { "level": 45, "profile": "boundary-portage" },
+    "MnR20C01R01": { "level": 45, "profile": "boundary-portage" },
+    "MnStaplesRailJunction": { "level": 30, "profile": "central-pine" },
+    "MnWinona": { "level": 4, "profile": "driftless" }
+  }
+}

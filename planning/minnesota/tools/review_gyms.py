@@ -54,6 +54,19 @@ def render(pack, design, output, verify_published=False, events=()):
             for x, symbol in enumerate(row):
                 source, block = gym['art'][symbol]
                 native = art.blocks(source, 'indoor')[int(block, 16)]
+                if gym.get('wooden_port_deck') and source == 'port':
+                    native = native.copy()
+                    source_blocks = bytes(pack['runtime_files']['data/tilesets/port_metatiles.bin'])
+                    start = int(block, 16) * 16
+                    wood = art.blocks('tower', 'indoor')[0x09].crop((0, 0, 8, 8))
+                    for glyph_index, glyph in enumerate(source_blocks[start:start + 16]):
+                        if glyph == 0x05:
+                            native.paste(wood, (glyph_index % 4 * 8, glyph_index // 4 * 8))
+                if symbol in gym.get('buoy_quadrants', {}):
+                    native = native.copy()
+                    buoy = art.blocks('port', 'indoor')[0x02].crop((0, 0, 16, 8))
+                    for quadrant in gym['buoy_quadrants'][symbol]:
+                        native.paste(buoy, (quadrant % 2 * 16, quadrant // 2 * 16))
                 if gym.get('wind_arrows') and symbol in gym.get('winds', {}):
                     native = marked_wind(pack, native, gym['winds'][symbol])
                 terrain.paste(native, (x * 32, y * 32))
@@ -71,7 +84,10 @@ def render(pack, design, output, verify_published=False, events=()):
                     actual = collision[f'{room["blocks"][y*width+x]:02x}']
                     expected = (['WALL'] * 4 if symbol in gym.get('barriers', [])
                                 else [gym['winds'][symbol]] * 4 if symbol in gym.get('winds', {})
-                                else pack['data']['tilesets'][source]['collision'][block])
+                                else list(pack['data']['tilesets'][source]['collision'][block]))
+                    for quadrant in gym.get('buoy_quadrants', {}).get(symbol, []):
+                        assert expected[quadrant] == 'WATER'
+                        expected[quadrant] = 'BUOY'
                     assert actual == expected, (gym['id'],x,y)
         scene = terrain.convert('RGBA')
         actors = [{'at':gym['leader_at'], 'sprite':gym['leader_sprite']},

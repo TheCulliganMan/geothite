@@ -5,6 +5,7 @@ use anyhow::{Context, Result, ensure};
 use serde_json::Value;
 
 use crate::CompiledGamePack;
+use crate::authored_dialogue;
 use crate::grand_marais_modpack::authoring;
 
 pub(crate) fn install(pack: &mut CompiledGamePack) -> Result<()> {
@@ -90,26 +91,28 @@ pub(crate) fn install(pack: &mut CompiledGamePack) -> Result<()> {
             ]
         } else {
             &[
-                "Try the ROD GURU!",
-                "His house is above",
-                "the lakeside deck",
+                "For a SUPER ROD,",
+                "ask at the house",
+                "above the deck",
                 "on PINE COUNTRY RD",
                 "south of BRAINERD.",
-                "A free SUPER ROD!",
             ]
         };
         for label in labels {
-            if id == "MnR01C00R00" && label == "MN_R01_CREEK_CHILDText" {
-                authoring::text(
-                    &mut map,
-                    &label,
-                    &[
-                        "The man inside",
-                        "loves fishing.",
-                        "I like watching",
-                        "the creek, too.",
-                    ],
-                );
+            // These passages already give directions in the speaker's own words.
+            if matches!(
+                label.as_str(),
+                "MN_R01_CREEK_CHILDText"
+                    | "MN_R03_ANGLERText"
+                    | "MN_R05_FISHERText"
+                    | "MN_R06_LAKE_ANGLERText"
+                    | "MN_R15_PIER_WATCHERText"
+                    | "MN_R18_T06Won"
+                    | "MN_MP_CLUB_BANKSWon"
+                    | "MN_RIVER_UPSTREAM_BANK_FISHERWon"
+            ) && crate::northstar_story_revision::owns_text(&id, &label)
+            {
+                authored_dialogue::install_canonical(&mut map, &label)?;
                 continue;
             }
             let body = map

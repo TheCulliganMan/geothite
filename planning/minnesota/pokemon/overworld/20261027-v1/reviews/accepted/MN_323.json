@@ -1,0 +1,94 @@
+{
+  "species_id": "MN_323",
+  "name": "Flurrit",
+  "family_id": "MN_F147",
+  "dex_number": 195,
+  "status": "accepted",
+  "generation_tool": "built-in image_gen",
+  "selected_manifest": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f147/flurrit.manifest-20261104-v3-features.json",
+    "sha256": "805bd4b33d7c2a400fb699abcacfe253c5af66b66ed68c36e0d81792d382c476",
+    "bytes": 1923
+  },
+  "sources": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f147/flurrit.overworld.imagegen-20261104-v1.png",
+      "sha256": "27318e81ff2ef9f33f0944dd5bb768bcbb69296cfdae05719fbf952d004d59de",
+      "bytes": 1368858
+    }
+  ],
+  "prompts": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f147/flurrit.overworld.prompt-20261104-v1.txt",
+      "sha256": "733e2c4fdb73ade8f31523b2ff08a448f504fc05a18291abf4554edbf790ad9e",
+      "bytes": 2613
+    }
+  ],
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/flurrit-20261104-v3-features",
+  "normal_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/flurrit-20261104-v3-features/review/flurrit.normal-8x.png",
+    "sha256": "d3dd30105fbef39142bfabbdf2d54a96b4ed10240fd46db4d3be09587d6460e1",
+    "bytes": 9766
+  },
+  "shiny_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/flurrit-20261104-v3-features/review/flurrit.shiny-8x.png",
+    "sha256": "2fd7e9129e2c24fa06675331c85024e05a6d684f7e791847830aa77e0c1bf340",
+    "bytes": 9573
+  },
+  "compiled_index": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/flurrit-20261104-v3-features/compiled-index.json",
+    "sha256": "647713bc94eade50e19d3a10d2e16b821d65d4a1d4ad0c98cdb04928f4b884eb",
+    "bytes": 7930
+  },
+  "source_feature_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f147/flurrit.source-feature-review-20261104-v3.json",
+    "sha256": "c60fbeffe815483962fcfdca3927445f7148cc6e8d6420d0dac0e64fb8990e3b",
+    "bytes": 5311
+  },
+  "context_evidence": {
+    "directory": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-02",
+    "input_manifest": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-02/input-manifest.json",
+      "sha256": "29b454a90f5a4f38bcceeb39dc97d11f0cd1c27cd6d4fa38949eb31fa5ba8f7c",
+      "bytes": 1162
+    },
+    "verification": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-02/verification.json",
+      "sha256": "3642ade68fbdbffa8f955efc82f661d8cf5d1151cbf998007c0d5ecdb00b02a0",
+      "bytes": 16890
+    },
+    "test_log": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/verification/all225-20261104-v5-02.log",
+      "sha256": "bd25bbc4ffb3d01568ea6d0477559f41aef603c464b90b555117ecde2de2d25f",
+      "bytes": 217
+    },
+    "normal_actor_poses": 8,
+    "all_six_shiny_native_poses_verified": true
+  },
+  "root_visual_review": {
+    "accepted": true,
+    "notes": "Species-specific head, dark facial marks and themed body silhouette retained in front/profile. Rear poses show backs of ears/crest/head and the actual back/tail, without a pasted frontal face. Six distinct native poses, paired idle/step articulation and both palettes reviewed alongside the trainer on terrain."
+  },
+  "runtime_files": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/flurrit/overworld.2bpp",
+      "sha256": "e3bebca50e3b4ad74d064f929001eea3a1816b431fb06611c9052444430ef00d",
+      "bytes": 384
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/flurrit/overworld.png",
+      "sha256": "4fcc6a4e159ab5ccbbb773306e4ce231dc22779a1a59a469d818d310fec91c6d",
+      "bytes": 845
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/flurrit/overworld.gbcpal",
+      "sha256": "216745563c3541f778280d1feef26c4fec46342d9950f8ab5fa0e0690f2958d5",
+      "bytes": 8
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/flurrit/overworld-shiny.gbcpal",
+      "sha256": "1cfd055a4896f27b7ef89291f6a163c4ad3ac86e7338234d0ade90f0ca747a89",
+      "bytes": 8
+    }
+  ]
+}

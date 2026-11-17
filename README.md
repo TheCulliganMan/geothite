@@ -8,6 +8,10 @@ The [Pokémon Northstar opening](planning/minnesota/title/README.md) opens Minne
 directly at New Game/Continue, with no title sequence. Professor Tamarack
 introduces Jiglet during new-game setup.
 
+The [Minnesota campaign polish review](docs/game-content.md#minnesota-campaign-polish-review)
+includes local build and play commands for the dialogue, roster, and early
+fishing update on top of the Glacier Line pack.
+
 The [current browser release](docs/deployment.md#combined-minnesota-release-2026-10-29)
 combines the reviewed Minnesota world/dialogue, starter signature moves and all
 225 original species' field art and cries. Verdigrim's excavation encounter is
@@ -84,9 +88,9 @@ The web guide follows these conditions; full-roster integration remains active.
 
 The [Minnesota canoe](planning/minnesota/canoe/README.md) adds a reusable key
 item, a St. Paul canoe-shop handoff after the Capitol Badge, and native Chris/Kris
-paddling sprites. Carry it and walk into open water to launch; step onto land to
-portage. Surf remains available. The separate local candidate is
-`content-packs/minnesota-canoe-v04.crystalpack`; see its runbook for verification.
+paddling sprites. Carry it and walk into open water to launch. Step onto land to
+portage. Surf remains available. For the local pack, build and launch using the
+canoe runbook.
 
 The [North Shore smokehouse and pie shop](planning/minnesota/landmarks/north-shore-shops-v01/README.md)
 add enterable native 2D roadside cafes and 92 reachable grass tiles for future
@@ -1220,8 +1224,9 @@ existing programs, regional fauna, fishing, art/audio and attributes stay exact.
 The twenty-one-stage source build reproduces v09 as well. Broader map quality
 and earned regional progression remain open.
 
-The [Pine Country fork revision](planning/minnesota/routes/r06-pine-fork-v01/README.md) is the current local selection,
-`content-packs/minnesota-reviewed-maps-v11.crystalpack`. Its native dry downhill
+The [Pine Country fork revision](planning/minnesota/routes/r06-pine-fork-v01/README.md) built
+`content-packs/minnesota-reviewed-maps-v11.crystalpack`, the parent of the current
+local spawn revision. Its native dry downhill
 hop, closed pine flanks and six-grass uphill choices give the lake road a distinct
 return trip. The original northern hop, Cut-gated Ether/stair, cabins, Super Rod
 guru, bridge and pier remain intact; the lookout rim is continuous. Seven native
@@ -1229,3 +1234,14 @@ courses, 938 actual stdio calls, ten exact complete native frames and four playe
 views pass. All 742 other maps and existing programs, fauna/fishing, rooms,
 attributes and art/audio stay exact. The twenty-two-stage source build reproduces
 v10 as well. Broader map quality and earned regional progression remain open.
+
+The [Minnesota encounter revision](planning/minnesota/pokemon/acquisition-v01/region-ecology-v01/README.md)
+rebuilds walking, Surf, fishing, Headbutt, and Safari encounters across the
+region, including the full 225-species active roster.
+
+## Minnesota native sprite review
+
+The [November 3 artwork checkpoint](planning/minnesota/pokemon/NATIVE-ART-20261103.md)
+contains the verified local pack-build commands, exact selected-art checks and
+normal/shiny battle fixtures for 52 revised species. This local artwork candidate
+does not change the selected world pack or public deployment.

@@ -210,6 +210,100 @@ fn admit(c: &mut VisibleShellController) {
 }
 
 #[test]
+#[ignore = "requires CRYSTAL_CANOE_TEST_PACK"]
+fn canoe_controller_paid_safari_portages_and_crosses_water_seams() {
+    use crystal_core::systems::field_moves::{CANOE_ACTIVE_MEMORY, CANOE_ITEM};
+    use crystal_core::systems::safari::SafariEncounterSource;
+    use crystal_core::world::map::TilePosition;
+
+    let (root, runtime) = super::super::canoe::load();
+    let zone = runtime.data().safari_zone.as_ref().expect("enabled Safari");
+    let origin = zone.return_to.tile;
+    let mut c = super::super::interior_life::fixture(
+        &root,
+        &runtime,
+        &zone.admission_map,
+        (origin.x, origin.y),
+    );
+    let state = c.shell.shell.session_mut().state_mut();
+    state.money = 1500;
+    for item in [CANOE_ITEM, "GOOD_ROD"] {
+        assert!(
+            state
+                .bag
+                .add_item(&runtime.data().items[item], 1)
+                .expect("Safari field item")
+        );
+    }
+    state.registered_key_item = Some("GOOD_ROD".into());
+
+    let grid = LakeGrid::new(&runtime);
+    admit(&mut c);
+    travel(&mut c, &grid, (3, 90), false);
+    step(&mut c, (3, 89));
+    release_wild(&mut c);
+    let steps = active(&mut c).steps_remaining;
+    let fish = (0..64)
+        .find_map(|_| {
+            press(&mut c, GameButton::Select);
+            assert!(c.shell.visible_fishing_animation.is_some());
+            for _ in 0..128 {
+                if c.shell.visible_fishing_animation.is_none() {
+                    break;
+                }
+                press(&mut c, GameButton::A);
+            }
+            assert!(c.shell.visible_fishing_animation.is_none());
+            let SafariPhase::Encounter(fish) = active(&mut c).phase else {
+                return None;
+            };
+            Some(fish)
+        })
+        .expect("Safari rod encounter while afloat");
+    assert!(
+        matches!(&fish.source, SafariEncounterSource::Fishing { water_tile, rod, .. }
+        if *water_tile == TilePosition::new(3, 40) && rod == "GOOD_ROD")
+    );
+    assert_eq!(fish.origin_tile, TilePosition::new(3, 41));
+    assert_eq!(active(&mut c).steps_remaining, steps);
+    c = continue_save(root, runtime.clone(), &mut c);
+    assert_eq!(active(&mut c).phase, SafariPhase::Encounter(fish));
+    release_wild(&mut c);
+    assert_eq!(
+        c.snapshot()
+            .expect("canoe Continue")
+            .script_events
+            .memory
+            .get(CANOE_ACTIVE_MEMORY)
+            .map(String::as_str),
+        Some("1"),
+    );
+    step(&mut c, (3, 90));
+    assert!(travel(&mut c, &grid, (13, 92), false) >= 4);
+    step(&mut c, (14, 92));
+    step(&mut c, (13, 92));
+    travel(&mut c, &grid, (3, 90), false);
+    step(&mut c, (3, 89));
+    travel(&mut c, &grid, (63, 75), true);
+    step(&mut c, (64, 75));
+    assert_eq!(
+        c.snapshot().expect("east canoe seam").overworld.map_name,
+        "MnBoundarySafariC01R01"
+    );
+    step(&mut c, (63, 75));
+    let returned = c.snapshot().expect("west canoe seam");
+    assert_eq!(returned.overworld.map_name, "MnBoundarySafariC00R01");
+    assert_eq!(returned.overworld.mode, MovementMode::Surf);
+    assert!(
+        returned
+            .script_events
+            .memory
+            .contains_key(CANOE_ACTIVE_MEMORY)
+    );
+    assert_eq!(c.shell.shell.session().state().money, 1000);
+}
+
+#[test]
 #[ignore = "requires enabled current-parent CRYSTAL_INTERIOR_PACK Safari review"]
 fn safari_paid_lake_portages_cabin_seams_and_surf_continue() {
     let (root, runtime, mut c) = controller_fixture();

@@ -1856,13 +1856,13 @@
     },
     {
       "map": "MnStPaulFreightOffice",
-      "purpose": "Depot freight context without moving the original Team Lode manifest.",
+      "purpose": "An ordinary parcel counter for the train station.",
       "texts": [
         {
           "label": "MN_SPX_FREIGHTOFFICE_HOSTText",
           "lines": [
-            "The original manifest is inside UNION DEPOT. We keep this desk for questions about ordinary cargo.",
-            "Freight is somebody's seed order, medicine, or repair part before it is a line on our schedule."
+            "Set it on the scale, please.",
+            "If it rattles, I've got paper to wrap it in."
           ]
         }
       ],

@@ -1,0 +1,146 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F043",
+  "status": "regenerated-pair-native-review-pending",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_094": {
+      "species_id": "MN_094",
+      "name": "Wreckquiem",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          21,
+          24,
+          25
+        ],
+        [
+          12,
+          8,
+          7
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        26389,
+        7436,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          173,
+          198,
+          206
+        ],
+        [
+          99,
+          66,
+          57
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#ADC6CE",
+        "#634239",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f043/definition-20261103-v1/prompt-front.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-094-wreckquiem-definition-20261103-v1",
+      "species_id": "MN_094",
+      "view": "front",
+      "source": "sprites/mn-f043/definition-20261103-v1/front.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        1254,
+        1254
+      ],
+      "fit": [
+        54,
+        54
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        26389,
+        7436,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "pixel_edits": [
+        {
+          "x": 21,
+          "y": 14,
+          "from": 0,
+          "to": 3
+        },
+        {
+          "x": 22,
+          "y": 14,
+          "from": 0,
+          "to": 3
+        }
+      ]
+    },
+    {
+      "id": "mn-094-wreckquiem-definition-20261103-v1",
+      "species_id": "MN_094",
+      "view": "back",
+      "source": "sprites/mn-f043/definition-20261103-v1/back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        1254,
+        1254
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        26389,
+        7436,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed"
+    }
+  ],
+  "original_manifest": "sprites/mn-f043/manifest.json",
+  "original_style_reference": {
+    "origin": "authentic local Crystal sprites",
+    "generator": "crates/crystal-assets/examples/minnesota_gen2_reference.rs",
+    "boards": [
+      "target/minnesota-pokemon/gen2-reference/starters.png",
+      "target/minnesota-pokemon/gen2-reference/bugs.png"
+    ]
+  },
+  "scope": "Wreckquiem regenerated front and matching close rear portrait, with guarded native front highlight correction.",
+  "native_manual_fix": "At 56x56, replace two descending forehead-highlight pixels with the dark eye boundary. Source image and all other native pixels remain unchanged.",
+  "back_prompt_file": "sprites/mn-f043/definition-20261103-v1/prompt-back.txt"
+}

@@ -4,8 +4,10 @@ use std::sync::OnceLock;
 
 use anyhow::{Context, Result, ensure};
 use serde::Deserialize;
+use serde_json::Value;
 
 use crate::authored_dialogue::{self, AuthoredDialoguePage};
+use crate::grand_marais_modpack::authoring::command;
 use crate::{CompiledGamePack, MapModule};
 
 pub(crate) const MANIFEST: &str = "northstar-dialogue-overhaul-v1";
@@ -58,6 +60,249 @@ struct Revision {
     id: String,
     approved_parents: Vec<String>,
     texts: BTreeMap<String, BTreeMap<String, Vec<AuthoredDialoguePage>>>,
+}
+
+/// Applies canonical pages to plain text programs in an installed Northstar pack.
+///
+/// Returns the revised pack and the map and label of each conversation that
+/// needs separate staging because its installed program is missing, shared
+/// with differing text, or includes commands beyond ordinary text pagination.
+///
+/// # Errors
+/// Rejects invalid source pages, invalid regional packs, or invalid output.
+pub fn refresh_installed_northstar_story(
+    base: &CompiledGamePack,
+    source: &str,
+) -> Result<(CompiledGamePack, Vec<String>)> {
+    refresh_installed_story(base, source, InvestigationAccess::AcceptEvidenceEarly)
+}
+
+pub(crate) enum InvestigationAccess {
+    PreserveBadgeChecks,
+    AcceptEvidenceEarly,
+}
+
+pub(crate) fn refresh_installed_story(
+    base: &CompiledGamePack,
+    source: &str,
+    access: InvestigationAccess,
+) -> Result<(CompiledGamePack, Vec<String>)> {
+    crate::verify_compiled_game_pack_for_runtime(base)?;
+    crate::verify_northstar_publication_geometry(base)?;
+    crate::validate_compact_superior_geography(base)?;
+    let root: Value = serde_json::from_str(source)?;
+    let authored_texts = &root["dialogue_overhaul"]["texts"];
+    let revision: Revision = serde_json::from_value(root["dialogue_overhaul"].clone())
+        .context("canonical dialogue overhaul")?;
+    ensure!(
+        revision.schema_version == 1 && revision.id == MANIFEST,
+        "unsupported dialogue revision"
+    );
+
+    let mut pack = base.clone();
+    if let Some(pages) = revision
+        .texts
+        .get("MnStPaulUnionDepot")
+        .and_then(|texts| texts.get("MnNSTPMinaDeclinedText"))
+    {
+        crate::northstar_story_bridges::install_mina_refusal(&mut pack, pages)?;
+    }
+    if let Some(texts) = revision.texts.get("MnGrandMaraisFieldStation") {
+        crate::northstar_marais_part::install(&mut pack, texts)?;
+    }
+    if let Some(texts) = revision.texts.get("MnGrandMaraisLighthouse") {
+        crate::northstar_lighthouse_reward::install(&mut pack, texts)?;
+    }
+    if let Some(texts) = revision.texts.get("MnWinonaHome2F")
+        && pack.data.maps.contains_key("MnWinonaHome2F")
+    {
+        crate::northstar_opening_revision::install_cousin_dialogue(&mut pack, Some(texts))?;
+    }
+    if let Some(texts) = revision.texts.get("MnWinonaFieldStation")
+        && pack.data.maps.contains_key("MnWinonaFieldStation")
+    {
+        crate::northstar_opening_revision::install_tamarack_guidance(&mut pack, texts)?;
+    }
+    if let Some(texts) = revision.texts.get("MnRochesterPokecenter1F")
+        && pack.data.maps.contains_key("MnRochesterPokecenter1F")
+    {
+        crate::northstar_clinic_revision::install_ivy_reminders(&mut pack, texts)?;
+    }
+    if matches!(access, InvestigationAccess::AcceptEvidenceEarly) {
+        crate::northstar_story_pacing::install_headwaters(&mut pack)?;
+    }
+    crate::northstar_story_pacing::install_returns(&mut pack, Some(&revision.texts))?;
+    install_shop_greetings(&mut pack, &revision)?;
+    if let Some(texts) = revision.texts.get("MnMinneapolisBattleClub") {
+        crate::northstar_club_dialogue::install(&mut pack, texts)?;
+    }
+    if let Some(pages) = revision
+        .texts
+        .get("MnDuluthHarborWorkshop")
+        .and_then(|texts| texts.get("MnOverhaulHarborMissingLogText"))
+    {
+        crate::northstar_story_pacing::install_harbor_missing_log(&mut pack, pages)?;
+        if matches!(access, InvestigationAccess::AcceptEvidenceEarly) {
+            crate::northstar_story_pacing::install_harbor(&mut pack)?;
+        }
+    }
+    let mut deferred = Vec::new();
+    for (name, texts) in revision.texts {
+        let Some(map) = pack.data.maps.get_mut(&name) else {
+            deferred.extend(texts.keys().map(|label| format!("{name}/{label}")));
+            continue;
+        };
+        let mut changed = false;
+        for (label, pages) in texts {
+            let mut replacement = authored_dialogue::compile(&pages)
+                .with_context(|| format!("dialogue {name}/{label}"))?;
+            let Some(old) = map.scripts.get(&label).and_then(Value::as_array) else {
+                deferred.push(format!("{name}/{label}"));
+                continue;
+            };
+            // A shared label can change only when every installed owner
+            // has the same old script and requests the same new pages.
+            let conflicting_owner = base.data.maps.values().any(|other| {
+                other.id != name
+                    && other.scripts.get(&label).is_some_and(|body| {
+                        body != &map.scripts[&label]
+                            || authored_texts[&other.id][&label] != authored_texts[&name][&label]
+                    })
+            });
+            let Some((last, lines)) = old.split_last() else {
+                deferred.push(format!("{name}/{label}"));
+                continue;
+            };
+            if conflicting_owner
+                || !matches!(last["command"].as_str(), Some("done" | "prompt"))
+                || !lines.iter().all(|line| {
+                    matches!(
+                        line["command"].as_str(),
+                        Some("text" | "line" | "para" | "cont")
+                    )
+                })
+            {
+                deferred.push(format!("{name}/{label}"));
+                continue;
+            }
+            let terminal = replacement
+                .as_array_mut()
+                .and_then(|commands| commands.last_mut())
+                .expect("authored dialogue compiler always emits a terminator");
+            *terminal = last.clone();
+            if pack.data.map_scripts.get(&label).is_some_and(|body| {
+                body != &map.scripts[&label]
+                    && (body != &replacement
+                        || base.data.map_scripts.get(&label) != Some(&map.scripts[&label]))
+            }) {
+                deferred.push(format!("{name}/{label}"));
+                continue;
+            }
+            if let Some(mirror) = pack.data.map_scripts.get_mut(&label) {
+                *mirror = replacement.clone();
+            }
+            map.scripts.insert(label, replacement);
+            changed = true;
+        }
+        if changed {
+            map.script_text_commands = crate::parse_script_text_commands(&name, &map.scripts)?;
+            map.script_text_bodies = crate::parse_script_text_bodies(&name, &map.scripts)?;
+        }
+    }
+    pack.identity = crate::derive_compiled_game_pack_identity_from_manifest(
+        pack.format_version,
+        &pack.data,
+        &pack.audio_manifest,
+        &pack.runtime_files,
+        &pack.report,
+    )?;
+    crate::verify_compiled_game_pack_for_runtime(&pack)?;
+    Ok((pack, deferred))
+}
+
+fn install_shop_greetings(pack: &mut CompiledGamePack, revision: &Revision) -> Result<()> {
+    for (name, clerk) in [
+        ("MnMinneapolis", "MN_MP_MARKET_SNACK"),
+        ("MnMinneapolis", "MN_MP_MARKET_BERRY"),
+        ("MnMinneapolis", "MN_MP_MARKET_TRAIL"),
+        ("MnMinneapolisGardenShop", "MN_MP_GARDENSHOP_CLERK"),
+        ("MnMinneapolisSouthMarket", "MN_MP_SOUTHMARKET_CLERK"),
+        ("MnMinneapolisSupplyCoop", "MN_MP_SUPPLYCOOP_CLERK"),
+        ("MnStPaulFairFestivalMail", "MN_SPX_FAIRFESTIVALMAIL_HOST"),
+        ("MnStPaulFairGardenStand", "MN_SPX_FAIRGARDENSTAND_HOST"),
+        ("MnStPaulRiversideSupplies", "MN_SPX_RIVERSIDESUPPLIES_HOST"),
+        ("MnStCloudMart", "MN_ST_CLOUD_MART_CLERK"),
+        ("MnDetroitLakesMart", "MN_DETROIT_MART_CLERK"),
+        ("MnBrainerdMart", "MN_BRAINERD_MART_CLERK"),
+        ("MnBemidjiMart", "MN_BEMIDJI_CLERK"),
+        ("MnGrandRapidsMart", "MN_GR_MART_CLERK"),
+        ("MnDuluthMart", "MN_DULUTH_MART_CLERK"),
+        (
+            "MnDuluthCommunityKitchen",
+            "MN_DULUTH_X_COMMUNITYKITCHEN_F1_HOST",
+        ),
+        ("MnDuluthDockSupplies", "MN_DULUTH_X_DOCKSUPPLIES_F1_HOST"),
+        ("MnDuluthHillSupplies", "MN_DULUTH_X_HILLSUPPLIES_F1_HOST"),
+        ("MnDuluthLakeOutfitter", "MN_DULUTH_X_LAKEOUTFITTER_F1_HOST"),
+        ("MnDuluthMaritimeCoop1F", "MN_DULUTH_X_MARITIMECOOP_F1_HOST"),
+        ("MnDuluthMaritimeCoop2F", "MN_DULUTH_X_MARITIMECOOP_F2_HOST"),
+        (
+            "MnDuluthPointOutfitter",
+            "MN_DULUTH_X_POINTOUTFITTER_F1_HOST",
+        ),
+        ("MnDuluthToolExchange", "MN_DULUTH_X_TOOLEXCHANGE_F1_HOST"),
+        ("MnMinneapolisDepartmentStore1F", "MN_MP_DEPT_1_CLERK"),
+        ("MnMinneapolisDepartmentStore2F", "MN_MP_DEPT_2_CLERK"),
+        ("MnMinneapolisDepartmentStore3F", "MN_MP_DEPT_3_CLERK"),
+        ("MnMinneapolisDepartmentStore4F", "MN_MP_DEPT_4_CLERK"),
+        ("MnMinneapolisDepartmentStore5F", "MN_MP_DEPT_5_CLERK"),
+        ("MnMinneapolisMart", "MN_MP_MART_CLERK"),
+        ("MnStPaulFairBerrySnack", "MN_SPX_FAIRBERRYSNACK_HOST"),
+        ("MnStPaulFairFoodHall", "MN_SPX_FAIRFOODHALL_HOST"),
+        ("MnStPaulLowertownCafe", "MN_SPX_LOWERTOWNCAFE_HOST"),
+        ("MnStPaulLowertownCrafts", "MN_SPX_LOWERTOWNCRAFTS_HOST"),
+        ("MnStPaulMart", "MN_ST_PAUL_MART_CLERK"),
+        ("MnStPaulWestSeventhBakery", "MN_SPX_WESTSEVENTHBAKERY_HOST"),
+    ] {
+        let label = format!("{clerk}Text");
+        let Some(pages) = revision.texts.get(name).and_then(|texts| texts.get(&label)) else {
+            continue;
+        };
+        let Some(mut map) = pack.data.maps.get(name).cloned() else {
+            continue;
+        };
+        let script = map
+            .scripts
+            .get_mut(clerk)
+            .and_then(Value::as_array_mut)
+            .with_context(|| format!("missing shop interaction {name}/{clerk}"))?;
+        // A broad prose overlay may have installed the text program without
+        // connecting it to the clerk. Presence alone is not a staged greeting.
+        if script
+            .iter()
+            .any(|row| *row == command("writetext", &[&label]))
+        {
+            continue;
+        }
+        ensure!(
+            matches!(script.as_slice(), [face, open, mart, close, end]
+                if *face == command("faceplayer", &[])
+                    && *open == command("opentext", &[])
+                    && mart["command"] == "pokemart"
+                    && mart["args"][0] == "MARTTYPE_STANDARD"
+                    && *close == command("closetext", &[])
+                    && *end == command("end", &[])),
+            "changed shop interaction {name}/{clerk}"
+        );
+        script.splice(
+            2..2,
+            [command("writetext", &[&label]), command("waitbutton", &[])],
+        );
+        map.scripts
+            .insert(label, authored_dialogue::compile(pages)?);
+        publish(pack, map)?;
+    }
+    Ok(())
 }
 
 /// Revises the installed Minnesota story without rebuilding unrelated content.
@@ -138,6 +383,16 @@ fn install_revision(base: &CompiledGamePack, revision: Revision) -> Result<Compi
         .clone();
     crate::northstar_holding_fence::install(&mut pack, &mut holding)?;
     publish(&mut pack, holding)?;
+    install_shop_greetings(&mut pack, &revision)?;
+    if let Some(texts) = revision.texts.get("MnMinneapolisBattleClub") {
+        crate::northstar_club_dialogue::install(&mut pack, texts)?;
+    }
+    if let Some(texts) = revision.texts.get("MnGrandMaraisFieldStation") {
+        crate::northstar_marais_part::install(&mut pack, texts)?;
+    }
+    if let Some(texts) = revision.texts.get("MnGrandMaraisLighthouse") {
+        crate::northstar_lighthouse_reward::install(&mut pack, texts)?;
+    }
     for (name, texts) in revision.texts {
         ensure!(
             name.starts_with("Mn"),

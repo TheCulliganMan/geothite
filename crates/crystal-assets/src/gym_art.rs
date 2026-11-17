@@ -8,6 +8,14 @@ use crate::{CompiledGamePack, CompiledTilesetExtension, native_tile_png};
 
 /// Installs native glyphs, retaining source collision except declared wind slats.
 pub(crate) fn install(pack: &mut CompiledGamePack, gym: &Gym) -> Result<BTreeMap<char, u16>> {
+    ensure!(
+        !gym.wooden_port_deck || (gym.slot == 6 && gym.id == "MnBrainerdGym"),
+        "wooden Port deck is reserved for the Brainerd room"
+    );
+    ensure!(
+        gym.buoy_quadrants.is_empty() || gym.wooden_port_deck,
+        "floating barriers require the Brainerd dock room"
+    );
     let tileset_id = gym.tileset();
     ensure!(
         !pack.data.tilesets.contains_key(&tileset_id),
@@ -54,22 +62,60 @@ pub(crate) fn install(pack: &mut CompiledGamePack, gym: &Gym) -> Result<BTreeMap
             .context("source glyphs")?;
         let target_id = u16::try_from(symbols.len())?;
         let glyph_start = metatiles.len();
-        for glyph in source_blocks
+        for (position, glyph) in source_blocks
             .get(source_block * 16..(source_block + 1) * 16)
             .context("source block bounds")?
+            .iter()
+            .enumerate()
         {
-            let key = (source.as_str(), *glyph);
+            // Port's single brick-deck glyph is replaced in memory with the
+            // existing tower-plank glyph; water, rail, statue and carpet glyphs
+            // retain their native pixels and collision.
+            let quadrant = u8::try_from((position / 8) * 2 + (position % 4) / 2)?;
+            let buoy = position / 4 % 2 == 0
+                && gym
+                    .buoy_quadrants
+                    .get(symbol)
+                    .is_some_and(|q| q.contains(&quadrant));
+            let (glyph_source, glyph_index) = if buoy {
+                ensure!(source == "port", "buoy art requires Port water");
+                let buoy_block = files
+                    .get("data/tilesets/port_metatiles.bin")
+                    .context("native buoy art")?;
+                let offset = 0x02 * 16 + (position / 4 % 2) * 4 + position % 2;
+                (
+                    "port",
+                    *buoy_block.get(offset).context("native buoy glyph")?,
+                )
+            } else if gym.wooden_port_deck && source == "port" && *glyph == 0x05 {
+                ("tower", 0x02)
+            } else {
+                (source.as_str(), *glyph)
+            };
+            let key = (glyph_source, glyph_index);
             let target = if let Some(target) = relocated.get(&key) {
                 *target
             } else {
                 ensure!(next < 192, "selected gym art exceeds native glyph capacity");
-                let palette = source_definition.palette_map[usize::from(*glyph)];
-                let physical = if palette & 8 == 0 {
-                    usize::from(*glyph)
+                let glyph_definition = pack
+                    .data
+                    .tilesets
+                    .get(glyph_source)
+                    .context("glyph tileset definition")?;
+                let glyph_graphics = if glyph_source == source {
+                    source_graphics
                 } else {
-                    usize::from(*glyph & 0x7f) + source_graphics.len() / 32
+                    files
+                        .get(&format!("gfx/tilesets/{glyph_source}.2bpp"))
+                        .context("replacement glyph graphics")?
                 };
-                let pixels = source_graphics
+                let palette = glyph_definition.palette_map[usize::from(glyph_index)];
+                let physical = if palette & 8 == 0 {
+                    usize::from(glyph_index)
+                } else {
+                    usize::from(glyph_index & 0x7f) + glyph_graphics.len() / 32
+                };
+                let pixels = glyph_graphics
                     .get(physical * 16..(physical + 1) * 16)
                     .context("source glyph addressing")?;
                 let (logical, bank) = if next < 96 {
@@ -91,6 +137,15 @@ pub(crate) fn install(pack: &mut CompiledGamePack, gym: &Gym) -> Result<BTreeMap
             .get(id)
             .context("native source collision")?
             .clone();
+        if let Some(quadrants) = gym.buoy_quadrants.get(symbol) {
+            for quadrant in quadrants {
+                let permission = collision
+                    .get_mut(usize::from(*quadrant))
+                    .context("buoy quadrant")?;
+                ensure!(permission == "WATER", "buoy must replace native water");
+                *permission = "BUOY".into();
+            }
+        }
         if let Some(wind) = gym.winds.get(symbol) {
             ensure!(
                 source == "tower"

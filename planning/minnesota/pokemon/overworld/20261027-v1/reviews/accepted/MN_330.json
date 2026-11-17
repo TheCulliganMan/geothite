@@ -1,0 +1,94 @@
+{
+  "species_id": "MN_330",
+  "name": "Talursa",
+  "family_id": "MN_F150",
+  "dex_number": 202,
+  "status": "accepted",
+  "generation_tool": "built-in image_gen",
+  "selected_manifest": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f150/talursa.manifest-20261104-v3-features.json",
+    "sha256": "36a078e624fe97e30d4d4d45c2a3df61cbf368e82b77c5cdbae3b8ed9354fd9f",
+    "bytes": 1922
+  },
+  "sources": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f150/talursa.overworld.imagegen-20261104-v1.png",
+      "sha256": "56fa8bb0fbc658ec406ffb389edf846d13f2fda9c7d6d63d554eff5763323171",
+      "bytes": 1226883
+    }
+  ],
+  "prompts": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f150/talursa.overworld.prompt-20261104-v1.txt",
+      "sha256": "695fcee8cb94a07ddec979164761c6d803f751aae9c4dba450a80fca76a9d28e",
+      "bytes": 2654
+    }
+  ],
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/talursa-20261104-v3-features",
+  "normal_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/talursa-20261104-v3-features/review/talursa.normal-8x.png",
+    "sha256": "b7a5b5cee0a150a18d3fece7b7043900dda62ecb009534d8b138251609b0fc96",
+    "bytes": 9602
+  },
+  "shiny_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/talursa-20261104-v3-features/review/talursa.shiny-8x.png",
+    "sha256": "17a3caea89a4df1ff26e4960dc150564ea4e6dae093aaff32067bd96d3050854",
+    "bytes": 9605
+  },
+  "compiled_index": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/talursa-20261104-v3-features/compiled-index.json",
+    "sha256": "2e23ba00e27e0453af5b0d3bb693ba18fd481b914d8bc8399b3f14ddfcfbc457",
+    "bytes": 7930
+  },
+  "source_feature_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f150/talursa.source-feature-review-20261104-v3.json",
+    "sha256": "734cd23536df158cbbdeb34c7289429f0139a0c9ff4600511a9bf25ebd39a61d",
+    "bytes": 5311
+  },
+  "context_evidence": {
+    "directory": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-03",
+    "input_manifest": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-03/input-manifest.json",
+      "sha256": "e18330a1160c1ece35186004be00d5d3d6e7d59798289e301da0f3620c213c6c",
+      "bytes": 1150
+    },
+    "verification": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-03/verification.json",
+      "sha256": "fd365fe28b700321d3026b15de005ddbb61889bdecdeccdca8cf9024edafa081",
+      "bytes": 16830
+    },
+    "test_log": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/verification/all225-20261104-v5-03.log",
+      "sha256": "f556fa7ae716d6343c6f13c13cc8280e9824956caf11f5ceb4bd49a856570873",
+      "bytes": 217
+    },
+    "normal_actor_poses": 8,
+    "all_six_shiny_native_poses_verified": true
+  },
+  "root_visual_review": {
+    "accepted": true,
+    "notes": "Species-specific head, dark facial marks and themed body silhouette retained in front/profile. Rear poses show backs of ears/crest/head and the actual back/tail, without a pasted frontal face. Six distinct native poses, paired idle/step articulation and both palettes reviewed alongside the trainer on terrain."
+  },
+  "runtime_files": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/talursa/overworld.2bpp",
+      "sha256": "bded9bcdeae94db46025822de90409e3f715711de3ff03bf19a6eed105ae7876",
+      "bytes": 384
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/talursa/overworld.png",
+      "sha256": "075a3efdcd5f25dae5d46d946e476b5ec11f5c089189cf3d7703ef008b807490",
+      "bytes": 813
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/talursa/overworld.gbcpal",
+      "sha256": "5613db7adc654f83f53475b0dc0c499ac35d4476809a918f4d054e97389ad67a",
+      "bytes": 8
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/talursa/overworld-shiny.gbcpal",
+      "sha256": "f7c82578fa9717939f4a709afa30776fd186cdf673aa1c1be5600e8458636629",
+      "bytes": 8
+    }
+  ]
+}

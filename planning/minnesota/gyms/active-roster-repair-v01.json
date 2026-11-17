@@ -1,0 +1,149 @@
+{
+  "schema_version": 1,
+  "status": "Unselected active-roster repair for the eight-gym review pack; ordinary-party balance remains unverified.",
+  "replacements": [
+    {
+      "trainer": "MN_GYM_2",
+      "slot": 0,
+      "from": "GILLPUP",
+      "species": "CASTOROCK",
+      "level": 14,
+      "moves": [
+        "TACKLE",
+        "DEFENSE_CURL",
+        "ROCK_THROW",
+        "HEADBUTT"
+      ]
+    },
+    {
+      "trainer": "MN_GYM_2",
+      "slot": 1,
+      "from": "AUGRUB",
+      "species": "BURRBUD",
+      "level": 15,
+      "moves": [
+        "TACKLE",
+        "HARDEN",
+        "MEGA_DRAIN",
+        "GROWTH"
+      ]
+    },
+    {
+      "trainer": "MN_GYM_2_TRAINER_1",
+      "slot": 0,
+      "from": "AUGRUB",
+      "species": "SODCALF",
+      "level": 12,
+      "moves": [
+        "TACKLE",
+        "TAIL_WHIP",
+        "MUD_SLAP",
+        "HORN_ATTACK"
+      ]
+    },
+    {
+      "trainer": "MN_GYM_2_TRAINER_2",
+      "slot": 0,
+      "from": "GILLPUP",
+      "species": "CASTOROCK",
+      "level": 13,
+      "moves": [
+        "TACKLE",
+        "DEFENSE_CURL",
+        "ROCK_THROW",
+        "HEADBUTT"
+      ]
+    },
+    {
+      "trainer": "MN_GYM_5",
+      "slot": 0,
+      "from": "NOTCHBILL",
+      "species": "VANECHICK",
+      "level": 28,
+      "moves": [
+        "WING_ATTACK",
+        "THIEF",
+        "FAINT_ATTACK",
+        "SWAGGER"
+      ]
+    },
+    {
+      "trainer": "MN_GYM_5",
+      "slot": 2,
+      "from": "NOTCHBILL",
+      "species": "SILOHAWK",
+      "level": 30,
+      "moves": [
+        "SAND_ATTACK",
+        "WING_ATTACK",
+        "THIEF",
+        "FAINT_ATTACK"
+      ]
+    },
+    {
+      "trainer": "MN_GYM_5_TRAINER_1",
+      "slot": 0,
+      "from": "NOTCHBILL",
+      "species": "VANECHICK",
+      "level": 25,
+      "moves": [
+        "SAND_ATTACK",
+        "WING_ATTACK",
+        "THIEF",
+        "FAINT_ATTACK"
+      ]
+    },
+    {
+      "trainer": "MN_GYM_6",
+      "slot": 1,
+      "from": "MUDMENDER",
+      "species": "PIKEMAN",
+      "level": 34,
+      "moves": [
+        "WATER_GUN",
+        "AQUA_JET",
+        "LOW_KICK",
+        "SLAM"
+      ]
+    },
+    {
+      "trainer": "MN_GYM_6",
+      "slot": 2,
+      "from": "BUOYOSTIC",
+      "species": "PADDARRAY",
+      "level": 35,
+      "moves": [
+        "WATER_GUN",
+        "THUNDER_WAVE",
+        "SPARK",
+        "PSYBEAM"
+      ]
+    },
+    {
+      "trainer": "MN_GYM_6_TRAINER_2",
+      "slot": 0,
+      "from": "GILLPUP",
+      "species": "PIKEMAN",
+      "level": 31,
+      "moves": [
+        "WATER_GUN",
+        "AQUA_JET",
+        "LOW_KICK",
+        "SLAM"
+      ]
+    },
+    {
+      "trainer": "MN_GYM_6_TRAINER_2",
+      "slot": 1,
+      "from": "BOBCAST",
+      "species": "PINGLET",
+      "level": 31,
+      "moves": [
+        "THUNDERSHOCK",
+        "WATER_GUN",
+        "CONFUSION",
+        "SPARK"
+      ]
+    }
+  ]
+}

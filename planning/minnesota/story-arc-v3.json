@@ -3,103 +3,84 @@
   "id": "northstar-rival-arc-v3",
   "texts": {
     "MnNSEReedArrivalText": [
-      "REED: You got a partner for carrying a parcel?",
-      "I want a team that wins. And work that pays for it."
+      "REED: TAMARACK? Can you clear a spot? I've got something I can't set down sideways."
     ],
     "MnNSEReedAfterText": [
-      "People remember the trainer who wins.",
-      "You can keep doing their errands. I will find a better offer."
+      "REED: Can I leave it with you? I said I'd be back at the gate when the shift came up. I'd like to get there before they tell me there's no room."
     ],
     "MnArcRCWaitingText": [
-      "REED: I asked about a contract. They sent me to this waiting room."
+      "REED: VOSS asked what she could move. He didn't ask whether she'd done mine work. I should've asked him what he needed her for."
     ],
     "MnArcRCPathsText": [
-      "REED: They trusted you with the originals.",
-      "I asked for the escort job. They said I needed experience.",
-      "An ICE recruiter in Minneapolis did not ask for references. They pay for a team."
+      "REED: The foreman came up and said every spot on the drill was taken. A woman at the gate gave me a number. VOSS picked up. Asked how much rock my partner could shift. Said to bring her to MINNEAPOLIS."
     ],
     "MnArcRCChallengeText": [
-      "Show me what they saw in you. Battle?"
+      "REED: I said she could move more than me. He asked how much that was. I still don't know what he wants moved. You up for a match? I want to see what we've got before we go."
     ],
     "MnArcRCBeforeText": [
-      "REED: No one is going to carry me."
+      "REED: Come on, girl. Look at me when you're ready."
     ],
     "MnArcRCWonText": [
-      "A delivery does not make you better than me."
+      "REED: You got us. Easy, girl. Come over here. We'll let the nurse have a look before we walk to MINNEAPOLIS."
     ],
     "MnArcRCAfterText": [
-      "REED: My interview is at the dispatch office.",
-      "When I have a proper team, we will do this again."
+      "REED: We're staying till the nurse gives us the all clear. VOSS can wait. If he wants to see her move rock, he can tell me where and why."
     ],
     "MnArcRCDeclinedText": [
-      "REED: The nurse is right there. I can wait."
+      "REED: All right. We're staying a while anyway. Ask me again if you've got time."
     ],
     "MnNICEReedQuestionText": [
-      "REED: I came for the security interview.",
-      "And ELLIS? What did they do?"
+      "REED: You asked how much rock my partner could move. I thought you meant work at the mine. Wait. ELLIS? Is that you behind the door?"
     ],
     "MnNICEReedAcceptText": [
-      "REED: I heard him.",
-      "But I need work.",
-      "Pay me on Friday.",
-      "I will guard it."
+      "REED: HALE paid me for half a shift last time. I carried steel till dark. Put the whole day's pay on the table and I'll take the job."
     ],
     "MnNICEReedAfterText": [
-      "REED: You made me look useless in front of them.",
-      "LODE has a shipment at Union Depot. I am taking that escort.",
-      "You can take ELLIS home. Stay away from my next job."
+      "REED: VOSS can keep his badge. HALE said he'd be at UNION DEPOT in ST PAUL. I'll ask him for a turn on the drill myself."
     ],
     "MnNICEReedWonText": [
-      "You had to do that in front of everyone."
+      "REED: Fine. I'm stepping back. I stood here and battled you. That's what I'll tell VOSS. What you do with the switch is on you."
     ],
     "MnArcSPBeforeText": [
-      "REED: The crew and this load go north.",
-      "MINA: FINN needs that meter. He is not your cargo.",
-      "REED: He signed. Stay out of the aisle."
+      "REED: HALE says I get the next cut. He's finally letting me run the drill.",
+      "MINA: Did he tell you what happened to the last crew?",
+      "REED: He said the new pump could keep up.",
+      "MINA: I heard him say that about the old one."
     ],
     "MnArcSPReadyText": [
-      "REED: Get your team ready. I am not leaving without my load. Battle?"
+      "REED: I've carried steel since last winter. I'm taking my turn. You want a match before I go?"
     ],
     "MnArcSPDeclinedText": [
-      "MINA: Go to the clinic. I will keep him here."
+      "MINA: All right. I'm staying with the pump. If HALE comes for it, I want him to tell me what he promised the next crew."
     ],
     "MnArcSPWonText": [
-      "REED: The northbound load left while you were here.",
-      "They can still use me at the mine."
+      "REED: You beat me. That doesn't put you in charge of my shift.",
+      "MINA: No. HALE is. Ask him what he did when the water came up."
     ],
     "MnArcSPAfterText": [
-      "MINA: He did not take our copy. He cannot make us forget.",
-      "Let me tell you where FINN was sent."
+      "REED: I'll ask him what happened to the last crew. If he tells me the new pump can keep up, I'm asking how he knows."
     ],
     "MnArcSCBeforeText": [
-      "REED: That worker left a contracted shift. I am taking them back.",
-      "SERA: The lift cage jammed. I went for help.",
-      "REED: I decide what goes in the report."
+      "REED: HALE said you walked off your shift. He sent me to bring you back.",
+      "SERA: The cage jammed. FINN held the ladder while I climbed out. He stayed to hold it for the next person.",
+      "REED: He didn't tell me the cage was stuck.",
+      "SERA: Then let me call NELL and find out if she's got it free. There's a phone inside."
     ],
     "MnArcSCChoiceText": [
-      "SERA has not agreed to go with him. Stand beside SERA?"
+      "REED is between SERA and the path to the station. Stand with her?"
     ],
     "MnArcSCDeclinedText": [
-      "SERA: Please do not leave me alone with him."
+      "SERA: If you see the BRAINERD ranger, tell her the mine needs a winch. FINN was still below when I came up."
     ],
     "MnArcSCStandText": [
-      "You step between",
-      "REED and SERA.",
-      "SERA: I am going.",
-      "I will get help.",
-      "REED: Fine. Go."
+      "REED: Fine. Make your call. If HALE asks, you told me the cage was stuck.",
+      "SERA: It is, REED. You can tell him that yourself."
     ],
     "MnArcSCReleasedText": [
-      "SERA: I will tell",
-      "the clinic staff.",
-      "The other shift",
-      "needs help too."
+      "SERA: Thanks. I'll try NELL first. If she can't get the cage moving, I'll call the BRAINERD ranger for a winch."
     ],
     "MnArcSCAfterText": [
-      "SERA: I know who",
-      "was on that shift.",
-      "I'll tell a nurse",
-      "who is still held."
+      "SERA: NELL was at the shaft when I came up. If you get there before I get through to her, ask whether she's heard from FINN."
     ],
     "MnNDrillReedWorkText": [
       "REED: I signed for this run. Keep the drive moving."
@@ -127,22 +108,20 @@
       "a stronger team."
     ],
     "MnArcHarborIntakeText": [
-      "WORKER: That is a locking cradle.",
       "The radio crackles.",
-      "IVY: I found my crew at the intake. We cannot clear it while the drive runs.",
-      "Send the live readings. ELLIS will hold the line."
+      "IVY: Harbor, it's IVY. I'm at the intake. The drill's still turning and the crew can't get past it.",
+      "Send the readings to the shelter. I'll listen here."
     ],
     "MnArcLinkReadyText": [
-      "The chief cannot stop you using the receiver now.",
-      "Send the live readings to ELLIS and the intake crew?"
+      "Hale steps away from the receiver.",
+      "Send the pump readings to ELLIS and IVY?"
     ],
     "MnArcLinkText": [
-      "ELLIS: I have the readings. JO is beside me.",
-      "IVY: The intake is still live. REED has the local drive.",
-      "ELLIS: I can hold the public line. Go through the service hatch. We will stay with you."
+      "ELLIS: I have both readings. I'll stay on the radio.",
+      "IVY: REED's still by the drive. Come down through the service hatch. Stop at the landing and call to me before you go any farther."
     ],
     "MnArcLinkAfterText": [
-      "ELLIS: The intake crew is waiting. The hatch is on your right."
+      "IVY: Shelter, leave the hatch open. FINN's bringing the crew up on foot. If the trainer's coming down, tell them to stop at the landing. I'm by the controls."
     ],
     "MnArcFinalBeforeText": [
       "REED: The chief",
@@ -189,13 +168,13 @@
       "IVY: The pull has eased. The crew can cross."
     ],
     "MnArcIntakeCrewText": [
-      "FINN: The last crew is clear. NELL knows we are out.",
-      "ELLIS: I have the pump crews. North line off. South line off.",
-      "JO: Tell them they can come home."
+      "FINN: That's the last one up. I'll call NELL and give her the names.",
+      "ELLIS: I've got both pump crews. North line's off. South line's off too.",
+      "JO: Tell them we'll be here when they get back."
     ],
     "MnArcIntakeReedExitText": [
-      "IVY: Leave the badge here. You cannot use it on anyone else.",
-      "REED: It was their badge. They can come and collect it."
+      "IVY: Leave the badge on the rail, REED. You'll need both hands on the stairs.",
+      "REED: Here. If VOSS wants it back, he can come down for it."
     ],
     "MnArcIntakeDoneText": [
       "The current settles. The lakes are no longer feeding the pumps.",
@@ -219,40 +198,31 @@
       "Do not ask me to thank you."
     ],
     "MnArcSeraWaitingText": [
-      "SERA: I left the lift to find help. REED followed me here."
+      "SERA: I started up with the lamp. FINN called for me to leave it. I set it back on the rung and saw two hands reach out. I couldn't see who was behind him."
     ],
     "MnArcTamarackAfterText": [
-      "TAMARACK: The river eggs are back in warm nests.",
-      "One journey did not fix every bank. It gave us time to care for them."
+      "TAMARACK: The crew's safe. IVY called from the shelter. I checked the nest by the river after we hung up. The water's still below it. I left my waders out for tomorrow."
     ],
     "MnArcEllisAfterText": [
-      "ELLIS: The crew calls come here now. No one has to ask ICE for a line.",
-      "JO kept the kettle on through the last shutdown call.",
-      "We will do the work of putting this right."
+      "ELLIS: I tried taking a night call again. Couldn't stand the sound of the phone in that empty room. The new dispatcher sat with me till the next one came."
     ],
     "MnArcJoAfterText": [
-      "JO: ELLIS finally slept.",
-      "The light stays on for the crews coming home."
+      "JO: ELLIS used to leave his boots pointing at the door. He still does when he's had a bad night. This morning I found them under the table."
     ],
     "MnArcMinaAfterText": [
-      "MINA: FINN called from the intake. They let the last crew out.",
-      "You can sit down this time. I will carry the next message."
+      "MINA: I heard FINN on the shelter radio. He asked if the old pump could be fixed. I said the ring was still in two pieces. Neither of us had anything to say for a while."
     ],
     "MnArcNellAfterText": [
-      "NELL: FINN is coming home after the intake shift.",
-      "We are not going to talk about work tonight."
+      "NELL: I heard FINN give the count. He always starts at the bottom of the ladder and works up. I could tell who was on each step just by the order he said their names."
     ],
     "MnArcHabitatText": [
-      "The GILLPUP huddles away from the dry channel.",
-      "IVY: The test pulled the water out from under its nest.",
-      "My crew went to check the gauge. They have not called back."
+      "AIDE: That's GILLPUP. I found it in a nest on the dry bank. The mud was still damp underneath. It backed away when I reached for it, so I set a basin down and gave it room. It climbed in by itself."
     ],
     "MnArcHabitatAfterText": [
-      "IVY: The water is holding now. That GILLPUP went back to its nest."
+      "AIDE: GILLPUP used to sleep with its chin on the rim. Look. It's all the way in the basin now. I'll ask IVY to look at the bank with me before we take it home."
     ],
     "MnArcSPBattleText": [
-      "REED: Move MINA away from the load.",
-      "MINA: I am staying here."
+      "REED: Back from the loading step. We've got room here on the platform."
     ]
   },
   "scene_contracts": [
@@ -345,7 +315,7 @@
           19
         ]
       ],
-      "seen": "Open your bag. We decide what counts as evidence."
+      "seen": "Put your PACK down. VOSS told me to take anything with a crew name on it. He made me open a lunch tin because somebody had scratched their initials in the lid."
     },
     {
       "map": "MnIceCargoBasement",
@@ -366,7 +336,7 @@
           19
         ]
       ],
-      "seen": "The passenger list travels with the ore."
+      "seen": "ICE: Somebody scratched a name into that crate. VOSS made me sand it off. Said if I wanted to ask whose it was, he'd put my name there instead. Back away."
     },
     {
       "map": "MnIceOperations",
@@ -387,7 +357,7 @@
           19
         ]
       ],
-      "seen": "I sent the van. I knew who was inside."
+      "seen": "ELLIS asked me for the phone. I put his name on the board so the next shift would know he was waiting. VOSS wiped it off in front of me. Step away from the board."
     },
     {
       "map": "MnIceOperations",
@@ -408,7 +378,7 @@
           20
         ]
       ],
-      "seen": "A closed office is still our office."
+      "seen": "Stay here. The last person who came down asking about a name got taken through that door. I watched him go in. I can't tell you where he went after that."
     },
     {
       "map": "MnIceRecords",
@@ -429,7 +399,7 @@
           21
         ]
       ],
-      "seen": "A complaint is a name and an address. Useful things."
+      "seen": "I used to take names at this desk. The last man who gave me his asked if he could go home for his coat. VOSS took him through before I could answer. What do you want?"
     },
     {
       "map": "MnIceMaintenance",
@@ -450,7 +420,7 @@
           21
         ]
       ],
-      "seen": "I keep their vans running. They keep me paid."
+      "seen": "They brought me this latch and told me to take the handle off the inside. I asked which door it was for. They told me to mind my tools. Get out of the bay."
     },
     {
       "map": "MnIceTransfer",
@@ -471,7 +441,7 @@
           21
         ]
       ],
-      "seen": "No calls. No visitors. Keep walking."
+      "seen": "The last person they brought down asked me to leave the back door open. I shut it. Now I'm waiting for the van again. Get back from the landing."
     },
     {
       "map": "MnIceRelayFloor",
@@ -492,7 +462,7 @@
           21
         ]
       ],
-      "seen": "You are not getting a signal out."
+      "seen": "See the light on that relay? If it goes out, the bolt upstairs lets go. VOSS made me stand here and watch it. Hands off."
     },
     {
       "map": "MnIronDrillApproach",
@@ -513,7 +483,7 @@
           36
         ]
       ],
-      "seen": "The notices went up after we started. That is your warning."
+      "seen": "The drill shook the warning sign right off its post. The foreman sent me out to stand where it was. You're going back."
     },
     {
       "map": "MnIronDrillApproach",
@@ -534,7 +504,7 @@
           36
         ]
       ],
-      "seen": "The runoff goes downhill. So do the complaints."
+      "seen": "LODE: HALE told me to cut a ditch through the waste rock. I hit ledge and the water went under the path. I poked it with a shovel and the whole edge gave. That's why I'm standing here."
     },
     {
       "map": "MnIronHaulage",
@@ -555,7 +525,7 @@
           37
         ]
       ],
-      "seen": "Every loaded truck has a bonus on it. Move."
+      "seen": "LODE: HALE saw copper in this and told us to keep cutting. I broke it off the face this morning. The back came away in my hand. He's only seen the shiny side."
     },
     {
       "map": "MnIronHaulage",
@@ -576,7 +546,7 @@
           37
         ]
       ],
-      "seen": "There is no stop code on my orders."
+      "seen": "There's a slab caught under the belt. HALE says to try starting it. Last time a piece shot back and took the lamp off my helmet. Stand clear."
     },
     {
       "map": "MnIronPumpGallery",
@@ -597,7 +567,7 @@
           38
         ]
       ],
-      "seen": "The gauges are red. The pumps stay on."
+      "seen": "Gauge hit red. The office asked if the bell rang. I said no. They told me to keep the pump running. You want to put your name on shutting it off?"
     },
     {
       "map": "MnIronPumpGallery",
@@ -618,7 +588,7 @@
           38
         ]
       ],
-      "seen": "Nobody measures the water until we finish."
+      "seen": "LODE: Mind the jar. I filled it when the water first came up through the cut. Foreman said it was mud. I've been waiting to see what settled. Keep off this side of the rail."
     },
     {
       "map": "MnIronSump",
@@ -639,7 +609,7 @@
           39
         ]
       ],
-      "seen": "That water was clear when we got here. So what?"
+      "seen": "LODE: Stay back from the edge. Yesterday I could see the bottom. This morning the water covered the white stripe on my pole. I marked that stripe so I'd know when to get help."
     },
     {
       "map": "MnIronSump",
@@ -660,7 +630,7 @@
           38
         ]
       ],
-      "seen": "They can drink bottled water. We have a deadline."
+      "seen": "LODE: HALE told me to open the drain. I've stood at the other end of that pipe. It's right by the boat landing. He can come turn it himself if he wants it open."
     },
     {
       "map": "MnIronVentilation",
@@ -681,7 +651,7 @@
           39
         ]
       ],
-      "seen": "The crew asked for air. Management asked for output."
+      "seen": "The fan cut out twice this shift. Both times the dust stayed right where we were cutting. Wait here till you can see the far steps."
     },
     {
       "map": "MnIronVentilation",
@@ -702,7 +672,7 @@
           39
         ]
       ],
-      "seen": "My shift ends when that vein is empty."
+      "seen": "LODE: My lamp's going. If you're from the surface, stay put. The last blast knocked a chunk out of the roof just past me."
     },
     {
       "map": "MnIronDrillCore",
@@ -723,7 +693,7 @@
           40
         ]
       ],
-      "seen": "We heard them calling from the lower shaft."
+      "seen": "LODE: The foreman said to wait for the cage. I brought rope anyway. Hear that scrape? That's the cable winding without the cage. Keep back."
     },
     {
       "map": "MnIronDrillCore",
@@ -744,7 +714,7 @@
           40
         ]
       ],
-      "seen": "The boss said to keep people away. That includes the crew."
+      "seen": "LODE: Two names still on the shift board. I heard somebody helping both of them down there. If there's a third name, I want to hear it before anybody tells me we're clear."
     },
     {
       "map": "MnBoundaryIntake",
@@ -765,7 +735,7 @@
           42
         ]
       ],
-      "seen": "No names. No report. You came here alone."
+      "seen": "ICE: Stop at the rail. Somebody called from below. I caught the first word before the drill started up again. If you can hear the rest from there, tell me."
     },
     {
       "map": "MnBoundaryIntake",
@@ -786,7 +756,7 @@
           42
         ]
       ],
-      "seen": "The water leaves. The minerals stay. That is the contract."
+      "seen": "LODE: HALE told me to keep cutting wherever I saw copper. I can still see it from here. I can also see the water reach the rail. Keep to the steps."
     },
     {
       "map": "MnBoundaryIntake",
@@ -811,7 +781,7 @@
           42
         ]
       ],
-      "seen": "We took the people who could identify the site."
+      "seen": "ICE: I felt this rail kick when they started the pump. The man on the radio told me it always does that. I've stood here all week. It doesn't. Back up."
     },
     {
       "map": "MnBoundaryIntake",
@@ -836,7 +806,7 @@
           42
         ]
       ],
-      "seen": "They promised protection. We promised production."
+      "seen": "LODE: I put a pencil mark where the needle was. See it? That pipe's jumping and the needle hasn't left the mark. Keep your hands off the panel."
     }
   ]
 }

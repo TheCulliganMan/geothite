@@ -12,7 +12,7 @@ use super::super::lake_country_story::try_road_with;
 use super::{VisibleShellController, care, enter_road, return_to_city, supplies};
 
 fn grass(r: &CrystalRuntime) -> [(i16, i16); 2] {
-    let grid = RouteGrid::new_with_grass(
+    let grid = RouteGrid::new_for_battles(
         r,
         RouteSpec {
             prefix: "MnR05",
@@ -38,7 +38,9 @@ fn grass(r: &CrystalRuntime) -> [(i16, i16); 2] {
         })
         .collect::<Vec<_>>();
     available.sort_by_key(|&(x, y)| (x.abs_diff(24) + y.unsigned_abs(), x, y));
-    [available[0], available[1]]
+    *available
+        .first_chunk()
+        .expect("two reachable Route 5 grass tiles")
 }
 
 /// Search the actual time-dependent table and catch a local Electric/Psychic
@@ -106,7 +108,7 @@ pub(super) fn train(
     root: &AssetRoot,
     level: u8,
 ) {
-    let targets = grass(r);
+    let mut targets = None;
     for outing in 0..48 {
         if c.snapshot().expect("earned level").party.slots[0]
             .pokemon
@@ -115,6 +117,7 @@ pub(super) fn train(
         {
             return;
         }
+        let targets = targets.get_or_insert_with(|| grass(r));
         care(c, r);
         enter_road(c, r);
         let mut fought = false;

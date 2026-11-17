@@ -1,0 +1,94 @@
+{
+  "species_id": "MN_291",
+  "name": "Mudnip",
+  "family_id": "MN_F132",
+  "dex_number": 48,
+  "status": "accepted",
+  "generation_tool": "built-in image_gen",
+  "selected_manifest": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f132/mudnip.manifest-20261104-v3-features.json",
+    "sha256": "5cc932d6384917b3ffd580c1f8f61d7417edafb664d20f88ece1570cde682467",
+    "bytes": 1916
+  },
+  "sources": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f132/mudnip.overworld.imagegen-20261104-v3.png",
+      "sha256": "863971a81e4c40ddce0bcbd0caa86d41c6bbff5a49584a5787d1aea57b93f900",
+      "bytes": 1014390
+    }
+  ],
+  "prompts": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f132/mudnip.overworld.prompt-20261104-v3.txt",
+      "sha256": "83b7de365c6ddc17d6a56d1084544d72a800f350816eeda32c05d243b567f42c",
+      "bytes": 1545
+    }
+  ],
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mudnip-20261104-v3-features",
+  "normal_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mudnip-20261104-v3-features/review/mudnip.normal-8x.png",
+    "sha256": "e5159cf117382a7910bc036379b699b703b6a9a60a76f4470e11d8fc3e9b01e4",
+    "bytes": 8713
+  },
+  "shiny_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mudnip-20261104-v3-features/review/mudnip.shiny-8x.png",
+    "sha256": "36fcd210bf628c6e23fa877c65b0e994bb198dc0400588052e60d7518449f6f2",
+    "bytes": 8713
+  },
+  "compiled_index": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mudnip-20261104-v3-features/compiled-index.json",
+    "sha256": "187867b53d5d7e0330300655f04a82d8fe33734331a506c86f259868abac7729",
+    "bytes": 7928
+  },
+  "source_feature_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f132/mudnip.source-feature-review-20261104-v3.json",
+    "sha256": "528e19006f6713f1facd63ab95098dd23e715f634b46aa402350678eb79b0b62",
+    "bytes": 5003
+  },
+  "context_evidence": {
+    "directory": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-01",
+    "input_manifest": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-01/input-manifest.json",
+      "sha256": "ffeb8afcd879f59e506ec0338a37128e322b23baa7378c0a66b664db5564083e",
+      "bytes": 1152
+    },
+    "verification": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-01/verification.json",
+      "sha256": "1e9dd46aa7e66018650cac2a456e2935e6d8a7f28072d5fe36819d8991542a66",
+      "bytes": 16840
+    },
+    "test_log": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/verification/all225-20261104-v5-01.log",
+      "sha256": "0e1ad30a0d8e98e2431b49f4e9a8aff62a0352430d7171451425c4d742d8b942",
+      "bytes": 217
+    },
+    "normal_actor_poses": 8,
+    "all_six_shiny_native_poses_verified": true
+  },
+  "root_visual_review": {
+    "accepted": true,
+    "notes": "Low snapping-turtle face beneath a terraced shell overhang, splayed forefeet and distinct true rear shell; side has hooked beak and saw tail. Six distinct native poses, paired idle/step articulation and both palettes reviewed alongside the trainer on terrain."
+  },
+  "runtime_files": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/mudnip/overworld.2bpp",
+      "sha256": "9d956899e9b6ccca05969abfa47dbcdf9b913976e2e79a2b23ec75c0b18fd82f",
+      "bytes": 384
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/mudnip/overworld.png",
+      "sha256": "924daf5833b1f0a8d0f9cc0e2f99cca0b82f63478f7c391314eed78f6d2aac29",
+      "bytes": 733
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/mudnip/overworld.gbcpal",
+      "sha256": "d0006e78c115ca4f8d1e3f7051133ed6d8c7ddf0b2758fa74bad377f89d1fd6b",
+      "bytes": 8
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/mudnip/overworld-shiny.gbcpal",
+      "sha256": "de8f12581da5e69547fb7f7b501cec58d6a568b449a4b1e049b56e09f92d116a",
+      "bytes": 8
+    }
+  ]
+}

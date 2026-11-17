@@ -1,0 +1,94 @@
+{
+  "species_id": "MN_190",
+  "name": "Dynarill",
+  "family_id": "MN_F088",
+  "dex_number": 102,
+  "status": "accepted",
+  "generation_tool": "built-in image_gen",
+  "selected_manifest": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f088/dynarill.manifest-20261104-v3-features.json",
+    "sha256": "c2457befbc84ed5257537840e8b03fd68e06856a0152b6c540c8d37c05b612ff",
+    "bytes": 1929
+  },
+  "sources": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f088/dynarill.overworld.imagegen-20261104-v3.png",
+      "sha256": "26320c01c8aab553e693a8eb904768dee0123d059cf603bfb0c49a3abaa7bb2d",
+      "bytes": 1253252
+    }
+  ],
+  "prompts": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f088/dynarill.overworld.prompt-20261104-v3.txt",
+      "sha256": "04ab4ddb3b34bc0fa2a4ba275862530b1de833ad023219d2c47242598cac5d17",
+      "bytes": 1477
+    }
+  ],
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/dynarill-20261104-v3-features",
+  "normal_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/dynarill-20261104-v3-features/review/dynarill.normal-8x.png",
+    "sha256": "42fb7e276b8c06e48309b393d56c6f40d74b94b8b6b20f19c203bab9ec7333c3",
+    "bytes": 9885
+  },
+  "shiny_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/dynarill-20261104-v3-features/review/dynarill.shiny-8x.png",
+    "sha256": "09d5267c7f2dec9c56f78a9259b8c87b47b4bd1f12111e1f38359c4258ddaea1",
+    "bytes": 9885
+  },
+  "compiled_index": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/dynarill-20261104-v3-features/compiled-index.json",
+    "sha256": "b21bd0d42ffb44c4b2cf0223494ada6e151e68a08f0b9e73a8083240ad623718",
+    "bytes": 7936
+  },
+  "source_feature_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f088/dynarill.source-feature-review-20261104-v3.json",
+    "sha256": "b329285359d87efb068017dead7a4895412a970af85e0fae3f6d541cfc20708c",
+    "bytes": 5089
+  },
+  "context_evidence": {
+    "directory": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-01",
+    "input_manifest": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-01/input-manifest.json",
+      "sha256": "ffeb8afcd879f59e506ec0338a37128e322b23baa7378c0a66b664db5564083e",
+      "bytes": 1152
+    },
+    "verification": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-01/verification.json",
+      "sha256": "1e9dd46aa7e66018650cac2a456e2935e6d8a7f28072d5fe36819d8991542a66",
+      "bytes": 16840
+    },
+    "test_log": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/verification/all225-20261104-v5-01.log",
+      "sha256": "0e1ad30a0d8e98e2431b49f4e9a8aff62a0352430d7171451425c4d742d8b942",
+      "bytes": 217
+    },
+    "normal_actor_poses": 8,
+    "all_six_shiny_native_poses_verified": true
+  },
+  "root_visual_review": {
+    "accepted": true,
+    "notes": "Downward facing scoop/wrist-runner/crest anatomy and curled paddle tail; side view keeps the snout and profile mark; back shows the dorsal crest and tail. Six distinct native poses, paired idle/step articulation and both palettes reviewed alongside the trainer on terrain."
+  },
+  "runtime_files": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/dynarill/overworld.2bpp",
+      "sha256": "b0e87ee43038c27ea3e58a4727fefcd150782216551c30b0c89140b60de61cdc",
+      "bytes": 384
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/dynarill/overworld.png",
+      "sha256": "d841cf94767bff00058fdc4aaaf5e23b1418de821a8dfcb252d7cb706c49d672",
+      "bytes": 891
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/dynarill/overworld.gbcpal",
+      "sha256": "0af888e3dd2b3a81fdb4a6005e2585aeacdaa8dd947dd5b6983e9d066f474075",
+      "bytes": 8
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/dynarill/overworld-shiny.gbcpal",
+      "sha256": "99228c4c03d6bf6acb95870b75fe63ccaa2cc49db3048a700a60ada4a25a15ab",
+      "bytes": 8
+    }
+  ]
+}

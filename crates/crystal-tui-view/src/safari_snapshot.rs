@@ -3,7 +3,6 @@
 use crystal_runtime::RuntimeShellSnapshot;
 use crystal_runtime::core::systems::safari::SafariPhase;
 use crystal_runtime::core::systems::safari_catch_presentation::SafariCatchStage as Stage;
-use crystal_runtime::core::systems::safari_prompt::SafariPromptKind;
 
 use super::{LineKind, SnapshotLine};
 
@@ -151,23 +150,17 @@ pub(super) fn dialogue(source: &RuntimeShellSnapshot) -> Option<Vec<SnapshotLine
         });
     }
     if let Some(prompt) = &source.safari_prompt {
-        return Some(lines(match prompt.kind {
-            SafariPromptKind::Admission => {
-                vec!["Enter for 500?".into(), "30 BALLS, 500 STEPS.".into()]
-            }
-            SafariPromptKind::Retire => {
-                vec!["End the expedition?".into(), "Your catches stay.".into()]
-            }
-        }));
+        return Some(lines(crystal_runtime::safari_ranger_prompt_lines(
+            prompt.kind,
+        )));
     }
     match &source.safari.as_ref()?.phase {
         SafariPhase::Presenting { encounter, result } => Some(lines(
             crystal_runtime::safari_result_lines(encounter, result),
         )),
-        SafariPhase::Ending(_) => Some(lines(vec![
-            "Expedition over!".into(),
-            "Return to basecamp.".into(),
-        ])),
+        SafariPhase::Ending(reason) => Some(lines(
+            crystal_runtime::safari_ending_lines(*reason).map(str::to_owned),
+        )),
         _ => None,
     }
 }

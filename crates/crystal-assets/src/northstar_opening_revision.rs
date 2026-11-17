@@ -1,7 +1,7 @@
 //! Staged family departure, professor introduction, starter handover,
 //! Pokégear & Pokédex handoff, Winona trail wardens, bedroom cousin tracker,
 //! progressive Tamarack guidance, and Route 01 cliff fossil hunter.
-use std::collections::BTreeSet;
+use std::collections::{BTreeMap, BTreeSet};
 
 use anyhow::{Context, Result, ensure};
 use crystal_core::map::{CoordEvent, MapScene, MapScriptSectionCommand};
@@ -333,13 +333,13 @@ pub(crate) fn install_door_approaches(room: &mut MapModule) {
 }
 
 pub(crate) fn install_home_2f(pack: &mut CompiledGamePack) -> Result<()> {
-    let mut room = map(pack, "MnWinonaHome2F")?;
-    ensure!(
-        room.objects
-            .iter()
-            .any(|o| o.script == "MN_SMALL_INTERIOR_WINONA_COUSIN"),
-        "Winona bedroom cousin actor required"
-    );
+    install_cousin_dialogue(pack, None)
+}
+
+pub(crate) fn install_cousin_dialogue(
+    pack: &mut CompiledGamePack,
+    reviewed_texts: Option<&BTreeMap<String, Vec<AuthoredDialoguePage>>>,
+) -> Result<()> {
     let stages = [
         (
             "EVENT_MN_LEAGUE_CHAMPION",
@@ -382,18 +382,45 @@ pub(crate) fn install_home_2f(pack: &mut CompiledGamePack) -> Result<()> {
             "MnWinonaCousinStarterText",
         ),
     ];
+    if reviewed_texts.is_some_and(|texts| {
+        stages
+            .iter()
+            .any(|(_, _, label)| !texts.contains_key(*label))
+    }) {
+        return Ok(());
+    }
+    let mut room = map(pack, "MnWinonaHome2F")?;
+    ensure!(
+        room.objects
+            .iter()
+            .any(|o| o.script == "MN_SMALL_INTERIOR_WINONA_COUSIN"),
+        "Winona bedroom cousin actor required"
+    );
     let mut dispatch = vec![c("faceplayer", &[])];
     for (flag, branch, text_label) in stages {
         dispatch.push(c("checkevent", &[flag]));
         dispatch.push(c("iftrue", &[branch]));
         put(&mut room, branch, vec![c("jumptext", &[text_label])]);
-        authored_dialogue::install_canonical(&mut room, text_label)?;
+        if let Some(texts) = reviewed_texts {
+            let pages = texts
+                .get(text_label)
+                .with_context(|| format!("missing Winona cousin dialogue {text_label}"))?;
+            room.scripts
+                .insert(text_label.into(), authored_dialogue::compile(pages)?);
+        } else {
+            authored_dialogue::install_canonical(&mut room, text_label)?;
+        }
     }
     dispatch.push(c(
         "jumptext",
         &["MN_SMALL_INTERIOR_WINONA_COUSINInteriorText"],
     ));
-    authored_dialogue::install_canonical(&mut room, "MN_SMALL_INTERIOR_WINONA_COUSINInteriorText")?;
+    if reviewed_texts.is_none() {
+        authored_dialogue::install_canonical(
+            &mut room,
+            "MN_SMALL_INTERIOR_WINONA_COUSINInteriorText",
+        )?;
+    }
     put(&mut room, "MN_SMALL_INTERIOR_WINONA_COUSIN", dispatch);
     publish(pack, room)
 }
@@ -914,6 +941,27 @@ pub(crate) fn apply_field_station_upgrades(
         }
     }
 
+    apply_tamarack_guidance(room, changed, None)
+}
+
+pub(crate) fn install_tamarack_guidance(
+    pack: &mut CompiledGamePack,
+    reviewed_texts: &BTreeMap<String, Vec<AuthoredDialoguePage>>,
+) -> Result<()> {
+    let mut room = map(pack, "MnWinonaFieldStation")?;
+    let mut changed = BTreeSet::new();
+    apply_tamarack_guidance(&mut room, &mut changed, Some(reviewed_texts))?;
+    if !changed.is_empty() {
+        publish(pack, room)?;
+    }
+    Ok(())
+}
+
+fn apply_tamarack_guidance(
+    room: &mut MapModule,
+    changed: &mut BTreeSet<String>,
+    reviewed_texts: Option<&BTreeMap<String, Vec<AuthoredDialoguePage>>>,
+) -> Result<()> {
     // Progressive guidance from Dr. Tamarack as milestones are completed.
     let guidance_stages = [
         (
@@ -972,26 +1020,43 @@ pub(crate) fn apply_field_station_upgrades(
             "MnWTamarackGuideStPaulText",
         ),
     ];
+    if reviewed_texts.is_some_and(|texts| {
+        guidance_stages
+            .iter()
+            .any(|(_, _, label)| !texts.contains_key(*label))
+    }) {
+        return Ok(());
+    }
     let mut post_egg_dispatch = vec![c("faceplayer", &[])];
     for (flag, branch, text_label) in guidance_stages {
         post_egg_dispatch.push(c("checkevent", &[flag]));
         post_egg_dispatch.push(c("iftrue", &[branch]));
-        put(
-            room,
-            branch,
-            vec![
-                c("opentext", &[]),
-                c("writetext", &[text_label]),
-                c("waitbutton", &[]),
-                c("closetext", &[]),
-                c("special", &["HealParty"]),
-                c("checkevent", &["EVENT_MN_TAMARACK_EGG_RECEIVED"]),
-                c("iftrue", &["MnNSEEnd"]),
-                c("scall", &["MnNSEEggOffer"]),
-                c("end", &[]),
-            ],
-        );
-        authored_dialogue::install_canonical(room, text_label)?;
+        let mut commands = vec![
+            c("opentext", &[]),
+            c("writetext", &[text_label]),
+            c("waitbutton", &[]),
+            c("closetext", &[]),
+            c("special", &["HealParty"]),
+        ];
+        if reviewed_texts.is_some() {
+            commands.push(c("scall", &["MnWSupplies"]));
+        }
+        commands.extend([
+            c("checkevent", &["EVENT_MN_TAMARACK_EGG_RECEIVED"]),
+            c("iftrue", &["MnNSEEnd"]),
+            c("scall", &["MnNSEEggOffer"]),
+            c("end", &[]),
+        ]);
+        put(room, branch, commands);
+        if let Some(texts) = reviewed_texts {
+            let pages = texts
+                .get(text_label)
+                .with_context(|| format!("missing Tamarack dialogue {text_label}"))?;
+            room.scripts
+                .insert(text_label.into(), authored_dialogue::compile(pages)?);
+        } else {
+            authored_dialogue::install_canonical(room, text_label)?;
+        }
         changed.insert(branch.into());
         changed.insert(text_label.into());
     }
@@ -1040,7 +1105,9 @@ pub(crate) fn apply_field_station_upgrades(
             .get_mut(label)
             .and_then(Value::as_array_mut)
             .with_context(|| format!("Tamarack return branch {label}"))?;
-        body.splice(0..0, dispatch);
+        if !body.starts_with(&dispatch) {
+            body.splice(0..0, dispatch);
+        }
         changed.insert(label.into());
     }
     Ok(())

@@ -1,0 +1,94 @@
+{
+  "species_id": "MN_174",
+  "name": "Loomlet",
+  "family_id": "MN_F080",
+  "dex_number": 154,
+  "status": "accepted",
+  "generation_tool": "built-in image_gen",
+  "selected_manifest": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f080/loomlet.manifest-20261104-v3-features.json",
+    "sha256": "b22fd4f5b88e88f50ba5bca6be25640183a9a12acea4c247ab4385387808e34e",
+    "bytes": 1922
+  },
+  "sources": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f080/loomlet.overworld.imagegen-20261104-v3.png",
+      "sha256": "534879e19928e18a4dcdbdb9d45a80b29ca0c0fdb5f88416655f012d3da9b9cc",
+      "bytes": 1152723
+    }
+  ],
+  "prompts": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f080/loomlet.overworld.prompt-20261104-v3.txt",
+      "sha256": "b7c2412b3daddd538a4e7db63df705e3a641e344f342834036d43393fbc4c1bd",
+      "bytes": 1562
+    }
+  ],
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/loomlet-20261104-v3-features",
+  "normal_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/loomlet-20261104-v3-features/review/loomlet.normal-8x.png",
+    "sha256": "1bafa85c20c12f47a728fd27da637588095a69ec825df97db17769e710e981da",
+    "bytes": 8037
+  },
+  "shiny_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/loomlet-20261104-v3-features/review/loomlet.shiny-8x.png",
+    "sha256": "ce4bdc7f390d9f053afcfdf000fda2435ea5e5163b7be45db2dbaf6022774f88",
+    "bytes": 8037
+  },
+  "compiled_index": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/loomlet-20261104-v3-features/compiled-index.json",
+    "sha256": "1071fa59f9c2fe52917a7339ff458420e99ddb0f08599271b1095df855402384",
+    "bytes": 7924
+  },
+  "source_feature_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f080/loomlet.source-feature-review-20261104-v3.json",
+    "sha256": "e3bc7d3cdf8561cd9b7072b62e6462e76ca4966780fd2a6719d5b5703d84b7d8",
+    "bytes": 4965
+  },
+  "context_evidence": {
+    "directory": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-00",
+    "input_manifest": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-00/input-manifest.json",
+      "sha256": "c4a930dd2097722d52d79f2a1033531b0a00b0dd036abde21f959dfaa19f4800",
+      "bytes": 1158
+    },
+    "verification": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-00/verification.json",
+      "sha256": "757ed1ef7ca038c0007a704d39be0eb5ae590f1e41a84c1dc377d8dec9966208",
+      "bytes": 16870
+    },
+    "test_log": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/verification/all225-20261104-v5-00.log",
+      "sha256": "59265f6f08266b94db09c6c0ddde3af257a8cfbea003fe8d079186efecfdfa9a",
+      "bytes": 217
+    },
+    "normal_actor_poses": 8,
+    "all_six_shiny_native_poses_verified": true
+  },
+  "root_visual_review": {
+    "accepted": true,
+    "notes": "Small true lower creature beneath a separate false mirage face; transparent air gap retained. Back views show rear crown/body surfaces. Six distinct native poses, paired idle/step articulation and both palettes reviewed alongside the trainer on terrain."
+  },
+  "runtime_files": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/loomlet/overworld.2bpp",
+      "sha256": "16c778645da376c2a8ab3fc3f7f960a0bfb77121f9ab1c3cc8f5baa5a2ad4b9d",
+      "bytes": 384
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/loomlet/overworld.png",
+      "sha256": "2a9ec50500ece0bdb5e7344f466efc80791b5b45e6cf087190fbbf73d002b095",
+      "bytes": 770
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/loomlet/overworld.gbcpal",
+      "sha256": "f238d2e44002b5a82bb478067a9df80705f49e6d68aa39e93771b95731c74340",
+      "bytes": 8
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/loomlet/overworld-shiny.gbcpal",
+      "sha256": "e234b7fb43820d10059ecc38fbfc0c0700a47f0c889765523eac5615e2e537da",
+      "bytes": 8
+    }
+  ]
+}

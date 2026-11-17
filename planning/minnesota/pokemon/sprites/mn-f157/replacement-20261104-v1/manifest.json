@@ -1,0 +1,243 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F157",
+  "tool": "built-in image_gen",
+  "prompt_file": "sprites/mn-f157/replacement-20261104-v1/prompt.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "status": "native-front-back-candidate-reviewed",
+  "sprites": [
+    {
+      "id": "mn-345-rekink-v1",
+      "species_id": "MN_345",
+      "view": "front",
+      "source": "sprites/mn-f157/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        0,
+        0,
+        580,
+        600
+      ],
+      "fit": [
+        40,
+        34
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        20382,
+        14784,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-345-rekink-v1",
+      "species_id": "MN_345",
+      "view": "back",
+      "source": "sprites/mn-f157/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        0,
+        600,
+        580,
+        599
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        20382,
+        14784,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-346-revertail-v1",
+      "species_id": "MN_346",
+      "view": "front",
+      "source": "sprites/mn-f157/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        580,
+        0,
+        732,
+        600
+      ],
+      "fit": [
+        52,
+        43
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        18301,
+        13696,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-346-revertail-v1",
+      "species_id": "MN_346",
+      "view": "back",
+      "source": "sprites/mn-f157/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        580,
+        600,
+        732,
+        599
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        18301,
+        13696,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    }
+  ],
+  "pokemon_palettes": {
+    "MN_345": {
+      "species_id": "MN_345",
+      "name": "Rekink",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          30,
+          28,
+          19
+        ],
+        [
+          0,
+          14,
+          14
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        20382,
+        14784,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          247,
+          231,
+          156
+        ],
+        [
+          0,
+          115,
+          115
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#F7E79C",
+        "#007373",
+        "#000000"
+      ]
+    },
+    "MN_346": {
+      "species_id": "MN_346",
+      "name": "Revertail",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          29,
+          27,
+          17
+        ],
+        [
+          0,
+          12,
+          13
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        18301,
+        13696,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          239,
+          222,
+          140
+        ],
+        [
+          0,
+          99,
+          107
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#EFDE8C",
+        "#00636B",
+        "#000000"
+      ]
+    }
+  },
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "171f814fdb3ef35069d4b1862b357f3c5d83b715a2fdea70ae78f43c019b03d5",
+    "notes": "Native front/back candidate inspected for connected anatomy, battle orientation, eye boundaries and four-color dithered volume. Preserved owned original and conversion provenance. Awaiting user review."
+  }
+}

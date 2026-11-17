@@ -3,6 +3,7 @@ use anyhow::{Context, Result, ensure};
 use serde::Deserialize;
 
 use crate::CompiledGamePack;
+use crate::authored_dialogue;
 use crate::grand_marais_modpack::authoring;
 use crate::grand_marais_modpack::authoring::command as c;
 use crate::northstar_lair_authoring as a;
@@ -53,16 +54,23 @@ pub(crate) fn install(pack: &mut CompiledGamePack, guards: &[Guard]) -> Result<(
         let lost = format!("{}LostText", guard.id);
         let after = format!("{}After", guard.id);
         authoring::text(&mut room, &seen, &[&guard.seen]);
-        authoring::text(
-            &mut room,
-            &won,
-            &[if ice {
-                "My orders came from upstairs. I still carried them out."
+        for (label, fallback) in [
+            (
+                &won,
+                if ice {
+                    "My orders came from upstairs. I still carried them out."
+                } else {
+                    "I knew what we were taking."
+                },
+            ),
+            (&lost, "You should have kept walking."),
+        ] {
+            if crate::northstar_story_revision::owns_text(&room.id, label) {
+                authored_dialogue::install_canonical(&mut room, label)?;
             } else {
-                "I knew what we were taking."
-            }],
-        );
-        authoring::text(&mut room, &lost, &["You should have kept walking."]);
+                authoring::text(&mut room, label, &[fallback]);
+            }
+        }
         arc::put(
             &mut room,
             &guard.id,

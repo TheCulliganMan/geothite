@@ -1,0 +1,1 @@
+Unselected: coarse faces/construction improve, but broad surfaces remain too flat and the dither transition is only a thin decorative row. Follow-up r17 strengthens shadow planes/dither without finer detail.

@@ -1,0 +1,94 @@
+{
+  "species_id": "MN_346",
+  "name": "Revertail",
+  "family_id": "MN_F157",
+  "dex_number": 218,
+  "status": "accepted",
+  "generation_tool": "built-in image_gen",
+  "selected_manifest": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f157/revertail.manifest-20261104-v3-features.json",
+    "sha256": "2237afbc7d09a9eead7c3ab4f5844b7cabb4a6409fcc43a066b7437b75fc2029",
+    "bytes": 1934
+  },
+  "sources": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f157/revertail.overworld.imagegen-20261104-v1.png",
+      "sha256": "23750050247f32fc1cd1d0b84efc31334d2bff5603f007d86c119cad3d69eb9d",
+      "bytes": 1326711
+    }
+  ],
+  "prompts": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f157/revertail.overworld.prompt-20261104-v1.txt",
+      "sha256": "a1157dcd88513d39e2fbac54baa5c1e6835c03cfd98b3745c88ed0d46717527f",
+      "bytes": 2495
+    }
+  ],
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/revertail-20261104-v3-features",
+  "normal_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/revertail-20261104-v3-features/review/revertail.normal-8x.png",
+    "sha256": "21bbcadd8d2396bc9ee896d2c93f64245335f8bf29974d598a87cd5e2a2c9f97",
+    "bytes": 8861
+  },
+  "shiny_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/revertail-20261104-v3-features/review/revertail.shiny-8x.png",
+    "sha256": "c4027317accdbcc2ea2d4fddfc610f1c704550f839a2382cff689af8c346e791",
+    "bytes": 9181
+  },
+  "compiled_index": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/revertail-20261104-v3-features/compiled-index.json",
+    "sha256": "5f44461bad4cc9e9c1f96cf2bf23e49420cc818e7551705991a1b87b39bcb83f",
+    "bytes": 7938
+  },
+  "source_feature_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f157/revertail.source-feature-review-20261104-v3.json",
+    "sha256": "6dce0bae9c6fbc96fc31363cc1f04c9179e85b80327df8fada5551a174331736",
+    "bytes": 5319
+  },
+  "context_evidence": {
+    "directory": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-06",
+    "input_manifest": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-06/input-manifest.json",
+      "sha256": "d19452fb4c890c8bcb71bad9b5c6d4e94277d8bfec08f657fd1f1e9a76edc13f",
+      "bytes": 1150
+    },
+    "verification": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-06/verification.json",
+      "sha256": "548d32ab6f3d28e0e8ebc9f69bf933a351951542aae6aff5c75a26214afa90a9",
+      "bytes": 16830
+    },
+    "test_log": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/verification/all225-20261104-v5-06.log",
+      "sha256": "b415c9ea82d9f3cf79ae941c1f9e72d153011d023e0c673b6b5f5687ac26449f",
+      "bytes": 217
+    },
+    "normal_actor_poses": 8,
+    "all_six_shiny_native_poses_verified": true
+  },
+  "root_visual_review": {
+    "accepted": true,
+    "notes": "Species-specific head, dark facial marks and themed body silhouette retained in front/profile. Rear poses show backs of ears/crest/head and the actual back/tail, without a pasted frontal face. Six distinct native poses, paired idle/step articulation and both palettes reviewed alongside the trainer on terrain."
+  },
+  "runtime_files": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/revertail/overworld.2bpp",
+      "sha256": "ebc7a2bd910771e60895be068833d586a3d3b62c8caa8f482d6965998c62abad",
+      "bytes": 384
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/revertail/overworld.png",
+      "sha256": "827dced35d247474e0676440192578c492ca622ab831a9fb3b95009832d44ece",
+      "bytes": 778
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/revertail/overworld.gbcpal",
+      "sha256": "3e35efc7b99a5ea8a843330f4deea48804618e72352ea658ee9f8e7c645f27ba",
+      "bytes": 8
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/revertail/overworld-shiny.gbcpal",
+      "sha256": "cb467f727e521e3f7dbeefa095b748f34452a568a888f57dcf8c9a32919b14fe",
+      "bytes": 8
+    }
+  ]
+}

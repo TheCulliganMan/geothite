@@ -1,0 +1,94 @@
+{
+  "species_id": "MN_340",
+  "name": "Squallfin",
+  "family_id": "MN_F154",
+  "dex_number": 212,
+  "status": "accepted",
+  "generation_tool": "built-in image_gen",
+  "selected_manifest": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f154/squallfin.manifest-20261104-v3-features.json",
+    "sha256": "f2ed120277312132729d3d677776787a05960366f701634acb316e3e886f9a84",
+    "bytes": 1937
+  },
+  "sources": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f154/squallfin.overworld.imagegen-20261104-v1.png",
+      "sha256": "0f55eafaedbb153ba6be2c464736b98bc56bf9606beb1584f2e11e367743794c",
+      "bytes": 1324864
+    }
+  ],
+  "prompts": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f154/squallfin.overworld.prompt-20261104-v1.txt",
+      "sha256": "57ca547aac90b966af939b02757a4c9327d39bf33cd7a9b1cc2706c5b85c3849",
+      "bytes": 2736
+    }
+  ],
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/squallfin-20261104-v3-features",
+  "normal_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/squallfin-20261104-v3-features/review/squallfin.normal-8x.png",
+    "sha256": "12b6387a315b1e5769b6959d4a8c197d57e71243bdf84015c51d656fcf57339e",
+    "bytes": 10132
+  },
+  "shiny_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/squallfin-20261104-v3-features/review/squallfin.shiny-8x.png",
+    "sha256": "4daa1edadfa9080e036651ada546fb3fccc56b65ea69420599f8a6efabcaf96a",
+    "bytes": 10134
+  },
+  "compiled_index": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/squallfin-20261104-v3-features/compiled-index.json",
+    "sha256": "202de5d397f1e20791e95f66834c5cdd368c103eebb4e67ec0fe788ab0b4ec41",
+    "bytes": 7942
+  },
+  "source_feature_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f154/squallfin.source-feature-review-20261104-v3.json",
+    "sha256": "1eb9dc6639bf51cb40a8d50547a2df6b658cc8e95259d0c935f1e254e3cf23df",
+    "bytes": 5320
+  },
+  "context_evidence": {
+    "directory": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-05",
+    "input_manifest": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-05/input-manifest.json",
+      "sha256": "9efc1305914df9abe4e36f5d10257a688c67a51bab71364393eacc20fd08a6ee",
+      "bytes": 1162
+    },
+    "verification": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-05/verification.json",
+      "sha256": "d58139eab686235056245767e379b61320861ad7e417f794ae6231a933f6cd09",
+      "bytes": 16890
+    },
+    "test_log": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/verification/all225-20261104-v5-05.log",
+      "sha256": "9235be84259714cc6a7497dd8fd0819a62bdeee8349ef95f4f154ac8b0d7d78d",
+      "bytes": 217
+    },
+    "normal_actor_poses": 8,
+    "all_six_shiny_native_poses_verified": true
+  },
+  "root_visual_review": {
+    "accepted": true,
+    "notes": "Species-specific head, dark facial marks and themed body silhouette retained in front/profile. Rear poses show backs of ears/crest/head and the actual back/tail, without a pasted frontal face. Six distinct native poses, paired idle/step articulation and both palettes reviewed alongside the trainer on terrain."
+  },
+  "runtime_files": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/squallfin/overworld.2bpp",
+      "sha256": "8eb4777d8525a6eef23d4d0d28def84c1bb8bdbeac417193064f099b9d06843a",
+      "bytes": 384
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/squallfin/overworld.png",
+      "sha256": "9788cbe8d550f1413d1e9389498fbd57888b815030736648ef6fc90064a6a639",
+      "bytes": 931
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/squallfin/overworld.gbcpal",
+      "sha256": "1da4e4fcef3e63dd1dc9bf89aa172c1b78f5077541fdecc9ede005f423d48fd2",
+      "bytes": 8
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/squallfin/overworld-shiny.gbcpal",
+      "sha256": "72ede6eaa84afbf1089c6add5a142e73ab459fc3e3806027b889ecf4947beafc",
+      "bytes": 8
+    }
+  ]
+}

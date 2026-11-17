@@ -1,0 +1,131 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F158",
+  "tool": "built-in image_gen",
+  "prompt_file": "sprites/mn-f158/replacement-20261104-v1/prompt.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "status": "native-front-back-candidate-reviewed",
+  "sprites": [
+    {
+      "id": "mn-347-pendulop-v1",
+      "species_id": "MN_347",
+      "view": "front",
+      "source": "sprites/mn-f158/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        0,
+        0,
+        960,
+        873
+      ],
+      "fit": [
+        45,
+        43
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        15133,
+        17768,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-347-pendulop-v1",
+      "species_id": "MN_347",
+      "view": "back",
+      "source": "sprites/mn-f158/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        960,
+        0,
+        841,
+        873
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        15133,
+        17768,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    }
+  ],
+  "pokemon_palettes": {
+    "MN_347": {
+      "species_id": "MN_347",
+      "name": "Pendulop",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          29,
+          24,
+          14
+        ],
+        [
+          8,
+          11,
+          17
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        15133,
+        17768,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          239,
+          198,
+          115
+        ],
+        [
+          66,
+          90,
+          140
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#EFC673",
+        "#425A8C",
+        "#000000"
+      ]
+    }
+  },
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "ef3aa0660137fcefee49b25ad252915ebe8ced09ad708edda856c97ccb8fbb6c",
+    "notes": "Native front/back candidate inspected for connected anatomy, battle orientation, eye boundaries and four-color dithered volume. Preserved owned original and conversion provenance. Awaiting user review."
+  }
+}

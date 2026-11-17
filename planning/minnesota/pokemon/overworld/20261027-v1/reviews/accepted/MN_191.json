@@ -1,0 +1,94 @@
+{
+  "species_id": "MN_191",
+  "name": "Cascavolt",
+  "family_id": "MN_F088",
+  "dex_number": 103,
+  "status": "accepted",
+  "generation_tool": "built-in image_gen",
+  "selected_manifest": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f088/cascavolt.manifest-20261104-v3-features.json",
+    "sha256": "fe012eab0ba27ded9a28a5eef4a23fde6afdd04a4b940f6a71d49d9672bfc54b",
+    "bytes": 1936
+  },
+  "sources": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f088/cascavolt.overworld.imagegen-20261104-v3.png",
+      "sha256": "c04b543db00bb1ef5834027d8faee4391f9589c9044e014b6dbcbfcae48735fe",
+      "bytes": 1267051
+    }
+  ],
+  "prompts": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f088/cascavolt.overworld.prompt-20261104-v3.txt",
+      "sha256": "f40c8b01beacc48449c5927b29f6b810bc007ae4780d91ee66d1ccb03d5da384",
+      "bytes": 1523
+    }
+  ],
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/cascavolt-20261104-v3-features",
+  "normal_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/cascavolt-20261104-v3-features/review/cascavolt.normal-8x.png",
+    "sha256": "dce21eaed4041bc8004e28bbf020957a2b35c28deab2df575563a28dffa60167",
+    "bytes": 10208
+  },
+  "shiny_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/cascavolt-20261104-v3-features/review/cascavolt.shiny-8x.png",
+    "sha256": "f64c961a012146f7e13bf90e58ea11070a1c63dbdcea4e6138d093eb367049ea",
+    "bytes": 10208
+  },
+  "compiled_index": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/cascavolt-20261104-v3-features/compiled-index.json",
+    "sha256": "870c28aa15bc24da80d395e06fb74f116af91803b75a523a97909d55f0be5ed7",
+    "bytes": 7942
+  },
+  "source_feature_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f088/cascavolt.source-feature-review-20261104-v3.json",
+    "sha256": "fdb67282bc1efdd25943d9842f84864c709c968c7d24fc3ab7197d819b32f562",
+    "bytes": 5093
+  },
+  "context_evidence": {
+    "directory": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-01",
+    "input_manifest": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-01/input-manifest.json",
+      "sha256": "ffeb8afcd879f59e506ec0338a37128e322b23baa7378c0a66b664db5564083e",
+      "bytes": 1152
+    },
+    "verification": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-01/verification.json",
+      "sha256": "1e9dd46aa7e66018650cac2a456e2935e6d8a7f28072d5fe36819d8991542a66",
+      "bytes": 16840
+    },
+    "test_log": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/verification/all225-20261104-v5-01.log",
+      "sha256": "0e1ad30a0d8e98e2431b49f4e9a8aff62a0352430d7171451425c4d742d8b942",
+      "bytes": 217
+    },
+    "normal_actor_poses": 8,
+    "all_six_shiny_native_poses_verified": true
+  },
+  "root_visual_review": {
+    "accepted": true,
+    "notes": "Downward facing scoop/wrist-runner/crest anatomy and curled paddle tail; side view keeps the snout and profile mark; back shows the dorsal crest and tail. Six distinct native poses, paired idle/step articulation and both palettes reviewed alongside the trainer on terrain."
+  },
+  "runtime_files": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/cascavolt/overworld.2bpp",
+      "sha256": "006f71306dd2217ba0d60dc9dd9549420670ffd53efe6f733ff06a8a5f2a27c2",
+      "bytes": 384
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/cascavolt/overworld.png",
+      "sha256": "e300dfcf60e1d6022c0a74ddb43651da9161cce4daa4adca56ceef75e764f001",
+      "bytes": 887
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/cascavolt/overworld.gbcpal",
+      "sha256": "03117508921a851c787f7e850bed9deaa0d4a44fdf1240bac7c206435b00eac6",
+      "bytes": 8
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/cascavolt/overworld-shiny.gbcpal",
+      "sha256": "f4727bea0c042abdd728abcce71131075ce4db7b01178fc426805977e5afd580",
+      "bytes": 8
+    }
+  ]
+}

@@ -34,7 +34,11 @@ fn main() -> Result<()> {
         "output must be untracked and must not alias the source"
     );
     let base = crystal_assets::read_verified_compiled_game_pack(input)?;
-    let result = crystal_assets::build_canoe_modpack(&base)?;
+    let result = if base.data().items.contains_key("CANOE") {
+        crystal_assets::build_canoe_art_refresh(&base)?
+    } else {
+        crystal_assets::build_canoe_modpack(&base)?
+    };
     result.write_preserving_storage(&resolved)?;
     let written = crystal_assets::read_verified_compiled_game_pack(&resolved)?;
     ensure!(

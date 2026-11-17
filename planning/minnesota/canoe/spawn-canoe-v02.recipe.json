@@ -1,0 +1,7 @@
+{
+  "parent_pack": "content-packs/minnesota-spawn-locations-v01.crystalpack",
+  "parent_pack_sha256": "4bb44b1a96dcea87f53498e842ba47b4739bd68cfe1ddba326948bb6dea2d761",
+  "builder": "pack_canoe",
+  "output": "content-packs/minnesota-spawn-canoe-v02.crystalpack",
+  "expected_pack_sha256": "b273295968dba62d3eecc97e691875c4222d005969f96dcf28e267781d6ccaa5"
+}

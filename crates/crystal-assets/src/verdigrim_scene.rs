@@ -3,7 +3,8 @@ use anyhow::{Context, Result, ensure};
 use serde_json::Value;
 
 use crate::CompiledGamePack;
-use crate::grand_marais_modpack::authoring::{self, command as c};
+use crate::authored_dialogue;
+use crate::grand_marais_modpack::authoring::command as c;
 use crate::northstar_lair_authoring as a;
 use crate::northstar_rival_arc::{self as arc, FINAL_WON, LINK, RESTORED, map, publish, put};
 use crate::verdigrim_intake_art::{self as art, IntakeArt};
@@ -192,7 +193,7 @@ pub fn build_verdigrim_scene(base: &CompiledGamePack, site: &str) -> Result<Comp
         .clone();
     retreat.insert(0, c("jump_step", &["UP"]));
     put(&mut room, "MnVerdigrimRetreat", retreat);
-    texts(&mut room);
+    texts(&mut room)?;
     let mut reveal = a::say("MnVerdigrimWarningText");
     reveal.push(c("applymovement", &[FOREMAN, "MnVerdigrimForemanStep"]));
     reveal.extend(a::say("MnVerdigrimOrderText"));
@@ -516,82 +517,29 @@ fn encounter(room: &mut crate::MapModule) {
     );
 }
 
-fn texts(room: &mut crate::MapModule) {
-    for (label, text) in [
-        (
-            "MnVerdigrimWarningText",
-            "FINN: Green grit in the test sump. Stop cutting that seam.",
-        ),
-        (
-            "MnVerdigrimOrderText",
-            "FOREMAN: We have a schedule. Clear the rest of that copper.",
-        ),
-        (
-            "MnVerdigrimExposedText",
-            "The copper mass opens its eyes. VERDIGRIM crushes the test line with one huge forepaw.",
-        ),
-        (
-            "MnVerdigrimGreenText",
-            "Dark green water spills into the outflow. IVY: Back from the water. All of you.",
-        ),
-        (
-            "MnVerdigrimCounterText",
-            "KETTLURK pushes the current back. The wave curls green and stalls. FINN: That creature is pinning the return channel shut.",
-        ),
-        (
-            "MnVerdigrimDrillAskText",
-            "The drill feeds the damaged test line. Stop its drive?",
-        ),
-        (
-            "MnVerdigrimDrillDoneText",
-            "The drill stops. The dirty outlet is still open.",
-        ),
-        (
-            "MnVerdigrimOutletAskText",
-            "The contaminated outlet is open. Close the valve?",
-        ),
-        (
-            "MnVerdigrimOutletDoneText",
-            "The outlet is sealed. Green water remains in the sump. The clean bypass is still closed.",
-        ),
-        (
-            "MnVerdigrimBypassAskText",
-            "The clean bypass is isolated from the sump. Open it?",
-        ),
-        (
-            "MnVerdigrimBypassDoneText",
-            "The clean return opens. KETTLURK's current presses against the copper tail.",
-        ),
-        (
-            "MnVerdigrimRetreatText",
-            "VERDIGRIM lifts its tail and retreats to the exposed chamber. The clean current is moving again.",
-        ),
-        (
-            "MnVerdigrimDeniedText",
-            "Clear the intake warning and REED first. Stop the drill, seal the dirty outlet, then open the clean bypass.",
-        ),
-        ("MnVerdigrimAlreadyText", "That control is already set."),
-        (
-            "MnVerdigrimEncounterText",
-            "VERDIGRIM watches from the copper chamber. Approach it?",
-        ),
-        (
-            "MnVerdigrimRetryText",
-            "VERDIGRIM withdraws deeper into the chamber. It may return when you do.",
-        ),
-        (
-            "MnVerdigrimCaughtText",
-            "VERDIGRIM was recorded. The sealed sump still needs the field crew's care.",
-        ),
-        (
-            "MnArcIntakeFinnText",
-            "Stop the drill. Seal the dirty outlet in the lower bay. Then open the clean bypass beside the west drive. We can clear the crew after that.",
-        ),
-        (
-            "MnArcIntakeIvyText",
-            "REED is guarding the drive. Keep clear of the green water. We need the drill, outlet and bypass set separately.",
-        ),
+fn texts(room: &mut crate::MapModule) -> Result<()> {
+    for label in [
+        "MnVerdigrimWarningText",
+        "MnVerdigrimOrderText",
+        "MnVerdigrimExposedText",
+        "MnVerdigrimGreenText",
+        "MnVerdigrimCounterText",
+        "MnVerdigrimDrillAskText",
+        "MnVerdigrimDrillDoneText",
+        "MnVerdigrimOutletAskText",
+        "MnVerdigrimOutletDoneText",
+        "MnVerdigrimBypassAskText",
+        "MnVerdigrimBypassDoneText",
+        "MnVerdigrimRetreatText",
+        "MnVerdigrimDeniedText",
+        "MnVerdigrimAlreadyText",
+        "MnVerdigrimEncounterText",
+        "MnVerdigrimRetryText",
+        "MnVerdigrimCaughtText",
+        "MnArcIntakeFinnText",
+        "MnArcIntakeIvyText",
     ] {
-        authoring::text(room, label, &[text]);
+        authored_dialogue::install_canonical(room, label)?;
     }
+    Ok(())
 }

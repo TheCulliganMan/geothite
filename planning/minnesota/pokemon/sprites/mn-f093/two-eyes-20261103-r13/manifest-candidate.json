@@ -1,0 +1,237 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F093",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_203": {
+      "species_id": "MN_203",
+      "name": "Siphlet",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          25,
+          22,
+          17
+        ],
+        [
+          9,
+          11,
+          16
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        18137,
+        16745,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          206,
+          181,
+          140
+        ],
+        [
+          74,
+          90,
+          132
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#CEB58C",
+        "#4A5A84",
+        "#000000"
+      ]
+    },
+    "MN_204": {
+      "species_id": "MN_204",
+      "name": "Obelurk",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          23,
+          25,
+          27
+        ],
+        [
+          9,
+          6,
+          14
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        28471,
+        14537,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          189,
+          206,
+          222
+        ],
+        [
+          74,
+          49,
+          115
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#BDCEDE",
+        "#4A3173",
+        "#000000"
+      ]
+    }
+  },
+  "prompt_file": "sprites/mn-f093/two-eyes-20261103-r13/prompt.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "sprites": [
+    {
+      "id": "mn-203-siphlet-v1",
+      "species_id": "MN_203",
+      "view": "front",
+      "source": "sprites/mn-f093/two-eyes-20261103-r13/front-back.imagegen.png",
+      "crop": [
+        0,
+        0,
+        627,
+        627
+      ],
+      "fit": [
+        42,
+        42
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        18137,
+        16745,
+        0
+      ],
+      "interior_black_min_samples": 32,
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16
+    },
+    {
+      "id": "mn-203-siphlet-v1",
+      "species_id": "MN_203",
+      "view": "back",
+      "source": "sprites/mn-f093/two-eyes-20261103-r13/front-back.imagegen.png",
+      "crop": [
+        0,
+        627,
+        627,
+        627
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        18137,
+        16745,
+        0
+      ],
+      "interior_black_min_samples": 32,
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16
+    },
+    {
+      "id": "mn-204-obelurk-v1",
+      "species_id": "MN_204",
+      "view": "front",
+      "source": "sprites/mn-f093/two-eyes-20261103-r13/front-back.imagegen.png",
+      "crop": [
+        627,
+        0,
+        627,
+        627
+      ],
+      "fit": [
+        50,
+        52
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        28471,
+        14537,
+        0
+      ],
+      "interior_black_min_samples": 32,
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16
+    },
+    {
+      "id": "mn-204-obelurk-v1",
+      "species_id": "MN_204",
+      "view": "back",
+      "source": "sprites/mn-f093/two-eyes-20261103-r13/front-back.imagegen.png",
+      "crop": [
+        627,
+        627,
+        627,
+        627
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        28471,
+        14537,
+        0
+      ],
+      "interior_black_min_samples": 32,
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16
+    }
+  ],
+  "original_manifest": "sprites/mn-f093/manifest.json",
+  "status": "native-review-pending"
+}

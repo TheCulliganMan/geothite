@@ -9,6 +9,8 @@ mod city_expansions;
 mod current_gyms;
 #[path = "duluth_gates.rs"]
 mod duluth_gates;
+#[path = "duluth_harbor_ice.rs"]
+mod duluth_harbor_ice;
 #[path = "ely_league.rs"]
 mod ely_league;
 #[path = "ely_pine_camp.rs"]
@@ -19,6 +21,8 @@ mod gym_care;
 mod gym_eight_approach;
 #[path = "gym_four_approach.rs"]
 mod gym_four_approach;
+#[path = "gym_review_migration.rs"]
+mod gym_review_migration;
 #[path = "gym_transition_audit.rs"]
 mod gym_transition_audit;
 #[path = "itasca_story.rs"]
@@ -4240,6 +4244,18 @@ fn minnesota_regional_gyms_controller_all_eight_actual_facades_and_local_courses
 #[test]
 #[ignore = "full ordinary-party arc campaign; no review boosts or injected progress"]
 pub(super) fn northstar_arc_unboosted_new_game_through_legendary_release_and_hall_of_fame() {
+    for (name, _) in std::env::vars_os() {
+        let name = name.to_string_lossy();
+        assert!(
+            !(name.starts_with("CRYSTAL_NORTHSTAR_") && name.ends_with("_SAVE")),
+            "New Game course cannot use checkpoint input {name}"
+        );
+    }
+    let starter = super::winona::campaign_starter();
+    eprintln!(
+        "UNBOOSTED CAMPAIGN: lab choice {} / {}",
+        starter.index, starter.family[0]
+    );
     earned_arc_through_hall_of_fame(true);
 }
 
@@ -4264,4 +4280,232 @@ pub(super) fn earned_arc_through_hall_of_fame(verify_service_return: bool) {
     if verify_service_return {
         northstar_earned_return::play(&mut c, &r, &root);
     }
+}
+
+#[test]
+#[ignore = "requires Rochester training-hall progress review pack"]
+fn rochester_training_hall_controller_trainers_badge_and_returns() {
+    let (root, runtime, _) = load();
+    let path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("../../planning/minnesota/gyms/rochester-training-hall-v01.json");
+    let design: Value = serde_json::from_str(&std::fs::read_to_string(path).expect("hall source"))
+        .expect("hall design");
+    let gym = &design["gyms"][0];
+    let mut c = controller(&root, &runtime, gym, false);
+    let tavel = point(&gym["trainers"][0]["at"]);
+    let elvik = point(&gym["trainers"][1]["at"]);
+    let varel = point(&gym["leader_at"]);
+    interact(&mut c, &runtime, elvik);
+    assert_eq!(
+        c.snapshot()
+            .expect("Elvik refusal")
+            .ui
+            .text
+            .expect("guidance")
+            .label,
+        "MnRochesterGymBeatTavelText"
+    );
+    finish(&mut c);
+    interact(&mut c, &runtime, tavel);
+    battle(&mut c, false);
+    finish(&mut c);
+    assert!(event(&c, "EVENT_MN_GYM_1_TRAINER_1_DEFEATED"));
+    c = continue_save(&mut c, &root, &runtime);
+    interact(&mut c, &runtime, varel);
+    assert_eq!(
+        c.snapshot()
+            .expect("leader refusal")
+            .ui
+            .text
+            .expect("guidance")
+            .label,
+        "MnRochesterGymBeatElvikText"
+    );
+    finish(&mut c);
+    interact(&mut c, &runtime, elvik);
+    battle(&mut c, false);
+    finish(&mut c);
+    interact(&mut c, &runtime, varel);
+    battle(&mut c, false);
+    finish(&mut c);
+    assert!(c.shell.shell.session().state().badges.johto[0]);
+    let tm = &runtime.data().items["TM_HEADBUTT"];
+    assert_eq!(c.shell.shell.session().state().bag.quantity(tm), 1);
+    for carpet in gym["exit_tiles_core"].as_array().expect("both exits") {
+        exit_and_reenter(&mut c, &runtime, gym, point(carpet));
+    }
+    c = continue_save(&mut c, &root, &runtime);
+    assert!(event(&c, "EVENT_MN_GYM_1_DEFEATED"));
+    interact(&mut c, &runtime, varel);
+    finish(&mut c);
+    assert_eq!(c.shell.shell.session().state().bag.quantity(tm), 1);
+}
+
+#[test]
+#[ignore = "requires the three-gym electrical station review pack"]
+fn minneapolis_electrical_station_controller_switches_badge_and_returns() {
+    let (root, runtime, _) = load();
+    let path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("../../planning/minnesota/gyms/minneapolis-electrical-station-v01.json");
+    let design: Value =
+        serde_json::from_str(&std::fs::read_to_string(path).expect("station source"))
+            .expect("station design");
+    let gym = &design["gyms"][0];
+    let mut c = controller(&root, &runtime, gym, false);
+    let lenvi = point(&gym["trainers"][0]["at"]);
+    let jossa = point(&gym["trainers"][1]["at"]);
+    let avrin = point(&gym["leader_at"]);
+    assert!(!can_approach(&mut c, &runtime, avrin));
+    for id in [
+        "UPPER_LEFT",
+        "UPPER_MIDDLE",
+        "UPPER_RIGHT",
+        "LOWER_LEFT",
+        "LOWER_MIDDLE",
+        "LOWER_RIGHT",
+    ] {
+        touch_switch(&mut c, &runtime, gym, id);
+        assert_switches(&mut c, false, false);
+    }
+    interact(&mut c, &runtime, lenvi);
+    battle(&mut c, false);
+    finish(&mut c);
+    touch_switch(&mut c, &runtime, gym, "UPPER_LEFT");
+    assert_switches(&mut c, false, false);
+    interact(&mut c, &runtime, jossa);
+    battle(&mut c, false);
+    finish(&mut c);
+    touch_switch(&mut c, &runtime, gym, "UPPER_LEFT");
+    assert_switches(&mut c, true, false);
+    assert!(!can_approach(&mut c, &runtime, avrin));
+    c = continue_save(&mut c, &root, &runtime);
+    touch_switch(&mut c, &runtime, gym, "UPPER_RIGHT");
+    assert_switches(&mut c, false, false);
+    assert!(!can_approach(&mut c, &runtime, avrin));
+    touch_switch(&mut c, &runtime, gym, "UPPER_LEFT");
+    touch_switch(&mut c, &runtime, gym, "UPPER_MIDDLE");
+    assert_switches(&mut c, true, true);
+    interact(&mut c, &runtime, avrin);
+    battle(&mut c, false);
+    finish(&mut c);
+    assert!(c.shell.shell.session().state().badges.johto[2]);
+    let tm = &runtime.data().items["TM_THUNDERPUNCH"];
+    assert_eq!(c.shell.shell.session().state().bag.quantity(tm), 1);
+    for carpet in gym["exit_tiles_core"].as_array().expect("both exits") {
+        exit_and_reenter(&mut c, &runtime, gym, point(carpet));
+        assert_switches(&mut c, true, true);
+    }
+    c = continue_save(&mut c, &root, &runtime);
+    interact(&mut c, &runtime, avrin);
+    finish(&mut c);
+    assert_eq!(c.shell.shell.session().state().bag.quantity(tm), 1);
+}
+
+#[test]
+#[ignore = "requires the four-gym civic loop review pack"]
+fn st_paul_civic_loop_controller_pad_pairs_badge_and_returns() {
+    let (root, runtime, _) = load();
+    let path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("../../planning/minnesota/gyms/st-paul-civic-loop-v01.json");
+    let design: Value = serde_json::from_str(&std::fs::read_to_string(path).expect("civic source"))
+        .expect("civic design");
+    let gym = &design["gyms"][0];
+    let mut c = controller(&root, &runtime, gym, false);
+    let leader = point(&gym["leader_at"]);
+    assert!(!can_approach(&mut c, &runtime, leader));
+    ride_lift(&mut c, &runtime, &gym["lifts"][3], 0);
+    c = continue_save(&mut c, &root, &runtime);
+    assert!(!can_approach(&mut c, &runtime, leader));
+    ride_lift(&mut c, &runtime, &gym["lifts"][3], 1);
+    ride_lift(&mut c, &runtime, &gym["lifts"][0], 0);
+    c = continue_save(&mut c, &root, &runtime);
+    assert_eq!(at(&mut c), point(&gym["lifts"][0]["ends_core"][1]));
+    interact(&mut c, &runtime, point(&gym["trainers"][0]["at"]));
+    battle(&mut c, false);
+    finish(&mut c);
+    assert!(!event(&c, "EVENT_MN_GYM_4_COURT_OPEN"));
+    ride_lift(&mut c, &runtime, &gym["lifts"][0], 1);
+    ride_lift(&mut c, &runtime, &gym["lifts"][0], 0);
+    ride_lift(&mut c, &runtime, &gym["lifts"][1], 0);
+    ride_lift(&mut c, &runtime, &gym["lifts"][1], 1);
+    ride_lift(&mut c, &runtime, &gym["lifts"][1], 0);
+    interact(&mut c, &runtime, point(&gym["trainers"][1]["at"]));
+    battle(&mut c, false);
+    finish(&mut c);
+    assert!(event(&c, "EVENT_MN_GYM_4_COURT_OPEN"));
+    ride_lift(&mut c, &runtime, &gym["lifts"][2], 0);
+    c = continue_save(&mut c, &root, &runtime);
+    ride_lift(&mut c, &runtime, &gym["lifts"][2], 1);
+    ride_lift(&mut c, &runtime, &gym["lifts"][2], 0);
+    interact(&mut c, &runtime, leader);
+    battle(&mut c, false);
+    finish(&mut c);
+    assert!(c.shell.shell.session().state().badges.johto[3]);
+    let tm = &runtime.data().items["TM_STEEL_WING"];
+    assert_eq!(c.shell.shell.session().state().bag.quantity(tm), 1);
+    ride_lift(&mut c, &runtime, &gym["lifts"][3], 1);
+    for carpet in gym["exit_tiles_core"].as_array().expect("both exits") {
+        exit_and_reenter(&mut c, &runtime, gym, point(carpet));
+        assert!(event(&c, "EVENT_MN_GYM_4_COURT_OPEN"));
+    }
+    c = continue_save(&mut c, &root, &runtime);
+    interact(&mut c, &runtime, leader);
+    finish(&mut c);
+    assert_eq!(c.shell.shell.session().state().bag.quantity(tm), 1);
+}
+
+#[test]
+#[ignore = "requires the four-gym civic loop review pack"]
+fn st_paul_civic_loop_controller_loss_keeps_grille_closed() {
+    let (root, runtime, _) = load();
+    let path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("../../planning/minnesota/gyms/st-paul-civic-loop-v01.json");
+    let design: Value = serde_json::from_str(&std::fs::read_to_string(path).expect("civic source"))
+        .expect("civic design");
+    let gym = &design["gyms"][0];
+    let mut c = controller(&root, &runtime, gym, true);
+    ride_lift(&mut c, &runtime, &gym["lifts"][0], 0);
+    interact(&mut c, &runtime, point(&gym["trainers"][0]["at"]));
+    battle(&mut c, true);
+    finish(&mut c);
+    assert!(!event(&c, "EVENT_MN_GYM_4_TRAINER_1_DEFEATED"));
+    assert!(!event(&c, "EVENT_MN_GYM_4_COURT_OPEN"));
+    assert!(!c.shell.shell.session().state().badges.johto[3]);
+    assert_ne!(
+        c.snapshot().expect("loss recovery").overworld.map_name,
+        "MnStPaulGym"
+    );
+}
+
+#[test]
+#[ignore = "requires the four-gym civic loop review pack"]
+fn st_paul_civic_loop_controller_prior_badge_is_required() {
+    let (root, runtime, _) = load();
+    let path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("../../planning/minnesota/gyms/st-paul-civic-loop-v01.json");
+    let design: Value = serde_json::from_str(&std::fs::read_to_string(path).expect("civic source"))
+        .expect("civic design");
+    let gym = &design["gyms"][0];
+    let mut c = controller(&root, &runtime, gym, false);
+    c.shell.shell.session_mut().state_mut().badges.johto[2] = false;
+    mark_runtime_snapshot_dirty(&mut c.shell);
+    ride_lift(&mut c, &runtime, &gym["lifts"][3], 0);
+    ride_lift(&mut c, &runtime, &gym["lifts"][2], 1);
+    interact(&mut c, &runtime, point(&gym["trainers"][1]["at"]));
+    battle(&mut c, false);
+    finish(&mut c);
+    assert!(!event(&c, "EVENT_MN_GYM_4_COURT_OPEN"));
+    ride_lift(&mut c, &runtime, &gym["lifts"][1], 1);
+    interact(&mut c, &runtime, point(&gym["trainers"][0]["at"]));
+    battle(&mut c, false);
+    finish(&mut c);
+    assert!(event(&c, "EVENT_MN_GYM_4_COURT_OPEN"));
+    ride_lift(&mut c, &runtime, &gym["lifts"][1], 0);
+    ride_lift(&mut c, &runtime, &gym["lifts"][2], 0);
+    interact(&mut c, &runtime, point(&gym["leader_at"]));
+    finish(&mut c);
+    assert!(!event(&c, "EVENT_MN_GYM_4_DEFEATED"));
+    assert!(!event(&c, "EVENT_MN_GYM_4_TM_RECEIVED"));
+    assert!(!c.shell.shell.session().state().badges.johto[3]);
+    assert!(c.snapshot().expect("prior badge refusal").battle.is_none());
 }

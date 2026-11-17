@@ -5,15 +5,18 @@ use std::sync::OnceLock;
 
 use crystal_assets::{AssetRoot, read_loaded_verified_compiled_game_pack};
 use crystal_core::input::GameButton;
+use crystal_core::models::bag::KEY_ITEM_POCKET_CAPACITY;
 use crystal_core::systems::field_moves::{CANOE_ACTIVE_MEMORY, CANOE_ITEM};
 use crystal_core::world::movement::MovementMode;
 use crystal_runtime::CrystalRuntime;
 
 use super::super::VisibleShellController;
-use super::interior_life::{collision, fixture, talk};
+use super::interior_life::{collision, fixture, talk, travel, walk};
+use super::minnesota_hm_progression::talk as talk_to_owner;
+use super::native_city_ports::city_port;
 use super::r10_gallery::{continue_save, press};
 
-fn load() -> (AssetRoot, CrystalRuntime) {
+pub(super) fn load() -> (AssetRoot, CrystalRuntime) {
     static LOADED: OnceLock<(AssetRoot, CrystalRuntime)> = OnceLock::new();
     LOADED
         .get_or_init(|| {
@@ -31,6 +34,98 @@ fn load() -> (AssetRoot, CrystalRuntime) {
         .clone()
 }
 
+#[test]
+#[ignore = "requires CRYSTAL_CANOE_TEST_PACK"]
+fn canoe_fishing_controller_registered_rod_catch_and_continue_afloat() {
+    use crystal_core::models::Dv;
+    use crystal_runtime::RuntimeBattleKind;
+
+    const MAP: &str = "MnR03C00R00";
+    let (root, runtime) = load();
+    let mut c = fixture(&root, &runtime, MAP, (11, 6));
+    let state = c.shell.shell.session_mut().state_mut();
+    let partner = runtime
+        .data()
+        .create_pokemon("KINDLIT", 20, Dv::default())
+        .expect("Minnesota fishing partner");
+    assert!(state.storage.party.add_pokemon(partner));
+    state.sync_party_from_storage();
+    for item in [CANOE_ITEM, "GOOD_ROD", "MASTER_BALL"] {
+        assert!(
+            state
+                .bag
+                .add_item(&runtime.data().items[item], 1)
+                .expect("field fixture item")
+        );
+    }
+    state.registered_key_item = Some("GOOD_ROD".into());
+    // Isolate the rod encounter from unrelated encounters on the launch step.
+    state
+        .flags
+        .set_engine_flag("STATUSFLAGS_NO_WILD_ENCOUNTERS_F", true)
+        .expect("disable step encounters for this fixture");
+    press(&mut c, GameButton::Right);
+    press(&mut c, GameButton::Right);
+    press(&mut c, GameButton::Down);
+    super::winona::at(&mut c, MAP, (12, 6));
+    let position = c.snapshot().expect("afloat").overworld.tile;
+
+    for attempt in 0..64 {
+        press(&mut c, GameButton::Select);
+        assert!(
+            c.shell.visible_fishing_animation.is_some(),
+            "rod must cast from the canoe"
+        );
+        if attempt == 0 {
+            c = capture(c, "canoe-rod-cast.png");
+        }
+        press(&mut c, GameButton::Down);
+        assert_eq!(
+            c.snapshot().expect("cast owns movement").overworld.tile,
+            position
+        );
+        for _ in 0..128 {
+            let s = c.snapshot().expect("native fishing result");
+            if let Some(battle) = s.battle {
+                assert!(matches!(battle.kind, RuntimeBattleKind::Wild { .. }));
+                assert_eq!(s.overworld.mode, MovementMode::Surf);
+                assert_eq!(s.overworld.tile, position);
+                let species = battle.enemy_pokemon.species.id;
+                assert!(super::rochester_earned::try_recruit_with_ball(
+                    &mut c,
+                    &runtime,
+                    "MASTER_BALL"
+                ));
+                let mut c = continue_save(root, runtime.clone(), &mut c);
+                let state = c.shell.shell.session().state();
+                assert!(state.pokedex.has_caught(&species));
+                assert!(state.bag.has_item(&runtime.data().items["GOOD_ROD"]));
+                let saved = c.snapshot().expect("Continue afloat");
+                assert_eq!(saved.overworld.mode, MovementMode::Surf);
+                assert_eq!(
+                    saved
+                        .script_events
+                        .memory
+                        .get(CANOE_ACTIVE_MEMORY)
+                        .map(String::as_str),
+                    Some("1")
+                );
+                press(&mut c, GameButton::Down);
+                super::winona::at(&mut c, MAP, (12, 7));
+                return;
+            }
+            if c.shell.visible_fishing_animation.is_none()
+                && c.shell.field_notice.is_none()
+                && !c.has_pending_script_work()
+            {
+                break;
+            }
+            press(&mut c, GameButton::A);
+        }
+    }
+    panic!("registered Good Rod never hooked a Pokémon from the canoe");
+}
+
 fn quantity(c: &VisibleShellController, runtime: &CrystalRuntime) -> u16 {
     c.shell
         .shell
@@ -42,10 +137,41 @@ fn quantity(c: &VisibleShellController, runtime: &CrystalRuntime) -> u16 {
 
 #[test]
 #[ignore = "requires CRYSTAL_CANOE_TEST_PACK"]
-fn canoe_controller_shop_badge_gift_dialogue_repeat_and_continue() {
+fn canoe_controller_regional_travel_advice() {
     let (root, runtime) = load();
-    let mut c = fixture(&root, &runtime, "MnStPaulAnglerHouse", (5, 4));
-    let before = talk(&mut c, (5, 3));
+    let mut outfitter = fixture(&root, &runtime, "MnBrainerdOutfitter", (9, 5));
+    let advice = talk(&mut outfitter, (9, 4));
+    assert!(advice.contains("CANOE"), "{advice}");
+    assert!(!advice.contains("SURF"), "{advice}");
+
+    let mut fisher = fixture(&root, &runtime, "MnGrandMaraisFisherHouse", (5, 4));
+    let advice = talk(&mut fisher, (5, 3));
+    assert!(advice.contains("CANOE"), "{advice}");
+    assert!(advice.contains("current"), "{advice}");
+}
+
+#[test]
+#[ignore = "requires CRYSTAL_CANOE_TEST_PACK"]
+fn canoe_controller_shop_badge_gift_dialogue_repeat_and_continue() {
+    const CITY: &str = "MnStPaul";
+    const SHOP: &str = "MnStPaulAnglerHouse";
+    let (root, runtime) = load();
+    let (doorstep, arrival) = city_port(&runtime, CITY, SHOP);
+    let sign = runtime.data().maps[CITY]
+        .events
+        .bg_events
+        .iter()
+        .find(|event| event.script == "MnCanoeShopSign")
+        .expect("exterior canoe shop sign");
+    let sign = (sign.x as i16, sign.y as i16);
+    let mut c = fixture(&root, &runtime, CITY, doorstep);
+    walk(&mut c, &runtime, (sign.0, sign.1 + 1));
+    let sign_text = talk(&mut c, sign);
+    assert!(sign_text.contains("ST PAUL CANOE SHOP"), "{sign_text}");
+    walk(&mut c, &runtime, doorstep);
+    super::winona::travel(&mut c, GameButton::Up, SHOP, arrival);
+    walk(&mut c, &runtime, (5, 4));
+    let before = talk_to_owner(&mut c, (5, 3));
     assert!(before.contains("CAPITOL"));
     assert_eq!(quantity(&c, &runtime), 0);
     // Local earned-badge fixture. The actual delivery still runs native scripts.
@@ -55,19 +181,60 @@ fn canoe_controller_shop_badge_gift_dialogue_repeat_and_continue() {
         .flags
         .set_engine_flag("ENGINE_FOGBADGE", true)
         .expect("Capitol Badge fixture");
-    let text = talk(&mut c, (5, 3));
+    let text = talk_to_owner(&mut c, (5, 3));
     assert!(text.contains("portage"), "{text}");
     assert_eq!(quantity(&c, &runtime), 1);
-    talk(&mut c, (5, 3));
+    let surf = &runtime.data().items["HM_SURF"];
+    assert_eq!(c.shell.shell.session().state().bag.quantity(surf), 1);
+    talk_to_owner(&mut c, (5, 3));
     assert_eq!(quantity(&c, &runtime), 1);
     let mut c = capture(c, "shop-native-v01.png");
     let mut loaded = continue_save(root, runtime.clone(), &mut c);
-    talk(&mut loaded, (5, 3));
+    talk_to_owner(&mut loaded, (5, 3));
     assert_eq!(quantity(&loaded, &runtime), 1);
-    super::interior_life::walk(&mut loaded, &runtime, (11, 6));
+    assert_eq!(loaded.shell.shell.session().state().bag.quantity(surf), 1);
+    walk(&mut loaded, &runtime, (11, 6));
     let display_text = talk(&mut loaded, (11, 5));
     assert!(display_text.contains("cedar"), "{display_text}");
-    capture(loaded, "shop-display-native-v01.png");
+    let mut loaded = capture(loaded, "shop-display-native-v01.png");
+    travel(&mut loaded, &runtime, CITY);
+    let returned = loaded.snapshot().expect("returned to the shop doorstep");
+    assert_eq!(
+        (returned.overworld.tile.x, returned.overworld.tile.y),
+        doorstep
+    );
+    assert_eq!(quantity(&loaded, &runtime), 1);
+}
+
+#[test]
+#[ignore = "requires CRYSTAL_CANOE_TEST_PACK"]
+fn canoe_controller_gift_fills_final_key_pocket_slot() {
+    let (root, runtime) = load();
+    let mut c = fixture(&root, &runtime, "MnStPaulAnglerHouse", (5, 4));
+    let state = c.shell.shell.session_mut().state_mut();
+    state.badges.johto[3] = true;
+    state
+        .flags
+        .set_engine_flag("ENGINE_FOGBADGE", true)
+        .expect("Capitol Badge fixture");
+    let items = runtime
+        .data()
+        .items
+        .values()
+        .filter(|item| item.pocket == "KEY_ITEM" && item.script_name != CANOE_ITEM);
+    for item in items.take(KEY_ITEM_POCKET_CAPACITY - 1) {
+        assert!(state.bag.add_item(item, 1).expect("fill key pocket"));
+    }
+    assert_eq!(state.bag.key_items.len(), KEY_ITEM_POCKET_CAPACITY - 1);
+    let gift = talk_to_owner(&mut c, (5, 3));
+    assert!(gift.contains("portage"), "{gift}");
+    assert_eq!(
+        c.shell.shell.session().state().bag.key_items.len(),
+        KEY_ITEM_POCKET_CAPACITY,
+    );
+    let repeat = talk_to_owner(&mut c, (5, 3));
+    assert!(repeat.contains("Carry your CANOE"), "{repeat}");
+    assert_eq!(quantity(&c, &runtime), 1);
 }
 
 #[test]
@@ -82,6 +249,7 @@ fn canoe_controller_automatic_launch_portage_and_water_continue() {
         .find(|&(x, y)| {
             collision(&runtime, map, (x, y)) == Some("FLOOR")
                 && collision(&runtime, map, (x + 1, y)) == Some("WATER")
+                && collision(&runtime, map, (x + 2, y)) == Some("WATER")
                 && map.objects.iter().all(|o| {
                     (i32::from(o.x) - i32::from(x)).abs() + (i32::from(o.y) - i32::from(y)).abs()
                         > 8
@@ -135,6 +303,14 @@ fn canoe_controller_automatic_launch_portage_and_water_continue() {
             .map(String::as_str),
         Some("1")
     );
+    press(&mut c, GameButton::Right);
+    let paddled = c.snapshot().expect("paddled after Continue");
+    assert_eq!(
+        (paddled.overworld.tile.x, paddled.overworld.tile.y),
+        (shore.0 + 2, shore.1)
+    );
+    assert_eq!(paddled.overworld.mode, MovementMode::Surf);
+    press(&mut c, GameButton::Left);
     press(&mut c, GameButton::Left);
     press(&mut c, GameButton::Left);
     let landed = c.snapshot().expect("portage landing");
@@ -147,6 +323,103 @@ fn canoe_controller_automatic_launch_portage_and_water_continue() {
             .contains_key(CANOE_ACTIVE_MEMORY)
     );
     assert_eq!(quantity(&c, &runtime), 1);
+}
+
+#[test]
+#[ignore = "requires CRYSTAL_CANOE_TEST_PACK"]
+fn canoe_controller_paddling_triggers_wild_battle_and_capture() {
+    use crystal_core::models::Dv;
+    use crystal_runtime::RuntimeBattleKind;
+
+    const MAP: &str = "MnR03C00R00";
+    let (root, runtime) = load();
+    let mut c = fixture(&root, &runtime, MAP, (11, 6));
+    let state = c.shell.shell.session_mut().state_mut();
+    state.player_gender = 1;
+    let partner = runtime
+        .data()
+        .create_pokemon("KINDLIT", 20, Dv::default())
+        .expect("Minnesota partner");
+    assert!(partner.moves.iter().all(|m| m.name != "SURF"));
+    assert!(state.storage.party.add_pokemon(partner));
+    state.sync_party_from_storage();
+    for item in [CANOE_ITEM, "MASTER_BALL"] {
+        assert!(
+            state
+                .bag
+                .add_item(&runtime.data().items[item], 1)
+                .expect("field fixture item")
+        );
+    }
+    state
+        .flags
+        .set_engine_flag("STATUSFLAGS_NO_WILD_ENCOUNTERS_F", false)
+        .expect("ordinary wild encounters enabled");
+    press(&mut c, GameButton::Right);
+    press(&mut c, GameButton::Right);
+    super::winona::at(&mut c, MAP, (12, 6));
+    if c.snapshot().expect("launch").battle.is_none() {
+        c = capture(c, "kris-red-canoe.png");
+    }
+    for step in 0..1024 {
+        let s = c.snapshot().expect("paddling");
+        assert_eq!(s.overworld.mode, MovementMode::Surf);
+        assert_eq!(
+            s.script_events
+                .memory
+                .get(CANOE_ACTIVE_MEMORY)
+                .map(String::as_str),
+            Some("1")
+        );
+        if let Some(battle) = s.battle {
+            assert!(
+                matches!(&battle.kind, RuntimeBattleKind::Wild { map_name, .. } if map_name == MAP)
+            );
+            let species = battle.enemy_pokemon.species.id;
+            let table = runtime.data().wild_encounters[MAP]
+                .water
+                .as_ref()
+                .expect("native Surf encounter table");
+            assert!(
+                table
+                    .morning
+                    .iter()
+                    .chain(&table.day)
+                    .chain(&table.night)
+                    .any(|slot| slot.species == species)
+            );
+            assert!(super::rochester_earned::try_recruit_with_ball(
+                &mut c,
+                &runtime,
+                "MASTER_BALL"
+            ));
+            let mut c = continue_save(root, runtime, &mut c);
+            assert!(c.shell.shell.session().state().pokedex.has_caught(&species));
+            let snapshot = c.snapshot().expect("returned afloat");
+            assert_eq!(snapshot.overworld.mode, MovementMode::Surf);
+            let before = snapshot.overworld.tile;
+            let direction = if before.y == 6 {
+                GameButton::Down
+            } else {
+                GameButton::Up
+            };
+            press(&mut c, direction);
+            press(&mut c, direction);
+            assert_ne!(
+                c.snapshot().expect("paddling after capture").overworld.tile,
+                before
+            );
+            return;
+        }
+        let direction = match (s.overworld.tile.x, s.overworld.tile.y) {
+            (12, 6) => GameButton::Down,
+            (12, 7) => GameButton::Up,
+            tile => panic!("left native water loop at {tile:?}"),
+        };
+        press(&mut c, direction);
+        c.wait_frames(17 + step % 11).expect("ordinary idle frames");
+    }
+    panic!("canoe movement never triggered an ordinary water encounter");
 }
 
 // Compose the production 2D Sprite/Image outputs with the existing overworld audit

@@ -1,0 +1,231 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F060",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_131": {
+      "species_id": "MN_131",
+      "name": "Tugget",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          29,
+          17,
+          6
+        ],
+        [
+          7,
+          12,
+          16
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        6717,
+        16775,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          239,
+          140,
+          49
+        ],
+        [
+          57,
+          99,
+          132
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#EF8C31",
+        "#396384",
+        "#000000"
+      ]
+    },
+    "MN_132": {
+      "species_id": "MN_132",
+      "name": "Lakernaut",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          31,
+          19,
+          7
+        ],
+        [
+          6,
+          10,
+          15
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        7807,
+        15686,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          255,
+          156,
+          57
+        ],
+        [
+          49,
+          82,
+          123
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#FF9C39",
+        "#31527B",
+        "#000000"
+      ]
+    }
+  },
+  "sprites": [
+    {
+      "id": "mn-131-tugget-v1",
+      "species_id": "MN_131",
+      "view": "front",
+      "source": "sprites/mn-f060/mn-131-132.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        690,
+        520
+      ],
+      "fit": [
+        38,
+        38
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        6717,
+        16775,
+        0
+      ]
+    },
+    {
+      "id": "mn-131-tugget-v1",
+      "species_id": "MN_131",
+      "view": "back",
+      "source": "sprites/mn-f060/mn-131-132.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        520,
+        690,
+        504
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        6717,
+        16775,
+        0
+      ],
+      "exterior_contour": "solid",
+      "sampling": "area_vote"
+    },
+    {
+      "id": "mn-132-lakernaut-v1",
+      "species_id": "MN_132",
+      "view": "front",
+      "source": "sprites/mn-f060/native-refinement-20261103-r18/front-back.imagegen.png",
+      "crop": [
+        0,
+        0,
+        887,
+        887
+      ],
+      "fit": [
+        52,
+        52
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        7807,
+        15686,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-132-lakernaut-v1",
+      "species_id": "MN_132",
+      "view": "back",
+      "source": "sprites/mn-f060/native-refinement-20261103-r18/front-back.imagegen.png",
+      "crop": [
+        887,
+        0,
+        887,
+        887
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        7807,
+        15686,
+        0
+      ],
+      "exterior_contour": "source_backed",
+      "sampling": "source_center",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    }
+  ],
+  "status": "native-review-pending",
+  "original_manifest": "sprites/mn-f060/manifest.json",
+  "prompt_file": "sprites/mn-f060/native-refinement-20261103-r18/prompt.txt",
+  "back_framing": "gen2-close-rear-portrait"
+}

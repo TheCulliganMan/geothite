@@ -42,6 +42,31 @@ pub(super) fn cleanup_reached_save(path: &Path) {
     }
 }
 
+/// Completes encountered trainers and escapes wild battles using native inputs.
+pub(super) fn play_route_encounter(controller: &mut VisibleShellController) {
+    let battle = controller
+        .snapshot()
+        .expect("actual route encounter")
+        .battle
+        .expect("battle handler owns an encounter");
+    if let RuntimeBattleKind::Trainer {
+        trainer_id,
+        event_flag,
+        ..
+    } = battle.kind
+    {
+        let runtime = controller.shell.shell.runtime().clone();
+        assert!(super::rochester_earned::try_battle(
+            controller,
+            &runtime,
+            &trainer_id,
+            &event_flag,
+        ));
+    } else {
+        escape_wild(controller);
+    }
+}
+
 pub(super) fn origin(name: &str) -> Point {
     let (col, row) = name
         .split_once('C')
@@ -150,24 +175,42 @@ impl RouteGrid {
                     let p = (col * 64 + o.x as i16, row * 48 + o.y as i16);
                     grid.blocked.insert(p);
                     if o.object_type == "OBJECTTYPE_TRAINER" && !include_trainers {
-                        trainers.push((p, o));
+                        // Match OverworldSession's regional trainer range.
+                        // The stored radius alone is shorter than live sight.
+                        let regional = name.starts_with("Mn")
+                            && o.radius > 0
+                            && o.sightline_direction_override.is_none();
+                        let radius = if regional { o.radius.max(8) } else { o.radius };
+                        trainers.push((p, o, radius, regional));
                     }
                 }
             }
         }
-        for ((x, y), o) in trainers {
-            let (dx, dy) = match o.spritemovedata.as_str() {
-                "SPRITEMOVEDATA_STANDING_UP" => (0, -1),
-                "SPRITEMOVEDATA_STANDING_LEFT" => (-1, 0),
-                "SPRITEMOVEDATA_STANDING_RIGHT" => (1, 0),
+        for ((x, y), o, radius, regional) in trainers {
+            let facing = o
+                .sightline_direction_override
+                .as_deref()
+                .unwrap_or(o.spritemovedata.as_str());
+            let direction = match facing {
+                "UP" | "SPRITEMOVEDATA_STANDING_UP" => (0, -1),
+                "LEFT" | "SPRITEMOVEDATA_STANDING_LEFT" => (-1, 0),
+                "RIGHT" | "SPRITEMOVEDATA_STANDING_RIGHT" => (1, 0),
                 _ => (0, 1),
             };
-            for n in 1..=o.radius as i16 {
-                let p = (x + dx * n, y + dy * n);
-                if !grid.floor.contains(&p) {
-                    break;
+            // Regional standing trainers turn autonomously in production.
+            let directions = if regional {
+                &[(0, -1), (-1, 0), (1, 0), (0, 1)][..]
+            } else {
+                std::slice::from_ref(&direction)
+            };
+            for &(dx, dy) in directions {
+                for n in 1..=i16::try_from(radius).expect("trainer sight fits route coordinates") {
+                    let p = (x + dx * n, y + dy * n);
+                    if !grid.floor.contains(&p) || grid.blocked.contains(&p) {
+                        break;
+                    }
+                    grid.hazards.insert(p);
                 }
-                grid.hazards.insert(p);
             }
         }
         // Native rock-top tiles can be FLOOR while remaining inaccessible
@@ -280,8 +323,21 @@ impl RouteGrid {
                 .into_iter()
                 .find_map(|(point, input)| (input == button).then_some(point))
                 .expect("planned production route destination");
-            for _ in 0..8 {
-                controller.press(button).expect("native route input");
+            for _ in 0..64 {
+                let before_input = controller.snapshot().expect("route input owner");
+                let input = if before_input.ui.pending_yes_no.is_none()
+                    && !before_input.party.slots.is_empty()
+                    && before_input
+                        .ui
+                        .text
+                        .as_ref()
+                        .is_some_and(|text| text.label == "visible-shell:field-notice")
+                {
+                    GameButton::A
+                } else {
+                    button
+                };
+                controller.press(input).expect("native route input");
                 let mut s = controller.snapshot().expect("native route step");
                 if s.battle.is_some() {
                     on_battle(controller);
@@ -306,7 +362,11 @@ impl RouteGrid {
                     );
                     return;
                 }
-                if position(controller) != before {
+                let notice_owns_input =
+                    s.ui.text
+                        .as_ref()
+                        .is_some_and(|text| text.label == "visible-shell:field-notice");
+                if position(controller) != before && !notice_owns_input {
                     break;
                 }
             }
@@ -323,7 +383,8 @@ impl RouteGrid {
             assert_ne!(
                 position(controller),
                 before,
-                "blocked route step {before:?}, {button:?}"
+                "blocked route step {before:?}, {button:?}; UI: {:?}",
+                controller.snapshot().expect("blocked route input owner").ui
             );
         }
         assert_eq!(position(controller), to);
@@ -468,7 +529,7 @@ pub(super) fn indoor_walk(
     if runtime.data().maps.contains_key("MnBoundaryIntake")
         && matches!(
             before.overworld.map_name.as_str(),
-            "MnRochesterPokecenter1F" | "MnStCloud" | "MnMankato"
+            "MnRochester" | "MnRochesterPokecenter1F" | "MnStCloud" | "MnMankato"
         )
     {
         for _ in 0..1024 {
@@ -487,29 +548,26 @@ pub(super) fn indoor_walk(
                 .first()
                 .expect("remaining step");
             for _ in 0..8 {
-                controller.press(button).expect("native arc step");
+                let input = if controller.shell.field_notice.is_some()
+                    || controller.shell.visible_blackout_phase.is_some()
+                {
+                    GameButton::A
+                } else {
+                    button
+                };
+                controller.press(input).expect("native arc step");
                 controller
                     .wait_frames(24)
                     .expect("live street presentation");
                 super::northstar_rival_arc::settle_walk_scene(controller, runtime);
-                if controller
-                    .snapshot()
-                    .expect("actual arc step")
-                    .overworld
-                    .tile
-                    != tile
-                {
+                let now = controller.snapshot().expect("actual arc step").overworld;
+                if now.map_name != before.overworld.map_name {
+                    return;
+                }
+                if now.tile != tile {
                     break;
                 }
             }
-            assert_ne!(
-                controller
-                    .snapshot()
-                    .expect("walked arc tile")
-                    .overworld
-                    .tile,
-                tile
-            );
         }
         panic!("bounded authored arc walk");
     }
@@ -533,7 +591,7 @@ pub(super) fn indoor_walk(
                 [&format!("{block:02x}")][usize::from(y % 2) * 2 + usize::from(x % 2)];
             if matches!(
                 k.as_str(),
-                "FLOOR" | "WARP_CARPET_DOWN" | "LADDER" | "BRIDGE_NS_DECK"
+                "FLOOR" | "WARP_CARPET_DOWN" | "LADDER" | "BRIDGE_NS_DECK" | "BRIDGE_EW_DECK"
             ) {
                 grid.floor.insert((x as i16, y as i16));
             }

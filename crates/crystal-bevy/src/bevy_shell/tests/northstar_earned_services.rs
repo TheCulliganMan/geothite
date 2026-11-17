@@ -230,15 +230,52 @@ pub(super) fn st_paul(c: &mut VisibleShellController, r: &CrystalRuntime, root: 
     leave(c, r, "MnStPaul", source.room);
 }
 
+#[test]
+#[ignore = "requires an actual same-pack earned Capitol Badge checkpoint"]
+fn earned_capitol_party_visits_canoe_shop_and_returns() {
+    let (root, runtime) = crate::bevy_shell::tests::winona::load();
+    let save =
+        std::env::var_os("CRYSTAL_NORTHSTAR_CAPITOL_SAVE").expect("earned Capitol Badge save");
+    let mut c = VisibleShellController::load_save(
+        root.clone(),
+        runtime.clone(),
+        std::path::PathBuf::from(save),
+        None,
+    )
+    .expect("same-pack earned Capitol checkpoint");
+    c.set_runtime_journal_enabled(false);
+    assert_eq!(
+        c.shell.shell.session().state().badges.johto,
+        [true, true, true, true, false, false, false, false]
+    );
+    assert_eq!(
+        c.snapshot().expect("Gym exit").overworld.map_name,
+        "MnStPaul"
+    );
+    st_paul(&mut c, &runtime, &root);
+    assert_eq!(quantity(&c, &runtime, "CANOE"), 1);
+    assert_eq!(quantity(&c, &runtime, "HM_SURF"), 1);
+    assert_eq!(
+        c.snapshot().expect("shop return").overworld.map_name,
+        "MnStPaul"
+    );
+}
+
 pub(super) fn st_cloud(c: &mut VisibleShellController, r: &CrystalRuntime, root: &AssetRoot) {
     assert_eq!(
         c.snapshot().expect("earned Wind gift").overworld.map_name,
         "MnStCloud"
     );
+    let guide = r.data().maps["MnStCloud"]
+        .objects
+        .iter()
+        .find(|actor| actor.script == "MN_ST_CLOUD_DEPOT_GUIDEFieldHM")
+        .expect("installed Fly giver");
+    let actor = (guide.x as i16, guide.y as i16);
     let source = Gift {
         room: "MnStCloud",
-        stand: (37, 14),
-        actor: (37, 13),
+        stand: (actor.0, actor.1 + 1),
+        actor,
         item: "HM_FLY",
         checkpoint: "campaign-earned-wind-fly",
     };

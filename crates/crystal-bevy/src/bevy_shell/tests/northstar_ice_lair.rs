@@ -256,7 +256,7 @@ pub(super) fn path(
                 [&format!("{block:02x}")][yy as usize % 2 * 2 + xx as usize % 2];
             if !matches!(
                 collision.as_str(),
-                "FLOOR" | "WARP_CARPET_DOWN" | "LADDER" | "BRIDGE_NS_DECK"
+                "FLOOR" | "WARP_CARPET_DOWN" | "LADDER" | "BRIDGE_NS_DECK" | "BRIDGE_EW_DECK"
             ) || (collision == "LADDER" && (xx, yy) != to)
             {
                 continue;

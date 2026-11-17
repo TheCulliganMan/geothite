@@ -1,0 +1,60 @@
+{
+  "status": "reviewed text proposal; not integrated or installed",
+  "scope": "Clarify what Tamarack's original river logs are for. Preserve the installed delivery triggers, envelope narration, event flags, rewards, and all Rochester dialogue except where a verified wording defect is identified.",
+  "reviewed_pack": {
+    "base": "target/northstar-next-cdd4da77.crystalpack",
+    "base_sha256": "4071b8ab72bd40c71a40a888c9b9dda6d14309dac37568cd7326d8ac8e9068c1",
+    "hosted": "target/northstar-next-hosted-cdd4da77.crystalpack",
+    "hosted_sha256": "03ad92a98538f810809e3b547fffe4642c3fadbc82a9c778da91870258486aef",
+    "comparison": "The maps and script/text bodies for the reviewed scenes match between the base and hosted packs."
+  },
+  "proposed_replacement": {
+    "milestone": "MS00",
+    "map": "MnWinonaFieldStation",
+    "label": "MnWReadingsText",
+    "pages": [
+      ["TAMARACK: You two", "make a great team!"],
+      ["Take my original", "river logs to IVY."],
+      ["She needs them to", "check river nests."],
+      ["She's at the", "ROCHESTER clinic."]
+    ],
+    "intent": "States the concrete use for the logs before the player travels. This purpose is supported by Ivy's installed delivery line, 'We check river nests with these.'"
+  },
+  "unchanged_installed_labels": {
+    "MnRochesterPokecenter1F/MnRCDeliveryText": [
+      "IVY: You must be / TAMARACK's helper!",
+      "You handed IVY the / sealed envelope.",
+      "IVY: Her original / river notes!",
+      "I will keep them / safe here.",
+      "We check river / nests with these.",
+      "ELLIS was bringing / our survey meters.",
+      "He should have / been home by now.",
+      "JO, his partner, / is in MINNEAPOLIS.",
+      "Ask JO if ELLIS / has come home.",
+      "I will check the / river landings."
+    ],
+    "MnRochesterPokecenter1F/MnRCDeliveryAfterText": [
+      "IVY: TAMARACK's / notes are safe.",
+      "Please check on JO / in MINNEAPOLIS.",
+      "Ask if ELLIS has / come home.",
+      "Your team can rest / here first."
+    ]
+  },
+  "claim_audit": [
+    "Supported in the installed earlier Tamarack introduction: she studies the river and its Pokemon, the river is low, nests are drying, and Ivy needs her logs.",
+    "Supported in installed MS00 and MS01: Tamarack sends her original river logs to Ivy at the Rochester clinic; Ivy says the logs are used to check river nests.",
+    "Supported in installed MS01: Ellis was bringing the survey meters; Ivy says he should have been home by now; Jo is his partner and is in Minneapolis; Ivy asks the player to ask Jo whether Ellis has come home.",
+    "Not established in these playable scenes: a particular date range, spring counts, a previous-year baseline, the logs being the only surviving record, or that the meters definitely never arrived or were diverted. This proposal makes none of those claims.",
+    "Ivy's existing opening line identifies the player as Tamarack's helper before the script narrates the envelope handoff. Ivy's separate early/refusal line says Tamarack has notes for her, which supports her expectation of the notes, but the pack does not explicitly show how she identifies this particular player. Do not add an off-screen call or an envelope address without a source change; review this inference in the staged scene."
+  ],
+  "trigger_and_custody_review": {
+    "winona": "MnWFollowup branches to the Tamarack reminder after EVENT_MN_R01_PARCEL_RECEIVED is set. Before that flag, it opens MnWReadingsText, then sets the received flag; the script's inventory rewards are separate. The parcel is not a bag item.",
+    "rochester": "MN_ROCHESTER_RECIPIENT checks EVENT_MN_DELIVERED_ROCHESTER_PARCEL first. If already set, it takes MnRCDeliveryAfter; otherwise it requires EVENT_MN_STARTER_RECEIVED and EVENT_MN_R01_PARCEL_RECEIVED, displays MnRCDeliveryText, waits for acknowledgment and closes the text before setting EVENT_MN_DELIVERED_ROCHESTER_PARCEL. The script does not consume or clear the received flag or create a parcel item. The narration establishes transfer; the delivered event records it.",
+    "repeat": "MnRCDeliveryAfter selects later milestone-specific Ivy lines before falling back to MnRCDeliveryAfterText. The fallback directs the player to Jo and offers healing; it does not replay the envelope handoff or claim the comparison is complete."
+  },
+  "integration_notes": [
+    "Only MS00 is proposed for change. Keep the two Rochester labels byte-for-byte in wording unless the staged knowledge inference is separately resolved with authored evidence.",
+    "Feed the replacement through the active final dialogue writer and native text compiler; do not edit compiled pack bytes directly.",
+    "Verify the exact selected parent, first delivery, refused/missing-prerequisite reply, post-delivery repeat, acknowledgment boundary, saved Continue, and Start/movement after dialogue."
+  ]
+}

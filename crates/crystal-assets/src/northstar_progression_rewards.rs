@@ -341,6 +341,7 @@ pub fn build_northstar_progression_rewards(
     );
     publish(&mut pack, city)?;
     repair_machine_part_handoff(&mut pack)?;
+    crate::northstar_reward_receipts::install(&mut pack)?;
     pack.report.manifests.push(MANIFEST.into());
     pack.identity = crate::derive_compiled_game_pack_identity_from_manifest(
         pack.format_version,

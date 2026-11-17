@@ -1,0 +1,94 @@
+{
+  "species_id": "MN_321",
+  "name": "Mantlsnail",
+  "family_id": "MN_F146",
+  "dex_number": 193,
+  "status": "accepted",
+  "generation_tool": "built-in image_gen",
+  "selected_manifest": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f146/mantlsnail.manifest-20261104-v3-features.json",
+    "sha256": "e03e8d3218f87b7df12dc500968c5bb17c05d9c8c5cfd857e46c4c73d3ccc887",
+    "bytes": 1943
+  },
+  "sources": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f146/mantlsnail.overworld.imagegen-20261104-v1.png",
+      "sha256": "bc686bc6bd317a4f468fd7615632901fd0fc0fa45d2f6a28f34faa9b87f66643",
+      "bytes": 1372107
+    }
+  ],
+  "prompts": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f146/mantlsnail.overworld.prompt-20261104-v1.txt",
+      "sha256": "b7376fdfbcdc8d29ed47f673071c90163dbe65bc2cad087450f9bc83eceb89c7",
+      "bytes": 2629
+    }
+  ],
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mantlsnail-20261104-v3-features",
+  "normal_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mantlsnail-20261104-v3-features/review/mantlsnail.normal-8x.png",
+    "sha256": "9a7a45057f84caf9aee8d0ba35e3c4c20e8c72a4f40b720ee06a28a0dfb81f77",
+    "bytes": 10110
+  },
+  "shiny_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mantlsnail-20261104-v3-features/review/mantlsnail.shiny-8x.png",
+    "sha256": "238715489378fa6a088cc5932296fa220b41e8d32648010983f44f8aec993c46",
+    "bytes": 9714
+  },
+  "compiled_index": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/mantlsnail-20261104-v3-features/compiled-index.json",
+    "sha256": "9ccd9524533fafcea2695023a7880ef459851d4b350784a2f651ec5389790889",
+    "bytes": 7950
+  },
+  "source_feature_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f146/mantlsnail.source-feature-review-20261104-v3.json",
+    "sha256": "2d7b467f1a8c7056ddb8285a7363c7ef7f40d82f0ab5e3b80a93675c3675b3eb",
+    "bytes": 5327
+  },
+  "context_evidence": {
+    "directory": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-02",
+    "input_manifest": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-02/input-manifest.json",
+      "sha256": "29b454a90f5a4f38bcceeb39dc97d11f0cd1c27cd6d4fa38949eb31fa5ba8f7c",
+      "bytes": 1162
+    },
+    "verification": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-02/verification.json",
+      "sha256": "3642ade68fbdbffa8f955efc82f661d8cf5d1151cbf998007c0d5ecdb00b02a0",
+      "bytes": 16890
+    },
+    "test_log": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/verification/all225-20261104-v5-02.log",
+      "sha256": "bd25bbc4ffb3d01568ea6d0477559f41aef603c464b90b555117ecde2de2d25f",
+      "bytes": 217
+    },
+    "normal_actor_poses": 8,
+    "all_six_shiny_native_poses_verified": true
+  },
+  "root_visual_review": {
+    "accepted": true,
+    "notes": "Species-specific head, dark facial marks and themed body silhouette retained in front/profile. Rear poses show backs of ears/crest/head and the actual back/tail, without a pasted frontal face. Six distinct native poses, paired idle/step articulation and both palettes reviewed alongside the trainer on terrain."
+  },
+  "runtime_files": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/mantlsnail/overworld.2bpp",
+      "sha256": "90ce4e3e4afaefa7558b1199f9c8bf19eb3c1a7f32ecc0a56d722c7a281f752f",
+      "bytes": 384
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/mantlsnail/overworld.png",
+      "sha256": "8a20f12257143975c110e14aa7a8367e6df7c82de18d356ca3a32995ae09bde9",
+      "bytes": 856
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/mantlsnail/overworld.gbcpal",
+      "sha256": "28c91be247db60f4cd043308dd6b94fb01586f73b82c148b808c0543042748f8",
+      "bytes": 8
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/mantlsnail/overworld-shiny.gbcpal",
+      "sha256": "536ec68d0c43fd2e380f04fba1abb1c0e656aa4f2fd18b860bb16585b52c2e38",
+      "bytes": 8
+    }
+  ]
+}

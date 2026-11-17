@@ -1,0 +1,355 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F148",
+  "tool": "built-in image_gen",
+  "prompt_file": "sprites/mn-f148/replacement-20261104-v1/prompt.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "status": "native-front-back-candidate-reviewed",
+  "sprites": [
+    {
+      "id": "mn-325-owletch-v1",
+      "species_id": "MN_325",
+      "view": "front",
+      "source": "sprites/mn-f148/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        0,
+        0,
+        430,
+        512
+      ],
+      "fit": [
+        34,
+        34
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        24147,
+        14633,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-325-owletch-v1",
+      "species_id": "MN_325",
+      "view": "back",
+      "source": "sprites/mn-f148/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        0,
+        512,
+        430,
+        512
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        24147,
+        14633,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-326-hollowl-v1",
+      "species_id": "MN_326",
+      "view": "front",
+      "source": "sprites/mn-f148/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        430,
+        0,
+        440,
+        512
+      ],
+      "fit": [
+        43,
+        43
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        24146,
+        14632,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-326-hollowl-v1",
+      "species_id": "MN_326",
+      "view": "back",
+      "source": "sprites/mn-f148/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        430,
+        512,
+        440,
+        512
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        24146,
+        14632,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-327-gloamowl-v1",
+      "species_id": "MN_327",
+      "view": "front",
+      "source": "sprites/mn-f148/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        870,
+        0,
+        666,
+        512
+      ],
+      "fit": [
+        52,
+        38
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        23121,
+        13607,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-327-gloamowl-v1",
+      "species_id": "MN_327",
+      "view": "back",
+      "source": "sprites/mn-f148/replacement-20261104-v1/front-back.imagegen.png",
+      "crop": [
+        870,
+        512,
+        666,
+        512
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        23121,
+        13607,
+        0
+      ],
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16,
+      "interior_black_min_samples": 32
+    }
+  ],
+  "pokemon_palettes": {
+    "MN_325": {
+      "species_id": "MN_325",
+      "name": "Owletch",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          19,
+          18,
+          23
+        ],
+        [
+          9,
+          9,
+          14
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        24147,
+        14633,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          156,
+          148,
+          189
+        ],
+        [
+          74,
+          74,
+          115
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#9C94BD",
+        "#4A4A73",
+        "#000000"
+      ]
+    },
+    "MN_326": {
+      "species_id": "MN_326",
+      "name": "Hollowl",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          18,
+          18,
+          23
+        ],
+        [
+          8,
+          9,
+          14
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        24146,
+        14632,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          148,
+          148,
+          189
+        ],
+        [
+          66,
+          74,
+          115
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#9494BD",
+        "#424A73",
+        "#000000"
+      ]
+    },
+    "MN_327": {
+      "species_id": "MN_327",
+      "name": "Gloamowl",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          17,
+          18,
+          22
+        ],
+        [
+          7,
+          9,
+          13
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        23121,
+        13607,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          140,
+          148,
+          181
+        ],
+        [
+          57,
+          74,
+          107
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#8C94B5",
+        "#394A6B",
+        "#000000"
+      ]
+    }
+  },
+  "visual_review": {
+    "status": "reviewed",
+    "reviewer": "root",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "edc86627d6da0b135aa85cc2db68f8a9f61b6eeb60a215b6ab3d5b282ee0d0ca",
+    "notes": "Native review: owl stages grow from round owlet to broad hovering negative-space wings. Eye disks, beak and two feet remain separate; adult wing gaps survive reduction. Close rear portraits retain wing/root folds and face profile. Candidate for user feedback."
+  }
+}

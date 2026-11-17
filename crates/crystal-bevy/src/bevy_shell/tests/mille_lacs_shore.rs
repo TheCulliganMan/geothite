@@ -146,6 +146,86 @@ fn reports(controller: &VisibleShellController) -> [bool; 3] {
     SHORE_WATCH_REPORT_EVENTS.map(|name| event(controller, name))
 }
 
+#[test]
+#[ignore = "current external story pack; prepared regional party, followed by native shore quest"]
+fn mille_lacs_story_reports_battles_rod_handoff_and_continue() {
+    let (root, runtime, mut controller, _) = fixture(true, None);
+    let state = controller.shell.shell.session_mut().state_mut();
+    for species in ["BOREALYNX", "PORTABEAU"] {
+        let pokemon = runtime
+            .data()
+            .create_pokemon(species, 60, Dv::default())
+            .expect("regional shore review partner");
+        assert!(state.storage.party.add_pokemon(pokemon));
+    }
+    assert!(
+        state
+            .bag
+            .add_item(&runtime.data().items["SUPER_POTION"], 10)
+            .expect("initial shore review medicine")
+    );
+    state.sync_party_from_storage();
+    mark_runtime_snapshot_dirty(&mut controller.shell);
+    let grid = RouteGrid::new_for_battles(
+        &runtime,
+        RouteSpec {
+            prefix: "MnR18",
+            columns: 2,
+            rows: 1,
+            tileset: "mn_headwaters",
+            start: (6, 10),
+            doors: BTreeMap::new(),
+        },
+    )
+    .with_battle_handler(super::authored_route_fixture::play_route_encounter);
+    grid.walk(&mut controller, (16, 23));
+    if !event(&controller, "EVENT_MN_R18_TRAINER_01") {
+        press(&mut controller, GameButton::Right);
+        press(&mut controller, GameButton::A);
+        assert!(super::rochester_earned::try_battle(
+            &mut controller,
+            &runtime,
+            "MN_R18_T01",
+            "EVENT_MN_R18_TRAINER_01",
+        ));
+    }
+    super::authored_route_fixture::finish_text(&mut controller);
+    let labels = [
+        "MN_R18_WATCH_REEDText",
+        "MN_R18_WATCH_MEADOWText",
+        "MN_R18_WATCH_BEACHText",
+    ];
+    for (index, (at, _)) in VOLUNTEERS.into_iter().enumerate() {
+        talk_open(&mut controller, &grid, at);
+        super::northstar_dialogue::acknowledge(
+            &mut controller,
+            "",
+            labels[index],
+            SHORE_WATCH_REPORT_EVENTS[index],
+        );
+        super::authored_route_fixture::finish_text(&mut controller);
+        assert!(event(&controller, SHORE_WATCH_REPORT_EVENTS[index]));
+        assert!(!event(&controller, SHORE_WATCH_REWARDED_EVENT));
+    }
+    assert_eq!(quantity(&controller, &runtime, "GOOD_ROD"), 0);
+    let delivered = speak(&mut controller, &grid, RANGER);
+    assert!(delivered.has_label("MN_R18_WatchRewardIntroText"));
+    assert!(delivered.has_label("MN_R18_WatchRewardGivenText"));
+    assert!(event(&controller, SHORE_WATCH_REWARDED_EVENT));
+    assert_eq!(quantity(&controller, &runtime, "GOOD_ROD"), 1);
+    assert_eq!(quantity(&controller, &runtime, "OLD_ROD"), 1);
+    let path = super::authored_route_fixture::reached_save_path(
+        "mille-lacs-story-shore-reports.crystalsave",
+    );
+    controller.save(&path).expect("save completed shore quest");
+    let mut loaded = VisibleShellController::load_save(root, runtime.clone(), path.clone(), None)
+        .expect("Continue completed shore quest");
+    assert_eq!(reports(&loaded), [true; 3]);
+    assert!(speak(&mut loaded, &grid, RANGER).has_label("MN_R18_WatchAlreadyRewardedText"));
+    assert_eq!(quantity(&loaded, &runtime, "GOOD_ROD"), 1);
+    super::authored_route_fixture::cleanup_reached_save(&path);
+}
+
 fn talk_open(controller: &mut VisibleShellController, grid: &RouteGrid, at: Point) {
     let (approach, facing) = neighbors(at)
         .into_iter()

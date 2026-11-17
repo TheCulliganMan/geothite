@@ -805,7 +805,6 @@ fn overhaul_clinic_speakers_and_return_advice_follow_completed_actions() {
     for (stage, label) in labels.into_iter().enumerate() {
         let mut flags = vec![
             "EVENT_MN_HOME_INTRO",
-            "EVENT_MN_TAMARACK_INTRO",
             "EVENT_MN_STARTER_RECEIVED",
             "EVENT_MN_R01_PARCEL_RECEIVED",
             "EVENT_MN_DELIVERED_ROCHESTER_PARCEL",

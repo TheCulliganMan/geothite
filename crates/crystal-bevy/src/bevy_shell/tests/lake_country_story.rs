@@ -8,7 +8,7 @@ use crystal_core::systems::script_flags::BADGE_ENGINE_FLAGS;
 use crystal_runtime::{CrystalRuntime, RuntimeBattleKind};
 use serde_json::{Value, json};
 
-use super::super::authored_route_fixture::{RouteGrid, RouteSpec, position};
+use super::super::authored_route_fixture::{RouteGrid, RouteSpec, origin, position};
 use super::super::rochester::flee;
 use super::super::winona::{at, continued, travel};
 use super::{
@@ -96,7 +96,7 @@ pub(super) fn try_road_with(
     } else {
         ("MnR06", 2, BTreeMap::from([((9, 61), "MnR06NeedleCabin")]))
     };
-    let grid = RouteGrid::new_with_grass(
+    let mut grid = RouteGrid::new_for_battles(
         r,
         RouteSpec {
             prefix,
@@ -107,6 +107,8 @@ pub(super) fn try_road_with(
             doors,
         },
     );
+    let original_blocked = grid.blocked.clone();
+    let mut blocked_attempts = 0;
     for _ in 0..2048 {
         let old = position(c);
         if old == target {
@@ -115,16 +117,79 @@ pub(super) fn try_road_with(
         // Native hops can land beyond the planned adjacent tile. Encounters
         // also settle movement before returning control. Observe that landing
         // before choosing another direction, as an actual player must.
-        let button = *grid.path(old, target).first().expect("remaining road step");
+        grid.blocked.clone_from(&original_blocked);
+        let snapshot = c.snapshot().expect("live road actors");
+        let map_origin = origin(&snapshot.overworld.map_name);
+        for object in &snapshot.visible_objects {
+            let id = object
+                .object_identifier
+                .as_deref()
+                .expect("visible road actor id");
+            let tile = c
+                .shell
+                .shell
+                .session()
+                .overworld()
+                .object_runtime_tile_by_id(id)
+                .expect("live road actor position");
+            grid.blocked
+                .insert((map_origin.0 + tile.x, map_origin.1 + tile.y));
+        }
+        let Some(path) = grid.try_path(old, target) else {
+            blocked_attempts += 1;
+            assert!(
+                blocked_attempts < 32,
+                "{prefix} route remains blocked at {old:?}"
+            );
+            c.wait_frames(24).expect("wait for a road actor");
+            continue;
+        };
+        let button = *path.first().expect("remaining road step");
         for _ in 0..8 {
             press(c, button);
-            if c.snapshot().expect("road encounter").battle.is_some() {
-                encounter(c);
+            if let Some(battle) = c.snapshot().expect("road encounter").battle {
+                match battle.kind {
+                    RuntimeBattleKind::Wild { .. } => encounter(c),
+                    RuntimeBattleKind::Trainer {
+                        trainer_id,
+                        event_flag,
+                        ..
+                    } => {
+                        if !super::super::rochester_earned::try_battle(
+                            c,
+                            r,
+                            &trainer_id,
+                            &event_flag,
+                        ) {
+                            return false;
+                        }
+                    }
+                    other => panic!("unexpected {prefix} encounter {other:?}"),
+                }
             }
             let outcome = c.snapshot().expect("road field notice");
             if outcome.battle.is_none() && outcome.ui.text.is_some() {
-                // Poison and other field notices own input until acknowledged.
-                finish(c);
+                if let Some(intro) = &c.shell.pending_trainer_intro {
+                    let script = r.data().maps[&intro.origin_map_name].scripts
+                        [&intro.source_script]
+                        .as_array()
+                        .expect("native trainer program");
+                    let trainer = script
+                        .iter()
+                        .find(|row| row["command"] == "trainer")
+                        .expect("trainer command");
+                    let id = trainer["args"][1].as_str().expect("trainer id").to_owned();
+                    let flag = trainer["args"][2]
+                        .as_str()
+                        .expect("trainer flag")
+                        .to_owned();
+                    if !super::super::rochester_earned::try_battle(c, r, &id, &flag) {
+                        return false;
+                    }
+                } else {
+                    // Poison and other field notices own input until acknowledged.
+                    finish(c);
+                }
             }
             if !c
                 .snapshot()
@@ -140,6 +205,11 @@ pub(super) fn try_road_with(
             }
         }
         if position(c) == old {
+            blocked_attempts += 1;
+            if blocked_attempts < 32 {
+                c.wait_frames(24).expect("wait for a road actor");
+                continue;
+            }
             if let Some(directory) = std::env::var_os("CRYSTAL_WINONA_SAVE_DIR") {
                 c.save(std::path::PathBuf::from(directory).join(format!(
                     "lake-road-blocked-r{n}-{}-{}-{}.crystalsave",
@@ -150,12 +220,63 @@ pub(super) fn try_road_with(
                 .expect("retain the actual blocked road state");
             }
             panic!(
-                "native {prefix} road step {button:?} from {old:?} did not move; target={target:?}, ui={:?}",
-                c.snapshot().expect("actual blocked road state").ui
+                "native {prefix} road step {button:?} from {old:?} did not move; target={target:?}, ui={:?}, pending={}, trainer={:?}, player={:?}",
+                c.snapshot().expect("actual blocked road state").ui,
+                c.has_pending_script_work(),
+                c.shell
+                    .pending_trainer_intro
+                    .as_ref()
+                    .map(|intro| &intro.source_script),
+                c.shell.shell.session().overworld().player,
             );
+        } else {
+            blocked_attempts = 0;
         }
     }
     panic!("bounded native {prefix} road did not reach {target:?}");
+}
+
+#[test]
+#[ignore = "requires an actual same-pack R06 blocked checkpoint"]
+fn r06_earned_blocked_checkpoint_resumes_the_native_road() {
+    let (root, runtime) = super::super::winona::load();
+    let save = std::env::var_os("CRYSTAL_R06_BLOCKED_SAVE").expect("real R06 checkpoint");
+    let mut c = VisibleShellController::load_save(
+        root,
+        runtime.clone(),
+        std::path::PathBuf::from(save),
+        None,
+    )
+    .expect("same-pack blocked checkpoint");
+    c.set_runtime_journal_enabled(false);
+    eprintln!(
+        "R06 resumed: {:?}, pending={}, trainer={:?}, player={:?}",
+        c.snapshot().expect("resume").overworld,
+        c.has_pending_script_work(),
+        c.shell
+            .pending_trainer_intro
+            .as_ref()
+            .map(|intro| &intro.source_script),
+        c.shell.shell.session().overworld().player
+    );
+    let snapshot = c.snapshot().expect("live R06 actors");
+    eprintln!(
+        "R06 visible actor positions: {:?}",
+        snapshot.visible_object_runtime_tiles
+    );
+    let map = &c.shell.shell.session().overworld().map;
+    for (x, y) in [(49_i16, 43_i16), (50, 43), (50, 42), (51, 43), (50, 44)] {
+        let block = map.metatile_ids[(y as usize / 2) * map.width as usize + x as usize / 2];
+        let name = &runtime.data().maps["MnR06C00R00"].attributes.tileset_name;
+        eprintln!(
+            "R06 ({x},{y}): block {block:02x} collision {}",
+            runtime.data().tilesets[name].collision[&format!("{block:02x}")]
+                [y as usize % 2 * 2 + x as usize % 2]
+        );
+    }
+    assert!(try_road_with(&mut c, &runtime, 6, (37, 40), |c| {
+        super::super::earned_rod_visits::encounter(c, &runtime)
+    }));
 }
 fn unchanged_story(c: &VisibleShellController) {
     for name in [

@@ -1,0 +1,94 @@
+{
+  "species_id": "MN_083",
+  "name": "Berryboo",
+  "family_id": "MN_F035",
+  "dex_number": 81,
+  "status": "accepted",
+  "generation_tool": "built-in image_gen",
+  "selected_manifest": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f035/berryboo.manifest-20261104-v3-features.json",
+    "sha256": "77c3c0b3eafbdba5e56fc8f80a354b0e67c6af3326e4bc0bb4a25763fa004660",
+    "bytes": 1929
+  },
+  "sources": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f035/berryboo.overworld.imagegen-20261104-v1.png",
+      "sha256": "0af60bc93624797f73e57f9554480d9a42d2b00c0273196743eead84f208af79",
+      "bytes": 1232282
+    }
+  ],
+  "prompts": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f035/berryboo.overworld.prompt-20261104-v1.txt",
+      "sha256": "13f06e32b1f2320457659073984ffa3f4d957cc72252d1f4358dac5878f599e9",
+      "bytes": 2532
+    }
+  ],
+  "candidate_directory": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/berryboo-20261104-v3-features",
+  "normal_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/berryboo-20261104-v3-features/review/berryboo.normal-8x.png",
+    "sha256": "d2150428fc01dc060ec3046114937f56f7ed0aa6a3103aff553cb7544b17dff5",
+    "bytes": 9718
+  },
+  "shiny_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/berryboo-20261104-v3-features/review/berryboo.shiny-8x.png",
+    "sha256": "1a63f99667b56518b636b732905abc122fad917007d22c951a7c9530c7aacdaf",
+    "bytes": 9697
+  },
+  "compiled_index": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/candidates/berryboo-20261104-v3-features/compiled-index.json",
+    "sha256": "9e57c60a083617f5728caaa76655f328a9051d8c4a4962ce62e2912dd70c58dc",
+    "bytes": 7938
+  },
+  "source_feature_review": {
+    "path": "planning/minnesota/pokemon/overworld/20261027-v1/sources/mn_f035/berryboo.source-feature-review-20261104-v3.json",
+    "sha256": "26bc07156555569d1909a58c977d0bf3239deed62b0cd582db1ef225c5e3da9a",
+    "bytes": 5318
+  },
+  "context_evidence": {
+    "directory": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-00",
+    "input_manifest": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-00/input-manifest.json",
+      "sha256": "c4a930dd2097722d52d79f2a1033531b0a00b0dd036abde21f959dfaa19f4800",
+      "bytes": 1158
+    },
+    "verification": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/diagnostics/all225-20261104-v5-00/verification.json",
+      "sha256": "757ed1ef7ca038c0007a704d39be0eb5ae590f1e41a84c1dc377d8dec9966208",
+      "bytes": 16870
+    },
+    "test_log": {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/verification/all225-20261104-v5-00.log",
+      "sha256": "59265f6f08266b94db09c6c0ddde3af257a8cfbea003fe8d079186efecfdfa9a",
+      "bytes": 217
+    },
+    "normal_actor_poses": 8,
+    "all_six_shiny_native_poses_verified": true
+  },
+  "root_visual_review": {
+    "accepted": true,
+    "notes": "Species-specific head, dark facial marks and themed body silhouette retained in front/profile. Rear poses show backs of ears/crest/head and the actual back/tail, without a pasted frontal face. Six distinct native poses, paired idle/step articulation and both palettes reviewed alongside the trainer on terrain."
+  },
+  "runtime_files": [
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/berryboo/overworld.2bpp",
+      "sha256": "1dd2e9fcecfde423707806e37ad4ba120b30e10b8dfee46efd3a4fffb688a639",
+      "bytes": 384
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/berryboo/overworld.png",
+      "sha256": "3f00f906df9efca58d91bad25be6a2e177099ff135ea9f3394fd47b274716017",
+      "bytes": 873
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/berryboo/overworld.gbcpal",
+      "sha256": "ff376f705716826116a616a65bb5603efad9aa57e01cd62a181afac1ebafc011",
+      "bytes": 8
+    },
+    {
+      "path": "planning/minnesota/pokemon/overworld/20261027-v1/native/gfx/pokemon/berryboo/overworld-shiny.gbcpal",
+      "sha256": "e28fb12275c1c21c952c0ef8e7408f7c959879ad854f43b9ac4c0c8a3f05e8da",
+      "bytes": 8
+    }
+  ]
+}

@@ -170,6 +170,25 @@ fn battle_anim_clock_gust_return_reaches_the_bridge_without_mutating_gameplay() 
 }
 
 #[test]
+fn text_controller_completes_move_after_its_audio_tail() {
+    let mut shell = route36_battle_shell_for_render_regression();
+    shell.battle_messages.clear();
+    let mut animation = battle_anim_regression_timeline(Vec::new(), 185);
+    animation.total_frames = 185;
+    shell.visible_move_animations.clear();
+    shell.visible_move_animations.push_back(animation);
+    shell.visible_move_audio_wait = Some(2);
+
+    for _ in 0..2 {
+        fast_forward_text_client_battle_visuals(&mut shell);
+        advance_visible_move_animation(&mut shell).expect("finish move after its audio wait");
+    }
+
+    assert!(shell.visible_move_audio_wait.is_none());
+    assert!(shell.visible_move_animations.is_empty());
+}
+
+#[test]
 fn battle_anim_clock_source_fix_does_not_extend_synthetic_fixed_delays() {
     for total in [1_u16, 14, 60, u16::MAX] {
         let mut shell = route36_battle_shell_for_render_regression();

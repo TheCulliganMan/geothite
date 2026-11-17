@@ -29,17 +29,19 @@ pub(super) fn try_road_with(
     mut encounter: impl FnMut(&mut VisibleShellController),
 ) -> bool {
     let from = position(c);
-    let mut grid = RouteGrid::new_with_grass(
-        r,
-        RouteSpec {
-            prefix: "MnR03",
-            columns: 1,
-            rows: 2,
-            tileset: "mn_headwaters",
-            start: from,
-            doors: std::collections::BTreeMap::from([((8, 37), "MnR03Cave1F")]),
-        },
-    );
+    let spec = RouteSpec {
+        prefix: "MnR03",
+        columns: 1,
+        rows: 2,
+        tileset: "mn_headwaters",
+        start: from,
+        doors: std::collections::BTreeMap::from([((8, 37), "MnR03Cave1F")]),
+    };
+    let mut grid = if c.snapshot().expect("route party").party.slots.is_empty() {
+        RouteGrid::new_with_grass(r, spec)
+    } else {
+        RouteGrid::new_for_battles(r, spec)
+    };
     let original_blocked = grid.blocked.clone();
     let mut blocked_attempts = 0;
     for _ in 0..4096 {
