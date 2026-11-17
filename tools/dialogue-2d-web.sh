@@ -9,8 +9,8 @@ TARGET=${CARGO_TARGET_DIR:-target/northstar-story}
 BINDGEN=${WASM_BINDGEN:-wasm-bindgen}
 export CARGO_TARGET_DIR=$TARGET
 [ -f "$PACK" ] || { echo "Missing content pack: $PACK" >&2; exit 1; }
-[ "$("$BINDGEN" --version)" = 'wasm-bindgen 0.2.128' ] || {
-    echo 'Set WASM_BINDGEN to the official wasm-bindgen-cli 0.2.128 executable.' >&2
+[ "$("$BINDGEN" --version)" = 'wasm-bindgen 0.2.129' ] || {
+    echo 'Set WASM_BINDGEN to the official wasm-bindgen-cli 0.2.129 executable.' >&2
     exit 1
 }
 git check-ignore --quiet --no-index "$OUT/core-modular.browser.crystalpack" || {

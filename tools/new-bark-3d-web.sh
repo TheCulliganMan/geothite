@@ -1,6 +1,6 @@
 #!/bin/sh
 # Build the actual production game with New Bark's modeled renderer locally.
-# Requires the repository's Rust toolchain, wasm32 target and wasm-bindgen 0.2.128.
+# Requires the repository's Rust toolchain, wasm32 target and wasm-bindgen 0.2.129.
 # Content remains external/ignored. No downloads or deployment are performed here.
 set -eu
 cd "$(dirname "$0")/.."
@@ -20,9 +20,9 @@ case "$PROFILE" in
 esac
 [ -f "$PACK" ] || { echo "Missing compatible content pack: $PACK" >&2; exit 1; }
 BINDGEN="${WASM_BINDGEN:-wasm-bindgen}"
-command -v "$BINDGEN" >/dev/null 2>&1 || { echo 'Install official wasm-bindgen-cli 0.2.128.' >&2; exit 1; }
-[ "$("$BINDGEN" --version)" = 'wasm-bindgen 0.2.128' ] || {
-    echo 'This Cargo.lock requires wasm-bindgen-cli 0.2.128; set WASM_BINDGEN to its executable.' >&2
+command -v "$BINDGEN" >/dev/null 2>&1 || { echo 'Install official wasm-bindgen-cli 0.2.129.' >&2; exit 1; }
+[ "$("$BINDGEN" --version)" = 'wasm-bindgen 0.2.129' ] || {
+    echo 'This Cargo.lock requires wasm-bindgen-cli 0.2.129; set WASM_BINDGEN to its executable.' >&2
     exit 1
 }
 export CARGO_BUILD_JOBS="${CARGO_BUILD_JOBS:-1}"

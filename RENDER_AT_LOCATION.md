@@ -73,7 +73,7 @@ but does not verify the window surface itself.
 
 ## Inspect outdoor art in the browser
 
-The production browser preview builder requires `wasm-bindgen-cli` 0.2.128,
+The production browser preview builder requires `wasm-bindgen-cli` 0.2.129,
 matching `Cargo.lock`. Set `WASM_BINDGEN` to that executable if a different
 version is installed globally. The Rust server needs the ignored core pack
 as its input; it derives the realtime-clock/customization pack itself.

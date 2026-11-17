@@ -534,7 +534,7 @@ The local compact pack is compatible with this native renderer. The current
 browser verification uses the `web-release` profile, the
 `wasm32-unknown-unknown` target, full-detail scenery, and the production renderer
 with `location-tester`, `fullscreen-scaling`, and both worker feature hooks.
-Packaging requires wasm-bindgen CLI 0.2.128; `WASM_BINDGEN` selects its executable.
+Packaging requires wasm-bindgen CLI 0.2.129; `WASM_BINDGEN` selects its executable.
 `tools/new-bark-3d-web.sh` now packages separate WebGPU and WebGL builds by
 default. Set `CRYSTAL_WEBGPU=0` to build only WebGL. Bevy selects WebGL uniform
 padding and texture views at compile time, so a dual-feature binary cannot

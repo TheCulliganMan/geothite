@@ -149,7 +149,7 @@ map/position timestamps; the walking harness also writes its own movement trace.
 
 ## Browser build
 
-With the official `wasm-bindgen-cli` 0.2.128 and wasm32 target installed:
+With the official `wasm-bindgen-cli` 0.2.129 and wasm32 target installed:
 
 ```sh
 sh tools/new-bark-3d-web.sh

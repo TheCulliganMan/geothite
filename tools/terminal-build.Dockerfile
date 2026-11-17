@@ -11,6 +11,7 @@ COPY crates ./crates
 COPY assets ./assets
 COPY art ./art
 COPY modpacks ./modpacks
+COPY planning ./planning
 ARG CARGO_BUILD_JOBS=2
 RUN --mount=type=cache,target=/usr/local/cargo/registry,sharing=locked \
     --mount=type=cache,target=/usr/local/cargo/git,sharing=locked \
