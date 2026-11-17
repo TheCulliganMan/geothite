@@ -109,8 +109,16 @@ impl RoomReentry {
 
     // Only a copy with checked identity/checksum and an idle checkpoint reaches
     // this method. The caller must fully validate the target state before write.
-    pub(crate) fn apply(&self, state: &mut GameState) -> Result<()> {
-        for entry in &self.maps {
+    pub(crate) fn apply(
+        &self,
+        state: &mut GameState,
+        selected_rooms: Option<&[String]>,
+    ) -> Result<()> {
+        let selected = self
+            .maps
+            .iter()
+            .filter(|entry| selected_rooms.is_none_or(|rooms| rooms.contains(&entry.map_id)));
+        for entry in selected.clone() {
             if let Some(memory) = state.map_object_overrides.get(&entry.map_id) {
                 ensure!(
                     !memory.player_hidden && !memory.object_structs.player_fixed_facing,
@@ -121,7 +129,7 @@ impl RoomReentry {
         }
         let arrival = match &state.overworld {
             OverworldMemory::Active { map_name, mode, .. } => {
-                let arrival = self.maps.iter().find(|entry| entry.map_id == *map_name);
+                let arrival = selected.clone().find(|entry| entry.map_id == *map_name);
                 ensure!(
                     arrival.is_none() || *mode == MovementMode::Normal,
                     "room upgrade requires normal walking movement"
@@ -132,7 +140,7 @@ impl RoomReentry {
                 anyhow::bail!("room upgrade requires an overworld checkpoint")
             }
         };
-        for entry in &self.maps {
+        for entry in selected {
             state.map_block_overrides.remove(&entry.map_id);
             state.map_object_overrides.remove(&entry.map_id);
         }

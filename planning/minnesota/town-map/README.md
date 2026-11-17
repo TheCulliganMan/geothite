@@ -1,5 +1,12 @@
 # Minnesota Town Map and Fly atlas
 
+The town map gives each installed numbered route and town its own selectable
+stop. In the current campaign, nine towns share a caught-location ID with a
+road. The Pokégear resolves the player's current map before choosing a cursor,
+so the route and its town keep independent names and positions. Stepping
+through the map follows the main journey first, then the side roads. A selected
+road displays its destination, and the terminal map lists both endpoints.
+
 The atlas is authored in
 `crates/crystal-bevy/src/bevy_shell/minnesota_town_map.rs` as a native 20×18
 Johto tilemap. It reads the original Town Map sheet and palette from the loaded

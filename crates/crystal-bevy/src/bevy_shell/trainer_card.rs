@@ -799,8 +799,7 @@ fn open_visible_pokegear_menu(runtime_shell: &mut BevyRuntimeShell) -> Result<()
     runtime_shell.bill_pc_deposit_open = false;
     runtime_shell.pc_item_cursor = None;
     close_visible_field_pack_without_log(runtime_shell);
-    let landmark =
-        &snapshot.presentation.pokegear_landmarks.landmarks[runtime_shell.pokegear_cursor];
+    let landmark = selected_pokegear_landmark(&snapshot, runtime_shell.pokegear_cursor)?;
     runtime_shell
         .last_audio_events
         .push(format!("opened Pokegear selected={}", landmark.constant));
@@ -988,6 +987,11 @@ fn visible_pokegear_player_landmark(
 
 fn visible_pokegear_initial_cursor_index(snapshot: &RuntimeShellSnapshot, standalone_map: bool) -> Result<usize> {
     let player = visible_pokegear_player_landmark(snapshot)?;
+    if minnesota_map_active(snapshot) {
+        let stops = minnesota_atlas_routes::stops(&snapshot.presentation.pokegear_landmarks);
+        return minnesota_atlas_routes::player_cursor(&stops,&snapshot.overworld.map_name,&player.constant)
+            .context("Minnesota location has no map stop");
+    }
     let cursor = if !standalone_map && player.constant == "LANDMARK_FAST_SHIP" {
         "LANDMARK_NEW_BARK_TOWN"
     } else {
@@ -1016,20 +1020,8 @@ fn visible_pokegear_landmark_indices(
     standalone_map: bool,
 ) -> Result<Vec<usize>> {
     if minnesota_map_active(snapshot) {
-        let catalog = &snapshot.presentation.pokegear_landmarks;
-        let indices = catalog
-            .landmarks
-            .iter()
-            .enumerate()
-            .filter(|(_, landmark)| {
-                catalog
-                    .map_to_landmark
-                    .iter()
-                    .any(|(map, constant)| map.starts_with("Mn") && !map.contains("Review") && !map.contains("Gallery")
-                        && constant == &landmark.constant)
-            })
-            .map(|(index, _)| index)
-            .collect::<Vec<_>>();
+        let indices=minnesota_atlas_routes::stops(&snapshot.presentation.pokegear_landmarks)
+            .into_iter().map(|stop|stop.cursor).collect::<Vec<_>>();
         anyhow::ensure!(!indices.is_empty(), "Minnesota has no mapped landmarks");
         return Ok(indices);
     }
@@ -1656,12 +1648,16 @@ fn cycle_visible_pokegear_page(runtime_shell: &mut BevyRuntimeShell, delta: isiz
 fn selected_pokegear_landmark(
     snapshot: &RuntimeShellSnapshot,
     cursor: usize,
-) -> Result<&crate::core::models::PokegearLandmark> {
+) -> Result<crate::core::models::PokegearLandmark> {
+    if minnesota_map_active(snapshot) {
+        return minnesota_atlas_routes::stops(&snapshot.presentation.pokegear_landmarks)
+            .into_iter().find(|stop|stop.cursor==cursor).map(|stop|stop.landmark).context("Minnesota map cursor");
+    }
     let landmarks = &snapshot.presentation.pokegear_landmarks.landmarks;
     if landmarks.is_empty() {
         anyhow::bail!("compiled pack has no Pokegear landmarks");
     }
-    landmarks.get(cursor).with_context(|| {
+    landmarks.get(cursor).cloned().with_context(|| {
         format!(
             "selected Pokegear cursor {cursor} is outside compiled landmark catalog length {}",
             landmarks.len()

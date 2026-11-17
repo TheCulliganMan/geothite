@@ -32,7 +32,11 @@ impl GymReentry {
         self.0.validate_arrivals(data, ArrivalSurface::Walkable)
     }
 
-    pub(crate) fn apply(&self, state: &mut GameState) -> Result<()> {
-        self.0.apply(state)
+    pub(crate) fn apply(
+        &self,
+        state: &mut GameState,
+        selected_rooms: Option<&[String]>,
+    ) -> Result<()> {
+        self.0.apply(state, selected_rooms)
     }
 }

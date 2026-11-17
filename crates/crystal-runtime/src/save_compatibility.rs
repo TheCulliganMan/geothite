@@ -4,6 +4,7 @@ use std::collections::BTreeSet;
 use std::path::{Path, PathBuf};
 
 use anyhow::{Context, Result, ensure};
+use crystal_assets::GameDataSet;
 use crystal_core::save::{self, SaveModpackIdentity};
 use crystal_core::state::{BattleMemory, GameState, OverworldMemory};
 use serde::Deserialize;
@@ -11,6 +12,7 @@ use serde::Deserialize;
 use crate::CrystalRuntime;
 use crate::cave_save_migration::{self, CaveReentry};
 use crate::gym_save_migration::{self, GymReentry};
+use crate::iron_save_migration::{self, IronRelocations};
 
 pub const SAVE_COMPATIBILITY_FILE: &str = "data/northstar-save-compatibility.json";
 pub const SAVE_COMPATIBILITY_MANIFEST: &str = "northstar-refinement-v1";
@@ -33,6 +35,8 @@ struct Compatibility {
     sources: Vec<CompatibleSaveSource>,
     gym_reentry: Option<GymReentry>,
     cave_reentry: Option<CaveReentry>,
+    iron_relocations: Option<IronRelocations>,
+    layout_reentry: Option<Vec<String>>,
 }
 
 /// Returns the exact source identities approved by this target's hashed metadata.
@@ -49,6 +53,11 @@ pub fn compatible_save_sources(runtime: &CrystalRuntime) -> Result<Vec<Compatibl
 fn parse_compatibility(bytes: &[u8], target_id: &str) -> Result<Compatibility> {
     let metadata: Compatibility =
         serde_json::from_slice(bytes).context("save compatibility metadata")?;
+    ensure!(
+        metadata.schema_version == 3
+            || (metadata.iron_relocations.is_none() && metadata.layout_reentry.is_none()),
+        "iron policies require schema three"
+    );
     match metadata.schema_version {
         1 => ensure!(
             metadata.target_manifest == SAVE_COMPATIBILITY_MANIFEST
@@ -56,21 +65,28 @@ fn parse_compatibility(bytes: &[u8], target_id: &str) -> Result<Compatibility> {
                 && metadata.cave_reentry.is_none(),
             "unsupported refinement save compatibility policy"
         ),
-        2 => {
+        2 | 3 => {
             ensure!(
-                metadata.target_manifest == gym_save_migration::TARGET_MANIFEST
-                    && metadata.target_modpack_ids.len() == 2
-                    && metadata.target_modpack_ids[0] != metadata.target_modpack_ids[1]
-                    && metadata.sources.len() == 6,
-                "gym compatibility requires two exact targets and six exact sources"
+                metadata.target_modpack_ids.len() == 2
+                    && metadata.target_modpack_ids[0] != metadata.target_modpack_ids[1],
+                "room compatibility requires two distinct targets"
             );
             metadata
                 .gym_reentry
                 .as_ref()
                 .context("gym compatibility requires the gym reentry policy")?
                 .validate_metadata()?;
-            if let Some(policy) = &metadata.cave_reentry {
-                policy.validate_metadata()?;
+            if metadata.schema_version == 2 {
+                ensure!(
+                    metadata.target_manifest == gym_save_migration::TARGET_MANIFEST
+                        && metadata.sources.len() == 6,
+                    "gym compatibility requires six exact sources"
+                );
+                if let Some(policy) = &metadata.cave_reentry {
+                    policy.validate_metadata()?;
+                }
+            } else {
+                validate_iron_policy(&metadata)?;
             }
         }
         _ => anyhow::bail!("unsupported save compatibility schema"),
@@ -89,7 +105,7 @@ fn parse_compatibility(bytes: &[u8], target_id: &str) -> Result<Compatibility> {
     );
     for id in &metadata.target_modpack_ids {
         SaveModpackIdentity::validate_id(id)?;
-        if metadata.schema_version == 2 {
+        if metadata.schema_version >= 2 {
             ensure!(
                 id.split('+').any(|part| part == metadata.target_manifest),
                 "gym target identity is missing its release marker"
@@ -127,7 +143,7 @@ fn parse_compatibility(bytes: &[u8], target_id: &str) -> Result<Compatibility> {
             )),
             "duplicate compatible source"
         );
-        if metadata.schema_version == 2 {
+        if metadata.schema_version >= 2 {
             ensure!(
                 source_modpacks.insert((&source.modpack_id, &source.modpack_hash)),
                 "duplicate gym source pack identity"
@@ -186,6 +202,9 @@ pub fn prepare_runtime_save_slot(
     if let Some(policy) = &metadata.cave_reentry {
         policy.validate_arrivals(runtime.data())?;
     }
+    if let Some(policy) = &metadata.iron_relocations {
+        policy.validate_landings(runtime.data())?;
+    }
     for source in &metadata.sources {
         let path = previous_path(source);
         if path == destination {
@@ -199,7 +218,8 @@ pub fn prepare_runtime_save_slot(
                 &identity,
                 &source.content_hash,
             )?;
-            let upgraded = upgrade_checkpoint(saved.into_state(), &metadata)?;
+            let upgraded =
+                upgrade_source_checkpoint(saved.into_state(), &metadata, source, runtime.data())?;
             runtime.validate_save_state_for_runtime_pack(&upgraded)?;
             Ok(upgraded)
         }) else {
@@ -216,13 +236,127 @@ pub fn prepare_runtime_save_slot(
     Ok(false)
 }
 
-fn upgrade_checkpoint(state: GameState, metadata: &Compatibility) -> Result<GameState> {
+fn upgrade_source_checkpoint(
+    state: GameState,
+    metadata: &Compatibility,
+    source: &CompatibleSaveSource,
+    data: &GameDataSet,
+) -> Result<GameState> {
+    let subset = metadata
+        .layout_reentry
+        .as_deref()
+        .filter(|_| direct_iron_parent(metadata, &source.modpack_id));
+    let mut upgraded = upgrade_checkpoint(state, metadata, subset)?;
+    if let Some(policy) = &metadata.iron_relocations {
+        policy.apply(data, &mut upgraded)?;
+    }
+    Ok(upgraded)
+}
+
+fn direct_iron_parent(metadata: &Compatibility, source_id: &str) -> bool {
+    metadata.target_modpack_ids.iter().any(|target| {
+        target
+            .split('+')
+            .filter(|&part| part != iron_save_migration::TARGET_MANIFEST)
+            .eq(source_id.split('+'))
+    })
+}
+
+fn validate_iron_policy(metadata: &Compatibility) -> Result<()> {
+    ensure!(
+        metadata.target_manifest == iron_save_migration::TARGET_MANIFEST
+            && metadata.sources.len() == 8,
+        "iron compatibility requires eight exact sources"
+    );
+    metadata
+        .cave_reentry
+        .as_ref()
+        .context("missing iron target's cave policy")?
+        .validate_all_eight()?;
+    metadata
+        .iron_relocations
+        .as_ref()
+        .context("missing iron relocations")?
+        .validate_metadata()?;
+    let layouts = metadata
+        .layout_reentry
+        .as_ref()
+        .context("missing revised layouts")?;
+    let rooms: BTreeSet<_> = layouts.iter().map(String::as_str).collect();
+    ensure!(
+        rooms.len() == layouts.len()
+            && rooms
+                == BTreeSet::from([
+                    "MnRochesterGym",
+                    "MnBrainerdGym",
+                    "MnStPaulGym",
+                    "MnVoyageursIce1F",
+                    "MnVoyageursIceB1F",
+                    "MnR17Cave1F",
+                ]),
+        "iron layout reentry must name each redesigned floor exactly once"
+    );
+    let raw = metadata.target_modpack_ids[0].as_str();
+    ensure!(
+        metadata.target_modpack_ids[1].strip_prefix(raw)
+            == Some("+realtime-clock+player-customization"),
+        "iron release requires its exact raw and hosted target pair"
+    );
+    for target in &metadata.target_modpack_ids {
+        ensure!(
+            target
+                .split('+')
+                .filter(|&id| id == iron_save_migration::TARGET_MANIFEST)
+                .count()
+                == 1
+                && target
+                    .split('+')
+                    .any(|id| id == gym_save_migration::TARGET_MANIFEST)
+                && target
+                    .split('+')
+                    .any(|id| id == cave_save_migration::TARGET_MANIFEST),
+            "iron target is missing its unique revision or prior room markers"
+        );
+        let parent = target
+            .split('+')
+            .filter(|&id| id != iron_save_migration::TARGET_MANIFEST);
+        ensure!(
+            metadata
+                .sources
+                .iter()
+                .filter(|s| parent.clone().eq(s.modpack_id.split('+')))
+                .count()
+                == 1,
+            "iron target requires its exact immediate parent"
+        );
+    }
+    for source in &metadata.sources {
+        if !direct_iron_parent(metadata, &source.modpack_id) {
+            ensure!(
+                !source.modpack_id.split('+').any(|id| matches!(
+                    id,
+                    iron_save_migration::TARGET_MANIFEST
+                        | gym_save_migration::TARGET_MANIFEST
+                        | cave_save_migration::TARGET_MANIFEST
+                )),
+                "older iron sources must predate all three room revisions"
+            );
+        }
+    }
+    Ok(())
+}
+
+fn upgrade_checkpoint(
+    state: GameState,
+    metadata: &Compatibility,
+    subset: Option<&[String]>,
+) -> Result<GameState> {
     let mut upgraded = normalize_upgrade_checkpoint(state)?;
     if let Some(policy) = &metadata.gym_reentry {
-        policy.apply(&mut upgraded)?;
+        policy.apply(&mut upgraded, subset)?;
     }
     if let Some(policy) = &metadata.cave_reentry {
-        policy.apply(&mut upgraded)?;
+        policy.apply(&mut upgraded, subset)?;
     }
     Ok(upgraded)
 }
@@ -507,3 +641,7 @@ mod gym_tests;
 #[cfg(test)]
 #[path = "cave_save_migration_tests.rs"]
 mod cave_tests;
+
+#[cfg(test)]
+#[path = "iron_save_migration_tests.rs"]
+mod iron_tests;

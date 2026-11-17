@@ -110,7 +110,7 @@ pub(crate) fn install(pack: &mut CompiledGamePack, design: &str, story: &str) ->
     Ok(())
 }
 
-fn validate_native_art(pack: &CompiledGamePack, room: &MapModule) -> Result<()> {
+pub(crate) fn validate_native_art(pack: &CompiledGamePack, room: &MapModule) -> Result<()> {
     let tileset = &room.attributes.tileset_name;
     let definition = pack
         .data
@@ -162,7 +162,7 @@ fn validate_native_art(pack: &CompiledGamePack, room: &MapModule) -> Result<()> 
     Ok(())
 }
 
-fn preimage(room: &MapModule) -> Result<String> {
+pub(crate) fn preimage(room: &MapModule) -> Result<String> {
     // Value normalizes nested object keys before hashing, independent of Rust
     // struct field declaration order or the pack's CBOR map ordering.
     let value = json!({

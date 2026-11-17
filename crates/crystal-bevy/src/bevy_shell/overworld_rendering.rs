@@ -3718,9 +3718,14 @@ fn spawn_field_pokegear_screen(
         if !runtime_shell.pokegear_standalone_map {
             spawn_pokegear_card_objects(commands, snapshot, runtime_shell, asset_root, images)?;
         }
-        let original_landmark =
-            selected_pokegear_landmark(snapshot, runtime_shell.pokegear_cursor)?;
-        let landmark = projected_minnesota_landmark(snapshot, original_landmark);
+        let player = visible_pokegear_player_landmark(snapshot)?;
+        let (landmark, current, route) = if minnesota_map_active(snapshot) {
+            let stops = &runtime_shell.minnesota_atlas;
+            minnesota_atlas_routes::selected_and_current(stops, &snapshot.overworld.map_name,
+                &player.constant, runtime_shell.pokegear_cursor).context("Minnesota atlas selection")?
+        } else {
+            (selected_pokegear_landmark(snapshot, runtime_shell.pokegear_cursor)?, player.clone(), None)
+        };
         for (row, line) in town_map_label_lines(&landmark.name).iter().enumerate() {
             if line.is_empty() {
                 continue;
@@ -3738,20 +3743,11 @@ fn spawn_field_pokegear_screen(
             );
         }
         if minnesota_map_active(snapshot) {
-            let (x, y) = battle_hud_tile_origin(2.0, 16.0);
-            spawn_field_command_bitmap_text(
-                commands,
-                rendered_art,
-                asset_root,
-                images,
-                "MINNESOTA",
-                x,
-                y,
-                3.8,
-            );
+            let footer = route.map(|number| minnesota_atlas_routes::destination_footer(number, &current.name))
+                .unwrap_or_else(|| "MINNESOTA".into());
+            let (x, y) = battle_hud_tile_origin(1.0, 16.0);
+            spawn_field_command_bitmap_text(commands, rendered_art, asset_root, images, &footer, x, y, 3.8);
         }
-        let current = visible_pokegear_player_landmark(snapshot)?;
-        let current = projected_minnesota_landmark(snapshot, current);
         spawn_town_map_markers(
             commands,
             snapshot,

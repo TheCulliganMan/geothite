@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "trainers": [
+    {"map_id": "MnIronDrillApproach", "id": "MN_LODE_ARC_ACCESS", "direction": "LEFT", "radius": 3},
+    {"map_id": "MnIronDrillApproach", "id": "MN_LODE_ARC_SPOIL", "direction": "LEFT", "radius": 3},
+    {"map_id": "MnIronHaulage", "id": "MN_LODE_ARC_WEIGH", "direction": "LEFT", "radius": 3},
+    {"map_id": "MnIronHaulage", "id": "MN_LODE_ARC_CONVEYOR", "direction": "LEFT", "radius": 3},
+    {"map_id": "MnIronSump", "id": "MN_LODE_ARC_SUMP", "direction": "UP", "radius": 2},
+    {"map_id": "MnIronSump", "id": "MN_LODE_ARC_DRAIN", "direction": "RIGHT", "radius": 3},
+    {"map_id": "MnIronVentilation", "id": "MN_LODE_ARC_VENT", "direction": "RIGHT", "radius": 3},
+    {"map_id": "MnIronVentilation", "id": "MN_LODE_ARC_SHIFT", "direction": "DOWN", "radius": 2},
+    {"map_id": "MnIronPumpGallery", "id": "MN_LODE_ARC_PUMP", "direction": "DOWN", "radius": 3},
+    {"map_id": "MnIronPumpGallery", "id": "MN_LODE_ARC_INTAKE", "direction": "RIGHT", "radius": 3},
+    {"map_id": "MnIronDrillCore", "id": "MN_LODE_ARC_CORE_WEST", "direction": "LEFT", "radius": 2},
+    {"map_id": "MnIronDrillCore", "id": "MN_LODE_ARC_CORE_EAST", "direction": "UP", "radius": 3}
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "rooms": [
+    {
+      "id": "MnIronHaulage",
+      "relocations": [
+        {"origin": [6, 8], "landings": [[6, 7], [5, 8], [6, 6]]},
+        {"origin": [7, 8], "landings": [[7, 7], [8, 8], [7, 6]]}
+      ],
+      "changes": [
+        {"at": [7, 2], "from": 6, "to": 5},
+        {"at": [8, 2], "from": 46, "to": 6},
+        {"at": [7, 3], "from": 30, "to": 42},
+        {"at": [8, 3], "from": 46, "to": 30},
+        {"at": [3, 4], "from": 33, "to": 57},
+        {"at": [7, 4], "from": 34, "to": 33},
+        {"at": [8, 4], "from": 46, "to": 34},
+        {"at": [3, 5], "from": 4, "to": 13}
+      ]
+    },
+    {
+      "id": "MnIronSump",
+      "relocations": [
+        {"origin": [8, 6], "landings": [[7, 6], [7, 5], [9, 5]]},
+        {"origin": [9, 6], "landings": [[9, 5], [10, 6], [10, 5]]}
+      ],
+      "changes": [
+        {"at": [4, 3], "from": 33, "to": 24}
+      ]
+    }
+  ]
+}

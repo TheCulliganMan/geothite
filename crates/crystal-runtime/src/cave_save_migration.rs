@@ -34,11 +34,19 @@ impl CaveReentry {
             })
     }
 
+    pub(crate) fn validate_all_eight(&self) -> Result<()> {
+        self.0.validate_metadata("minnesota-eight-caves-v1", &CAVES)
+    }
+
     pub(crate) fn validate_arrivals(&self, data: &GameDataSet) -> Result<()> {
         self.0.validate_arrivals(data, ArrivalSurface::Floor)
     }
 
-    pub(crate) fn apply(&self, state: &mut GameState) -> Result<()> {
-        self.0.apply(state)
+    pub(crate) fn apply(
+        &self,
+        state: &mut GameState,
+        selected_rooms: Option<&[String]>,
+    ) -> Result<()> {
+        self.0.apply(state, selected_rooms)
     }
 }

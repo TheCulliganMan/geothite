@@ -8846,16 +8846,20 @@
         ],
         "MnNDrillPowerDoneText": [
           [
-            "The bit falls",
-            "quiet. A boot"
+            "The bit winds",
+            "down."
           ],
           [
-            "rings against the",
-            "ladder. FINN comes"
+            "A boot rings on a",
+            "rung. Then another"
           ],
           [
-            "up far enough to",
-            "reach back down."
+            "boot, keeping time",
+            "with the first."
+          ],
+          [
+            "FINN: That's it.",
+            "Keep coming!"
           ]
         ],
         "MnNDrillPowerAfterText": [
@@ -8870,38 +8874,37 @@
             "jumped both times"
           ],
           [
-            "we started the",
-            "pump. I saw the"
+            "we ran the pump.",
+            "Did the meter save"
           ],
           [
-            "second one from",
-            "the cage."
+            "the times, too?"
           ],
           [
-            "Take it to the",
-            "tech at the GRAND"
+            "The tech at the",
+            "GRAND RAPIDS"
           ],
           [
-            "RAPIDS survey",
-            "depot. She lent it"
+            "survey depot lent",
+            "it to me. Take it"
           ],
           [
-            "to me. Ask if it",
-            "saved the times."
+            "to her. I'll hold",
+            "the rope."
           ]
         ],
         "MnNDrillMeterAfterText": [
           [
-            "FINN: Take the",
-            "meter to GRAND"
+            "FINN: The tech at",
+            "the GRAND RAPIDS"
           ],
           [
-            "RAPIDS. I'll stay",
-            "by the ladder till"
+            "depot made me tie",
+            "it to my belt."
           ],
           [
-            "I've heard from",
-            "everybody below."
+            "Tell you what, I'm",
+            "glad she did."
           ]
         ],
         "MnNDrillCrewReadyText": [
@@ -9054,37 +9057,35 @@
       "MnIronPumpGallery": {
         "MnNDrillGalleryText": [
           [
-            "CORE STAIR LOCK.",
-            "This powers the"
+            "STAIR AND SERVICE",
+            "DOOR CIRCUIT"
           ],
           [
-            "bolt on the stair",
-            "door. Cut the"
-          ],
-          [
-            "power?"
+            "Cut power to the",
+            "locks?"
           ]
         ],
         "MnNDrillGalleryDoneText": [
           [
-            "The bolt slides",
-            "back when the hum"
+            "Two bolts clack.",
+            "The core stair and"
           ],
           [
-            "stops. Farther",
-            "down, the drill is"
+            "the service return",
+            "are open."
           ],
           [
-            "still running."
+            "Down the stair,",
+            "the drill pounds."
           ]
         ],
         "MnNDrillGalleryAfterText": [
           [
-            "The stair bolt is",
-            "back. The drill is"
+            "The core stair is",
+            "open. The bit is"
           ],
           [
-            "still running",
+            "still pounding",
             "below."
           ]
         ],
@@ -16353,20 +16354,20 @@
         ],
         "MN_LODE_ARC_ACCESSWonText": [
           [
-            "LODE: Keep away",
-            "from the wall at"
+            "LODE: See that",
+            "pale patch above"
           ],
           [
-            "the bend. The",
-            "drill shook a slab"
+            "the bend? That's",
+            "where the slab"
           ],
           [
-            "loose there. Look",
-            "up and you'll see"
+            "came off. Take the",
+            "upper shaft for"
           ],
           [
-            "where it came",
-            "from."
+            "HAULAGE. Keep off",
+            "that wall."
           ]
         ],
         "MN_LODE_ARC_SPOILLostText": [
@@ -16464,19 +16465,16 @@
         ],
         "MN_LODE_ARC_CONVEYORWonText": [
           [
-            "LODE: Wait. You",
-            "came to shut it"
+            "LODE: Shut it off?",
+            "I thought HALE"
           ],
           [
-            "down?"
+            "wanted you to run",
+            "it again. Here."
           ],
           [
-            "RUTH's by the feed",
-            "valve. Tell her"
-          ],
-          [
-            "she can count me",
-            "in."
+            "The valve's on",
+            "this side."
           ]
         ],
         "MN_LODE_ARC_WEIGHLostText": [
@@ -16527,42 +16525,44 @@
         ],
         "MN_LODE_ARC_WEIGHWonText": [
           [
-            "LODE: Turn it",
-            "over. The copper"
+            "LODE: The heaviest",
+            "thing I ever put"
           ],
           [
-            "face is hard. The",
-            "back comes apart"
+            "on my scale was a",
+            "ball. Bent the pan"
           ],
           [
-            "in my hand. Now",
-            "imagine cutting"
+            "and rolled under",
+            "that sample just"
           ],
           [
-            "under a whole roof",
-            "of that."
+            "east of me."
           ]
         ],
         "MnIronHaulageRuthText": [
           [
-            "RUTH: Shut the",
-            "HAULAGE feed here"
+            "RUTH: My valve's",
+            "on the east side,"
           ],
           [
-            "by the belt. When",
-            "the needle hits"
+            "right by the belt.",
+            "To get over there,"
           ],
           [
-            "zero, the shutter",
-            "lifts. VERN can"
+            "I go down to the",
+            "sump and come up"
           ],
           [
-            "show you the other",
-            "feed in VENT. The"
+            "through VENT.",
+            "Ask VERN about his"
           ],
           [
-            "sump shutter needs",
-            "both shut."
+            "valve. It takes",
+            "both to open the"
+          ],
+          [
+            "sump shutter."
           ]
         ],
         "MnIronPressureHAULAfterText": [
@@ -16694,35 +16694,34 @@
         ],
         "MN_LODE_ARC_SUMPWonText": [
           [
-            "LODE: You don't",
-            "work for him, do"
+            "LODE: I rang twice",
+            "and kept bailing."
           ],
           [
-            "you?"
+            "The water took my",
+            "first-aid tin."
           ],
           [
-            "I'm staying where",
-            "I can watch the"
+            "Saw it wedge in a",
+            "rock on the north"
           ],
           [
-            "water. If you see",
-            "the foreman, tell"
-          ],
-          [
-            "him I rang twice."
+            "bank of that pool.",
+            "I packed it tight."
           ]
         ],
         "MnIronSumpGateText": [
           [
-            "SUMP SHUTTER. Both",
-            "feeds must be"
+            "Two gauges on the",
+            "shutter."
           ],
           [
-            "shut. Check the",
-            "valves in HAULAGE"
+            "HAUL and VENT both",
+            "read high."
           ],
           [
-            "and VENT."
+            "Close both feeds",
+            "to lift it."
           ]
         ]
       },
@@ -16856,23 +16855,20 @@
         ],
         "MnIronVentilationVernText": [
           [
-            "VERN: This is the",
-            "VENT feed. Shut it"
+            "VERN: My valve's",
+            "west of the grate."
           ],
           [
-            "and wait for zero.",
-            "The shutter by the"
+            "When it's down, I",
+            "take the shaft in"
           ],
           [
-            "shaft will lift.",
-            "If RUTH's feed is"
+            "the sump, the one",
+            "above the pool."
           ],
           [
-            "shut too, you can",
-            "get through at the"
-          ],
-          [
-            "sump."
+            "It comes up on the",
+            "side I need."
           ]
         ]
       },
@@ -54443,6 +54439,1820 @@
           ]
         ]
       }
+    }
+  },
+  "iron_workings_revision": {
+    "dialogue": {
+      "MnIronDrillApproach": {
+        "MN_LODE_ARC_ACCESSWonText": [
+          [
+            "LODE: See that",
+            "pale patch above"
+          ],
+          [
+            "the bend? That's",
+            "where the slab"
+          ],
+          [
+            "came off. Take the",
+            "upper shaft for"
+          ],
+          [
+            "HAULAGE. Keep off",
+            "that wall."
+          ]
+        ]
+      },
+      "MnIronHaulage": {
+        "MnIronHaulageRuthText": [
+          [
+            "RUTH: My valve's",
+            "on the east side,"
+          ],
+          [
+            "right by the belt.",
+            "To get over there,"
+          ],
+          [
+            "I go down to the",
+            "sump and come up"
+          ],
+          [
+            "through VENT.",
+            "Ask VERN about his"
+          ],
+          [
+            "valve. It takes",
+            "both to open the"
+          ],
+          [
+            "sump shutter."
+          ]
+        ],
+        "MN_LODE_ARC_CONVEYORWonText": [
+          [
+            "LODE: Shut it off?",
+            "I thought HALE"
+          ],
+          [
+            "wanted you to run",
+            "it again. Here."
+          ],
+          [
+            "The valve's on",
+            "this side."
+          ]
+        ],
+        "MN_LODE_ARC_WEIGHWonText": [
+          [
+            "LODE: The heaviest",
+            "thing I ever put"
+          ],
+          [
+            "on my scale was a",
+            "ball. Bent the pan"
+          ],
+          [
+            "and rolled under",
+            "that sample just"
+          ],
+          [
+            "east of me."
+          ]
+        ]
+      },
+      "MnIronVentilation": {
+        "MnIronVentilationVernText": [
+          [
+            "VERN: My valve's",
+            "west of the grate."
+          ],
+          [
+            "When it's down, I",
+            "take the shaft in"
+          ],
+          [
+            "the sump, the one",
+            "above the pool."
+          ],
+          [
+            "It comes up on the",
+            "side I need."
+          ]
+        ]
+      },
+      "MnIronSump": {
+        "MN_LODE_ARC_SUMPWonText": [
+          [
+            "LODE: I rang twice",
+            "and kept bailing."
+          ],
+          [
+            "The water took my",
+            "first-aid tin."
+          ],
+          [
+            "Saw it wedge in a",
+            "rock on the north"
+          ],
+          [
+            "bank of that pool.",
+            "I packed it tight."
+          ]
+        ],
+        "MnIronSumpGateText": [
+          [
+            "Two gauges on the",
+            "shutter."
+          ],
+          [
+            "HAUL and VENT both",
+            "read high."
+          ],
+          [
+            "Close both feeds",
+            "to lift it."
+          ]
+        ],
+        "MnIronSumpHaulOnlyText": [
+          [
+            "HAUL reads zero.",
+            "VENT reads high."
+          ],
+          [
+            "The vent valve is",
+            "holding the sump"
+          ],
+          [
+            "shutter down."
+          ]
+        ],
+        "MnIronSumpVentOnlyText": [
+          [
+            "VENT reads zero.",
+            "HAUL reads high."
+          ],
+          [
+            "The haulage valve",
+            "is holding the"
+          ],
+          [
+            "sump shutter down."
+          ]
+        ],
+        "MnIronSumpOpenText": [
+          [
+            "Both needles rest",
+            "on zero."
+          ],
+          [
+            "The shutter is up.",
+            "The shaft beyond"
+          ],
+          [
+            "leads to the pump",
+            "gallery."
+          ]
+        ]
+      },
+      "MnIronPumpGallery": {
+        "MnNDrillGalleryText": [
+          [
+            "STAIR AND SERVICE",
+            "DOOR CIRCUIT"
+          ],
+          [
+            "Cut power to the",
+            "locks?"
+          ]
+        ],
+        "MnNDrillGalleryDoneText": [
+          [
+            "Two bolts clack.",
+            "The core stair and"
+          ],
+          [
+            "the service return",
+            "are open."
+          ],
+          [
+            "Down the stair,",
+            "the drill pounds."
+          ]
+        ],
+        "MnNDrillGalleryAfterText": [
+          [
+            "The core stair is",
+            "open. The bit is"
+          ],
+          [
+            "still pounding",
+            "below."
+          ]
+        ],
+        "MnNDrillGalleryStoppedText": [
+          [
+            "Both bolts are",
+            "back."
+          ],
+          [
+            "From down the core",
+            "stair comes the"
+          ],
+          [
+            "sound of boots on",
+            "the ladder."
+          ]
+        ]
+      },
+      "MnIronDrillCore": {
+        "MnNDrillForemanStoppedText": [
+          [
+            "FOREMAN: Who threw",
+            "that switch?"
+          ],
+          [
+            "You? All right.",
+            "HALE can ask me"
+          ],
+          [
+            "why FINN was still",
+            "down there."
+          ]
+        ],
+        "MnNDrillPowerDoneText": [
+          [
+            "The bit winds",
+            "down."
+          ],
+          [
+            "A boot rings on a",
+            "rung. Then another"
+          ],
+          [
+            "boot, keeping time",
+            "with the first."
+          ],
+          [
+            "FINN: That's it.",
+            "Keep coming!"
+          ]
+        ],
+        "MnNDrillMeterQuestText": [
+          [
+            "FINN: The needle",
+            "jumped both times"
+          ],
+          [
+            "we ran the pump.",
+            "Did the meter save"
+          ],
+          [
+            "the times, too?"
+          ],
+          [
+            "The tech at the",
+            "GRAND RAPIDS"
+          ],
+          [
+            "survey depot lent",
+            "it to me. Take it"
+          ],
+          [
+            "to her. I'll hold",
+            "the rope."
+          ]
+        ],
+        "MnNDrillMeterAfterText": [
+          [
+            "FINN: The tech at",
+            "the GRAND RAPIDS"
+          ],
+          [
+            "depot made me tie",
+            "it to my belt."
+          ],
+          [
+            "Tell you what, I'm",
+            "glad she did."
+          ]
+        ]
+      }
+    }
+  },
+  "floorplan_revision": {
+    "dialogue": {
+      "MnStPaulGym": {
+        "MnStPaulGymGuideText": [
+          [
+            "Left lift: files.",
+            "Right lift: tools."
+          ],
+          [
+            "Win in either wing",
+            "to open the court."
+          ]
+        ],
+        "MN_GYM_4_TRAINER_1AfterText": [
+          [
+            "That goes in my",
+            "notebook! The back"
+          ],
+          [
+            "lift takes you to",
+            "the court."
+          ]
+        ],
+        "MN_GYM_4_TRAINER_2AfterText": [
+          [
+            "Hear that clank?",
+            "Court gate. Take"
+          ],
+          [
+            "the back lift up."
+          ]
+        ]
+      },
+      "MnRochesterGym": {
+        "MnRochesterGymGuideText": [
+          [
+            "Those steps lead",
+            "up to VAREL."
+          ],
+          [
+            "TAVEL opens the",
+            "gate. Then it's"
+          ],
+          [
+            "up to you. ELVIK",
+            "takes the quick"
+          ],
+          [
+            "way on the right.",
+            "I walk the loop."
+          ]
+        ],
+        "MnRochesterGymLeaderSeenText": [
+          [
+            "VAREL: From up",
+            "here I could see"
+          ],
+          [
+            "your first bout.",
+            "You kept an eye"
+          ],
+          [
+            "on your partner.",
+            "Let's see it up"
+          ],
+          [
+            "close."
+          ]
+        ],
+        "MN_GYM_1_TRAINER_1AfterText": [
+          [
+            "TAVEL: Gate's up!",
+            "Both ends of the"
+          ],
+          [
+            "court have steps.",
+            "I take the right"
+          ],
+          [
+            "when I want a",
+            "match with ELVIK."
+          ]
+        ],
+        "MN_GYM_1_TRAINER_2Seen": [
+          [
+            "ELVIK: You picked",
+            "the quick way up."
+          ],
+          [
+            "PIPBOOM needs a",
+            "moment to warm up."
+          ],
+          [
+            "Keep him waiting?",
+            "I wouldn't!"
+          ]
+        ],
+        "MN_GYM_1_TRAINER_2AfterText": [
+          [
+            "ELVIK: Other side",
+            "of the court's a"
+          ],
+          [
+            "good cool-down",
+            "lap. Give it a go."
+          ]
+        ],
+        "MnRochesterGymBeatTavelText": [
+          [
+            "Meet TAVEL by the",
+            "gate. He'll let"
+          ],
+          [
+            "you onto the",
+            "practice floor."
+          ]
+        ]
+      },
+      "MnBrainerdGym": {
+        "MnBrainerdGymGuideText": [
+          [
+            "See SIVREN across",
+            "the water?"
+          ],
+          [
+            "First, get past",
+            "LORLA on the pier."
+          ],
+          [
+            "Set her winch LEFT",
+            "for the long dock"
+          ],
+          [
+            "to SIVREN. CENTER",
+            "puts you on"
+          ],
+          [
+            "BRAVEL's pier."
+          ]
+        ],
+        "MN_GYM_6_TRAINER_1Seen": [
+          [
+            "LORLA: Right there",
+            "on the planks."
+          ],
+          [
+            "When YODELOON",
+            "calls, you can"
+          ],
+          [
+            "feel it in your",
+            "heels!"
+          ]
+        ],
+        "MN_GYM_6_TRAINER_1AfterText": [
+          [
+            "LORLA: Winch is",
+            "yours. Set LEFT"
+          ],
+          [
+            "for SIVREN. CENTER",
+            "puts you on"
+          ],
+          [
+            "BRAVEL's little",
+            "finger pier."
+          ]
+        ],
+        "MN_GYM_6_TRAINER_2Seen": [
+          [
+            "BRAVEL: I bet I",
+            "can tell when you"
+          ],
+          [
+            "step on my pier",
+            "with my eyes shut."
+          ],
+          [
+            "Yep! Your move."
+          ]
+        ],
+        "MN_GYM_6_TRAINER_2AfterText": [
+          [
+            "BRAVEL: Look east.",
+            "The short span is"
+          ],
+          [
+            "in. You can cross",
+            "to SIVREN now."
+          ]
+        ],
+        "MnBrainerdGymLeaderSeenText": [
+          [
+            "SIVREN: I knew",
+            "you were coming."
+          ],
+          [
+            "The floats by my",
+            "pier started to"
+          ],
+          [
+            "knock together.",
+            "Hear them?"
+          ],
+          [
+            "That's my tempo."
+          ]
+        ]
+      }
+    },
+    "cave_dialogue": {
+      "MnR17Cave1F": {
+        "MN_INTERIOR_R17_LICHEN_READERInteriorText": [
+          [
+            "The lichen crossed",
+            "the crack at last."
+          ],
+          [
+            "I waited a year",
+            "to draw that line!"
+          ],
+          [
+            "See the last stone",
+            "on the high shelf?"
+          ],
+          [
+            "It used to hold a",
+            "paper tag."
+          ]
+        ]
+      }
+    }
+  },
+  "regional_guidance_revision": {
+    "MnWinona": {
+      "entry": "MnWTownSign",
+      "original_text": "MnWTownSignText",
+      "replies": [
+        {
+          "id": "MnWayHomeNote",
+          "after": "EVENT_MN_LEAGUE_CHAMPION",
+          "pages": [
+            [
+              "FIELD STATION"
+            ],
+            [
+              "Bring your DEX in",
+              "for a count."
+            ],
+            [
+              "The aide counts",
+              "partners in the"
+            ],
+            [
+              "PC, too."
+            ]
+          ]
+        },
+        {
+          "id": "MnWayClinicRun",
+          "after": "EVENT_MN_R01_PARCEL_RECEIVED",
+          "pages": [
+            [
+              "The station's",
+              "delivery board."
+            ],
+            [
+              "ROCHESTER CLINIC:",
+              "Original readings"
+            ],
+            [
+              "for IVY."
+            ],
+            [
+              "Take the DRIFTLESS",
+              "TRAIL."
+            ]
+          ],
+          "until": "EVENT_MN_DELIVERED_ROCHESTER_PARCEL"
+        }
+      ]
+    },
+    "MnRochester": {
+      "entry": "MN_RC_CITY_GUIDE",
+      "original_text": "MN_RC_CITY_GUIDEText",
+      "replies": [
+        {
+          "id": "MnWayHomeRematch",
+          "after": "EVENT_MN_LEAGUE_CHAMPION",
+          "pages": [
+            [
+              "VAREL recognized",
+              "your name on the"
+            ],
+            [
+              "radio."
+            ],
+            [
+              "She put her team",
+              "through another"
+            ],
+            [
+              "lap."
+            ],
+            [
+              "I'd stop by the",
+              "GYM if I were you."
+            ]
+          ]
+        },
+        {
+          "id": "MnWayPrairieRoad",
+          "after": "EVENT_MN_GYM_1_DEFEATED",
+          "pages": [
+            [
+              "That's your first",
+              "BADGE? Mine too!"
+            ],
+            [
+              "I'm taking PRAIRIE",
+              "FARM ROAD to"
+            ],
+            [
+              "MANKATO."
+            ],
+            [
+              "Meet you on the",
+              "hill?"
+            ]
+          ],
+          "until": "EVENT_MN_GYM_2_DEFEATED"
+        },
+        {
+          "id": "MnWayCareCourt",
+          "after": "EVENT_MN_DELIVERED_ROCHESTER_PARCEL",
+          "pages": [
+            [
+              "IVY got her",
+              "papers? Good."
+            ],
+            [
+              "Head for VAREL's",
+              "GYM. She sent me"
+            ],
+            [
+              "to TAVEL for my",
+              "first bout."
+            ]
+          ],
+          "until": "EVENT_MN_GYM_1_DEFEATED"
+        },
+        {
+          "id": "MnWayClinicParcel",
+          "after": "EVENT_MN_R01_PARCEL_RECEIVED",
+          "pages": [
+            [
+              "IVY works in the",
+              "clinic."
+            ],
+            [
+              "When I'm carrying",
+              "her papers I go"
+            ],
+            [
+              "there before the",
+              "GYM."
+            ],
+            [
+              "Bent a whole sheaf",
+              "in my first match."
+            ]
+          ],
+          "until": "EVENT_MN_DELIVERED_ROCHESTER_PARCEL"
+        }
+      ]
+    },
+    "MnMankato": {
+      "entry": "MN_MK_COACH",
+      "original_text": "MN_MK_COACHText",
+      "replies": [
+        {
+          "id": "MnWayPrairieCoach",
+          "after": "EVENT_MN_GYM_2_DEFEATED",
+          "pages": [
+            [
+              "Got up TORVEN's",
+              "hill, did you?"
+            ],
+            [
+              "Follow the river",
+              "valley on to"
+            ],
+            [
+              "MINNEAPOLIS."
+            ],
+            [
+              "My team takes the",
+              "walk down easy."
+            ],
+            [
+              "Knees, you know."
+            ]
+          ],
+          "until": "EVENT_MN_GYM_3_DEFEATED"
+        },
+        {
+          "id": "MnWayGardenCoach",
+          "after": "EVENT_MN_GYM_1_DEFEATED",
+          "pages": [
+            [
+              "Looking for",
+              "TORVEN? Up the"
+            ],
+            [
+              "hill."
+            ],
+            [
+              "I send new teams",
+              "past the garden on"
+            ],
+            [
+              "their way back."
+            ],
+            [
+              "The gardener there",
+              "can tell you about"
+            ],
+            [
+              "the survey."
+            ]
+          ],
+          "until": "EVENT_MN_GYM_2_DEFEATED"
+        }
+      ]
+    },
+    "MnMinneapolis": {
+      "entry": "MN_MP_PARK_WITNESS",
+      "original_text": "MN_MP_PARK_WITNESSText",
+      "replies": [
+        {
+          "id": "MnWayEllisOut",
+          "after": "EVENT_MN_SURVEY_RESTORED",
+          "pages": [
+            [
+              "ELLIS came through",
+              "the gate today in"
+            ],
+            [
+              "those slippers."
+            ],
+            [
+              "He'd brought me a",
+              "chair. This time I"
+            ],
+            [
+              "stayed to sit with",
+              "him."
+            ]
+          ]
+        },
+        {
+          "id": "MnWayEllisWitness",
+          "after": "EVENT_MN_DISPATCH_NOTE",
+          "pages": [
+            [
+              "That ring was off",
+              "the mine pump?"
+            ],
+            [
+              "MINA was on duty",
+              "at UNION DEPOT in"
+            ],
+            [
+              "ST PAUL."
+            ],
+            [
+              "I'd show her the",
+              "stamp."
+            ]
+          ],
+          "until": "EVENT_MN_DEEP_BORE_MANIFEST_READ"
+        },
+        {
+          "id": "MnWayEllisDesk",
+          "after": "EVENT_MN_ICE_CAPTIVE_RESCUED",
+          "pages": [
+            [
+              "Saw ELLIS go home."
+            ],
+            [
+              "He kept looking",
+              "back at dispatch."
+            ],
+            [
+              "That broken ring",
+              "is still lying on"
+            ],
+            [
+              "his desk."
+            ]
+          ],
+          "until": "EVENT_MN_DISPATCH_NOTE"
+        },
+        {
+          "id": "MnWayEllisHome",
+          "after": "EVENT_MN_ICE_CAPTIVE_RESCUED",
+          "pages": [
+            [
+              "I took his keys",
+              "home. JO opened"
+            ],
+            [
+              "the door, and",
+              "ELLIS called from"
+            ],
+            [
+              "the kitchen."
+            ],
+            [
+              "First time I'd",
+              "heard him sing."
+            ]
+          ]
+        },
+        {
+          "id": "MnWayEllisLatch",
+          "after": "EVENT_MN_ICE_HOLDING_POWER_OFF",
+          "pages": [
+            [
+              "The hum stopped. I",
+              "heard somebody"
+            ],
+            [
+              "knock from inside",
+              "dispatch."
+            ],
+            [
+              "Try the cell latch",
+              "now. I'll wait"
+            ],
+            [
+              "here."
+            ]
+          ],
+          "until": "EVENT_MN_ICE_CAPTIVE_RESCUED"
+        },
+        {
+          "id": "MnWayEllisPower",
+          "after": "EVENT_MN_ICE_ENFORCER_DEFEATED",
+          "pages": [
+            [
+              "They've gone, but",
+              "the latch still"
+            ],
+            [
+              "hums."
+            ],
+            [
+              "The wires go down",
+              "through the office"
+            ],
+            [
+              "floor."
+            ],
+            [
+              "Can you get below?"
+            ]
+          ],
+          "until": "EVENT_MN_ICE_HOLDING_POWER_OFF"
+        }
+      ]
+    },
+    "MnStPaul": {
+      "entry": "MN_ST_PAUL_CIVIC_GUIDE",
+      "original_text": "MN_ST_PAUL_CIVIC_GUIDEText",
+      "replies": [
+        {
+          "id": "MnWayDepotDate",
+          "after": "EVENT_MN_DEEP_BORE_MANIFEST_READ",
+          "pages": [
+            [
+              "Got a date on that",
+              "shipment?"
+            ],
+            [
+              "The lake ranger in",
+              "BRAINERD keeps her"
+            ],
+            [
+              "old readings."
+            ],
+            [
+              "For the north",
+              "road, go back"
+            ],
+            [
+              "through",
+              "MINNEAPOLIS."
+            ]
+          ],
+          "until": "EVENT_MN_BRAINERD_REPORT"
+        },
+        {
+          "id": "MnWayDepotMiner",
+          "after": "EVENT_MN_COURIER_DEFEATED",
+          "pages": [
+            [
+              "That miner let the",
+              "platform through."
+            ],
+            [
+              "MINA stayed behind",
+              "with the shipment"
+            ],
+            [
+              "papers."
+            ],
+            [
+              "I'd read them",
+              "before the train"
+            ],
+            [
+              "goes."
+            ]
+          ],
+          "until": "EVENT_MN_DEEP_BORE_MANIFEST_READ"
+        },
+        {
+          "id": "MnWayDepotMina",
+          "after": "EVENT_MN_DISPATCH_NOTE",
+          "pages": [
+            [
+              "UNION DEPOT is",
+              "down the street."
+            ],
+            [
+              "MINA's by the pump",
+              "shipment."
+            ],
+            [
+              "Show her what you",
+              "found at ELLIS's"
+            ],
+            [
+              "desk."
+            ]
+          ],
+          "until": "EVENT_MN_COURIER_DEFEATED"
+        }
+      ]
+    },
+    "MnStCloud": {
+      "entry": "MN_ST_CLOUD_GYM_STUDENT",
+      "original_text": "MN_ST_CLOUD_GYM_STUDENTText",
+      "replies": [
+        {
+          "id": "MnWayPineRoad",
+          "after": "EVENT_MN_GYM_5_DEFEATED",
+          "pages": [
+            [
+              "Show me SAVEN's",
+              "BADGE!"
+            ],
+            [
+              "She told us to",
+              "take PINE ROAD"
+            ],
+            [
+              "north to BRAINERD."
+            ],
+            [
+              "They train out on",
+              "the piers there."
+            ]
+          ],
+          "until": "EVENT_MN_GYM_6_DEFEATED"
+        },
+        {
+          "id": "MnWayWindCourt",
+          "after": "EVENT_MN_GYM_4_DEFEATED",
+          "pages": [
+            [
+              "I used to walk at",
+              "the wind with my"
+            ],
+            [
+              "eyes shut."
+            ],
+            [
+              "SAVEN had me watch",
+              "where it carried"
+            ],
+            [
+              "my scarf."
+            ],
+            [
+              "Try it at the GYM."
+            ]
+          ],
+          "until": "EVENT_MN_GYM_5_DEFEATED"
+        }
+      ]
+    },
+    "MnBrainerd": {
+      "entry": "MN_BRAINERD_GYM_SPECTATOR",
+      "original_text": "MN_BRAINERD_GYM_SPECTATORText",
+      "replies": [
+        {
+          "id": "MnWayLakeReturn",
+          "after": "EVENT_MN_BRAINERD_REPORT",
+          "pages": [
+            [
+              "The ranger's got",
+              "her reading."
+            ],
+            [
+              "For BEMIDJI, take",
+              "the path north"
+            ],
+            [
+              "through LEECH",
+              "LAKE."
+            ],
+            [
+              "I walk it in my",
+              "good boots."
+            ]
+          ],
+          "until": "EVENT_MN_GYM_7_DEFEATED"
+        },
+        {
+          "id": "MnWayPierReport",
+          "after": "EVENT_MN_GYM_6_DEFEATED",
+          "pages": [
+            [
+              "A LAKE BADGE! The",
+              "ranger wanted to"
+            ],
+            [
+              "see SIVREN's last",
+              "challenger."
+            ],
+            [
+              "Try the ranger",
+              "station. She was"
+            ],
+            [
+              "watching the pier",
+              "when the water"
+            ],
+            [
+              "fell."
+            ]
+          ],
+          "until": "EVENT_MN_BRAINERD_REPORT"
+        }
+      ]
+    },
+    "MnBemidji": {
+      "entry": "MN_BEMIDJI_LAKE_WALKER",
+      "original_text": "MN_BEMIDJI_LAKE_WALKERText",
+      "replies": [
+        {
+          "id": "MnWayMineReport",
+          "after": "EVENT_MN_HEADWATERS_REPORT",
+          "pages": [
+            [
+              "The field officer",
+              "signed that copy?"
+            ],
+            [
+              "Take it and your",
+              "PINE BADGE to the"
+            ],
+            [
+              "ROUTE 09 mine."
+            ],
+            [
+              "FINN works with a",
+              "pressure meter."
+            ]
+          ],
+          "until": "EVENT_MN_MINE_INSTRUMENT_RECOVERED"
+        },
+        {
+          "id": "MnWayDeskReading",
+          "after": "EVENT_MN_HEADWATERS_READING",
+          "pages": [
+            [
+              "Got the marks from",
+              "ITASCA?"
+            ],
+            [
+              "Find the field",
+              "officer here in"
+            ],
+            [
+              "BEMIDJI."
+            ],
+            [
+              "She laid two",
+              "sheets out side by"
+            ],
+            [
+              "side for you."
+            ]
+          ],
+          "until": "EVENT_MN_HEADWATERS_REPORT"
+        },
+        {
+          "id": "MnWayDryItasca",
+          "after": "EVENT_MN_GYM_7_DEFEATED",
+          "pages": [
+            [
+              "The old mark at",
+              "LAKE ITASCA is on"
+            ],
+            [
+              "dry land."
+            ],
+            [
+              "You can read it",
+              "with both boots on"
+            ],
+            [
+              "the bank."
+            ],
+            [
+              "Bring the numbers",
+              "back to our field"
+            ],
+            [
+              "officer."
+            ]
+          ],
+          "until": "EVENT_MN_HEADWATERS_READING"
+        }
+      ]
+    },
+    "MnGrandRapids": {
+      "entry": "MN_GR_WORKER",
+      "original_text": "MN_GR_WORKERText",
+      "replies": [
+        {
+          "id": "MnWayDepotLog",
+          "after": "EVENT_MN_DEPOT_CLEARED",
+          "pages": [
+            [
+              "The depot tech",
+              "made a copy for"
+            ],
+            [
+              "DULUTH harbor."
+            ],
+            [
+              "They've got a",
+              "gauge there too."
+            ],
+            [
+              "See if the times",
+              "agree."
+            ]
+          ],
+          "until": "EVENT_MN_LIGHTHOUSE_SIGNAL"
+        },
+        {
+          "id": "MnWayDepotMeter",
+          "after": "EVENT_MN_MINE_INSTRUMENT_RECOVERED",
+          "pages": [
+            [
+              "That dent in the",
+              "meter case!"
+            ],
+            [
+              "I remember the",
+              "tech dropping it."
+            ],
+            [
+              "She's at the",
+              "survey depot. Best"
+            ],
+            [
+              "give it back to",
+              "her yourself."
+            ]
+          ],
+          "until": "EVENT_MN_DEPOT_CLEARED"
+        },
+        {
+          "id": "MnWayMineFinn",
+          "after": "EVENT_MN_DRILL_STOPPED",
+          "pages": [
+            [
+              "A quiet shift. I'd",
+              "forgotten what"
+            ],
+            [
+              "that sounded like."
+            ],
+            [
+              "FINN was bringing",
+              "the meter up the"
+            ],
+            [
+              "drill ladder. Ask",
+              "him for it."
+            ]
+          ],
+          "until": "EVENT_MN_MINE_INSTRUMENT_RECOVERED"
+        }
+      ]
+    },
+    "MnDuluth": {
+      "entry": "MnDuluth_MN_DULUTH_HARBOR_WORKER",
+      "original_text": "MnDuluth_MN_DULUTH_HARBOR_WORKERText",
+      "replies": [
+        {
+          "id": "MnWayHarborAfter",
+          "after": "EVENT_MN_SURVEY_RESTORED",
+          "pages": [
+            [
+              "We marked the post",
+              "where the water"
+            ],
+            [
+              "stood the day the",
+              "drive stopped."
+            ],
+            [
+              "Come back when the",
+              "lake is smooth."
+            ],
+            [
+              "You can see both",
+              "marks."
+            ]
+          ]
+        },
+        {
+          "id": "MnWayShoreCrew",
+          "after": "EVENT_MN_LIGHTHOUSE_SIGNAL",
+          "pages": [
+            [
+              "The shelter picked",
+              "up our call."
+            ],
+            [
+              "Go by GRAND MARAIS",
+              "and GUNFLINT."
+            ],
+            [
+              "The shelter is on",
+              "the public trail"
+            ],
+            [
+              "outside SAFARI."
+            ]
+          ],
+          "until": "EVENT_MN_ARC_LINK_SENT"
+        },
+        {
+          "id": "MnWayHarborGauge",
+          "after": "EVENT_MN_DEPOT_CLEARED",
+          "pages": [
+            [
+              "The engineer wants",
+              "the depot times."
+            ],
+            [
+              "Cross the canal to",
+              "the HARBOR"
+            ],
+            [
+              "WORKSHOP."
+            ],
+            [
+              "She wrote down",
+              "when our bow went"
+            ],
+            [
+              "aground."
+            ]
+          ],
+          "until": "EVENT_MN_LIGHTHOUSE_SIGNAL"
+        }
+      ]
+    },
+    "MnGrandMarais": {
+      "entry": "MnGrandMaraisTrailWorker",
+      "original_text": "MnGrandMaraisTrailWorkerText",
+      "replies": [
+        {
+          "id": "MnWayTowardShelter",
+          "after": "EVENT_MN_LIGHTHOUSE_SIGNAL",
+          "pages": [
+            [
+              "Crew came through",
+              "here carrying"
+            ],
+            [
+              "rope."
+            ],
+            [
+              "Take GUNFLINT to",
+              "BOUNDARY WATERS."
+            ],
+            [
+              "The survey shelter",
+              "is outside the"
+            ],
+            [
+              "SAFARI fence."
+            ]
+          ],
+          "until": "EVENT_MN_ARC_LINK_SENT"
+        }
+      ]
+    },
+    "MnBoundaryWatersSurveyShelter": {
+      "entry": "MN_BOUNDARY_SURVEY_ASSISTANT",
+      "original_text": "MN_BOUNDARY_SURVEY_ASSISTANTText",
+      "replies": [
+        {
+          "id": "MnWayCrewCount",
+          "after": "EVENT_MN_SURVEY_RESTORED",
+          "pages": [
+            [
+              "Hear that? FINN",
+              "has everybody."
+            ],
+            [
+              "We're leaving the",
+              "radio clear for"
+            ],
+            [
+              "the medic."
+            ],
+            [
+              "The south trail",
+              "leads to ELY."
+            ]
+          ]
+        },
+        {
+          "id": "MnWayStopDrive",
+          "after": "EVENT_MN_ARC_LINK_SENT",
+          "pages": [
+            [
+              "IVY called from",
+              "the intake."
+            ],
+            [
+              "Go down the hatch",
+              "and stop on the"
+            ],
+            [
+              "landing."
+            ],
+            [
+              "Give her a shout",
+              "before you go on."
+            ]
+          ],
+          "until": "EVENT_MN_SURVEY_RESTORED"
+        },
+        {
+          "id": "MnWayReadTimes",
+          "after": "EVENT_MN_SURVEY_CHIEF_DEFEATED",
+          "pages": [
+            [
+              "The chief's away",
+              "from the mic."
+            ],
+            [
+              "Take the shelter",
+              "receiver. Read out"
+            ],
+            [
+              "the two pump times",
+              "so the crew can"
+            ],
+            [
+              "pick a landing."
+            ]
+          ],
+          "until": "EVENT_MN_ARC_LINK_SENT"
+        }
+      ]
+    },
+    "MnBoundaryWaters": {
+      "entry": "MN_BOUNDARY_BORDER_RANGER",
+      "original_text": "MN_BOUNDARY_BORDER_RANGERText",
+      "replies": [
+        {
+          "id": "MnWayNorthWatch",
+          "after": "EVENT_MN_LEAGUE_CHAMPION",
+          "pages": [
+            [
+              "Back on the trail,",
+              "CHAMP?"
+            ],
+            [
+              "The VOYAGEURS",
+              "watch is west."
+            ],
+            [
+              "If you're doing",
+              "the border loop,"
+            ],
+            [
+              "check in at the",
+              "INTERNATIONAL"
+            ],
+            [
+              "FALLS clinic."
+            ]
+          ]
+        },
+        {
+          "id": "MnWayLeagueTrail",
+          "after": "EVENT_MN_SURVEY_RESTORED",
+          "pages": [
+            [
+              "FINN's crew is up.",
+              "I'm letting people"
+            ],
+            [
+              "down the south",
+              "trail again."
+            ],
+            [
+              "Head for ELY. The",
+              "registrar needs to"
+            ],
+            [
+              "see all eight",
+              "BADGES."
+            ]
+          ],
+          "until": "EVENT_MN_LEAGUE_CHAMPION"
+        }
+      ]
+    },
+    "MnEly": {
+      "entry": "MnElyTrailSign",
+      "original_text": "MnElyTrailSignText",
+      "replies": [
+        {
+          "id": "MnWayLeagueAgain",
+          "after": "EVENT_MN_LEAGUE_CHAMPION",
+          "pages": [
+            [
+              "ELY LEAGUE"
+            ],
+            [
+              "Returning teams",
+              "sign in at the"
+            ],
+            [
+              "lobby desk."
+            ],
+            [
+              "Four matches",
+              "before CASEY."
+            ],
+            [
+              "Exiting ends the",
+              "run."
+            ]
+          ]
+        },
+        {
+          "id": "MnWayLeagueReady",
+          "after": "EVENT_MN_SURVEY_RESTORED",
+          "pages": [
+            [
+              "ELY LEAGUE"
+            ],
+            [
+              "Intake crew clear.",
+              "Registration open."
+            ],
+            [
+              "Bring eight BADGES",
+              "to the lobby desk."
+            ],
+            [
+              "FERN takes the",
+              "first match."
+            ]
+          ],
+          "until": "EVENT_MN_LEAGUE_CHAMPION"
+        },
+        {
+          "id": "MnWayLeagueHold",
+          "after": "EVENT_MN_GYM_8_DEFEATED",
+          "pages": [
+            [
+              "ELY LEAGUE"
+            ],
+            [
+              "Registration waits",
+              "for word from the"
+            ],
+            [
+              "intake."
+            ],
+            [
+              "Ask at the survey",
+              "shelter in"
+            ],
+            [
+              "BOUNDARY WATERS."
+            ]
+          ],
+          "until": "EVENT_MN_SURVEY_RESTORED"
+        }
+      ]
+    },
+    "MnLeechLake": {
+      "entry": "MN_LEECH_SHORE_FISHER",
+      "original_text": "MN_LEECH_SHORE_FISHERText",
+      "replies": [
+        {
+          "id": "MnWayBootMark",
+          "after": "EVENT_MN_BRAINERD_REPORT",
+          "pages": [
+            [
+              "Your ranger kept",
+              "the date? Good."
+            ],
+            [
+              "There's a field",
+              "officer up in"
+            ],
+            [
+              "BEMIDJI. Follow",
+              "the north shore on"
+            ],
+            [
+              "foot."
+            ],
+            [
+              "Tell her how high",
+              "that rock sits"
+            ],
+            [
+              "now."
+            ]
+          ],
+          "until": "EVENT_MN_HEADWATERS_REPORT"
+        },
+        {
+          "id": "MnWayBowMark",
+          "after": "EVENT_MN_SURVEY_RESTORED",
+          "pages": [
+            [
+              "I've left the",
+              "scrape on the bow."
+            ],
+            [
+              "When someone asks",
+              "how low the lake"
+            ],
+            [
+              "got, I take them",
+              "out to the rock"
+            ],
+            [
+              "and line it up."
+            ]
+          ]
+        }
+      ]
+    },
+    "MnLakeItasca": {
+      "entry": "MN_ITASCA_TRAIL_WALKER",
+      "original_text": "MN_ITASCA_TRAIL_WALKERText",
+      "replies": [
+        {
+          "id": "MnWayStoneReturn",
+          "after": "EVENT_MN_HEADWATERS_READING",
+          "pages": [
+            [
+              "Back to BEMIDJI",
+              "with the readings?"
+            ],
+            [
+              "Cross on the",
+              "stones. That's the"
+            ],
+            [
+              "way to the field",
+              "officer."
+            ]
+          ],
+          "until": "EVENT_MN_HEADWATERS_REPORT"
+        },
+        {
+          "id": "MnWayItascaSteps",
+          "after": "EVENT_MN_GYM_7_DEFEATED",
+          "pages": [
+            [
+              "Standing here you",
+              "can see the whole"
+            ],
+            [
+              "river between your",
+              "boots."
+            ],
+            [
+              "For the reading,",
+              "walk to the"
+            ],
+            [
+              "headwaters marker.",
+              "Keep your shoes"
+            ],
+            [
+              "on."
+            ]
+          ],
+          "until": "EVENT_MN_HEADWATERS_READING"
+        }
+      ]
+    },
+    "MnMoorhead": {
+      "entry": "MN_MOORHEAD_GAUGE_KEEPER",
+      "original_text": "MN_MOORHEAD_GAUGE_KEEPERText",
+      "replies": [
+        {
+          "id": "MnWayMittens",
+          "after": "EVENT_MN_MOORHEAD_DRY_KIT_GIVEN",
+          "pages": [
+            [
+              "I keep a spare",
+              "pair of mittens by"
+            ],
+            [
+              "the gauge now."
+            ],
+            [
+              "My sister keeps a",
+              "pair by hers. We"
+            ],
+            [
+              "got tired of",
+              "reading the"
+            ],
+            [
+              "numbers through",
+              "our sleeves."
+            ]
+          ]
+        },
+        {
+          "id": "MnWayRiverKit",
+          "after": "EVENT_MN_MOORHEAD_GAUGE_READ",
+          "pages": [
+            [
+              "The volunteer at",
+              "the clinic asked"
+            ],
+            [
+              "about that line on",
+              "the river board."
+            ],
+            [
+              "Tell her you read",
+              "it. She knows who"
+            ],
+            [
+              "put it there."
+            ]
+          ],
+          "until": "EVENT_MN_MOORHEAD_DRY_KIT_GIVEN"
+        }
+      ]
+    },
+    "MnDetroitLakes": {
+      "entry": "MN_DETROIT_CABIN_NEIGHBOR",
+      "original_text": "MN_DETROIT_CABIN_NEIGHBORText",
+      "replies": [
+        {
+          "id": "MnWaySpringReward",
+          "after": "EVENT_MN_LAKE_OBSERVATIONS_REWARDED",
+          "pages": [
+            [
+              "The ranger rubbed",
+              "an arrow right off"
+            ],
+            [
+              "the map. Drew it",
+              "in the other way."
+            ],
+            [
+              "I'd have sworn the",
+              "wind was the"
+            ],
+            [
+              "current too."
+            ]
+          ]
+        },
+        {
+          "id": "MnWaySpringGrass",
+          "after": "EVENT_MN_GYM_6_DEFEATED",
+          "pages": [
+            [
+              "Looking for the",
+              "ranger? Try the"
+            ],
+            [
+              "ranger cabin."
+            ],
+            [
+              "She's mapping a",
+              "spring off the"
+            ],
+            [
+              "ITASCA trail.",
+              "Bring your LAKE"
+            ],
+            [
+              "BADGE along."
+            ]
+          ],
+          "until": "EVENT_MN_LAKE_OBSERVATIONS_REWARDED"
+        }
+      ]
+    },
+    "MnMilleLacs": {
+      "entry": "MN_ML_PARK_RANGER",
+      "original_text": "MN_ML_PARK_RANGERText",
+      "replies": [
+        {
+          "id": "MnWayShoreReport",
+          "after": "EVENT_MN_GYM_6_DEFEATED",
+          "pages": [
+            [
+              "Our three watchers",
+              "cover the reeds,"
+            ],
+            [
+              "the meadow and the",
+              "beach. All on"
+            ],
+            [
+              "foot."
+            ],
+            [
+              "Check in with",
+              "them, then tell"
+            ],
+            [
+              "the dock ranger",
+              "what they saw."
+            ]
+          ],
+          "until": "EVENT_MN_SHORE_WATCH_REWARDED"
+        }
+      ]
+    },
+    "MnInternationalFalls": {
+      "entry": "MN_FALLS_PLOW_DRIVER",
+      "original_text": "MN_FALLS_PLOW_DRIVERText",
+      "replies": [
+        {
+          "id": "MnWayWinterLoop",
+          "after": "EVENT_MN_BORDER_REPORT",
+          "pages": [
+            [
+              "Got your name on",
+              "the clinic list?"
+            ],
+            [
+              "The RAINY RIVER",
+              "route runs east."
+            ],
+            [
+              "The warden checks",
+              "eight BADGES and"
+            ],
+            [
+              "word from DULUTH."
+            ]
+          ],
+          "until": "EVENT_MN_BORDER_CIRCUIT_REWARDED"
+        },
+        {
+          "id": "MnWayWinterDesk",
+          "after": "EVENT_MN_GYM_7_DEFEATED",
+          "pages": [
+            [
+              "Before I take the",
+              "plow out, I tell"
+            ],
+            [
+              "the ranger where",
+              "I'm going."
+            ],
+            [
+              "BORDER LOOP list",
+              "is at the clinic."
+            ],
+            [
+              "Bring ORLIS's",
+              "BADGE."
+            ]
+          ],
+          "until": "EVENT_MN_BORDER_REPORT"
+        }
+      ]
     }
   }
 }

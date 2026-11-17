@@ -1,0 +1,82 @@
+{
+  "id": "MnR17Cave1F",
+  "dimensions_metatiles": [
+    12,
+    9
+  ],
+  "tileset": "cave",
+  "preimage_sha256": "d739457766cf0be3c0d002f39264a0c13d07d1977c584adb3321b5bbaf3a6f51",
+  "arrival": [
+    9,
+    12
+  ],
+  "rows": [
+    "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e",
+    "2e 2e 04 05 06 2e 2e 2e 04 05 06 2e",
+    "2e 04 02 02 02 05 05 05 02 02 1e 2e",
+    "2e 08 02 1d 02 09 02 1d 1d 09 1e 2e",
+    "2e 08 12 21 39 21 0f 0a 2e 08 0a 2e",
+    "2e 20 02 02 02 09 0f 0f 04 02 0a 2e",
+    "2e 2e 20 21 07 02 02 02 02 09 22 2e",
+    "2e 2e 2e 2e 2e 20 21 21 21 22 2e 2e",
+    "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e"
+  ],
+  "actor_positions": {
+    "MN_R17_ITEM_04": [
+      17,
+      5
+    ],
+    "MNR17CAVE1F_NPC2": [
+      6,
+      10
+    ]
+  },
+  "trainers": [],
+  "hidden_items": [
+    {
+      "id": "MN_HIDDEN_R17CAVE1F",
+      "item": "SPELL_TAG",
+      "tile": [
+        17,
+        7
+      ],
+      "target_surface": "rock",
+      "landmark": "The last rounded stone in the lichen terrace above the eastern hollow."
+    }
+  ],
+  "waypoints": [
+    [
+      5,
+      9
+    ],
+    [
+      6,
+      5
+    ],
+    [
+      14,
+      5
+    ],
+    [
+      18,
+      7
+    ],
+    [
+      19,
+      8
+    ],
+    [
+      19,
+      10
+    ],
+    [
+      8,
+      8
+    ],
+    [
+      8,
+      10
+    ]
+  ],
+  "optional_water_waypoints": []
+}

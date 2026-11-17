@@ -1,0 +1,315 @@
+{
+  "schema_version": 1,
+  "status": "Full-room floorplan on gym and cave continuation v04.",
+  "gyms": [
+    {
+      "slot": 1,
+      "id": "MnRochesterGym",
+      "constant": "MN_ROCHESTER_GYM",
+      "city": "ROCHESTER",
+      "leader": "VAREL",
+      "trainer_class": "COOLTRAINERF",
+      "leader_sprite": "SPRITE_MN_LEADER_VAREL",
+      "leader_at": [
+        12,
+        6
+      ],
+      "badge_flag": "ENGINE_ZEPHYRBADGE",
+      "requires": [
+        "EVENT_MN_DELIVERED_ROCHESTER_PARCEL"
+      ],
+      "reward": "TM_HEADBUTT",
+      "party": [
+        {
+          "species": "NIBBIN",
+          "level": 10,
+          "moves": [
+            "SCRATCH",
+            "TAIL_WHIP",
+            "QUICK_ATTACK"
+          ]
+        },
+        {
+          "species": "CROOKIT",
+          "level": 12,
+          "moves": [
+            "SCRATCH",
+            "TAIL_WHIP",
+            "QUICK_ATTACK",
+            "BITE"
+          ]
+        }
+      ],
+      "rows": [
+        "##[vsvv]#",
+        "AW{tttt}B",
+        "L.|tttt|R",
+        "L.Keeee.R",
+        "L.Jiiii.R",
+        "L.b.....R",
+        "ZUUUUUGUz",
+        "####L...R",
+        "####ZUCUz"
+      ],
+      "art": {
+        "#": [
+          "facility",
+          "17"
+        ],
+        "A": [
+          "facility",
+          "09"
+        ],
+        "W": [
+          "facility",
+          "01"
+        ],
+        "B": [
+          "facility",
+          "0a"
+        ],
+        "J": [
+          "facility",
+          "07"
+        ],
+        "L": [
+          "facility",
+          "22"
+        ],
+        "R": [
+          "facility",
+          "33"
+        ],
+        ".": [
+          "facility",
+          "07"
+        ],
+        "K": [
+          "facility",
+          "0d"
+        ],
+        "i": [
+          "facility",
+          "1f"
+        ],
+        "b": [
+          "facility",
+          "2d"
+        ],
+        "Z": [
+          "facility",
+          "23"
+        ],
+        "U": [
+          "facility",
+          "34"
+        ],
+        "G": [
+          "facility",
+          "16"
+        ],
+        "z": [
+          "facility",
+          "3a"
+        ],
+        "C": [
+          "facility",
+          "0c"
+        ],
+        "[": [
+          "elite_four_room",
+          "3e"
+        ],
+        "v": [
+          "elite_four_room",
+          "15"
+        ],
+        "s": [
+          "elite_four_room",
+          "33"
+        ],
+        "]": [
+          "elite_four_room",
+          "3f"
+        ],
+        "{": [
+          "elite_four_room",
+          "10"
+        ],
+        "t": [
+          "elite_four_room",
+          "2d"
+        ],
+        "}": [
+          "elite_four_room",
+          "1a"
+        ],
+        "|": [
+          "elite_four_room",
+          "01"
+        ],
+        "e": [
+          "elite_four_room",
+          "19"
+        ]
+      },
+      "trainers": [
+        {
+          "id": "MN_GYM_1_TRAINER_1",
+          "name": "TAVEL",
+          "trainer_class": "SCHOOLBOY",
+          "sprite": "SPRITE_YOUNGSTER",
+          "at": [
+            11,
+            14
+          ],
+          "party": [
+            {
+              "species": "NIBBIN",
+              "level": 8,
+              "moves": [
+                "SCRATCH",
+                "TAIL_WHIP",
+                "QUICK_ATTACK"
+              ]
+            }
+          ],
+          "optional": false,
+          "before_lines": [
+            "TAVEL: Ready?",
+            "NIBBIN gets going",
+            "before I can",
+            "finish counting!"
+          ],
+          "after_lines": [
+            "TAVEL: Gate's up!",
+            "Both ends of the",
+            "court have steps.",
+            "I take the right",
+            "when I want a",
+            "match with ELVIK."
+          ],
+          "requires": []
+        },
+        {
+          "id": "MN_GYM_1_TRAINER_2",
+          "name": "ELVIK",
+          "trainer_class": "SCHOOLBOY",
+          "sprite": "SPRITE_YOUNGSTER",
+          "at": [
+            16,
+            7
+          ],
+          "party": [
+            {
+              "species": "PIPBOOM",
+              "level": 9,
+              "moves": [
+                "GROWL",
+                "GUST",
+                "FOCUS_ENERGY",
+                "STOMP"
+              ]
+            }
+          ],
+          "optional": true,
+          "before_lines": [
+            "ELVIK: You picked",
+            "the quick way up.",
+            "PIPBOOM needs a",
+            "moment to warm up.",
+            "Keep him waiting?",
+            "I wouldn't!"
+          ],
+          "after_lines": [
+            "ELVIK: Other side",
+            "of the court's a",
+            "good cool-down",
+            "lap. Give it a go."
+          ],
+          "requires": []
+        }
+      ],
+      "stations": [],
+      "gates": [
+        {
+          "at": [
+            6,
+            6
+          ],
+          "requires": [
+            "EVENT_MN_GYM_1_TRAINER_1_DEFEATED"
+          ],
+          "open_symbol": ".",
+          "event": "EVENT_MN_GYM_1_V2_INTRO_RAIL_OPEN"
+        }
+      ],
+      "guide": [
+        "Those steps lead",
+        "up to VAREL.",
+        "TAVEL opens the",
+        "gate. Then it's",
+        "up to you. ELVIK",
+        "takes the quick",
+        "way on the right.",
+        "I walk the loop."
+      ],
+      "walkthrough": [
+        "MN_GYM_1_TRAINER_1"
+      ],
+      "dimensions_metatiles": [
+        9,
+        9
+      ],
+      "arrival_core": [
+        12,
+        15
+      ],
+      "exit_tiles_core": [
+        [
+          12,
+          17
+        ],
+        [
+          13,
+          17
+        ]
+      ],
+      "guide_at": [
+        15,
+        15
+      ],
+      "leader_court_locked": false,
+      "before_lines": [
+        "VAREL: From up",
+        "here I could see",
+        "your first bout.",
+        "You kept an eye",
+        "on your partner.",
+        "Let's see it up",
+        "close."
+      ],
+      "victory_lines": [
+        "You noticed when",
+        "the battle turned.",
+        "You earned this!"
+      ],
+      "after_lines": [
+        "Prairie Farm Road",
+        "leads to MANKATO.",
+        "Let your partners",
+        "rest on the way."
+      ],
+      "pads": [],
+      "routers": [],
+      "court_requires": [
+        "EVENT_MN_GYM_1_TRAINER_1_DEFEATED"
+      ],
+      "court_denied_lines": [
+        "Meet TAVEL first.",
+        "Then choose your",
+        "own route here."
+      ]
+    }
+  ]
+}

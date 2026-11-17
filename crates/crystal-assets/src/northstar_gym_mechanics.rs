@@ -166,23 +166,25 @@ pub(crate) fn install(
             .get_mut(&label)
             .and_then(Value::as_array_mut)
             .context("Rochester leader program")?;
-        ensure!(
-            body.get(5..9)
-                == Some(&[
-                    c("checkevent", &["EVENT_MN_GYM_1_TRAINER_1_DEFEATED"]),
+        if body.get(5) != Some(&c("checkevent", &[&gym.court_event()])) {
+            ensure!(
+                body.get(5..9)
+                    == Some(&[
+                        c("checkevent", &["EVENT_MN_GYM_1_TRAINER_1_DEFEATED"]),
+                        c("iffalse", &["MnRochesterGymBeatTavel"]),
+                        c("checkevent", &["EVENT_MN_GYM_1_TRAINER_2_DEFEATED"]),
+                        c("iffalse", &["MnRochesterGymBeatElvik"]),
+                    ]),
+                "Rochester qualification preimage"
+            );
+            body.splice(
+                5..9,
+                [
+                    c("checkevent", &[&gym.court_event()]),
                     c("iffalse", &["MnRochesterGymBeatTavel"]),
-                    c("checkevent", &["EVENT_MN_GYM_1_TRAINER_2_DEFEATED"]),
-                    c("iffalse", &["MnRochesterGymBeatElvik"]),
-                ]),
-            "Rochester qualification preimage"
-        );
-        body.splice(
-            5..9,
-            [
-                c("checkevent", &[&gym.court_event()]),
-                c("iffalse", &["MnRochesterGymBeatTavel"]),
-            ],
-        );
+                ],
+            );
+        }
     }
     if !gym.court_denied_lines.is_empty() {
         let denied = format!("{}CourtRequirements", gym.id);

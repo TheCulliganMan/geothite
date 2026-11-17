@@ -69,36 +69,7 @@ pub(crate) fn install(
         actor.sightline_direction_override = Some(trainer.direction.to_ascii_uppercase());
     }
     for item in &cave.hidden_items {
-        ensure!(
-            pack.data.items.contains_key(&item.item),
-            "installed cave reward required"
-        );
-        ensure!(
-            !pack.data.map_scripts.contains_key(&item.id)
-                && !room
-                    .events
-                    .bg_events
-                    .iter()
-                    .any(|event| [event.x, event.y] == item.tile)
-                && !room
-                    .events
-                    .warps
-                    .iter()
-                    .any(|warp| [warp.x, warp.y] == item.tile),
-            "hidden cave reward overlaps retained content"
-        );
-        let flag = format!("EVENT_{}", item.id);
-        crate::authored_city_expansion_events::flags(pack, std::slice::from_ref(&flag))?;
-        room.scripts.insert(
-            item.id.clone(),
-            json!([authoring::command("hiddenitem", &[&item.item, &flag]),]),
-        );
-        room.events.bg_events.push(BackgroundEvent {
-            x: item.tile[0],
-            y: item.tile[1],
-            event_type: "BGEVENT_ITEM".into(),
-            script: item.id.clone(),
-        });
+        add_hidden_item(pack, room, &item.id, &item.item, item.tile)?;
     }
     let story: Value = serde_json::from_str(story)?;
     let texts = story["cave_overhaul"]["dialogue"][&room.id]
@@ -141,6 +112,46 @@ pub(crate) fn install(
             "native hidden-item receipt and Itemfinder metadata"
         );
     }
+    Ok(())
+}
+
+pub(crate) fn add_hidden_item(
+    pack: &mut CompiledGamePack,
+    room: &mut MapModule,
+    id: &str,
+    item: &str,
+    tile: [u16; 2],
+) -> Result<()> {
+    ensure!(
+        pack.data.items.contains_key(item),
+        "installed cave reward required"
+    );
+    ensure!(
+        !pack.data.map_scripts.contains_key(id)
+            && !room
+                .events
+                .bg_events
+                .iter()
+                .any(|event| [event.x, event.y] == tile)
+            && !room
+                .events
+                .warps
+                .iter()
+                .any(|warp| [warp.x, warp.y] == tile),
+        "hidden cave reward overlaps retained content"
+    );
+    let flag = format!("EVENT_{id}");
+    crate::authored_city_expansion_events::flags(pack, std::slice::from_ref(&flag))?;
+    room.scripts.insert(
+        id.to_owned(),
+        json!([authoring::command("hiddenitem", &[item, &flag]),]),
+    );
+    room.events.bg_events.push(BackgroundEvent {
+        x: tile[0],
+        y: tile[1],
+        event_type: "BGEVENT_ITEM".into(),
+        script: id.to_owned(),
+    });
     Ok(())
 }
 

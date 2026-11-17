@@ -1,5 +1,6 @@
 mod boot_font;
 mod evolution_dex_finalization;
+mod minnesota_atlas_routes;
 mod minnesota_badges;
 mod minnesota_town_map;
 #[cfg(not(target_arch = "wasm32"))]
@@ -1348,6 +1349,7 @@ struct BevyRuntimeShell {
     pokegear_map_radio_delay: Option<u16>,
     pokegear_return_start_menu_cursor: Option<MenuCursor>,
     pokegear_cursor: usize,
+    minnesota_atlas: Vec<minnesota_atlas_routes::Stop>,
     pokegear_map_animation_frame: u8,
     pokegear_phone_cursor: usize,
     pokegear_phone_scroll: usize,
@@ -9268,6 +9270,9 @@ fn initialize_bevy_runtime_shell(
         pokegear_map_radio_delay: None,
         pokegear_return_start_menu_cursor: None,
         pokegear_cursor: 0,
+        minnesota_atlas: minnesota_atlas_routes::stops(
+            &initial_snapshot.presentation.pokegear_landmarks,
+        ),
         pokegear_map_animation_frame: 0,
         pokegear_phone_cursor: 0,
         pokegear_phone_scroll: 0,

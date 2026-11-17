@@ -319,8 +319,7 @@ fn minnesota_town_map_and_fly_share_one_screen_art_and_positions() {
     assert!(minnesota_map_active(&snapshot));
     let indices = visible_pokegear_landmark_indices(&snapshot, true).expect("regional cursor");
     assert!(indices.iter().all(|index| {
-        let landmark = &snapshot.presentation.pokegear_landmarks.landmarks[*index];
-        let projected = projected_minnesota_landmark(&snapshot, landmark);
+        let projected = selected_pokegear_landmark(&snapshot, *index).expect("atlas cursor");
         (16..=151).contains(&(projected.x - 8)) && (32..=119).contains(&(projected.y - 16))
     }));
     shell.pokegear_menu_open = true;
@@ -341,10 +340,7 @@ fn minnesota_town_map_and_fly_share_one_screen_art_and_positions() {
     shell.pokegear_cursor = indices
         .into_iter()
         .find(|index| {
-            projected_minnesota_landmark(
-                &snapshot,
-                &snapshot.presentation.pokegear_landmarks.landmarks[*index],
-            )
+            selected_pokegear_landmark(&snapshot, *index).expect("atlas cursor")
             .name
                 == "WINONA"
         })
@@ -360,10 +356,7 @@ fn minnesota_town_map_and_fly_share_one_screen_art_and_positions() {
             .expect("regional cursor")
             .into_iter()
             .find(|index| {
-                projected_minnesota_landmark(
-                    &snapshot,
-                    &snapshot.presentation.pokegear_landmarks.landmarks[*index],
-                )
+                selected_pokegear_landmark(&snapshot, *index).expect("atlas cursor")
                 .name
                     == town
             })
@@ -374,7 +367,7 @@ fn minnesota_town_map_and_fly_share_one_screen_art_and_positions() {
                             .expect("regional cursor")
                             .into_iter()
                             .find(|index| {
-                                snapshot.presentation.pokegear_landmarks.landmarks[*index].constant
+                                selected_pokegear_landmark(&snapshot, *index).expect("atlas cursor").constant
                                     == "LANDMARK_MN_BORDER_PINES"
                             })
                     })

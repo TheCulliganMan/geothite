@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "discoveries": [
+    {
+      "map_id": "MnIronHaulage",
+      "id": "MN_IRON_CACHE_WEIGH_SAMPLE",
+      "item": "HEAVY_BALL",
+      "tile": [15, 6],
+      "landmark": "The lone ore sample at the east end of the weighing shelf."
+    },
+    {
+      "map_id": "MnIronSump",
+      "id": "MN_IRON_CACHE_SUMP_WATERLINE",
+      "item": "MAX_REVIVE",
+      "tile": [8, 7],
+      "landmark": "The exposed rock beside the little notch in the north bank of the flooded sump.",
+      "requires_surf": true
+    }
+  ]
+}

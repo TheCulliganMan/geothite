@@ -163,6 +163,20 @@ impl Surface {
     }
 }
 
+/// Reachable stopping squares from one entrance with the room's actual actor bodies.
+pub(crate) fn resting_tiles(
+    pack: &CompiledGamePack,
+    room: &MapModule,
+    entry: [u16; 2],
+    surf: bool,
+) -> Result<BTreeSet<[u16; 2]>> {
+    let mut surface = Surface::new(pack, room, false, &Placements::new())?;
+    // This graph ends at the room boundary. Actual connected-map steps carry
+    // signed coordinates into the next map and are not local resting squares.
+    surface.map.connections.clear();
+    Ok(surface.graph(entry, surf)?.into_keys().collect())
+}
+
 pub(crate) fn validate(pack: &CompiledGamePack, room: &MapModule, cave: &Cave) -> Result<()> {
     let encounters = encounters(room, cave)?;
     let configurations = configurations(&encounters)?;

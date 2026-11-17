@@ -1,0 +1,388 @@
+{
+  "schema_version": 1,
+  "routes": [
+    {
+      "route": 1,
+      "landmark": "The wildflowers in the elbow above the footbridge",
+      "script": "MN_HIDDEN_R01",
+      "item": "POTION",
+      "flag": "EVENT_MN_HIDDEN_R01",
+      "source_map": "MnR01C00R00",
+      "from_tile": [14, 29],
+      "map_id": "MnR01C00R00",
+      "tile": [6, 29],
+      "target_kind": "FLOOR",
+      "entry": [0, 24],
+      "edits": [
+        {"at": [4, 13], "from": 5, "to": 2},
+        {"at": [4, 14], "from": 5, "to": 2},
+        {"at": [3, 14], "from": 5, "to": 4}
+      ]
+    },
+    {
+      "route": 2,
+      "landmark": "The paired hitching posts behind the wheat",
+      "script": "MN_HIDDEN_R02",
+      "item": "ANTIDOTE",
+      "flag": "EVENT_MN_HIDDEN_R02",
+      "source_map": "MnR02C00R00",
+      "from_tile": [46, 40],
+      "map_id": "MnR02C00R00",
+      "tile": [18, 34],
+      "target_kind": "WALL",
+      "entry": [0, 30],
+      "edits": [
+        {"at": [8, 16], "from": 15, "to": 10},
+        {"at": [8, 17], "from": 15, "to": 10},
+        {"at": [7, 17], "from": 15, "to": 10},
+        {"at": [9, 17], "from": 15, "to": 27}
+      ]
+    },
+    {
+      "route": 3,
+      "landmark": "The wildflower loop on the upper riverbank",
+      "script": "MN_HIDDEN_R03",
+      "item": "POKE_BALL",
+      "flag": "EVENT_MN_HIDDEN_R03",
+      "source_map": "MnR03C00R00",
+      "from_tile": [28, 45],
+      "map_id": "MnR03C00R00",
+      "tile": [27, 12],
+      "target_kind": "FLOOR",
+      "entry": [9, 38],
+      "edits": [
+        {"at": [12, 5], "from": 5, "to": 2},
+        {"at": [13, 5], "from": 5, "to": 2},
+        {"at": [13, 6], "from": 5, "to": 4},
+        {"at": [13, 7], "from": 5, "to": 2},
+        {"at": [12, 7], "from": 5, "to": 2}
+      ]
+    },
+    {
+      "route": 4,
+      "landmark": "The bench under the picnic garden canopy",
+      "script": "MN_HIDDEN_R04",
+      "item": "REPEL",
+      "flag": "EVENT_MN_HIDDEN_R04",
+      "source_map": "MnR04C00R00",
+      "from_tile": [39, 22],
+      "map_id": "MnR04C00R00",
+      "tile": [47, 30],
+      "target_kind": "WALL",
+      "entry": [55, 19],
+      "edits": [
+        {"at": [22, 15], "from": 0, "to": 4},
+        {"at": [22, 16], "from": 0, "to": 4},
+        {"at": [23, 16], "from": 0, "to": 4},
+        {"at": [23, 15], "from": 0, "to": 14}
+      ]
+    },
+    {
+      "route": 5,
+      "landmark": "The exposed stone inside the bluff overlook",
+      "script": "MN_HIDDEN_R05",
+      "item": "GREAT_BALL",
+      "flag": "EVENT_MN_HIDDEN_R05",
+      "source_map": "MnR05C00R00",
+      "from_tile": [55, 17],
+      "map_id": "MnR05C00R01",
+      "tile": [48, 29],
+      "target_kind": "WALL",
+      "entry": [17, 30],
+      "edits": [
+        {"at": [22, 15], "from": 5, "to": 2},
+        {"at": [22, 14], "from": 5, "to": 2},
+        {"at": [23, 14], "from": 5, "to": 2},
+        {"at": [24, 14], "from": 5, "to": 110}
+      ]
+    },
+    {
+      "route": 6,
+      "landmark": "The spruce island on the pine country loop",
+      "script": "MN_HIDDEN_R06",
+      "item": "PARLYZ_HEAL",
+      "flag": "EVENT_MN_HIDDEN_R06",
+      "source_map": "MnR06C00R00",
+      "from_tile": [44, 23],
+      "map_id": "MnR06C00R01",
+      "tile": [8, 30],
+      "target_kind": "FLOOR",
+      "entry": [16, 39],
+      "edits": [
+        {"at": [5, 14], "from": 5, "to": 2},
+        {"at": [4, 14], "from": 5, "to": 2},
+        {"at": [4, 15], "from": 5, "to": 63},
+        {"at": [4, 16], "from": 5, "to": 2},
+        {"at": [5, 16], "from": 5, "to": 2}
+      ]
+    },
+    {
+      "route": 7,
+      "landmark": "The bent sapling inland of the lake rail",
+      "script": "MN_HIDDEN_R07",
+      "item": "MYSTIC_WATER",
+      "flag": "EVENT_MN_HIDDEN_R07",
+      "source_map": "MnR07C00R00",
+      "from_tile": [25, 25],
+      "map_id": "MnR07C00R01",
+      "tile": [24, 24],
+      "target_kind": "FLOOR",
+      "entry": [20, 47],
+      "edits": [
+        {"at": [10, 13], "from": 5, "to": 2},
+        {"at": [11, 13], "from": 5, "to": 2},
+        {"at": [12, 13], "from": 5, "to": 2},
+        {"at": [12, 12], "from": 5, "to": 62}
+      ]
+    },
+    {
+      "route": 8,
+      "landmark": "The flower bed in the thawed grove",
+      "script": "MN_HIDDEN_R08",
+      "item": "MIRACLE_SEED",
+      "flag": "EVENT_MN_HIDDEN_R08",
+      "source_map": "MnR08C00R00",
+      "from_tile": [23, 13],
+      "map_id": "MnR08C00R01",
+      "tile": [35, 42],
+      "target_kind": "FLOOR",
+      "entry": [27, 47],
+      "edits": [
+        {"at": [18, 20], "from": 5, "to": 2},
+        {"at": [18, 21], "from": 5, "to": 2},
+        {"at": [19, 21], "from": 5, "to": 2},
+        {"at": [17, 21], "from": 5, "to": 4}
+      ]
+    },
+    {
+      "route": 9,
+      "landmark": "The iron cap below the eastern rock shelf",
+      "script": "MN_HIDDEN_R09",
+      "item": "RARE_CANDY",
+      "flag": "EVENT_MN_HIDDEN_R09",
+      "source_map": "MnR09C00R00",
+      "from_tile": [49, 27],
+      "map_id": "MnR09C01R00",
+      "tile": [31, 18],
+      "target_kind": "WALL",
+      "entry": [63, 24],
+      "edits": [
+        {"at": [17, 11], "from": 5, "to": 2},
+        {"at": [17, 10], "from": 5, "to": 2},
+        {"at": [16, 10], "from": 5, "to": 2},
+        {"at": [16, 9], "from": 5, "to": 2},
+        {"at": [15, 9], "from": 5, "to": 10}
+      ]
+    },
+    {
+      "route": 10,
+      "landmark": "The flowers at the green end of the snowline",
+      "script": "MN_HIDDEN_R10",
+      "item": "SUPER_POTION",
+      "flag": "EVENT_MN_HIDDEN_R10",
+      "source_map": "MnR10C00R00",
+      "from_tile": [32, 12],
+      "map_id": "MnR10C01R00",
+      "tile": [22, 15],
+      "target_kind": "FLOOR",
+      "entry": [31, 24],
+      "edits": [
+        {"at": [12, 8], "from": 5, "to": 2},
+        {"at": [12, 7], "from": 5, "to": 2},
+        {"at": [11, 7], "from": 5, "to": 4}
+      ]
+    },
+    {
+      "route": 11,
+      "landmark": "The short line of shore posts at the end of the headland spur",
+      "script": "MN_HIDDEN_R11",
+      "item": "ULTRA_BALL",
+      "flag": "EVENT_MN_HIDDEN_R11",
+      "source_map": "MnR11C00R00",
+      "from_tile": [22, 27],
+      "map_id": "MnR11C00R02",
+      "tile": [50, 18],
+      "target_kind": "FLOOR",
+      "entry": [44, 0],
+      "edits": [
+        {"at": [23, 10], "from": 5, "to": 1},
+        {"at": [23, 9], "from": 5, "to": 1},
+        {"at": [24, 9], "from": 5, "to": 1},
+        {"at": [25, 9], "from": 5, "to": 130}
+      ]
+    },
+    {
+      "route": 12,
+      "landmark": "The small spruce at the bend in the snow trail",
+      "script": "MN_HIDDEN_R12",
+      "item": "PP_UP",
+      "flag": "EVENT_MN_HIDDEN_R12",
+      "source_map": "MnR12C00R00",
+      "from_tile": [33, 32],
+      "map_id": "MnR12C00R00",
+      "tile": [12, 39],
+      "target_kind": "FLOOR",
+      "entry": [0, 29],
+      "edits": [
+        {"at": [5, 17], "from": 73, "to": 60},
+        {"at": [5, 18], "from": 73, "to": 60},
+        {"at": [5, 19], "from": 73, "to": 60},
+        {"at": [6, 19], "from": 73, "to": 71}
+      ]
+    },
+    {
+      "route": 13,
+      "landmark": "The survey marker set beside the snowy return loop",
+      "script": "MN_HIDDEN_R13",
+      "item": "HYPER_POTION",
+      "flag": "EVENT_MN_HIDDEN_R13",
+      "source_map": "MnR13C00R00",
+      "from_tile": [47, 25],
+      "map_id": "MnR13C00R00",
+      "tile": [38, 32],
+      "target_kind": "WALL",
+      "entry": [34, 47],
+      "edits": [
+        {"at": [18, 15], "from": 139, "to": 131},
+        {"at": [18, 16], "from": 139, "to": 131},
+        {"at": [19, 16], "from": 139, "to": 136},
+        {"at": [20, 16], "from": 139, "to": 131},
+        {"at": [20, 15], "from": 139, "to": 131}
+      ]
+    },
+    {
+      "route": 14,
+      "landmark": "The tracks at the turn in the winter wood",
+      "script": "MN_HIDDEN_R14",
+      "item": "FULL_HEAL",
+      "flag": "EVENT_MN_HIDDEN_R14",
+      "source_map": "MnR14C00R00",
+      "from_tile": [18, 8],
+      "map_id": "MnR14C01R00",
+      "tile": [18, 23],
+      "target_kind": "FLOOR",
+      "entry": [0, 16],
+      "edits": [
+        {"at": [10, 9], "from": 5, "to": 2},
+        {"at": [9, 9], "from": 5, "to": 2},
+        {"at": [9, 10], "from": 5, "to": 2},
+        {"at": [9, 11], "from": 5, "to": 4}
+      ]
+    },
+    {
+      "route": 15,
+      "landmark": "The stump at the end of the lakeside lane",
+      "script": "MN_HIDDEN_R15",
+      "item": "ETHER",
+      "flag": "EVENT_MN_HIDDEN_R15",
+      "source_map": "MnR15C00R00",
+      "from_tile": [36, 17],
+      "map_id": "MnR15C00R00",
+      "tile": [48, 5],
+      "target_kind": "WALL",
+      "entry": [52, 12],
+      "edits": [
+        {"at": [22, 3], "from": 15, "to": 10},
+        {"at": [23, 3], "from": 15, "to": 10},
+        {"at": [24, 3], "from": 15, "to": 10},
+        {"at": [24, 2], "from": 15, "to": 65}
+      ]
+    },
+    {
+      "route": 16,
+      "landmark": "The short fence at the head of the stubble rows",
+      "script": "MN_HIDDEN_R16",
+      "item": "GREAT_BALL",
+      "flag": "EVENT_MN_HIDDEN_R16",
+      "source_map": "MnR16C00R00",
+      "from_tile": [61, 39],
+      "map_id": "MnR16C01R00",
+      "tile": [17, 5],
+      "target_kind": "WALL",
+      "entry": [22, 0],
+      "edits": [
+        {"at": [7, 3], "from": 5, "to": 131},
+        {"at": [7, 2], "from": 5, "to": 131},
+        {"at": [6, 2], "from": 5, "to": 131},
+        {"at": [8, 2], "from": 5, "to": 129}
+      ]
+    },
+    {
+      "route": 17,
+      "landmark": "The fir standing alone above the ice",
+      "script": "MN_HIDDEN_R17",
+      "item": "REPEL",
+      "flag": "EVENT_MN_HIDDEN_R17",
+      "source_map": "MnR17C00R00",
+      "from_tile": [42, 39],
+      "map_id": "MnR17C00R01",
+      "tile": [24, 2],
+      "target_kind": "FLOOR",
+      "entry": [40, 0],
+      "edits": [
+        {"at": [13, 2], "from": 63, "to": 60},
+        {"at": [13, 1], "from": 63, "to": 60},
+        {"at": [12, 1], "from": 63, "to": 71}
+      ]
+    },
+    {
+      "route": 18,
+      "landmark": "The flowers on the lake loop",
+      "script": "MN_HIDDEN_R18",
+      "item": "SUPER_POTION",
+      "flag": "EVENT_MN_HIDDEN_R18",
+      "source_map": "MnR18C00R00",
+      "from_tile": [60, 39],
+      "map_id": "MnR18C00R00",
+      "tile": [2, 32],
+      "target_kind": "FLOOR",
+      "entry": [0, 11],
+      "edits": [
+        {"at": [2, 15], "from": 5, "to": 2},
+        {"at": [1, 15], "from": 5, "to": 2},
+        {"at": [1, 16], "from": 5, "to": 4},
+        {"at": [1, 17], "from": 5, "to": 2},
+        {"at": [2, 17], "from": 5, "to": 2}
+      ]
+    },
+    {
+      "route": 19,
+      "landmark": "The sapling in the elbow of the prairie windbreak",
+      "script": "MN_HIDDEN_R19",
+      "item": "GREAT_BALL",
+      "flag": "EVENT_MN_HIDDEN_R19",
+      "source_map": "MnR19C00R00",
+      "from_tile": [49, 29],
+      "map_id": "MnR19C00R00",
+      "tile": [54, 21],
+      "target_kind": "FLOOR",
+      "entry": [63, 13],
+      "edits": [
+        {"at": [25, 9], "from": 5, "to": 2},
+        {"at": [26, 9], "from": 5, "to": 2},
+        {"at": [27, 9], "from": 5, "to": 2},
+        {"at": [27, 10], "from": 5, "to": 61}
+      ]
+    },
+    {
+      "route": 20,
+      "landmark": "The tracked snow on the lower tamarack loop",
+      "script": "MN_HIDDEN_R20",
+      "item": "NEVERMELTICE",
+      "flag": "EVENT_MN_HIDDEN_R20",
+      "source_map": "MnR20C00R00",
+      "from_tile": [29, 29],
+      "map_id": "MnR20C00R01",
+      "tile": [33, 11],
+      "target_kind": "FLOOR",
+      "entry": [30, 0],
+      "edits": [
+        {"at": [15, 4], "from": 5, "to": 2},
+        {"at": [15, 5], "from": 5, "to": 2},
+        {"at": [16, 5], "from": 5, "to": 4},
+        {"at": [17, 5], "from": 5, "to": 2},
+        {"at": [17, 4], "from": 5, "to": 2}
+      ]
+    }
+  ]
+}

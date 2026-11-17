@@ -1,0 +1,388 @@
+{
+  "schema_version": 1,
+  "status": "Capitol lift hall with an archive balcony and a machine shop.",
+  "gyms": [
+    {
+      "slot": 4,
+      "id": "MnStPaulGym",
+      "constant": "MN_ST_PAUL_GYM",
+      "city": "ST PAUL",
+      "leader": "BRANNIC",
+      "trainer_class": "MN_LEADER_BRANNIC",
+      "leader_sprite": "SPRITE_MN_LEADER_BRANNIC",
+      "leader_at": [
+        14,
+        3
+      ],
+      "badge_flag": "ENGINE_FOGBADGE",
+      "requires": [
+        "BADGE_3"
+      ],
+      "reward": "TM_STEEL_WING",
+      "party": [
+        {
+          "species": "CARTICK",
+          "level": 23,
+          "moves": [
+            "METAL_CLAW",
+            "POISON_GAS",
+            "MUD_SLAP",
+            "SLUDGE"
+          ]
+        },
+        {
+          "species": "CLINKLAW",
+          "level": 24,
+          "moves": [
+            "LEER",
+            "METAL_CLAW",
+            "MUD_SLAP",
+            "CLAMP"
+          ]
+        },
+        {
+          "species": "BRISTUB",
+          "level": 25,
+          "moves": [
+            "HEADBUTT",
+            "BIND",
+            "HARDEN",
+            "TAKE_DOWN"
+          ]
+        }
+      ],
+      "rows": [
+        "#####JUUUY#####",
+        "#####vcccZ#####",
+        "AKWKBvocoZ#JUVY",
+        "Lp..RnnGnn#vcpZ",
+        "L.h.RvpcpZ#vcmZ",
+        "L..pRnnGnn#vpcZ",
+        "fffffvpcpZ#ijjk",
+        "#####vcccZ#####",
+        "#####ijDjk#####"
+      ],
+      "art": {
+        "#": [
+          "underground",
+          "00"
+        ],
+        "A": [
+          "tower",
+          "04"
+        ],
+        "B": [
+          "tower",
+          "06"
+        ],
+        "W": [
+          "tower",
+          "05"
+        ],
+        "L": [
+          "tower",
+          "08"
+        ],
+        "R": [
+          "tower",
+          "0a"
+        ],
+        ".": [
+          "tower",
+          "09"
+        ],
+        "K": [
+          "lab",
+          "04"
+        ],
+        "h": [
+          "facility",
+          "08"
+        ],
+        "p": [
+          "underground",
+          "0f"
+        ],
+        "o": [
+          "underground",
+          "04"
+        ],
+        "G": [
+          "tower",
+          "0b"
+        ],
+        "f": [
+          "tower",
+          "1b"
+        ],
+        "v": [
+          "underground",
+          "0c"
+        ],
+        "Z": [
+          "underground",
+          "0e"
+        ],
+        "J": [
+          "underground",
+          "06"
+        ],
+        "U": [
+          "underground",
+          "09"
+        ],
+        "Y": [
+          "underground",
+          "0a"
+        ],
+        "m": [
+          "lab",
+          "21"
+        ],
+        "c": [
+          "underground",
+          "0d"
+        ],
+        "i": [
+          "underground",
+          "10"
+        ],
+        "j": [
+          "underground",
+          "11"
+        ],
+        "k": [
+          "underground",
+          "12"
+        ],
+        "n": [
+          "underground",
+          "2d"
+        ],
+        "V": [
+          "lab",
+          "08"
+        ],
+        "D": [
+          "tower",
+          "26"
+        ]
+      },
+      "trainers": [
+        {
+          "id": "MN_GYM_4_TRAINER_1",
+          "name": "BELVA",
+          "trainer_class": "COOLTRAINERF",
+          "sprite": "SPRITE_LASS",
+          "at": [
+            3,
+            9
+          ],
+          "party": [
+            {
+              "species": "PATCHEBEE",
+              "level": 21,
+              "moves": [
+                "METAL_CLAW",
+                "FURY_CUTTER",
+                "HEADBUTT",
+                "HARDEN"
+              ]
+            }
+          ],
+          "optional": true,
+          "before_lines": [
+            "Hold that pose.",
+            "PATCHEBEE, sketch!"
+          ],
+          "after_lines": [
+            "That goes in my",
+            "notebook! The back",
+            "lift takes you to",
+            "the court."
+          ],
+          "requires": []
+        },
+        {
+          "id": "MN_GYM_4_TRAINER_2",
+          "name": "ORVEN",
+          "trainer_class": "POKEFANM",
+          "sprite": "SPRITE_POKEFAN_M",
+          "at": [
+            25,
+            9
+          ],
+          "party": [
+            {
+              "species": "SKATUFF",
+              "level": 22,
+              "moves": [
+                "METAL_CLAW",
+                "ICE_SHARD",
+                "HEADBUTT",
+                "LEER"
+              ]
+            },
+            {
+              "species": "CARTICK",
+              "level": 22,
+              "moves": [
+                "SLUDGE",
+                "METAL_CLAW",
+                "POISON_GAS",
+                "HARDEN"
+              ]
+            }
+          ],
+          "optional": true,
+          "before_lines": [
+            "Tools down. CLAWS",
+            "up!"
+          ],
+          "after_lines": [
+            "Hear that clank?",
+            "Court gate. Take",
+            "the back lift up."
+          ],
+          "requires": []
+        }
+      ],
+      "stations": [],
+      "gates": [
+        {
+          "at": [
+            7,
+            3
+          ],
+          "requires": [
+            "EVENT_MN_GYM_4_COURT_OPEN"
+          ],
+          "open_symbol": "c",
+          "event": "EVENT_MN_GYM_4_V2_GRILLE_OPEN"
+        },
+        {
+          "at": [
+            7,
+            5
+          ],
+          "requires": [
+            "EVENT_MN_GYM_4_COURT_OPEN"
+          ],
+          "open_symbol": "c",
+          "event": "EVENT_MN_GYM_4_COURT_OPEN"
+        }
+      ],
+      "guide": [
+        "Left lift: files.",
+        "Right lift: tools.",
+        "Win in either wing",
+        "to open the court."
+      ],
+      "walkthrough": [
+        "MN_GYM_4_TRAINER_1",
+        "MN_GYM_4_TRAINER_2"
+      ],
+      "dimensions_metatiles": [
+        15,
+        9
+      ],
+      "arrival_core": [
+        14,
+        15
+      ],
+      "exit_tiles_core": [
+        [
+          14,
+          17
+        ],
+        [
+          15,
+          17
+        ]
+      ],
+      "guide_at": [
+        16,
+        15
+      ],
+      "leader_court_locked": true,
+      "before_lines": [
+        "BRANNIC: You found",
+        "the middle court.",
+        "Now hold it.",
+        "Steel gives ground",
+        "only when it must."
+      ],
+      "victory_lines": [
+        "BRANNIC: I yield.",
+        "You held the line.",
+        "Take the CAPITOL",
+        "BADGE with pride."
+      ],
+      "after_lines": [
+        "BRANNIC: The CANOE",
+        "SHOP is in the",
+        "ANGLER HOUSE. If",
+        "you've already got",
+        "the boat, you can",
+        "ask there about HM",
+        "SURF too."
+      ],
+      "routers": [],
+      "lifts": [
+        {
+          "id": "WEST_ROOM",
+          "ends_core": [
+            [
+              13,
+              13
+            ],
+            [
+              3,
+              7
+            ]
+          ]
+        },
+        {
+          "id": "CROSS_ROOM",
+          "ends_core": [
+            [
+              7,
+              11
+            ],
+            [
+              13,
+              9
+            ]
+          ]
+        },
+        {
+          "id": "EAST_RETURN",
+          "ends_core": [
+            [
+              17,
+              13
+            ],
+            [
+              27,
+              7
+            ]
+          ]
+        },
+        {
+          "id": "MAIN_LIFT",
+          "ends_core": [
+            [
+              25,
+              11
+            ],
+            [
+              17,
+              9
+            ]
+          ]
+        }
+      ],
+      "court_requires": []
+    }
+  ]
+}

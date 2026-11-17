@@ -61,50 +61,55 @@ impl Revision {
                 gym.id == MAPS[index] && usize::from(gym.slot) == index + 1,
                 "ordered gym identities"
             );
-            let [width, height] = gym.dimensions_metatiles;
-            ensure!(
-                (5..=16).contains(&width) && (5..=16).contains(&height),
-                "bounded native gym extent"
-            );
-            ensure!(
-                gym.rows.len() == usize::from(height)
-                    && gym
-                        .rows
-                        .iter()
-                        .all(|row| row.chars().count() == usize::from(width)
-                            && row.chars().all(|glyph| gym.art.contains_key(&glyph)))
-                    && gym.art.contains_key(&'#'),
-                "complete native geometry recipe: {}",
-                gym.id
-            );
             let contract = self
                 .contracts
                 .get(&gym.id)
                 .ok_or_else(|| anyhow::anyhow!("missing gym contract"))?;
-            ensure!(
-                contract.sightlines.len() == gym.trainers.len(),
-                "every trainer needs a sightline contract"
-            );
-            for trainer in &gym.trainers {
-                let sight = contract
-                    .sightlines
-                    .get(&trainer.id)
-                    .ok_or_else(|| anyhow::anyhow!("missing trainer sightline"))?;
-                ensure!(
-                    matches!(sight.direction.as_str(), "up" | "down" | "left" | "right")
-                        && (1..=3).contains(&sight.radius),
-                    "bounded cardinal trainer sightline"
-                );
-            }
-            ensure!(
-                !contract.court.all.is_empty() || !contract.court.any.is_empty(),
-                "explicit court qualification"
-            );
-            ensure!(
-                gym.stations.is_empty() && gym.switch_puzzle.is_none() && gym.pads.is_empty(),
-                "revision uses physical routes and controls, not old quizzes or ordered guesses"
-            );
+            validate_room(gym, contract)?;
         }
         Ok(())
     }
+}
+
+pub(crate) fn validate_room(gym: &Gym, contract: &RoomContract) -> Result<()> {
+    let [width, height] = gym.dimensions_metatiles;
+    ensure!(
+        (5..=16).contains(&width) && (5..=16).contains(&height),
+        "bounded native gym extent"
+    );
+    ensure!(
+        gym.rows.len() == usize::from(height)
+            && gym
+                .rows
+                .iter()
+                .all(|row| row.chars().count() == usize::from(width)
+                    && row.chars().all(|glyph| gym.art.contains_key(&glyph)))
+            && gym.art.contains_key(&'#'),
+        "complete native geometry recipe: {}",
+        gym.id
+    );
+    ensure!(
+        contract.sightlines.len() == gym.trainers.len(),
+        "every trainer needs a sightline contract"
+    );
+    for trainer in &gym.trainers {
+        let sight = contract
+            .sightlines
+            .get(&trainer.id)
+            .ok_or_else(|| anyhow::anyhow!("missing trainer sightline"))?;
+        ensure!(
+            matches!(sight.direction.as_str(), "up" | "down" | "left" | "right")
+                && (1..=3).contains(&sight.radius),
+            "bounded cardinal trainer sightline"
+        );
+    }
+    ensure!(
+        !contract.court.all.is_empty() || !contract.court.any.is_empty(),
+        "explicit court qualification"
+    );
+    ensure!(
+        gym.stations.is_empty() && gym.switch_puzzle.is_none() && gym.pads.is_empty(),
+        "revision uses physical routes and controls, not old quizzes or ordered guesses"
+    );
+    Ok(())
 }

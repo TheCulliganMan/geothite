@@ -55,6 +55,50 @@ tools in separate commands; retain one target directory so common dependencies
 remain cached. The no-default-feature command above intentionally checks only
 the runtime library, rather than the authoring CLI targets.
 
+## Minnesota regional floorplans and exploration
+
+The floorplan revision builds on the exact v04 raw pack and its hosted counterpart.
+The authoring command reads the three Gym buildings, Voyageurs ice floors,
+Granite Den, six Iron Range mine rooms, statewide wayfinding dialogue and the
+twenty numbered route designs from `planning/minnesota`.
+
+Rochester introduces a supervised first battle and a choice of approaches to
+Varel. St. Paul connects its archive and workshop to the same court by four
+reciprocal lifts. In Brainerd the dock operator controls which crossing is up,
+and the northern winch allows a return by the other channel.
+
+The two Voyageurs floors use distinct ice courses. Granite Den places its Revive
+on the upper shelf and its Spell Tag in the rock above the seep. The Iron Range
+haulage chute returns to the lower gallery, and the sump's shutter has four
+gauge readings reflecting the two actual valves. A Heavy Ball and a Surf-accessible
+Max Revive have individual, persistent native hidden-item receipts.
+
+Each numbered road has a native landmark at the end of a short branch or loop.
+The twenty route caches retain their items and earned collection flags. Regional
+guides change their directions after major handoffs. The Pokégear displays the
+actual town or road under the cursor, even where the underlying caught-location
+catalog gives both the same ID.
+
+Build with the pre-existing external v04 files and an unused ignored output path.
+
+```sh
+CARGO_INCREMENTAL=0 cargo build --locked -p crystal-assets \
+  --bin pack_iron_workings --bin materialize_northstar_hosted --bin verify_crystalpack
+target/debug/pack_iron_workings \
+  content-packs/minnesota-gym-cave-overhaul-v04.crystalpack \
+  target/northstar-gym-overhaul/hosted-v04.crystalpack planning/minnesota \
+  content-packs/minnesota-floorplans-v01.crystalpack
+target/debug/materialize_northstar_hosted content-packs/minnesota-floorplans-v01.crystalpack \
+  target/iron-workings-20261117/hosted-v01.crystalpack
+target/debug/verify_crystalpack content-packs/minnesota-floorplans-v01.crystalpack --audio --desktop
+```
+
+The v04 save upgrade re-enters the six rebuilt Gym and cave rooms at their safe
+arrivals and preserves progression. In the mine only four former standing tiles
+need local alternatives. Every candidate landing is checked against the saved
+actors and block overrides. The six earlier supported releases also receive
+their previous Gym and cave reentry rules.
+
 ## Minnesota Gym and cave overhaul
 
 The combined overlay builds directly on the exact refinement v02 raw and hosted

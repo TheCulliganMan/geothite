@@ -760,6 +760,20 @@ fn visible_pokegear_menu_entries(
     if runtime_shell.pokegear_page == PokegearPage::Phone {
         return visible_pokegear_phone_entries(snapshot, runtime_shell);
     }
+    if minnesota_map_active(snapshot) {
+        let stops = &runtime_shell.minnesota_atlas;
+        let raw = visible_pokegear_player_landmark(snapshot)?;
+        let (selected, player, route) = minnesota_atlas_routes::selected_and_current(stops, &snapshot.overworld.map_name,
+            &raw.constant, runtime_shell.pokegear_cursor).context("Minnesota atlas selection")?;
+        let mut rows = vec!["POKEGEAR MAP MINNESOTA".into(), format!(">{}", selected.name)];
+        if let Some(number) = route {
+            let (a, b) = minnesota_atlas_routes::endpoints(number);
+            rows.push(format!("Route {number}: {a} - {b}"));
+        }
+        rows.extend([format!("You: {}", player.name), "Up/Down: location".into(),
+            "Left/Right: card".into(), "B: close".into()]);
+        return Ok(rows);
+    }
     let region = visible_pokegear_region(snapshot, runtime_shell.pokegear_standalone_map)?;
     visible_pokegear_landmark_indices(snapshot, runtime_shell.pokegear_standalone_map)?;
     let selected = snapshot.presentation.pokegear_landmarks.landmarks

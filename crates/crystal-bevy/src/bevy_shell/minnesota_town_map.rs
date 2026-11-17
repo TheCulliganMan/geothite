@@ -2,7 +2,7 @@
 
 // Native LCD centers of each town tile. The Town Map and Fly selector project
 // their OAM coordinates onto these same positions.
-const TOWNS: &[(&str, i16, i16)] = &[
+pub(super) const TOWNS: &[(&str, i16, i16)] = &[
     ("WINONA", 124, 116),
     ("ROCHESTER", 100, 116),
     ("MANKATO", 60, 116),
@@ -54,6 +54,7 @@ pub(super) fn position(constant: &str, name: &str, old_x: i16, old_y: i16) -> (i
         "TWIN_CITIES" => (11, 13),
         "RIVER_BLUFFS" => (9, 12),
         "PINE_COUNTRY" => (7, 11),
+        "LEECH_LAKE" => (8, 9),
         "NORTHERN_LAKES" => (8, 7),
         "IRON_RANGE" => (9, 8),
         "IRON_RANGE_DESCENT" => (12, 9),
@@ -146,28 +147,7 @@ pub(super) fn tilemap() -> Vec<u8> {
     }
     // Pale native land corridors connect town squares, as on the Johto map.
     let mut roads = [[false; 20]; 18];
-    for (a, b) in [
-        (0, 1),
-        (1, 2),
-        (2, 3),
-        (3, 4),
-        (3, 5),
-        (5, 6),
-        (6, 7),
-        (7, 8),
-        (8, 9),
-        (9, 10),
-        (10, 11),
-        (11, 12),
-        (12, 13),
-        (8, 14),
-        (6, 15),
-        (15, 16),
-        (8, 17),
-        (6, 18),
-        (14, 15),
-        (17, 12),
-    ] {
+    for (a, b) in super::minnesota_atlas_routes::CONNECTIONS {
         if (a, b) == (10, 11) {
             continue;
         }

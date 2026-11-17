@@ -44,3 +44,7 @@ required-features = ["pack-authoring"]
 [[bin]]
 name = "pack_northstar_gyms"
 required-features = ["pack-authoring"]
+
+[[bin]]
+name = "pack_iron_workings"
+required-features = ["pack-authoring"]

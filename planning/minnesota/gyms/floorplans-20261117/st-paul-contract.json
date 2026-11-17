@@ -1,0 +1,19 @@
+{
+  "sightlines": {
+    "MN_GYM_4_TRAINER_1": {
+      "direction": "up",
+      "radius": 2
+    },
+    "MN_GYM_4_TRAINER_2": {
+      "direction": "up",
+      "radius": 2
+    }
+  },
+  "court": {
+    "all": [],
+    "any": [
+      "EVENT_MN_GYM_4_TRAINER_1_DEFEATED",
+      "EVENT_MN_GYM_4_TRAINER_2_DEFEATED"
+    ]
+  }
+}
