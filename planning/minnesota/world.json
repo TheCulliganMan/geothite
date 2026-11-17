@@ -12562,6 +12562,9 @@
     "content_identity": "d4ce7998673f393e69771a36c3575878060f121102f6db840ddf197c583979dd",
     "map_count": 743,
     "runbook": "planning/minnesota/QUALITY.md",
-    "status": "Selected locally for publication. Pack build, native content checks, all 602 audio checks and static preservation checks passed. Client builds and release checks are pending. Gameplay verification is excluded by user instruction; existing saves are not migrated."
+    "status": "Selected and published as adventure-20261116. Fresh production client/server and pack builds, all-target asset and WASM worker Clippy, native content checks, all 602 audio checks and public static release checks passed. No gameplay, controller journeys or visual review was performed, per user instruction. Existing saves are preserved without migration.",
+    "hosted_release": "adventure-20261116",
+    "hosted_pack_sha256": "5254da0a14f9bf6acdb6378ee9d7d3f890d4f6eab13e5334ff079033212c4858",
+    "hosted_content_identity": "80dc44ba48e3347b3e760095c295d10748386b9e8ab2a985350f043862236baa"
   }
 }

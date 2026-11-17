@@ -263,5 +263,20 @@ art/audio/event constants, identical terrain and unchanged non-Minnesota maps.
 The Rust verifier passes all 602 audio PCM hashes, frame counts and loop ranges.
 The canonical native-page compilation/protection test passes. Formatting and
 the initial all-target asset Clippy pass succeeded; existing warnings remain.
-The candidate is selected locally in `world.json` while client build and
-publication checks are completed. No gameplay has been run.
+The adventure revision is selected in `world.json` and published as
+`adventure-20261116` from implementation commit
+`c44d317df809d7d41e2980d1550eb6a330f89b86`. Fresh production client/server and
+pack builds, all-target asset Clippy and all-target WASM worker Clippy passed;
+existing warnings remain. Public checks matched 148 assets and both gzip HTML
+pages, verified the service routes and matching WebSocket identity, and checked
+both native downloads, the launcher and versioned pack against their manifest.
+macOS and Linux each passed two silent `--no-play` installs with zero output and
+preserved scratch save markers. No game client was launched.
+
+The [release record](../../docs/deployment.md#minnesota-adventure-release-2026-11-16)
+distinguishes the raw pack above from the hosted identity and checksum after the
+standard server wrappers. An initial candidate permission issue was fixed before
+rollout; no production rollback was needed. Existing saves were preserved without
+migration. No gameplay, controller journeys or visual review was performed. These
+build and static/content results do not establish complete campaign balance or
+playability.

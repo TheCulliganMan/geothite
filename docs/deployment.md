@@ -1,7 +1,7 @@
 # Deploy Geothite multiplayer
 
 The live browser game serves [The Northstar Survey](https://geothite.ryanculligan.com/?view=2d)
-in native 2D. See the [2026-11-16 release record](#integrated-minnesota-release-2026-11-16)
+in native 2D. See the [2026-11-16 release record](#minnesota-adventure-release-2026-11-16)
 for the exact pack, image, verification scope and rollback command.
 
 ## Requirements
@@ -617,3 +617,67 @@ removed, retaining the finished clients, packs, saves and review evidence.
 Local free space increased from about 342 GiB to 396 GiB. Docker build-cache
 cleanup reported 10.69 GB removed; the server has 227 GiB free. Published and
 rollback images, volumes and release files were preserved.
+
+## Minnesota adventure release (2026-11-16)
+
+Published implementation commit `c44d317df809d7d41e2980d1550eb6a330f89b86` as
+release `adventure-20261116`, image
+`sha256:7cad0ccfab7bb68ba360c05a25c8c828fdb49995779b982877c1d23607796d4b`.
+The selected 743-map adventure revision adds forty hidden items, eight optional
+Champion gym rematches, accepted native leader art, battle-party corrections
+and revised campaign dialogue. Minnesota remains native 2D. The graphical
+browser, browser TUI and both native terminal downloads were rebuilt and
+published.
+
+- Input: `content-packs/minnesota-adventure-v01.crystalpack`, SHA-256
+  `36da6928a3aa0b0d75c9ad9a7abe353a9d79a7d3d1327eed2dc29d4fc4adb181`.
+- Raw content identity:
+  `d4ce7998673f393e69771a36c3575878060f121102f6db840ddf197c583979dd`.
+- Hosted content identity, after the standard server wrappers:
+  `80dc44ba48e3347b3e760095c295d10748386b9e8ab2a985350f043862236baa`.
+- Hosted/installer pack SHA-256:
+  `5254da0a14f9bf6acdb6378ee9d7d3f890d4f6eab13e5334ff079033212c4858`.
+- Native manifest: `downloads/terminal/current.txt`, release
+  `adventure-20261116`, with `aarch64-apple-darwin` and
+  `x86_64-unknown-linux-gnu` plus its immutable versioned pack.
+
+Fresh production client/server and pack builds passed. Formatting, all-target
+asset Clippy and all-target WASM worker Clippy passed with existing warnings.
+Native dialogue compilation/protection, independent static content/preservation
+checks and all 602 audio PCM hashes, frame counts and loop ranges passed.
+The hosted/raw pack comparison confirms only the standard clock, customization
+and manifest wrappers were added; the authored game content is unchanged.
+
+Public checks matched 148 assets byte-for-byte and checked both gzip HTML pages.
+Health, clock, TUI, Flygon and Pokedex endpoints passed. The public WebSocket
+welcome matched the hosted identity, including its 22,238-byte composed modpack
+ID. Both native downloads, the launcher and versioned pack matched the public
+manifest checksums. macOS and Linux each completed two silent `--no-play`
+installs with zero output; scratch save markers survived reinstall, and no game
+client was launched. Two synthetic installer safety cases also passed.
+
+An initial candidate permission issue was corrected before rollout. Publication
+passed without a production rollback. Existing saves were preserved without
+relabeling or migration. The candidate service and installer scratch were
+removed after the checks.
+
+No gameplay, controller journeys, visual review or playthrough verification was
+performed, per the user's instruction. Builds and static/content release checks
+do not establish complete campaign balance or playability. Earlier releases'
+gameplay evidence remains historical and does not verify this release.
+
+Frozen source, build recipes, checksums, verification receipts and guarded
+rollback state are retained outside Git at
+`/mnt/homelab/config/geothite/releases/adventure-20261116`.
+To restore the captured previous service, provided its configuration has not
+changed since publication:
+
+```sh
+python3 /mnt/homelab/config/geothite/releases/adventure-20261116/deploy.py rollback
+```
+
+Inactive local Cargo caches were removed while retaining standalone clients,
+packs, saves, review evidence and publication records. Actual local free space
+increased by 8.24 GiB, from about 386 to 394 GiB. Remote Docker build-cache
+cleanup reported 14.5 GB removed; free space rose from about 204 to 218 GiB.
+Current and rollback images, volumes and release files were retained.

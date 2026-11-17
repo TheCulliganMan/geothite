@@ -12,10 +12,12 @@ The [Minnesota campaign polish review](docs/game-content.md#minnesota-campaign-p
 includes local build and play commands for the dialogue, roster, and early
 fishing update on top of the Glacier Line pack.
 
-The [current browser release](docs/deployment.md#combined-minnesota-release-2026-10-29)
-combines the reviewed Minnesota world/dialogue, starter signature moves and all
-225 original species' field art and cries. Verdigrim's excavation encounter is
-still in progress; its completed assets and Pokédex entry are published.
+The [current Minnesota release](docs/deployment.md#minnesota-adventure-release-2026-11-16),
+`adventure-20261116`, adds forty hidden items, eight optional Champion gym
+rematches, accepted native leader artwork, battle-party corrections and revised
+campaign dialogue. The graphical browser, browser TUI and both native terminal
+downloads are published. Minnesota remains native 2D. Builds and static/content
+release checks passed; no gameplay, controller or visual review was performed.
 
 The [Tamarack and Team ICE sprite revision](planning/minnesota/npcs/tamarack-ice/README.md)
 uses normal Crystal overworld proportions, woman Tamarack and eight additional
