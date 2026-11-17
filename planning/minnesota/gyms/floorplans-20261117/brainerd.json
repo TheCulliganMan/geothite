@@ -53,14 +53,30 @@
       ],
       "rows": [
         "###RRR###",
-        "##a^P^^b#",
-        "#ac~T~~>R",
-        "R<~~~~~>R",
-        "R<~~~~>R#",
-        "#R<~v~>R#",
+        "##absEab#",
+        "#ac>sasER",
+        "RL<d^cbZR",
+        "RLs<~~>R#",
+        "#Rass<>R#",
         "##RrDrR##"
       ],
       "art": {
+        "s": [
+          "cave",
+          "02"
+        ],
+        "L": [
+          "cave",
+          "28"
+        ],
+        "E": [
+          "cave",
+          "2a"
+        ],
+        "Z": [
+          "cave",
+          "2b"
+        ],
         "#": [
           "johto",
           "05"
@@ -72,18 +88,6 @@
         "r": [
           "cave",
           "21"
-        ],
-        "P": [
-          "tower",
-          "09"
-        ],
-        "T": [
-          "port",
-          "27"
-        ],
-        "v": [
-          "port",
-          "0c"
         ],
         "D": [
           "port",
@@ -116,6 +120,10 @@
         "c": [
           "johto",
           "79"
+        ],
+        "d": [
+          "johto",
+          "7a"
         ]
       },
       "trainers": [
@@ -123,7 +131,7 @@
           "id": "MN_GYM_6_TRAINER_1",
           "name": "LORLA",
           "trainer_class": "SWIMMERF",
-          "sprite": "SPRITE_SWIMMER_GIRL",
+          "sprite": "SPRITE_COOLTRAINER_F",
           "at": [
             4,
             8
@@ -152,16 +160,16 @@
           ],
           "optional": true,
           "before_lines": [
-            "LORLA: Feel that",
-            "tug at your sock?",
-            "YODELOON likes to",
-            "go first."
+            "LORLA: See that",
+            "line in the sand?",
+            "YODELOON drew it.",
+            "Ready to race?"
           ],
           "after_lines": [
-            "LORLA: I can see",
-            "every toe down",
-            "here. YODELOON",
-            "counts them twice."
+            "LORLA: There goes",
+            "my starting line.",
+            "One good wave",
+            "wipes it clean."
           ],
           "requires": []
         },
@@ -218,7 +226,7 @@
         "Wade straight out.",
         "The sand is firm.",
         "See SIVREN on the",
-        "far landing?"
+        "far sandbar?"
       ],
       "walkthrough": [],
       "dimensions_metatiles": [
@@ -279,12 +287,11 @@
       "wading_water": [
         "<",
         ">",
-        "T",
         "^",
         "a",
         "b",
         "c",
-        "v",
+        "d",
         "~"
       ]
     }

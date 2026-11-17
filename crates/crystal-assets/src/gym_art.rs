@@ -138,10 +138,10 @@ pub(crate) fn install(pack: &mut CompiledGamePack, gym: &Gym) -> Result<BTreeMap
                 if shallow {
                     // Raise the two dark water shades one step on the native
                     // palette ramp while retaining the ripple highlights.
-                    for planes in tile.chunks_exact_mut(2) {
-                        let [low, high] = [planes[0], planes[1]];
-                        planes[0] = low ^ high;
-                        planes[1] = low & high;
+                    let (rows, _) = tile.as_chunks_mut::<2>();
+                    for planes in rows {
+                        let [low, high] = *planes;
+                        *planes = [low ^ high, low & high];
                     }
                 }
                 definition.palette_map[logical] = (palette & 7) | bank;

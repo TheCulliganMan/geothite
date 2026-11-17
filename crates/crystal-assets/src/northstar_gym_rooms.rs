@@ -54,11 +54,14 @@ pub(crate) fn install(
         } else if id == format!("{}Guide", gym.id) {
             gym.guide_at
         } else {
-            gym.trainers
+            let trainer = gym.trainers
                 .iter()
                 .find(|trainer| trainer.id == id)
-                .with_context(|| format!("unclassified saved gym actor {id}"))?
-                .at
+                .with_context(|| format!("unclassified saved gym actor {id}"))?;
+            if !gym.wading_water.is_empty() {
+                actor.sprite.clone_from(&trainer.sprite);
+            }
+            trainer.at
         };
         actor.x = at[0];
         actor.y = at[1];
@@ -71,6 +74,7 @@ pub(crate) fn install(
     crate::northstar_gym_mechanics::install(pack, &mut room, gym, contract, &symbols)?;
     crate::northstar_gym_dialogue::install(&mut room, gym, story)?;
     if room.id == "MnBrainerdGym" && !gym.wading_water.is_empty() {
+        validate_lake_shore(pack, gym, contract)?;
         ensure!(gym.routers.is_empty() && gym.gates.is_empty(), "open lake has no dock controls");
         room.scripts.retain(|label, _| {
             ![
@@ -84,6 +88,40 @@ pub(crate) fn install(
     crate::northstar_shore_roster_repair::validate_visible_species(pack, &room)?;
     crate::northstar_gym_validation::validate(pack, &room, gym, contract, &symbols)?;
     crate::northstar_story_revision::publish(pack, room)
+}
+
+/// NPCs stay on native dry ground, including after walking toward a challenger.
+fn validate_lake_shore(pack: &CompiledGamePack, gym: &Gym, contract: &RoomContract) -> Result<()> {
+    let dry = |[x, y]: [u16; 2]| -> Result<()> {
+        let symbol = gym.rows.get(usize::from(y / 2))
+            .and_then(|row| row.chars().nth(usize::from(x / 2)))
+            .context("Gym shore position outside the room")?;
+        let [tileset, block] = &gym.art[&symbol];
+        let quadrant = usize::from(2 * (y % 2) + x % 2);
+        ensure!(
+            pack.data.tilesets[tileset].collision[block][quadrant] == "FLOOR",
+            "shore actor would stand in water or on a barrier at ({x},{y})"
+        );
+        Ok(())
+    };
+    dry(gym.leader_at)?;
+    dry(gym.guide_at)?;
+    for trainer in &gym.trainers {
+        let sight = &contract.sightlines[&trainer.id];
+        let (dx, dy): (i32, i32) = match sight.direction.as_str() {
+            "up" => (0, -1),
+            "right" => (1, 0),
+            "down" => (0, 1),
+            "left" => (-1, 0),
+            _ => anyhow::bail!("unknown shore trainer direction"),
+        };
+        for distance in 0..i32::from(sight.radius) {
+            let x = u16::try_from(i32::from(trainer.at[0]) + dx * distance)?;
+            let y = u16::try_from(i32::from(trainer.at[1]) + dy * distance)?;
+            dry([x, y]).with_context(|| format!("shore approach for {}", trainer.name))?;
+        }
+    }
+    Ok(())
 }
 
 /// Rebuild the menu records consumed by the runtime from the installed scripts.

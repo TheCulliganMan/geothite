@@ -5,8 +5,8 @@
       "radius": 2
     },
     "MN_GYM_6_TRAINER_2": {
-      "direction": "down",
-      "radius": 3
+      "direction": "left",
+      "radius": 2
     }
   },
   "court": {

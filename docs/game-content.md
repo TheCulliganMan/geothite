@@ -65,7 +65,8 @@ twenty numbered route designs from `planning/minnesota`.
 Rochester introduces a supervised first battle and a choice of approaches to
 Varel. St. Paul connects its archive and workshop to the same court by four
 reciprocal lifts. Brainerd opens onto a shallow lake. Walk into the water and
-head north to Sivren. Lorla and Bravel watch the approaches from the sides.
+head north to Sivren on the far bank. Lorla and Bravel watch the water from
+the shore and stay on dry ground when they approach a challenger.
 Both can challenge you on sight. You can also wade past them before obtaining
 Surf. The shoreline stays in the same place throughout the challenge.
 
