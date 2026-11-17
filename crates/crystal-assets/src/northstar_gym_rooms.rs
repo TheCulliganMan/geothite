@@ -70,9 +70,29 @@ pub(crate) fn install(
     );
     crate::northstar_gym_mechanics::install(pack, &mut room, gym, contract, &symbols)?;
     crate::northstar_gym_dialogue::install(&mut room, gym, story)?;
+    if room.id == "MnBrainerdGym" && !gym.wading_water.is_empty() {
+        ensure!(gym.routers.is_empty() && gym.gates.is_empty(), "open lake has no dock controls");
+        room.scripts.retain(|label, _| {
+            ![
+                "MnBrainerdGymFLOAT_WALKRouting",
+                "MnBrainerdGymSOUTH_WINCHRouting",
+                "MnBrainerdGymNORTH_WINCHRouting",
+            ].iter().any(|prefix| label.starts_with(prefix))
+        });
+    }
+    refresh_control_menus(&mut room)?;
     crate::northstar_shore_roster_repair::validate_visible_species(pack, &room)?;
     crate::northstar_gym_validation::validate(pack, &room, gym, contract, &symbols)?;
     crate::northstar_story_revision::publish(pack, room)
+}
+
+/// Rebuild the menu records consumed by the runtime from the installed scripts.
+pub(super) fn refresh_control_menus(room: &mut crate::MapModule) -> Result<()> {
+    room.script_menu_definitions = crate::parse_script_menu_definitions(&room.id, &room.scripts)?;
+    room.script_vertical_menus = crate::parse_script_vertical_menus(
+        &room.id, &room.scripts, &room.script_menu_definitions,
+    )?;
+    Ok(())
 }
 
 fn replace_art(pack: &mut CompiledGamePack, gym: &Gym) -> Result<BTreeMap<char, u16>> {

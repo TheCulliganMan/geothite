@@ -64,8 +64,10 @@ twenty numbered route designs from `planning/minnesota`.
 
 Rochester introduces a supervised first battle and a choice of approaches to
 Varel. St. Paul connects its archive and workshop to the same court by four
-reciprocal lifts. In Brainerd the dock operator controls which crossing is up,
-and the northern winch allows a return by the other channel.
+reciprocal lifts. Brainerd opens onto a shallow lake. Walk into the water and
+head north to Sivren. Lorla and Bravel watch the approaches from the sides.
+Both can challenge you on sight. You can also wade past them before obtaining
+Surf. The shoreline stays in the same place throughout the challenge.
 
 The two Voyageurs floors use distinct ice courses. Granite Den places its Revive
 on the upper shelf and its Spell Tag in the rock above the seep. The Iron Range
@@ -78,6 +80,10 @@ The twenty route caches retain their items and earned collection flags. Regional
 guides change their directions after major handoffs. The Pokégear displays the
 actual town or road under the cursor, even where the underlying caught-location
 catalog gives both the same ID.
+
+Minnesota's ordinary trainers initiate their first battles on sight. At the
+State Fair the stamp-card activities still use their own interactions. Gym
+leaders, invitations and rematches retain their authored conversations.
 
 Build with the pre-existing external v04 files and an unused ignored output path.
 

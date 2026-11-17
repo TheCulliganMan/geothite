@@ -44,6 +44,9 @@ pub(crate) struct Gym {
     /// Water quadrants replaced with native floating barriers in the dock room.
     #[serde(default)]
     pub buoy_quadrants: BTreeMap<char, BTreeSet<u8>>,
+    /// Native water quadrants shallow enough to cross on foot in this room.
+    #[serde(default)]
+    pub wading_water: BTreeSet<char>,
     /// A contained indoor pool may have native walk-to-water access like Cerulean.
     #[serde(default)]
     pub enclosed_pool: bool,

@@ -1,0 +1,400 @@
+{
+  "MnDetroitLakesApproach": {
+    "entries": [
+      [
+        0,
+        18
+      ]
+    ],
+    "trainers": {
+      "MN_COHESION_DETROIT_KEEPER": {
+        "direction": "RIGHT",
+        "radius": 2
+      },
+      "MN_COHESION_DETROIT_WALKER": {
+        "direction": "LEFT",
+        "radius": 2
+      }
+    }
+  },
+  "MnDuluth": {
+    "entries": [
+      [
+        41,
+        32
+      ]
+    ],
+    "trainers": {
+      "MN_DULUTH_X_T01": {
+        "direction": "LEFT",
+        "radius": 2
+      },
+      "MN_DULUTH_X_T07": {
+        "direction": "RIGHT",
+        "radius": 2
+      },
+      "MN_DULUTH_X_T08": {
+        "direction": "LEFT",
+        "radius": 2
+      }
+    }
+  },
+  "MnDuluthBoatClub1F": {
+    "entries": [
+      [
+        8,
+        10
+      ]
+    ],
+    "trainers": {
+      "MN_DULUTH_X_T06": {
+        "direction": "LEFT",
+        "radius": 2
+      }
+    }
+  },
+  "MnDuluthMaritimeCoop3F": {
+    "entries": [
+      [
+        3,
+        2
+      ]
+    ],
+    "trainers": {
+      "MN_DULUTH_X_T04": {
+        "direction": "RIGHT",
+        "radius": 2
+      },
+      "MN_DULUTH_X_T05": {
+        "direction": "DOWN",
+        "radius": 2
+      }
+    }
+  },
+  "MnDuluthQuarryPractice": {
+    "entries": [
+      [
+        8,
+        10
+      ]
+    ],
+    "trainers": {
+      "MN_DULUTH_X_T02": {
+        "direction": "DOWN",
+        "radius": 3
+      }
+    }
+  },
+  "MnDuluthTrainingAnnex": {
+    "entries": [
+      [
+        8,
+        9
+      ]
+    ],
+    "trainers": {
+      "MN_DULUTH_X_T03": {
+        "direction": "LEFT",
+        "radius": 3
+      }
+    }
+  },
+  "MnMaraisCedarApproach": {
+    "entries": [
+      [
+        18,
+        14
+      ],
+      [
+        25,
+        14
+      ]
+    ],
+    "trainers": {
+      "MN_COHESION_MARAIS_KEEPER": {
+        "direction": "UP",
+        "radius": 2
+      },
+      "MN_COHESION_MARAIS_WALKER": {
+        "direction": "LEFT",
+        "radius": 2
+      }
+    }
+  },
+  "MnMinneapolisBattleClub": {
+    "entries": [
+      [
+        10,
+        14
+      ]
+    ],
+    "trainers": {
+      "MN_MP_CLUB_RIVET": {
+        "direction": "RIGHT",
+        "radius": 2
+      },
+      "MN_MP_CLUB_BANKS": {
+        "direction": "LEFT",
+        "radius": 2
+      },
+      "MN_MP_CLUB_CEDAR": {
+        "direction": "RIGHT",
+        "radius": 2
+      },
+      "MN_MP_CLUB_COACH_INEZ": {
+        "direction": "LEFT",
+        "radius": 2
+      }
+    }
+  },
+  "MnMississippiConfluenceC01R00": {
+    "entries": [
+      [
+        0,
+        10
+      ]
+    ],
+    "trainers": {
+      "MN_RIVER_CONFLUENCE_FISHER": {
+        "direction": "DOWN",
+        "radius": 1
+      }
+    },
+    "water_access": true
+  },
+  "MnMississippiLowerWoodsC00R01": {
+    "entries": [
+      [
+        14,
+        0
+      ]
+    ],
+    "trainers": {
+      "MN_RIVER_LOWER_BANK_FISHER": {
+        "direction": "RIGHT",
+        "radius": 2
+      }
+    }
+  },
+  "MnMississippiLowerWoodsC01R01": {
+    "entries": [
+      [
+        14,
+        47
+      ]
+    ],
+    "trainers": {
+      "MN_RIVER_LOWER_PINE_KEEPER": {
+        "direction": "RIGHT",
+        "radius": 2
+      }
+    }
+  },
+  "MnMississippiUpstreamWoodsC00R02": {
+    "entries": [
+      [
+        63,
+        18
+      ]
+    ],
+    "trainers": {
+      "MN_RIVER_UPSTREAM_BANK_FISHER": {
+        "direction": "DOWN",
+        "radius": 2
+      }
+    },
+    "water_access": true
+  },
+  "MnMississippiUpstreamWoodsC01R00": {
+    "entries": [
+      [
+        22,
+        47
+      ]
+    ],
+    "trainers": {
+      "MN_RIVER_UPSTREAM_WOODS_KEEPER": {
+        "direction": "RIGHT",
+        "radius": 2
+      }
+    },
+    "water_access": true
+  },
+  "MnStPaul": {
+    "entries": [
+      [
+        8,
+        8
+      ],
+      [
+        11,
+        64
+      ]
+    ],
+    "trainers": {
+      "MN_SPX_TRAINER_1": {
+        "direction": "RIGHT",
+        "radius": 2
+      },
+      "MN_SPX_TRAINER_8": {
+        "direction": "LEFT",
+        "radius": 2
+      }
+    }
+  },
+  "MnStPaulAnglerHouse": {
+    "entries": [
+      [
+        3,
+        10
+      ]
+    ],
+    "trainers": {
+      "MN_SPX_TRAINER_6": {
+        "direction": "LEFT",
+        "radius": 2
+      }
+    }
+  },
+  "MnStPaulEastWorkshop": {
+    "entries": [
+      [
+        3,
+        10
+      ]
+    ],
+    "trainers": {
+      "MN_SPX_TRAINER_3": {
+        "direction": "LEFT",
+        "radius": 2
+      }
+    }
+  },
+  "MnStPaulFairBreederBarn": {
+    "entries": [
+      [
+        3,
+        10
+      ]
+    ],
+    "trainers": {
+      "MN_SPX_TRAINER_2": {
+        "direction": "DOWN",
+        "radius": 2
+      }
+    }
+  },
+  "MnStPaulLowertownExchange3F": {
+    "entries": [
+      [
+        12,
+        1
+      ]
+    ],
+    "trainers": {
+      "MN_SPX_TRAINER_4": {
+        "direction": "RIGHT",
+        "radius": 2
+      }
+    }
+  },
+  "MnStPaulSummitExhibitionClub": {
+    "entries": [
+      [
+        3,
+        10
+      ]
+    ],
+    "trainers": {
+      "MN_SPX_TRAINER_5": {
+        "direction": "LEFT",
+        "radius": 2
+      }
+    }
+  },
+  "MnStPaulWestsideArena": {
+    "entries": [
+      [
+        3,
+        10
+      ]
+    ],
+    "trainers": {
+      "MN_SPX_TRAINER_7": {
+        "direction": "LEFT",
+        "radius": 3
+      }
+    },
+    "host_text": "MN_SPX_WESTSIDEARENA_HOSTText"
+  },
+  "MnStateFairgrounds": {
+    "entries": [
+      [
+        11,
+        18
+      ]
+    ],
+    "trainers": {
+      "MN_FAIR_SHOW_TRAINER": {
+        "direction": "DOWN",
+        "radius": 2
+      },
+      "MN_FAIR_JUNIOR_TRAINER": {
+        "direction": "RIGHT",
+        "radius": 2
+      },
+      "MN_FAIR_EXHIBITOR_01_TRAINER": {
+        "direction": "DOWN",
+        "radius": 1
+      },
+      "MN_FAIR_EXHIBITOR_02_TRAINER": {
+        "direction": "RIGHT",
+        "radius": 2
+      },
+      "MN_FAIR_EXHIBITOR_03_TRAINER": {
+        "direction": "LEFT",
+        "radius": 2
+      },
+      "MN_FAIR_EXHIBITOR_04_TRAINER": {
+        "direction": "DOWN",
+        "radius": 2
+      },
+      "MN_FAIR_EXHIBITOR_05_TRAINER": {
+        "direction": "DOWN",
+        "radius": 2
+      },
+      "MN_FAIR_EXHIBITOR_06_TRAINER": {
+        "direction": "DOWN",
+        "radius": 2
+      },
+      "MN_FAIR_EXHIBITOR_07_TRAINER": {
+        "direction": "RIGHT",
+        "radius": 2
+      },
+      "MN_FAIR_EXHIBITOR_08_TRAINER": {
+        "direction": "RIGHT",
+        "radius": 2
+      },
+      "MN_FAIR_EXHIBITOR_09_TRAINER": {
+        "direction": "LEFT",
+        "radius": 2
+      },
+      "MN_FAIR_EXHIBITOR_10_TRAINER": {
+        "direction": "RIGHT",
+        "radius": 2
+      },
+      "MN_FAIR_EXHIBITOR_11_TRAINER": {
+        "direction": "UP",
+        "radius": 2
+      },
+      "MN_FAIR_EXHIBITOR_12_TRAINER": {
+        "direction": "DOWN",
+        "radius": 2
+      },
+      "MN_FAIR_EXHIBITOR_13_TRAINER": {
+        "direction": "RIGHT",
+        "radius": 2
+      }
+    }
+  }
+}

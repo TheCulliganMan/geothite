@@ -61,6 +61,11 @@ pub(crate) fn install(pack: &mut CompiledGamePack, gym: &Gym) -> Result<BTreeMap
             .get(&format!("gfx/tilesets/{source}.2bpp"))
             .context("source glyphs")?;
         let target_id = u16::try_from(symbols.len())?;
+        let mut collision = source_definition
+            .collision
+            .get(id)
+            .context("native source collision")?
+            .clone();
         let glyph_start = metatiles.len();
         for (position, glyph) in source_blocks
             .get(source_block * 16..(source_block + 1) * 16)
@@ -92,7 +97,9 @@ pub(crate) fn install(pack: &mut CompiledGamePack, gym: &Gym) -> Result<BTreeMap
             } else {
                 (source.as_str(), *glyph)
             };
-            let key = (glyph_source, glyph_index);
+            let shallow = gym.wading_water.contains(symbol)
+                && collision.get(usize::from(quadrant)).is_some_and(|q| q == "WATER");
+            let key = (glyph_source, glyph_index, shallow);
             let target = if let Some(target) = relocated.get(&key) {
                 *target
             } else {
@@ -126,7 +133,17 @@ pub(crate) fn install(pack: &mut CompiledGamePack, gym: &Gym) -> Result<BTreeMap
                 } else {
                     ((next - 96) | 0x80, 8)
                 };
-                graphics[next * 16..(next + 1) * 16].copy_from_slice(pixels);
+                let tile = &mut graphics[next * 16..(next + 1) * 16];
+                tile.copy_from_slice(pixels);
+                if shallow {
+                    // Raise the two dark water shades one step on the native
+                    // palette ramp while retaining the ripple highlights.
+                    for planes in tile.chunks_exact_mut(2) {
+                        let [low, high] = [planes[0], planes[1]];
+                        planes[0] = low ^ high;
+                        planes[1] = low & high;
+                    }
+                }
                 definition.palette_map[logical] = (palette & 7) | bank;
                 let logical = u8::try_from(logical)?;
                 relocated.insert(key, logical);
@@ -135,11 +152,18 @@ pub(crate) fn install(pack: &mut CompiledGamePack, gym: &Gym) -> Result<BTreeMap
             };
             metatiles.push(target);
         }
-        let mut collision = source_definition
-            .collision
-            .get(id)
-            .context("native source collision")?
-            .clone();
+        if gym.wading_water.contains(symbol) {
+            ensure!(
+                collision.iter().any(|quadrant| quadrant == "WATER")
+                    && !gym.buoy_quadrants.contains_key(symbol),
+                "a wading-water metatile must contain open native water"
+            );
+            for quadrant in &mut collision {
+                if quadrant == "WATER" {
+                    *quadrant = "FLOOR".into();
+                }
+            }
+        }
         if let Some(quadrants) = gym.buoy_quadrants.get(symbol) {
             for quadrant in quadrants {
                 let permission = collision

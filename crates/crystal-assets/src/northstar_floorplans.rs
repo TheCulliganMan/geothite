@@ -35,6 +35,11 @@ pub(super) fn install(
         }
     }
     let gym_story = serde_json::to_string(&gym_story)?;
+    // The inherited St. Cloud room has four relay menus whose scripts were
+    // shipped without the option records used by both clients.
+    let airworks = pack.data.maps.get_mut("MnStCloudGym").context("St. Cloud Gym")?;
+    crate::northstar_gym_rooms::refresh_control_menus(airworks)?;
+    ensure!(airworks.script_vertical_menus.len() == 4, "four published fan controls");
     let dir = root.join("gyms/floorplans-20261117");
     for (slot, name, id) in [
         (1, "rochester", "MnRochesterGym"),

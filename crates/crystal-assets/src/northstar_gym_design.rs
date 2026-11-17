@@ -45,6 +45,8 @@ pub(crate) struct Sightline {
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
 pub(crate) struct Court {
+    #[serde(default)]
+    pub open: bool,
     pub all: Vec<String>,
     pub any: Vec<String>,
 }
@@ -104,8 +106,8 @@ pub(crate) fn validate_room(gym: &Gym, contract: &RoomContract) -> Result<()> {
         );
     }
     ensure!(
-        !contract.court.all.is_empty() || !contract.court.any.is_empty(),
-        "explicit court qualification"
+        contract.court.open == (contract.court.all.is_empty() && contract.court.any.is_empty()),
+        "declare either an open court or explicit court requirements"
     );
     ensure!(
         gym.stations.is_empty() && gym.switch_puzzle.is_none() && gym.pads.is_empty(),

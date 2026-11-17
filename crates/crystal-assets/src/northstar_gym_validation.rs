@@ -351,6 +351,15 @@ pub(crate) fn validate(
         qualification_routes_without(&reverse, &victories, 0).contains(&fresh),
         "fresh Gym arrival has no qualified route to the leader"
     );
+    if contract.court.open {
+        let trainer_wins = gym.trainers.iter().fold(0, |wins, trainer| {
+            wins | flags.bits[&format!("EVENT_{}_DEFEATED", trainer.id)]
+        });
+        ensure!(
+            qualification_routes_without(&reverse, &victories, trainer_wins).contains(&fresh),
+            "the open court must be reachable without fighting either supporting trainer"
+        );
+    }
     for trainer in gym.trainers.iter().filter(|trainer| trainer.optional) {
         let win = flags.bits[&format!("EVENT_{}_DEFEATED", trainer.id)];
         let routes = qualification_routes_without(&reverse, &victories, win);

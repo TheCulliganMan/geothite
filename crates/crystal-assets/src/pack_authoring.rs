@@ -87,6 +87,7 @@ mod northstar_gym_mechanics;
 mod northstar_gym_overhaul;
 mod northstar_floorplans;
 mod northstar_regional_guidance;
+mod northstar_regional_sight;
 mod northstar_route_exploration;
 mod northstar_iron_dialogue;
 mod northstar_iron_encounters;

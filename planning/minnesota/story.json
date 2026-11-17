@@ -38362,11 +38362,11 @@
             "either side. LEE's"
           ],
           [
-            "on the floor. Go",
-            "talk to him if you"
+            "on the floor. Step",
+            "in front of him"
           ],
           [
-            "want a match. He's",
+            "for a match. He's",
             "been pacing since"
           ],
           [
@@ -54861,91 +54861,115 @@
       "MnBrainerdGym": {
         "MnBrainerdGymGuideText": [
           [
-            "See SIVREN across",
-            "the water?"
+            "Wade straight out.",
+            "The sand is firm."
           ],
           [
-            "First, get past",
-            "LORLA on the pier."
-          ],
-          [
-            "Set her winch LEFT",
-            "for the long dock"
-          ],
-          [
-            "to SIVREN. CENTER",
-            "puts you on"
-          ],
-          [
-            "BRAVEL's pier."
+            "See SIVREN on the",
+            "far landing?"
           ]
         ],
         "MN_GYM_6_TRAINER_1Seen": [
           [
-            "LORLA: Right there",
-            "on the planks."
+            "LORLA: Feel that",
+            "tug at your sock?"
           ],
           [
-            "When YODELOON",
-            "calls, you can"
-          ],
-          [
-            "feel it in your",
-            "heels!"
+            "YODELOON likes to",
+            "go first."
           ]
         ],
         "MN_GYM_6_TRAINER_1AfterText": [
           [
-            "LORLA: Winch is",
-            "yours. Set LEFT"
+            "LORLA: I can see",
+            "every toe down"
           ],
           [
-            "for SIVREN. CENTER",
-            "puts you on"
-          ],
+            "here. YODELOON",
+            "counts them twice."
+          ]
+        ],
+        "MN_GYM_6_TRAINER_1WonText": [
           [
-            "BRAVEL's little",
-            "finger pier."
+            "LORLA: Good catch!",
+            "I lost my footing."
+          ]
+        ],
+        "MN_GYM_6_TRAINER_1LostText": [
+          [
+            "LORLA: Even my",
+            "socks got wet."
           ]
         ],
         "MN_GYM_6_TRAINER_2Seen": [
           [
-            "BRAVEL: I bet I",
-            "can tell when you"
+            "BRAVEL: A nibble!"
           ],
           [
-            "step on my pier",
-            "with my eyes shut."
+            "Oh. Your boot."
           ],
           [
-            "Yep! Your move."
+            "Well, while we're",
+            "both here..."
           ]
         ],
         "MN_GYM_6_TRAINER_2AfterText": [
           [
-            "BRAVEL: Look east.",
-            "The short span is"
+            "BRAVEL: If you see",
+            "my red float,"
           ],
           [
-            "in. You can cross",
-            "to SIVREN now."
+            "kick it back this",
+            "way, would you?"
+          ]
+        ],
+        "MN_GYM_6_TRAINER_2WonText": [
+          [
+            "BRAVEL: You pulled",
+            "me in that time."
+          ]
+        ],
+        "MN_GYM_6_TRAINER_2LostText": [
+          [
+            "BRAVEL: Back you",
+            "go, little fish."
           ]
         ],
         "MnBrainerdGymLeaderSeenText": [
           [
-            "SIVREN: I knew",
-            "you were coming."
+            "SIVREN: Look down.",
+            "See that ripple?"
           ],
           [
-            "The floats by my",
-            "pier started to"
+            "My TORROUT knows",
+            "you're here."
           ],
           [
-            "knock together.",
-            "Hear them?"
+            "Ready when you",
+            "are."
+          ]
+        ],
+        "MnBrainerdGymLeaderWonText": [
+          [
+            "SIVREN: We felt",
+            "that on both"
           ],
           [
-            "That's my tempo."
+            "shores! You earned",
+            "the LAKE BADGE."
+          ]
+        ],
+        "MnBrainerdGymRequirementsText": [
+          [
+            "SIVREN: Train with",
+            "SAVEN in ST CLOUD."
+          ],
+          [
+            "Bring me the WIND",
+            "BADGE. I'll be"
+          ],
+          [
+            "right here."
           ]
         ]
       }

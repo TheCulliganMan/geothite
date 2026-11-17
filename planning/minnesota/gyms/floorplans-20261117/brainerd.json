@@ -11,8 +11,8 @@
       "trainer_class": "MN_LEADER_SIVREN",
       "leader_sprite": "SPRITE_MN_LEADER_SIVREN",
       "leader_at": [
-        14,
-        6
+        8,
+        3
       ],
       "badge_flag": "ENGINE_MINERALBADGE",
       "requires": [
@@ -52,140 +52,70 @@
         }
       ],
       "rows": [
-        "annnnnnnb",
-        "l~uuucuur",
-        "ldFNFAHFe",
-        "ldFAFAFTf",
-        "lgBhAhicj",
-        "l~GFFFNFe",
-        "lgiBFAcij",
-        "lg~GFFHkj",
-        "moopDpqoz"
+        "###RRR###",
+        "##a^P^^b#",
+        "#ac~T~~>R",
+        "R<~~~~~>R",
+        "R<~~~~>R#",
+        "#R<~v~>R#",
+        "##RrDrR##"
       ],
       "art": {
         "#": [
-          "port",
-          "2a"
-        ],
-        "a": [
-          "port",
+          "johto",
           "05"
         ],
-        "n": [
-          "port",
-          "06"
-        ],
-        "b": [
-          "port",
-          "07"
-        ],
-        "l": [
-          "port",
-          "09"
+        "R": [
+          "cave",
+          "34"
         ],
         "r": [
-          "port",
-          "0b"
+          "cave",
+          "21"
         ],
-        "m": [
-          "port",
-          "0d"
-        ],
-        "o": [
-          "port",
-          "0e"
-        ],
-        "z": [
-          "port",
-          "0f"
-        ],
-        "~": [
-          "port",
-          "0a"
-        ],
-        "u": [
-          "port",
-          "0c"
-        ],
-        "G": [
-          "port",
-          "2d"
-        ],
-        "H": [
-          "port",
-          "28"
+        "P": [
+          "tower",
+          "09"
         ],
         "T": [
           "port",
           "27"
         ],
+        "v": [
+          "port",
+          "0c"
+        ],
         "D": [
           "port",
           "33"
         ],
-        "F": [
-          "tower",
-          "09"
+        "~": [
+          "johto",
+          "35"
         ],
-        "A": [
-          "port",
-          "0a"
+        "^": [
+          "johto",
+          "76"
         ],
-        "B": [
-          "port",
-          "0a"
+        "<": [
+          "johto",
+          "58"
         ],
-        "V": [
-          "port",
-          "14"
+        ">": [
+          "johto",
+          "59"
         ],
-        "N": [
-          "elite_four_room",
-          "37"
+        "a": [
+          "johto",
+          "54"
+        ],
+        "b": [
+          "johto",
+          "55"
         ],
         "c": [
-          "port",
-          "0a"
-        ],
-        "d": [
-          "port",
-          "0a"
-        ],
-        "e": [
-          "port",
-          "0b"
-        ],
-        "f": [
-          "port",
-          "0b"
-        ],
-        "g": [
-          "port",
-          "0a"
-        ],
-        "h": [
-          "port",
-          "0a"
-        ],
-        "i": [
-          "port",
-          "0a"
-        ],
-        "j": [
-          "port",
-          "0b"
-        ],
-        "k": [
-          "port",
-          "0a"
-        ],
-        "p": [
-          "port",
-          "0e"
-        ],
-        "q": [
-          "port",
-          "0e"
+          "johto",
+          "79"
         ]
       },
       "trainers": [
@@ -195,8 +125,8 @@
           "trainer_class": "SWIMMERF",
           "sprite": "SPRITE_SWIMMER_GIRL",
           "at": [
-            8,
-            12
+            4,
+            8
           ],
           "party": [
             {
@@ -220,22 +150,18 @@
               ]
             }
           ],
-          "optional": false,
+          "optional": true,
           "before_lines": [
-            "LORLA: Right there",
-            "on the planks.",
-            "When YODELOON",
-            "calls, you can",
-            "feel it in your",
-            "heels!"
+            "LORLA: Feel that",
+            "tug at your sock?",
+            "YODELOON likes to",
+            "go first."
           ],
           "after_lines": [
-            "LORLA: Winch is",
-            "yours. Set LEFT",
-            "for SIVREN. CENTER",
-            "puts you on",
-            "BRAVEL's little",
-            "finger pier."
+            "LORLA: I can see",
+            "every toe down",
+            "here. YODELOON",
+            "counts them twice."
           ],
           "requires": []
         },
@@ -245,8 +171,8 @@
           "trainer_class": "FISHER",
           "sprite": "SPRITE_FISHER",
           "at": [
-            8,
-            7
+            13,
+            5
           ],
           "party": [
             {
@@ -272,113 +198,65 @@
           ],
           "optional": true,
           "before_lines": [
-            "BRAVEL: I bet I",
-            "can tell when you",
-            "step on my pier",
-            "with my eyes shut.",
-            "Yep! Your move."
+            "BRAVEL: A nibble!",
+            "Oh. Your boot.",
+            "Well, while we're",
+            "both here..."
           ],
           "after_lines": [
-            "BRAVEL: Look east.",
-            "The short span is",
-            "in. You can cross",
-            "to SIVREN now."
+            "BRAVEL: If you see",
+            "my red float,",
+            "kick it back this",
+            "way, would you?"
           ],
           "requires": []
         }
       ],
       "stations": [],
-      "gates": [
-        {
-          "at": [
-            4,
-            4
-          ],
-          "requires": [
-            "EVENT_MN_GYM_6_TRAINER_1_DEFEATED",
-            "EVENT_MN_GYM_6_V2_WALK_CENTER"
-          ],
-          "open_symbol": "V",
-          "event": "EVENT_MN_GYM_6_V2_CENTER_WALK_OPEN"
-        },
-        {
-          "at": [
-            2,
-            4
-          ],
-          "requires": [
-            "EVENT_MN_GYM_6_TRAINER_1_DEFEATED",
-            "EVENT_MN_GYM_6_V2_WALK_LEFT"
-          ],
-          "open_symbol": "V",
-          "event": "EVENT_MN_GYM_6_V2_LEFT_WALK_OPEN"
-        },
-        {
-          "at": [
-            5,
-            2
-          ],
-          "requires": [
-            "EVENT_MN_GYM_6_COURT_OPEN"
-          ],
-          "open_symbol": "T",
-          "event": "EVENT_MN_GYM_6_V2_COURT_OPEN"
-        }
-      ],
+      "gates": [],
       "guide": [
-        "See SIVREN across",
-        "the water?",
-        "First, get past",
-        "LORLA on the pier.",
-        "Set her winch LEFT",
-        "for the long dock",
-        "to SIVREN. CENTER",
-        "puts you on",
-        "BRAVEL's pier."
+        "Wade straight out.",
+        "The sand is firm.",
+        "See SIVREN on the",
+        "far landing?"
       ],
-      "walkthrough": [
-        "MN_GYM_6_TRAINER_1",
-        "CENTER",
-        "MN_GYM_6_TRAINER_2",
-        "LEFT"
-      ],
+      "walkthrough": [],
       "dimensions_metatiles": [
         9,
-        9
+        7
       ],
       "arrival_core": [
         8,
-        16
+        12
       ],
       "exit_tiles_core": [
         [
           8,
-          17
+          13
         ],
         [
           9,
-          17
+          13
         ]
       ],
       "guide_at": [
-        11,
-        14
+        7,
+        11
       ],
-      "leader_court_locked": true,
+      "leader_court_locked": false,
       "before_lines": [
-        "SIVREN: I knew",
-        "you were coming.",
-        "The floats by my",
-        "pier started to",
-        "knock together.",
-        "Hear them?",
-        "That's my tempo."
+        "SIVREN: Look down.",
+        "See that ripple?",
+        "My TORROUT knows",
+        "you're here.",
+        "Ready when you",
+        "are."
       ],
       "victory_lines": [
-        "SIVREN: You read",
-        "that turn well.",
-        "Come up on the",
-        "pier. Your BADGE!"
+        "SIVREN: We felt",
+        "that on both",
+        "shores! You earned",
+        "the LAKE BADGE."
       ],
       "after_lines": [
         "SIVREN: Take your",
@@ -392,178 +270,23 @@
         "while you're",
         "there."
       ],
-      "routers": [
-        {
-          "id": "SOUTH_WINCH",
-          "operator": null,
-          "at": [
-            12,
-            11
-          ],
-          "prompt": [
-            "Which pier?",
-            "CENTER: training.",
-            "LEFT: leader."
-          ],
-          "modes": [
-            {
-              "id": "CENTER",
-              "label": "CENTER",
-              "requires": [
-                "EVENT_MN_GYM_6_TRAINER_1_DEFEATED"
-              ],
-              "event": "EVENT_MN_GYM_6_V2_WALK_CENTER",
-              "lines": [
-                "CENTER walk set.",
-                "Use either winch",
-                "to change routes."
-              ],
-              "denied_lines": [
-                "Beat LORLA first."
-              ]
-            },
-            {
-              "id": "LEFT",
-              "label": "LEFT",
-              "requires": [
-                "EVENT_MN_GYM_6_TRAINER_1_DEFEATED"
-              ],
-              "event": "EVENT_MN_GYM_6_V2_WALK_LEFT",
-              "lines": [
-                "LEFT walk set.",
-                "Use either winch",
-                "to change routes."
-              ],
-              "denied_lines": [
-                "Beat LORLA first."
-              ]
-            }
-          ],
-          "toggle": false
-        },
-        {
-          "id": "NORTH_WINCH",
-          "operator": null,
-          "at": [
-            6,
-            5
-          ],
-          "prompt": [
-            "Which pier?",
-            "CENTER: training.",
-            "LEFT: leader."
-          ],
-          "modes": [
-            {
-              "id": "CENTER",
-              "label": "CENTER",
-              "requires": [
-                "EVENT_MN_GYM_6_TRAINER_1_DEFEATED"
-              ],
-              "event": "EVENT_MN_GYM_6_V2_WALK_CENTER",
-              "lines": [
-                "CENTER walk set.",
-                "Use either winch",
-                "to change routes."
-              ],
-              "denied_lines": [
-                "Beat LORLA first."
-              ]
-            },
-            {
-              "id": "LEFT",
-              "label": "LEFT",
-              "requires": [
-                "EVENT_MN_GYM_6_TRAINER_1_DEFEATED"
-              ],
-              "event": "EVENT_MN_GYM_6_V2_WALK_LEFT",
-              "lines": [
-                "LEFT walk set.",
-                "Use either winch",
-                "to change routes."
-              ],
-              "denied_lines": [
-                "Beat LORLA first."
-              ]
-            }
-          ],
-          "toggle": false
-        }
-      ],
+      "routers": [],
       "enclosed_pool": true,
       "wooden_port_deck": true,
-      "buoy_quadrants": {
-        "~": [
-          3
-        ],
-        "u": [
-          0,
-          1
-        ],
-        "c": [
-          2,
-          3
-        ],
-        "r": [
-          2
-        ],
-        "d": [
-          1,
-          3
-        ],
-        "A": [
-          0,
-          1,
-          2,
-          3
-        ],
-        "H": [
-          3
-        ],
-        "e": [
-          0,
-          2
-        ],
-        "T": [
-          2,
-          3
-        ],
-        "f": [
-          0
-        ],
-        "B": [
-          0,
-          1,
-          3
-        ],
-        "h": [
-          0,
-          2,
-          3
-        ],
-        "i": [
-          0,
-          1
-        ],
-        "G": [
-          0
-        ],
-        "k": [
-          0
-        ],
-        "p": [
-          0,
-          1
-        ],
-        "q": [
-          0
-        ],
-        "V": [
-          0,
-          2
-        ]
-      },
-      "court_requires": []
+      "buoy_quadrants": {},
+      "court_requires": [],
+      "court_denied_lines": [],
+      "wading_water": [
+        "<",
+        ">",
+        "T",
+        "^",
+        "a",
+        "b",
+        "c",
+        "v",
+        "~"
+      ]
     }
   ]
 }

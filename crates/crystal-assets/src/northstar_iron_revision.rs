@@ -76,6 +76,8 @@ pub fn revise_iron_workings(
     }
     let arrivals = crate::northstar_floorplans::install(&mut pack, root, &story)?;
     crate::northstar_regional_guidance::install(&mut pack, &story)?;
+    let sightlines = fs::read_to_string(root.join("npcs/regional-sight-20261117.json"))?;
+    crate::northstar_regional_sight::install(&mut pack, &sightlines, &story)?;
     let route_source = fs::read_to_string(root.join("routes/exploration-20261117/routes.json"))?;
     crate::northstar_route_exploration::install(&mut pack, &route_source)?;
     // Reinstalling private Gym graphics republishes their existing markers.
