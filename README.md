@@ -12,12 +12,15 @@ The [Minnesota campaign polish review](docs/game-content.md#minnesota-campaign-p
 includes local build and play commands for the dialogue, roster, and early
 fishing update on top of the Glacier Line pack.
 
-The [current Minnesota release](docs/deployment.md#minnesota-adventure-release-2026-11-16),
-`adventure-20261116`, adds forty hidden items, eight optional Champion gym
-rematches, accepted native leader artwork, battle-party corrections and revised
-campaign dialogue. The graphical browser, browser TUI and both native terminal
-downloads are published. Minnesota remains native 2D. Builds and static/content
-release checks passed; no gameplay, controller or visual review was performed.
+The [current Minnesota release](docs/deployment.md#minnesota-refinement-release-2026-11-17),
+`refinement-20261117`, implements the ten accepted improvements: checked save
+continuity, supplies and training services, distinct leader tactics, targeted
+party corrections, discovery clues and rewards, a rematch circuit, Reed's
+optional challenge, interactive museums and persistent story aftermath.
+The graphical browser, browser TUI and both native terminal downloads are
+published. Minnesota remains native 2D. Builds, unit tests and static/content
+release checks passed; campaign balance was assessed statically, with no
+gameplay, controller or visual verification.
 
 The [Tamarack and Team ICE sprite revision](planning/minnesota/npcs/tamarack-ice/README.md)
 uses normal Crystal overworld proportions, woman Tamarack and eight additional

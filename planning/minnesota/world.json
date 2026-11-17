@@ -12575,6 +12575,9 @@
     "content_identity": "a9f23e3bc1dadad74c377d02c23df61dcf9ed70c1b1d5e3918805593f37a9527",
     "map_count": 743,
     "runbook": "planning/minnesota/QUALITY.md",
-    "status": "Selected locally after successful pack build/readback, independent content comparison and all 602 PCM/frame/loop checks. Native builds, production browser WASM checks, lean runtime, formatting and all-target Clippy passed. Publication pending. No gameplay, controller journeys or visual review was performed. Checked save migration preserves prior release files."
+    "status": "Selected and published as refinement-20261117. Fresh native and production WASM client/server and pack builds, all-target Clippy including WASM workers, pure unit tests, independent static content checks, all 602 audio checks and public static release checks passed. All ten accepted implementation areas are delivered; campaign balance was assessed statically. No gameplay, controller journeys, client launches or visual review was performed. Checked save migration and backup recovery preserve prior release files.",
+    "hosted_release": "refinement-20261117",
+    "hosted_pack_sha256": "5d82fb89116f82856f8cc1cef77ceac018d2863f756ad8e7bbb7bbf589cc6c70",
+    "hosted_content_identity": "5eba128f5fd1871d87a58bfca28833476591708c6a6ad6d04075ed29a6f087e4"
   }
 }

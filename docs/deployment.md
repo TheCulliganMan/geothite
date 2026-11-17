@@ -1,7 +1,7 @@
 # Deploy Geothite multiplayer
 
 The live browser game serves [The Northstar Survey](https://geothite.ryanculligan.com/?view=2d)
-in native 2D. See the [2026-11-16 release record](#minnesota-adventure-release-2026-11-16)
+in native 2D. See the [2026-11-17 release record](#minnesota-refinement-release-2026-11-17)
 for the exact pack, image, verification scope and rollback command.
 
 ## Requirements
@@ -681,3 +681,80 @@ packs, saves, review evidence and publication records. Actual local free space
 increased by 8.24 GiB, from about 386 to 394 GiB. Remote Docker build-cache
 cleanup reported 14.5 GB removed; free space rose from about 204 to 218 GiB.
 Current and rollback images, volumes and release files were retained.
+
+## Minnesota refinement release (2026-11-17)
+
+Published implementation commit `e0225a19a8e5bf3814f83e2c2eea4f7a1eec1977` as
+release `refinement-20261117`, image
+`sha256:720ada1d8afb4b1e7b5ad10746ac194516cbddd899fbe1a17b1b4da12c50dc1a`.
+The selected 743-map revision implements the [ten accepted improvements](../planning/minnesota/QUALITY.md#refinement-release-2026-11-17),
+including checked save continuity, training and supply services, leader tactics,
+discovery rewards, the rematch circuit, Reed's optional battle, distinct museum
+activities and persistent restoration aftermath. Minnesota remains native 2D.
+The graphical browser, browser TUI and both native terminal downloads were
+rebuilt and published.
+
+- Input: `content-packs/minnesota-refinement-v02.crystalpack`, SHA-256
+  `5b173130deed7dc9c2af97b4bc2509e4f54f848c207361ff5278e21abce513ad`.
+- Raw content identity:
+  `a9f23e3bc1dadad74c377d02c23df61dcf9ed70c1b1d5e3918805593f37a9527`.
+- Hosted content identity:
+  `5eba128f5fd1871d87a58bfca28833476591708c6a6ad6d04075ed29a6f087e4`.
+- Hosted/installer pack SHA-256:
+  `5d82fb89116f82856f8cc1cef77ceac018d2863f756ad8e7bbb7bbf589cc6c70`.
+- Native manifest: `downloads/terminal/current.txt`, release
+  `refinement-20261117`, with `aarch64-apple-darwin` and
+  `x86_64-unknown-linux-gnu` plus its immutable versioned pack.
+
+Fresh pack and production client/server builds passed. Formatting and all-target
+Clippy checks, including native targets and WASM workers, passed with existing
+warnings. Pure unit tests covered save compatibility/recovery, move reminder
+selection/payment, reward ordering and native dialogue. Independent static
+content checks and all 602 audio PCM hash,
+frame-count and loop-range checks passed. The hosted/raw comparison confirms
+only the standard clock/customization flags, manifests and derived identity
+changed; authored game content and compatibility metadata are retained.
+
+Public checks matched 142 assets and both gzip HTML pages. Health, clock, TUI,
+Flygon and Pokedex endpoints passed. The public WebSocket welcome matched the
+frozen hosted identity and its 22,440-byte modpack ID; the handshake sent zero
+gameplay inputs. Both native downloads, the launcher and the versioned pack
+matched the public manifest and frozen artifacts. macOS and Linux each passed two silent
+`--no-play` installs with zero output and preserved scratch save markers.
+Two synthetic installer safety cases and 17 pure publication failure-case tests
+also passed. No game client was launched.
+
+Save continuity accepts only the exact checked integrated/adventure releases
+at an idle overworld checkpoint, validates the target state and writes an
+independent slot. Prior release saves remain intact. Same-pack recovery archives
+a damaged primary before restoring a valid backup. Explicit custom paths use
+same-pack recovery and do not automatically import another release's save.
+These contracts were checked in pure tests; no player's game was opened for
+release verification.
+
+Publication needed no candidate corrections or production rollback. The owned
+candidate and temporary private files were removed after successful public and
+Mac checks. Frozen source, build recipes, artifact hashes, verification receipts
+and guarded rollback state remain outside Git at
+`/mnt/homelab/config/geothite/releases/refinement-20261117`.
+
+To restore the captured adventure release, provided no later service or terminal
+publication has replaced this release:
+
+```sh
+python3 /mnt/homelab/config/geothite/releases/refinement-20261117/deploy.py rollback
+```
+
+No gameplay, controller journeys, rendering, visual review or playthrough
+verification was performed, per the user's instruction. All ten implementation
+areas are delivered; campaign balance was assessed through static coverage,
+legality, progression and resource checks, not measured through an earned run.
+Historical gameplay evidence does not verify this release.
+
+Inactive local Cargo output was removed while preserving standalone binaries,
+packs, saves and review/publication evidence. Cleanup recovered 18,744,950,784
+bytes (about 17.46 GiB), leaving about 393 GiB free. Remote cleanup recovered
+14,926,995,456 bytes (about 13.90 GiB), increasing free space from about 194 to
+208 GiB and leaving Docker build cache at 0 B. Only the owned toolchain image
+was removed; current and adventure rollback image IDs were verified unchanged.
+Volumes, packs, saves, downloads and retained evidence were preserved.

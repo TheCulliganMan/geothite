@@ -281,9 +281,9 @@ migration. No gameplay, controller journeys or visual review was performed. Thes
 build and static/content results do not establish complete campaign balance or
 playability.
 
-## Refinement goal (2026-11-17)
+## Refinement release (2026-11-17)
 
-The accepted ten improvements extend the selected adventure v01 release. The
+The accepted ten improvements extend the adventure v01 release. The
 `pack_northstar_refinement` recipe preserves old map geometry, original actor
 slots, event constants, audio and non-Minnesota maps. Save migration is limited
 to the exact integrated/adventure raw and hosted releases, with full target
@@ -309,7 +309,7 @@ Implementation covers:
 10. Visible shore restoration, a player-controlled Sera radio handoff, and
     progress-aware return dialogue without granting rescue progress by talking.
 
-The selected raw candidate is
+The selected and published raw pack is
 `content-packs/minnesota-refinement-v02.crystalpack`, content identity
 `a9f23e3bc1dadad74c377d02c23df61dcf9ed70c1b1d5e3918805593f37a9527`,
 file SHA-256
@@ -323,8 +323,19 @@ Core legality, transactional teaching/payment, save recovery and compatibility,
 rematch reward ordering and canonical-page unit checks pass. Migration clears
 only completed text/end presentation records in the new copy, after rejecting
 active scenes and pending work; original progress and prior files are retained.
-Native graphical/terminal builds, both production browser WASM checks, the lean
-runtime check, workspace formatting and all-target Clippy pass. Existing
-warnings remain; the changed code introduces none. Publication is pending.
-Verification is restricted to builds, pure unit tests and static/content/release checks.
-No gameplay, controller journeys or client launches are authorized for this goal.
+Published as `refinement-20261117` from implementation commit
+`e0225a19a8e5bf3814f83e2c2eea4f7a1eec1977`. Final native and production WASM
+client/server builds, pack builds, formatting, all-target Clippy including WASM
+workers, and pure unit checks passed; existing warnings remain.
+[Publication receipts](../../docs/deployment.md#minnesota-refinement-release-2026-11-17)
+record the exact hosted identity, 142 public assets, both native downloads and
+silent Mac/Linux `--no-play` installation checks. Two synthetic installer safety
+cases and 17 pure publication failure-case tests passed. Prior save files are
+retained by the checked continuity/recovery paths.
+
+All ten accepted implementation areas are delivered. Campaign balance was
+assessed statically across the three starters, legal teams, progression and
+resources; it was not measured through an earned campaign. No gameplay,
+controller journeys, client launches or visual verification was performed.
+Earlier numbered playtest acceptance items remain open unless their own
+evidence has separately been recorded.

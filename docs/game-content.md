@@ -64,6 +64,12 @@ It verifies the geometry and saved identifiers of all four approved previous
 raw/hosted releases before embedding their exact save identities. Generated
 packs remain external and ignored; the builder never opens player saves.
 
+The selected v02 pack is published as
+[refinement-20261117](deployment.md#minnesota-refinement-release-2026-11-17).
+The graphical browser, browser TUI and both native terminal releases use the
+published content; generated packs and frozen publication inputs remain
+external and ignored.
+
 Verified commands (choose a fresh output path, and substitute the local paths
 to the two retained hosted release packs):
 
@@ -88,6 +94,14 @@ file SHA-256 is
 `5b173130deed7dc9c2af97b4bc2509e4f54f848c207361ff5278e21abce513ad`.
 The independent content comparison and all 602 Rust audio synthesis checks
 pass. No game client or controller was used for verification.
+
+The hosted content identity is
+`5eba128f5fd1871d87a58bfca28833476591708c6a6ad6d04075ed29a6f087e4`;
+hosted pack SHA-256 is
+`5d82fb89116f82856f8cc1cef77ceac018d2863f756ad8e7bbb7bbf589cc6c70`.
+Only the standard server clock/customization wrappers distinguish it from the
+raw pack. Production builds, unit tests and public static release checks
+passed. No gameplay, controller or visual verification was performed.
 
 Automatic save continuity is restricted to the checked integrated/adventure
 releases and an idle overworld checkpoint. The new slot is independently
