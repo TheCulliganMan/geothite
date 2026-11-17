@@ -55,6 +55,46 @@ tools in separate commands; retain one target directory so common dependencies
 remain cached. The no-default-feature command above intentionally checks only
 the runtime library, rather than the authoring CLI targets.
 
+## Minnesota refinement revision
+
+The refinement recipe extends the exact adventure v01 release. It adds the
+500-cost move reminder, regional supplies, rematch circuit, interactive museum
+activities, optional Reed challenge, restoration aftermath and discovery clues.
+It verifies the geometry and saved identifiers of all four approved previous
+raw/hosted releases before embedding their exact save identities. Generated
+packs remain external and ignored; the builder never opens player saves.
+
+Verified commands (choose a fresh output path, and substitute the local paths
+to the two retained hosted release packs):
+
+```sh
+CARGO_INCREMENTAL=0 cargo build --locked -p crystal-assets \
+  --bin pack_northstar_refinement --bin verify_crystalpack
+target/debug/pack_northstar_refinement \
+  content-packs/minnesota-adventure-v01.crystalpack \
+  planning/minnesota/story.json planning/minnesota/story-pokemon.json \
+  planning/minnesota/discoveries/refinement-v01.json \
+  content-packs/minnesota-refinement-v02.crystalpack \
+  target/deploy-adventure-20261116/hosted.crystalpack \
+  target/northstar-refinement/integrated-hosted.crystalpack \
+  content-packs/minnesota-integrated-campaign-v03.crystalpack
+target/debug/verify_crystalpack \
+  content-packs/minnesota-refinement-v02.crystalpack --audio --desktop
+```
+
+The verified raw content identity is
+`a9f23e3bc1dadad74c377d02c23df61dcf9ed70c1b1d5e3918805593f37a9527`;
+file SHA-256 is
+`5b173130deed7dc9c2af97b4bc2509e4f54f848c207361ff5278e21abce513ad`.
+The independent content comparison and all 602 Rust audio synthesis checks
+pass. No game client or controller was used for verification.
+
+Automatic save continuity is restricted to the checked integrated/adventure
+releases and an idle overworld checkpoint. The new slot is independently
+validated; prior files remain intact. Current-slot backup recovery archives a
+damaged primary before restoring its valid backup. Explicit custom paths use
+same-pack recovery and do not automatically import another release's save.
+
 ## Minnesota adventure revision
 
 The adventure recipe uses the selected integrated v03 pack directly. It adds

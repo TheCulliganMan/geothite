@@ -9,6 +9,11 @@ mod map_catalog;
 mod music_catalog;
 mod northstar_save_migration;
 pub use northstar_save_migration::migrate_northstar_reviewed_save;
+mod save_compatibility;
+pub use save_compatibility::{
+    CompatibleSaveSource, SAVE_COMPATIBILITY_FILE, SAVE_COMPATIBILITY_MANIFEST,
+    compatible_save_sources, prepare_runtime_save_slot,
+};
 mod gym_review_save_migration;
 pub use gym_review_save_migration::migrate_gym_review_save;
 mod outdoor_mods;

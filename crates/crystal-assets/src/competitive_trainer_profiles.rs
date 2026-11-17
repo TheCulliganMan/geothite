@@ -23,6 +23,14 @@ impl TrainerBattleProfile {
 
     pub fn for_class(class: &str) -> Self {
         match class {
+            "MN_LEADER_VAREL" => Self::Disruption,
+            "MN_LEADER_TORVEN" => Self::Endurance,
+            "MN_LEADER_AVRIN" => Self::Setup,
+            "MN_LEADER_BRANNIC" => Self::Endurance,
+            "MN_LEADER_SAVEN" => Self::Switching,
+            "MN_LEADER_SIVREN" => Self::Offensive,
+            "MN_LEADER_ORLIS" => Self::Setup,
+            "MN_LEADER_NOREK" => Self::Endurance,
             "YOUNGSTER" | "LASS" | "SAILOR" | "BLACKBELT_T" | "KARATE_KING" | "CHUCK" | "BRUNO"
             | "LT_SURGE" | "BLAINE" | "BROCK" | "PRYCE" | "FALKNER" | "CAL" => Self::Offensive,
             "PSYCHIC_T" | "SAGE" | "MEDIUM" | "SCIENTIST" | "SUPER_NERD" | "WILL" | "SABRINA"

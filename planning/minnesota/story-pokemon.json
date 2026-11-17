@@ -1850,5 +1850,263 @@
         ]
       }
     ]
+  },
+  "refinement_team_adjustments": [
+    {
+      "trainer": "MN_GYM_5",
+      "party_slot": 2,
+      "original_species": "BOOMRUFF",
+      "original_moves": [
+        "STOMP",
+        "WING_ATTACK",
+        "BELLY_DRUM",
+        "MAGNITUDE"
+      ],
+      "member": {
+        "species": "BOOMRUFF",
+        "level": 29,
+        "moves": [
+          "STOMP",
+          "WING_ATTACK",
+          "FOCUS_ENERGY",
+          "MAGNITUDE"
+        ]
+      },
+      "rationale": "Keep Saven's Ground coverage and current level while replacing the midgame +6 Attack swing with the gentler, legal Focus Energy setup. The team still answers Rock and Electric approaches without requiring a single-turn Belly Drum response."
+    },
+    {
+      "trainer": "MN_REED_BOUNDARY",
+      "party_slot": 3,
+      "original_species": "CARTICK",
+      "original_moves": [
+        "METAL_CLAW",
+        "SLUDGE_BOMB",
+        "SHADOW_BALL",
+        "MUD_SLAP"
+      ],
+      "member": {
+        "species": "HAULGEIST",
+        "level": 43,
+        "moves": [
+          "IRON_TAIL",
+          "SLUDGE_BOMB",
+          "SHADOW_BALL",
+          "HAZE"
+        ]
+      },
+      "rationale": "Show Reed's established Cartick partner evolving naturally at level 32 before the level-43 boundary encounter. Keep the encounter level, held item, DVs and rewards; remove repeat accuracy reduction and provide Haze counterplay against setup."
+    }
+  ],
+  "refinement_reed_challenge": {
+    "trainer_id": "MN_REED_REFINEMENT",
+    "original_trainer": "MN_REED_BOUNDARY",
+    "level_range": [
+      57,
+      59
+    ],
+    "party": [
+      {
+        "species": "CROOKVEIL",
+        "level": 58,
+        "moves": [
+          "CRUNCH",
+          "SLASH",
+          "QUICK_ATTACK",
+          "SCREECH"
+        ]
+      },
+      {
+        "species": "SILOHAWK",
+        "level": 58,
+        "moves": [
+          "DRILL_PECK",
+          "CRUNCH",
+          "PURSUIT",
+          "ROAR"
+        ]
+      },
+      {
+        "species": "HAULGEIST",
+        "level": 58,
+        "moves": [
+          "SLUDGE_BOMB",
+          "SHADOW_BALL",
+          "HAZE",
+          "PAIN_SPLIT"
+        ]
+      },
+      {
+        "species": "GREYTAG",
+        "level": 57,
+        "moves": [
+          "RETURN",
+          "LOW_KICK",
+          "QUICK_ATTACK",
+          "ENCORE"
+        ]
+      },
+      {
+        "species": "RIMEGUARD",
+        "level": 57,
+        "moves": [
+          "ICE_PUNCH",
+          "VITAL_THROW",
+          "COUNTER",
+          "PROTECT"
+        ]
+      },
+      {
+        "species": "MOSQUITAN",
+        "level": 59,
+        "moves": [
+          "X_SCISSOR",
+          "POISON_JAB",
+          "BOG_SIPHON",
+          "HAZE"
+        ],
+        "item": "GOLD_BERRY"
+      }
+    ]
+  },
+  "refinement_balance_review": {
+    "scope": "Static assessment of the exact adventure-v01 pack before refinement. This does not claim earned-play win rates, money exhaustion or perfect encounter difficulty.",
+    "parent_content_hash": "d4ce7998673f393e69771a36c3575878060f121102f6db840ddf197c583979dd",
+    "preserved_curve": {
+      "gym_aces": [
+        12,
+        16,
+        21,
+        25,
+        30,
+        35,
+        40,
+        45
+      ],
+      "league_champion_ace": 53,
+      "rematch_ranges": [
+        [
+          55,
+          57
+        ],
+        [
+          55,
+          57
+        ],
+        [
+          55,
+          57
+        ],
+        [
+          55,
+          57
+        ],
+        [
+          56,
+          58
+        ],
+        [
+          56,
+          58
+        ],
+        [
+          56,
+          58
+        ],
+        [
+          58,
+          60
+        ]
+      ],
+      "policy": "No campaign level increases, XP multiplier changes, trainer reward cuts, wild-team scaling changes or forced postgame battles."
+    },
+    "starter_paths": [
+      {
+        "starter": "POUCHID",
+        "native_tools": [
+          "VINE_WHIP at 5",
+          "MEGA_DRAIN at 9",
+          "CONFUSION at 13",
+          "SLIPPERINA gets FAIRY_WIND at 16"
+        ],
+        "pressure": "Dark opening is no longer a Grass-vs-Dark type advantage; Steel and Poison middle gyms resist Grass and punish careless switching. Late Ice remains a reason to build a team.",
+        "available_answers": [
+          "Route 1 DRIPTIP: ROCK_THROW at 5; later MAGNITUDE and DIG",
+          "Route 2 Harvest Wind habitat SODCALF at 9; MAGNITUDE at 17",
+          "Route 3 MUDNIP at 16, Water/Ground; MAGNITUDE at 18"
+        ],
+        "refinement_support": "Renewable GIGA_DRAIN, SUNNY_DAY and REST at Minneapolis; affordable reminder restores legal missed evolution/current-species moves. MIRACLE_SEED remains obtainable openly and hidden."
+      },
+      {
+        "starter": "KINDLIT",
+        "native_tools": [
+          "EMBER at 5",
+          "FLAME_WHEEL at 16",
+          "RIMEPELT BITE at 20",
+          "ICY_WIND at 28"
+        ],
+        "pressure": "Mankato Rock/Ground and Brainerd Water require partners; Duluth Ice and Bemidji Grass reward raising the Fire starter.",
+        "available_answers": [
+          "Route 2 ZAPSAP at 11 in every time table; THUNDERSHOCK and later SPARK",
+          "Route 3 River Hatch habitat POUCHID at 15",
+          "Route 3 MUDNIP at 16 offers Water/Ground coverage"
+        ],
+        "refinement_support": "Renewable HEADBUTT, RETURN, SUNNY_DAY and REST plus CHARCOAL; midgame Belly Drum spike reduced without reducing leader levels."
+      },
+      {
+        "starter": "BIRCHIT",
+        "native_tools": [
+          "WATER_GUN at 5",
+          "AQUA_JET at 9",
+          "BITE at 13",
+          "PORTABEAU WATER_PULSE at 18 and WATERFALL at 24"
+        ],
+        "pressure": "Minneapolis Electric and Bemidji Grass reward a Ground or Fire/Flying partner; Water alone cannot answer all eight gyms.",
+        "available_answers": [
+          "Route 2 Harvest Wind habitat SODCALF at 9 is Electric-immune and learns MAGNITUDE at 17",
+          "Route 3 MUDNIP at 16 is Electric-immune but still fears Grass",
+          "Route 2 night VANECHICK at 8; WING_ATTACK at 13 supplies a Grass answer"
+        ],
+        "refinement_support": "Renewable HEADBUTT, RETURN and REST plus MYSTIC_WATER; no forced special-only Water moves on a physical starter."
+      }
+    ],
+    "campaign_checkpoints": [
+      {
+        "gyms": [
+          1,
+          2
+        ],
+        "assessment": "Keep levels 10-16 and four-move starter learning cadence. Rochester gains SUPER_POTION; Winona/Rochester gain REPEL to support exploration and return trips without level inflation."
+      },
+      {
+        "gyms": [
+          3,
+          4
+        ],
+        "assessment": "Existing Ground answers are present before the electric/industrial sequence, including Route 2 habitat SODCALF and Route 3 MUDNIP. Minneapolis now sells reusable supplies of legal coverage/status TMs and affordable held boosters; the existing TM consumption rules remain."
+      },
+      {
+        "gyms": [
+          5,
+          6
+        ],
+        "assessment": "Saven's level-29 BOOMRUFF retained MAGNITUDE but changes BELLY_DRUM to FOCUS_ENERGY to reduce extreme setup variance. Sivren's prior-release physical PIKEMAN repair and Water/Electric/Psychic diversity stay intact."
+      },
+      {
+        "gyms": [
+          7,
+          8
+        ],
+        "assessment": "Retain the previous ZIZALITH evolution/move repair and level-40/45 aces. Grand Marais now stocks level-appropriate medicine, capture supplies, berries and four useful TMs; no shared Johto mart or global item price changes."
+      },
+      {
+        "stage": "final story and League",
+        "assessment": "Preserve last-release twelve legal party corrections. Reed's CARTICK evolves to HAULGEIST at the same level, with a clear Poison/Ghost role and no accuracy spam. Reminder and renewable TM stock let players repair their own moves before the League."
+      },
+      {
+        "stage": "postgame",
+        "assessment": "Keep optional leader rematch levels and consent. First unclaimed gifts become eight themed held items, existing candy receipts stay claimed, guides show missing wins, and all eight earned wins unlock one retryable LEFTOVERS. Reed is a separate optional 57-59 six-partner challenge with recognizable weaknesses and one held healing berry."
+      }
+    ],
+    "limits": "These are table, legality and availability conclusions. Static evidence does not establish how much grinding a player needs or how often each starter wins."
   }
 }

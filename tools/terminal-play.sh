@@ -20,6 +20,6 @@ if [ "${1:-}" = --session ]; then
   shift 2
 fi
 if [ -f "$save" ] || [ -f "$save.bak" ]; then
-  exec "$release_dir/geothite-native" "$command" "$pack" --save "$save" --load "$save" "$@"
+  exec "$release_dir/geothite-native" "$command" "$pack" --save "$save" --load "$save" --compatible-saves "$home_dir/saves" "$@"
 fi
-exec "$release_dir/geothite-native" "$command" "$pack" --save "$save" "$@"
+exec "$release_dir/geothite-native" "$command" "$pack" --save "$save" --compatible-saves "$home_dir/saves" "$@"

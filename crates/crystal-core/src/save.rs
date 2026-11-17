@@ -14,6 +14,12 @@ use base64::{Engine as _, engine::general_purpose::STANDARD as BASE64};
 use crate::multiplayer::{fnv1a32_bytes, game_state_checksum};
 use crate::state::GameState;
 
+#[path = "save_recovery.rs"]
+mod recovery;
+pub use recovery::{
+    read_save_slot_bytes, recover_save_primary, save_slot_exists, write_new_compatible_save,
+};
+
 const SAVE_MAGIC: &[u8; 12] = b"CRYSTALSAVE\0";
 pub const SAVE_EXTENSION: &str = "crystalsave";
 pub const SAVE_FORMAT_VERSION: u16 = 26;

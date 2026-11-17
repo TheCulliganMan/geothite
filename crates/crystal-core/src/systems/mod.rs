@@ -15,6 +15,7 @@ pub mod item_use;
 pub mod learnsets;
 pub mod map_context;
 pub mod map_name_sign;
+pub mod move_reminder;
 pub mod name_entry;
 pub mod phone;
 pub mod roaming;

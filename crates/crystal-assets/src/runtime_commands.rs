@@ -2461,6 +2461,15 @@ pub struct RuntimeMoveTutorCommand {
     pub move_id: String,
 }
 
+/// One atomic move-reminder purchase, including an optional replacement.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct RuntimeMoveReminderCommand {
+    pub party_index: usize,
+    pub move_id: String,
+    pub forget_index: Option<usize>,
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct RuntimeNameRivalCommand {
@@ -2812,6 +2821,7 @@ pub enum RuntimeMutationCommand {
     RatePartyNicknameSpecial(RuntimePartyNicknameCommand),
     SeePartyPokemonSpecial(RuntimePartySlotCommand),
     TeachPartyMoveSpecial(RuntimeMoveTutorCommand),
+    RelearnPartyMoveSpecial(RuntimeMoveReminderCommand),
     OpenBankOfMomSpecial,
     OpenGameCornerSpecial(RuntimeGameCornerCommand),
     OpenDisplayLinkRecordSpecial,

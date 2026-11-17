@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "id": "northstar-discovery-clues-v1",
+  "parent_content_hash": "d4ce7998673f393e69771a36c3575878060f121102f6db840ddf197c583979dd",
+  "rewards": [
+    { "cache": "R07", "item": "MYSTIC_WATER" },
+    { "cache": "R08", "item": "MIRACLE_SEED" },
+    { "cache": "R20", "item": "NEVERMELTICE" },
+    { "cache": "STPAUL", "item": "BLACKGLASSES" },
+    { "cache": "R05ROCKCUT", "item": "HARD_STONE" },
+    { "cache": "R17CAVE1F", "item": "SPELL_TAG" }
+  ],
+  "hints": [
+    { "cache": "R01", "actor": "MN_R01_CREEK_CHILD", "script": "MN_R01_CREEK_CHILD" },
+    { "cache": "R07", "actor": "MN_R07_LAKE_WALKER", "script": "MN_R07_LAKE_WALKER" },
+    { "cache": "R08", "actor": "MN_R08_BIRCH_WALKER", "script": "MN_R08_BIRCH_WALKER" },
+    { "cache": "R12", "actor": "MN_R12_N06", "script": "MN_R12_N06" },
+    { "cache": "R20", "actor": "MN_R20_RANGER", "script": "MN_R20_RANGER" },
+    { "cache": "STPAUL", "actor": "MN_SPX_EAST_HARBOR_WALKER", "script": "MN_SPX_EAST_HARBOR_WALKER" }
+  ]
+}

@@ -17,6 +17,8 @@ use crystal_runtime::CrystalRuntime;
 
 #[cfg(not(target_arch = "wasm32"))]
 mod desktop_paths;
+#[cfg(not(target_arch = "wasm32"))]
+mod native_save_selection;
 
 const DEFAULT_PACK_FILENAME: &str = "core-modular.crystalpack";
 #[cfg(target_arch = "wasm32")]
@@ -94,6 +96,7 @@ fn run_native() -> Result<()> {
         let _span = bevy::log::info_span!("crystal_runtime_load").entered();
         CrystalRuntime::from_loaded_compiled_pack(&asset_root, loaded)?
     };
+    let automatic_save_slot = args.save_path.is_none() && args.load_save.is_none();
     let default_save_path = match args.save_path {
         Some(path) => path,
         None => default_save_path(&pack_directory, &runtime)?,
@@ -133,15 +136,20 @@ fn run_native() -> Result<()> {
         );
         return Ok(());
     }
+    let destination = args.load_save.as_deref().unwrap_or(&default_save_path);
+    let save_available = native_save_selection::prepare_native_save(
+        &runtime,
+        destination,
+        &pack_directory,
+        automatic_save_slot,
+    )?;
     let start = match args.load_save {
         Some(save_path) => BevyShellStart::LoadSave { save_path },
         None => BevyShellStart::Title {
             spawn_identifier: runtime.title_new_game_spawn_identifier()?,
-            // Preserve existing-primary visibility; only a missing primary
-            // enters the core loader's validated primary-to-backup recovery.
-            save_path: (default_save_path.exists()
-                || runtime.load_save_summary(&default_save_path).is_ok())
-            .then_some(default_save_path.clone()),
+            // Continue is offered for recovered/migrated saves. The player's
+            // explicit New Game choice on the title screen remains unchanged.
+            save_path: save_available.then_some(default_save_path.clone()),
         },
     };
 
@@ -481,6 +489,27 @@ async fn run_browser() -> Result<()> {
 
 #[cfg(target_arch = "wasm32")]
 fn select_browser_save(
+    runtime: &CrystalRuntime,
+    save_path: &Path,
+    player_id: Option<u64>,
+) -> Result<Option<PathBuf>> {
+    if crystal_runtime::prepare_runtime_save_slot(runtime, save_path, |source| {
+        browser_save_path_for_identity(&source.modpack_id, player_id)
+    })? {
+        return Ok(Some(save_path.to_path_buf()));
+    }
+    // Retain the older, separately checked center migration only for its exact
+    // destination. Unknown older releases must never prevent New Game.
+    if runtime.pack_identity().content_hash
+        == "d13645cf90952b8be4211918093acb7cb158afd0082226227caed1602a6e5878"
+    {
+        return Ok(select_legacy_northstar_save(runtime, save_path, player_id).unwrap_or(None));
+    }
+    Ok(None)
+}
+
+#[cfg(target_arch = "wasm32")]
+fn select_legacy_northstar_save(
     runtime: &CrystalRuntime,
     save_path: &Path,
     player_id: Option<u64>,

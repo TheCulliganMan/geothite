@@ -8876,12 +8876,14 @@ fn resolve_visible_pc_confirmation(
         VisiblePcConfirmation::MoveTutorForget {
             move_id,
             party_index,
+            reminder,
         } => {
             if accepted {
                 runtime_shell.pending_script_party_selection =
                     Some(PendingScriptPartySelection::MoveTutor {
                         move_id,
                         party_index: Some(party_index),
+                        reminder,
                     });
                 let snapshot = runtime_shell.shell.snapshot()?;
                 let nickname = snapshot
@@ -8962,6 +8964,7 @@ fn resolve_visible_pc_confirmation(
                 runtime_shell.pc_confirmation = Some(VisiblePcConfirmation::MoveTutorStop {
                     move_id,
                     party_index,
+                    reminder,
                 });
                 runtime_shell.yes_no_cursor = Some(MenuCursor {
                     surface_id: "pc:confirmation".to_string(),
@@ -8974,6 +8977,7 @@ fn resolve_visible_pc_confirmation(
         VisiblePcConfirmation::MoveTutorStop {
             move_id,
             party_index,
+            reminder,
         } => {
             if accepted {
                 runtime_shell.party_move_cursor = None;
@@ -9039,6 +9043,7 @@ fn resolve_visible_pc_confirmation(
                 runtime_shell.pc_confirmation = Some(VisiblePcConfirmation::MoveTutorForget {
                     move_id,
                     party_index,
+                    reminder,
                 });
                 runtime_shell.yes_no_cursor = Some(MenuCursor {
                     surface_id: "pc:confirmation".to_string(),

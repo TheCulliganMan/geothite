@@ -3319,6 +3319,11 @@ enum PendingScriptPartySelection {
     MoveTutor {
         move_id: String,
         party_index: Option<usize>,
+        reminder: bool,
+    },
+    MoveReminder {
+        party_index: Option<usize>,
+        moves: Vec<String>,
     },
     MoveDeletion {
         party_index: Option<usize>,
@@ -4374,10 +4379,12 @@ enum VisiblePcConfirmation {
     MoveTutorForget {
         move_id: String,
         party_index: usize,
+        reminder: bool,
     },
     MoveTutorStop {
         move_id: String,
         party_index: usize,
+        reminder: bool,
     },
     BuenaPrize {
         item_id: String,
@@ -9579,6 +9586,7 @@ include!("bevy_shell/trainer_anchor.rs");
 include!("bevy_shell/scripted_trainer_anchor.rs");
 include!("bevy_shell/scripted_ground_anchor.rs");
 include!("bevy_shell/battle_entry.rs");
+include!("bevy_shell/move_reminder.rs");
 include!("bevy_shell/battle_sliding_intro.rs");
 #[cfg(feature = "voxel-view")]
 #[path = "bevy_shell/battle_source_overlay.rs"]

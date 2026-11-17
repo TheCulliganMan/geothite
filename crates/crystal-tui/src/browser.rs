@@ -140,7 +140,14 @@ mod wasm {
                 .ok_or_else(|| js_error("No browser window"))?
                 .local_storage()?
                 .ok_or_else(|| js_error("Browser save storage unavailable"))?;
-            let migrated = migrate_northstar_session_save(&runtime, session, &storage)?;
+            let migrated = crystal_runtime::prepare_runtime_save_slot(&runtime, &path, |source| {
+                // The session was validated when constructing the destination.
+                super::session_save_path(&source.modpack_id, session)
+                    .expect("validated session and compatible identity")
+            })
+            .map_err(js_error)?;
+            let migrated = migrated
+                || migrate_northstar_session_save(&runtime, session, &storage).unwrap_or(false);
             let resume = storage
                 .get_item(&format!("crystal.save.v1.{}", path.display()))?
                 .is_some()

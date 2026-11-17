@@ -2948,6 +2948,16 @@ fn close_visible_special_boundary(runtime_shell: &mut BevyRuntimeShell) -> Resul
         runtime_shell,
         &boundary.label,
     )?;
+    if boundary.label == "MoveReminderNoMoves"
+        && matches!(
+            runtime_shell.pending_script_party_selection,
+            Some(PendingScriptPartySelection::MoveReminder { .. })
+        )
+    {
+        set_shell_action_status(runtime_shell, "WHICH POKéMON?");
+        mark_runtime_snapshot_dirty(runtime_shell);
+        return Ok(());
+    }
     if matches!(
         runtime_shell.pending_script_party_selection.as_ref(),
         Some(PendingScriptPartySelection::MoveTutor { .. })
@@ -5415,13 +5425,13 @@ fn move_visible_primary_cursor(runtime_shell: &mut BevyRuntimeShell, delta: isiz
             &mut runtime_shell.last_audio_events,
         );
     }
+    if move_visible_script_move_cursor(runtime_shell, delta)? {
+        return Ok(());
+    }
     if matches!(
         runtime_shell.pending_script_party_selection.as_ref(),
         Some(PendingScriptPartySelection::MoveDeletion {
             party_index: Some(_)
-        }) | Some(PendingScriptPartySelection::MoveTutor {
-            party_index: Some(_),
-            ..
         })
     ) {
         return move_visible_party_move_cursor(runtime_shell, delta);

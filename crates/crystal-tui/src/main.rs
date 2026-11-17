@@ -1,3 +1,5 @@
+mod native_save_compatibility;
+
 use anyhow::{Context, Result, bail};
 use crossterm::{
     event::{self, Event, KeyCode, KeyEventKind},
@@ -27,6 +29,7 @@ struct Options {
     pack: PathBuf,
     load: Option<PathBuf>,
     save: Option<PathBuf>,
+    compatible_saves: Option<PathBuf>,
     theme: Option<PathBuf>,
     compact: bool,
     player_name: String,
@@ -61,6 +64,24 @@ fn main() -> Result<()> {
         PaintedRenderer::default()
     };
     let runtime = CrystalRuntime::from_loaded_compiled_pack(&asset_root, loaded)?;
+    if options.command != Command::Dump
+        && let Some(destination) = options.load.as_ref().or(options.save.as_ref())
+    {
+        let suffix = options.compatible_saves.as_ref().and_then(|directory| {
+            native_save_compatibility::owned_slot_suffix(
+                directory,
+                destination,
+                runtime.modpack().hash(),
+            )
+            .map(|suffix| (directory, suffix))
+        });
+        crystal_runtime::prepare_runtime_save_slot(&runtime, destination, |source| {
+            suffix.as_ref().map_or_else(
+                || destination.clone(),
+                |(directory, suffix)| directory.join(format!("{}{suffix}", source.modpack_hash)),
+            )
+        })?;
+    }
     let resume = options.load.as_ref().or_else(|| {
         options
             .save
@@ -103,10 +124,11 @@ fn main() -> Result<()> {
 }
 
 fn parse_options(arguments: impl IntoIterator<Item = String>) -> Result<Options> {
-    let usage = "usage: geothite <play|mcp|dump> <game.crystalpack> [--load SAVE] [--save SAVE] [--name NAME] [--theme THEME] [--compact]";
+    let usage = "usage: geothite <play|mcp|dump> <game.crystalpack> [--load SAVE] [--save SAVE] [--compatible-saves DIRECTORY] [--name NAME] [--theme THEME] [--compact]";
     let mut pack = None;
     let mut load = None;
     let mut save = None;
+    let mut compatible_saves = None;
     let mut compact = false;
     let mut player_name = "CHRIS".to_string();
     let mut theme = None;
@@ -136,6 +158,13 @@ fn parse_options(arguments: impl IntoIterator<Item = String>) -> Result<Options>
                     arguments.next().context("--save requires a path")?,
                 ))
             }
+            "--compatible-saves" => {
+                compatible_saves = Some(PathBuf::from(
+                    arguments
+                        .next()
+                        .context("--compatible-saves requires a directory")?,
+                ));
+            }
             "--name" => {
                 player_name = arguments.next().context("--name requires a trainer name")?;
                 anyhow::ensure!(
@@ -163,6 +192,7 @@ fn parse_options(arguments: impl IntoIterator<Item = String>) -> Result<Options>
         pack: pack.context(usage)?,
         load,
         save,
+        compatible_saves,
         theme,
         compact,
         player_name,

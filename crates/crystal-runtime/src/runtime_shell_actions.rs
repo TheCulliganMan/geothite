@@ -903,6 +903,40 @@ impl RuntimeGameShell {
         })
     }
 
+    /// List legal forgotten level-up moves for the selected party member.
+    ///
+    /// Errors if the party slot or species learnset is missing.
+    pub fn relearnable_party_moves(&self, party_index: usize) -> Result<Vec<String>> {
+        let pokemon = self.session.state.storage.party.pokemon.get(party_index)
+            .and_then(Option::as_ref).context("move reminder party slot is empty")?;
+        crystal_core::systems::move_reminder::relearnable_moves(
+            &self.runtime.data.learnsets, pokemon,
+        ).map_err(anyhow::Error::new)
+    }
+
+    /// Teach a legal forgotten move and charge the reminder fee atomically.
+    ///
+    /// Errors without changing moves or money if the choice is invalid, an HM
+    /// would be forgotten, or the player cannot afford the service.
+    pub fn relearn_party_move_special(
+        &mut self,
+        party_index: usize,
+        move_id: String,
+        forget_index: Option<usize>,
+    ) -> Result<RuntimeSpecialRoutineUse> {
+        let mutation = self.apply_runtime_mutation_command(
+            RuntimeMutationCommand::RelearnPartyMoveSpecial(
+                crystal_assets::RuntimeMoveReminderCommand { party_index, move_id, forget_index },
+            ),
+        )?;
+        let RuntimeMutationResult::PartyMoveTaughtBySpecial(outcome) = mutation.result else {
+            anyhow::bail!("runtime mutation returned non-move-reminder result");
+        };
+        self.runtime.validate_save_state_for_runtime_pack(&self.session.state)
+            .context("validate runtime state after move reminder")?;
+        Ok(RuntimeSpecialRoutineUse { outcome, state_checksum: mutation.state_checksum })
+    }
+
     pub fn open_bank_of_mom_special(&mut self) -> Result<RuntimeSpecialRoutineUse> {
         let mutation =
             self.apply_runtime_mutation_command(RuntimeMutationCommand::OpenBankOfMomSpecial)?;

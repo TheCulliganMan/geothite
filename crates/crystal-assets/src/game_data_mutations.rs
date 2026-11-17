@@ -2763,6 +2763,11 @@ impl GameDataSet {
                     )?,
                 )
             }
+            RuntimeMutationCommand::RelearnPartyMoveSpecial(command) => {
+                RuntimeMutationResult::PartyMoveTaughtBySpecial(
+                    self.relearn_party_move(state, command, music_ids)?,
+                )
+            }
             RuntimeMutationCommand::OpenBankOfMomSpecial => RuntimeMutationResult::BankOfMomOpened(
                 self.apply_special_routine(state, "BankOfMom", music_ids)?,
             ),

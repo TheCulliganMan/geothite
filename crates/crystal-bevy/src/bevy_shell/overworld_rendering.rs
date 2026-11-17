@@ -787,6 +787,28 @@ fn spawn_field_command_menu(
         }
         return;
     }
+    if runtime_shell.party_menu_open {
+        match visible_script_move_menu_entries(snapshot, runtime_shell) {
+            Ok(Some(move_entries)) => {
+                if let Err(error) = spawn_visible_script_move_menu(
+                    commands,
+                    &move_entries,
+                    runtime_shell,
+                    rendered_art,
+                    asset_root,
+                    images,
+                ) {
+                    *render_error = Some(error);
+                }
+                return;
+            }
+            Err(error) => {
+                *render_error = Some(error);
+                return;
+            }
+            Ok(None) => {}
+        }
+    }
     if runtime_shell.party_menu_open && runtime_shell.party_summary_open {
         if let Err(error) = spawn_field_party_summary_screen(
             commands,

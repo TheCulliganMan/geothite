@@ -543,6 +543,7 @@ include!("runtime_pack.rs");
 include!("verification.rs");
 include!("runtime_commands.rs");
 mod game_data_encounter_surfaces;
+mod game_data_move_reminder;
 include!("game_data.rs");
 mod pack_load_trace;
 pub use pack_load_trace::with_compiled_pack_load_observer;

@@ -9271,20 +9271,20 @@
         ],
         "MnArcSCReleasedText": [
           [
-            "SERA: Thanks.",
-            "NELL is at the"
+            "SERA: Thank you.",
+            "Give me a moment."
           ],
           [
-            "shaft. I will try",
-            "her first."
+            "I will wait by the",
+            "station path."
           ],
           [
-            "If the lift stays",
-            "jammed, BRAINERD"
+            "Come speak to me",
+            "there. NELL needs"
           ],
           [
-            "has a ranger",
-            "with a winch."
+            "to hear about",
+            "FINN."
           ]
         ],
         "MnArcSCAfterText": [
@@ -33623,20 +33623,20 @@
         ],
         "MnMPExpansionMillTrailRewardText": [
           [
-            "Straight into",
-            "a rail car!"
+            "Those three",
+            "plaques tell us"
           ],
           [
-            "The door belongs",
-            "beside the siding."
+            "how the mill",
+            "worked."
           ],
           [
-            "This MAGNET is",
-            "yours. You saved"
+            "Here is a MAGNET",
+            "for your trouble."
           ],
           [
-            "me building a",
-            "ridiculous stair."
+            "Come back and help",
+            "me test the model!"
           ]
         ]
       },
@@ -37709,20 +37709,20 @@
         ],
         "MN_SPX_RIVERRewardText": [
           [
-            "I drew the flood",
-            "too low. It went"
+            "You found all",
+            "three readings."
           ],
           [
-            "over the bridge!",
-            "Let me fix that."
+            "Take this MYSTIC",
+            "WATER."
           ],
           [
-            "Take this",
-            "MYSTIC WATER."
+            "Now we can compare",
+            "the levels. Ask me"
           ],
           [
-            "Now I can answer",
-            "her properly."
+            "when you are",
+            "ready."
           ]
         ]
       },
@@ -52346,6 +52346,1394 @@
   "native_presentation": {
     "trainer_names": {
       "MN_RIVER_FUN_LOWER_REED": "ARNE"
+    }
+  },
+  "refinement_discoveries": {
+    "dialogue": {
+      "R01": [
+        [
+          "The OLD ROD guru",
+          "lives by the"
+        ],
+        [
+          "trail."
+        ],
+        [
+          "A bottle washed up",
+          "on the west bank."
+        ],
+        [
+          "Face the ground",
+          "and press A."
+        ],
+        [
+          "Things hide in the",
+          "mud!"
+        ]
+      ],
+      "R07": [
+        [
+          "The meadow trail",
+          "goes toward the"
+        ],
+        [
+          "pine peninsula."
+        ],
+        [
+          "I paddled past two",
+          "trees on the far"
+        ],
+        [
+          "bank of the bay."
+        ],
+        [
+          "Something blue was",
+          "caught between"
+        ],
+        [
+          "their roots."
+        ]
+      ],
+      "R08": [
+        [
+          "Those stone stairs",
+          "work both ways."
+        ],
+        [
+          "Across the water,",
+          "the north bank has"
+        ],
+        [
+          "a dry corner."
+        ],
+        [
+          "I saw an odd seed",
+          "there. Too big for"
+        ],
+        [
+          "a birch!"
+        ]
+      ],
+      "R12": [
+        [
+          "I cast southeast",
+          "and snagged a tiny"
+        ],
+        [
+          "vial on the bank."
+        ],
+        [
+          "It slipped free.",
+          "You could paddle"
+        ],
+        [
+          "over and look."
+        ]
+      ],
+      "R20": [
+        [
+          "The bridge outlets",
+          "keep the foot"
+        ],
+        [
+          "trail open."
+        ],
+        [
+          "I found ice on the",
+          "far northwest bank"
+        ],
+        [
+          "across the water."
+        ],
+        [
+          "It stayed cold in",
+          "my hand. I left it"
+        ],
+        [
+          "where it lay."
+        ]
+      ],
+      "STPAUL": [
+        [
+          "The inn is along",
+          "the main bank."
+        ],
+        [
+          "I left my dark",
+          "shades on the far"
+        ],
+        [
+          "northeast bank."
+        ],
+        [
+          "You need a boat to",
+          "get around there."
+        ],
+        [
+          "If you find them,",
+          "keep them. I have"
+        ],
+        [
+          "a spare pair."
+        ]
+      ]
+    }
+  },
+  "refinement_reed_challenge": {
+    "dialogue": {
+      "MnRefineReedOfferText": [
+        [
+          "REED: CHAMPION.",
+          "They put your name"
+        ],
+        [
+          "up everywhere."
+        ],
+        [
+          "CROOKVEIL knows",
+          "you. So do I."
+        ],
+        [
+          "Six partners. LV",
+          "57-59."
+        ],
+        [
+          "Let us see how",
+          "long that title"
+        ],
+        [
+          "lasts."
+        ],
+        [
+          "Battle REED?"
+        ]
+      ],
+      "MnRefineReedWonText": [
+        [
+          "REED: Keep your",
+          "crowd. I will find"
+        ],
+        [
+          "stronger work."
+        ]
+      ],
+      "MnRefineReedLostText": [
+        [
+          "REED: There. A",
+          "title did not save"
+        ],
+        [
+          "you."
+        ]
+      ],
+      "MnRefineReedAfterText": [
+        [
+          "REED: HALE still",
+          "owes me. So do"
+        ],
+        [
+          "you."
+        ],
+        [
+          "One more loss does",
+          "not change that."
+        ]
+      ],
+      "MnRefineReedDeclinedText": [
+        [
+          "REED: Then move. I",
+          "am not here to"
+        ],
+        [
+          "admire you."
+        ]
+      ]
+    }
+  },
+  "refinement_museums": {
+    "dialogue": {
+      "MnMinneapolisFoundryMuseum": {
+        "MnMillWheelPromptText": [
+          [
+            "A loose belt lies",
+            "beside the model"
+          ],
+          [
+            "wheel."
+          ],
+          [
+            "Where should it",
+            "carry the power?"
+          ]
+        ],
+        "MnMillWheelReadyText": [
+          [
+            "The shaft turns.",
+            "The grinding"
+          ],
+          [
+            "stones turn with",
+            "it."
+          ],
+          [
+            "Now choose where",
+            "the grain goes at"
+          ],
+          [
+            "the sack display."
+          ]
+        ],
+        "MnMillWheelWrongText": [
+          [
+            "The loading belt",
+            "runs, but the"
+          ],
+          [
+            "stones stand",
+            "still."
+          ],
+          [
+            "You have a moving",
+            "sack of raw grain."
+          ],
+          [
+            "Try the shaft."
+          ]
+        ],
+        "MnMillGrainPromptText": [
+          [
+            "The sack display",
+            "has a little grain"
+          ],
+          [
+            "chute."
+          ],
+          [
+            "Where should the",
+            "grain go first?"
+          ]
+        ],
+        "MnMillGrainReadyText": [
+          [
+            "The chute feeds",
+            "the stones."
+          ],
+          [
+            "Ask the host to",
+            "test the model"
+          ],
+          [
+            "when the wheel is",
+            "ready."
+          ]
+        ],
+        "MnMillGrainWrongText": [
+          [
+            "Raw grain pours",
+            "into the rail car."
+          ],
+          [
+            "The mill has done",
+            "no milling! Feed"
+          ],
+          [
+            "the stones first."
+          ]
+        ],
+        "MnMillHostOfferText": [
+          [
+            "Would you help me",
+            "test the mill?"
+          ],
+          [
+            "Set the wheel belt",
+            "and grain chute at"
+          ],
+          [
+            "the two displays."
+          ],
+          [
+            "Then we can try a",
+            "loading door."
+          ]
+        ],
+        "MnMillHostPowerText": [
+          [
+            "The stones have no",
+            "power yet."
+          ],
+          [
+            "Check the belt on",
+            "the wheel display."
+          ]
+        ],
+        "MnMillHostGrainText": [
+          [
+            "The stones turn,",
+            "but nothing goes"
+          ],
+          [
+            "through them."
+          ],
+          [
+            "Set the chute at",
+            "the sack display."
+          ]
+        ],
+        "MnMillDoorPromptText": [
+          [
+            "The model grinds a",
+            "little flour."
+          ],
+          [
+            "Where should we",
+            "put the loading"
+          ],
+          [
+            "door?"
+          ]
+        ],
+        "MnMillDoorWrongText": [
+          [
+            "The sacks reach",
+            "the river steps."
+          ],
+          [
+            "Someone must carry",
+            "them back uphill"
+          ],
+          [
+            "to the rail car."
+          ],
+          [
+            "Try the other",
+            "side."
+          ]
+        ],
+        "MnMillSolvedText": [
+          [
+            "The wheel turns.",
+            "Grain goes in."
+          ],
+          [
+            "Flour slides into",
+            "the waiting car."
+          ],
+          [
+            "There! A mill that",
+            "makes flour"
+          ],
+          [
+            "instead of work",
+            "for me."
+          ]
+        ],
+        "MnMillDoneText": [
+          [
+            "Your route still",
+            "runs the model."
+          ],
+          [
+            "The little car is",
+            "full. I had better"
+          ],
+          [
+            "fetch another."
+          ]
+        ],
+        "MnMillCancelText": [
+          [
+            "You leave the",
+            "model as it is."
+          ],
+          [
+            "The settings will",
+            "keep."
+          ]
+        ]
+      },
+      "MnStPaulCivicMuseum": {
+        "MnFloodTodayPromptText": [
+          [
+            "Help me lay two",
+            "lines on the"
+          ],
+          [
+            "chart."
+          ],
+          [
+            "First, where is",
+            "the river TODAY?"
+          ]
+        ],
+        "MnFloodTodayWrongText": [
+          [
+            "The north gauge",
+            "touches a notch"
+          ],
+          [
+            "below the bottom",
+            "step."
+          ],
+          [
+            "Use that reading",
+            "for today, not the"
+          ],
+          [
+            "old flood mark."
+          ]
+        ],
+        "MnFloodOldPromptText": [
+          [
+            "The blue line sits",
+            "below the steps."
+          ],
+          [
+            "Now place the OLD",
+            "FLOOD line."
+          ]
+        ],
+        "MnFloodOldWrongText": [
+          [
+            "The bluff mark is",
+            "higher than the"
+          ],
+          [
+            "south bridge deck."
+          ],
+          [
+            "That is the old",
+            "flood line. Try it"
+          ],
+          [
+            "above the bridge."
+          ]
+        ],
+        "MnFloodPathPromptText": [
+          [
+            "The old flood line",
+            "crosses the"
+          ],
+          [
+            "bridge."
+          ],
+          [
+            "Her aunt lives up",
+            "on the bluff."
+          ],
+          [
+            "Which route should",
+            "the child mark?"
+          ]
+        ],
+        "MnFloodPathWrongText": [
+          [
+            "At the old flood",
+            "level, the bridge"
+          ],
+          [
+            "would be under."
+          ],
+          [
+            "Choose the uphill",
+            "path to her aunt."
+          ]
+        ],
+        "MnFloodSolvedText": [
+          [
+            "You trace the path",
+            "up the bluff."
+          ],
+          [
+            "Two river levels.",
+            "Two very different"
+          ],
+          [
+            "walks home."
+          ],
+          [
+            "Now she can see",
+            "why the hill path"
+          ],
+          [
+            "matters."
+          ]
+        ],
+        "MnFloodDoneText": [
+          [
+            "She added her dog",
+            "beside the hill"
+          ],
+          [
+            "path you marked."
+          ],
+          [
+            "He takes up nearly",
+            "half the chart."
+          ]
+        ],
+        "MnFloodCancelText": [
+          [
+            "We can stop here."
+          ],
+          [
+            "I will keep the",
+            "lines you placed."
+          ]
+        ]
+      }
+    },
+    "menus": {
+      "MillWheel": [
+        "STONE SHAFT",
+        "LOADING BELT"
+      ],
+      "MillGrain": [
+        "GRINDING STONES",
+        "RAIL CAR"
+      ],
+      "MillDoor": [
+        "RAIL SIDING",
+        "RIVER STEPS"
+      ],
+      "FloodToday": [
+        "BELOW STEPS",
+        "AT BRIDGE DECK",
+        "ABOVE BRIDGE"
+      ],
+      "FloodOld": [
+        "BELOW STEPS",
+        "AT BRIDGE DECK",
+        "ABOVE BRIDGE"
+      ],
+      "FloodPath": [
+        "SOUTH BRIDGE",
+        "UPHILL PATH"
+      ]
+    }
+  },
+  "refinement_aftermath": {
+    "dialogue": {
+      "MnStCloud": {
+        "MnRefineSeraHandoffText": [
+          [
+            "SERA: The station",
+            "clerk has a radio."
+          ],
+          [
+            "Tell her the mine",
+            "lift is jammed and"
+          ],
+          [
+            "FINN is below."
+          ],
+          [
+            "Ask her to reach",
+            "NELL at the shaft."
+          ],
+          [
+            "I need a moment.",
+            "My hands will not"
+          ],
+          [
+            "stop shaking."
+          ]
+        ],
+        "MnRefineSeraHeardText": [
+          [
+            "You tell SERA that",
+            "NELL answered."
+          ],
+          [
+            "SERA: She heard?",
+            "Good."
+          ],
+          [
+            "I will wait here.",
+            "NELL knows where"
+          ],
+          [
+            "to find me."
+          ]
+        ],
+        "MnRefineSeraWaitingText": [
+          [
+            "SERA: NELL is at",
+            "the shaft."
+          ],
+          [
+            "The pump must stop",
+            "before anyone can"
+          ],
+          [
+            "reach FINN."
+          ]
+        ],
+        "MnRefineSeraMineSafeText": [
+          [
+            "You tell SERA the",
+            "drill has stopped"
+          ],
+          [
+            "and FINN is out."
+          ],
+          [
+            "SERA: Out? Oh. Let",
+            "me sit a moment."
+          ],
+          [
+            "I kept hearing",
+            "that ladder slip."
+          ]
+        ],
+        "MnRefineSeraRestoredText": [
+          [
+            "SERA: NELL came",
+            "through here with"
+          ],
+          [
+            "FINN."
+          ],
+          [
+            "He complained that",
+            "I had kept his"
+          ],
+          [
+            "lunch tin."
+          ],
+          [
+            "I told him to try",
+            "leaving on time."
+          ],
+          [
+            "He ate everything."
+          ]
+        ]
+      },
+      "MnStCloudStation": {
+        "MnRefineRadioOfferText": [
+          [
+            "SERA sent you? I",
+            "can try the shaft"
+          ],
+          [
+            "radio."
+          ],
+          [
+            "Tell NELL about",
+            "the jammed lift?"
+          ]
+        ],
+        "MnRefineRadioSentText": [
+          [
+            "You give SERA's",
+            "message to the"
+          ],
+          [
+            "clerk."
+          ],
+          [
+            "The clerk turns",
+            "the radio dial."
+          ],
+          [
+            "NELL: I hear you.",
+            "Keep SERA there."
+          ],
+          [
+            "The pump is still",
+            "running. I cannot"
+          ],
+          [
+            "get to FINN yet."
+          ],
+          [
+            "CLERK: She heard.",
+            "Please tell SERA."
+          ]
+        ],
+        "MnRefineRadioDeclinedText": [
+          [
+            "I will be at this",
+            "desk if you need"
+          ],
+          [
+            "the radio."
+          ]
+        ],
+        "MnRefineRadioRepeatText": [
+          [
+            "NELL heard your",
+            "call."
+          ],
+          [
+            "SERA is outside by",
+            "the station path."
+          ]
+        ],
+        "MnRefineRadioSafeText": [
+          [
+            "If FINN is out,",
+            "SERA needs to"
+          ],
+          [
+            "hear it. She is",
+            "just outside."
+          ]
+        ]
+      },
+      "MnWinona": {
+        "MnRestoreWinonaOfferText": [
+          [
+            "This GILLPUP was",
+            "sheltering away"
+          ],
+          [
+            "from the low",
+            "river."
+          ],
+          [
+            "The water is back",
+            "at this little"
+          ],
+          [
+            "landing."
+          ],
+          [
+            "Hold the basket",
+            "while I open it?"
+          ]
+        ],
+        "MnRestoreWinonaDoneText": [
+          [
+            "You steady the",
+            "basket. GILLPUP"
+          ],
+          [
+            "hops onto the",
+            "bank."
+          ],
+          [
+            "It has found the",
+            "wet stones"
+          ],
+          [
+            "already!"
+          ]
+        ],
+        "MnRestoreWinonaAfterText": [
+          [
+            "GILLPUP comes back",
+            "to this spot."
+          ],
+          [
+            "I leave the basket",
+            "open. It can"
+          ],
+          [
+            "choose."
+          ]
+        ],
+        "MnRestoreWinonaDeclinedText": [
+          [
+            "All right. I will",
+            "keep the basket"
+          ],
+          [
+            "steady for now."
+          ]
+        ],
+        "MnRestoreWinonaGillpupText": [
+          [
+            "GILLPUP pats a wet",
+            "stone with both"
+          ],
+          [
+            "front paws."
+          ]
+        ],
+        "MnRestoreWinonaWatcherText": [
+          [
+            "My kid put a stick",
+            "by the water."
+          ],
+          [
+            "Yesterday it was",
+            "dry. Today the tip"
+          ],
+          [
+            "is wet."
+          ],
+          [
+            "He checks it",
+            "before breakfast."
+          ]
+        ]
+      },
+      "MnLeechLake": {
+        "MnRestoreLeechOfferText": [
+          [
+            "The lake is rising",
+            "a little. We can"
+          ],
+          [
+            "let this one out."
+          ],
+          [
+            "Can you hold the",
+            "basket level?"
+          ]
+        ],
+        "MnRestoreLeechDoneText": [
+          [
+            "You hold the",
+            "basket low."
+          ],
+          [
+            "GILLPUP noses out,",
+            "then steps onto"
+          ],
+          [
+            "the bank."
+          ],
+          [
+            "Easy there. The",
+            "lake is not going"
+          ],
+          [
+            "anywhere today."
+          ]
+        ],
+        "MnRestoreLeechAfterText": [
+          [
+            "It keeps coming",
+            "back to inspect my"
+          ],
+          [
+            "boots."
+          ],
+          [
+            "The water has a",
+            "long way to rise."
+          ],
+          [
+            "We have time."
+          ]
+        ],
+        "MnRestoreLeechDeclinedText": [
+          [
+            "Take your time.",
+            "The basket is safe"
+          ],
+          [
+            "in the shade."
+          ]
+        ],
+        "MnRestoreLeechGillpupText": [
+          [
+            "GILLPUP sniffs",
+            "your shoes, then"
+          ],
+          [
+            "looks toward the",
+            "water."
+          ]
+        ]
+      },
+      "MnR09Cave1F": {
+        "MnRefineNellRadioText": [
+          [
+            "NELL: That was you",
+            "on the radio?"
+          ],
+          [
+            "I heard. SERA is",
+            "clear of REED."
+          ],
+          [
+            "Now we need to get",
+            "the pump off and"
+          ],
+          [
+            "reach FINN."
+          ]
+        ]
+      }
+    }
+  },
+  "refinement_services": {
+    "dialogue": {
+      "MnGrandMaraisMart": {
+        "MnRefineGrandMaraisSuppliesText": [
+          [
+            "Long trip ahead?",
+            "They carry HYPER"
+          ],
+          [
+            "and MAX POTIONS."
+          ],
+          [
+            "REVIVES, FULL",
+            "HEAL, ULTRA BALLS"
+          ],
+          [
+            "and MAX REPELS",
+            "too."
+          ],
+          [
+            "I count mine",
+            "before I leave"
+          ],
+          [
+            "town."
+          ],
+          [
+            "There are berries",
+            "and a few strong"
+          ],
+          [
+            "TMs at the",
+            "counter, too."
+          ]
+        ]
+      },
+      "MnMinneapolisToolWorkshop": {
+        "MnRefineReminderOfferText": [
+          [
+            "I help partners",
+            "recall old moves."
+          ],
+          [
+            "Only moves their",
+            "current kind can"
+          ],
+          [
+            "learn by their",
+            "level."
+          ],
+          [
+            "It costs 500, only",
+            "if a move is"
+          ],
+          [
+            "learned. Try it?"
+          ]
+        ],
+        "MnRefineReminderPoorText": [
+          [
+            "You need 500. Come",
+            "back when you have"
+          ],
+          [
+            "enough."
+          ]
+        ],
+        "MnRefineReminderDoneText": [
+          [
+            "There it is! The",
+            "lesson cost 500."
+          ],
+          [
+            "Try that move",
+            "while it is fresh."
+          ]
+        ],
+        "MnRefineReminderCancelText": [
+          [
+            "No move learned,",
+            "no charge."
+          ],
+          [
+            "We can try again",
+            "any time."
+          ]
+        ]
+      },
+      "MnRochesterGym": {
+        "MnRochesterGymRematchGiftText": [
+          [
+            "VAREL: Your first",
+            "return win earns"
+          ],
+          [
+            "BLACKGLASSES."
+          ],
+          [
+            "It is yours. Put",
+            "it to good use."
+          ]
+        ],
+        "MnRochesterGymRematchFullText": [
+          [
+            "Your first prize",
+            "is waiting."
+          ],
+          [
+            "Make room in your",
+            "PACK, then ask me"
+          ],
+          [
+            "again. You need",
+            "not battle again."
+          ]
+        ]
+      },
+      "MnMankatoGym": {
+        "MnMankatoGymRematchGiftText": [
+          [
+            "TORVEN: Your first",
+            "return win earns"
+          ],
+          [
+            "SOFT SAND."
+          ],
+          [
+            "It is yours. Put",
+            "it to good use."
+          ]
+        ],
+        "MnMankatoGymRematchFullText": [
+          [
+            "Your first prize",
+            "is waiting."
+          ],
+          [
+            "Make room in your",
+            "PACK, then ask me"
+          ],
+          [
+            "again. You need",
+            "not battle again."
+          ]
+        ]
+      },
+      "MnMinneapolisGym": {
+        "MnMinneapolisGymRematchGiftText": [
+          [
+            "AVRIN: Your first",
+            "return win earns"
+          ],
+          [
+            "MAGNET."
+          ],
+          [
+            "It is yours. Put",
+            "it to good use."
+          ]
+        ],
+        "MnMinneapolisGymRematchFullText": [
+          [
+            "Your first prize",
+            "is waiting."
+          ],
+          [
+            "Make room in your",
+            "PACK, then ask me"
+          ],
+          [
+            "again. You need",
+            "not battle again."
+          ]
+        ]
+      },
+      "MnStPaulGym": {
+        "MnStPaulGymRematchGiftText": [
+          [
+            "BRANNIC: Your",
+            "first return win"
+          ],
+          [
+            "earns METAL COAT."
+          ],
+          [
+            "It is yours. Put",
+            "it to good use."
+          ]
+        ],
+        "MnStPaulGymRematchFullText": [
+          [
+            "Your first prize",
+            "is waiting."
+          ],
+          [
+            "Make room in your",
+            "PACK, then ask me"
+          ],
+          [
+            "again. You need",
+            "not battle again."
+          ]
+        ]
+      },
+      "MnStCloudGym": {
+        "MnStCloudGymRematchGiftText": [
+          [
+            "SAVEN: Your first",
+            "return win earns"
+          ],
+          [
+            "SHARP BEAK."
+          ],
+          [
+            "It is yours. Put",
+            "it to good use."
+          ]
+        ],
+        "MnStCloudGymRematchFullText": [
+          [
+            "Your first prize",
+            "is waiting."
+          ],
+          [
+            "Make room in your",
+            "PACK, then ask me"
+          ],
+          [
+            "again. You need",
+            "not battle again."
+          ]
+        ]
+      },
+      "MnBrainerdGym": {
+        "MnBrainerdGymRematchGiftText": [
+          [
+            "SIVREN: Your first",
+            "return win earns"
+          ],
+          [
+            "MYSTIC WATER."
+          ],
+          [
+            "It is yours. Put",
+            "it to good use."
+          ]
+        ],
+        "MnBrainerdGymRematchFullText": [
+          [
+            "Your first prize",
+            "is waiting."
+          ],
+          [
+            "Make room in your",
+            "PACK, then ask me"
+          ],
+          [
+            "again. You need",
+            "not battle again."
+          ]
+        ]
+      },
+      "MnBemidjiGym": {
+        "MnBemidjiGymRematchGiftText": [
+          [
+            "ORLIS: Your first",
+            "return win earns"
+          ],
+          [
+            "MIRACLE SEED."
+          ],
+          [
+            "It is yours. Put",
+            "it to good use."
+          ]
+        ],
+        "MnBemidjiGymRematchFullText": [
+          [
+            "Your first prize",
+            "is waiting."
+          ],
+          [
+            "Make room in your",
+            "PACK, then ask me"
+          ],
+          [
+            "again. You need",
+            "not battle again."
+          ]
+        ]
+      },
+      "MnDuluthGym": {
+        "MnDuluthGymRematchGiftText": [
+          [
+            "NOREK: Your first",
+            "return win earns"
+          ],
+          [
+            "NEVERMELTICE."
+          ],
+          [
+            "It is yours. Put",
+            "it to good use."
+          ]
+        ],
+        "MnDuluthGymRematchFullText": [
+          [
+            "Your first prize",
+            "is waiting."
+          ],
+          [
+            "Make room in your",
+            "PACK, then ask me"
+          ],
+          [
+            "again. You need",
+            "not battle again."
+          ]
+        ]
+      },
+      "MnMinneapolisDepartmentStore5F": {
+        "MN_MP_DEPT_5_CLERKText": [
+          [
+            "Need another way",
+            "to train? Try a"
+          ],
+          [
+            "TM."
+          ],
+          [
+            "We stock DIG,",
+            "HEADBUTT and moves"
+          ],
+          [
+            "for several types."
+          ],
+          [
+            "Check which",
+            "partner can learn"
+          ],
+          [
+            "one before buying."
+          ]
+        ]
+      },
+      "MnMinneapolisDepartmentStore3F": {
+        "MN_MP_DEPT_3_CLERKText": [
+          [
+            "Our held items can",
+            "strengthen a move"
+          ],
+          [
+            "of the same type."
+          ],
+          [
+            "MAGNET for",
+            "Electric, CHARCOAL"
+          ],
+          [
+            "for Fire."
+          ],
+          [
+            "We also stock",
+            "Grass, Water and"
+          ],
+          [
+            "Ground boosters."
+          ]
+        ]
+      }
+    },
+    "circuit": {
+      "Intro": [
+        [
+          "CHAMPION circuit.",
+          "Ask each leader"
+        ],
+        [
+          "for a return bout.",
+          "Wins still needed:"
+        ]
+      ],
+      "Complete": [
+        [
+          "All eight leaders",
+          "beaten again."
+        ],
+        [
+          "The full circuit",
+          "is yours. I have"
+        ],
+        [
+          "marked it here."
+        ]
+      ],
+      "Full": [
+        [
+          "All eight wins",
+          "count. Your prize"
+        ],
+        [
+          "is safe."
+        ],
+        [
+          "Make room in your",
+          "PACK for LEFTOVERS"
+        ],
+        [
+          "and ask a guide."
+        ]
+      ],
+      "Prize": [
+        [
+          "Eight leaders,",
+          "eight return wins!"
+        ],
+        [
+          "Take these",
+          "LEFTOVERS. A long"
+        ],
+        [
+          "circuit needs a",
+          "good lunch."
+        ]
+      ],
+      "Missing1": [
+        [
+          "VAREL:",
+          "ROCHESTER"
+        ]
+      ],
+      "Missing2": [
+        [
+          "TORVEN:",
+          "MANKATO"
+        ]
+      ],
+      "Missing3": [
+        [
+          "AVRIN:",
+          "MINNEAPOLIS"
+        ]
+      ],
+      "Missing4": [
+        [
+          "BRANNIC:",
+          "ST PAUL"
+        ]
+      ],
+      "Missing5": [
+        [
+          "SAVEN:",
+          "ST CLOUD"
+        ]
+      ],
+      "Missing6": [
+        [
+          "SIVREN:",
+          "BRAINERD"
+        ]
+      ],
+      "Missing7": [
+        [
+          "ORLIS:",
+          "BEMIDJI"
+        ]
+      ],
+      "Missing8": [
+        [
+          "NOREK:",
+          "DULUTH"
+        ]
+      ]
     }
   }
 }

@@ -6,6 +6,19 @@ on:
 permissions:
   contents: read
 jobs:
+  production-runtime-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: '1.99.0'
+          targets: wasm32-unknown-unknown
+      - uses: Swatinem/rust-cache@v2
+      # Keep ordinary clients independent of authoring/test-only feature unions.
+      - run: cargo check --locked -p crystal-runtime --lib --no-default-features
+      - run: cargo check --locked -p geothite --lib --target wasm32-unknown-unknown
+      - run: cargo check --locked -p crystal-bevy --bin crystal-bevy --no-default-features --features bevy-shell,fullscreen-scaling --target wasm32-unknown-unknown
   native-model-tests:
     runs-on: ubuntu-latest
     steps:

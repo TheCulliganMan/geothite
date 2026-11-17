@@ -3716,6 +3716,7 @@ pub const EXECUTABLE_SPECIAL_ROUTINES: &[&str] = &[
     "NameRater",
     "PokeSeer",
     "MoveTutor",
+    "MoveReminder",
     "BankOfMom",
     "SlotMachine",
     "CardFlip",
@@ -4184,6 +4185,12 @@ pub fn apply_special_routine_with_context(
         "NameRater" => name_rater(state, routine),
         "PokeSeer" => poke_seer(state, routine),
         "MoveTutor" => move_tutor(state, context.move_catalog, context.happiness_data, routine),
+        // Selection is owned by the shared UI; learning/payment use the atomic
+        // RelearnPartyMoveSpecial mutation, never stale script variables.
+        "MoveReminder" => {
+            set_script_numeric_value(state, u8::MAX);
+            noop_special(routine)
+        }
         "BankOfMom" => bank_of_mom(state, routine),
         "SlotMachine" => Err(SpecialRoutineError::MissingDividerSource {
             routine: routine.to_string(),

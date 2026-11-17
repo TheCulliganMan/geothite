@@ -308,6 +308,9 @@ fn visible_party_menu_entries(
     snapshot: &RuntimeShellSnapshot,
     runtime_shell: &BevyRuntimeShell,
 ) -> Result<Vec<String>> {
+    if let Some(entries) = visible_script_move_menu_entries(snapshot, runtime_shell)? {
+        return Ok(entries);
+    }
     let row_count = normal_visible_party_menu_row_count(snapshot);
     anyhow::ensure!(
         runtime_shell.party_cursor < row_count,

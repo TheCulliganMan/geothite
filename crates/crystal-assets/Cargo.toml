@@ -36,3 +36,7 @@ crystal-core = { workspace = true, features = ["test-fixtures"] }
 [[bin]]
 name = "pack_northstar_adventure"
 required-features = ["pack-authoring"]
+
+[[bin]]
+name = "pack_northstar_refinement"
+required-features = ["pack-authoring"]

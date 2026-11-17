@@ -1077,9 +1077,19 @@ fn resolve_visible_script_party_selection(
             resume_immediately = false;
         }
         (
+            PendingScriptPartySelection::MoveReminder {
+                party_index: selected,
+                moves,
+            },
+            party_index,
+        ) => {
+            return resolve_visible_move_reminder(runtime_shell, selected, moves, party_index);
+        }
+        (
             PendingScriptPartySelection::MoveTutor {
                 move_id,
                 party_index: None,
+                reminder,
             },
             party_index,
         ) => {
@@ -1103,11 +1113,18 @@ fn resolve_visible_script_party_selection(
                 let already_knows = pokemon.moves.iter().any(|known| known.name == move_id);
                 let incompatible = pokemon.is_egg
                     || pokemon.species.id == "EGG"
-                    || !pokemon
-                        .species
-                        .tmhm_learnset
-                        .iter()
-                        .any(|candidate| candidate == &move_id);
+                    || if reminder {
+                        !runtime_shell
+                            .shell
+                            .relearnable_party_moves(party_index)?
+                            .contains(&move_id)
+                    } else {
+                        !pokemon
+                            .species
+                            .tmhm_learnset
+                            .iter()
+                            .any(|candidate| candidate == &move_id)
+                    };
                 if already_knows || incompatible {
                     let (label, text_target) = if already_knows {
                         ("KnowsMoveText", "_KnowsMoveText")
@@ -1127,6 +1144,7 @@ fn resolve_visible_script_party_selection(
                         Some(PendingScriptPartySelection::MoveTutor {
                             move_id,
                             party_index: None,
+                            reminder,
                         });
                     close_party_menu = false;
                     resume_immediately = false;
@@ -1152,6 +1170,7 @@ fn resolve_visible_script_party_selection(
                     runtime_shell.pc_confirmation = Some(VisiblePcConfirmation::MoveTutorForget {
                         move_id,
                         party_index,
+                        reminder,
                     });
                     runtime_shell.yes_no_cursor = Some(MenuCursor {
                         surface_id: "pc:confirmation".to_string(),
@@ -1162,9 +1181,15 @@ fn resolve_visible_script_party_selection(
                     resume_immediately = false;
                 } else {
                     let learned_move = move_id.replace('_', " ");
-                    let used = runtime_shell
-                        .shell
-                        .teach_party_move_special(party_index, move_id)?;
+                    let used = if reminder {
+                        runtime_shell
+                            .shell
+                            .relearn_party_move_special(party_index, move_id, None)?
+                    } else {
+                        runtime_shell
+                            .shell
+                            .teach_party_move_special(party_index, move_id)?
+                    };
                     runtime_shell
                         .last_audio_events
                         .push(format!("move tutor outcome={:?}", used.outcome.effect));
@@ -1187,6 +1212,7 @@ fn resolve_visible_script_party_selection(
             PendingScriptPartySelection::MoveTutor {
                 move_id,
                 party_index: Some(party_index),
+                reminder,
             },
             Some(_),
         ) => {
@@ -1206,9 +1232,18 @@ fn resolve_visible_script_party_selection(
             let move_index = strict_readonly_cursor_index(
                 &runtime_shell.party_move_cursor,
                 &party_move_cursor_surface_id(party_index),
-                pokemon.moves.len(),
+                pokemon.moves.len() + 1,
             )
             .context("Move Tutor move list has no valid selection")?;
+            if move_index == pokemon.moves.len() {
+                runtime_shell.pending_script_party_selection =
+                    Some(PendingScriptPartySelection::MoveTutor {
+                        move_id,
+                        party_index: Some(party_index),
+                        reminder,
+                    });
+                return resolve_visible_script_party_selection(runtime_shell, None);
+            }
             let forgotten_move = pokemon
                 .moves
                 .get(move_index)
@@ -1222,6 +1257,7 @@ fn resolve_visible_script_party_selection(
                     Some(PendingScriptPartySelection::MoveTutor {
                         move_id,
                         party_index: Some(party_index),
+                        reminder,
                     });
                 let pending_move_id = match runtime_shell.pending_script_party_selection.as_ref() {
                     Some(PendingScriptPartySelection::MoveTutor { move_id, .. }) => move_id.clone(),
@@ -1240,13 +1276,21 @@ fn resolve_visible_script_party_selection(
                 return Ok(());
             }
             runtime_shell.pc_notice = None;
-            runtime_shell
-                .shell
-                .delete_party_move_special(party_index, move_index)?;
             let learned_move = move_id.replace('_', " ");
-            let used = runtime_shell
-                .shell
-                .teach_party_move_special(party_index, move_id)?;
+            let used = if reminder {
+                runtime_shell.shell.relearn_party_move_special(
+                    party_index,
+                    move_id,
+                    Some(move_index),
+                )?
+            } else {
+                runtime_shell
+                    .shell
+                    .delete_party_move_special(party_index, move_index)?;
+                runtime_shell
+                    .shell
+                    .teach_party_move_special(party_index, move_id)?
+            };
             runtime_shell.last_audio_events.push(format!(
                 "move tutor replacement outcome={:?}",
                 used.outcome.effect
@@ -1265,6 +1309,7 @@ fn resolve_visible_script_party_selection(
             PendingScriptPartySelection::MoveTutor {
                 move_id,
                 party_index: Some(party_index),
+                reminder,
             },
             None,
         ) => {
@@ -1305,6 +1350,7 @@ fn resolve_visible_script_party_selection(
             runtime_shell.pc_confirmation = Some(VisiblePcConfirmation::MoveTutorStop {
                 move_id,
                 party_index,
+                reminder,
             });
             runtime_shell.yes_no_cursor = Some(MenuCursor {
                 surface_id: "pc:confirmation".to_string(),

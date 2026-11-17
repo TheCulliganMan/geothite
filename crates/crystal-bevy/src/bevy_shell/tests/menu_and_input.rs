@@ -5518,6 +5518,7 @@ fn move_tutor_known_incompatible_and_stop_branches_use_exported_text() {
             Some(PendingScriptPartySelection::MoveTutor {
                 move_id: move_id.to_string(),
                 party_index: None,
+                reminder: false,
             });
         runtime_shell.party_menu_open = true;
 
@@ -5551,6 +5552,7 @@ fn move_tutor_known_incompatible_and_stop_branches_use_exported_text() {
     runtime_shell.pc_confirmation = Some(VisiblePcConfirmation::MoveTutorStop {
         move_id: "FLAMETHROWER".to_string(),
         party_index: 0,
+        reminder: false,
     });
     runtime_shell.yes_no_cursor = Some(MenuCursor {
         surface_id: "pc:confirmation".to_string(),
@@ -5596,6 +5598,7 @@ fn move_tutor_four_move_prompt_preserves_every_exported_source_page() {
     runtime_shell.pending_script_party_selection = Some(PendingScriptPartySelection::MoveTutor {
         move_id: "FLAMETHROWER".to_string(),
         party_index: None,
+        reminder: false,
     });
     runtime_shell.party_menu_open = true;
 
@@ -5643,6 +5646,7 @@ fn move_tutor_four_move_prompt_preserves_every_exported_source_page() {
         Some(VisiblePcConfirmation::MoveTutorForget {
             move_id: "FLAMETHROWER".to_string(),
             party_index: 0,
+            reminder: false,
         })
     );
 
@@ -5687,6 +5691,7 @@ fn move_tutor_replacement_plays_each_sound_at_its_source_text_boundary() {
     runtime_shell.pending_script_party_selection = Some(PendingScriptPartySelection::MoveTutor {
         move_id: "FLAMETHROWER".to_string(),
         party_index: Some(0),
+        reminder: false,
     });
     runtime_shell.party_menu_open = true;
     runtime_shell.party_move_cursor = Some(MenuCursor {

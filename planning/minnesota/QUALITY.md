@@ -280,3 +280,51 @@ rollout; no production rollback was needed. Existing saves were preserved withou
 migration. No gameplay, controller journeys or visual review was performed. These
 build and static/content results do not establish complete campaign balance or
 playability.
+
+## Refinement goal (2026-11-17)
+
+The accepted ten improvements extend the selected adventure v01 release. The
+`pack_northstar_refinement` recipe preserves old map geometry, original actor
+slots, event constants, audio and non-Minnesota maps. Save migration is limited
+to the exact integrated/adventure raw and hosted releases, with full target
+state validation and an independent destination slot.
+
+Implementation covers:
+
+1. Checked prior-release save migration and backup recovery that preserve the
+   original primary, backup and earlier release slots.
+2. Grand Marais late-campaign supplies and early-route healing/Repel access.
+3. Distinct tactical AI profiles for each Gym Leader.
+4. A shared move reminder costing 500 only after successful learning, plus
+   renewable TMs and held battle tools in Minneapolis.
+5. A campaign-wide static assessment of all three starters, experience,
+   resources and counterplay, with targeted legal team and supply corrections.
+6. Six location-specific hidden-item clues and six upgraded detour rewards,
+   retaining the original forty collection receipts.
+7. An eight-leader rematch circuit with missing-leader feedback, differentiated
+   first-win prizes, and a one-time completion reward with full-Pack retries.
+8. An optional Champion-level Reed battle that preserves his hostile character.
+9. Distinct interactive Minneapolis model and St. Paul river-chart activities,
+   preserving the museums' existing clue rewards and collection flags.
+10. Visible shore restoration, a player-controlled Sera radio handoff, and
+    progress-aware return dialogue without granting rescue progress by talking.
+
+The selected raw candidate is
+`content-packs/minnesota-refinement-v02.crystalpack`, content identity
+`a9f23e3bc1dadad74c377d02c23df61dcf9ed70c1b1d5e3918805593f37a9527`,
+file SHA-256
+`5b173130deed7dc9c2af97b4bc2509e4f54f848c207361ff5278e21abce513ad`.
+Build/readback, independent static content comparison and all 602 Rust audio
+PCM/frame/loop checks pass. Both native object-entry and Continue sprite
+callbacks reconcile the appended shore actors for old saves. The hosted pack's
+only data changes are the standard clock/customization wrappers.
+
+Core legality, transactional teaching/payment, save recovery and compatibility,
+rematch reward ordering and canonical-page unit checks pass. Migration clears
+only completed text/end presentation records in the new copy, after rejecting
+active scenes and pending work; original progress and prior files are retained.
+Native graphical/terminal builds, both production browser WASM checks, the lean
+runtime check, workspace formatting and all-target Clippy pass. Existing
+warnings remain; the changed code introduces none. Publication is pending.
+Verification is restricted to builds, pure unit tests and static/content/release checks.
+No gameplay, controller journeys or client launches are authorized for this goal.

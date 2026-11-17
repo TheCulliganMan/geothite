@@ -3233,6 +3233,10 @@ fn open_visible_script_party_selection_for_command(
             Some("YoungerHaircutBrother") => PendingScriptPartySelection::YoungerHaircutBrother,
             Some("DaisysGrooming") => PendingScriptPartySelection::DaisysGrooming,
             Some("MoveDeletion") => PendingScriptPartySelection::MoveDeletion { party_index: None },
+            Some("MoveReminder") => PendingScriptPartySelection::MoveReminder {
+                party_index: None,
+                moves: Vec::new(),
+            },
             Some("MoveTutor") => {
                 let value = runtime_shell
                     .shell
@@ -3249,6 +3253,7 @@ fn open_visible_script_party_selection_for_command(
                 PendingScriptPartySelection::MoveTutor {
                     move_id: move_id.to_string(),
                     party_index: None,
+                    reminder: false,
                 }
             }
             _ => return Ok(false),
