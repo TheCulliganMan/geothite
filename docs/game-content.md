@@ -55,6 +55,44 @@ tools in separate commands; retain one target directory so common dependencies
 remain cached. The no-default-feature command above intentionally checks only
 the runtime library, rather than the authoring CLI targets.
 
+## Minnesota story flow
+
+The story revision builds on the released floorplans. Mina offers her date when
+Reed moves, and the Itasca marker can supply the date if the visitor skipped the
+Brainerd ranger. Finn's meter and the Duluth radio call open the confrontation
+with Hale. The Ely registrar still requires all eight badges. The later drill
+and valve controls each have an action and a consequence. Finn remembers which
+controls are already closed on return visits.
+
+The source of the 906 revised passages is `story_flow_revision.dialogue` in
+`planning/minnesota/story.json`. The 276 separate trainer return conversations
+are reachable through the ordinary follow-up interaction. The current floorplan
+pair can carry forward an idle save in place. The eight earlier raw and hosted
+sources retain their existing room reentry and mine relocation rules.
+
+Run these commands from the repository with both external floorplan parents
+available. The two output packs must have fresh, ignored paths.
+
+```sh
+mkdir -p target/story-flow-20261117
+cargo build --locked -p crystal-assets --bin pack_northstar_story_flow \
+  --bin materialize_northstar_hosted --bin verify_crystalpack
+target/debug/pack_northstar_story_flow \
+  content-packs/minnesota-floorplans-v01.crystalpack \
+  target/iron-workings-20261117/hosted-v01.crystalpack planning/minnesota \
+  content-packs/minnesota-story-flow-v01.crystalpack
+target/debug/materialize_northstar_hosted content-packs/minnesota-story-flow-v01.crystalpack \
+  target/story-flow-20261117/hosted.crystalpack
+target/debug/verify_crystalpack target/story-flow-20261117/hosted.crystalpack --audio --desktop
+python3 planning/minnesota/tools/audit_story_flow.py \
+  content-packs/minnesota-floorplans-v01.crystalpack content-packs/minnesota-story-flow-v01.crystalpack
+```
+
+The Python audit uses `cbor2` and Pillow. Supply the hosted pair to the same
+command to check the installer and browser content. The audit reads installed
+script branches, trainer callback targets and native text pages without starting
+a game session.
+
 ## Minnesota regional floorplans and exploration
 
 The floorplan revision builds on the exact v04 raw pack and its hosted counterpart.

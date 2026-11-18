@@ -163,7 +163,36 @@ def check_trainers(before, after):
 
 def run(parent, child, dialogue):
     old, new = parent["data"], child["data"]
-    outputs = {"identity", "report", "data"}
+    migration = "data/northstar-save-compatibility.json"
+    runtime = parent["runtime_files"]
+    updated = child["runtime_files"]
+    require(runtime.keys() == updated.keys(), "changed runtime file roster")
+    require(all(runtime[k] == updated[k] for k in runtime.keys() - {migration}), "changed runtime art or assets")
+    old_save = json.loads(bytes(runtime[migration]))
+    new_save = json.loads(bytes(updated[migration]))
+    require(old_save["schema_version"] == 3 and new_save["schema_version"] == 4 and
+            len(new_save["sources"]) == len(old_save["sources"]) + 2 and
+            new_save["sources"][2:] == old_save["sources"], "older save lineage")
+    release = json.loads((REGION / "world.json").read_text())["regional_floorplans_revision"]
+    for index, prefix in enumerate(("", "hosted_")):
+        require(new_save["sources"][index] == {
+            "modpack_id": old_save["target_modpack_ids"][index],
+            "modpack_hash": release[f"{prefix}pack_sha256"],
+            "content_hash": release["content_identity" if not prefix else "hosted_content_identity"],
+        }, f"exact {prefix}floorplan predecessor")
+    for key in old_save.keys() - {"schema_version", "target_manifest", "target_modpack_ids", "sources"}:
+        require(old_save[key] == new_save[key], f"changed earlier save migration {key}")
+    for key in parent["report"].keys() - {"manifests"}:
+        require(parent["report"][key] == child["report"][key], f"changed build report {key}")
+    # The raw revision is appended; hosted builds then reapply their original clock
+    # and appearance publishers. Both retain the prior order around this insertion.
+    added = new_save["target_manifest"]
+    before = parent["report"]["manifests"]
+    wrappers = ["realtime-clock", "player-customization"]
+    expected = before[:-2] + [added] + wrappers if before[-2:] == wrappers else before + [added]
+    require(added == "northstar-story-flow-v1" and added not in before and
+            child["report"]["manifests"] == expected, "release manifest")
+    outputs = {"identity", "report", "data", "runtime_files"}
     require(parent.keys() == child.keys() and old.keys() == new.keys(), "changed pack sections")
     for key in parent.keys() - outputs:
         require(parent[key] == child[key], f"non-story pack section {key}")
@@ -184,6 +213,21 @@ def run(parent, child, dialogue):
             require(before[key] == after[key], f"{name} changed {key}")
         old_scripts, scripts = before["scripts"], after["scripts"]
         require(old_scripts.keys() <= scripts.keys(), f"{name} lost scripts")
+        fresh = scripts.keys() - old_scripts.keys()
+        if fresh:
+            reachable = set()
+            # Map roots are unchanged. New subprograms must be reachable from
+            # a pre-existing program, directly or through another new label.
+            def links(label):
+                return {arg for row in scripts[label] for arg in row["args"] if arg in fresh}
+
+            frontier = set().union(*(links(label) for label in old_scripts))
+            while frontier:
+                label = frontier.pop()
+                if label not in reachable:
+                    reachable.add(label)
+                    frontier.update(links(label) - reachable)
+            require(reachable == fresh, f"{name} unreachable additions {sorted(fresh - reachable)}")
         previous_items = Counter()
         current_items = Counter()
         for label, rows in scripts.items():

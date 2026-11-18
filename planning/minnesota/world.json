@@ -7964,7 +7964,7 @@
     "status": "Accepted current-parent terrain revision: source/native pixels, strict whole-pack preservation, directional grass/ledge proof, actual2D review, native encounters/trainerPP/resources/Continue and stdio pass. CurrentR12 work preserved.",
     "scope_limit": "Sequential Minnesota grass pass remains open beyond R01-R03. Explicit local fixtures do not prove an earned statewide campaign."
   },
-  "active_local_review_revision": "regional_floorplans_revision",
+  "active_local_review_revision": "story_flow_revision",
   "script_command_repair_revision": {
     "kind": "missing_minnesota_map_command_records",
     "parent_revision": "field_hm_habitats_cyclists_revision",
@@ -12649,5 +12649,22 @@
     "ordinary_trainers_with_sight": 301,
     "brainerd_shallow_water_tiles": 80,
     "hosted_release": "floorplans-20261117"
+  },
+  "story_flow_revision": {
+    "kind": "native_2d_story_revision",
+    "parent_revision": "regional_floorplans_revision",
+    "pack": "content-packs/minnesota-story-flow-v01.crystalpack",
+    "pack_sha256": "02e18ba71203d8aa2e10658c6babc53512daeef592ee53fb2900630f91aa57cb",
+    "content_identity": "79c1c85ebc25b200c9fe30689299af09bc88182828931576e512736395ebd521",
+    "hosted_pack_sha256": "f4dd4819f039631c81372078d8640f7929114d46bdef90f5ae90d42612a789a0",
+    "hosted_content_identity": "9fadbe2b9ecf745d0cc2852e745b12d6fd2634dc694e38ac0f0986e4e38624e3",
+    "map_count": 743,
+    "changed_maps_from_parent": 114,
+    "revised_text_entries": 906,
+    "ordinary_sight_trainers": 301,
+    "new_trainer_return_conversations": 276,
+    "save_compatibility_source_identities": 10,
+    "runbook": "docs/game-content.md#minnesota-story-flow",
+    "status": "Selected locally. The raw and hosted packs contain the same revised Minnesota story."
   }
 }
