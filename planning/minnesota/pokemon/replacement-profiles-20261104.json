@@ -2142,7 +2142,8 @@
         "DIG",
         "EARTHQUAKE",
         "FLY",
-        "SWIFT"
+        "SWIFT",
+        "STEEL_WING"
       ],
       "egg_moves": []
     },
@@ -2260,7 +2261,8 @@
         "DIG",
         "EARTHQUAKE",
         "FLY",
-        "SWIFT"
+        "SWIFT",
+        "STEEL_WING"
       ],
       "egg_moves": []
     },
@@ -2381,7 +2383,8 @@
         "BLIZZARD",
         "ICY_WIND",
         "FLY",
-        "SWIFT"
+        "SWIFT",
+        "STEEL_WING"
       ],
       "egg_moves": []
     },
@@ -2502,7 +2505,8 @@
         "BLIZZARD",
         "ICY_WIND",
         "FLY",
-        "SWIFT"
+        "SWIFT",
+        "STEEL_WING"
       ],
       "egg_moves": []
     },
@@ -2620,7 +2624,8 @@
         "BLIZZARD",
         "ICY_WIND",
         "FLY",
-        "SWIFT"
+        "SWIFT",
+        "STEEL_WING"
       ],
       "egg_moves": []
     },

@@ -770,7 +770,8 @@
         "IRON_TAIL",
         "SUNNY_DAY",
         "PROTECT",
-        "REST"
+        "REST",
+        "THUNDERPUNCH"
       ],
       "egg_moves": [
         "COUNTER",
@@ -2793,7 +2794,8 @@
         "STRENGTH",
         "PROTECT",
         "RETURN",
-        "REST"
+        "REST",
+        "STEEL_WING"
       ],
       "egg_moves": [
         "TWINEEDLE",
@@ -2920,7 +2922,8 @@
         "STRENGTH",
         "PROTECT",
         "RETURN",
-        "REST"
+        "REST",
+        "STEEL_WING"
       ],
       "egg_moves": [
         "TWINEEDLE",
@@ -3044,7 +3047,8 @@
         "STRENGTH",
         "PROTECT",
         "RETURN",
-        "REST"
+        "REST",
+        "STEEL_WING"
       ],
       "egg_moves": [
         "TWINEEDLE",
@@ -3689,7 +3693,8 @@
         "STRENGTH",
         "EARTHQUAKE",
         "PROTECT",
-        "REST"
+        "REST",
+        "THUNDERPUNCH"
       ],
       "egg_moves": []
     },
@@ -3814,7 +3819,8 @@
         "STRENGTH",
         "EARTHQUAKE",
         "PROTECT",
-        "REST"
+        "REST",
+        "THUNDERPUNCH"
       ],
       "egg_moves": []
     },
@@ -10140,7 +10146,8 @@
         "RETURN",
         "ATTRACT",
         "ENDURE",
-        "PROTECT"
+        "PROTECT",
+        "THUNDERPUNCH"
       ],
       "egg_moves": [
         "COMET_PUNCH",
@@ -17102,7 +17109,8 @@
         "FRUSTRATION",
         "DOUBLE_TEAM",
         "PROTECT",
-        "REST"
+        "REST",
+        "STEEL_WING"
       ],
       "egg_moves": [
         "WHIRLWIND",
@@ -17227,7 +17235,8 @@
         "FRUSTRATION",
         "DOUBLE_TEAM",
         "PROTECT",
-        "REST"
+        "REST",
+        "STEEL_WING"
       ],
       "egg_moves": [
         "WHIRLWIND",
@@ -24830,7 +24839,8 @@
         "DETECT",
         "ENDURE",
         "PROTECT",
-        "REST"
+        "REST",
+        "THUNDERPUNCH"
       ],
       "egg_moves": [
         "ENCORE",
@@ -29051,7 +29061,8 @@
         "HEADBUTT",
         "ENDURE",
         "PROTECT",
-        "REST"
+        "REST",
+        "THUNDERPUNCH"
       ],
       "egg_moves": [
         "DOUBLESLAP",
@@ -29178,7 +29189,8 @@
         "HEADBUTT",
         "ENDURE",
         "PROTECT",
-        "REST"
+        "REST",
+        "THUNDERPUNCH"
       ],
       "egg_moves": [
         "DOUBLESLAP",
@@ -41796,7 +41808,8 @@
         "DIG",
         "EARTHQUAKE",
         "FLY",
-        "SWIFT"
+        "SWIFT",
+        "STEEL_WING"
       ],
       "egg_moves": []
     },
@@ -41914,7 +41927,8 @@
         "DIG",
         "EARTHQUAKE",
         "FLY",
-        "SWIFT"
+        "SWIFT",
+        "STEEL_WING"
       ],
       "egg_moves": []
     },
@@ -42035,7 +42049,8 @@
         "BLIZZARD",
         "ICY_WIND",
         "FLY",
-        "SWIFT"
+        "SWIFT",
+        "STEEL_WING"
       ],
       "egg_moves": []
     },
@@ -42156,7 +42171,8 @@
         "BLIZZARD",
         "ICY_WIND",
         "FLY",
-        "SWIFT"
+        "SWIFT",
+        "STEEL_WING"
       ],
       "egg_moves": []
     },
@@ -42274,7 +42290,8 @@
         "BLIZZARD",
         "ICY_WIND",
         "FLY",
-        "SWIFT"
+        "SWIFT",
+        "STEEL_WING"
       ],
       "egg_moves": []
     },
