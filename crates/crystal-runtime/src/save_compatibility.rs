@@ -7,6 +7,7 @@ use anyhow::{Context, Result, ensure};
 use crystal_assets::GameDataSet;
 use crystal_core::save::{self, SaveModpackIdentity};
 use crystal_core::state::{BattleMemory, GameState, OverworldMemory};
+use crystal_core::world::session::object_event_starts_fixed_and_sliding;
 use serde::Deserialize;
 
 use crate::CrystalRuntime;
@@ -380,7 +381,7 @@ fn upgrade_source_checkpoint(
         .unchanged_checkpoint_parents
         .contains(&source.modpack_id)
     {
-        return normalize_upgrade_checkpoint(state);
+        return normalize_upgrade_checkpoint(state, data);
     }
     if !metadata.regional_parents.is_empty() {
         road_trainer_save_migration::align_undefeated_trainers(data, &mut state)?;
@@ -389,13 +390,13 @@ fn upgrade_source_checkpoint(
     if metadata.regional_parents.contains(&source.modpack_id)
         || direct_story_parent(metadata, &source.modpack_id)
     {
-        return normalize_upgrade_checkpoint(state);
+        return normalize_upgrade_checkpoint(state, data);
     }
     let subset = metadata
         .layout_reentry
         .as_deref()
         .filter(|_| direct_iron_parent(metadata, &source.modpack_id));
-    let mut upgraded = upgrade_checkpoint(state, metadata, subset)?;
+    let mut upgraded = upgrade_checkpoint(state, metadata, subset, data)?;
     if let Some(policy) = &metadata.iron_relocations {
         policy.apply(data, &mut upgraded)?;
     }
@@ -546,8 +547,9 @@ fn upgrade_checkpoint(
     state: GameState,
     metadata: &Compatibility,
     subset: Option<&[String]>,
+    data: &GameDataSet,
 ) -> Result<GameState> {
-    let mut upgraded = normalize_upgrade_checkpoint(state)?;
+    let mut upgraded = normalize_upgrade_checkpoint(state, data)?;
     if let Some(policy) = &metadata.gym_reentry {
         policy.apply(&mut upgraded, subset)?;
     }
@@ -595,15 +597,15 @@ fn read_pair(
 // copy reaches us. Completed source-command positions are presentation history,
 // not executable work; edited dialogue may legitimately move those positions.
 // Never clear active ownership or gameplay state to make an upgrade validate.
-fn normalize_upgrade_checkpoint(mut state: GameState) -> Result<GameState> {
-    validate_upgrade_checkpoint(&state)?;
+fn normalize_upgrade_checkpoint(mut state: GameState, data: &GameDataSet) -> Result<GameState> {
+    validate_upgrade_checkpoint(&state, data)?;
     state.script_runtime.script_ended = None;
     state.script_runtime.text_events.clear();
     state.script_runtime.active_text_label = None;
     Ok(state)
 }
 
-fn validate_upgrade_checkpoint(state: &GameState) -> Result<()> {
+fn validate_upgrade_checkpoint(state: &GameState, data: &GameDataSet) -> Result<()> {
     ensure!(
         matches!(state.battle, BattleMemory::Inactive)
             && state.pending_static_wild_terminal.is_none()
@@ -655,7 +657,7 @@ fn validate_upgrade_checkpoint(state: &GameState) -> Result<()> {
             && script.command_queue.is_empty(),
         "finish the active scene before upgrading"
     );
-    for memory in state.map_object_overrides.values() {
+    for (map_name, memory) in &state.map_object_overrides {
         ensure!(
             memory.following.is_none()
                 && memory.object_structs.following_queued_step.is_none()
@@ -667,17 +669,31 @@ fn validate_upgrade_checkpoint(state: &GameState) -> Result<()> {
                 && !memory.object_structs.player_normal_following,
             "finish movement before upgrading"
         );
-        ensure!(
-            memory.object_structs.structs.iter().all(|actor| actor
-                .last_tile_occupied_remaining_frames
-                == 0
-                && actor.strength_push_direction.is_none()
-                && !actor.strength_moving
-                && !actor.sliding
-                && !actor.normal_following
-                && actor.following_not_exact_leader_slot.is_none()),
-            "finish actor movement before upgrading"
-        );
+        for actor in &memory.object_structs.structs {
+            ensure!(
+                actor.last_tile_occupied_remaining_frames == 0
+                    && actor.strength_push_direction.is_none()
+                    && !actor.strength_moving
+                    && !actor.normal_following
+                    && actor.following_not_exact_leader_slot.is_none(),
+                "finish actor movement before upgrading"
+            );
+            if actor.sliding {
+                // Some stationary objects carry both sprite flags from the moment they spawn.
+                let map = data.map_module(map_name)?;
+                let event = actor
+                    .map_object_index
+                    .checked_sub(1)
+                    .and_then(|index| map.objects.get(usize::from(index)))
+                    .context("saved sliding actor is missing its map event")?;
+                ensure!(
+                    actor.fixed_facing
+                        && actor.step_duration.is_none()
+                        && object_event_starts_fixed_and_sliding(&event.spritemovedata),
+                    "finish actor movement before upgrading"
+                );
+            }
+        }
     }
     Ok(())
 }
@@ -685,6 +701,7 @@ fn validate_upgrade_checkpoint(state: &GameState) -> Result<()> {
 #[cfg(test)]
 mod tests {
     use super::{parse_compatibility, read_pair, validate_upgrade_checkpoint};
+    use crystal_assets::GameDataSet;
     use crystal_core::save::{
         SaveModpackIdentity, read_save_game_bytes_for_modpack, write_new_compatible_save,
     };
@@ -729,9 +746,9 @@ mod tests {
             money: 4321,
             ..GameState::default()
         };
-        assert!(validate_upgrade_checkpoint(&state).is_ok());
+        assert!(validate_upgrade_checkpoint(&state, &GameDataSet::default()).is_ok());
         state.script_runtime.text_window_open = true;
-        assert!(validate_upgrade_checkpoint(&state).is_err());
+        assert!(validate_upgrade_checkpoint(&state, &GameDataSet::default()).is_err());
         assert_eq!(state.money, 4321);
     }
 
@@ -773,14 +790,14 @@ mod tests {
                 following_not_exact_leader_slot: None,
             });
         state.map_object_overrides.insert("MnWinona".into(), memory);
-        assert!(validate_upgrade_checkpoint(&state).is_ok());
+        assert!(validate_upgrade_checkpoint(&state, &GameDataSet::default()).is_ok());
         state
             .map_object_overrides
             .get_mut("MnWinona")
             .expect("map")
             .object_structs
             .player_last_tile_occupied_remaining_frames = 1;
-        assert!(validate_upgrade_checkpoint(&state).is_err());
+        assert!(validate_upgrade_checkpoint(&state, &GameDataSet::default()).is_err());
     }
 
     #[test]

@@ -4031,7 +4031,8 @@ pub fn object_event_initial_facing(spritemovedata: &str) -> Option<Direction> {
     }
 }
 
-fn object_event_starts_fixed_and_sliding(movement: &str) -> bool {
+/// Whether a newly allocated object starts with both fixed-facing and sliding sprite flags.
+pub fn object_event_starts_fixed_and_sliding(movement: &str) -> bool {
     matches!(
         movement,
         "SPRITEMOVEDATA_STILL"
