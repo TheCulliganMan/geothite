@@ -279,6 +279,39 @@ fn iron_workings_target_accepts_both_v04_parents_and_reviewed_landings() {
     } else {
         assert_eq!(meta.schema_version, 3);
     }
+    if runtime
+        .modpack()
+        .id()
+        .split('+')
+        .any(|id| id == super::REGIONAL_DESIGN_MANIFEST)
+    {
+        assert_eq!(meta.sources.len(), 12);
+        assert_eq!(meta.regional_parents.len(), 2);
+        for source in &meta.sources[..2] {
+            assert!(meta.regional_parents.contains(&source.modpack_id));
+            let state = source_at(
+                "MnR17C00R01",
+                TilePosition::new(24, 2),
+                MovementMode::Normal,
+            );
+            let upgraded = upgrade_source_checkpoint(state.clone(), &meta, source, runtime.data())
+                .expect("regional design preserves the exact road checkpoint");
+            assert_eq!(upgraded.overworld, state.overworld);
+            assert_eq!(upgraded.flags, state.flags);
+        }
+        let bytes = runtime
+            .runtime_file(SAVE_COMPATIBILITY_FILE)
+            .expect("release metadata");
+        let mut bad: Value = serde_json::from_slice(bytes).expect("JSON");
+        bad["sources"][0]["content_hash"] = json!("0".repeat(64));
+        assert!(
+            parse_compatibility(
+                &serde_json::to_vec(&bad).expect("JSON"),
+                runtime.modpack().id()
+            )
+            .is_err()
+        );
+    }
     meta.iron_relocations
         .as_ref()
         .expect("iron policy")

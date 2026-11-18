@@ -17,6 +17,7 @@ use crate::iron_save_migration::{self, IronRelocations};
 pub const SAVE_COMPATIBILITY_FILE: &str = "data/northstar-save-compatibility.json";
 pub const SAVE_COMPATIBILITY_MANIFEST: &str = "northstar-refinement-v1";
 const STORY_FLOW_MANIFEST: &str = "northstar-story-flow-v1";
+const REGIONAL_DESIGN_MANIFEST: &str = "northstar-regional-design-v1";
 
 /// One exact, author-approved source release. The hash covers serialized bytes.
 #[derive(Debug, Clone, Deserialize)]
@@ -38,6 +39,8 @@ struct Compatibility {
     cave_reentry: Option<CaveReentry>,
     iron_relocations: Option<IronRelocations>,
     layout_reentry: Option<Vec<String>>,
+    #[serde(skip)]
+    regional_parents: Vec<String>,
 }
 
 /// Returns the exact source identities approved by this target's hashed metadata.
@@ -52,6 +55,19 @@ pub fn compatible_save_sources(runtime: &CrystalRuntime) -> Result<Vec<Compatibl
 }
 
 fn parse_compatibility(bytes: &[u8], target_id: &str) -> Result<Compatibility> {
+    #[derive(Deserialize)]
+    struct Header {
+        schema_version: u8,
+    }
+    let header: Header = serde_json::from_slice(bytes).context("save compatibility version")?;
+    if header.schema_version == 5 {
+        return parse_regional_compatibility(bytes, target_id);
+    }
+    parse_prior_compatibility(bytes, target_id)
+}
+
+// Keep earlier reentry and relocation rules bound to the release that authored them.
+fn parse_prior_compatibility(bytes: &[u8], target_id: &str) -> Result<Compatibility> {
     let metadata: Compatibility =
         serde_json::from_slice(bytes).context("save compatibility metadata")?;
     ensure!(
@@ -156,6 +172,65 @@ fn parse_compatibility(bytes: &[u8], target_id: &str) -> Result<Compatibility> {
     Ok(metadata)
 }
 
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct RegionalCompatibility {
+    schema_version: u8,
+    target_manifest: String,
+    target_modpack_ids: [String; 2],
+    sources: [CompatibleSaveSource; 2],
+    inherited: serde_json::Value,
+}
+
+fn parse_regional_compatibility(bytes: &[u8], target_id: &str) -> Result<Compatibility> {
+    let release: RegionalCompatibility = serde_json::from_slice(bytes)?;
+    let [raw, hosted] = &release.target_modpack_ids;
+    let suffix = "+realtime-clock+player-customization";
+    ensure!(
+        release.schema_version == 5
+            && release.target_manifest == REGIONAL_DESIGN_MANIFEST
+            && hosted.strip_prefix(raw) == Some(suffix)
+            && (target_id == raw || target_id == hosted),
+        "unsupported regional design target"
+    );
+    let parent = raw
+        .strip_suffix(&format!("+{REGIONAL_DESIGN_MANIFEST}"))
+        .context("regional design marker must follow the story release")?;
+    ensure!(
+        !parent.split('+').any(|id| id == REGIONAL_DESIGN_MANIFEST),
+        "duplicate design marker"
+    );
+    let parent_ids = [parent.to_owned(), format!("{parent}{suffix}")];
+    let mut policy = parse_prior_compatibility(&serde_json::to_vec(&release.inherited)?, parent)?;
+    ensure!(
+        policy.schema_version == 4 && policy.target_modpack_ids == parent_ids,
+        "regional design requires the released story policy"
+    );
+    for id in &release.target_modpack_ids {
+        SaveModpackIdentity::validate_id(id)?;
+    }
+    for ((source, id), (pack_hash, content_hash)) in release.sources.iter().zip(&parent_ids).zip([
+        (
+            "02e18ba71203d8aa2e10658c6babc53512daeef592ee53fb2900630f91aa57cb",
+            "79c1c85ebc25b200c9fe30689299af09bc88182828931576e512736395ebd521",
+        ),
+        (
+            "f4dd4819f039631c81372078d8640f7929114d46bdef90f5ae90d42612a789a0",
+            "9fadbe2b9ecf745d0cc2852e745b12d6fd2634dc694e38ac0f0986e4e38624e3",
+        ),
+    ]) {
+        ensure!(
+            source.modpack_id == *id
+                && source.modpack_hash == pack_hash
+                && source.content_hash == content_hash,
+            "regional design requires the exact story parents"
+        );
+    }
+    policy.regional_parents = parent_ids.into();
+    policy.sources.splice(0..0, release.sources);
+    Ok(policy)
+}
+
 /// Resumes/recover a current slot, or copies the first compatible prior slot.
 ///
 /// Prior identities come only from this target's checked compatibility metadata.
@@ -246,7 +321,9 @@ fn upgrade_source_checkpoint(
     data: &GameDataSet,
 ) -> Result<GameState> {
     // Story-only changes preserve the floorplan parent's exact room and actor positions.
-    if direct_story_parent(metadata, &source.modpack_id) {
+    if metadata.regional_parents.contains(&source.modpack_id)
+        || direct_story_parent(metadata, &source.modpack_id)
+    {
         return normalize_upgrade_checkpoint(state);
     }
     let subset = metadata
