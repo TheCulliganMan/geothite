@@ -865,3 +865,48 @@ To roll back the active Story Flow release, run this on the build host.
 ```sh
 python3 /mnt/homelab/config/geothite/releases/story-flow-20261117/deploy.py rollback
 ```
+
+## Minnesota regional design release (2026-11-18)
+
+The regional revision uses the November 17 Story Flow release. The pack was
+authored at `ccfb96f1`, and the native clients, browser clients and server use
+the save-compatible runtime at `4e06870f`. Production serves
+`regional-design-20261118` from image
+`sha256:9b5b801c70c17bcc3f1fc4b82c2ae46c0e188a8504927cb8224e58b456c075be`.
+
+| Artifact | SHA-256 | Content identity |
+| --- | --- | --- |
+| Raw Minnesota pack | `ea89ae2a3df712b16018c3f7d89f96cfef5486f24778476cff5f7df490af74dd` | `9f34e8a1279499804524a383a7c641fcee7a2e11581cce5fc14468c65338d2d9` |
+| Hosted and installer pack | `19caa20f4616a72a378f757cbef7052c5bf2a91d079782e267a7b43f6b91a64e` | `4076beb45e8a5d5caeabc3e69449f243c3e57de2f6ec42653f418bf3b7051f49` |
+
+Each independent pack comparison checked 743 maps, 48 changed map modules,
+329 terrain changes, 125 fixed trainer sightlines, seven moved pickup receipts
+and one new Fair reward. All existing warps, parties, badge and victory
+scripts, item receipts and encounter tables passed. The hosted check matched
+the PCM hashes, frame counts and loop ranges for all 602 audio programs.
+The [four independent submissions](../planning/minnesota/reviews/regional-design-20261118/README.md)
+record the original design evidence.
+
+The 27 save tests and the raw and hosted target-pack tests passed. Four
+previously walkable Route 10 takeoff squares were tested using a real old-format
+save at each location for each parent. The migration preserved position and
+progress, allowed the southward hop and retained a way back up. The new
+compatibility metadata admits both exact story parents and inherits ten
+earlier identities. Workspace formatting and all-target Clippy for the asset and
+runtime crates completed. Compiler warnings were in existing code. Verification
+used data, isolated saves and service checks without a playthrough.
+
+Public verification matched 140 changed browser assets, both compressed
+entry pages, the graphical and TUI WASM, and the hosted pack. The network
+server returned the expected welcome and content identity. Apple Silicon and
+Linux x86-64 each completed two silent installer passes with the scratch save
+intact. The running service retained the previous storage mounts.
+
+Local cleanup removed 5.14 GiB of temporary compiler output. It retained
+the previous debug client, both updated release executables, and the two
+verified packs. If rollback is needed while this release is
+active, run this on the build host.
+
+```sh
+python3 /mnt/homelab/config/geothite/releases/regional-design-20261118/deploy.py rollback
+```

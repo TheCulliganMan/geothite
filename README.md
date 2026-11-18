@@ -12,8 +12,15 @@ The [Minnesota campaign polish review](docs/game-content.md#minnesota-campaign-p
 includes local build and play commands for the dialogue, roster, and early
 fishing update on top of the Glacier Line pack.
 
-The [current Minnesota release](docs/deployment.md#minnesota-story-flow-release-2026-11-17),
-`story-flow-20261117`, lets you follow Ivy's distress call as soon as the harbor
+The [current Minnesota release](docs/deployment.md#minnesota-regional-design-release-2026-11-18),
+`regional-design-20261118`, gives all 125 numbered-road trainers individual
+sightlines, opens two routes around the Border Pines ice, and marks the State
+Fair avenue from the east gate to the grandstand. The
+[regional design review](planning/minnesota/reviews/regional-design-20261118/README.md)
+covers the new cave rewards, native artwork and remaining design priorities.
+
+The [story release](docs/deployment.md#minnesota-story-flow-release-2026-11-17)
+lets you follow Ivy's distress call as soon as the harbor
 receives the pump readings. Mina offers her date after Reed steps aside, Finn
 remembers the rescue, and ordinary trainers have new things to say when you
 come back after a battle.

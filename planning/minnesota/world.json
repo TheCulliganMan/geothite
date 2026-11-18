@@ -12685,6 +12685,7 @@
     "save_compatibility_source_identities": 12,
     "reviews": "planning/minnesota/reviews/regional-design-20261118/README.md",
     "runbook": "docs/game-content.md#minnesota-regional-design",
-    "status": "Selected locally. The released-parent comparisons and non-destructive save migration passed for both pack variants."
+    "status": "Selected locally and published. Released-parent comparisons and save migration passed for both variants.",
+    "hosted_release": "regional-design-20261118"
   }
 }
