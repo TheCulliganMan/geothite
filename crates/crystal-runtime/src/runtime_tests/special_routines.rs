@@ -2897,7 +2897,7 @@
     }
 
     #[test]
-    fn runtime_cut_field_move_replaces_block_and_persists_override() {
+    fn runtime_cut_field_move_updates_loaded_map_and_regrows_tree_on_continue() {
         let root = temp_repository_root("field-move-cut");
         write_tileset(
             &root,
@@ -2920,7 +2920,11 @@
         module.blocks = vec![0x5b, 0x00];
         data.map_attributes
             .insert("RuntimeMap".to_string(), module.attributes.clone());
-        add_runtime_deferred_field_move_global_scripts(&mut data);
+        add_runtime_deferred_field_move_global_scripts(
+            &mut data,
+            &["Script_Cut"],
+            &["GetPartyNickname", "UseCutText", "CutDownTreeOrGrass"],
+        );
         let mut connected_map = runtime_map();
         connected_map.id = "ConnectedMap".to_string();
         connected_map.attributes.map_constant = None;
@@ -3019,8 +3023,15 @@
 
         let resumed =
             RuntimeOverworldSession::from_state(&runtime, &asset_root, session.state.clone())
-                .expect("resume with cut override");
-        assert_eq!(resumed.overworld.map.metatile_at(0, 0), Some(0x3c));
+                .expect("continue from the cut clearing");
+        assert_eq!(resumed.overworld.player.tile, session.overworld.player.tile);
+        assert_eq!(resumed.overworld.map.metatile_at(0, 0), Some(0x5b));
+        assert!(!resumed.state.map_block_overrides.contains_key("RuntimeMap"));
+        assert_eq!(
+            resumed.state.map_block_overrides.get("ConnectedMap"),
+            session.state.map_block_overrides.get("ConnectedMap"),
+            "Continue rebuilds the loaded map and retains its neighbor's changes"
+        );
         let _ = std::fs::remove_dir_all(root);
     }
 
@@ -3109,7 +3120,11 @@
         module.blocks = vec![0x07, 0x00];
         data.map_attributes
             .insert("RuntimeMap".to_string(), module.attributes.clone());
-        add_runtime_deferred_field_move_global_scripts(&mut data);
+        add_runtime_deferred_field_move_global_scripts(
+            &mut data,
+            &["Script_UsedWhirlpool"],
+            &["GetPartyNickname", "UseWhirlpoolText", "DisappearWhirlpool"],
+        );
         let runtime = CrystalRuntime::from_compiled_pack(
             &asset_root,
             CompiledGamePack::new_unchecked_for_tests(data, report()),
@@ -3178,7 +3193,17 @@
         write_floor_tileset(&root, "johto");
         let asset_root = AssetRoot::new(&root);
         let mut data = minimal_runtime_data_with_scripted_battles();
-        add_runtime_deferred_field_move_global_scripts(&mut data);
+        add_runtime_deferred_field_move_global_scripts(
+            &mut data,
+            &["Script_UseFlash", "Script_StrengthFromMenu", "Script_UsedStrength"],
+            &[
+                "UseFlashTextScript",
+                "BlindingFlash",
+                "SetStrengthFlag",
+                ".UseStrengthText@Script_UsedStrength",
+                ".MoveBoulderText@Script_UsedStrength",
+            ],
+        );
 
         let lit_runtime = CrystalRuntime::from_compiled_pack(
             &asset_root,
@@ -3356,7 +3381,11 @@
         );
         let asset_root = AssetRoot::new(&root);
         let mut data = minimal_runtime_data_with_scripted_battles();
-        add_runtime_deferred_field_move_global_scripts(&mut data);
+        add_runtime_deferred_field_move_global_scripts(
+            &mut data,
+            &["SurfFromMenuScript", "UsedSurfScript"],
+            &["GetPartyNickname", ".stubbed_fn@UsedSurfScript", "UsedSurfText"],
+        );
         data.tilesets.insert(
             "johto".to_string(),
             test_tileset(&[("00", &["FLOOR", "WATER", "FLOOR", "FLOOR"])]),
@@ -3543,7 +3572,17 @@
         );
         let asset_root = AssetRoot::new(&root);
         let mut data = minimal_runtime_data_with_scripted_battles();
-        add_runtime_deferred_field_move_global_scripts(&mut data);
+        add_runtime_deferred_field_move_global_scripts(
+            &mut data,
+            &["Script_UsedWaterfall"],
+            &[
+                "GetPartyNickname",
+                ".loop@Script_UsedWaterfall",
+                ".CheckContinueWaterfall@Script_UsedWaterfall",
+                ".WaterfallStep@Script_UsedWaterfall",
+                ".UseWaterfallText@Script_UsedWaterfall",
+            ],
+        );
         data.tilesets.insert(
             "johto".to_string(),
             test_tileset(&[

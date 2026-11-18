@@ -129,7 +129,18 @@ mod tests {
             iron_relocations: None,
             layout_reentry: None,
             regional_parents: vec!["direct-story".into()],
+            wayfinding_parents: vec!["direct-regional".into()],
         };
+        let regional = CompatibleSaveSource {
+            modpack_id: "direct-regional".into(),
+            modpack_hash: "b".repeat(64),
+            content_hash: "a".repeat(64),
+        };
+        assert_eq!(
+            upgrade_source_checkpoint(original.clone(), &metadata, &regional, &data)
+                .expect("a current regional save keeps its actors"),
+            original
+        );
         for source_id in ["direct-story", "older-compatible"] {
             let source = CompatibleSaveSource {
                 modpack_id: source_id.into(),

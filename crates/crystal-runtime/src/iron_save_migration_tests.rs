@@ -242,22 +242,16 @@ fn ongoing_sump_surf_and_canoe_positions_survive_all_eight_migrations() {
     }
 }
 
-fn check_carrier_save_landings(target: &CrystalRuntime) {
+fn check_ledge_save_landings(target: &CrystalRuntime, wayfinding: bool) {
     let parent_path = PathBuf::from(
-        std::env::var_os("CRYSTAL_REGIONAL_SAVE_PARENT").expect("released story parent pack"),
+        std::env::var_os("CRYSTAL_REGIONAL_SAVE_PARENT").expect("released parent pack"),
     );
     let root = AssetRoot::new(parent_path.parent().expect("parent pack directory"));
     let parent = CrystalRuntime::from_loaded_compiled_pack(
         &root,
-        read_loaded_verified_compiled_game_pack(&parent_path).expect("verified story parent"),
+        read_loaded_verified_compiled_game_pack(&parent_path).expect("verified parent"),
     )
     .expect("parent runtime");
-    let road = "MnR10C00R00";
-    let map = target.data().overworld_map(road).expect("carrier map");
-    let tileset = target
-        .data()
-        .tileset_collision("mn_iron_descent_thaw")
-        .expect("carrier collision");
     let dir = std::env::temp_dir().join(format!(
         "geothite-carrier-saves-{}-{}",
         std::process::id(),
@@ -271,68 +265,79 @@ fn check_carrier_save_landings(target: &CrystalRuntime) {
         force_step_after_turn: true,
         ..StepOptions::default()
     };
-    for x in 24..=27 {
-        let lip = TilePosition::new(x, 20);
-        let parent_slot = dir.join(format!("parent-{x}.crystalsave"));
-        let target_slot = dir.join(format!("target-{x}.crystalsave"));
-        let mut game = RuntimeGameShell::new_game_at_runtime_tile(
-            root.clone(),
-            parent.clone(),
-            parent.title_new_game_spawn_identifier().expect("spawn"),
-            road,
-            x,
-            20,
-        )
-        .expect("old idle carrier fixture");
-        game.save(&parent_slot).expect("save in released format");
-        let source = parent
-            .load_save(&parent_slot)
-            .expect("read released checkpoint");
-        let loaded = super::prepare_runtime_save_slot(target, &target_slot, |candidate| {
-            if candidate.modpack_id == parent.modpack().id() {
-                parent_slot.clone()
-            } else {
-                dir.join("absent.crystalsave")
-            }
-        })
-        .expect("migrate real carrier save");
-        assert!(loaded, "missing migrated save at {lip:?}");
-        let state = target
-            .load_save(&target_slot)
-            .expect("read migrated checkpoint");
-        assert_eq!(state.overworld, source.overworld);
-        assert_eq!(state.flags, source.flags);
-        let OverworldMemory::Active {
-            map_name,
-            tile,
-            facing,
-            mode,
-        } = state.overworld
-        else {
-            panic!("expected idle overworld save");
-        };
-        assert_eq!(map_name, road);
-        assert_eq!(tile, lip);
-        let player = PlayerMovementState { tile, facing, mode };
-        let mut upper = player;
-        assert!(matches!(
-            attempt_step(&mut upper, Direction::Up, &map, &tileset, options),
-            StepOutcome::Moved { to, .. } if to == TilePosition::new(x, 19)
-        ));
-        let mut lower = player;
-        assert!(matches!(
-            attempt_ledge_jump(&mut lower, Direction::Down, &map, &tileset, options),
-            LedgeJumpOutcome::Jumped { from, over, to, .. }
-                if from == lip && over == TilePosition::new(x, 21) && to == TilePosition::new(x, 22)
-        ));
-        assert!(matches!(
-            attempt_step(&mut lower, Direction::Up, &map, &tileset, options),
-            StepOutcome::Blocked { .. }
-        ));
-        assert!(matches!(
-            attempt_step(&mut lower, Direction::Down, &map, &tileset, options),
-            StepOutcome::Moved { to, .. } if to == TilePosition::new(x, 23)
-        ));
+    let mut cliffs = vec![("MnR10C00R00", "mn_iron_descent_thaw", 20, 24..=27)];
+    if wayfinding {
+        cliffs.push(("MnR01C00R00", "mn_outdoor_johto_stairs", 16, 24..=25));
+    }
+    for (road, atlas, y, columns) in cliffs {
+        let map = target.data().overworld_map(road).expect("cliff road");
+        let tileset = target
+            .data()
+            .tileset_collision(atlas)
+            .expect("cliff collision");
+        for x in columns {
+            let lip = TilePosition::new(x, y);
+            let parent_slot = dir.join(format!("{road}-parent-{x}.crystalsave"));
+            let target_slot = dir.join(format!("{road}-target-{x}.crystalsave"));
+            let mut game = RuntimeGameShell::new_game_at_runtime_tile(
+                root.clone(),
+                parent.clone(),
+                parent.title_new_game_spawn_identifier().expect("spawn"),
+                road,
+                x,
+                y,
+            )
+            .expect("old idle cliff fixture");
+            game.save(&parent_slot).expect("save in released format");
+            let source = parent
+                .load_save(&parent_slot)
+                .expect("read released checkpoint");
+            let loaded = super::prepare_runtime_save_slot(target, &target_slot, |candidate| {
+                if candidate.modpack_id == parent.modpack().id() {
+                    parent_slot.clone()
+                } else {
+                    dir.join("absent.crystalsave")
+                }
+            })
+            .expect("migrate old cliff save");
+            assert!(loaded, "missing migrated save at {lip:?}");
+            let state = target
+                .load_save(&target_slot)
+                .expect("read migrated checkpoint");
+            assert_eq!(state.overworld, source.overworld);
+            assert_eq!(state.flags, source.flags);
+            let OverworldMemory::Active {
+                map_name,
+                tile,
+                facing,
+                mode,
+            } = state.overworld
+            else {
+                panic!("expected idle overworld save");
+            };
+            assert_eq!(map_name, road);
+            assert_eq!(tile, lip);
+            let player = PlayerMovementState { tile, facing, mode };
+            let mut upper = player;
+            assert!(matches!(
+                attempt_step(&mut upper, Direction::Up, &map, &tileset, options),
+                StepOutcome::Moved { to, .. } if to == TilePosition::new(x, y - 1)
+            ));
+            let mut lower = player;
+            assert!(matches!(
+                attempt_ledge_jump(&mut lower, Direction::Down, &map, &tileset, options),
+                LedgeJumpOutcome::Jumped { from, over, to, .. }
+                    if from == lip && over == TilePosition::new(x, y + 1) && to == TilePosition::new(x, y + 2)
+            ));
+            assert!(matches!(
+                attempt_step(&mut lower, Direction::Up, &map, &tileset, options),
+                StepOutcome::Blocked { .. }
+            ));
+            assert!(matches!(
+                attempt_step(&mut lower, Direction::Down, &map, &tileset, options),
+                StepOutcome::Moved { to, .. } if to == TilePosition::new(x, y + 3)
+            ));
+        }
     }
     std::fs::remove_dir_all(dir).expect("remove test saves");
 }
@@ -395,7 +400,7 @@ fn iron_workings_target_accepts_both_v04_parents_and_reviewed_landings() {
             assert!(meta.wayfinding_parents.contains(&direct.modpack_id));
         }
         assert_eq!(meta.regional_parents.len(), 2);
-        check_carrier_save_landings(&runtime);
+        check_ledge_save_landings(&runtime, wayfinding);
         for source in &meta.sources[direct_count..direct_count + 2] {
             assert!(meta.regional_parents.contains(&source.modpack_id));
             let state = source_at(

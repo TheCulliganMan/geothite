@@ -1,3 +1,5 @@
+use std::collections::BTreeMap;
+
 use super::*;
 use crystal_assets::SpecialRoutineRule;
 use crystal_assets::modpack::{
@@ -2385,28 +2387,34 @@ fn add_runtime_field_encounters(data: &mut GameDataSet) {
     );
 }
 
-fn canonical_standard_scripts_for_field_tests() -> &'static serde_json::Map<String, serde_json::Value> {
-    static SCRIPTS: std::sync::OnceLock<serde_json::Map<String, serde_json::Value>> =
+fn canonical_scripts_for_field_tests() -> &'static BTreeMap<String, serde_json::Value> {
+    static SCRIPTS: std::sync::OnceLock<BTreeMap<String, serde_json::Value>> =
         std::sync::OnceLock::new();
     SCRIPTS.get_or_init(|| {
         let repository_root = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
             .join("../..")
             .canonicalize()
             .expect("workspace root");
-        let loaded = crystal_assets::read_loaded_verified_compiled_game_pack(
-            &repository_root.join("content-packs/core-modular.browser.crystalpack"),
-        )
-        .expect("read shipped pack for field-move script fixtures");
+        // This released pack retains the native field animation and Sweet Scent
+        // sources. The older core-modular pack omits both from its export.
+        let pack_path = std::env::var_os("CRYSTAL_RENDER_TEST_PACK")
+            .map(std::path::PathBuf::from)
+            .unwrap_or_else(|| {
+                repository_root.join("content-packs/minnesota-regional-design-v01.crystalpack")
+            });
+        let loaded = crystal_assets::read_loaded_verified_compiled_game_pack(&pack_path)
+            .expect("read shipped pack for field-move script fixtures");
         let runtime = CrystalRuntime::from_loaded_compiled_pack(&AssetRoot::new(repository_root), loaded)
             .expect("load shipped field-move scripts");
+        // Field moves use both StandardScripts and OverworldEvents. Read the
+        // installed global definitions through the same merge as the game.
         runtime
             .data()
-            .story_events
-            .iter()
-            .find_map(|catalog| catalog.get("StandardScripts"))
-            .and_then(serde_json::Value::as_object)
-            .cloned()
-            .expect("shipped StandardScripts definitions")
+            .global_scripts
+            .as_ref()
+            .expect("global field move programs")
+            .definitions
+            .clone()
     })
 }
 
@@ -2418,7 +2426,7 @@ fn add_runtime_rock_smash_global_scripts(data: &mut GameDataSet) {
     data.story_event_script_constants
         .global
         .insert("CHIKORITA".to_string(), 152);
-    let exported = canonical_standard_scripts_for_field_tests();
+    let exported = canonical_scripts_for_field_tests();
     let definitions = data
         .story_events
         .iter_mut()
@@ -2426,6 +2434,7 @@ fn add_runtime_rock_smash_global_scripts(data: &mut GameDataSet) {
         .and_then(serde_json::Value::as_object_mut)
         .expect("minimal StandardScripts catalog");
     for label in [
+        "GetPartyNickname",
         "RockMonEncounter",
         ".no_battle@RockMonEncounter",
         "RockSmashScript",
@@ -2458,7 +2467,7 @@ fn add_runtime_headbutt_global_scripts(data: &mut GameDataSet) {
     data.story_event_script_constants
         .global
         .insert("CHIKORITA".to_string(), 152);
-    let exported = canonical_standard_scripts_for_field_tests();
+    let exported = canonical_scripts_for_field_tests();
     let definitions = data
         .story_events
         .iter_mut()
@@ -2500,7 +2509,7 @@ fn add_runtime_sweet_scent_global_scripts(data: &mut GameDataSet) {
     data.story_event_script_constants
         .global
         .insert("CHIKORITA".to_string(), 152);
-    let exported = canonical_standard_scripts_for_field_tests();
+    let exported = canonical_scripts_for_field_tests();
     let definitions = data
         .story_events
         .iter_mut()
@@ -2539,40 +2548,19 @@ fn add_runtime_sweet_scent_global_scripts(data: &mut GameDataSet) {
         .expect("materialize exact Sweet Scent common script");
 }
 
-fn add_runtime_deferred_field_move_global_scripts(data: &mut GameDataSet) {
-    let exported = canonical_standard_scripts_for_field_tests();
+fn add_runtime_deferred_field_move_global_scripts(
+    data: &mut GameDataSet,
+    roots: &[&str],
+    supporting_labels: &[&str],
+) {
+    let exported = canonical_scripts_for_field_tests();
     let definitions = data
         .story_events
         .iter_mut()
         .find_map(|catalog| catalog.get_mut("StandardScripts"))
         .and_then(serde_json::Value::as_object_mut)
         .expect("minimal StandardScripts catalog");
-    for label in [
-        "Script_Cut",
-        "GetPartyNickname",
-        "UseCutText",
-        "CutDownTreeOrGrass",
-        "Script_UsedWhirlpool",
-        "UseWhirlpoolText",
-        "DisappearWhirlpool",
-        "Script_UseFlash",
-        "UseFlashTextScript",
-        "BlindingFlash",
-        "Script_StrengthFromMenu",
-        "Script_UsedStrength",
-        "SetStrengthFlag",
-        ".UseStrengthText@Script_UsedStrength",
-        ".MoveBoulderText@Script_UsedStrength",
-        "SurfFromMenuScript",
-        "UsedSurfScript",
-        ".stubbed_fn@UsedSurfScript",
-        "UsedSurfText",
-        "Script_UsedWaterfall",
-        ".loop@Script_UsedWaterfall",
-        ".CheckContinueWaterfall@Script_UsedWaterfall",
-        ".WaterfallStep@Script_UsedWaterfall",
-        ".UseWaterfallText@Script_UsedWaterfall",
-    ] {
+    for &label in roots.iter().chain(supporting_labels) {
         definitions.insert(
             label.to_string(),
             exported
@@ -2581,18 +2569,7 @@ fn add_runtime_deferred_field_move_global_scripts(data: &mut GameDataSet) {
                 .clone(),
         );
     }
-    definitions.insert(
-        "GlobalScriptRoots".to_string(),
-        serde_json::json!([
-            "Script_Cut",
-            "Script_UsedWhirlpool",
-            "Script_UseFlash",
-            "Script_StrengthFromMenu",
-            "Script_UsedStrength",
-            "SurfFromMenuScript",
-            "Script_UsedWaterfall"
-        ]),
-    );
+    definitions.insert("GlobalScriptRoots".to_string(), serde_json::json!(roots));
     data.materialize_global_scripts()
         .expect("materialize exact deferred field-move scripts");
 }
