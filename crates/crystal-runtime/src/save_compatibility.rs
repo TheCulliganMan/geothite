@@ -16,6 +16,7 @@ use crate::iron_save_migration::{self, IronRelocations};
 
 pub const SAVE_COMPATIBILITY_FILE: &str = "data/northstar-save-compatibility.json";
 pub const SAVE_COMPATIBILITY_MANIFEST: &str = "northstar-refinement-v1";
+const STORY_FLOW_MANIFEST: &str = "northstar-story-flow-v1";
 
 /// One exact, author-approved source release. The hash covers serialized bytes.
 #[derive(Debug, Clone, Deserialize)]
@@ -54,9 +55,9 @@ fn parse_compatibility(bytes: &[u8], target_id: &str) -> Result<Compatibility> {
     let metadata: Compatibility =
         serde_json::from_slice(bytes).context("save compatibility metadata")?;
     ensure!(
-        metadata.schema_version == 3
+        matches!(metadata.schema_version, 3 | 4)
             || (metadata.iron_relocations.is_none() && metadata.layout_reentry.is_none()),
-        "iron policies require schema three"
+        "iron policies require a floorplan-compatible schema"
     );
     match metadata.schema_version {
         1 => ensure!(
@@ -65,7 +66,7 @@ fn parse_compatibility(bytes: &[u8], target_id: &str) -> Result<Compatibility> {
                 && metadata.cave_reentry.is_none(),
             "unsupported refinement save compatibility policy"
         ),
-        2 | 3 => {
+        2..=4 => {
             ensure!(
                 metadata.target_modpack_ids.len() == 2
                     && metadata.target_modpack_ids[0] != metadata.target_modpack_ids[1],
@@ -120,7 +121,9 @@ fn parse_compatibility(bytes: &[u8], target_id: &str) -> Result<Compatibility> {
         }
     }
     ensure!(
-        !metadata.sources.is_empty() && metadata.sources.len() <= 8,
+        !metadata.sources.is_empty()
+            && metadata.sources.len() <= 10
+            && (metadata.schema_version == 4 || metadata.sources.len() <= 8),
         "bounded compatibility source list required"
     );
     let mut identities = BTreeSet::new();
@@ -242,6 +245,10 @@ fn upgrade_source_checkpoint(
     source: &CompatibleSaveSource,
     data: &GameDataSet,
 ) -> Result<GameState> {
+    // Story-only changes preserve the floorplan parent's exact room and actor positions.
+    if direct_story_parent(metadata, &source.modpack_id) {
+        return normalize_upgrade_checkpoint(state);
+    }
     let subset = metadata
         .layout_reentry
         .as_deref()
@@ -253,21 +260,40 @@ fn upgrade_source_checkpoint(
     Ok(upgraded)
 }
 
+fn direct_story_parent(metadata: &Compatibility, source_id: &str) -> bool {
+    metadata.schema_version == 4
+        && metadata.target_modpack_ids.iter().any(|target| {
+            target
+                .split('+')
+                .filter(|&id| id != STORY_FLOW_MANIFEST)
+                .eq(source_id.split('+'))
+        })
+}
+
 fn direct_iron_parent(metadata: &Compatibility, source_id: &str) -> bool {
     metadata.target_modpack_ids.iter().any(|target| {
         target
             .split('+')
-            .filter(|&part| part != iron_save_migration::TARGET_MANIFEST)
+            .filter(|&part| {
+                part != iron_save_migration::TARGET_MANIFEST
+                    && (metadata.schema_version != 4 || part != STORY_FLOW_MANIFEST)
+            })
             .eq(source_id.split('+'))
     })
 }
 
 fn validate_iron_policy(metadata: &Compatibility) -> Result<()> {
+    let story_release = metadata.schema_version == 4;
+    let (marker, count) = if story_release {
+        (STORY_FLOW_MANIFEST, 10)
+    } else {
+        (iron_save_migration::TARGET_MANIFEST, 8)
+    };
     ensure!(
-        metadata.target_manifest == iron_save_migration::TARGET_MANIFEST
-            && metadata.sources.len() == 8,
-        "iron compatibility requires eight exact sources"
+        metadata.target_manifest == marker && metadata.sources.len() == count,
+        "wrong save compatibility marker or number of source identities"
     );
+
     metadata
         .cave_reentry
         .as_ref()
@@ -317,9 +343,34 @@ fn validate_iron_policy(metadata: &Compatibility) -> Result<()> {
                     .any(|id| id == cave_save_migration::TARGET_MANIFEST),
             "iron target is missing its unique revision or prior room markers"
         );
-        let parent = target
-            .split('+')
-            .filter(|&id| id != iron_save_migration::TARGET_MANIFEST);
+        if story_release {
+            let base = target
+                .strip_suffix("+realtime-clock+player-customization")
+                .unwrap_or(target);
+            ensure!(
+                base.ends_with(&format!("+{STORY_FLOW_MANIFEST}"))
+                    && target
+                        .split('+')
+                        .filter(|&id| id == STORY_FLOW_MANIFEST)
+                        .count()
+                        == 1,
+                "story marker must follow the floorplan release"
+            );
+            let floorplan = target.split('+').filter(|&id| id != STORY_FLOW_MANIFEST);
+            ensure!(
+                metadata
+                    .sources
+                    .iter()
+                    .filter(|s| floorplan.clone().eq(s.modpack_id.split('+')))
+                    .count()
+                    == 1,
+                "story target requires its floorplan parent"
+            );
+        }
+        let parent = target.split('+').filter(|&id| {
+            id != iron_save_migration::TARGET_MANIFEST
+                && (!story_release || id != STORY_FLOW_MANIFEST)
+        });
         ensure!(
             metadata
                 .sources
@@ -331,11 +382,14 @@ fn validate_iron_policy(metadata: &Compatibility) -> Result<()> {
         );
     }
     for source in &metadata.sources {
-        if !direct_iron_parent(metadata, &source.modpack_id) {
+        if !direct_iron_parent(metadata, &source.modpack_id)
+            && !direct_story_parent(metadata, &source.modpack_id)
+        {
             ensure!(
                 !source.modpack_id.split('+').any(|id| matches!(
                     id,
-                    iron_save_migration::TARGET_MANIFEST
+                    STORY_FLOW_MANIFEST
+                        | iron_save_migration::TARGET_MANIFEST
                         | gym_save_migration::TARGET_MANIFEST
                         | cave_save_migration::TARGET_MANIFEST
                 )),

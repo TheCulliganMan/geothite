@@ -316,3 +316,43 @@ fn iron_workings_target_accepts_both_v04_parents_and_reviewed_landings() {
         }
     }
 }
+
+#[test]
+fn story_release_keeps_floorplan_positions_and_inherits_earlier_repairs() {
+    let marker = super::STORY_FLOW_MANIFEST;
+    let target = format!("{TARGET}+{marker}");
+    let hosted = format!("{target}+realtime-clock+player-customization");
+    let mut value = metadata_value();
+    value["schema_version"] = json!(4);
+    value["target_manifest"] = json!(marker);
+    value["target_modpack_ids"] = json!([target, hosted]);
+    for (index, id) in [
+        TARGET.to_owned(),
+        format!("{TARGET}+realtime-clock+player-customization"),
+    ]
+    .into_iter()
+    .enumerate()
+    {
+        value["sources"].as_array_mut().expect("sources").push(json!({
+            "modpack_id": id, "modpack_hash": format!("{:064x}", 300+index), "content_hash": format!("{:064x}", 310+index)
+        }));
+    }
+    let metadata = parse_compatibility(&serde_json::to_vec(&value).expect("metadata"), &target)
+        .expect("raw story child");
+    parse_compatibility(&serde_json::to_vec(&value).expect("metadata"), &hosted)
+        .expect("hosted story child");
+    for source in &metadata.sources[8..] {
+        let state = source_at(
+            "MnBrainerdGym",
+            TilePosition::new(8, 10),
+            MovementMode::Normal,
+        );
+        let copy =
+            upgrade_source_checkpoint(state.clone(), &metadata, source, &GameDataSet::default())
+                .expect("floorplan save does not need room relocation");
+        assert_eq!(state.overworld, copy.overworld);
+    }
+    assert!(direct_iron_parent(&metadata, PARENT));
+    value["sources"][8]["modpack_id"] = json!("unknown");
+    assert!(parse_compatibility(&serde_json::to_vec(&value).expect("metadata"), &target).is_err());
+}
