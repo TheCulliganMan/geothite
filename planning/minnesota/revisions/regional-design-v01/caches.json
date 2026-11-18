@@ -1,0 +1,122 @@
+[
+  {
+    "map": "MnR06C00R01",
+    "caches": [
+      {
+        "script": "MN_HIDDEN_R06",
+        "from": [
+          8,
+          30
+        ],
+        "to": [
+          9,
+          31
+        ],
+        "entry": [
+          16,
+          39
+        ],
+        "approach": [
+          9,
+          32
+        ]
+      }
+    ]
+  },
+  {
+    "map": "MnR07C00R01",
+    "caches": [
+      {
+        "script": "MN_HIDDEN_R07",
+        "from": [
+          24,
+          24
+        ],
+        "to": [
+          24,
+          25
+        ],
+        "entry": [
+          20,
+          47
+        ],
+        "approach": [
+          24,
+          26
+        ]
+      }
+    ]
+  },
+  {
+    "map": "MnR12C00R00",
+    "caches": [
+      {
+        "script": "MN_HIDDEN_R12",
+        "from": [
+          12,
+          39
+        ],
+        "to": [
+          13,
+          38
+        ],
+        "entry": [
+          0,
+          29
+        ],
+        "approach": [
+          13,
+          39
+        ]
+      }
+    ]
+  },
+  {
+    "map": "MnR17C00R01",
+    "caches": [
+      {
+        "script": "MN_HIDDEN_R17",
+        "from": [
+          24,
+          2
+        ],
+        "to": [
+          25,
+          2
+        ],
+        "entry": [
+          40,
+          0
+        ],
+        "approach": [
+          24,
+          2
+        ]
+      }
+    ]
+  },
+  {
+    "map": "MnR19C00R00",
+    "caches": [
+      {
+        "script": "MN_HIDDEN_R19",
+        "from": [
+          54,
+          21
+        ],
+        "to": [
+          55,
+          20
+        ],
+        "entry": [
+          63,
+          13
+        ],
+        "approach": [
+          55,
+          21
+        ]
+      }
+    ]
+  }
+]

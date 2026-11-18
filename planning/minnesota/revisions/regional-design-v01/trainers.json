@@ -1,0 +1,350 @@
+{
+  "MnR01C00R00": {
+    "entries": [[0, 25]],
+    "trainers": {
+      "MN_R01_T01": {"facing": "DOWN", "range": 2},
+      "MN_R01_T02": {"facing": "RIGHT", "range": 2},
+      "MN_R01_T03": {"facing": "LEFT", "range": 2}
+    }
+  },
+  "MnR02C00R00": {
+    "entries": [[0, 31]],
+    "trainers": {
+      "MN_R02_T01": {"facing": "LEFT", "range": 2},
+      "MN_R02_T02": {"facing": "UP", "range": 2},
+      "MN_R02_T03": {"facing": "UP", "range": 2}
+    }
+  },
+  "MnR03C00R00": {
+    "entries": [[39, 47]],
+    "trainers": {
+      "MN_R03_T02": {"facing": "RIGHT", "range": 2},
+      "MN_R03_T03": {"facing": "UP", "range": 2},
+      "MN_R03_T04": {"facing": "RIGHT", "range": 2}
+    }
+  },
+  "MnR03C00R01": {
+    "entries": [[19, 15]],
+    "trainers": {
+      "MN_R03_T01": {"facing": "RIGHT", "range": 1}
+    }
+  },
+  "MnR04C00R00": {
+    "entries": [[0, 19]],
+    "trainers": {
+      "MN_R04_T01": {"facing": "LEFT", "range": 2},
+      "MN_R04_T02": {"facing": "RIGHT", "range": 2}
+    }
+  },
+  "MnR05C00R00": {
+    "entries": [[25, 0]],
+    "trainers": {
+      "MN_R05_T03": {"facing": "RIGHT", "range": 2},
+      "MN_R05_T04": {"facing": "LEFT", "range": 3},
+      "MN_R05_T05": {"facing": "RIGHT", "range": 2}
+    }
+  },
+  "MnR05C00R01": {
+    "entries": [[23, 47]],
+    "trainers": {
+      "MN_R05_T01": {"facing": "DOWN", "range": 3},
+      "MN_R05_T02": {"facing": "RIGHT", "range": 4}
+    }
+  },
+  "MnR06C00R00": {
+    "entries": [[41, 47]],
+    "cut": {"trainer": "MN_R06_T05", "tile": [29, 32]},
+    "trainers": {
+      "MN_R06_T03": {"facing": "RIGHT", "range": 1},
+      "MN_R06_T04": {"facing": "LEFT", "range": 4},
+      "MN_R06_T05": {"facing": "LEFT", "range": 3}
+    }
+  },
+  "MnR06C00R01": {
+    "entries": [[17, 39]],
+    "trainers": {
+      "MN_R06_T01": {"facing": "LEFT", "range": 2},
+      "MN_R06_T02": {"facing": "RIGHT", "range": 2}
+    }
+  },
+  "MnR07C00R00": {
+    "entries": [[18, 47]],
+    "trainers": {
+      "MN_R07_T05": {"facing": "LEFT", "range": 2},
+      "MN_R07_T06": {"facing": "RIGHT", "range": 4},
+      "MN_R07_T07": {"facing": "LEFT", "range": 1},
+      "MN_R07_T08": {"facing": "RIGHT", "range": 2}
+    }
+  },
+  "MnR07C00R01": {
+    "entries": [[21, 47]],
+    "trainers": {
+      "MN_R07_T01": {"facing": "RIGHT", "range": 1},
+      "MN_R07_T02": {"facing": "LEFT", "range": 2},
+      "MN_R07_T03": {"facing": "LEFT", "range": 2},
+      "MN_R07_T04": {"facing": "RIGHT", "range": 2}
+    }
+  },
+  "MnR08C00R00": {
+    "entries": [[25, 0]],
+    "cut": {"trainer": "MN_R08_T04", "tile": [6, 21]},
+    "trainers": {
+      "MN_R08_T04": {"facing": "UP", "range": 1},
+      "MN_R08_T05": {"facing": "LEFT", "range": 4},
+      "MN_R08_T07": {"facing": "RIGHT", "range": 2}
+    }
+  },
+  "MnR08C00R01": {
+    "entries": [[27, 47]],
+    "trainers": {
+      "MN_R08_T01": {"facing": "LEFT", "range": 2},
+      "MN_R08_T02": {"facing": "RIGHT", "range": 2}
+    }
+  },
+  "MnR08C01R00": {
+    "entries": [[0, 11]],
+    "trainers": {
+      "MN_R08_T06": {"facing": "DOWN", "range": 1}
+    }
+  },
+  "MnR08C01R01": {
+    "entries": [[0, 7]],
+    "trainers": {
+      "MN_R08_T03": {"facing": "LEFT", "range": 1},
+      "MN_R08_T08": {"facing": "UP", "range": 2}
+    }
+  },
+  "MnR09C00R00": {
+    "entries": [[6, 47], [21, 47]],
+    "trainers": {
+      "MN_R09_T01": {"facing": "RIGHT", "range": 3},
+      "MN_R09_T03": {"facing": "RIGHT", "range": 3},
+      "MN_R09_T07": {"facing": "DOWN", "range": 1}
+    }
+  },
+  "MnR09C00R01": {
+    "entries": [[35, 0]],
+    "trainers": {
+      "MN_R09_T02": {"facing": "LEFT", "range": 1}
+    }
+  },
+  "MnR09C01R00": {
+    "entries": [[0, 23], [0, 44]],
+    "trainers": {
+      "MN_R09_T04": {"facing": "LEFT", "range": 2},
+      "MN_R09_T05": {"facing": "LEFT", "range": 2},
+      "MN_R09_T06": {"facing": "RIGHT", "range": 3},
+      "MN_R09_T08": {"facing": "LEFT", "range": 2}
+    }
+  },
+  "MnR10C00R00": {
+    "entries": [[0, 11]],
+    "trainers": {
+      "MN_R10_T01": {"facing": "RIGHT", "range": 2},
+      "MN_R10_T02": {"facing": "LEFT", "range": 3},
+      "MN_R10_T05": {"facing": "LEFT", "range": 2},
+      "MN_R10_T06": {"facing": "RIGHT", "range": 2}
+    }
+  },
+  "MnR10C01R00": {
+    "entries": [[0, 26]],
+    "trainers": {
+      "MN_R10_T03": {"facing": "DOWN", "range": 4},
+      "MN_R10_T04": {"facing": "DOWN", "range": 2}
+    }
+  },
+  "MnR11C00R00": {
+    "entries": [[34, 47]],
+    "trainers": {
+      "MN_R11_T09": {"facing": "DOWN", "range": 1},
+      "MN_R11_T10": {"facing": "RIGHT", "range": 2}
+    }
+  },
+  "MnR11C00R01": {
+    "entries": [[14, 0]],
+    "trainers": {
+      "MN_R11_T04": {"facing": "RIGHT", "range": 3},
+      "MN_R11_T05": {"facing": "DOWN", "range": 1},
+      "MN_R11_T06": {"facing": "RIGHT", "range": 4},
+      "MN_R11_T07": {"facing": "LEFT", "range": 1},
+      "MN_R11_T08": {"facing": "LEFT", "range": 3}
+    }
+  },
+  "MnR11C00R02": {
+    "entries": [[0, 31], [55, 0]],
+    "trainers": {
+      "MN_R11_T01": {"facing": "LEFT", "range": 3},
+      "MN_R11_T02": {"facing": "RIGHT", "range": 1},
+      "MN_R11_T03": {"facing": "UP", "range": 3}
+    }
+  },
+  "MnR12C00R00": {
+    "entries": [[0, 29]],
+    "trainers": {
+      "MN_R12_T02": {"facing": "UP", "range": 4},
+      "MN_R12_T03": {"facing": "RIGHT", "range": 3},
+      "MN_R12_T04": {"facing": "DOWN", "range": 2},
+      "MN_R12_T05": {"facing": "RIGHT", "range": 2},
+      "MN_R12_T06": {"facing": "RIGHT", "range": 2},
+      "MN_R12_T08": {"facing": "UP", "range": 1},
+      "MN_R12_T09": {"facing": "LEFT", "range": 2},
+      "MN_R12_T10": {"facing": "LEFT", "range": 3}
+    }
+  },
+  "MnR12C00R01": {
+    "entries": [[23, 0], [35, 0]],
+    "trainers": {
+      "MN_R12_T01": {"facing": "UP", "range": 1},
+      "MN_R12_T07": {"facing": "LEFT", "range": 1}
+    }
+  },
+  "MnR13C00R00": {
+    "entries": [[20, 47]],
+    "trainers": {
+      "MN_R13_T01": {"facing": "LEFT", "range": 3},
+      "MN_R13_T02": {"facing": "RIGHT", "range": 3},
+      "MN_R13_T03": {"facing": "LEFT", "range": 3}
+    }
+  },
+  "MnR13C00R01": {
+    "entries": [[20, 0]],
+    "trainers": {
+      "MN_R13_T04": {"facing": "LEFT", "range": 3},
+      "MN_R13_T05": {"facing": "RIGHT", "range": 3}
+    }
+  },
+  "MnR13C00R02": {
+    "entries": [[37, 0]],
+    "cut": {"trainer": "MN_R13_T07", "tile": [18, 7]},
+    "trainers": {
+      "MN_R13_T07": {"facing": "RIGHT", "range": 3},
+      "MN_R13_T10": {"facing": "LEFT", "range": 4}
+    }
+  },
+  "MnR14C00R00": {
+    "entries": [[0, 39]],
+    "trainers": {
+      "MN_R14_T03": {"facing": "UP", "range": 2}
+    }
+  },
+  "MnR14C00R01": {
+    "entries": [[21, 0]],
+    "trainers": {
+      "MN_R14_T04": {"facing": "DOWN", "range": 3}
+    }
+  },
+  "MnR14C01R00": {
+    "entries": [[0, 14]],
+    "trainers": {
+      "MN_R14_T01": {"facing": "RIGHT", "range": 2},
+      "MN_R14_T02": {"facing": "RIGHT", "range": 2},
+      "MN_R14_T06": {"facing": "RIGHT", "range": 2}
+    }
+  },
+  "MnR14C01R01": {
+    "entries": [[10, 0]],
+    "trainers": {
+      "MN_R14_T05": {"facing": "LEFT", "range": 1}
+    }
+  },
+  "MnR15C00R00": {
+    "entries": [[0, 25]],
+    "trainers": {
+      "MN_R15_T02": {"facing": "DOWN", "range": 1},
+      "MN_R15_T03": {"facing": "RIGHT", "range": 2}
+    }
+  },
+  "MnR16C00R00": {
+    "entries": [[0, 25]],
+    "trainers": {
+      "MN_R16_T01": {"facing": "LEFT", "range": 1},
+      "MN_R16_T02": {"facing": "DOWN", "range": 4},
+      "MN_R16_T03": {"facing": "LEFT", "range": 2},
+      "MN_R16_T04": {"facing": "RIGHT", "range": 2},
+      "MN_R16_T05": {"facing": "LEFT", "range": 1},
+      "MN_R16_T07": {"facing": "UP", "range": 2}
+    }
+  },
+  "MnR16C01R00": {
+    "entries": [[0, 30]],
+    "trainers": {
+      "MN_R16_T06": {"facing": "DOWN", "range": 2},
+      "MN_R16_T08": {"facing": "UP", "range": 2},
+      "MN_R16_T09": {"facing": "DOWN", "range": 4},
+      "MN_R16_T10": {"facing": "RIGHT", "range": 2}
+    }
+  },
+  "MnR17C00R00": {
+    "entries": [[11, 47], [37, 0]],
+    "trainers": {
+      "MN_R17_T04": {"facing": "RIGHT", "range": 3},
+      "MN_R17_T05": {"facing": "RIGHT", "range": 2},
+      "MN_R17_T06": {"facing": "LEFT", "range": 4}
+    }
+  },
+  "MnR17C00R01": {
+    "entries": [[25, 47]],
+    "trainers": {
+      "MN_R17_T02": {"facing": "RIGHT", "range": 2},
+      "MN_R17_T03": {"facing": "RIGHT", "range": 4}
+    }
+  },
+  "MnR17C00R02": {
+    "entries": [[25, 0]],
+    "trainers": {
+      "MN_R17_T01": {"facing": "LEFT", "range": 4}
+    }
+  },
+  "MnR18C00R00": {
+    "entries": [[0, 11]],
+    "trainers": {
+      "MN_R18_T01": {"facing": "RIGHT", "range": 1},
+      "MN_R18_T02": {"facing": "DOWN", "range": 2},
+      "MN_R18_T03": {"facing": "RIGHT", "range": 2},
+      "MN_R18_T04": {"facing": "DOWN", "range": 1},
+      "MN_R18_T05": {"facing": "RIGHT", "range": 2},
+      "MN_R18_T06": {"facing": "RIGHT", "range": 1}
+    }
+  },
+  "MnR19C00R00": {
+    "entries": [[24, 47]],
+    "trainers": {
+      "MN_R19_T01": {"facing": "DOWN", "range": 2},
+      "MN_R19_T02": {"facing": "LEFT", "range": 3},
+      "MN_R19_T03": {"facing": "UP", "range": 2},
+      "MN_R19_T04": {"facing": "RIGHT", "range": 3},
+      "MN_R19_T05": {"facing": "RIGHT", "range": 2},
+      "MN_R19_T06": {"facing": "RIGHT", "range": 1}
+    }
+  },
+  "MnR20C00R00": {
+    "entries": [[0, 45]],
+    "trainers": {
+      "MN_R20_T01": {"facing": "RIGHT", "range": 4},
+      "MN_R20_T02": {"facing": "DOWN", "range": 4}
+    }
+  },
+  "MnR20C00R01": {
+    "entries": [[20, 0]],
+    "trainers": {
+      "MN_R20_T04": {"facing": "UP", "range": 2},
+      "MN_R20_T05": {"facing": "UP", "range": 1}
+    }
+  },
+  "MnR20C01R00": {
+    "entries": [[0, 36]],
+    "trainers": {
+      "MN_R20_T03": {"facing": "RIGHT", "range": 3},
+      "MN_R20_T08": {"facing": "RIGHT", "range": 3},
+      "MN_R20_T09": {"facing": "RIGHT", "range": 4},
+      "MN_R20_T10": {"facing": "LEFT", "range": 4}
+    }
+  },
+  "MnR20C01R01": {
+    "entries": [[8, 0]],
+    "trainers": {
+      "MN_R20_T06": {"facing": "UP", "range": 1},
+      "MN_R20_T07": {"facing": "LEFT", "range": 3}
+    }
+  }
+}
