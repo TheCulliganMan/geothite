@@ -184,7 +184,7 @@ fn check_cache_receipt(pack: &CompiledGamePack, map: &str, cache: &Cache) -> Res
             event_type: "BGEVENT_ITEM".into(),
         },
     };
-    let mut state = GameState::default();
+    let mut state = GameState::reset_wram_for_new_game();
     ensure!(
         pack.data
             .resolve_overworld_interaction(&state, &event)?
