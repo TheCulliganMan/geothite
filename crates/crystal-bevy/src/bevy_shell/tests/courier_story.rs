@@ -248,9 +248,24 @@ fn courier_story_both_battle_prerequisites_and_locked_record_preserve_progress()
         (Case::MissingBadge, "CURRENT"),
         (Case::MissingNote, "dispatch"),
     ] {
-        let (_, _, mut c) = fixture(DEPOT, (19, 16), case);
+        let missing_badge = matches!(case, Case::MissingBadge);
+        let (_, r, mut c) = fixture(DEPOT, (19, 16), case);
         let before = c.snapshot().expect("before refusal");
         talk(&mut c, GameButton::Right);
+        if r.data().maps[DEPOT]
+            .scripts
+            .contains_key("MnFlowMinaOfferDate")
+        {
+            let label = if missing_badge {
+                "MnNSTPMinaInterruptText"
+            } else {
+                "MnSPCourierNoteText"
+            };
+            super::northstar_ice_lair::page(&mut c, label);
+            assert!(!event(&c, WIN) && !event(&c, READ));
+            assert_eq!(before.bag, c.snapshot().expect("before battle").bag);
+            continue;
+        }
         assert!(
             c.snapshot()
                 .expect("courier refusal")

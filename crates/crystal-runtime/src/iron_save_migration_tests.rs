@@ -255,8 +255,30 @@ fn iron_workings_target_accepts_both_v04_parents_and_reviewed_landings() {
             .expect("compatibility bytes"),
         runtime.modpack().id(),
     )
-    .expect("schema 3");
-    assert_eq!(meta.schema_version, 3);
+    .expect("valid floorplan save policy");
+    if runtime
+        .modpack()
+        .id()
+        .split('+')
+        .any(|part| part == super::STORY_FLOW_MANIFEST)
+    {
+        assert_eq!(meta.schema_version, 4);
+        let current: BTreeSet<_> = meta
+            .sources
+            .iter()
+            .filter(|source| super::direct_story_parent(&meta, &source.modpack_id))
+            .map(|source| source.modpack_hash.as_str())
+            .collect();
+        assert_eq!(
+            current,
+            BTreeSet::from([
+                "2e2554784f82f6b9e53c8b1d7a24e5993f730eefb460239d3edc4bc7d558a3df",
+                "de7379234cf30325688436bd2c846b7f00e23830f0125d762ea962ad304fddb4",
+            ])
+        );
+    } else {
+        assert_eq!(meta.schema_version, 3);
+    }
     meta.iron_relocations
         .as_ref()
         .expect("iron policy")

@@ -272,7 +272,7 @@ fn gym(c: &mut VisibleShellController, r: &CrystalRuntime, root: &AssetRoot) {
                 .text
                 .expect("text")
                 .label,
-            "MN_HARBOR_RECEIVERDeniedText"
+            super::super::northstar_dialogue::pre_badge_harbor_return(r)
         );
         finish(c);
         assert_eq!(event(c, SIGNAL), signal_before);
@@ -395,7 +395,14 @@ fn reveal(c: &mut VisibleShellController, r: &CrystalRuntime, root: &AssetRoot) 
     continue_in_place(c, root, r, "campaign-harbor-reveal-ready");
     receiver(c, r);
     let before = c.shell.shell.session().state().clone();
-    if r.data()
+    let revised_rescue = super::super::northstar_dialogue::evidence_opens_rescue(r);
+    if revised_rescue {
+        for label in super::super::northstar_dialogue::RESCUE_RADIO_EXCHANGE {
+            super::super::northstar_ice_lair::page(c, label);
+            super::super::northstar_dialogue::acknowledge(c, "MS10", label, SIGNAL);
+        }
+    } else if r
+        .data()
         .story_event_script_constants
         .global
         .contains_key("EVENT_MN_TAMARACK_INTRO")
@@ -444,7 +451,7 @@ fn reveal(c: &mut VisibleShellController, r: &CrystalRuntime, root: &AssetRoot) 
             press(c, GameButton::A);
         }
     }
-    if r.data().maps.contains_key("MnBoundaryIntake") {
+    if !revised_rescue && r.data().maps.contains_key("MnBoundaryIntake") {
         assert!(
             !event(c, SIGNAL),
             "the intake directions also require acknowledgment"

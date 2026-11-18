@@ -177,6 +177,18 @@ pub(super) fn refusal(c: &mut VisibleShellController, right: bool, lane: u16, ex
         (if right { 43 } else { 4 }, 24 + lane as i16),
     );
 }
+fn marker_text(c: &VisibleShellController, r: &CrystalRuntime) -> &'static str {
+    if r.data().maps[PARK]
+        .scripts
+        .contains_key("MnFlowItascaOwnDateText")
+        && !event(c, "EVENT_MN_BRAINERD_REPORT")
+    {
+        "MnFlowItascaOwnDateText"
+    } else {
+        "MN_ITASCA_MARKERText"
+    }
+}
+
 pub(super) fn acknowledge_marker(c: &mut VisibleShellController, r: &CrystalRuntime) {
     marker(c, r);
     if r.data()
@@ -184,7 +196,8 @@ pub(super) fn acknowledge_marker(c: &mut VisibleShellController, r: &CrystalRunt
         .global
         .contains_key("EVENT_MN_TAMARACK_INTRO")
     {
-        super::super::northstar_dialogue::acknowledge(c, "MS06", "MN_ITASCA_MARKERText", READING);
+        let label = marker_text(c, r);
+        super::super::northstar_dialogue::acknowledge(c, "MS06", label, READING);
         finish(c);
         assert!(event(c, READING) && !event(c, REPORT));
         return;
@@ -234,7 +247,8 @@ pub(super) fn acknowledge_report(c: &mut VisibleShellController, r: &CrystalRunt
 fn campaign_polish_itasca_and_harbor_hints_use_installed_branches() {
     let (_, runtime, _, mut c) = fixture(PARK, [19, 22], 7, true);
     marker(&mut c, &runtime);
-    super::super::northstar_dialogue::acknowledge(&mut c, "MS06", "MN_ITASCA_MARKERText", READING);
+    let label = marker_text(&c, &runtime);
+    super::super::northstar_dialogue::acknowledge(&mut c, "MS06", label, READING);
     finish(&mut c);
     assert!(event(&c, READING));
     assert!(!event(&c, REPORT));

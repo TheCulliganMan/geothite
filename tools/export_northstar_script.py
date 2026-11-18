@@ -542,9 +542,17 @@ def map_texts(maps):
     return texts
 
 
-def matching_authored_texts(path, installed):
+def authored_texts(path):
     with path.open(encoding="utf-8") as source:
-        authored = json.load(source)["dialogue_overhaul"]["texts"]
+        story = json.load(source)
+    texts = story["dialogue_overhaul"]["texts"]
+    for location, passages in story.get("story_flow_revision", {}).get("dialogue", {}).items():
+        texts.setdefault(location, {}).update(passages)
+    return texts
+
+
+def matching_authored_texts(path, installed):
+    authored = authored_texts(path)
     return {
         location: {label: pages for label, pages in passages.items()
                    if label in installed[location]}
@@ -647,7 +655,8 @@ def main():
             row["args"][0] for row in harbor.get("MN_HARBOR_RECEIVER", [])
             if row["command"] == "writetext" and row["args"]
         ]
-        legacy_harbor = harbor_passages and "MnOverhaulHarborEvidenceText" not in harbor_passages
+        legacy_harbor = (harbor_passages and "MnOverhaulHarborEvidenceText" not in harbor_passages
+                        and "MnOverhaulHarborDirectionsText" not in harbor_passages)
         keeper = maps.get("MnGrandMaraisLighthouse", {}).get("scripts", {})
         deferred_lighthouse_reward = "MnGrandMaraisSignalReward" in keeper
         if args.preview_source:
@@ -661,8 +670,7 @@ def main():
                     passages.pop("MnGrandMaraisSignalBagFullText", None)
                 texts[location].update(passages)
     else:
-        with args.source.open(encoding="utf-8") as source:
-            texts = json.load(source)["dialogue_overhaul"]["texts"]
+        texts = authored_texts(args.source)
         if args.trainer_reference_pack:
             reference = read_installed_data(args.trainer_reference_pack)
             trainer_names, repeat_lines = trainer_reference(
@@ -725,8 +733,16 @@ def main():
                     labels = " ".join(label for label in labels.split() if label in passages)
                     if not labels:
                         continue
-            if args.pack and legacy_harbor and location == "MnDuluthHarborWorkshop" and not is_return_visit:
-                labels = " ".join(harbor_passages)
+            if location == "MnDuluthHarborWorkshop" and not is_return_visit:
+                if args.pack and harbor_passages:
+                    labels = " ".join(harbor_passages)
+                elif "MnFlowFinalDriveClearText" in texts.get("MnBoundaryIntake", {}):
+                    labels = "MN_HARBOR_RECEIVERText MnArcHarborIntakeText MnOverhaulHarborDirectionsText"
+            if "MnFlowEllisAtDeskText" in passages and "MnMPCellReleaseText" in labels:
+                labels += " MnFlowEllisAtDeskText"
+            if "MnFlowFinalDriveClearText" in passages:
+                labels = labels.replace("MnArcFinalWonText ", "MnArcFinalWonText MnFlowFinalDriveClearText ")
+                labels = labels.replace(" MnArcIntakeReedExitText ", " ")
             if args.pack and labels in ("MnWinonaCousinChampionText", "MnWTamarackGuideChampionText"):
                 if labels not in passages:
                     print(f"=== {title} ===\n\n    [No Champion-specific conversation in this pack.]\n")

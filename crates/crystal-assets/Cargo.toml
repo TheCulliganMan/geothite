@@ -48,3 +48,7 @@ required-features = ["pack-authoring"]
 [[bin]]
 name = "pack_iron_workings"
 required-features = ["pack-authoring"]
+
+[[bin]]
+name = "pack_northstar_story_flow"
+required-features = ["pack-authoring"]

@@ -228,9 +228,16 @@ fn rival_arc_depot_win_does_not_accept_minas_request_three_starters() {
             );
         }
         assert!(event(&c, "EVENT_MN_REED_STPAUL_DEFEATED"));
-        finish(&mut c);
+        if r.data().maps["MnStPaulUnionDepot"]
+            .scripts
+            .contains_key("MnFlowMinaOfferDate")
+        {
+            page(&mut c, "MnNSTPMinaReadyText");
+        } else {
+            finish(&mut c);
+            talk(&mut c, GameButton::Left);
+        }
         assert!(!event(&c, "EVENT_MN_DEEP_BORE_MANIFEST_READ"));
-        talk(&mut c, GameButton::Left);
         choice(&mut c, false);
         finish(&mut c);
         talk(&mut c, GameButton::Left);

@@ -18,6 +18,28 @@ pub(super) fn timely_evidence(runtime: &CrystalRuntime) -> bool {
         })
 }
 
+pub(super) fn evidence_opens_rescue(runtime: &CrystalRuntime) -> bool {
+    runtime
+        .data()
+        .maps
+        .get("MnBoundaryIntake")
+        .is_some_and(|room| room.scripts.contains_key("MnFlowFinnRestored"))
+}
+
+pub(super) fn pre_badge_harbor_return(runtime: &CrystalRuntime) -> &'static str {
+    if evidence_opens_rescue(runtime) {
+        "MN_HARBOR_RECEIVERDoneText"
+    } else {
+        "MN_HARBOR_RECEIVERDeniedText"
+    }
+}
+
+pub(super) const RESCUE_RADIO_EXCHANGE: &[&str] = &[
+    "MN_HARBOR_RECEIVERText",
+    "MnArcHarborIntakeText",
+    "MnOverhaulHarborDirectionsText",
+];
+
 pub(super) fn canonical_pages(id: &str, label: &str) -> Vec<String> {
     let path = std::env::var_os("CRYSTAL_NORTHSTAR_CANONICAL_STORY_SOURCE")
         .map(std::path::PathBuf::from)

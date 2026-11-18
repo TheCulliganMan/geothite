@@ -87,6 +87,18 @@ fn depot_worker_witnesses_courier_then_offers_retryable_acknowledged_quest() {
     c = save(&mut c, &root, &r, "courier-witnessed");
     super::winona::at(&mut c, "MnStPaulUnionDepot", (19, 16));
     talk(&mut c, GameButton::Left);
+    if r.data().maps["MnStPaulUnionDepot"]
+        .scripts
+        .contains_key("MnFlowMinaOfferDate")
+    {
+        choice(&mut c, true);
+        assert!(super::rochester_earned::try_battle(
+            &mut c,
+            &r,
+            "MN_REED_STPAUL",
+            "EVENT_MN_REED_STPAUL_DEFEATED"
+        ));
+    }
     page(&mut c, "MnNSTPMinaReadyText");
     choice(&mut c, false);
     finish(&mut c);

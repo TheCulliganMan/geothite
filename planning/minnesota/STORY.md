@@ -19,8 +19,8 @@ edits or an uninterrupted, ordinary-party campaign.
 Read the sources in the order used by the Rust composition:
 
 - [story.json](story.json) supplies the base quest and badge contracts. Its
-  `dialogue_overhaul.texts` section supplies the final revised dialogue for the
-  labels it contains; those pages override earlier versions of the same label.
+  `dialogue_overhaul.texts` section holds the earlier dialogue. The story-flow
+  release applies `story_flow_revision.dialogue` last.
 - [story-events-v2.json](story-events-v2.json) supplies the acted opening,
   optional egg and character requests. [story-arc-v3.json](story-arc-v3.json)
   adds Reed's recurring scenes and the witnessed intake release.
@@ -55,7 +55,7 @@ campaign. Keep historical commands and saves attached to their original version.
 | Character | What the source establishes | Role in the journey |
 | --- | --- | --- |
 | Mom | Packs lunch, asks to meet the new partner and welcomes the player home | Gives departure and return a personal reason; home offers rest |
-| Dr Tamarack | Studies river Pokémon, works with Ivy and tends the egg Reed brings in | Entrusts the original readings to the player; offers the optional Gillpup egg |
+| Dr Tamarack | Studies river Pokémon, works with Ivy and tends the egg Reed brings in | Entrusts the original readings to the player; offers the optional Loobit egg |
 | Ivy | Keeps the original readings safe and looks for the missing crew | Sends the player to Jo, later joins the intake crew and helps confirm their safety |
 | Ellis | Survey dispatcher whose equipment was diverted; imprisoned after asking questions | Needs a physical rescue, returns home and directs the player toward Mina |
 | Jo | Ellis's partner in Minneapolis | Explains where Ellis was taken and responds to his return |
@@ -86,7 +86,7 @@ through the region:
    the counterfeit badge to threaten Sera until the player intervenes.
 5. At the mine he hears Finn's warning and still protects the running drill,
    hoping for promotion.
-6. At the intake he knows what is in the cage and guards the local drive.
+6. At the intake he admits to giving the all-clear while Finn was still on the ladder. He defends the order and guards the local drive.
    Losing the battle removes his obstruction; it does not stop the machine.
 
 Reed remains resentful after the operation fails. His optional station return
@@ -127,7 +127,7 @@ workers whose safety it disregards.
 | Boundary Waters | A warning becomes a coordinated rescue | Defeat the chief, acknowledge the live link, reach the intake, defeat Reed, stop the local drive and witness Kettlurk and the crew move clear |
 | Ely and return visits | The crews can assess the damage; the gym journey ends in the League | Complete the League and Hall of Fame; revisit allies who react to the outcome |
 
-The optional Gillpup egg, Mankato notebook, Fair, fishing, cabin visits and
+The optional Loobit egg, Mankato notebook, Fair, fishing, cabin visits and
 Safari expedition provide reasons to explore. They cannot replace required
 rescues or make paid admission a condition of finishing the story.
 

@@ -38,7 +38,15 @@ fn overhaul_public_reference_and_comparison_do_not_require_the_pine_badge() {
     press(&mut c, GameButton::Up);
     press(&mut c, GameButton::A);
     continue_in_place(&mut c, &root, &r, "pacing-unread-public-reference");
-    acknowledge(&mut c, "MS06", "MN_ITASCA_MARKERText", READING);
+    let label = if r.data().maps["MnLakeItasca"]
+        .scripts
+        .contains_key("MnFlowItascaOwnDateText")
+    {
+        "MnFlowItascaOwnDateText"
+    } else {
+        "MN_ITASCA_MARKERText"
+    };
+    acknowledge(&mut c, "MS06", label, READING);
     finish(&mut c);
     assert!(event(&c, READING) && !event(&c, REPORT));
     let after = c.shell.shell.session().state();
@@ -56,6 +64,14 @@ fn overhaul_public_reference_and_comparison_do_not_require_the_pine_badge() {
     assert!(event(&c, REPORT));
     assert_eq!(c.shell.shell.session().state().badges, before.badges);
     assert_eq!(c.shell.shell.session().state().bag, before.bag);
+    if r.data().maps["MnBemidji"]
+        .scripts
+        .contains_key("MnPublicRoadsBemidjiOpen")
+    {
+        assert!(!c.shell.shell.session().state().badges.johto[6]);
+        assert!(!event(&c, "EVENT_MN_MINE_INSTRUMENT_RECOVERED"));
+        return;
+    }
     // Accepting evidence does not grant the travel credential or open the mine.
     super::super::authored_route_fixture::indoor_walk(&mut c, &r, (43, 25));
     for _ in 0..4 {
@@ -111,6 +127,9 @@ fn overhaul_harbor_accepts_the_pump_log_before_final_gym_training() {
         ]);
     }
     labels.push("MnArcHarborIntakeText");
+    if super::super::northstar_dialogue::evidence_opens_rescue(&r) {
+        labels = super::super::northstar_dialogue::RESCUE_RADIO_EXCHANGE.to_vec();
+    }
     for label in labels {
         acknowledge(&mut c, "MS10", label, SIGNAL);
     }
@@ -122,7 +141,12 @@ fn overhaul_harbor_accepts_the_pump_log_before_final_gym_training() {
     assert_eq!(after.bag, before.bag);
     assert_eq!(after.money, before.money);
     press(&mut c, GameButton::A);
-    acknowledge(&mut c, "PACING", "MN_HARBOR_RECEIVERDeniedText", CHAMPION);
+    acknowledge(
+        &mut c,
+        "PACING",
+        super::super::northstar_dialogue::pre_badge_harbor_return(&r),
+        CHAMPION,
+    );
     finish(&mut c);
     assert!(!c.shell.shell.session().state().badges.johto[7]);
 
@@ -144,6 +168,16 @@ fn overhaul_harbor_accepts_the_pump_log_before_final_gym_training() {
         .filter(|event| event.script_name == "MnDuluthShoreCheck")
         .map(|event| (event.x as i16, event.y as i16 + 1))
         .collect::<Vec<_>>();
+    if r.data().maps["MnDuluth"]
+        .scripts
+        .contains_key("MnPublicRoadsDuluthOpen")
+    {
+        assert!(
+            lanes.is_empty(),
+            "public shoreline has no credential checkpoints"
+        );
+        return;
+    }
     assert!(!lanes.is_empty(), "installed north-road checkpoint lanes");
     for (x, y) in lanes {
         super::super::authored_route_fixture::indoor_walk(&mut c, &r, (x, y));

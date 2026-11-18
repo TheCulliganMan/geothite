@@ -886,6 +886,11 @@ fn overhaul_harbor_refusals_and_relay_return_describe_actual_progress() {
             ],
         };
         let (root, r, mut c) = fixture("MnDuluthHarborWorkshop", (8, 9), &flags);
+        let label = if stage == 0 {
+            super::northstar_dialogue::pre_badge_harbor_return(&r)
+        } else {
+            label
+        };
         let state = c.shell.shell.session_mut().state_mut();
         if stage == 0 && super::northstar_dialogue::timely_evidence(&r) {
             state
