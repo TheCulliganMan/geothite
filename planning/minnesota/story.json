@@ -68450,5 +68450,145 @@
         ["Your pack's full.", "I'll keep the TM."]
       ]
     }
+  },
+  "journey_landmark_dialogue": {
+    "MnRochesterGym": {
+      "MnRochesterGymLeaderGiftText": [
+        ["VAREL: A CARE", "BADGE for you!"],
+        ["Take this TM, too.", "It holds HEADBUTT."],
+        ["MANKATO? Head west", "on the farm road."],
+        ["Want HM FLASH?", "Head back east."],
+        ["Show the guide in", "the limestone cave"],
+        ["your CARE BADGE."]
+      ]
+    },
+    "MnMankatoGym": {
+      "MnMankatoGymLeaderGiftText": [
+        ["TORVEN: You earned", "the PRAIRIE BADGE."],
+        ["That TM holds", "MUD-SLAP. I keep"],
+        ["a spare shirt for", "practice days."],
+        ["Head north for", "MINNEAPOLIS."],
+        ["Want HM CUT? Take", "the east farm road"],
+        ["to the tool shed.", "Show your BADGE."]
+      ]
+    },
+    "MnMinneapolis": {
+      "MN_MP_NORTH_GUIDEText": [
+        ["See that bluff?", "The road north"],
+        ["runs along it to", "ST CLOUD."],
+        ["Going to BRANNIC's", "GYM? Take the east"],
+        ["road to ST PAUL.", "I took the bluff"],
+        ["road once. Lovely", "view. Wrong GYM."]
+      ]
+    },
+    "MnBrainerd": {
+      "MnBrainerdRangerBeforeText": [
+        ["RANGER: Careful.", "That's mud where"],
+        ["my boat used to", "sit. Want to see"],
+        ["the lake log? Show", "me SIVREN's LAKE"],
+        ["BADGE. She runs", "the GYM here."]
+      ],
+      "MN_BRAINERD_RANGERText": [
+        ["RANGER: My boat", "was hanging by its"],
+        ["rope. I cut it.", "Dropped into mud."],
+        ["HALE said the", "gauge had slipped."],
+        ["I showed him the", "rope. He asked me"],
+        ["to check again.", "Here's my reading."],
+        ["Head north through", "LEECH LAKE to"],
+        ["BEMIDJI. Turn west", "for LAKE ITASCA."],
+        ["Check their marker", "for the same date."]
+      ],
+      "MnBrainerdRangerRepeatText": [
+        ["RANGER: Head north", "past LEECH LAKE."],
+        ["At BEMIDJI, turn", "west for ITASCA."],
+        ["Copy the marks for", "my date. BEMIDJI's"],
+        ["field officer can", "compare the two."]
+      ]
+    },
+    "MnBemidji": {
+      "MnBemidjiNeedReadingText": [
+        ["OFFICER: HALE sent", "me two readings."],
+        ["I want to see what", "the observer wrote"],
+        ["at LAKE ITASCA.", "Walk west from"],
+        ["town and read the", "headwaters marker."],
+        ["Bring me her marks", "and the date."]
+      ]
+    },
+    "MnLakeItasca": {
+      "MN_ITASCA_WEST_CLOSEDText": [
+        ["DETROIT LAKES", "West to the trail."],
+        ["Turn south at the", "prairie flowers."],
+        ["BEMIDJI", "East via the ford."]
+      ],
+      "MN_ITASCA_OBSERVERText": [
+        ["I checked every", "bolt on the gauge."],
+        ["Tight. Then I went", "down the ladder."],
+        ["My boot leaks at", "the third rung."],
+        ["Got to the fifth", "before I felt it."],
+        ["I wrote both marks", "on the headwaters"],
+        ["marker. It's just", "north of here."]
+      ],
+      "MnItascaMarkerAfterText": [
+        ["You've copied both", "ITASCA readings."],
+        ["Take the east road", "back to BEMIDJI."],
+        ["The field officer", "has HALE's sheets."]
+      ]
+    },
+    "MnLeagueLobby": {
+      "MnElyMissingBadge1Text": [
+        ["REGISTRAR: I check", "all eight BADGES."],
+        ["For the CARE one,", "see VAREL by the"],
+        ["ROCHESTER clinic."]
+      ],
+      "MnElyMissingBadge2Text": [
+        ["REGISTRAR: Still", "need the PRAIRIE"],
+        ["BADGE? TORVEN runs", "the hilltop GYM"],
+        ["in MANKATO."]
+      ],
+      "MnElyMissingBadge3Text": [
+        ["REGISTRAR: Here's", "the empty spot for"],
+        ["the CURRENT BADGE.", "Look for AVRIN at"],
+        ["the MINNEAPOLIS", "GYM."]
+      ],
+      "MnElyMissingBadge4Text": [
+        ["REGISTRAR: For the", "CAPITOL BADGE,"],
+        ["ask for BRANNIC at", "the ST PAUL GYM."]
+      ],
+      "MnElyMissingBadge5Text": [
+        ["REGISTRAR: Room", "for a WIND BADGE"],
+        ["right here. SAVEN", "awards it at the"],
+        ["GYM in ST CLOUD."]
+      ],
+      "MnElyMissingBadge6Text": [
+        ["REGISTRAR: Still", "need a LAKE BADGE."],
+        ["SIVREN's the one", "to see. She runs"],
+        ["the BRAINERD GYM."]
+      ],
+      "MnElyMissingBadge7Text": [
+        ["REGISTRAR: I need", "to see your PINE"],
+        ["BADGE too. ORLIS", "awards it at the"],
+        ["GYM in BEMIDJI."]
+      ],
+      "MnElyMissingBadge8Text": [
+        ["REGISTRAR: Seven!", "For the last one,"],
+        ["the HARBOR BADGE,", "look for NOREK at"],
+        ["the DULUTH GYM."]
+      ]
+    },
+    "MnWinonaHome1F": {
+      "MnWinonaChampionSupperText": [
+        ["MOM: The CHAMPION,", "in my kitchen."],
+        ["Look at those", "muddy feet!"],
+        ["Oh, leave them.", "I've missed those"],
+        ["prints on my nice", "clean floor."],
+        ["Pull up a chair.", "Stew for you,"],
+        ["and a bowl for", "every one of them."]
+      ],
+      "MnWinonaChampionRestText": [
+        ["MOM: Home to eat?", "Good. Same chair."],
+        ["I still put out", "the big bowl."],
+        ["Funny how small", "it looks now."]
+      ]
+    }
   }
 }

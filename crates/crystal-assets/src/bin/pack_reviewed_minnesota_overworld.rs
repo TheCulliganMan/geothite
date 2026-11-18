@@ -2,6 +2,7 @@
 use std::path::Path;
 
 use anyhow::{Result, ensure};
+use crystal_assets::minnesota_reviewed_overworld::{self, Coverage};
 
 #[path = "pack_reviewed_minnesota_overworld/reviewed_banks.rs"]
 mod reviewed_banks;
@@ -14,11 +15,11 @@ fn main() -> Result<()> {
     );
     if args[0] == "--verify-reviewed" {
         let base = crystal_assets::read_verified_compiled_game_pack(Path::new(&args[3]))?;
-        let banks = reviewed_banks::load(
+        let banks = minnesota_reviewed_overworld::load(
             Path::new(&args[1]),
             Path::new(&args[2]),
             &base,
-            reviewed_banks::Coverage::Reviewed,
+            Coverage::Reviewed,
         )?;
         let overlay = banks.build_pack(&base)?;
         reviewed_banks::verify_preservation(&base, &overlay, &banks)?;
@@ -36,11 +37,11 @@ fn main() -> Result<()> {
     );
     ensure!(!destination.exists(), "output pack must be fresh");
     let base = crystal_assets::read_verified_compiled_game_pack(&source)?;
-    let banks = reviewed_banks::load(
+    let banks = minnesota_reviewed_overworld::load(
         Path::new(&args[1]),
         Path::new(&args[2]),
         &base,
-        reviewed_banks::Coverage::Complete,
+        Coverage::Complete,
     )?;
     let count = banks.runtime_files.len() / 4;
     let pack = banks.build_pack(&base)?;

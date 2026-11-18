@@ -12,6 +12,8 @@ The [Minnesota campaign polish review](docs/game-content.md#minnesota-campaign-p
 includes local build and play commands for the dialogue, roster, and early
 fishing update on top of the Glacier Line pack.
 
+Wade through Brainerd’s swimming beach, challenge trainers on the sandbars, and follow the lake readings from Brainerd to Itasca. [Lakeside design and comparisons](planning/minnesota/revisions/lakeside-v01/README.md)
+
 Walk the timber bridge toward Detroit Lakes, or take a canoe underneath to a
 quiet fishing spot. Search the old shell beds at Former Shores and visit the
 family photo gallery at the Ely Hall of Fame. [Minnesota maps and artwork](planning/minnesota/revisions/crossings-v01/README.md)

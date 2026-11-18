@@ -55,6 +55,33 @@ tools in separate commands; retain one target directory so common dependencies
 remain cached. The no-default-feature command above intentionally checks only
 the runtime library, rather than the authoring CLI targets.
 
+## Minnesota Lakeside
+
+Lakeside extends the released Crossings pair. Its authoring inputs include the
+selected Minnesota family manifests, the matching reviewed battle sheets and the
+complete walking-sprite registry. The source loader checks the native pixels,
+bitplanes, source digests and palettes before installation. Run from the repository
+root at the Lakeside authoring revision, using fresh ignored output paths.
+
+```sh
+mkdir -p target/lakeside-20261118
+CARGO_INCREMENTAL=0 cargo build --locked -j 2 -p crystal-assets --bin pack_northstar_lakeside \
+  --bin materialize_northstar_hosted --bin verify_crystalpack
+target/debug/pack_northstar_lakeside content-packs/minnesota-crossings-v01.crystalpack \
+  target/crossings-20261118/hosted.crystalpack planning/minnesota/pokemon \
+  target/minnesota-pokemon/native content-packs/minnesota-lakeside-v01.crystalpack
+target/debug/materialize_northstar_hosted content-packs/minnesota-lakeside-v01.crystalpack \
+  target/lakeside-20261118/hosted.crystalpack
+target/debug/verify_crystalpack target/lakeside-20261118/hosted.crystalpack --audio --desktop
+uv run --with cbor2 --with pillow python planning/minnesota/tools/audit_lakeside.py \
+  content-packs/minnesota-crossings-v01.crystalpack content-packs/minnesota-lakeside-v01.crystalpack
+uv run --with cbor2 --with pillow python planning/minnesota/gyms/brainerd-lakeside-v01/audit.py \
+  content-packs/minnesota-crossings-v01.crystalpack content-packs/minnesota-lakeside-v01.crystalpack
+```
+
+The same audits accept the two hosted packs. The [design notes](../planning/minnesota/revisions/lakeside-v01/README.md)
+cover the gym encounters, story directions and native art.
+
 ## Minnesota crossings
 
 Crossings extends the exact released Wayfinding raw and hosted packs. It changes
