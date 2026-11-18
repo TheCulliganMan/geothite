@@ -393,11 +393,19 @@ fn iron_workings_target_accepts_both_v04_parents_and_reviewed_landings() {
             .id()
             .split('+')
             .any(|id| id == super::WAYFINDING_MANIFEST);
-        let direct_count = if wayfinding { 2 } else { 0 };
+        let crossings = runtime
+            .modpack()
+            .id()
+            .split('+')
+            .any(|id| id == super::CROSSINGS_MANIFEST);
+        let direct_count = 2 * (usize::from(wayfinding) + usize::from(crossings));
         assert_eq!(meta.sources.len(), 12 + direct_count);
-        assert_eq!(meta.wayfinding_parents.len(), direct_count);
+        assert_eq!(meta.unchanged_checkpoint_parents.len(), direct_count);
         for direct in &meta.sources[..direct_count] {
-            assert!(meta.wayfinding_parents.contains(&direct.modpack_id));
+            assert!(
+                meta.unchanged_checkpoint_parents
+                    .contains(&direct.modpack_id)
+            );
         }
         assert_eq!(meta.regional_parents.len(), 2);
         check_ledge_save_landings(&runtime, wayfinding);

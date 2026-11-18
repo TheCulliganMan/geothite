@@ -129,7 +129,7 @@ mod tests {
             iron_relocations: None,
             layout_reentry: None,
             regional_parents: vec!["direct-story".into()],
-            wayfinding_parents: vec!["direct-regional".into()],
+            unchanged_checkpoint_parents: vec!["direct-regional".into()],
         };
         let regional = CompatibleSaveSource {
             modpack_id: "direct-regional".into(),

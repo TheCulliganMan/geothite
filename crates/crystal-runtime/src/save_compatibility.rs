@@ -20,6 +20,7 @@ mod road_trainer_save_migration;
 pub const SAVE_COMPATIBILITY_FILE: &str = "data/northstar-save-compatibility.json";
 pub const SAVE_COMPATIBILITY_MANIFEST: &str = "northstar-refinement-v1";
 const STORY_FLOW_MANIFEST: &str = "northstar-story-flow-v1";
+const CROSSINGS_MANIFEST: &str = "northstar-crossings-v1";
 const WAYFINDING_MANIFEST: &str = "northstar-wayfinding-v1";
 const REGIONAL_DESIGN_MANIFEST: &str = "northstar-regional-design-v1";
 
@@ -46,7 +47,7 @@ struct Compatibility {
     #[serde(skip)]
     regional_parents: Vec<String>,
     #[serde(skip)]
-    wayfinding_parents: Vec<String>,
+    unchanged_checkpoint_parents: Vec<String>,
 }
 
 /// Returns the exact source identities approved by this target's hashed metadata.
@@ -66,7 +67,7 @@ fn parse_compatibility(bytes: &[u8], target_id: &str) -> Result<Compatibility> {
         schema_version: u8,
     }
     let header: Header = serde_json::from_slice(bytes).context("save compatibility version")?;
-    if matches!(header.schema_version, 5 | 6) {
+    if matches!(header.schema_version, 5..=7) {
         return parse_regional_compatibility(bytes, target_id, header.schema_version);
     }
     parse_prior_compatibility(bytes, target_id)
@@ -220,6 +221,19 @@ fn parse_regional_compatibility(
                 ),
             ],
         ),
+        7 => (
+            CROSSINGS_MANIFEST,
+            [
+                (
+                    "e0638a9327e3296b214cdb8d3fdb6e25c33616cdacd2adac583bdd4eb70958bd",
+                    "0495ee73a16a6aa6ceb180a7a349b818d86d982e52f6b41118fd8eb60ad95e7d",
+                ),
+                (
+                    "e17218b24ad2b8292d17658b1176e7e093851f7502b2b5a6177f67edf27d97c4",
+                    "123e022fc3a37f46d8f06b7bae53f8b4ad1ffc5cd1d7b9b564b6a287dcbc73ac",
+                ),
+            ],
+        ),
         _ => anyhow::bail!("unsupported regional save policy"),
     };
     let release: RegionalCompatibility = serde_json::from_slice(bytes)?;
@@ -241,8 +255,8 @@ fn parse_regional_compatibility(
     );
     let parent_ids = [parent.to_owned(), format!("{parent}{suffix}")];
     let inherited = serde_json::to_vec(&release.inherited)?;
-    let mut policy = if schema == 6 {
-        parse_regional_compatibility(&inherited, parent, 5)?
+    let mut policy = if schema > 5 {
+        parse_regional_compatibility(&inherited, parent, schema - 1)?
     } else {
         let story = parse_prior_compatibility(&inherited, parent)?;
         ensure!(
@@ -264,8 +278,8 @@ fn parse_regional_compatibility(
             "regional revision requires its exact parent pack identities"
         );
     }
-    if schema == 6 {
-        policy.wayfinding_parents = parent_ids.into();
+    if schema > 5 {
+        policy.unchanged_checkpoint_parents.extend(parent_ids);
     } else {
         policy.regional_parents = parent_ids.into();
     }
@@ -362,7 +376,10 @@ fn upgrade_source_checkpoint(
     source: &CompatibleSaveSource,
     data: &GameDataSet,
 ) -> Result<GameState> {
-    if metadata.wayfinding_parents.contains(&source.modpack_id) {
+    if metadata
+        .unchanged_checkpoint_parents
+        .contains(&source.modpack_id)
+    {
         return normalize_upgrade_checkpoint(state);
     }
     if !metadata.regional_parents.is_empty() {
