@@ -14,6 +14,9 @@ use crate::cave_save_migration::{self, CaveReentry};
 use crate::gym_save_migration::{self, GymReentry};
 use crate::iron_save_migration::{self, IronRelocations};
 
+#[path = "road_trainer_save_migration.rs"]
+mod road_trainer_save_migration;
+
 pub const SAVE_COMPATIBILITY_FILE: &str = "data/northstar-save-compatibility.json";
 pub const SAVE_COMPATIBILITY_MANIFEST: &str = "northstar-refinement-v1";
 const STORY_FLOW_MANIFEST: &str = "northstar-story-flow-v1";
@@ -315,11 +318,14 @@ pub fn prepare_runtime_save_slot(
 }
 
 fn upgrade_source_checkpoint(
-    state: GameState,
+    mut state: GameState,
     metadata: &Compatibility,
     source: &CompatibleSaveSource,
     data: &GameDataSet,
 ) -> Result<GameState> {
+    if !metadata.regional_parents.is_empty() {
+        road_trainer_save_migration::align_undefeated_trainers(data, &mut state)?;
+    }
     // Story-only changes preserve the floorplan parent's exact room and actor positions.
     if metadata.regional_parents.contains(&source.modpack_id)
         || direct_story_parent(metadata, &source.modpack_id)
