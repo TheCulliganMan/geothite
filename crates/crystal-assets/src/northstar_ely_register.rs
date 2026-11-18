@@ -93,11 +93,23 @@ fn compose(pack: &mut CompiledGamePack, room: &mut MapModule, design: &Gallery) 
         let y = (i / 7) * 2;
         let mut collision = Vec::with_capacity(4);
         let mut assembled = [0_u8; 16];
-        for q in 0..4 {
-            let key = char::from(design.rows[y + q / 2].as_bytes()[x + q % 2]);
-            let kind = if x < 10 {
-                let previous = room.blocks[(y / 2) * 5 + x / 2];
-                old_collision[&format!("{previous:02x}")][q].as_str()
+        let original_footing = if x < 10 {
+            let previous = room.blocks[(y / 2) * 5 + x / 2];
+            Some(
+                old_collision
+                    .get(&format!("{previous:02x}"))
+                    .context("original hall footing")?,
+            )
+        } else {
+            None
+        };
+        for (quadrant, (dx, dy)) in [(0, 0), (1, 0), (0, 1), (1, 1)].into_iter().enumerate() {
+            let key = char::from(design.rows[y + dy].as_bytes()[x + dx]);
+            let kind = if let Some(footing) = original_footing {
+                footing
+                    .get(quadrant)
+                    .context("original hall quadrant")?
+                    .as_str()
             } else if matches!(key, 'a' | 'b') {
                 "FLOOR"
             } else {
@@ -106,7 +118,7 @@ fn compose(pack: &mut CompiledGamePack, room: &mut MapModule, design: &Gallery) 
             collision.push(kind.to_owned());
             let piece = usize::from(*design.tiles.get(&key).context("gallery floorplan symbol")?);
             let src = piece / 4 * 16 + (piece % 2) * 2 + (piece % 4 / 2) * 8;
-            let to = (q % 2) * 2 + (q / 2) * 8;
+            let to = dx * 2 + dy * 8;
             for d in [0, 1, 4, 5] {
                 assembled[to + d] = *blocks.get(src + d).context("native gallery quadrant")?;
             }
