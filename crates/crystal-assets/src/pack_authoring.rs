@@ -122,6 +122,13 @@ mod northstar_wayfinding;
 pub use northstar_wayfinding::revise_northstar_wayfinding;
 mod northstar_regional_art;
 mod northstar_regional_design;
+mod northstar_route_challenges;
+pub use northstar_route_challenges::install_northstar_route_challenges;
+mod northstar_town_responses;
+mod minnesota_hidden_route_clues;
+pub use minnesota_hidden_route_clues::install_minnesota_hidden_route_clues;
+mod northstar_river_terrace;
+pub use northstar_river_terrace::revise_northstar_river_terrace;
 mod northstar_road_trainers;
 pub use northstar_regional_design::revise_northstar_regional_design;
 mod northstar_regional_guidance;
@@ -1039,3 +1046,9 @@ mod northstar_refinement_revision;
 pub use northstar_refinement_revision::{
     NorthstarRefinementSaveSource, northstar_refinement_save_source, refine_northstar_adventure,
 };
+
+mod northstar_mine_return;
+pub use northstar_mine_return::build_mine_return;
+
+mod northstar_field_review;
+pub use northstar_field_review::{build_northstar_field_review, field_review_manifest};

@@ -1,0 +1,497 @@
+[
+  {
+    "id": "MN_R16_T01",
+    "map": "MnR16C00R00",
+    "name": "LYLE",
+    "expected_party": [
+      {
+        "species": "CACHEEK",
+        "level": 31,
+        "item": null,
+        "moves": [
+          {
+            "name": "DIG",
+            "current_pp": 10,
+            "pp_ups": 0
+          },
+          {
+            "name": "HEADBUTT",
+            "current_pp": 15,
+            "pp_ups": 0
+          },
+          {
+            "name": "THIEF",
+            "current_pp": 10,
+            "pp_ups": 0
+          },
+          {
+            "name": "SUPER_FANG",
+            "current_pp": 10,
+            "pp_ups": 0
+          }
+        ],
+        "dvs": {
+          "attack": 9,
+          "defense": 8,
+          "speed": 8,
+          "special": 8,
+          "hp": 8
+        }
+      },
+      {
+        "species": "FLOSSAIL",
+        "level": 31,
+        "item": null,
+        "moves": [
+          {
+            "name": "COTTON_SPORE",
+            "current_pp": 40,
+            "pp_ups": 0
+          },
+          {
+            "name": "GUST",
+            "current_pp": 35,
+            "pp_ups": 0
+          },
+          {
+            "name": "STUN_SPORE",
+            "current_pp": 30,
+            "pp_ups": 0
+          },
+          {
+            "name": "SLUDGE",
+            "current_pp": 20,
+            "pp_ups": 0
+          }
+        ],
+        "dvs": {
+          "attack": 9,
+          "defense": 8,
+          "speed": 8,
+          "special": 8,
+          "hp": 8
+        }
+      },
+      {
+        "species": "ZAPSAP",
+        "level": 30,
+        "item": null,
+        "moves": [
+          {
+            "name": "MEGA_DRAIN",
+            "current_pp": 10,
+            "pp_ups": 0
+          },
+          {
+            "name": "SPARK",
+            "current_pp": 20,
+            "pp_ups": 0
+          },
+          {
+            "name": "BIDE",
+            "current_pp": 10,
+            "pp_ups": 0
+          },
+          {
+            "name": "LIGHT_SCREEN",
+            "current_pp": 30,
+            "pp_ups": 0
+          }
+        ],
+        "dvs": {
+          "attack": 9,
+          "defense": 8,
+          "speed": 8,
+          "special": 8,
+          "hp": 8
+        }
+      }
+    ],
+    "party": [
+      {
+        "source_slot": 1,
+        "moves": [
+          "GUST",
+          "SLUDGE",
+          "COTTON_SPORE"
+        ]
+      },
+      {
+        "source_slot": 0,
+        "moves": [
+          "HEADBUTT",
+          "DIG",
+          "QUICK_ATTACK"
+        ]
+      }
+    ],
+    "tile": [
+      13,
+      16
+    ],
+    "facing": "LEFT",
+    "range": 1,
+    "dialogue": {
+      "MN_R16_T01Seen": [
+        [
+          "A bench can wait.",
+          "My team is quick!"
+        ]
+      ],
+      "MN_R16_T01Won": [
+        [
+          "You beat us to it!"
+        ]
+      ],
+      "MN_R16_T01Lost": [
+        [
+          "Try slowing us",
+          "down first."
+        ]
+      ],
+      "MN_R16_T01ReturnText": [
+        [
+          "Dad built this",
+          "gate. I will save"
+        ],
+        [
+          "the sound boards",
+          "for our bench."
+        ]
+      ]
+    }
+  },
+  {
+    "id": "MN_R16_T04",
+    "map": "MnR16C00R00",
+    "name": "JUNE",
+    "expected_party": [
+      {
+        "species": "ZAPSAP",
+        "level": 31,
+        "item": null,
+        "moves": [
+          {
+            "name": "MEGA_DRAIN",
+            "current_pp": 10,
+            "pp_ups": 0
+          },
+          {
+            "name": "SPARK",
+            "current_pp": 20,
+            "pp_ups": 0
+          },
+          {
+            "name": "BIDE",
+            "current_pp": 10,
+            "pp_ups": 0
+          },
+          {
+            "name": "LIGHT_SCREEN",
+            "current_pp": 30,
+            "pp_ups": 0
+          }
+        ],
+        "dvs": {
+          "attack": 6,
+          "defense": 10,
+          "speed": 10,
+          "special": 8,
+          "hp": 0
+        }
+      },
+      {
+        "species": "TOTLIT",
+        "level": 31,
+        "item": null,
+        "moves": [
+          {
+            "name": "SLAM",
+            "current_pp": 20,
+            "pp_ups": 0
+          },
+          {
+            "name": "ROLLOUT",
+            "current_pp": 20,
+            "pp_ups": 0
+          },
+          {
+            "name": "ENCORE",
+            "current_pp": 5,
+            "pp_ups": 0
+          },
+          {
+            "name": "FLAME_WHEEL",
+            "current_pp": 25,
+            "pp_ups": 0
+          }
+        ],
+        "dvs": {
+          "attack": 6,
+          "defense": 10,
+          "speed": 10,
+          "special": 8,
+          "hp": 0
+        }
+      },
+      {
+        "species": "RUMBLEHIDE",
+        "level": 30,
+        "item": null,
+        "moves": [
+          {
+            "name": "MAGNITUDE",
+            "current_pp": 30,
+            "pp_ups": 0
+          },
+          {
+            "name": "SPARK",
+            "current_pp": 20,
+            "pp_ups": 0
+          },
+          {
+            "name": "DIG",
+            "current_pp": 10,
+            "pp_ups": 0
+          },
+          {
+            "name": "ROAR",
+            "current_pp": 20,
+            "pp_ups": 0
+          }
+        ],
+        "dvs": {
+          "attack": 6,
+          "defense": 10,
+          "speed": 10,
+          "special": 8,
+          "hp": 0
+        }
+      }
+    ],
+    "party": [
+      {
+        "source_slot": 0,
+        "moves": [
+          "SPARK",
+          "MEGA_DRAIN",
+          "LIGHT_SCREEN"
+        ]
+      },
+      {
+        "source_slot": 1,
+        "moves": [
+          "HEADBUTT",
+          "FLAME_WHEEL",
+          "DEFENSE_CURL",
+          "ROLLOUT"
+        ]
+      }
+    ],
+    "tile": [
+      38,
+      39
+    ],
+    "facing": "RIGHT",
+    "range": 2,
+    "dialogue": {
+      "MN_R16_T04Seen": [
+        [
+          "I brace for turns",
+          "when I ski."
+        ],
+        [
+          "My team braces",
+          "before it rolls!"
+        ]
+      ],
+      "MN_R16_T04Won": [
+        [
+          "Missed my turn!"
+        ]
+      ],
+      "MN_R16_T04Lost": [
+        [
+          "Give us a turn",
+          "and off we go!"
+        ]
+      ],
+      "MN_R16_T04ReturnText": [
+        [
+          "LIGHT SCREEN helps",
+          "against special"
+        ],
+        [
+          "moves. A physical",
+          "hit gets through."
+        ]
+      ]
+    }
+  },
+  {
+    "id": "MN_R16_T06",
+    "map": "MnR16C01R00",
+    "name": "TOM",
+    "expected_party": [
+      {
+        "species": "CACHEEK",
+        "level": 31,
+        "item": null,
+        "moves": [
+          {
+            "name": "DIG",
+            "current_pp": 10,
+            "pp_ups": 0
+          },
+          {
+            "name": "HEADBUTT",
+            "current_pp": 15,
+            "pp_ups": 0
+          },
+          {
+            "name": "THIEF",
+            "current_pp": 10,
+            "pp_ups": 0
+          },
+          {
+            "name": "SUPER_FANG",
+            "current_pp": 10,
+            "pp_ups": 0
+          }
+        ],
+        "dvs": {
+          "attack": 9,
+          "defense": 8,
+          "speed": 8,
+          "special": 8,
+          "hp": 8
+        }
+      },
+      {
+        "species": "RUMBLEHIDE",
+        "level": 31,
+        "item": null,
+        "moves": [
+          {
+            "name": "SPARK",
+            "current_pp": 20,
+            "pp_ups": 0
+          },
+          {
+            "name": "DIG",
+            "current_pp": 10,
+            "pp_ups": 0
+          },
+          {
+            "name": "ROAR",
+            "current_pp": 20,
+            "pp_ups": 0
+          },
+          {
+            "name": "TAKE_DOWN",
+            "current_pp": 20,
+            "pp_ups": 0
+          }
+        ],
+        "dvs": {
+          "attack": 9,
+          "defense": 8,
+          "speed": 8,
+          "special": 8,
+          "hp": 8
+        }
+      },
+      {
+        "species": "FLOSSAIL",
+        "level": 30,
+        "item": null,
+        "moves": [
+          {
+            "name": "POISONPOWDER",
+            "current_pp": 35,
+            "pp_ups": 0
+          },
+          {
+            "name": "COTTON_SPORE",
+            "current_pp": 40,
+            "pp_ups": 0
+          },
+          {
+            "name": "GUST",
+            "current_pp": 35,
+            "pp_ups": 0
+          },
+          {
+            "name": "STUN_SPORE",
+            "current_pp": 30,
+            "pp_ups": 0
+          }
+        ],
+        "dvs": {
+          "attack": 9,
+          "defense": 8,
+          "speed": 8,
+          "special": 8,
+          "hp": 8
+        }
+      }
+    ],
+    "party": [
+      {
+        "source_slot": 0,
+        "moves": [
+          "SUPER_FANG",
+          "TAIL_WHIP",
+          "QUICK_ATTACK"
+        ]
+      },
+      {
+        "source_slot": 1,
+        "moves": [
+          "DIG",
+          "SPARK",
+          "STOMP"
+        ]
+      }
+    ],
+    "tile": [
+      11,
+      11
+    ],
+    "facing": "DOWN",
+    "range": 2,
+    "dialogue": {
+      "MN_R16_T06Seen": [
+        [
+          "A rough sketch,",
+          "then bold strokes."
+        ],
+        [
+          "That works for",
+          "battles too!"
+        ]
+      ],
+      "MN_R16_T06Won": [
+        [
+          "Back to my sketch!"
+        ]
+      ],
+      "MN_R16_T06Lost": [
+        [
+          "That first bite",
+          "sets up the rest."
+        ]
+      ],
+      "MN_R16_T06ReturnText": [
+        [
+          "Switching clears",
+          "TAIL WHIP."
+        ],
+        [
+          "A flying partner",
+          "can avoid DIG."
+        ]
+      ]
+    }
+  }
+]

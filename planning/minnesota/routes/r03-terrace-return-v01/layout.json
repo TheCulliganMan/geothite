@@ -1,0 +1,21 @@
+{
+  "map": "MnR03C00R00",
+  "tileset": "mn_outdoor_headwaters_stairs",
+  "dimensions_metatiles": [24, 24],
+  "placements": [
+    {"at": [18, 20], "from": 114, "to": 86},
+    {"at": [18, 19], "from": 113, "to": 1},
+    {"at": [19, 19], "from": 113, "to": 1},
+    {"at": [20, 19], "from": 113, "to": 1},
+    {"at": [16, 22], "from": 2, "to": 5},
+    {"at": [17, 22], "from": 2, "to": 5},
+    {"at": [18, 22], "from": 2, "to": 5},
+    {"at": [19, 22], "from": 1, "to": 5}
+  ],
+  "item": {"script": "MN_R03_ITEM_04", "from": [39, 35], "to": [39, 39]},
+  "sign_pages": [
+    ["NORTH: MINNEAPOLIS", "SOUTH: MANKATO"],
+    ["TERRACE SUPPLIES", "Climb east steps."],
+    ["Hop south to", "reach the path."]
+  ]
+}

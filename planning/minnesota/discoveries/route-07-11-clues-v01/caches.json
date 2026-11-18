@@ -1,0 +1,92 @@
+[
+  {
+    "route": 7,
+    "map": "MnR07C00R01",
+    "tile": [
+      24,
+      25
+    ],
+    "approach": [
+      24,
+      26
+    ],
+    "from_block": 62,
+    "to_block": 136,
+    "first_glyph": 192,
+    "item": "MYSTIC_WATER",
+    "script": "MN_HIDDEN_R07",
+    "flag": "EVENT_MN_HIDDEN_R07"
+  },
+  {
+    "route": 8,
+    "map": "MnR08C00R01",
+    "tile": [
+      35,
+      42
+    ],
+    "approach": [
+      36,
+      42
+    ],
+    "from_block": 4,
+    "to_block": 180,
+    "first_glyph": 196,
+    "item": "MIRACLE_SEED",
+    "script": "MN_HIDDEN_R08",
+    "flag": "EVENT_MN_HIDDEN_R08"
+  },
+  {
+    "route": 9,
+    "map": "MnR09C01R00",
+    "tile": [
+      31,
+      18
+    ],
+    "approach": [
+      32,
+      18
+    ],
+    "from_block": 10,
+    "to_block": 136,
+    "first_glyph": 196,
+    "item": "RARE_CANDY",
+    "script": "MN_HIDDEN_R09",
+    "flag": "EVENT_MN_HIDDEN_R09"
+  },
+  {
+    "route": 10,
+    "map": "MnR10C01R00",
+    "tile": [
+      22,
+      15
+    ],
+    "approach": [
+      23,
+      15
+    ],
+    "from_block": 4,
+    "to_block": 234,
+    "first_glyph": 196,
+    "item": "SUPER_POTION",
+    "script": "MN_HIDDEN_R10",
+    "flag": "EVENT_MN_HIDDEN_R10"
+  },
+  {
+    "route": 11,
+    "map": "MnR11C00R02",
+    "tile": [
+      51,
+      19
+    ],
+    "approach": [
+      50,
+      19
+    ],
+    "from_block": 135,
+    "to_block": 136,
+    "first_glyph": 200,
+    "item": "ULTRA_BALL",
+    "script": "MN_HIDDEN_R11",
+    "flag": "EVENT_MN_HIDDEN_R11"
+  }
+]

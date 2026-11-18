@@ -62,6 +62,18 @@ name = "pack_northstar_wayfinding"
 required-features = ["pack-authoring"]
 
 [[bin]]
+name = "pack_river_terrace"
+required-features = ["pack-authoring"]
+
+[[bin]]
+name = "pack_mine_return"
+required-features = ["pack-authoring"]
+
+[[bin]]
+name = "pack_northstar_field_review"
+required-features = ["pack-authoring"]
+
+[[bin]]
 name = "pack_northstar_lakeside"
 required-features = ["pack-authoring"]
 

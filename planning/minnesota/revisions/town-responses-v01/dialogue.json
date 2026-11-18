@@ -1,0 +1,149 @@
+{
+  "MnStCloud": {
+    "MN_ST_CLOUD_STONECUTTERText": [
+      [
+        "My PENDULOP checks",
+        "each stone I lay."
+      ],
+      [
+        "If it wobbles,",
+        "it won't move on."
+      ],
+      [
+        "It's never been",
+        "wrong yet!"
+      ]
+    ],
+    "MnTownStonecutterAfterText": [
+      [
+        "That shouting",
+        "scared PENDULOP."
+      ],
+      [
+        "It's asleep in",
+        "my coat now."
+      ],
+      [
+        "I'm staying here",
+        "till it wakes up."
+      ]
+    ],
+    "MN_ST_CLOUD_RIVER_WATCHERText": [
+      [
+        "My BIRCHIT loves",
+        "to race my canoe."
+      ],
+      [
+        "It slaps its tail",
+        "when it beats me."
+      ],
+      [
+        "Water's too low",
+        "for that now."
+      ],
+      [
+        "I miss getting",
+        "splashed by it."
+      ],
+      [
+        "Use the launch",
+        "inside the rocks."
+      ]
+    ],
+    "MnTownRiverWatcherAfterText": [
+      [
+        "BIRCHIT's racing",
+        "my canoe again!"
+      ],
+      [
+        "It was waiting",
+        "at the far bank"
+      ],
+      [
+        "before I'd even",
+        "started paddling."
+      ],
+      [
+        "I'm glad it's",
+        "feeling lively."
+      ],
+      [
+        "Use the launch",
+        "inside the rocks."
+      ]
+    ]
+  },
+  "MnDuluth": {
+    "MN_DULUTH_X_DOCK_HANDText": [
+      [
+        "My LAKERNAUT",
+        "helps load cargo."
+      ],
+      [
+        "Big arms, but",
+        "so gentle!"
+      ],
+      [
+        "It never drops",
+        "a single crate."
+      ],
+      [
+        "I love working",
+        "with that big guy."
+      ]
+    ],
+    "MnTownDockHandAfterText": [
+      [
+        "LAKERNAUT can",
+        "reach the boats"
+      ],
+      [
+        "again. It's been",
+        "waving its arms"
+      ],
+      [
+        "at every crew",
+        "that comes in."
+      ],
+      [
+        "It won't even",
+        "stop for lunch!"
+      ]
+    ],
+    "MnDuluth_MN_DULUTH_ISLAND_ARTISTText": [
+      [
+        "LOOBIT are my",
+        "favorite POKEMON."
+      ],
+      [
+        "They dive, and",
+        "I try to guess"
+      ],
+      [
+        "where they'll",
+        "come back up."
+      ],
+      [
+        "Haven't seen many",
+        "here lately."
+      ]
+    ],
+    "MnTownPainterAfterText": [
+      [
+        "The LOOBIT are",
+        "diving here again!"
+      ],
+      [
+        "One came up right",
+        "beside me today."
+      ],
+      [
+        "I was looking",
+        "the other way!"
+      ],
+      [
+        "I'd missed them."
+      ]
+    ]
+  }
+}
