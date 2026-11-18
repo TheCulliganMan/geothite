@@ -79,6 +79,7 @@ SCENES = (
      "MnArcSCBeforeText MnArcSCChoiceText MnArcSCStandText MnArcSCReleasedText MnArcSCAfterText"),
     ("Brainerd — the ranger", "MnBrainerd",
      "MnBrainerdRangerBeforeText MN_BRAINERD_RANGERText MnBrainerdRangerGiftText"),
+    ("Bemidji — if you stop on the way to Itasca", "MnBemidji", "MnBemidjiNeedReadingText"),
     ("Lake Itasca — the water mark", "MnLakeItasca",
      "MN_ITASCA_MARKERText"),
     ("Bemidji — comparing readings", "MnBemidji",
@@ -121,6 +122,7 @@ SCENES = (
     ("League — Casey", "MnLeagueChampion",
      "MnLeagueChampionBeforeText MnLeagueChampionWonText MnLeagueChampionAfterText"),
     ("League — recording the team", "MnLeagueHallOfFame", "MnElyRecordText"),
+    ("Winona — supper with Mom", "MnWinonaHome1F", "MnWinonaChampionSupperText"),
     ("Winona — home again", "MnWinonaHome2F", "MnWinonaCousinChampionText"),
     ("Winona — back at the field station", "MnWinonaFieldStation", "MnWTamarackGuideChampionText"),
 )
@@ -169,6 +171,9 @@ INLINE_CHOICES = {
     ),
     "MnElyRegistrationText": (
         ("If you put off signing in", "MnElyRegistrationDeclinedText"),
+    ),
+    "MnWinonaChampionSupperText": (
+        ("When you visit for supper again", "MnWinonaChampionRestText"),
     ),
     **{
         f"{room}BeforeText": (
@@ -487,13 +492,14 @@ def referenced_texts(maps, texts):
     A label shared by multiple maps is kept in each because some commands
     resolve their text context at runtime.
     """
-    # The Glacier service builder retains the previous conductor program
-    # under an archive label. The conductor event points at the new program.
+    # Some publishers retain the previous entry point for older saved scripts.
+    # The current conductor and registrar use their replacement branches.
     referenced_labels = {
         arg
         for room in maps.values()
         for script, commands in room["scripts"].items()
         if not (script.startswith("MnGlacier") and script.endswith("Original"))
+        if not (script == "MnElyBadgeDenied" and "MnElyMissingBadge1" in room["scripts"])
         for command in commands
         for arg in command["args"]
         if isinstance(arg, str)
@@ -547,9 +553,13 @@ def authored_texts(path):
         story = json.load(source)
     texts = story["dialogue_overhaul"]["texts"]
     for revision in (story.get("story_flow_revision", {}).get("dialogue", {}),
-                     story.get("wayfinding_dialogue", {})):
+                     story.get("wayfinding_dialogue", {}),
+                     story.get("journey_landmark_dialogue", {})):
         for location, passages in revision.items():
             texts.setdefault(location, {}).update(passages)
+    lobby = texts.get("MnLeagueLobby", {})
+    if "MnElyMissingBadge1Text" in lobby:
+        lobby.pop("MnElyBadgeDeniedText", None)
     return texts
 
 
@@ -710,6 +720,8 @@ def main():
         scenes = (*INSTALLED_OPENING, *SCENES[2:]) if args.pack else SCENES
         for title, location, labels in scenes:
             passages = texts.get(location, {})
+            if labels in ("MnBemidjiNeedReadingText", "MnWinonaChampionSupperText") and labels not in passages:
+                continue
             is_return_visit = (title, location, labels) in RETURN_VISITS
             if is_return_visit:
                 alternatives = labels.split()
@@ -766,7 +778,14 @@ def main():
                     continue
                 if label in BEFORE_PASSAGE:
                     print(f"    [{BEFORE_PASSAGE[label]}]\n")
-                entry_replies = print_inline_choices(passages, ENTRY_ALTERNATIVES.get(label, ()))
+                alternatives = ENTRY_ALTERNATIVES.get(label, ())
+                if label == "MnElyRegistrationText" and "MnElyMissingBadge1Text" in passages:
+                    alternatives = (
+                        *((f"If slot {slot} is the first without a badge", f"MnElyMissingBadge{slot}Text")
+                          for slot in range(1, 9)),
+                        *alternatives[1:],
+                    )
+                entry_replies = print_inline_choices(passages, alternatives)
                 if entry_replies:
                     staged.update((location, reply) for reply in entry_replies)
                     condition = (
