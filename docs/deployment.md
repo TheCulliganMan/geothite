@@ -1,7 +1,7 @@
 # Deploy Geothite multiplayer
 
 The live browser game serves [The Northstar Survey](https://geothite.ryanculligan.com/?view=2d)
-in native 2D. See the [November 18 wayfinding release](#minnesota-wayfinding-release-2026-11-18)
+in native 2D. See the [November 18 Crossings release](#minnesota-crossings-release-2026-11-18)
 for the exact pack, image, verification scope and rollback command.
 
 ## Requirements
@@ -955,4 +955,27 @@ Regional Design image and its installer manifest with the transaction tool.
 
 ```sh
 python3 /mnt/homelab/config/geothite/releases/wayfinding-20261118/deploy.py rollback
+```
+
+## Minnesota Crossings release (2026-11-18)
+
+Crossings extends the published Wayfinding release. [The five map revisions](../planning/minnesota/revisions/crossings-v01/README.md) include Shiner Narrows, Former Shores, the Ely Hall of Fame and the Gunflint and Mille Lacs rocks. Pack authoring was finished at `a224b7c9`. The production clients and server were built from `4408b36d`.
+
+| Pack | SHA-256 | Content identity |
+| --- | --- | --- |
+| Raw Minnesota | `caecd60747ee26510651509c6567a3490d919c0d6c9f8c2528d9445de2ad1599` | `5ad096a303e84c34353f4ac61cca7e52184001f8df71c9a9de9f0cabfa115aff` |
+| Hosted and installer | `966e3a8ac71190642addc67a010ffd4e59cb289401fc748ddd36594de4820ae3` | `fd716ecef2fcc77ff97ac1f4946356c36fc19d2559b0d019735dfe74e4f15a9b` |
+
+Both published variants were compared against Wayfinding. Five of 743 maps changed, across 248 block placements. All 616 earlier blocks examined retained their footing and original pixels. The 189 newly used tiles matched their two-bit source graphics and a single four-color RGB555 background palette each. All 602 audio programs passed their PCM, timing and loop checks.
+
+Save compatibility retains sixteen prior pack identities. The direct-parent checks write and reload old-format checkpoints on all five revised maps. On Gunflint, the stationary Rock Smash sprite carries Crystal's default fixed and sliding flags. The migration checks the declared object type and its movement state before accepting that checkpoint.
+
+The public `crossings-20261118` service and installer returned the hosted identities above. The release image is `sha256:f48cf0b4216b182967006a59429115ba1a5630535837a8b76754bd748e10c412` and the installer manifest SHA-256 is `f09165a6ff9801a86585945447dbe37e9bedaf0450301dea2896609b2e95e189`. The six browser WASM modules, selected browser assets and their compressed responses matched the private candidate. Apple Silicon and x86-64 Linux each completed two silent installs and retained a test save. The network welcome used zero gameplay inputs.
+
+The first public attempt rolled back to Wayfinding when a compressed download was interrupted. The same frozen image passed the repeated transfer and checksum checks. The final source at `9caef8ef` also reproduced both pack files byte for byte.
+
+The rollback for this release restores the preceding Wayfinding service and installer manifest.
+
+```sh
+python3 /mnt/homelab/config/geothite/releases/crossings-20261118/deploy.py rollback
 ```

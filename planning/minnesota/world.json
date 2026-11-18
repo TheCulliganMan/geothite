@@ -12723,6 +12723,7 @@
     "save_compatibility_source_identities": 16,
     "reviews": "planning/minnesota/revisions/crossings-v01/README.md",
     "runbook": "docs/game-content.md#minnesota-crossings",
-    "status": "Selected locally and verified against both released Wayfinding packs."
+    "status": "Selected locally and published. Both pack comparisons and old-save migrations passed.",
+    "hosted_release": "crossings-20261118"
   }
 }
