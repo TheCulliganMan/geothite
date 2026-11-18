@@ -33,7 +33,7 @@ fn reverse(direction: Direction) -> Direction {
     }
 }
 
-fn surf_partner(pack: &CompiledGamePack) -> Result<GameState> {
+pub(super) fn surf_partner(pack: &CompiledGamePack) -> Result<GameState> {
     let mut state = GameState::reset_wram_for_new_game();
     let mut pokemon = pack
         .data
@@ -47,7 +47,7 @@ fn surf_partner(pack: &CompiledGamePack) -> Result<GameState> {
     Ok(state)
 }
 
-fn verify_dock_edge(
+pub(super) fn verify_dock_edge(
     pack: &CompiledGamePack,
     state: &GameState,
     name: &str,

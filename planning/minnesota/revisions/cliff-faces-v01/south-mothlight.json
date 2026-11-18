@@ -1,0 +1,9 @@
+[
+  {
+    "map": "MnR08C01R01",
+    "tileset": "mn_headwaters_thaw",
+    "placements": [
+      {"at": [2, 13], "from": 182, "to": 163}
+    ]
+  }
+]

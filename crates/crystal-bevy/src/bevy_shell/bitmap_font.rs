@@ -757,7 +757,7 @@ fn load_common_tileset_animations(
         "forest",
         "mn_gunflint",
     ];
-    const WATER_TILESETS: [&str; 17] = [
+    const WATER_TILESETS: [&str; 18] = [
         "johto",
         "mn_north_shore",
         "mn_headwaters",
@@ -765,6 +765,7 @@ fn load_common_tileset_animations(
         "mn_prairie_headwaters",
         "mn_bemidji",
         "mn_detroit_lakes",
+        "mn_boundary_safari",
         "johto_modern",
         "johto_modern_generated",
         "kanto",

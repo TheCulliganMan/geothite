@@ -1,0 +1,254 @@
+[
+  {
+    "map": "MnDuluth",
+    "label": "MnDuluth_DOCK_SIGNText",
+    "source": "dialogue_overhaul",
+    "previous": [
+      [
+        "PUBLIC LAKE PIER",
+        "Rails close ahead."
+      ]
+    ]
+  },
+  {
+    "map": "MnDuluth",
+    "label": "MnDuluth_SUPERIOR_LOOKOUT_SIGNText",
+    "source": "dialogue_overhaul",
+    "previous": [
+      [
+        "LAKE SUPERIOR",
+        "The water is vast."
+      ],
+      [
+        "Keep behind rails."
+      ]
+    ]
+  },
+  {
+    "map": "MnDuluth",
+    "label": "MnDuluth_LAUNCH_SIGNText",
+    "source": "dialogue_overhaul",
+    "previous": [
+      [
+        "LOW HARBOR LAUNCH"
+      ],
+      [
+        "Put in from shore.",
+        "Stay inside the"
+      ],
+      [
+        "rocks."
+      ]
+    ]
+  },
+  {
+    "map": "MnDuluth",
+    "label": "MnDuluth_MN_DULUTH_PIER_FISHERText",
+    "source": "dialogue_overhaul",
+    "previous": [
+      [
+        "This end's good",
+        "for a rod. For a"
+      ],
+      [
+        "CANOE, take the",
+        "low launch east of"
+      ],
+      [
+        "the houses. You",
+        "want water at your"
+      ],
+      [
+        "feet, not a rail",
+        "in front of you."
+      ]
+    ]
+  },
+  {
+    "map": "MnDuluth",
+    "label": "MN_DULUTH_X_LAKEWALK_FISHERText",
+    "source": "dialogue_overhaul",
+    "previous": [
+      [
+        "Lift your line",
+        "clear of the rail"
+      ],
+      [
+        "if it starts",
+        "rubbing. I lost"
+      ],
+      [
+        "one that way. Came",
+        "home with half a"
+      ],
+      [
+        "line and a good",
+        "story about how"
+      ],
+      [
+        "big it was."
+      ]
+    ]
+  },
+  {
+    "map": "MnDuluthLakesideHome",
+    "label": "MN_DULUTH_X_LAKESIDEHOME_F1_HOSTText",
+    "source": "dialogue_overhaul",
+    "previous": [
+      [
+        "The pier has",
+        "rails. I used to"
+      ],
+      [
+        "think they were",
+        "for the kids. Then"
+      ],
+      [
+        "I leaned on one in",
+        "a west wind."
+      ]
+    ]
+  },
+  {
+    "map": "MnDuluthReadingHall2F",
+    "label": "MN_DULUTH_X_READINGHALL_F2_HOSTInteriorText",
+    "source": "dialogue_overhaul",
+    "previous": [
+      [
+        "I was at the pier",
+        "rail at eight. Two"
+      ],
+      [
+        "boats sounded",
+        "their horns. I"
+      ],
+      [
+        "couldn't see",
+        "either one. Tell"
+      ],
+      [
+        "the reader",
+        "upstairs at"
+      ],
+      [
+        "WEATHER STUDY how",
+        "low I was. Ask at"
+      ],
+      [
+        "LOOKOUT LODGE if",
+        "you want the view"
+      ],
+      [
+        "from up high."
+      ]
+    ]
+  },
+  {
+    "map": "MnDuluthReadingHall2F",
+    "label": "MN_DULUTH_X_READINGHALL_F2_HOSTInteriorRepeatText",
+    "source": "dialogue_overhaul",
+    "previous": [
+      [
+        "Two horns at",
+        "eight. Couldn't"
+      ],
+      [
+        "see the boats. I",
+        "was down on the"
+      ],
+      [
+        "pier with my hand",
+        "on the rail."
+      ]
+    ]
+  },
+  {
+    "map": "MnStPaul",
+    "label": "MN_ST_PAUL_SIGN_RIVERText",
+    "source": "dialogue_overhaul",
+    "previous": [
+      [
+        "RIVER PARK",
+        "Stay on the bank."
+      ]
+    ]
+  },
+  {
+    "map": "MnStPaul",
+    "label": "MN_SPX_RIVER_RECORD_1Text",
+    "source": "dialogue_overhaul",
+    "previous": [
+      [
+        "NORTH BANK GAUGE.",
+        "The water touches"
+      ],
+      [
+        "a notch below the",
+        "bottom step. You"
+      ],
+      [
+        "can read it from",
+        "behind the rail."
+      ]
+    ]
+  },
+  {
+    "map": "MnBoundaryWaters",
+    "label": "MN_BOUNDARY_DOCKHANDText",
+    "source": "dialogue_overhaul",
+    "previous": [
+      [
+        "I put my CANOE in",
+        "at the north end."
+      ],
+      [
+        "The rocks take the",
+        "worst of the waves"
+      ],
+      [
+        "there. If the",
+        "water's coming"
+      ],
+      [
+        "over the rail, I",
+        "stay on the dock"
+      ],
+      [
+        "and wait."
+      ]
+    ]
+  },
+  {
+    "map": "MnR09C00R00",
+    "label": "MN_R09_SIGN_04Text",
+    "source": "MN_R09.json",
+    "previous": [
+      [
+        "RECLAIMED QUARRY",
+        "STAY BEHIND RAIL"
+      ]
+    ]
+  },
+  {
+    "map": "MnR13C00R01",
+    "label": "MN_R13_SIGN_05Text",
+    "source": "MN_R13.json",
+    "previous": [
+      [
+        "LONG LAKE",
+        "STAY BEHIND RAIL"
+      ]
+    ]
+  },
+  {
+    "map": "MnR14C00R00",
+    "label": "MN_R14_SIGN_04Text",
+    "source": "MN_R14.json",
+    "previous": [
+      [
+        "SURVEY POND",
+        "WATCH FROM SHORE"
+      ]
+    ]
+  }
+]

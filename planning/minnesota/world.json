@@ -7964,7 +7964,7 @@
     "status": "Accepted current-parent terrain revision: source/native pixels, strict whole-pack preservation, directional grass/ledge proof, actual2D review, native encounters/trainerPP/resources/Continue and stdio pass. CurrentR12 work preserved.",
     "scope_limit": "Sequential Minnesota grass pass remains open beyond R01-R03. Explicit local fixtures do not prove an earned statewide campaign."
   },
-  "active_local_review_revision": "outdoor_contours_field_revision",
+  "active_local_review_revision": "cliff_faces_field_revision",
   "script_command_repair_revision": {
     "kind": "missing_minnesota_map_command_records",
     "parent_revision": "field_hm_habitats_cyclists_revision",
@@ -12791,5 +12791,21 @@
     "changed_metatiles": 572,
     "runbook": "revisions/outdoor-contours-v01/README.md",
     "status": "Local native 2D review; built and checked without gameplay inputs."
+  },
+  "cliff_faces_field_revision": {
+    "kind": "outdoor_terrain_review",
+    "parent_revision": "outdoor_contours_field_revision",
+    "parent_pack": "content-packs/minnesota-outdoor-contours-v04.crystalpack",
+    "parent_pack_sha256": "7aa73c709f135b37e64ac459076717a6ffc2f62ee2d08986398dd3e9a909d58e",
+    "pack": "content-packs/minnesota-cliff-faces-v01.crystalpack",
+    "pack_sha256": "a6e7147b5807f4c3c27e93293bff7f88cb29e1285b26bd7f45c4499310a97cb5",
+    "build_recipe": "planning/minnesota/revisions/cliff-faces-v01/field-build.json",
+    "build_recipe_sha256": "796e65090ae7eeabc18e22da341ac5edc596891a474f09922c54f9c68d358539",
+    "content_identity": "c862dba66df8f1f4bb979bd6a13f6fd605a23f046623b72c4654b1de696afab7",
+    "map_count": 743,
+    "changed_map_chunks": 37,
+    "changed_metatiles": 473,
+    "verified_shore_positions": 81,
+    "runbook": "revisions/cliff-faces-v01/README.md"
   }
 }

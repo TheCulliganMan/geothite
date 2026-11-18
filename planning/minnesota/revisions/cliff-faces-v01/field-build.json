@@ -1,0 +1,7 @@
+{
+  "parent_pack": "content-packs/minnesota-outdoor-contours-v04.crystalpack",
+  "parent_pack_sha256": "7aa73c709f135b37e64ac459076717a6ffc2f62ee2d08986398dd3e9a909d58e",
+  "output_pack": "content-packs/minnesota-cliff-faces-v01.crystalpack",
+  "expected_pack_sha256": "a6e7147b5807f4c3c27e93293bff7f88cb29e1285b26bd7f45c4499310a97cb5",
+  "builder": "pack_outdoor_contours --cliffs"
+}

@@ -227,6 +227,58 @@ fn city_fishing_piers_have_animated_water_on_all_three_open_sides() {
     }
 }
 
+#[test]
+#[ignore = "requires CRYSTAL_SHINER_WATER_TEST_PACK with the open Boundary Waters and Duluth docks"]
+fn boundary_waters_and_duluth_docks_keep_native_water_on_three_open_sides() {
+    let (root, runtime) = shoreline_fixture();
+    for time in ["day", "nite"] {
+        for (name, deck, water) in [
+            ("MnBoundaryWaters", [12, 16], [11, 16]),
+            ("MnBoundaryWaters", [16, 16], [16, 15]),
+            ("MnBoundaryWaters", [16, 17], [16, 18]),
+            ("MnDuluth", [47, 64], [47, 65]),
+            ("MnDuluth", [48, 63], [49, 63]),
+            ("MnDuluth", [47, 63], [46, 63]),
+        ] {
+            check_pier(&runtime, &root, time, name, deck, water);
+        }
+        let bank = &runtime.data().maps["MnBoundaryWaters"]
+            .attributes
+            .tileset_name;
+        let mut images = Assets::<Image>::default();
+        let art = load_tileset_art(
+            &root,
+            bank,
+            time,
+            &runtime.data().tilesets[bank].palette_map,
+            &mut images,
+        )
+        .expect("Boundary Waters terrain");
+        let original = load_tileset_art(
+            &root,
+            "johto",
+            time,
+            &runtime.data().tilesets["johto"].palette_map,
+            &mut images,
+        )
+        .expect("native water family");
+        assert_eq!(art.animated_tiles.len(), 1, "the reserve only cycles water");
+        let ripple = &art.animated_tiles[&0x14];
+        assert_eq!((ripple.frame_ticks, ripple.frames.len()), (22, 4));
+        for (frame, source) in ripple
+            .frames
+            .iter()
+            .zip(original.animated_tiles[&0x14].frames.iter())
+        {
+            assert!(
+                images.get(frame).expect("reserve frame").data
+                    == images.get(source).expect("source ripple").data,
+                "expected the native water drawing and clock palette at {time}"
+            );
+        }
+    }
+}
+
 fn check_pier(
     runtime: &CrystalRuntime,
     root: &AssetRoot,

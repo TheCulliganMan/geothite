@@ -73,7 +73,8 @@ fn address(glyph: u8, palette: u8, tiles: usize) -> usize {
 
 fn imported_id(bank: &str, source: u8) -> Option<u8> {
     let (planks, ends) = match bank {
-        BRAINERD_BANK | "mn_outdoor_headwaters_stairs" => (0xc0, 0xce),
+        BRAINERD_BANK | "mn_outdoor_headwaters_stairs" | "mn_duluth_expanded" => (0xc0, 0xce),
+        "mn_boundary_safari" => (0xc8, 0xd0),
         "mn_winter_bemidji" => (0xb0, 0xb8),
         "mn_detroit_lakes_glacier_rail" => (0xd0, 0xd8),
         "mn_headwaters_thaw" => (0xd0, 0xde),
@@ -106,6 +107,10 @@ pub(super) fn is_timber_glyph(bank: &str, glyph: u8) -> bool {
 
 /// Import existing Kanto dock pixels into unused addresses in each outdoor bank.
 pub(super) fn install_timber(pack: &mut CompiledGamePack) -> Result<()> {
+    install_timber_in_banks(pack, &BANKS)
+}
+
+pub(super) fn install_timber_in_banks(pack: &mut CompiledGamePack, banks: &[&str]) -> Result<()> {
     let gfx = pack
         .runtime_files
         .get("gfx/tilesets/kanto.2bpp")
@@ -133,7 +138,7 @@ pub(super) fn install_timber(pack: &mut CompiledGamePack) -> Result<()> {
         });
     }
 
-    for bank in BANKS {
+    for &bank in banks {
         let art = format!("gfx/tilesets/{bank}.2bpp");
         let layout = pack
             .runtime_files

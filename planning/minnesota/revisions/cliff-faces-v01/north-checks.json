@@ -1,0 +1,18 @@
+{
+  "drops": [
+    {"map": "MnR10C00R00", "from": [25, 20], "direction": "down"},
+    {"map": "MnR19C00R00", "from": [34, 32], "direction": "down"},
+    {"map": "MnR20C00R01", "from": [19, 2], "direction": "down"}
+  ],
+  "walks": [
+    {"map": "MnR09C00R00", "from": [57, 42], "to": [57, 40], "max_steps": 2},
+    {"map": "MnR11C00R01", "from": [48, 9], "to": [51, 10], "max_steps": 4},
+    {"map": "MnR11C00R02", "from": [50, 7], "to": [50, 9], "max_steps": 2},
+    {"map": "MnR13C00R00", "from": [12, 26], "to": [12, 24], "max_steps": 2},
+    {"map": "MnR13C00R01", "from": [39, 12], "to": [41, 12], "max_steps": 2},
+    {"map": "MnR19C00R00", "from": [41, 38], "to": [43, 38], "max_steps": 2},
+    {"map": "MnR10C00R00", "from": [60, 18], "to": [60, 24], "max_steps": 6},
+    {"map": "MnR20C00R00", "from": [57, 35], "to": [60, 35], "max_steps": 3},
+    {"map": "MnR19C00R00", "from": [11, 38], "to": [11, 35], "max_steps": 3}
+  ]
+}

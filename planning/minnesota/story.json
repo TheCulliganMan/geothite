@@ -10865,19 +10865,12 @@
             "at the north end."
           ],
           [
-            "The rocks take the",
-            "worst of the waves"
+            "The rocks break",
+            "the waves there."
           ],
           [
-            "there. If the",
-            "water's coming"
-          ],
-          [
-            "over the rail, I",
-            "stay on the dock"
-          ],
-          [
-            "and wait."
+            "If the boards are",
+            "awash, I wait."
           ]
         ],
         "MN_BOUNDARY_ADMISSION_RANGERText": [
@@ -11033,14 +11026,8 @@
       "MnDuluth": {
         "MnDuluth_LAUNCH_SIGNText": [
           [
-            "LOW HARBOR LAUNCH"
-          ],
-          [
-            "Put in from shore.",
-            "Stay inside the"
-          ],
-          [
-            "rocks."
+            "LOW HARBOR LAUNCH",
+            "CANOE LANDING"
           ]
         ],
         "MnDuluth_RECEIVER_SIGNText": [
@@ -11202,23 +11189,16 @@
         ],
         "MN_DULUTH_X_LAKEWALK_FISHERText": [
           [
-            "Lift your line",
-            "clear of the rail"
+            "I was watching the",
+            "float so hard I"
           ],
           [
-            "if it starts",
-            "rubbing. I lost"
+            "missed the",
+            "freighter. How do"
           ],
           [
-            "one that way. Came",
-            "home with half a"
-          ],
-          [
-            "line and a good",
-            "story about how"
-          ],
-          [
-            "big it was."
+            "you miss a whole",
+            "boat?"
           ]
         ],
         "MN_DULUTH_X_UNION_READERText": [
@@ -11407,20 +11387,16 @@
         ],
         "MnDuluth_MN_DULUTH_PIER_FISHERText": [
           [
-            "This end's good",
-            "for a rod. For a"
+            "See that flash",
+            "under the boards?"
           ],
           [
-            "CANOE, take the",
-            "low launch east of"
+            "Drop your line",
+            "straight down. The"
           ],
           [
-            "the houses. You",
-            "want water at your"
-          ],
-          [
-            "feet, not a rail",
-            "in front of you."
+            "little ones like",
+            "the shade."
           ]
         ],
         "MN_DULUTH_X_T01Seen": [
@@ -11680,7 +11656,7 @@
         "MnDuluth_DOCK_SIGNText": [
           [
             "PUBLIC LAKE PIER",
-            "Rails close ahead."
+            "Visitors welcome."
           ]
         ],
         "MnDuluth_HISTORY_SIGNText": [
@@ -11707,10 +11683,7 @@
         "MnDuluth_SUPERIOR_LOOKOUT_SIGNText": [
           [
             "LAKE SUPERIOR",
-            "The water is vast."
-          ],
-          [
-            "Keep behind rails."
+            "Look east at dawn."
           ]
         ]
       },
@@ -35776,7 +35749,7 @@
         "MN_ST_PAUL_SIGN_RIVERText": [
           [
             "RIVER PARK",
-            "Stay on the bank."
+            "Public landing"
           ]
         ],
         "MN_ST_PAUL_SIGN_WAYFINDINGText": [
@@ -35975,12 +35948,8 @@
             "The water touches"
           ],
           [
-            "a notch below the",
-            "bottom step. You"
-          ],
-          [
-            "can read it from",
-            "behind the rail."
+            "the notch below",
+            "the bottom step."
           ]
         ],
         "MN_SPX_RIVER_RECORD_2Text": [
@@ -41709,45 +41678,44 @@
         ],
         "MN_DULUTH_X_READINGHALL_F2_HOSTInteriorText": [
           [
-            "I was at the pier",
-            "rail at eight. Two"
+            "At eight I sat on",
+            "the pier with my"
           ],
           [
-            "boats sounded",
-            "their horns. I"
+            "feet over the",
+            "water. Two horns"
           ],
           [
-            "couldn't see",
-            "either one. Tell"
+            "sounded. I never",
+            "saw the boats."
           ],
           [
-            "the reader",
+            "Tell the reader",
             "upstairs at"
           ],
           [
             "WEATHER STUDY how",
-            "low I was. Ask at"
+            "low I was. The"
           ],
           [
-            "LOOKOUT LODGE if",
-            "you want the view"
+            "folks at LOOKOUT",
+            "LODGE had the high"
           ],
           [
-            "from up high."
+            "view."
           ]
         ],
         "MN_DULUTH_X_READINGHALL_F2_HOSTInteriorRepeatText": [
           [
-            "Two horns at",
-            "eight. Couldn't"
+            "Eight o'clock. Two",
+            "horns. I was down"
           ],
           [
-            "see the boats. I",
-            "was down on the"
+            "on the pier with",
+            "my feet over the"
           ],
           [
-            "pier with my hand",
-            "on the rail."
+            "water."
           ]
         ],
         "MN_DL_INTERIOR_CHART_READERInteriorText": [
@@ -42236,16 +42204,16 @@
         ],
         "MN_DULUTH_X_LAKESIDEHOME_F1_HOSTText": [
           [
-            "The pier has",
-            "rails. I used to"
+            "The wind took my",
+            "cap clean off the"
           ],
           [
-            "think they were",
-            "for the kids. Then"
+            "pier. A kid in a",
+            "CANOE caught it."
           ],
           [
-            "I leaned on one in",
-            "a west wind."
+            "Didn't spill a",
+            "drop of his juice."
           ]
         ],
         "MN_DL_INTERIOR_ICE_NOTEBOOKInteriorText": [

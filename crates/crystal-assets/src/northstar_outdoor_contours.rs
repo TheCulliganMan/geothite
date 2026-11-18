@@ -19,6 +19,10 @@ mod outdoor_shore_access;
 #[path = "shiner_dock_water.rs"]
 mod shiner_dock_water;
 
+#[path = "northstar_cliff_faces.rs"]
+mod cliff_faces;
+pub use cliff_faces::revise_cliff_faces;
+
 const MANIFEST: &str = "northstar-outdoor-contours-v4";
 type ArtIds = BTreeMap<(String, u16), u8>;
 
@@ -66,7 +70,16 @@ fn metatile_path(tileset: &str) -> String {
 }
 
 fn allocate(pack: &CompiledGamePack, ids: &mut ArtIds, tileset: &str, logical: u16) -> Result<u8> {
-    ensure!(tileset.starts_with("mn_"), "expected Minnesota tileset");
+    ensure!(
+        tileset.starts_with("mn_")
+            || (tileset == "kanto_glacier_rail"
+                && pack
+                    .data
+                    .maps
+                    .values()
+                    .all(|m| m.attributes.tileset_name != tileset || m.id == "MnStPaul")),
+        "expected Minnesota tileset"
+    );
     let len = pack
         .runtime_files
         .get(&metatile_path(tileset))
@@ -97,52 +110,141 @@ fn install_art(pack: &mut CompiledGamePack, dir: &Path) -> Result<ArtIds> {
         "southern-shore-art.json",
         "lake-pier-art.json",
     ] {
-        for art in source::<Vec<Metatile>>(dir, name)? {
-            let native = allocate(pack, &mut ids, &art.tileset, art.id)?;
-            let layout = pack
-                .runtime_files
-                .get_mut(&metatile_path(&art.tileset))
-                .context("metatile bank")?;
-            ensure!(
-                art.tiles.iter().all(|g| layout.contains(g)
-                    || northstar_public_piers::is_timber_glyph(&art.tileset, *g)),
-                "recipe references unused tile in {}",
-                art.tileset
-            );
-            let def = pack
-                .data
-                .tilesets
-                .get_mut(&art.tileset)
-                .context("terrain collision bank")?;
-            let donor = def
-                .collision
-                .get(&format!("{:02x}", art.collision_from))
-                .context("collision donor")?;
-            let collision = if let Some(quadrants) = art.collision {
+        let additions: Vec<Metatile> = source(dir, name)?;
+        for entry in &additions {
+            if let Some(quadrants) = &entry.collision {
                 ensure!(
                     quadrants
                         .iter()
                         .all(|q| matches!(q.as_str(), "WATER" | "FLOOR")),
                     "unexpected dock collision"
                 );
-                quadrants.to_vec()
-            } else {
-                donor.clone()
-            };
-            ensure!(
-                def.collision
-                    .insert(format!("{native:02x}"), collision)
-                    .is_none(),
-                "occupied terrain slot"
-            );
-            layout.extend(art.tiles);
-            pack.runtime_files.insert(
-                format!("data/tilesets/{}.json", art.tileset),
-                serde_json::to_vec(&def.collision)?,
-            );
+            }
         }
+        append_metatiles(pack, &mut ids, additions)?;
     }
     Ok(ids)
+}
+
+fn append_metatiles(
+    pack: &mut CompiledGamePack,
+    ids: &mut ArtIds,
+    art: Vec<Metatile>,
+) -> Result<()> {
+    for art in art {
+        let native = allocate(pack, ids, &art.tileset, art.id)?;
+        let layout = pack
+            .runtime_files
+            .get_mut(&metatile_path(&art.tileset))
+            .context("metatile bank")?;
+        ensure!(
+            art.tiles
+                .iter()
+                .all(|g| layout.contains(g)
+                    || northstar_public_piers::is_timber_glyph(&art.tileset, *g)),
+            "recipe references unused tile in {}",
+            art.tileset
+        );
+        let def = pack
+            .data
+            .tilesets
+            .get_mut(&art.tileset)
+            .context("terrain collision bank")?;
+        let donor = def
+            .collision
+            .get(&format!("{:02x}", art.collision_from))
+            .context("collision donor")?;
+        let collision = if let Some(quadrants) = art.collision {
+            for quadrant in &quadrants {
+                crate::resolve_collision_token(quadrant)?;
+            }
+            quadrants.to_vec()
+        } else {
+            donor.clone()
+        };
+        ensure!(
+            def.collision
+                .insert(format!("{native:02x}"), collision)
+                .is_none(),
+            "occupied terrain slot"
+        );
+        layout.extend(art.tiles);
+        pack.runtime_files.insert(
+            format!("data/tilesets/{}.json", art.tileset),
+            serde_json::to_vec(&def.collision)?,
+        );
+    }
+    Ok(())
+}
+
+fn apply_room(
+    pack: &mut CompiledGamePack,
+    base: &CompiledGamePack,
+    changes: Room,
+    ids: &ArtIds,
+) -> Result<()> {
+    let old = base
+        .data
+        .maps
+        .get(&changes.map)
+        .context("missing terrain map")?;
+    ensure!(
+        old.attributes.tileset_name == changes.tileset && !changes.placements.is_empty(),
+        "unexpected terrain: {}",
+        changes.map
+    );
+    let mut map = old.clone();
+    let a = &map.attributes;
+    let mut edited = BTreeSet::new();
+    for cell in changes.placements {
+        let [x, y] = cell.at;
+        ensure!(
+            edited.insert(cell.at) && x < a.width && y < a.height,
+            "invalid placement on {}",
+            changes.map
+        );
+        ensure!(
+            !map.script_block_changes
+                .iter()
+                .any(|c| [c.x / 2, c.y / 2] == cell.at),
+            "scripted terrain on {} at {x},{y}",
+            changes.map
+        );
+        let at = usize::from(y) * usize::from(a.width) + usize::from(x);
+        let dest = ids
+            .get(&(changes.tileset.clone(), cell.to))
+            .copied()
+            .map(u16::from)
+            .unwrap_or(cell.to);
+        ensure!(
+            map.blocks[at] == cell.from && dest != cell.from,
+            "stale terrain on {} at {x},{y}",
+            changes.map
+        );
+        ensure!(
+            pack.data.tilesets[&changes.tileset]
+                .collision
+                .contains_key(&format!("{dest:02x}")),
+            "missing terrain at {x},{y}"
+        );
+        map.blocks[at] = dest;
+    }
+    for tile in map
+        .events
+        .warps
+        .iter()
+        .map(|w| [w.x, w.y])
+        .chain(map.objects.iter().map(|o| [o.x, o.y]))
+    {
+        let old_kind = kind(base, old, tile)?;
+        let new_kind = kind(pack, &map, tile)?;
+        ensure!(
+            old_kind == new_kind,
+            "actor or warp terrain changed on {} at {tile:?}",
+            changes.map
+        );
+    }
+    authored_town_publication::replace(pack, map)
 }
 
 /// Applies the authored outdoor-map revisions to a verified Minnesota parent.
@@ -177,65 +279,11 @@ pub fn revise_outdoor_contours(base: &CompiledGamePack, dir: &Path) -> Result<Co
                 "duplicate or unowned route"
             );
             let old = base.data.maps.get(&changes.map).context("missing route")?;
-            let mut map = old.clone();
-            let a = &map.attributes;
             ensure!(
-                a.environment.as_deref() == Some("ROUTE")
-                    && a.tileset_name == changes.tileset
-                    && !changes.placements.is_empty(),
-                "unexpected route terrain: {}",
-                changes.map
+                old.attributes.environment.as_deref() == Some("ROUTE"),
+                "expected route"
             );
-            let mut edited = BTreeSet::new();
-            for cell in changes.placements {
-                let [x, y] = cell.at;
-                ensure!(
-                    edited.insert(cell.at) && x < a.width && y < a.height,
-                    "invalid placement on {}",
-                    changes.map
-                );
-                ensure!(
-                    !map.script_block_changes
-                        .iter()
-                        .any(|c| [c.x / 2, c.y / 2] == cell.at),
-                    "scripted terrain on {} at {x},{y}",
-                    changes.map
-                );
-                let at = usize::from(y) * usize::from(a.width) + usize::from(x);
-                let dest = ids
-                    .get(&(changes.tileset.clone(), cell.to))
-                    .copied()
-                    .map(u16::from)
-                    .unwrap_or(cell.to);
-                ensure!(
-                    map.blocks[at] == cell.from && dest != cell.from,
-                    "stale terrain on {} at {x},{y}",
-                    changes.map
-                );
-                ensure!(
-                    pack.data.tilesets[&changes.tileset]
-                        .collision
-                        .contains_key(&format!("{dest:02x}")),
-                    "missing terrain at {x},{y}"
-                );
-                map.blocks[at] = dest;
-            }
-            for tile in map
-                .events
-                .warps
-                .iter()
-                .map(|w| [w.x, w.y])
-                .chain(map.objects.iter().map(|o| [o.x, o.y]))
-            {
-                let old_kind = kind(base, old, tile)?;
-                let new_kind = kind(&pack, &map, tile)?;
-                ensure!(
-                    old_kind == new_kind,
-                    "actor or warp terrain changed on {} at {tile:?}",
-                    changes.map
-                );
-            }
-            authored_town_publication::replace(&mut pack, map)?;
+            apply_room(&mut pack, base, changes, &ids)?;
         }
     }
     northstar_public_piers::install_brainerd(&mut pack)?;

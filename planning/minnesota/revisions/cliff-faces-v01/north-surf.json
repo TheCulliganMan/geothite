@@ -1,0 +1,8 @@
+[
+  {"map": "MnR09C00R00", "from": [57, 40], "direction": "up"},
+  {"map": "MnR11C00R01", "from": [51, 10], "direction": "right"},
+  {"map": "MnR11C00R02", "from": [50, 9], "direction": "down"},
+  {"map": "MnR13C00R00", "from": [12, 24], "direction": "up"},
+  {"map": "MnR13C00R01", "from": [41, 12], "direction": "right"},
+  {"map": "MnR19C00R00", "from": [43, 38], "direction": "right"}
+]

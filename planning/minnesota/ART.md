@@ -13,7 +13,7 @@ Study `reference/johto-kanto-original.png` and the native-scale references under
 | Trees | Coherent source metatile clusters with source-scale crowns |
 | Houses | Complete original facade recipes with real door quadrants |
 | Paths | Source light ground and grass transitions; preserve room to see entrances |
-| Water | Original palette, source shoreline corners, existing animation schedule |
+| Water | Preserve native water animation. Give low banks and public docks open edges for fishing, launching Surf and landing. Ordinary walking already stops at water. |
 | Rocks and ledges | Source wall quadrants and directional collision; no painted height |
 | Text | Put planning labels outside playable pixels; in-game text uses the game's font and dialogue |
 | Enlargement | Integer nearest-neighbor for review; inspect 1:1 pixels too |

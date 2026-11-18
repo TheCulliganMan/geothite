@@ -1,0 +1,76 @@
+{
+  "drops": [
+    {
+      "map": "MnR03C00R00",
+      "from": [11, 20],
+      "direction": "down"
+    },
+    {
+      "map": "MnR06C00R00",
+      "from": [45, 10],
+      "direction": "down"
+    }
+  ],
+  "walks": [
+    {
+      "map": "MnR08C00R00",
+      "from": [35, 25],
+      "to": [35, 28],
+      "max_steps": 3
+    },
+    {
+      "map": "MnR08C00R00",
+      "from": [35, 28],
+      "to": [35, 25],
+      "max_steps": 3
+    },
+    {
+      "map": "MnR07C00R00",
+      "from": [17, 41],
+      "to": [17, 44],
+      "max_steps": 3
+    },
+    {
+      "map": "MnR07C00R00",
+      "from": [17, 44],
+      "to": [17, 41],
+      "max_steps": 3
+    },
+    {
+      "map": "MnR06C00R00",
+      "from": [29, 29],
+      "to": [29, 31],
+      "max_steps": 2
+    },
+    {
+      "map": "MnR06C00R00",
+      "from": [29, 31],
+      "to": [29, 29],
+      "max_steps": 2
+    },
+    {
+      "map": "MnR14C00R00",
+      "from": [21, 19],
+      "to": [12, 19],
+      "max_steps": 12
+    },
+    {
+      "map": "MnR14C00R00",
+      "from": [12, 19],
+      "to": [21, 19],
+      "max_steps": 12
+    },
+    {
+      "map": "MnR08C01R01",
+      "from": [6, 27],
+      "to": [0, 24],
+      "max_steps": 13
+    },
+    {
+      "map": "MnR08C01R01",
+      "from": [0, 24],
+      "to": [6, 27],
+      "max_steps": 13
+    }
+  ]
+}

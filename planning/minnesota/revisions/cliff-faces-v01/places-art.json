@@ -1,0 +1,52 @@
+[
+  {
+    "tileset": "mn_outdoor_modern_stairs_glacier_rail",
+    "id": 240,
+    "tiles": [78, 79, 60, 60, 94, 95, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60],
+    "collision_from": 69
+  },
+  {
+    "tileset": "mn_outdoor_modern_stairs_glacier_rail",
+    "id": 241,
+    "tiles": [60, 60, 44, 44, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60],
+    "collision_from": 113,
+    "collision": ["FLOOR", "UP_WALL", "FLOOR", "FLOOR"]
+  },
+  {
+    "tileset": "mn_north_shore",
+    "id": 241,
+    "tiles": [43, 44, 44, 45, 59, 60, 60, 61, 59, 60, 60, 61, 59, 60, 60, 61],
+    "collision_from": 10
+  },
+  {
+    "tileset": "mn_north_shore",
+    "id": 242,
+    "tiles": [59, 60, 60, 61, 59, 60, 60, 61, 59, 60, 60, 61, 59, 60, 60, 61],
+    "collision_from": 10
+  },
+  {
+    "tileset": "mn_north_shore",
+    "id": 243,
+    "tiles": [59, 60, 60, 61, 59, 60, 60, 61, 59, 60, 76, 77, 59, 60, 61, 20],
+    "collision_from": 10
+  },
+  {
+    "tileset": "mn_north_shore",
+    "id": 244,
+    "tiles": [59, 60, 61, 20, 59, 60, 61, 20, 59, 75, 77, 20, 75, 77, 20, 20],
+    "collision_from": 10,
+    "collision": ["WALL", "WALL", "WALL", "WATER"]
+  },
+  {
+    "tileset": "mn_boundary_safari",
+    "id": 244,
+    "tiles": [205, 204, 204, 204, 200, 201, 202, 203, 208, 209, 208, 209, 207, 206, 206, 206],
+    "collision_from": 1
+  },
+  {
+    "tileset": "mn_boundary_safari",
+    "id": 245,
+    "tiles": [204, 204, 204, 204, 200, 201, 202, 203, 208, 209, 208, 209, 206, 206, 206, 206],
+    "collision_from": 1
+  }
+]

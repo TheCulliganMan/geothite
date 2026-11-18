@@ -1,0 +1,10 @@
+{
+  "drops": [],
+  "walks": [
+    {"map": "MnGrandMarais", "from": [20, 28], "to": [20, 29], "max_steps": 1},
+    {"map": "MnMinneapolis", "from": [8, 34], "to": [8, 37], "max_steps": 3},
+    {"map": "MnStPaul", "from": [45, 57], "to": [45, 55], "max_steps": 2},
+    {"map": "MnDuluth", "from": [48, 59], "to": [48, 64], "max_steps": 5},
+    {"map": "MnDuluth", "from": [25, 74], "to": [36, 74], "max_steps": 11}
+  ]
+}

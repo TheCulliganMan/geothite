@@ -1,0 +1,244 @@
+[
+  {
+    "map": "MnStCloud",
+    "tileset": "mn_outdoor_modern_stairs_glacier_rail",
+    "placements": [
+      {"at": [2, 7], "from": 73, "to": 1},
+      {"at": [3, 7], "from": 73, "to": 1},
+      {"at": [4, 7], "from": 73, "to": 1},
+      {"at": [5, 7], "from": 73, "to": 1},
+      {"at": [6, 7], "from": 73, "to": 1},
+      {"at": [7, 7], "from": 73, "to": 1},
+      {"at": [8, 7], "from": 73, "to": 1},
+      {"at": [9, 7], "from": 73, "to": 1},
+      {"at": [10, 7], "from": 74, "to": 1},
+      {"at": [11, 7], "from": 68, "to": 1},
+      {"at": [13, 7], "from": 73, "to": 1},
+      {"at": [14, 7], "from": 73, "to": 1},
+      {"at": [15, 7], "from": 73, "to": 1},
+      {"at": [16, 7], "from": 73, "to": 1},
+      {"at": [17, 7], "from": 73, "to": 1},
+      {"at": [18, 7], "from": 73, "to": 1},
+      {"at": [19, 7], "from": 73, "to": 1},
+      {"at": [20, 7], "from": 73, "to": 1},
+      {"at": [21, 7], "from": 74, "to": 1},
+      {"at": [11, 11], "from": 68, "to": 1},
+      {"at": [15, 11], "from": 70, "to": 1},
+      {"at": [16, 12], "from": 10, "to": 104},
+      {"at": [19, 12], "from": 113, "to": 241},
+      {"at": [19, 13], "from": 69, "to": 240},
+      {"at": [21, 13], "from": 10, "to": 105}
+    ]
+  },
+  {
+    "map": "MnDevilsKettle",
+    "tileset": "mn_north_shore",
+    "placements": [
+      {"at": [6, 1], "from": 10, "to": 241},
+      {"at": [6, 2], "from": 10, "to": 242},
+      {"at": [6, 3], "from": 10, "to": 242},
+      {"at": [6, 4], "from": 10, "to": 243},
+      {"at": [6, 5], "from": 10, "to": 244},
+      {"at": [6, 6], "from": 10, "to": 53}
+    ]
+  },
+  {
+    "map": "MnGrandRapids",
+    "tileset": "mn_winter_grand_rapids",
+    "placements": [
+      {"at": [9, 17], "from": 73, "to": 1},
+      {"at": [10, 17], "from": 73, "to": 1},
+      {"at": [11, 17], "from": 73, "to": 1},
+      {"at": [14, 17], "from": 73, "to": 1},
+      {"at": [15, 17], "from": 73, "to": 1},
+      {"at": [16, 17], "from": 73, "to": 1},
+      {"at": [17, 17], "from": 73, "to": 1},
+      {"at": [18, 17], "from": 73, "to": 1},
+      {"at": [19, 17], "from": 73, "to": 1}
+    ]
+  },
+  {
+    "map": "MnMankato",
+    "tileset": "johto",
+    "placements": [
+      {"at": [18, 11], "from": 73, "to": 1},
+      {"at": [19, 11], "from": 73, "to": 1},
+      {"at": [20, 11], "from": 73, "to": 1},
+      {"at": [16, 15], "from": 64, "to": 1},
+      {"at": [17, 15], "from": 65, "to": 1},
+      {"at": [18, 15], "from": 65, "to": 1},
+      {"at": [19, 15], "from": 65, "to": 1},
+      {"at": [20, 15], "from": 66, "to": 1}
+    ]
+  },
+  {
+    "map": "MnBemidji",
+    "tileset": "mn_winter_bemidji",
+    "placements": [
+      {"at": [15, 13], "from": 73, "to": 1},
+      {"at": [16, 13], "from": 73, "to": 1},
+      {"at": [17, 13], "from": 73, "to": 1},
+      {"at": [18, 13], "from": 73, "to": 1},
+      {"at": [19, 13], "from": 73, "to": 1},
+      {"at": [20, 13], "from": 73, "to": 1},
+      {"at": [21, 13], "from": 73, "to": 1},
+      {"at": [14, 14], "from": 70, "to": 1},
+      {"at": [14, 15], "from": 70, "to": 1},
+      {"at": [14, 16], "from": 70, "to": 1},
+      {"at": [14, 19], "from": 70, "to": 1},
+      {"at": [14, 21], "from": 70, "to": 1},
+      {"at": [14, 22], "from": 70, "to": 1}
+    ]
+  },
+  {
+    "map": "MnDetroitLakes",
+    "tileset": "mn_detroit_lakes_glacier_rail",
+    "placements": [
+      {"at": [13, 12], "from": 68, "to": 1},
+      {"at": [14, 15], "from": 68, "to": 1},
+      {"at": [14, 16], "from": 68, "to": 1}
+    ]
+  },
+  {
+    "map": "MnLakeItasca",
+    "tileset": "mn_headwaters",
+    "placements": [
+      {"at": [10, 12], "from": 130, "to": 1},
+      {"at": [12, 12], "from": 130, "to": 1},
+      {"at": [10, 13], "from": 129, "to": 1},
+      {"at": [12, 13], "from": 129, "to": 1}
+    ]
+  },
+  {
+    "map": "MnLeechLake",
+    "tileset": "mn_headwaters",
+    "placements": [
+      {"at": [14, 10], "from": 130, "to": 1},
+      {"at": [15, 10], "from": 130, "to": 1},
+      {"at": [16, 10], "from": 130, "to": 1},
+      {"at": [17, 10], "from": 130, "to": 136},
+      {"at": [18, 10], "from": 130, "to": 136},
+      {"at": [19, 10], "from": 130, "to": 136},
+      {"at": [20, 10], "from": 66, "to": 136},
+      {"at": [21, 10], "from": 88, "to": 53},
+      {"at": [14, 11], "from": 129, "to": 1},
+      {"at": [15, 11], "from": 129, "to": 1},
+      {"at": [16, 11], "from": 129, "to": 84},
+      {"at": [17, 11], "from": 129, "to": 53},
+      {"at": [18, 11], "from": 129, "to": 53},
+      {"at": [19, 11], "from": 129, "to": 53},
+      {"at": [20, 11], "from": 74, "to": 53},
+      {"at": [21, 11], "from": 88, "to": 53},
+      {"at": [16, 12], "from": 84, "to": 88},
+      {"at": [17, 12], "from": 118, "to": 53},
+      {"at": [18, 12], "from": 118, "to": 53},
+      {"at": [19, 12], "from": 118, "to": 53},
+      {"at": [20, 12], "from": 118, "to": 53},
+      {"at": [21, 12], "from": 121, "to": 53}
+    ]
+  },
+  {
+    "map": "MnMilleLacs",
+    "tileset": "mn_headwaters",
+    "placements": [
+      {"at": [9, 10], "from": 130, "to": 1},
+      {"at": [10, 10], "from": 130, "to": 88},
+      {"at": [11, 10], "from": 130, "to": 53},
+      {"at": [12, 10], "from": 130, "to": 53},
+      {"at": [13, 10], "from": 130, "to": 53},
+      {"at": [14, 10], "from": 10, "to": 53},
+      {"at": [15, 10], "from": 88, "to": 53},
+      {"at": [9, 11], "from": 113, "to": 1},
+      {"at": [10, 11], "from": 113, "to": 136},
+      {"at": [11, 11], "from": 113, "to": 136},
+      {"at": [12, 11], "from": 113, "to": 136},
+      {"at": [13, 11], "from": 113, "to": 136},
+      {"at": [14, 11], "from": 10, "to": 136},
+      {"at": [15, 11], "from": 88, "to": 53},
+      {"at": [9, 12], "from": 129, "to": 1},
+      {"at": [10, 12], "from": 129, "to": 88},
+      {"at": [11, 12], "from": 129, "to": 53},
+      {"at": [12, 12], "from": 129, "to": 53},
+      {"at": [13, 12], "from": 129, "to": 53},
+      {"at": [14, 12], "from": 10, "to": 53},
+      {"at": [15, 12], "from": 88, "to": 53},
+      {"at": [10, 13], "from": 128, "to": 88},
+      {"at": [11, 13], "from": 128, "to": 53},
+      {"at": [12, 13], "from": 128, "to": 53},
+      {"at": [13, 13], "from": 128, "to": 53},
+      {"at": [14, 13], "from": 118, "to": 53},
+      {"at": [15, 13], "from": 121, "to": 53}
+    ]
+  },
+  {
+    "map": "MnBoundaryWaters",
+    "tileset": "mn_boundary_safari",
+    "placements": [
+      {"at": [5, 7], "from": 89, "to": 53},
+      {"at": [6, 7], "from": 68, "to": 53},
+      {"at": [7, 7], "from": 130, "to": 53},
+      {"at": [8, 7], "from": 130, "to": 53},
+      {"at": [9, 7], "from": 130, "to": 53},
+      {"at": [10, 7], "from": 130, "to": 53},
+      {"at": [11, 7], "from": 130, "to": 89},
+      {"at": [5, 8], "from": 89, "to": 53},
+      {"at": [6, 8], "from": 72, "to": 244},
+      {"at": [7, 8], "from": 129, "to": 245},
+      {"at": [8, 8], "from": 129, "to": 245},
+      {"at": [9, 8], "from": 129, "to": 245},
+      {"at": [10, 8], "from": 129, "to": 245},
+      {"at": [11, 8], "from": 129, "to": 245},
+      {"at": [5, 9], "from": 122, "to": 53},
+      {"at": [6, 9], "from": 128, "to": 53},
+      {"at": [7, 9], "from": 128, "to": 53},
+      {"at": [8, 9], "from": 128, "to": 53},
+      {"at": [9, 9], "from": 128, "to": 53},
+      {"at": [10, 9], "from": 128, "to": 53},
+      {"at": [11, 9], "from": 85, "to": 89}
+    ]
+  },
+  {
+    "map": "MnBoundarySafariC00R01",
+    "tileset": "mn_boundary_safari",
+    "placements": [
+      {"at": [28, 4], "from": 130, "to": 2},
+      {"at": [29, 4], "from": 130, "to": 2},
+      {"at": [30, 4], "from": 130, "to": 2},
+      {"at": [28, 5], "from": 129, "to": 2},
+      {"at": [29, 5], "from": 129, "to": 2},
+      {"at": [30, 5], "from": 129, "to": 2},
+      {"at": [1, 21], "from": 68, "to": 2},
+      {"at": [2, 21], "from": 65, "to": 2},
+      {"at": [3, 21], "from": 65, "to": 2},
+      {"at": [1, 22], "from": 72, "to": 2},
+      {"at": [2, 22], "from": 73, "to": 2},
+      {"at": [3, 22], "from": 73, "to": 2}
+    ]
+  },
+  {
+    "map": "MnBoundarySafariC01R00",
+    "tileset": "mn_boundary_safari",
+    "placements": [
+      {"at": [18, 17], "from": 130, "to": 2},
+      {"at": [19, 17], "from": 130, "to": 2},
+      {"at": [20, 17], "from": 130, "to": 2},
+      {"at": [18, 18], "from": 129, "to": 2},
+      {"at": [19, 18], "from": 129, "to": 2},
+      {"at": [20, 18], "from": 129, "to": 2}
+    ]
+  },
+  {
+    "map": "MnMississippiConfluenceC02R00",
+    "tileset": "johto",
+    "placements": [
+      {"at": [9, 3], "from": 73, "to": 1}
+    ]
+  },
+  {
+    "map": "MnMississippiWinonaMouth",
+    "tileset": "johto",
+    "placements": [
+      {"at": [9, 1], "from": 73, "to": 1}
+    ]
+  }
+]

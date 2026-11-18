@@ -1,0 +1,44 @@
+[
+  {
+    "tileset": "mn_winter_headwaters_stairs",
+    "id": 245,
+    "collision_from": 112,
+    "collision": [
+      "FLOOR",
+      "UP_WALL",
+      "FLOOR",
+      "FLOOR"
+    ],
+    "tiles": [60, 60, 61, 44, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60]
+  },
+  {
+    "tileset": "mn_winter_headwaters_stairs",
+    "id": 244,
+    "collision_from": 101,
+    "tiles": [224, 225, 224, 224, 225, 224, 225, 225, 230, 231, 230, 231, 234, 235, 234, 235]
+  },
+  {
+    "tileset": "mn_prairie_headwaters",
+    "id": 246,
+    "collision_from": 130,
+    "collision": [
+      "BRIDGE_NS_RAIL",
+      "BRIDGE_NS_RAIL",
+      "BRIDGE_NS_DECK",
+      "BRIDGE_NS_DECK"
+    ],
+    "tiles": [20, 20, 20, 20, 20, 20, 20, 20, 215, 215, 215, 215, 211, 212, 213, 214]
+  },
+  {
+    "tileset": "mn_prairie_headwaters",
+    "id": 247,
+    "collision_from": 129,
+    "collision": [
+      "BRIDGE_NS_DECK",
+      "BRIDGE_NS_DECK",
+      "BRIDGE_NS_RAIL",
+      "BRIDGE_NS_RAIL"
+    ],
+    "tiles": [219, 220, 219, 220, 217, 217, 217, 217, 20, 20, 20, 20, 20, 20, 20, 20]
+  }
+]

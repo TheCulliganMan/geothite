@@ -1,0 +1,21 @@
+{"drops": [], "walks": [
+  {"map": "MnStCloud", "from": [35, 30], "to": [35, 27], "max_steps": 3},
+  {"map": "MnStCloud", "from": [35, 24], "to": [33, 24], "max_steps": 2},
+  {"map": "MnStCloud", "from": [40, 26], "to": [42, 26], "max_steps": 2},
+  {"map": "MnStCloud", "from": [6, 12], "to": [6, 15], "max_steps": 3},
+  {"map": "MnGrandRapids", "from": [20, 32], "to": [20, 35], "max_steps": 3},
+  {"map": "MnMankato", "from": [42, 30], "to": [36, 30], "max_steps": 6},
+  {"map": "MnBemidji", "from": [29, 25], "to": [30, 27], "max_steps": 3},
+  {"map": "MnDetroitLakes", "from": [29, 31], "to": [28, 31], "max_steps": 1},
+  {"map": "MnMilleLacs", "from": [17, 22], "to": [29, 22], "max_steps": 12},
+  {"map": "MnLeechLake", "from": [27, 20], "to": [41, 20], "max_steps": 14},
+  {"map": "MnLakeItasca", "from": [19, 24], "to": [20, 24], "max_steps": 1},
+  {"map": "MnLakeItasca", "from": [25, 27], "to": [26, 27], "max_steps": 1},
+  {"map": "MnBoundaryWaters", "from": [24, 16], "to": [12, 16], "max_steps": 14},
+  {"map": "MnBoundarySafariC00R01", "from": [5, 43], "to": [2, 43], "max_steps": 3},
+  {"map": "MnBoundarySafariC01R00", "from": [41, 35], "to": [36, 35], "max_steps": 5},
+  {"map": "MnMississippiConfluenceC02R00", "from": [18, 6], "to": [18, 7], "max_steps": 1},
+  {"map": "MnMississippiWinonaMouth", "from": [18, 2], "to": [18, 3], "max_steps": 1},
+  {"map": "MnDevilsKettle", "from": [18, 12], "to": [18, 6], "max_steps": 6},
+  {"map": "MnDevilsKettle", "from": [6, 15], "to": [6, 6], "max_steps": 9}
+]}

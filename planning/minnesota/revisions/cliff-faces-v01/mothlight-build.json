@@ -1,0 +1,7 @@
+{
+  "parent_pack": "content-packs/minnesota-mothlight-outdoor-contours-v04.crystalpack",
+  "parent_pack_sha256": "e84d040588692d345980e204fe6e7d1976533caf9f047e5958a91c1722e00735",
+  "output_pack": "content-packs/minnesota-mothlight-cliff-faces-v01.crystalpack",
+  "expected_pack_sha256": "3bc846b3006259e4eab36945cf4db3c5dc406dd9d96b9ba9d164e166ed494ff0",
+  "builder": "pack_outdoor_contours --cliffs"
+}
