@@ -4,7 +4,6 @@ import argparse
 import json
 import re
 import sys
-from collections import Counter
 from pathlib import Path
 
 import cbor2
@@ -102,7 +101,8 @@ def audit(old, new):
     art, _ = room_image(new)
     for x, y in b.occupied:
         feet = art.crop((x * 16, y * 16 + 8, (x+1) * 16, (y+1) * 16))
-        assert Counter(feet.getdata())[sand] > 64, (x, y, "NPC footing should be visibly sand")
+        sand_pixels = sum(count for count, color in feet.getcolors() if color == sand)
+        assert sand_pixels > 64, (x, y, "NPC footing should be visibly sand")
     print("252 collision squares, 3 warps, 4 dry character positions, 4 reachable trainer sight squares, "
           "8 straight steps to Sivren, 155 physical tiles, 38 native metatiles, 8 RGB555 palettes.")
 
