@@ -86,7 +86,7 @@ fn overhaul_officer_inspects_records_and_reacts_before_granting_report() {
     };
     at(&mut c, "MnBemidji", (21, 20));
     capture(&mut c, "comparison");
-    let pages = canonical_pages("MS07", "MnBemidjiComparisonText");
+    let pages = canonical_pages(c.shell.shell.runtime(), "MS07", "MnBemidjiComparisonText");
     for (index, page) in pages.iter().enumerate() {
         let snapshot = c.snapshot().expect("officer's comparison page");
         assert_eq!(snapshot.visible_object_runtime_tiles[OFFICER].x, 21);

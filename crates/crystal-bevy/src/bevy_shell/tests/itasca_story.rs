@@ -274,7 +274,11 @@ fn assert_current_hint(c: &mut VisibleShellController, milestone: &str, label: &
     assert_eq!(
         crate::bevy_shell::visible_field_dialog_pages(&presentation, &c.shell)
             .expect("actual authored hint"),
-        super::super::northstar_dialogue::canonical_pages(milestone, label),
+        super::super::northstar_dialogue::canonical_pages(
+            c.shell.shell.runtime(),
+            milestone,
+            label
+        ),
     );
     finish(c);
 }

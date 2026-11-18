@@ -399,6 +399,7 @@ pub(super) fn finale() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
         .contains_key("EVENT_MN_TAMARACK_INTRO")
     {
         let expected = super::super::northstar_dialogue::canonical_pages(
+            c.shell.shell.runtime(),
             "MS11",
             "MnBoundarySurveyChiefAfterText",
         )

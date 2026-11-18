@@ -317,7 +317,11 @@ pub(super) fn delivery(index: usize) -> (AssetRoot, CrystalRuntime, VisibleShell
     press(&mut c, GameButton::Left);
     press(&mut c, GameButton::A);
     assert!(!event(&c, "EVENT_MN_DELIVERED_ROCHESTER_PARCEL"));
-    let pages = super::northstar_dialogue::canonical_pages("MS01", "MnRCDeliveryText");
+    let pages = super::northstar_dialogue::canonical_pages(
+        c.shell.shell.runtime(),
+        "MS01",
+        "MnRCDeliveryText",
+    );
     for page in pages {
         assert!(!event(&c, "EVENT_MN_DELIVERED_ROCHESTER_PARCEL"));
         assert_eq!(

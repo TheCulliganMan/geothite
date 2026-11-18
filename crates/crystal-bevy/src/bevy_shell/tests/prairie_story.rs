@@ -189,7 +189,11 @@ fn read_notebook(c: &mut VisibleShellController, r: &CrystalRuntime) {
             "Someone copied\none sheet twice.".to_owned(),
         ]
     } else {
-        super::northstar_dialogue::canonical_pages("MS02", "MnMKNotebookText")
+        super::northstar_dialogue::canonical_pages(
+            c.shell.shell.runtime(),
+            "MS02",
+            "MnMKNotebookText",
+        )
     };
     assert_eq!(
         c.snapshot()

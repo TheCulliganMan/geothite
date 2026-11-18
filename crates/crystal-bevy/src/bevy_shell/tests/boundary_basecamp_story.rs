@@ -591,8 +591,11 @@ fn play_chief_battle(controller: &mut VisibleShellController, losing: bool) -> B
         saw_battle && selected_attacks > 0,
         "must actually enter and choose a move in the chief battle"
     );
-    for page in super::northstar_dialogue::canonical_pages("MS11", "MnBoundarySurveyChiefSeenText")
-    {
+    for page in super::northstar_dialogue::canonical_pages(
+        controller.shell.shell.runtime(),
+        "MS11",
+        "MnBoundarySurveyChiefSeenText",
+    ) {
         assert!(
             admission.contains(&page),
             "missing native chief page: {page}"

@@ -584,7 +584,8 @@ fn battle_note(
 }
 
 fn trainer_pages(controller: &mut VisibleShellController, label: &str) {
-    let expected = super::northstar_dialogue::canonical_pages("", label);
+    let expected =
+        super::northstar_dialogue::canonical_pages(controller.shell.shell.runtime(), "", label);
     let raw = controller
         .shell
         .shell

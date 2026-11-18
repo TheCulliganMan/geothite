@@ -40,7 +40,7 @@ pub(super) const RESCUE_RADIO_EXCHANGE: &[&str] = &[
     "MnOverhaulHarborDirectionsText",
 ];
 
-pub(super) fn canonical_pages(id: &str, label: &str) -> Vec<String> {
+pub(super) fn canonical_pages(runtime: &CrystalRuntime, id: &str, label: &str) -> Vec<String> {
     let path = std::env::var_os("CRYSTAL_NORTHSTAR_CANONICAL_STORY_SOURCE")
         .map(std::path::PathBuf::from)
         .unwrap_or_else(|| {
@@ -49,9 +49,18 @@ pub(super) fn canonical_pages(id: &str, label: &str) -> Vec<String> {
         });
     let story: Value = serde_json::from_str(&std::fs::read_to_string(path).expect("story source"))
         .expect("canonical JSON");
-    if let Some(pages) = story["dialogue_overhaul"]["texts"]
-        .as_object()
-        .and_then(|maps| maps.values().find_map(|texts| texts[label].as_array()))
+    fn pages_in<'a>(maps: &'a Value, label: &str) -> Option<&'a Vec<Value>> {
+        maps.as_object()
+            .and_then(|items| items.values().find_map(|texts| texts.get(label)))
+            .and_then(Value::as_array)
+    }
+    let flow = &story["story_flow_revision"]["dialogue"];
+    let reviewed = if evidence_opens_rescue(runtime) {
+        pages_in(flow, label)
+    } else {
+        None
+    };
+    if let Some(pages) = reviewed.or_else(|| pages_in(&story["dialogue_overhaul"]["texts"], label))
     {
         return pages
             .iter()
@@ -101,7 +110,7 @@ pub(super) fn canonical_pages(id: &str, label: &str) -> Vec<String> {
 }
 
 pub(super) fn acknowledge(c: &mut VisibleShellController, id: &str, label: &str, event: &str) {
-    let expected = canonical_pages(id, label);
+    let expected = canonical_pages(c.shell.shell.runtime(), id, label);
     let raw = c
         .shell
         .shell

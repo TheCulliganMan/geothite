@@ -21,7 +21,10 @@ fn capture(c: &mut VisibleShellController, label: &str) {
 }
 
 fn read(c: &mut VisibleShellController, label: &str) {
-    for (page_index, expected) in canonical_pages("", label).into_iter().enumerate() {
+    for (page_index, expected) in canonical_pages(c.shell.shell.runtime(), "", label)
+        .into_iter()
+        .enumerate()
+    {
         let before = c.snapshot().expect("displayed authored page");
         let text = before.ui.text.expect("visible dialogue");
         assert_eq!(text.label, label);
@@ -215,13 +218,13 @@ fn story_review_tamarack_guides_before_reoffering_a_declined_egg() {
     );
     press(&mut c, GameButton::Right);
     press(&mut c, GameButton::A);
-    for expected in canonical_pages("", "MnWTamarackGuideManifestText") {
+    for expected in canonical_pages(c.shell.shell.runtime(), "", "MnWTamarackGuideManifestText") {
         let text = c.snapshot().expect("guidance").ui.text.expect("page");
         assert_eq!(text.label, "MnWTamarackGuideManifestText");
         assert_eq!(text.asm_text, Some(expected));
         press(&mut c, GameButton::A);
     }
-    let offer_pages = canonical_pages("", "MnNSEEggOfferText");
+    let offer_pages = canonical_pages(c.shell.shell.runtime(), "", "MnNSEEggOfferText");
     for (index, expected) in offer_pages.iter().enumerate() {
         let text = c.snapshot().expect("egg offer").ui.text.expect("page");
         assert_eq!(text.label, "MnNSEEggOfferText");

@@ -342,7 +342,11 @@ pub(super) fn delivery() -> (
             "ELLIS was bringing\nthe last case.".to_owned(),
         ]
     } else {
-        super::northstar_dialogue::canonical_pages("MS01", "MnRCDeliveryText")
+        super::northstar_dialogue::canonical_pages(
+            c.shell.shell.runtime(),
+            "MS01",
+            "MnRCDeliveryText",
+        )
     };
     assert_eq!(
         before.ui.text.as_ref().and_then(|t| t.asm_text.as_ref()),

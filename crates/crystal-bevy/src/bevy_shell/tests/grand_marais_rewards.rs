@@ -14,7 +14,10 @@ use super::super::{
 };
 
 fn finish_text(controller: &mut VisibleShellController, label: &str) -> String {
-    let expected = super::northstar_dialogue::canonical_pages("", label).join("\n") + "\n";
+    let expected =
+        super::northstar_dialogue::canonical_pages(controller.shell.shell.runtime(), "", label)
+            .join("\n")
+            + "\n";
     let mut pages = String::new();
     for _ in 0..32 {
         let snapshot = controller.snapshot().expect("reward dialogue");

@@ -174,7 +174,7 @@ fn duluth_story_controller_names_kettlurk_requires_every_page_and_retains_only_s
     let pages = visible_field_dialog_pages(&raw, &c.shell).expect("native pages");
     assert_eq!(
         pages,
-        super::northstar_dialogue::canonical_pages("MS10", READ)
+        super::northstar_dialogue::canonical_pages(c.shell.shell.runtime(), "MS10", READ)
     );
     for (index, expected) in pages.iter().enumerate() {
         assert!(!signal(&c), "signal before acknowledging page {index}");
