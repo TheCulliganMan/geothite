@@ -20,6 +20,7 @@ mod road_trainer_save_migration;
 pub const SAVE_COMPATIBILITY_FILE: &str = "data/northstar-save-compatibility.json";
 pub const SAVE_COMPATIBILITY_MANIFEST: &str = "northstar-refinement-v1";
 const STORY_FLOW_MANIFEST: &str = "northstar-story-flow-v1";
+const WAYFINDING_MANIFEST: &str = "northstar-wayfinding-v1";
 const REGIONAL_DESIGN_MANIFEST: &str = "northstar-regional-design-v1";
 
 /// One exact, author-approved source release. The hash covers serialized bytes.
@@ -44,6 +45,8 @@ struct Compatibility {
     layout_reentry: Option<Vec<String>>,
     #[serde(skip)]
     regional_parents: Vec<String>,
+    #[serde(skip)]
+    wayfinding_parents: Vec<String>,
 }
 
 /// Returns the exact source identities approved by this target's hashed metadata.
@@ -63,8 +66,8 @@ fn parse_compatibility(bytes: &[u8], target_id: &str) -> Result<Compatibility> {
         schema_version: u8,
     }
     let header: Header = serde_json::from_slice(bytes).context("save compatibility version")?;
-    if header.schema_version == 5 {
-        return parse_regional_compatibility(bytes, target_id);
+    if matches!(header.schema_version, 5 | 6) {
+        return parse_regional_compatibility(bytes, target_id, header.schema_version);
     }
     parse_prior_compatibility(bytes, target_id)
 }
@@ -185,51 +188,87 @@ struct RegionalCompatibility {
     inherited: serde_json::Value,
 }
 
-fn parse_regional_compatibility(bytes: &[u8], target_id: &str) -> Result<Compatibility> {
+fn parse_regional_compatibility(
+    bytes: &[u8],
+    target_id: &str,
+    schema: u8,
+) -> Result<Compatibility> {
+    let (marker, parent_hashes) = match schema {
+        5 => (
+            REGIONAL_DESIGN_MANIFEST,
+            [
+                (
+                    "02e18ba71203d8aa2e10658c6babc53512daeef592ee53fb2900630f91aa57cb",
+                    "79c1c85ebc25b200c9fe30689299af09bc88182828931576e512736395ebd521",
+                ),
+                (
+                    "f4dd4819f039631c81372078d8640f7929114d46bdef90f5ae90d42612a789a0",
+                    "9fadbe2b9ecf745d0cc2852e745b12d6fd2634dc694e38ac0f0986e4e38624e3",
+                ),
+            ],
+        ),
+        6 => (
+            WAYFINDING_MANIFEST,
+            [
+                (
+                    "ea89ae2a3df712b16018c3f7d89f96cfef5486f24778476cff5f7df490af74dd",
+                    "9f34e8a1279499804524a383a7c641fcee7a2e11581cce5fc14468c65338d2d9",
+                ),
+                (
+                    "19caa20f4616a72a378f757cbef7052c5bf2a91d079782e267a7b43f6b91a64e",
+                    "4076beb45e8a5d5caeabc3e69449f243c3e57de2f6ec42653f418bf3b7051f49",
+                ),
+            ],
+        ),
+        _ => anyhow::bail!("unsupported regional save policy"),
+    };
     let release: RegionalCompatibility = serde_json::from_slice(bytes)?;
     let [raw, hosted] = &release.target_modpack_ids;
     let suffix = "+realtime-clock+player-customization";
     ensure!(
-        release.schema_version == 5
-            && release.target_manifest == REGIONAL_DESIGN_MANIFEST
+        release.schema_version == schema
+            && release.target_manifest == marker
             && hosted.strip_prefix(raw) == Some(suffix)
             && (target_id == raw || target_id == hosted),
         "unsupported regional design target"
     );
     let parent = raw
-        .strip_suffix(&format!("+{REGIONAL_DESIGN_MANIFEST}"))
-        .context("regional design marker must follow the story release")?;
+        .strip_suffix(&format!("+{marker}"))
+        .context("regional marker must follow its parent release")?;
     ensure!(
-        !parent.split('+').any(|id| id == REGIONAL_DESIGN_MANIFEST),
+        !parent.split('+').any(|id| id == marker),
         "duplicate design marker"
     );
     let parent_ids = [parent.to_owned(), format!("{parent}{suffix}")];
-    let mut policy = parse_prior_compatibility(&serde_json::to_vec(&release.inherited)?, parent)?;
-    ensure!(
-        policy.schema_version == 4 && policy.target_modpack_ids == parent_ids,
-        "regional design requires the released story policy"
-    );
+    let inherited = serde_json::to_vec(&release.inherited)?;
+    let mut policy = if schema == 6 {
+        parse_regional_compatibility(&inherited, parent, 5)?
+    } else {
+        let story = parse_prior_compatibility(&inherited, parent)?;
+        ensure!(
+            story.schema_version == 4 && story.target_modpack_ids == parent_ids,
+            "regional design requires the released story policy"
+        );
+        story
+    };
     for id in &release.target_modpack_ids {
         SaveModpackIdentity::validate_id(id)?;
     }
-    for ((source, id), (pack_hash, content_hash)) in release.sources.iter().zip(&parent_ids).zip([
-        (
-            "02e18ba71203d8aa2e10658c6babc53512daeef592ee53fb2900630f91aa57cb",
-            "79c1c85ebc25b200c9fe30689299af09bc88182828931576e512736395ebd521",
-        ),
-        (
-            "f4dd4819f039631c81372078d8640f7929114d46bdef90f5ae90d42612a789a0",
-            "9fadbe2b9ecf745d0cc2852e745b12d6fd2634dc694e38ac0f0986e4e38624e3",
-        ),
-    ]) {
+    for ((source, id), (pack_hash, content_hash)) in
+        release.sources.iter().zip(&parent_ids).zip(parent_hashes)
+    {
         ensure!(
             source.modpack_id == *id
                 && source.modpack_hash == pack_hash
                 && source.content_hash == content_hash,
-            "regional design requires the exact story parents"
+            "regional revision requires its exact parent pack identities"
         );
     }
-    policy.regional_parents = parent_ids.into();
+    if schema == 6 {
+        policy.wayfinding_parents = parent_ids.into();
+    } else {
+        policy.regional_parents = parent_ids.into();
+    }
     policy.sources.splice(0..0, release.sources);
     Ok(policy)
 }
@@ -323,6 +362,9 @@ fn upgrade_source_checkpoint(
     source: &CompatibleSaveSource,
     data: &GameDataSet,
 ) -> Result<GameState> {
+    if metadata.wayfinding_parents.contains(&source.modpack_id) {
+        return normalize_upgrade_checkpoint(state);
+    }
     if !metadata.regional_parents.is_empty() {
         road_trainer_save_migration::align_undefeated_trainers(data, &mut state)?;
     }

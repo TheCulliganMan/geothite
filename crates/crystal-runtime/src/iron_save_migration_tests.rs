@@ -383,10 +383,20 @@ fn iron_workings_target_accepts_both_v04_parents_and_reviewed_landings() {
         .split('+')
         .any(|id| id == super::REGIONAL_DESIGN_MANIFEST)
     {
-        assert_eq!(meta.sources.len(), 12);
+        let wayfinding = runtime
+            .modpack()
+            .id()
+            .split('+')
+            .any(|id| id == super::WAYFINDING_MANIFEST);
+        let direct_count = if wayfinding { 2 } else { 0 };
+        assert_eq!(meta.sources.len(), 12 + direct_count);
+        assert_eq!(meta.wayfinding_parents.len(), direct_count);
+        for direct in &meta.sources[..direct_count] {
+            assert!(meta.wayfinding_parents.contains(&direct.modpack_id));
+        }
         assert_eq!(meta.regional_parents.len(), 2);
         check_carrier_save_landings(&runtime);
-        for source in &meta.sources[..2] {
+        for source in &meta.sources[direct_count..direct_count + 2] {
             assert!(meta.regional_parents.contains(&source.modpack_id));
             let state = source_at(
                 "MnR17C00R01",
