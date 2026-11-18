@@ -55,6 +55,43 @@ tools in separate commands; retain one target directory so common dependencies
 remain cached. The no-default-feature command above intentionally checks only
 the runtime library, rather than the authoring CLI targets.
 
+## Minnesota regional design
+
+The November 18 design revision uses the released story pack and its exact
+hosted counterpart. The regional designs live under
+`planning/minnesota/revisions/regional-design-v01`. The four independent
+[submissions and design decisions](../planning/minnesota/reviews/regional-design-20261118/README.md)
+explain the route, cave, crowd, cache and trainer changes.
+
+From the repository root, use fresh ignored output paths. The first command
+builds the regional authoring tool, the production hosted-wrapper tool and the
+runtime verifier.
+
+```sh
+mkdir -p target/regional-design-audit-20261118
+cargo build --locked -p crystal-assets --bin pack_northstar_regional_design \
+  --bin materialize_northstar_hosted --bin verify_crystalpack
+target/debug/pack_northstar_regional_design \
+  content-packs/minnesota-story-flow-v01.crystalpack \
+  target/story-flow-20261117/hosted.crystalpack planning/minnesota \
+  content-packs/minnesota-regional-design-v01.crystalpack
+target/debug/materialize_northstar_hosted \
+  content-packs/minnesota-regional-design-v01.crystalpack \
+  target/regional-design-audit-20261118/hosted.crystalpack
+target/debug/verify_crystalpack target/regional-design-audit-20261118/hosted.crystalpack --audio --desktop
+python3 planning/minnesota/tools/audit_regional_design.py \
+  content-packs/minnesota-story-flow-v01.crystalpack \
+  content-packs/minnesota-regional-design-v01.crystalpack
+python3 planning/minnesota/tools/audit_regional_design.py \
+  target/story-flow-20261117/hosted.crystalpack \
+  target/regional-design-audit-20261118/hosted.crystalpack
+```
+
+The Python audit reads the shipped packs and uses Pillow and cbor2. Save
+compatibility accepts the two exact story parents and inherits their ten earlier
+sources and room rules. On ordinary roads, an undefeated trainer with a stored
+spinner pose faces the newly authored lane when that checkpoint is upgraded.
+
 ## Minnesota story flow
 
 The story revision builds on the released floorplans. Mina offers her date when

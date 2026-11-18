@@ -7964,7 +7964,7 @@
     "status": "Accepted current-parent terrain revision: source/native pixels, strict whole-pack preservation, directional grass/ledge proof, actual2D review, native encounters/trainerPP/resources/Continue and stdio pass. CurrentR12 work preserved.",
     "scope_limit": "Sequential Minnesota grass pass remains open beyond R01-R03. Explicit local fixtures do not prove an earned statewide campaign."
   },
-  "active_local_review_revision": "story_flow_revision",
+  "active_local_review_revision": "regional_design_revision",
   "script_command_repair_revision": {
     "kind": "missing_minnesota_map_command_records",
     "parent_revision": "field_hm_habitats_cyclists_revision",
@@ -12667,5 +12667,24 @@
     "runbook": "docs/game-content.md#minnesota-story-flow",
     "status": "Selected locally and published. The raw and hosted story and save-compatibility checks passed.",
     "hosted_release": "story-flow-20261117"
+  },
+  "regional_design_revision": {
+    "kind": "native_2d_regional_design_revision",
+    "parent_revision": "story_flow_revision",
+    "pack": "content-packs/minnesota-regional-design-v01.crystalpack",
+    "pack_sha256": "ea89ae2a3df712b16018c3f7d89f96cfef5486f24778476cff5f7df490af74dd",
+    "content_identity": "9f34e8a1279499804524a383a7c641fcee7a2e11581cce5fc14468c65338d2d9",
+    "hosted_pack_sha256": "19caa20f4616a72a378f757cbef7052c5bf2a91d079782e267a7b43f6b91a64e",
+    "hosted_content_identity": "4076beb45e8a5d5caeabc3e69449f243c3e57de2f6ec42653f418bf3b7051f49",
+    "map_count": 743,
+    "changed_maps_from_parent": 48,
+    "changed_terrain_metatiles": 329,
+    "ordinary_road_sightlines": 125,
+    "moved_hidden_items": 7,
+    "new_fair_hidden_items": 1,
+    "save_compatibility_source_identities": 12,
+    "reviews": "planning/minnesota/reviews/regional-design-20261118/README.md",
+    "runbook": "docs/game-content.md#minnesota-regional-design",
+    "status": "Selected locally. The released-parent comparisons and non-destructive save migration passed for both pack variants."
   }
 }
