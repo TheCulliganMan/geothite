@@ -30,6 +30,10 @@ default = ["pack-authoring"]
 pack-authoring = []
 test-fixtures = ["crystal-core/test-fixtures", "pack-authoring"]
 
+[[example]]
+name = "pack_outdoor_contours"
+required-features = ["pack-authoring"]
+
 [dev-dependencies]
 crystal-core = { workspace = true, features = ["test-fixtures"] }
 

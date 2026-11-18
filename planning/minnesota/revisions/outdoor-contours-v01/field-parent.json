@@ -1,0 +1,7 @@
+{
+  "parent_pack": "content-packs/minnesota-lakeside-v01.crystalpack",
+  "parent_pack_sha256": "e56ded3d55b8364e8756a4a02eb530fb74f52c03951c1c01d962441f7e2193d9",
+  "output_pack": "content-packs/minnesota-field-review-v02.crystalpack",
+  "expected_pack_sha256": "c602c1d7be1594ffd7112a1752f265a80c3631b7bd4e8f1c74ffdd1e6c5b58ae",
+  "builder": "pack_northstar_field_review"
+}

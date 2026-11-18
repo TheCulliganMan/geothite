@@ -1,0 +1,6 @@
+[
+  {"tileset": "mn_winter_gunflint", "id": 87, "collision_from": 77, "tiles": [72, 72, 72, 72, 72, 72, 72, 72, 72, 72, 72, 72, 42, 42, 42, 42]},
+  {"tileset": "mn_outdoor_winter_stairs", "id": 141, "collision_from": 86, "tiles": [60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 76, 76, 76, 76]},
+  {"tileset": "mn_outdoor_winter_stairs", "id": 181, "collision_from": 132, "tiles": [212, 213, 60, 60, 60, 60, 212, 213, 60, 60, 212, 213, 212, 213, 60, 60], "cut_to": 113},
+  {"tileset": "mn_outdoor_winter_stairs", "id": 182, "collision_from": 132, "tiles": [60, 60, 212, 213, 212, 213, 60, 60, 212, 213, 60, 60, 60, 60, 212, 213], "cut_to": 113}
+]

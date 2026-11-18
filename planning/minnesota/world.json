@@ -7964,7 +7964,7 @@
     "status": "Accepted current-parent terrain revision: source/native pixels, strict whole-pack preservation, directional grass/ledge proof, actual2D review, native encounters/trainerPP/resources/Continue and stdio pass. CurrentR12 work preserved.",
     "scope_limit": "Sequential Minnesota grass pass remains open beyond R01-R03. Explicit local fixtures do not prove an earned statewide campaign."
   },
-  "active_local_review_revision": "crossings_revision",
+  "active_local_review_revision": "outdoor_contours_field_revision",
   "script_command_repair_revision": {
     "kind": "missing_minnesota_map_command_records",
     "parent_revision": "field_hm_habitats_cyclists_revision",
@@ -12745,5 +12745,42 @@
     "runbook": "docs/game-content.md#minnesota-lakeside",
     "status": "Published; both content packs, both parent save migrations and live clients verified.",
     "hosted_release": "lakeside-20261118"
+  },
+  "field_review_v02_revision": {
+    "kind": "private_field_review",
+    "parent_revision": "lakeside_revision",
+    "parent_pack": "content-packs/minnesota-lakeside-v01.crystalpack",
+    "parent_pack_sha256": "e56ded3d55b8364e8756a4a02eb530fb74f52c03951c1c01d962441f7e2193d9",
+    "pack": "content-packs/minnesota-field-review-v02.crystalpack",
+    "pack_sha256": "c602c1d7be1594ffd7112a1752f265a80c3631b7bd4e8f1c74ffdd1e6c5b58ae",
+    "build_recipe": "planning/minnesota/revisions/outdoor-contours-v01/field-parent.json",
+    "build_recipe_sha256": "2acd820433b1fbb64c398df9303388d0e406c7cb21cd000369f58610f63ebf97",
+    "content_identity": "f2de249613f5987b7722a959391a0d7f8a03953ca3ecaffd1eff80bce2b42250",
+    "map_count": 743,
+    "runbook": "revisions/field-review-v01/README.md"
+  },
+  "outdoor_contours_field_revision": {
+    "kind": "outdoor_terrain_review",
+    "parent_revision": "field_review_v02_revision",
+    "parent_pack": "content-packs/minnesota-field-review-v02.crystalpack",
+    "parent_pack_sha256": "c602c1d7be1594ffd7112a1752f265a80c3631b7bd4e8f1c74ffdd1e6c5b58ae",
+    "pack": "content-packs/minnesota-outdoor-contours-v02.crystalpack",
+    "pack_sha256": "534a4fece039fbb50dc73622217af559410a96b1ffeb687080e8cc8fdd77a657",
+    "build_recipe": "planning/minnesota/revisions/outdoor-contours-v01/field-build.json",
+    "build_recipe_sha256": "5932120586a115e6308b70bb8302282da01d5cd0233412ebb8a28527c7279e27",
+    "content_identity": "ef586c04e4b769295d56c8e4ea443ab60ef8cdef02725e75d9cdbe2f10e4c9c8",
+    "map_count": 743,
+    "revised_routes": [
+      1,
+      5,
+      9,
+      10,
+      12,
+      13
+    ],
+    "changed_map_chunks": 10,
+    "changed_metatiles": 291,
+    "runbook": "revisions/outdoor-contours-v01/README.md",
+    "status": "Local native 2D review; built and checked without gameplay inputs."
   }
 }

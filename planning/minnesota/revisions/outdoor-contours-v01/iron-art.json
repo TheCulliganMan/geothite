@@ -1,0 +1,8 @@
+[
+  {"tileset": "mn_winter_iron_range", "id": 167, "collision_from": 113, "tiles": [59, 60, 60, 60, 59, 60, 60, 60, 59, 60, 60, 60, 59, 60, 60, 72]},
+  {"tileset": "mn_winter_iron_range", "id": 162, "collision_from": 3, "tiles": [240, 241, 72, 60, 72, 60, 240, 241, 60, 72, 240, 241, 240, 241, 72, 60], "cut_to": 113},
+  {"tileset": "mn_winter_iron_range", "id": 163, "collision_from": 3, "tiles": [72, 60, 240, 241, 240, 241, 72, 60, 240, 241, 60, 72, 60, 72, 240, 241], "cut_to": 113},
+  {"tileset": "mn_winter_iron_range", "id": 164, "collision_from": 135, "tiles": [158, 159, 61, 61, 158, 159, 61, 61, 60, 60, 77, 77, 72, 60, 76, 77]},
+  {"tileset": "mn_winter_iron_range", "id": 165, "collision_from": 3, "tiles": [59, 60, 240, 241, 59, 60, 60, 60, 59, 240, 241, 60, 59, 60, 60, 72], "cut_to": 167},
+  {"tileset": "mn_winter_iron_range", "id": 166, "collision_from": 113, "tiles": [60, 60, 72, 60, 60, 60, 60, 60, 72, 60, 60, 60, 60, 60, 60, 72]}
+]
