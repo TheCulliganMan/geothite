@@ -546,8 +546,10 @@ def authored_texts(path):
     with path.open(encoding="utf-8") as source:
         story = json.load(source)
     texts = story["dialogue_overhaul"]["texts"]
-    for location, passages in story.get("story_flow_revision", {}).get("dialogue", {}).items():
-        texts.setdefault(location, {}).update(passages)
+    for revision in (story.get("story_flow_revision", {}).get("dialogue", {}),
+                     story.get("wayfinding_dialogue", {})):
+        for location, passages in revision.items():
+            texts.setdefault(location, {}).update(passages)
     return texts
 
 

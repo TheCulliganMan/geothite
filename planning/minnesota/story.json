@@ -68435,5 +68435,20 @@
         ]
       }
     }
+  },
+  "wayfinding_dialogue": {
+    "MnR10Cave1F": {
+      "MN_R10_GALLERY_READERText": [
+        ["Both paths meet", "at this pillar."],
+        ["For the crew, go", "west on the road."]
+      ],
+      "MnGalleryRockSmashText": [
+        ["Loose rock breaks", "along the seams."],
+        ["Teach your partner", "ROCK SMASH."]
+      ],
+      "MnGalleryFullPackText": [
+        ["Your pack's full.", "I'll keep the TM."]
+      ]
+    }
   }
 }

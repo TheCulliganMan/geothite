@@ -55,6 +55,32 @@ tools in separate commands; retain one target directory so common dependencies
 remain cached. The no-default-feature command above intentionally checks only
 the runtime library, rather than the authoring CLI targets.
 
+## Minnesota wayfinding
+
+The wayfinding builder uses the exact raw and hosted Regional Design releases.
+Use fresh output paths. The published data includes the native Rock Smash
+party command and the standard interaction for facing a rock. The Gallery
+surveyor offers TM08 before either breakable passage. He keeps the TM if the
+player’s pocket is full. The Minneapolis department store also stocks it.
+[Map layouts and geographic references](../planning/minnesota/revisions/wayfinding-v01/README.md)
+
+```sh
+mkdir -p target/wayfinding-20261118
+cargo build --locked -p crystal-assets --bin pack_northstar_wayfinding \
+  --bin materialize_northstar_hosted --bin verify_crystalpack
+target/debug/pack_northstar_wayfinding \
+  content-packs/minnesota-regional-design-v01.crystalpack \
+  target/regional-design-audit-20261118/hosted.crystalpack \
+  content-packs/minnesota-wayfinding-v01.crystalpack
+target/debug/materialize_northstar_hosted \
+  content-packs/minnesota-wayfinding-v01.crystalpack target/wayfinding-20261118/hosted.crystalpack
+target/debug/verify_crystalpack target/wayfinding-20261118/hosted.crystalpack --audio --desktop
+uv run --with cbor2 --with pillow python planning/minnesota/tools/audit_wayfinding.py \
+  content-packs/minnesota-regional-design-v01.crystalpack content-packs/minnesota-wayfinding-v01.crystalpack
+uv run --with cbor2 --with pillow python planning/minnesota/tools/audit_wayfinding.py \
+  target/regional-design-audit-20261118/hosted.crystalpack target/wayfinding-20261118/hosted.crystalpack
+```
+
 ## Minnesota regional design
 
 The November 18 design revision uses the released story pack and its exact

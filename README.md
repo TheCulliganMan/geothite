@@ -12,7 +12,12 @@ The [Minnesota campaign polish review](docs/game-content.md#minnesota-campaign-p
 includes local build and play commands for the dialogue, roster, and early
 fishing update on top of the Glacier Line pack.
 
-The [current Minnesota release](docs/deployment.md#minnesota-regional-design-release-2026-11-18),
+On Gunflint Trail you can cross the ice or break the frost-cracked rock and
+walk the ridge to the loon lookout. The survey crew on Route 10 gives you TM08.
+In the Iron Range mine, follow the rails to Haulage and the red discharge pipe
+to the Pump Gallery. [Minnesota wayfinding maps and design notes](planning/minnesota/revisions/wayfinding-v01/README.md)
+
+The [regional design release](docs/deployment.md#minnesota-regional-design-release-2026-11-18),
 `regional-design-20261118`, gives all 125 numbered-road trainers individual
 sightlines, opens two routes around the Border Pines ice, and marks the State
 Fair avenue from the east gate to the grandstand. The

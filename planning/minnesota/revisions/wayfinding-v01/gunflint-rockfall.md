@@ -1,0 +1,9 @@
+# The frost cleft at Raven Rock
+
+On the Gunflint Trail, Raven Rock rises immediately above the lake and west of the ice basin. Its cave mouth opens at the foot of the southern cliff. The released map had a substantial bare summit above that entrance, separated from the trail by the cliff face. The new trail enters the summit through one narrow fracture on its southwest side.
+
+A dark joint in the exposed bed stops at the smashable boulder. Thin beds continue across the adjoining cliff; angular pieces of the same color taper downslope onto the snow. The boulder fills the joint at (35, 13). Breaking it opens a walk across the exposed rock. A narrow extension of the eastern brow drops onto the existing snowy lookout, beside the resident who listens for loons. The Minnesota Geological Survey documents exposed layers in the Gunflint Lake area. The map interprets that local setting at Pokémon scale. [Minnesota Geological Survey](https://cse.umn.edu/mgs/ancient-meteorite-deposit-minnesota)
+
+From the foot of the joint at (35, 14), the original crossing reaches (49, 8) in 19 movement inputs with ice sliding. The new route there takes 25 inputs across bedrock and snow. Walking back from the summit uses the eastern drop even if the boulder has returned. The western Cut herb clearing still requires Cut. The old cave entrance, the frozen travel surface, the lake shore, the resident and the existing treasure are at their original coordinates.
+
+The authoring checks model the cave doorway and ranger hut as terminal exits, so a path cannot pass through the cave mouth onto the roof. Separate native checks verify the sealed ridge with Surf, the dry approach with all ice excluded, and the way out after the rock returns. The one new object uses the ordinary Rock Smash script. The route retains its original wild encounters and rewards.

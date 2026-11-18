@@ -207,6 +207,37 @@ fn check_cache_receipt(pack: &CompiledGamePack, map: &str, cache: &Cache) -> Res
     Ok(())
 }
 
+pub(super) fn apply_rooms(pack: &mut CompiledGamePack, source: &[u8]) -> Result<()> {
+    let rooms: Vec<Room> = serde_json::from_slice(source)?;
+    ensure!(!rooms.is_empty(), "no regional room designs");
+    let mut ids = BTreeSet::new();
+    for patch in rooms {
+        ensure!(
+            patch.map.starts_with("Mn")
+                && ids.insert(patch.map.clone())
+                && !(patch.blocks.is_empty() && patch.caches.is_empty()),
+            "empty or duplicate regional room"
+        );
+        let mut room = pack
+            .data
+            .maps
+            .get(&patch.map)
+            .context("Minnesota room")?
+            .clone();
+        terrain(pack, &mut room, &patch.blocks)
+            .with_context(|| format!("terrain in {}", patch.map))?;
+        for cache in &patch.caches {
+            move_cache(pack, &mut room, cache)?;
+        }
+        crate::northstar_cave_overhaul::validate_native_art(pack, &room)?;
+        authored_town_publication::replace(pack, room)?;
+        for cache in &patch.caches {
+            check_cache_receipt(pack, &patch.map, cache)?;
+        }
+    }
+    Ok(())
+}
+
 /// Builds the audited regional revision from the exact released story and hosted packs.
 ///
 /// # Errors
@@ -229,33 +260,8 @@ pub fn revise_northstar_regional_design(
     crate::northstar_regional_art::install(&mut pack)?;
     let dir = root.join("revisions/regional-design-v01");
     for file in ["caches.json", "roads.json", "caves.json"] {
-        let rooms: Vec<Room> = serde_json::from_slice(&fs::read(dir.join(file))?)?;
-        ensure!(!rooms.is_empty(), "no designs in {file}");
-        let mut ids = BTreeSet::new();
-        for patch in rooms {
-            ensure!(
-                patch.map.starts_with("Mn")
-                    && ids.insert(patch.map.clone())
-                    && !(patch.blocks.is_empty() && patch.caches.is_empty()),
-                "empty or duplicate room in {file}"
-            );
-            let mut room = pack
-                .data
-                .maps
-                .get(&patch.map)
-                .context("Minnesota room")?
-                .clone();
-            terrain(&pack, &mut room, &patch.blocks)
-                .with_context(|| format!("terrain in {}", patch.map))?;
-            for cache in &patch.caches {
-                move_cache(&pack, &mut room, cache)?;
-            }
-            crate::northstar_cave_overhaul::validate_native_art(&pack, &room)?;
-            authored_town_publication::replace(&mut pack, room)?;
-            for cache in &patch.caches {
-                check_cache_receipt(&pack, &patch.map, cache)?;
-            }
-        }
+        apply_rooms(&mut pack, &fs::read(dir.join(file))?)
+            .with_context(|| format!("regional designs in {file}"))?;
     }
     crate::northstar_carrier_ledge::install(&mut pack)?;
     crate::northstar_road_trainers::install(&mut pack, &dir)?;

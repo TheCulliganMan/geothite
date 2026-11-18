@@ -170,7 +170,24 @@ pub(crate) fn resting_tiles(
     entry: [u16; 2],
     surf: bool,
 ) -> Result<BTreeSet<[u16; 2]>> {
+    resting_tiles_avoiding(pack, room, entry, surf, &[])
+}
+
+/// Computes reachable stops before stepping onto a warp or other supplied terminal tile.
+pub(crate) fn resting_tiles_avoiding(
+    pack: &CompiledGamePack,
+    room: &MapModule,
+    entry: Position,
+    surf: bool,
+    excluded: &[Position],
+) -> Result<BTreeSet<Position>> {
     let mut surface = Surface::new(pack, room, false, &Placements::new())?;
+    for &at in excluded {
+        surface.bodies.push(OccupiedTile {
+            tile: tile(at)?,
+            object_identifier: None,
+        });
+    }
     // This graph ends at the room boundary. Actual connected-map steps carry
     // signed coordinates into the next map and are not local resting squares.
     surface.map.connections.clear();

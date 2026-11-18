@@ -7964,7 +7964,7 @@
     "status": "Accepted current-parent terrain revision: source/native pixels, strict whole-pack preservation, directional grass/ledge proof, actual2D review, native encounters/trainerPP/resources/Continue and stdio pass. CurrentR12 work preserved.",
     "scope_limit": "Sequential Minnesota grass pass remains open beyond R01-R03. Explicit local fixtures do not prove an earned statewide campaign."
   },
-  "active_local_review_revision": "regional_design_revision",
+  "active_local_review_revision": "wayfinding_revision",
   "script_command_repair_revision": {
     "kind": "missing_minnesota_map_command_records",
     "parent_revision": "field_hm_habitats_cyclists_revision",
@@ -12687,5 +12687,26 @@
     "runbook": "docs/game-content.md#minnesota-regional-design",
     "status": "Selected locally and published. Released-parent comparisons and save migration passed for both variants.",
     "hosted_release": "regional-design-20261118"
+  },
+  "wayfinding_revision": {
+    "kind": "native_2d_wayfinding_revision",
+    "parent_revision": "regional_design_revision",
+    "pack": "content-packs/minnesota-wayfinding-v01.crystalpack",
+    "pack_sha256": "e0638a9327e3296b214cdb8d3fdb6e25c33616cdacd2adac583bdd4eb70958bd",
+    "content_identity": "0495ee73a16a6aa6ceb180a7a349b818d86d982e52f6b41118fd8eb60ad95e7d",
+    "hosted_pack_sha256": "e17218b24ad2b8292d17658b1176e7e093851f7502b2b5a6177f67edf27d97c4",
+    "hosted_content_identity": "123e022fc3a37f46d8f06b7bae53f8b4ad1ffc5cd1d7b9b564b6a287dcbc73ac",
+    "map_count": 743,
+    "changed_maps_from_parent": 19,
+    "changed_terrain_metatiles": 159,
+    "smashable_rocks": [
+      "MnR10Cave1F",
+      "MnR12C00R00"
+    ],
+    "save_compatibility_source_identities": 14,
+    "reviews": "planning/minnesota/revisions/wayfinding-v01/README.md",
+    "runbook": "docs/game-content.md#minnesota-wayfinding",
+    "status": "Selected locally.",
+    "hosted_release": "wayfinding-20261118"
   }
 }
