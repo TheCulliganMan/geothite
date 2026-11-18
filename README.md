@@ -12,7 +12,11 @@ The [Minnesota campaign polish review](docs/game-content.md#minnesota-campaign-p
 includes local build and play commands for the dialogue, roster, and early
 fishing update on top of the Glacier Line pack.
 
-On Gunflint Trail you can cross the ice or break the frost-cracked rock and
+Walk the timber bridge toward Detroit Lakes, or take a canoe underneath to a
+quiet fishing spot. Search the old shell beds at Former Shores and visit the
+family photo gallery at the Ely Hall of Fame. [Minnesota maps and artwork](planning/minnesota/revisions/crossings-v01/README.md)
+
+On Gunflint Trail you can cross the ice or break the boulder below the cliff and
 walk the ridge to the loon lookout. The survey crew on Route 10 gives you TM08.
 In the Iron Range mine, follow the rails to Haulage and the red discharge pipe
 to the Pump Gallery. [Minnesota wayfinding maps and design notes](planning/minnesota/revisions/wayfinding-v01/README.md)

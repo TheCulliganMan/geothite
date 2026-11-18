@@ -55,6 +55,32 @@ tools in separate commands; retain one target directory so common dependencies
 remain cached. The no-default-feature command above intentionally checks only
 the runtime library, rather than the authoring CLI targets.
 
+## Minnesota crossings
+
+Crossings extends the exact released Wayfinding raw and hosted packs. It changes
+five Minnesota maps and connects the party menu to the native Strength script.
+The release uses one manifest for the maps and Ely's new Game Boy Color tileset.
+The [map notes](../planning/minnesota/revisions/crossings-v01/README.md) describe the
+timber crossing, fossil beds, northern rocks and family gallery.
+
+From the repository root, use fresh, ignored output paths.
+
+```sh
+mkdir -p target/crossings-20261118
+cargo build --locked -p crystal-assets --bin pack_northstar_crossings \
+  --bin materialize_northstar_hosted --bin verify_crystalpack
+target/debug/pack_northstar_crossings \
+  content-packs/minnesota-wayfinding-v01.crystalpack target/wayfinding-20261118/hosted.crystalpack \
+  content-packs/minnesota-crossings-v01.crystalpack
+target/debug/materialize_northstar_hosted \
+  content-packs/minnesota-crossings-v01.crystalpack target/crossings-20261118/hosted.crystalpack
+target/debug/verify_crystalpack target/crossings-20261118/hosted.crystalpack --audio --desktop
+uv run --with cbor2 --with pillow python planning/minnesota/tools/audit_crossings.py \
+  content-packs/minnesota-wayfinding-v01.crystalpack content-packs/minnesota-crossings-v01.crystalpack
+uv run --with cbor2 --with pillow python planning/minnesota/tools/audit_crossings.py \
+  target/wayfinding-20261118/hosted.crystalpack target/crossings-20261118/hosted.crystalpack
+```
+
 ## Minnesota wayfinding
 
 The wayfinding builder uses the exact raw and hosted Regional Design releases.
