@@ -11,15 +11,15 @@ const ART: &[u8] =
 const ROOMS: &[u8] =
     include_bytes!("../../../planning/minnesota/revisions/trail-landmarks-v01/caches.json");
 
-#[derive(Clone, Deserialize)]
+#[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
 pub(super) struct Landmark {
     name: String,
     pub(super) tileset: String,
     pub(super) block: u8,
     collision_from: u8,
-    pub(super) background: u8,
-    pub(super) foreground: Option<u8>,
+    background: u8,
+    foreground: Option<u8>,
     rows: [String; 32],
 }
 

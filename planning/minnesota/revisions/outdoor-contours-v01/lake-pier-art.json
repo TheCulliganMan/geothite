@@ -1,0 +1,134 @@
+[
+  {
+    "tileset": "mn_headwaters_thaw",
+    "id": 221,
+    "collision_from": 1,
+    "tiles": [20, 20, 20, 20, 20, 20, 20, 20, 212, 212, 212, 212, 208, 209, 210, 211],
+    "collision": [
+      "WATER",
+      "WATER",
+      "FLOOR",
+      "FLOOR"
+    ]
+  },
+  {
+    "tileset": "mn_headwaters_thaw",
+    "id": 222,
+    "collision_from": 1,
+    "tiles": [222, 223, 222, 223, 214, 214, 214, 214, 20, 20, 20, 20, 20, 20, 20, 20],
+    "collision": [
+      "FLOOR",
+      "FLOOR",
+      "WATER",
+      "WATER"
+    ]
+  },
+  {
+    "tileset": "mn_headwaters_thaw",
+    "id": 224,
+    "collision_from": 54,
+    "tiles": [20, 20, 20, 59, 20, 20, 20, 59, 20, 20, 20, 59, 20, 20, 20, 59]
+  },
+  {
+    "tileset": "mn_prairie_headwaters",
+    "id": 221,
+    "collision_from": 1,
+    "tiles": [20, 20, 20, 20, 20, 20, 20, 20, 215, 215, 215, 215, 211, 212, 213, 214],
+    "collision": [
+      "WATER",
+      "WATER",
+      "FLOOR",
+      "FLOOR"
+    ]
+  },
+  {
+    "tileset": "mn_prairie_headwaters",
+    "id": 222,
+    "collision_from": 1,
+    "tiles": [219, 220, 219, 220, 217, 217, 217, 217, 20, 20, 20, 20, 20, 20, 20, 20],
+    "collision": [
+      "FLOOR",
+      "FLOOR",
+      "WATER",
+      "WATER"
+    ]
+  },
+  {
+    "tileset": "mn_prairie_headwaters",
+    "id": 223,
+    "collision_from": 52,
+    "tiles": [61, 20, 20, 20, 61, 20, 20, 20, 61, 20, 20, 20, 61, 20, 20, 20]
+  },
+  {
+    "tileset": "mn_headwaters",
+    "id": 220,
+    "collision_from": 1,
+    "tiles": [159, 159, 159, 159, 157, 158, 157, 158, 195, 195, 195, 195, 159, 159, 159, 159]
+  },
+  {
+    "tileset": "mn_headwaters",
+    "id": 221,
+    "collision_from": 1,
+    "tiles": [20, 20, 20, 20, 20, 20, 20, 20, 159, 159, 159, 159, 157, 158, 157, 158],
+    "collision": [
+      "WATER",
+      "WATER",
+      "FLOOR",
+      "FLOOR"
+    ]
+  },
+  {
+    "tileset": "mn_headwaters",
+    "id": 223,
+    "collision_from": 52,
+    "tiles": [61, 20, 20, 20, 61, 20, 20, 20, 61, 20, 20, 20, 61, 20, 20, 20]
+  },
+  {
+    "tileset": "mn_winter_tamarack",
+    "id": 221,
+    "collision_from": 1,
+    "tiles": [20, 20, 20, 20, 20, 20, 20, 20, 220, 220, 220, 220, 216, 217, 218, 219],
+    "collision": [
+      "WATER",
+      "WATER",
+      "FLOOR",
+      "FLOOR"
+    ]
+  },
+  {
+    "tileset": "mn_winter_tamarack",
+    "id": 222,
+    "collision_from": 1,
+    "tiles": [240, 241, 240, 241, 222, 222, 222, 222, 20, 20, 20, 20, 20, 20, 20, 20],
+    "collision": [
+      "FLOOR",
+      "FLOOR",
+      "WATER",
+      "WATER"
+    ]
+  },
+  {
+    "tileset": "mn_winter_tamarack",
+    "id": 224,
+    "collision_from": 54,
+    "tiles": [20, 20, 20, 59, 20, 20, 20, 59, 20, 20, 20, 59, 20, 20, 20, 59]
+  },
+  {
+    "tileset": "mn_winter_tamarack",
+    "id": 225,
+    "collision_from": 57,
+    "tiles": [20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 76, 76, 76, 76]
+  },
+  {
+    "tileset": "mn_winter_tamarack",
+    "id": 226,
+    "collision_from": 56,
+    "tiles": [61, 20, 20, 20, 61, 20, 20, 20, 61, 20, 20, 20, 76, 76, 76, 76]
+  },
+  {
+    "tileset": "mn_winter_tamarack",
+    "id": 227,
+    "collision_from": 58,
+    "tiles": [20, 20, 20, 59, 20, 20, 20, 59, 20, 20, 20, 59, 76, 76, 76, 76]
+  }
+]

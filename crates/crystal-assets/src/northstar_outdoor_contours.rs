@@ -10,7 +10,16 @@ use crate::authored_town_geometry::kind;
 use crate::northstar_trail_caches::{self, Landmark};
 use crate::{CompiledGamePack, authored_town_publication};
 
-const MANIFEST: &str = "northstar-outdoor-contours-v1";
+#[path = "northstar_public_piers.rs"]
+mod northstar_public_piers;
+#[path = "outdoor_dock_dialogue.rs"]
+mod outdoor_dock_dialogue;
+#[path = "outdoor_shore_access.rs"]
+mod outdoor_shore_access;
+#[path = "shiner_dock_water.rs"]
+mod shiner_dock_water;
+
+const MANIFEST: &str = "northstar-outdoor-contours-v4";
 type ArtIds = BTreeMap<(String, u16), u8>;
 
 #[derive(Deserialize)]
@@ -18,18 +27,6 @@ type ArtIds = BTreeMap<(String, u16), u8>;
 struct Ink {
     first_glyph: u8,
     design: Landmark,
-    #[serde(default)]
-    additional_banks: Vec<InkBank>,
-}
-
-#[derive(Deserialize)]
-#[serde(deny_unknown_fields)]
-struct InkBank {
-    tileset: String,
-    id: u8,
-    first_glyph: u8,
-    background: u8,
-    foreground: u8,
 }
 
 #[derive(Deserialize)]
@@ -38,8 +35,8 @@ struct Metatile {
     tileset: String,
     id: u16,
     collision_from: u8,
+    collision: Option<[String; 4]>,
     tiles: [u8; 16],
-    cut_to: Option<u16>,
 }
 
 #[derive(Deserialize)]
@@ -88,28 +85,17 @@ fn install_art(pack: &mut CompiledGamePack, dir: &Path) -> Result<ArtIds> {
     // A parent can already contain a regional hidden-item tile in this bank.
     // Append after it; map sources use the recipe's logical ID only on output.
     let mut ids = ArtIds::new();
-    for ink in source::<Vec<Ink>>(dir, "iron-ink.json")? {
-        let mut designs = Vec::new();
-        for bank in ink.additional_banks {
-            let mut local = ink.design.clone();
-            local.tileset = bank.tileset;
-            local.block = bank.id;
-            local.background = bank.background;
-            local.foreground = Some(bank.foreground);
-            designs.push((local, bank.first_glyph));
-        }
-        designs.push((ink.design, ink.first_glyph));
-        for (mut local, first_glyph) in designs {
-            let tileset = local.tileset.clone();
-            local.block = allocate(pack, &mut ids, &tileset, u16::from(local.block))?;
-            northstar_trail_caches::install_art(pack, &tileset, &[local], first_glyph)?;
-        }
+    for mut ink in source::<Vec<Ink>>(dir, "iron-ink.json")? {
+        let tileset = ink.design.tileset.clone();
+        ink.design.block = allocate(pack, &mut ids, &tileset, u16::from(ink.design.block))?;
+        northstar_trail_caches::install_art(pack, &tileset, &[ink.design], ink.first_glyph)?;
     }
     for name in [
         "iron-art.json",
         "northern-art.json",
         "driftless-art.json",
-        "descent-art.json",
+        "southern-shore-art.json",
+        "lake-pier-art.json",
     ] {
         for art in source::<Vec<Metatile>>(dir, name)? {
             let native = allocate(pack, &mut ids, &art.tileset, art.id)?;
@@ -118,7 +104,8 @@ fn install_art(pack: &mut CompiledGamePack, dir: &Path) -> Result<ArtIds> {
                 .get_mut(&metatile_path(&art.tileset))
                 .context("metatile bank")?;
             ensure!(
-                art.tiles.iter().all(|g| layout.contains(g)),
+                art.tiles.iter().all(|g| layout.contains(g)
+                    || northstar_public_piers::is_timber_glyph(&art.tileset, *g)),
                 "recipe references unused tile in {}",
                 art.tileset
             );
@@ -127,53 +114,27 @@ fn install_art(pack: &mut CompiledGamePack, dir: &Path) -> Result<ArtIds> {
                 .tilesets
                 .get_mut(&art.tileset)
                 .context("terrain collision bank")?;
-            let collision = def
+            let donor = def
                 .collision
                 .get(&format!("{:02x}", art.collision_from))
-                .context("collision donor")?
-                .clone();
+                .context("collision donor")?;
+            let collision = if let Some(quadrants) = art.collision {
+                ensure!(
+                    quadrants
+                        .iter()
+                        .all(|q| matches!(q.as_str(), "WATER" | "FLOOR")),
+                    "unexpected dock collision"
+                );
+                quadrants.to_vec()
+            } else {
+                donor.clone()
+            };
             ensure!(
                 def.collision
                     .insert(format!("{native:02x}"), collision)
                     .is_none(),
                 "occupied terrain slot"
             );
-            if let Some(bare) = art.cut_to {
-                let bare = ids
-                    .get(&(art.tileset.clone(), bare))
-                    .copied()
-                    .map(u16::from)
-                    .unwrap_or(bare);
-                let ground = def
-                    .collision
-                    .get(&format!("{bare:02x}"))
-                    .context("bare quarry ground")?;
-                let grass = &def.collision[&format!("{native:02x}")];
-                ensure!(
-                    grass.iter().any(|tile| tile == "TALL_GRASS")
-                        && grass.iter().zip(ground).all(|(a, b)| if a == "TALL_GRASS" {
-                            b == "FLOOR"
-                        } else {
-                            a == b
-                        }),
-                    "Cut would alter a cliff on {}",
-                    art.tileset
-                );
-                let rules = pack
-                    .data
-                    .field_moves
-                    .cut
-                    .replacements
-                    .get_mut(&art.tileset)
-                    .context("outdoor Cut rules")?;
-                let mut rule = rules.get(&3).context("ordinary tall grass Cut")?.clone();
-                ensure!(rule.variant == "grass", "unexpected native Cut variant");
-                rule.replacement_block_id = bare;
-                ensure!(
-                    rules.insert(u16::from(native), rule).is_none(),
-                    "duplicate grass Cut rule"
-                );
-            }
             layout.extend(art.tiles);
             pack.runtime_files.insert(
                 format!("data/tilesets/{}.json", art.tileset),
@@ -196,6 +157,7 @@ pub fn revise_outdoor_contours(base: &CompiledGamePack, dir: &Path) -> Result<Co
         "outdoor revision already installed"
     );
     let mut pack = base.clone();
+    northstar_public_piers::install_timber(&mut pack)?;
     let ids = install_art(&mut pack, dir)?;
     let mut rooms = BTreeSet::new();
     for file in [
@@ -204,6 +166,10 @@ pub fn revise_outdoor_contours(base: &CompiledGamePack, dir: &Path) -> Result<Co
         "iron-range.json",
         "iron-descent.json",
         "northern-routes.json",
+        "shore-north.json",
+        "lake-country.json",
+        "southern-shore.json",
+        "lake-piers.json",
     ] {
         for changes in source::<Vec<Room>>(dir, file)? {
             ensure!(
@@ -264,11 +230,7 @@ pub fn revise_outdoor_contours(base: &CompiledGamePack, dir: &Path) -> Result<Co
                 let old_kind = kind(base, old, tile)?;
                 let new_kind = kind(&pack, &map, tile)?;
                 ensure!(
-                    old_kind == new_kind
-                        || matches!(
-                            (old_kind, new_kind),
-                            ("FLOOR", "TALL_GRASS") | ("TALL_GRASS", "FLOOR")
-                        ),
+                    old_kind == new_kind,
                     "actor or warp terrain changed on {} at {tile:?}",
                     changes.map
                 );
@@ -276,7 +238,11 @@ pub fn revise_outdoor_contours(base: &CompiledGamePack, dir: &Path) -> Result<Co
             authored_town_publication::replace(&mut pack, map)?;
         }
     }
+    northstar_public_piers::install_brainerd(&mut pack)?;
+    shiner_dock_water::install(&mut pack)?;
     crate::outdoor_contour_paths::verify(&pack)?;
+    outdoor_shore_access::verify(&pack)?;
+    outdoor_dock_dialogue::install(&mut pack, dir)?;
     pack.report.manifests.push(MANIFEST.into());
     pack.runtime_files
         .remove("data/northstar-save-compatibility.json");

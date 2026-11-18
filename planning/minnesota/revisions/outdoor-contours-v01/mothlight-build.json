@@ -1,7 +1,7 @@
 {
   "parent_pack": "content-packs/minnesota-mothlight-v10.crystalpack",
   "parent_pack_sha256": "07de9efc54913119e25b461aba703e93e394b2bab755496dec65dda4faec949f",
-  "output_pack": "content-packs/minnesota-mothlight-outdoor-contours-v02.crystalpack",
-  "expected_pack_sha256": "61aa4c1239a5cb130b911a072d4d31290d87f14c5f7db1ccc1dff5bcc931ab50",
+  "output_pack": "content-packs/minnesota-mothlight-outdoor-contours-v04.crystalpack",
+  "expected_pack_sha256": "e84d040588692d345980e204fe6e7d1976533caf9f047e5958a91c1722e00735",
   "builder": "pack_outdoor_contours"
 }

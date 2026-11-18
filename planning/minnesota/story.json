@@ -17795,24 +17795,19 @@
         ],
         "MN_R05_FISHERText": [
           [
-            "Stay inside the",
-            "rails when you"
+            "See my float? The",
+            "current's got it."
           ],
           [
-            "cast. I've lost",
-            "enough line around"
+            "Need a SUPER ROD?"
           ],
           [
-            "that post. For a",
-            "SUPER ROD, ask at"
+            "Try the house by",
+            "the pier on PINE"
           ],
           [
-            "the house above",
-            "the lake deck on"
-          ],
-          [
-            "PINE COUNTRY RD,",
-            "south of BRAINERD."
+            "COUNTRY RD, south",
+            "of BRAINERD."
           ]
         ],
         "MN_R05_CUT_SIGNText": [
@@ -18843,24 +18838,16 @@
         ],
         "MN_R08_FISHERText": [
           [
-            "I fish from inside",
-            "the rails. Start"
+            "I used to cast as",
+            "far as I could."
           ],
           [
-            "close if you're",
-            "trying the pier. I"
+            "Today I dropped my",
+            "line off the side."
           ],
           [
-            "used to throw as",
-            "far as I could,"
-          ],
-          [
-            "then spend half",
-            "the morning"
-          ],
-          [
-            "reeling in empty",
-            "line."
+            "First bite all",
+            "morning."
           ]
         ]
       },
@@ -61959,12 +61946,11 @@
       "MnR07C00R00": {
         "MnDiscoveryR07ClueText": [
           [
-            "Follow the lake",
-            "rail. Look inland"
+            "Follow the shore.",
+            "Look inland for a"
           ],
           [
-            "for a bent",
-            "sapling."
+            "bent sapling."
           ],
           [
             "There's something",

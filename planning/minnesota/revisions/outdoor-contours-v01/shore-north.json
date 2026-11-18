@@ -1,0 +1,20 @@
+[
+  {
+    "map": "MnR11C00R02",
+    "tileset": "mn_north_shore",
+    "placements": [
+      {"at": [13, 10], "from": 113, "to": 114},
+      {"at": [14, 10], "from": 105, "to": 109},
+      {"at": [11, 12], "from": 108, "to": 190}
+    ]
+  },
+  {
+    "map": "MnR11C00R03",
+    "tileset": "mn_north_shore",
+    "placements": [
+      {"at": [9, 5], "from": 113, "to": 114},
+      {"at": [10, 5], "from": 113, "to": 114},
+      {"at": [8, 6], "from": 108, "to": 190}
+    ]
+  }
+]

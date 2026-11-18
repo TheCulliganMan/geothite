@@ -1,0 +1,154 @@
+[
+  {
+    "map": "MnR05C00R01",
+    "label": "MN_R05_FISHERText",
+    "source": "dialogue_overhaul",
+    "previous": [
+      [
+        "Stay inside the",
+        "rails when you"
+      ],
+      [
+        "cast. I've lost",
+        "enough line around"
+      ],
+      [
+        "that post. For a",
+        "SUPER ROD, ask at"
+      ],
+      [
+        "the house above",
+        "the lake deck on"
+      ],
+      [
+        "PINE COUNTRY RD,",
+        "south of BRAINERD."
+      ]
+    ]
+  },
+  {
+    "map": "MnR05C00R01",
+    "label": "MN_R05_PIER_SIGNText",
+    "source": "MN_R05.json",
+    "previous": [
+      [
+        "RIVER PIER",
+        "THE RAILS MARK"
+      ],
+      [
+        "THE WALKING DECK."
+      ]
+    ]
+  },
+  {
+    "map": "MnR06C00R00",
+    "label": "MN_R06_PIER_SIGNText",
+    "source": "MN_R06.json",
+    "previous": [
+      [
+        "NEEDLE LAKE PIER",
+        "Closed rails."
+      ],
+      [
+        "One clear entrance"
+      ]
+    ]
+  },
+  {
+    "map": "MnR07C00R00",
+    "label": "MN_R07_LANDING_SIGNText",
+    "source": "MN_R07.json",
+    "previous": [
+      [
+        "FISHING LANDING",
+        "KEEP INSIDE RAILS"
+      ]
+    ]
+  },
+  {
+    "map": "MnR07C00R00",
+    "label": "MnDiscoveryR07ClueText",
+    "source": "story_flow",
+    "previous": [
+      [
+        "Follow the lake",
+        "rail. Look inland"
+      ],
+      [
+        "for a bent",
+        "sapling."
+      ],
+      [
+        "There's something",
+        "blue in its roots."
+      ],
+      [
+        "I thought it was",
+        "a bit of sky."
+      ]
+    ]
+  },
+  {
+    "map": "MnR08C01R01",
+    "label": "MN_R08_FISHERText",
+    "source": "dialogue_overhaul",
+    "previous": [
+      [
+        "I fish from inside",
+        "the rails. Start"
+      ],
+      [
+        "close if you're",
+        "trying the pier. I"
+      ],
+      [
+        "used to throw as",
+        "far as I could,"
+      ],
+      [
+        "then spend half",
+        "the morning"
+      ],
+      [
+        "reeling in empty",
+        "line."
+      ]
+    ]
+  },
+  {
+    "map": "MnR08C01R01",
+    "label": "MN_R08_SIGN_05Text",
+    "source": "MN_R08.json",
+    "previous": [
+      [
+        "CEDAR LAKE PIER",
+        "FISH INSIDE RAILS"
+      ]
+    ]
+  },
+  {
+    "map": "MnR18C00R00",
+    "label": "MN_R18_MARINA_SIGNText",
+    "source": "MN_R18.json",
+    "previous": [
+      [
+        "PUBLIC MARINA",
+        "Rails close slips."
+      ],
+      [
+        "Launch to the east"
+      ]
+    ]
+  },
+  {
+    "map": "MnR20C00R00",
+    "label": "MN_R20_SIGN_LAKEText",
+    "source": "MN_R20.json",
+    "previous": [
+      [
+        "BORDER LAKE",
+        "Keep to the rails."
+      ]
+    ]
+  }
+]

@@ -6,9 +6,9 @@ awaiting native publication. A source render is not production input evidence.
 [STATUS.md](STATUS.md) and each linked runbook distinguish current native checks
 from superseded captures and unfinished regional progression.
 
-The [outdoor contour revision](revisions/outdoor-contours-v01/README.md) changes the
-compiled terrain on Routes 1, 5, 9, 10, 12 and 13. Its layouts are applied after
-the route dossiers and include the final cliff, stair, sedge and ledge placements.
+The [outdoor contour revision](revisions/outdoor-contours-v01/README.md) records the
+current low public piers, cliff faces and stair landings. Its compiled layouts
+supersede older route captures and descriptions of fences around fishing piers.
 
 Every dossier has matching `routes/MN_Rxx.layout.json`; its core coordinates,
 actors/teams, speech, events, room exits and route ports are implementation

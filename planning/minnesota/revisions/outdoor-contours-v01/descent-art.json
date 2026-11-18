@@ -1,7 +1,0 @@
-[
-  {"tileset": "mn_iron_descent_thaw", "id": 241, "collision_from": 136, "tiles": [212, 213, 241, 241, 241, 241, 212, 213, 241, 241, 212, 213, 212, 213, 241, 241], "cut_to": 159},
-  {"tileset": "mn_iron_descent_thaw", "id": 242, "collision_from": 136, "tiles": [241, 241, 212, 213, 212, 213, 241, 241, 212, 213, 241, 241, 241, 241, 212, 213], "cut_to": 159},
-  {"tileset": "mn_iron_descent_thaw", "id": 243, "collision_from": 167, "tiles": [240, 240, 212, 213, 240, 240, 241, 241, 240, 240, 212, 213, 240, 240, 241, 241], "cut_to": 150},
-  {"tileset": "mn_iron_descent_thaw", "id": 244, "collision_from": 165, "tiles": [241, 241, 242, 242, 212, 213, 242, 242, 241, 241, 242, 242, 212, 213, 242, 242], "cut_to": 151},
-  {"tileset": "mn_iron_descent_thaw", "id": 245, "collision_from": 168, "tiles": [212, 213, 241, 241, 241, 241, 212, 213, 244, 244, 244, 244, 244, 244, 244, 244], "cut_to": 160}
-]

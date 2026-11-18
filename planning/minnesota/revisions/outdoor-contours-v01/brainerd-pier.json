@@ -1,0 +1,27 @@
+{
+  "metatiles": [
+    {"name": "west-tip", "tiles": [20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 196, 196, 20, 20, 192, 193], "collision": ["WATER", "WATER", "WATER", "FLOOR"]},
+    {"name": "east-tip", "tiles": [20, 20, 20, 20, 20, 20, 20, 20, 196, 196, 20, 20, 194, 195, 20, 20], "collision": ["WATER", "WATER", "FLOOR", "WATER"]},
+    {"name": "west-boards", "tiles": [20, 20, 206, 207, 20, 20, 192, 193, 20, 20, 206, 207, 20, 20, 192, 193], "collision": ["WATER", "FLOOR", "WATER", "FLOOR"]},
+    {"name": "east-boards", "tiles": [206, 207, 20, 20, 194, 195, 20, 20, 206, 207, 20, 20, 194, 195, 20, 20], "collision": ["FLOOR", "WATER", "FLOOR", "WATER"]}
+  ],
+  "placements": [
+    {"at": [23, 6], "from": 64, "deck": "west-tip"},
+    {"at": [24, 6], "from": 66, "deck": "east-tip"},
+    {"at": [23, 7], "from": 68, "deck": "west-boards"},
+    {"at": [24, 7], "from": 70, "deck": "east-boards"},
+    {"at": [23, 8], "from": 68, "deck": "west-boards"},
+    {"at": [24, 8], "from": 70, "deck": "east-boards"},
+    {"at": [23, 9], "from": 68, "deck": "west-boards"},
+    {"at": [24, 9], "from": 70, "deck": "east-boards"}
+  ],
+  "open_water": [
+    {"at": [22, 6], "from": 89},
+    {"at": [22, 7], "from": 89},
+    {"at": [22, 8], "from": 89},
+    {"at": [25, 6], "from": 88},
+    {"at": [25, 7], "from": 88},
+    {"at": [25, 8], "from": 88},
+    {"at": [25, 9], "from": 88}
+  ]
+}

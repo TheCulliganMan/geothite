@@ -9,7 +9,7 @@ SOURCE = Path(__file__).resolve().parent
 sys.path.insert(0, str(SOURCE.parents[1] / "tools"))
 
 from audit_regional_design import DIRS, Terrain, check, coords
-from render_reference import load_pack
+from render_reference import SourceArt, load_pack
 from review_r12_depth import walk
 
 
@@ -87,6 +87,31 @@ def check_paths(pack):
           "Cedar Shelter doorway and trail")
 
 
+def original_grass(pack):
+    """Record encounter quadrants, shared block IDs and their rendered native palettes."""
+    art = SourceArt(pack)
+    footprints, sprites = {}, {}
+    for name in pack["data"]["maps"]:
+        if not (name.startswith(("MnR11C", "MnR12C", "MnR13C")) and name[6:8].isdigit()):
+            continue
+        terrain = Terrain(pack, name)
+        occupied = {xy: terrain.block(*xy) for xy, kind in terrain.tiles.items() if kind == "TALL_GRASS"}
+        footprints[name] = occupied
+        blocks = set(occupied.values())
+        if name == "MnR12C00R00":
+            # The green-topped drop is ordinary ledge footing in this tileset.
+            check(terrain.block(48, 6) == 0x4d, "Raven Rock grassy crest")
+            blocks.add(0x4d)
+        for block in blocks:
+            for period in ("morn", "day", "nite"):
+                key = terrain.tileset, block, period
+                if key not in sprites:
+                    sprites[key] = art.blocks(terrain.tileset, period)[block].tobytes()
+    check(sum(name.startswith(("MnR12", "MnR13")) for name in footprints) == 5
+          and {"MnR11C00R02", "MnR11C00R03"} <= footprints.keys(), "northern route exteriors")
+    return footprints, sprites
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("parent", type=Path)
@@ -94,22 +119,27 @@ def main():
     args = parser.parse_args()
     parents = load_pack(args.parent)
     art = json.loads((SOURCE / "northern-art.json").read_text())
-    layouts = json.loads((SOURCE / "northern-routes.json").read_text())
+    layouts = [r for name in ("northern-routes.json", "shore-north.json")
+               for r in json.loads((SOURCE / name).read_text())]
     banks = {recipe["tileset"] for recipe in art}
     next_id = {bank: len(parents["runtime_files"][f"data/tilesets/{bank}_metatiles.bin"]) // 16
                for bank in banks}
     native_ids = {}
-    inks = []
-    for ink in json.loads((SOURCE / "iron-ink.json").read_text()):
-        inks.extend(ink.get("additional_banks", []))
-        inks.append(ink["design"])
-    for recipe in [*inks, *art]:
+    for recipe in art:
         bank = recipe["tileset"]
-        if bank not in banks:
-            continue
-        logical = recipe["id"] if "id" in recipe else recipe["block"]
-        native_ids[bank, logical] = next_id[bank]
+        native_ids[bank, recipe["id"]] = next_id[bank]
         next_id[bank] += 1
+    grass = original_grass(parents)
+    shore_cases = [
+        ("MnR11C00R02", [((24, 24), (23, 24))], ((25, 24), (26, 24))),
+        ("MnR11C00R03", [((x, 12), (x, 11)) for x in range(18, 22)] + [((18, 12), (17, 12))],
+         ((23, 12), (24, 12))),
+    ]
+    for name, blocked, low in shore_cases:
+        parent_terrain = Terrain(parents, name)
+        for water, bank in [*blocked, low]:
+            check((parent_terrain.tiles[water], parent_terrain.tiles[bank]) == ("WATER", "FLOOR"),
+                  f"{name} original dismount from {water} to {bank}")
     expected = {}
     for route in layouts:
         terrain = Terrain(parents, route["map"])
@@ -134,20 +164,19 @@ def main():
         collision = candidate["data"]["tilesets"][tileset]["collision"]
         check(collision[f'{native_id:02x}'] == collision[f'{row["collision_from"]:02x}'],
               f"{tileset} terrain collision {native_id}")
-    # Preserve all 44 encounter quadrants from the previously reviewed summit.
-    tor = Terrain(candidate, "MnR13C00R00")
-    patches = {(22, 6), (20, 7), (21, 7), (22, 7), (19, 8), (20, 8), (21, 8),
-               (20, 9), (21, 9), (22, 9), (20, 10)}
-    sedge = {native_ids[tor.tileset, i] for i in (181, 182)}
-    actual = {(x, y) for (x, y), kind in tor.tiles.items()
-              if 36 <= x < 58 and 6 <= y < 26 and kind == "TALL_GRASS"}
-    expected_grass = {(2*x+dx, 2*y+dy) for x, y in patches for dx in (0, 1) for dy in (0, 1)}
-    check(actual == expected_grass, "Wind Tor encounter quadrants")
-    check({tor.block(x, y) for x, y in actual} == sedge, "Wind Tor granite sedge artwork")
+    check(original_grass(candidate) == grass,
+          "Route 11/12/13 native grass blocks, appearance and encounter quadrants")
+    for name, blocked, (launch, low) in shore_cases:
+        terrain = Terrain(candidate, name)
+        for water, cliff in blocked:
+            check((terrain.tiles[water], terrain.tiles[cliff]) == ("WATER", "WALL"),
+                  f"{name} fitted wall at {cliff}")
+        check((terrain.tiles[launch], terrain.tiles[low]) == ("WATER", "FLOOR"),
+              f"{name} ordinary low bank at {low}")
     check_paths(candidate)
     print("Northern contours passed. Both ledges, the 18-step stair return, the Rock Smash "
-          "and ice alternatives, both shelter approaches and 44 Wind Tor sedge encounter quadrants "
-          "use their installed terrain.")
+          "and ice alternatives and both shelter approaches use their installed terrain. "
+          "The two low banks remain open and all Route 11–13 grass matches the parent.")
 
 
 if __name__ == "__main__":

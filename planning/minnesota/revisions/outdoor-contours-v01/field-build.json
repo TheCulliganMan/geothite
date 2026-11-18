@@ -1,7 +1,7 @@
 {
   "parent_pack": "content-packs/minnesota-field-review-v02.crystalpack",
   "parent_pack_sha256": "c602c1d7be1594ffd7112a1752f265a80c3631b7bd4e8f1c74ffdd1e6c5b58ae",
-  "output_pack": "content-packs/minnesota-outdoor-contours-v02.crystalpack",
-  "expected_pack_sha256": "534a4fece039fbb50dc73622217af559410a96b1ffeb687080e8cc8fdd77a657",
+  "output_pack": "content-packs/minnesota-outdoor-contours-v04.crystalpack",
+  "expected_pack_sha256": "7aa73c709f135b37e64ac459076717a6ffc2f62ee2d08986398dd3e9a909d58e",
   "builder": "pack_outdoor_contours"
 }

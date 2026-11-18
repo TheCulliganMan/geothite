@@ -57,6 +57,9 @@ pub(super) fn verify(pack: &CompiledGamePack) -> Result<()> {
         );
     }
     for (name, bottom, top, limit) in [
+        ("MnBrainerd", [47, 20], [47, 13], 7),
+        ("MnR01C00R00", [20, 34], [12, 34], 8),
+        ("MnR15C00R00", [42, 14], [34, 14], 8),
         ("MnR01C00R00", [23, 14], [23, 11], 3),
         ("MnR01C00R00", [39, 20], [39, 17], 3),
         ("MnR09C00R00", [36, 38], [36, 34], 4),
