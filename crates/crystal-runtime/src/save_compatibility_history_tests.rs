@@ -1,5 +1,6 @@
 //! Completed presentation records may move when a release edits dialogue.
 
+use crystal_assets::GameDataSet;
 use crystal_core::state::{
     GameState, ItemUseRuntimeEvent, OverworldMemory, ScriptAudioRuntimeEvent,
     ScriptAudioRuntimeKind, ScriptControlRuntimeEvent, ScriptControlRuntimeKind, ScriptEndState,
@@ -59,10 +60,77 @@ fn completed_conversation() -> GameState {
 }
 
 #[test]
+fn fixed_sprite_flags_migrate_only_when_the_declared_object_is_idle() {
+    use crystal_core::state::OverworldObjectMapMemory;
+    use crystal_core::world::session::OverworldObjectStructMemory;
+
+    let mut source = completed_conversation();
+    let mut data = GameDataSet::default();
+    let mut map = super::gym_tests::map("MnWinona");
+    let mut rock = super::gym_tests::actor();
+    rock.spritemovedata = "SPRITEMOVEDATA_SMASHABLE_ROCK".into();
+    map.objects.push(super::gym_tests::actor());
+    map.objects.push(rock);
+    data.maps.insert(map.id.clone(), map);
+    let tile = TilePosition::new(1, 5);
+    let mut memory = OverworldObjectMapMemory::default();
+    memory
+        .object_structs
+        .structs
+        .push(OverworldObjectStructMemory {
+            slot: 1,
+            map_object_index: 2,
+            live_tile: tile,
+            last_tile: None,
+            initial_tile: tile,
+            facing: Some(Direction::Down),
+            step_duration: None,
+            last_tile_occupied_remaining_frames: 0,
+            pending_random_wait: false,
+            initialized_fixed_spin: false,
+            strength_push_direction: None,
+            strength_moving: false,
+            fixed_facing: true,
+            sliding: true,
+            visible: true,
+            normal_following: false,
+            following_not_exact_leader_slot: None,
+        });
+    source
+        .map_object_overrides
+        .insert("MnWinona".into(), memory);
+    let upgraded = normalize_upgrade_checkpoint(source.clone(), &data).expect("idle rock");
+    assert_eq!(source.map_object_overrides, upgraded.map_object_overrides);
+
+    let invalid: &[fn(&mut OverworldObjectStructMemory)] = &[
+        |a| a.map_object_index = 0,
+        |a| a.map_object_index = 1,
+        |a| a.map_object_index = 3,
+        |a| a.fixed_facing = false,
+        |a| a.step_duration = Some(1),
+        |a| a.last_tile_occupied_remaining_frames = 1,
+        |a| a.strength_push_direction = Some(Direction::Left),
+        |a| a.strength_moving = true,
+        |a| a.normal_following = true,
+        |a| a.following_not_exact_leader_slot = Some(0),
+    ];
+    for change in invalid {
+        let mut unsafe_state = source.clone();
+        let room = unsafe_state
+            .map_object_overrides
+            .get_mut("MnWinona")
+            .expect("saved map");
+        change(&mut room.object_structs.structs[0]);
+        assert!(normalize_upgrade_checkpoint(unsafe_state, &data).is_err());
+    }
+}
+
+#[test]
 fn completed_history_is_removed_only_from_the_upgrade_copy() {
     let source = completed_conversation();
     let original_bytes = serde_json::to_vec(&source).expect("source snapshot");
-    let upgraded = normalize_upgrade_checkpoint(source.clone()).expect("idle upgrade copy");
+    let upgraded = normalize_upgrade_checkpoint(source.clone(), &GameDataSet::default())
+        .expect("idle upgrade copy");
     assert_eq!(
         serde_json::to_vec(&source).expect("unchanged source"),
         original_bytes
@@ -186,7 +254,7 @@ fn pending_work_is_rejected_instead_of_becoming_completed_history() {
         install_pending(&mut source);
         let before = serde_json::to_vec(&source).expect("pending source snapshot");
         assert!(
-            normalize_upgrade_checkpoint(source.clone()).is_err(),
+            normalize_upgrade_checkpoint(source.clone(), &GameDataSet::default()).is_err(),
             "{label}"
         );
         assert_eq!(

@@ -107,7 +107,7 @@ fn gym_upgrade_relocates_all_eight_rooms_and_preserves_every_other_field() {
         let source = source_state(map);
         let original = source.clone();
         let upgraded =
-            upgrade_checkpoint(source.clone(), &metadata, None).expect("idle gym upgrade");
+            upgrade_checkpoint(source.clone(), &metadata, None, &data()).expect("idle gym upgrade");
         let mut expected = source.clone();
         for gym in GYMS {
             expected.map_block_overrides.remove(gym);
@@ -130,7 +130,8 @@ fn gym_upgrade_preserves_outside_position_mode_and_unrelated_overrides() {
     if let OverworldMemory::Active { mode, .. } = &mut source.overworld {
         *mode = MovementMode::Surf;
     }
-    let upgraded = upgrade_checkpoint(source.clone(), &metadata(), None).expect("outside upgrade");
+    let upgraded =
+        upgrade_checkpoint(source.clone(), &metadata(), None, &data()).expect("outside upgrade");
     let mut expected = source;
     for gym in GYMS {
         expected.map_block_overrides.remove(gym);
@@ -176,7 +177,7 @@ fn gym_upgrade_rejects_unsafe_checkpoints_without_changing_source() {
     cases.push(moving);
     for source in cases {
         let original = source.clone();
-        assert!(upgrade_checkpoint(source.clone(), &metadata, None).is_err());
+        assert!(upgrade_checkpoint(source.clone(), &metadata, None, &data()).is_err());
         assert_eq!(source, original);
     }
 }
@@ -251,7 +252,7 @@ fn refinement_schema_retains_its_original_policy_without_gym_resets() {
     .expect("legacy schema");
     let source = source_state(GYMS[0]);
     assert_eq!(
-        upgrade_checkpoint(source.clone(), &metadata, None).expect("legacy upgrade"),
+        upgrade_checkpoint(source.clone(), &metadata, None, &data()).expect("legacy upgrade"),
         source
     );
     value["gym_reentry"] = metadata_value()["gym_reentry"].clone();
@@ -323,7 +324,7 @@ fn gym_candidate_backup_migrates_a_copy_and_rejects_wrong_identity() {
             &identity,
             &source.content_hash,
         )?;
-        upgrade_checkpoint(saved.into_state(), &metadata, None)
+        upgrade_checkpoint(saved.into_state(), &metadata, None, &data())
     })
     .expect("valid backup candidate");
     assert!(selected.backup);

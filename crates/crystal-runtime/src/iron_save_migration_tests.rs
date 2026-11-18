@@ -1,7 +1,7 @@
 //! Release-specific save policy and native collision checks using idle data.
 
 use std::collections::BTreeSet;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 use crystal_assets::{AssetRoot, GameDataSet, read_loaded_verified_compiled_game_pack};
 use crystal_core::state::{GameState, OverworldMemory, OverworldObjectMapMemory};
@@ -242,7 +242,53 @@ fn ongoing_sump_surf_and_canoe_positions_survive_all_eight_migrations() {
     }
 }
 
-fn check_ledge_save_landings(target: &CrystalRuntime, wayfinding: bool) {
+fn verify_checkpoint(
+    parent: &CrystalRuntime,
+    target: &CrystalRuntime,
+    root: &AssetRoot,
+    dir: &Path,
+    road: &str,
+    x: i16,
+    y: i16,
+) -> GameState {
+    let parent_slot = dir.join(format!("{road}-parent-{x}-{y}.crystalsave"));
+    let target_slot = dir.join(format!("{road}-target-{x}-{y}.crystalsave"));
+    let mut game = RuntimeGameShell::new_game_at_runtime_tile(
+        root.clone(),
+        parent.clone(),
+        parent.title_new_game_spawn_identifier().expect("spawn"),
+        road,
+        x,
+        y,
+    )
+    .expect("idle checkpoint on released map");
+    game.save(&parent_slot).expect("save in released format");
+    let source = parent
+        .load_save(&parent_slot)
+        .expect("read released checkpoint");
+    let idle = super::normalize_upgrade_checkpoint(source.clone(), parent.data())
+        .expect("fixture must be an idle checkpoint in the released game");
+    target
+        .validate_save_state_for_runtime_pack(&idle)
+        .expect("idle source state must remain valid on the revised maps");
+    let loaded = super::prepare_runtime_save_slot(target, &target_slot, |candidate| {
+        if candidate.modpack_id == parent.modpack().id() {
+            parent_slot.clone()
+        } else {
+            dir.join("absent.crystalsave")
+        }
+    })
+    .expect("migrate previously released checkpoint");
+    assert!(loaded, "missing migrated save at {road} ({x},{y})");
+    let state = target
+        .load_save(&target_slot)
+        .expect("read migrated checkpoint");
+    assert_eq!(state.overworld, source.overworld);
+    assert_eq!(state.flags, source.flags);
+    state
+}
+
+fn check_ledge_save_landings(target: &CrystalRuntime, wayfinding: bool, crossings: bool) {
     let parent_path = PathBuf::from(
         std::env::var_os("CRYSTAL_REGIONAL_SAVE_PARENT").expect("released parent pack"),
     );
@@ -277,35 +323,7 @@ fn check_ledge_save_landings(target: &CrystalRuntime, wayfinding: bool) {
             .expect("cliff collision");
         for x in columns {
             let lip = TilePosition::new(x, y);
-            let parent_slot = dir.join(format!("{road}-parent-{x}.crystalsave"));
-            let target_slot = dir.join(format!("{road}-target-{x}.crystalsave"));
-            let mut game = RuntimeGameShell::new_game_at_runtime_tile(
-                root.clone(),
-                parent.clone(),
-                parent.title_new_game_spawn_identifier().expect("spawn"),
-                road,
-                x,
-                y,
-            )
-            .expect("old idle cliff fixture");
-            game.save(&parent_slot).expect("save in released format");
-            let source = parent
-                .load_save(&parent_slot)
-                .expect("read released checkpoint");
-            let loaded = super::prepare_runtime_save_slot(target, &target_slot, |candidate| {
-                if candidate.modpack_id == parent.modpack().id() {
-                    parent_slot.clone()
-                } else {
-                    dir.join("absent.crystalsave")
-                }
-            })
-            .expect("migrate old cliff save");
-            assert!(loaded, "missing migrated save at {lip:?}");
-            let state = target
-                .load_save(&target_slot)
-                .expect("read migrated checkpoint");
-            assert_eq!(state.overworld, source.overworld);
-            assert_eq!(state.flags, source.flags);
+            let state = verify_checkpoint(&parent, target, &root, &dir, road, x, y);
             let OverworldMemory::Active {
                 map_name,
                 tile,
@@ -337,6 +355,18 @@ fn check_ledge_save_landings(target: &CrystalRuntime, wayfinding: bool) {
                 attempt_step(&mut lower, Direction::Down, &map, &tileset, options),
                 StepOutcome::Moved { to, .. } if to == TilePosition::new(x, y + 3)
             ));
+        }
+    }
+    if crossings {
+        for (map, x, y) in [
+            ("MnLeagueHallOfFame", 6, 5),
+            ("MnLeagueHallOfFame", 4, 11),
+            ("MnR15C00R00", 40, 28),
+            ("MnR18C00R00", 4, 20),
+            ("MnFormerShores", 8, 7),
+            ("MnR12C00R00", 35, 14),
+        ] {
+            verify_checkpoint(&parent, target, &root, &dir, map, x, y);
         }
     }
     std::fs::remove_dir_all(dir).expect("remove test saves");
@@ -408,7 +438,7 @@ fn iron_workings_target_accepts_both_v04_parents_and_reviewed_landings() {
             );
         }
         assert_eq!(meta.regional_parents.len(), 2);
-        check_ledge_save_landings(&runtime, wayfinding);
+        check_ledge_save_landings(&runtime, wayfinding, crossings);
         for source in &meta.sources[direct_count..direct_count + 2] {
             assert!(meta.regional_parents.contains(&source.modpack_id));
             let state = source_at(

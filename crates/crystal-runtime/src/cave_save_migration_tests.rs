@@ -96,7 +96,8 @@ fn earlier_five_cave_policy_preserves_the_three_later_rooms() {
             expected.map_block_overrides.remove(reset);
             expected.map_object_overrides.remove(reset);
         }
-        let upgraded = upgrade_checkpoint(source, &metadata, None).expect("old bounded migration");
+        let upgraded =
+            upgrade_checkpoint(source, &metadata, None, &data()).expect("old bounded migration");
         assert_eq!(upgraded, expected, "old policy must not reset {map_id}");
     }
 }
@@ -125,8 +126,8 @@ fn combined_upgrade_relocates_all_sixteen_rooms_and_preserves_other_state() {
     for (map_id, arrival) in positions {
         let source = source_state(map_id);
         let original = source.clone();
-        let upgraded =
-            upgrade_checkpoint(source.clone(), &metadata, None).expect("idle combined upgrade");
+        let upgraded = upgrade_checkpoint(source.clone(), &metadata, None, &data)
+            .expect("idle combined upgrade");
         let mut expected = source.clone();
         clear_expected_snapshots(&mut expected);
         expected.overworld = OverworldMemory::Active {
@@ -149,7 +150,7 @@ fn combined_upgrade_preserves_unlisted_cave_position_mode_and_snapshots() {
     let mut expected = source.clone();
     clear_expected_snapshots(&mut expected);
     assert_eq!(
-        upgrade_checkpoint(source, &metadata(), None).expect("unlisted cave"),
+        upgrade_checkpoint(source, &metadata(), None, &data()).expect("unlisted cave"),
         expected
     );
 }
@@ -169,7 +170,7 @@ fn gym_only_and_refinement_metadata_leave_cave_state_unchanged() {
         expected.map_object_overrides.remove(gym);
     }
     assert_eq!(
-        upgrade_checkpoint(source.clone(), &gym_only, None).expect("gym-only upgrade"),
+        upgrade_checkpoint(source.clone(), &gym_only, None, &data()).expect("gym-only upgrade"),
         expected
     );
 
@@ -187,7 +188,7 @@ fn gym_only_and_refinement_metadata_leave_cave_state_unchanged() {
     )
     .expect("schema1 unchanged");
     assert_eq!(
-        upgrade_checkpoint(source.clone(), &old, None).expect("refinement upgrade"),
+        upgrade_checkpoint(source.clone(), &old, None, &data()).expect("refinement upgrade"),
         source
     );
     refinement["cave_reentry"] = metadata_value()["cave_reentry"].clone();
@@ -321,7 +322,7 @@ fn combined_upgrade_rejects_cave_fences_without_mutating_source() {
             }
             let original = source.clone();
             assert!(
-                upgrade_checkpoint(source.clone(), &metadata, None).is_err(),
+                upgrade_checkpoint(source.clone(), &metadata, None, &data()).is_err(),
                 "accepted {map_id}/{fence}"
             );
             assert_eq!(source, original);
