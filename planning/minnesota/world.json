@@ -12743,6 +12743,7 @@
     "save_compatibility_source_identities": 18,
     "reviews": "planning/minnesota/revisions/lakeside-v01/README.md",
     "runbook": "docs/game-content.md#minnesota-lakeside",
-    "status": "Built and verified privately against both Crossings parents."
+    "status": "Published; both content packs, both parent save migrations and live clients verified.",
+    "hosted_release": "lakeside-20261118"
   }
 }
