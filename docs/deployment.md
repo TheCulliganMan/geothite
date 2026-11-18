@@ -814,3 +814,54 @@ Paced local Cargo cleanup and removal of duplicate deployment inputs recovered
 release scratch files and 42 attributable BuildKit records recovered 25.24 GiB.
 The final source, published and rollback images, user saves and canonical packs
 were retained.
+
+## Minnesota story flow release (2026-11-17)
+
+The external Minnesota pack was authored at `757178bf915e754e7b7b19be7267b521123a5058`.
+The server, browser clients and native terminal clients were built at
+`c38901eb9f53eaa0f27a134455ee0d6524c29189`, which adds the new save migration.
+
+| Artifact | SHA-256 | Content identity |
+| --- | --- | --- |
+| Raw Minnesota pack | `02e18ba71203d8aa2e10658c6babc53512daeef592ee53fb2900630f91aa57cb` | `79c1c85ebc25b200c9fe30689299af09bc88182828931576e512736395ebd521` |
+| Hosted and installer pack | `f4dd4819f039631c81372078d8640f7929114d46bdef90f5ae90d42612a789a0` | `9fadbe2b9ecf745d0cc2852e745b12d6fd2634dc694e38ac0f0986e4e38624e3` |
+
+Independent checks compared the raw and hosted releases with their respective
+parents. They covered 906 revised text entries across 113 maps and 114 maps
+with changed programs. All 355 Minnesota rooms retained their floorplans,
+warps, placed actors, field pickups and trainer identities. The checks followed
+Mina's date offer, the independent Itasca reading, the Duluth distress call,
+Hale's evidence check, Finn's return dialogue and the League's eight-badge
+requirement. All 602 hosted audio programs matched their PCM, length and loop
+references. Verification used compiled data, pure tests and service checks
+with zero gameplay inputs.
+
+Production serves `story-flow-20261117` from image
+`sha256:e57d284dd3704d73da34dc159490fb8a5d5c431aaff69c0b3af5f691a2eb13e0`.
+The public status endpoint and installer manifest match the hosted pack above.
+The first promotion rolled back when the public proxy rejected the readiness
+probe's default Python HTTP client with status 403. The second promotion used
+curl for that probe and passed with the same candidate image.
+
+Both public browser clients returned the expected WASM. Checks covered 144
+changed client assets, two HTML/gzip versions and the zero-input network
+welcome. The Linux and Apple Silicon installers each completed two silent
+`--no-play` installs and retained a scratch save. Both native file hashes
+matched their release manifest.
+
+Two story tests, 26 save tests and a native checkpoint migration test against
+each pack passed. All-target Clippy passed for the asset, runtime and graphical
+client crates, including the 18 changed scene test files. The compiler reported
+existing warnings. None pointed to a line changed for this release.
+
+The Mac's two retained release executables and the previous debug executable
+remain available. Removing disposable profile output reduced the profiles by
+3.04 GiB, leaving 386 GiB free. The build host removed the temporary client
+build cache, private candidate and independent validation directory. The
+previous production image remains available for rollback.
+
+To roll back the active Story Flow release, run this on the build host.
+
+```sh
+python3 /mnt/homelab/config/geothite/releases/story-flow-20261117/deploy.py rollback
+```

@@ -12665,6 +12665,7 @@
     "new_trainer_return_conversations": 276,
     "save_compatibility_source_identities": 10,
     "runbook": "docs/game-content.md#minnesota-story-flow",
-    "status": "Selected locally. The raw and hosted packs contain the same revised Minnesota story."
+    "status": "Selected locally and published. The raw and hosted story and save-compatibility checks passed.",
+    "hosted_release": "story-flow-20261117"
   }
 }

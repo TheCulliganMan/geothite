@@ -12,8 +12,13 @@ The [Minnesota campaign polish review](docs/game-content.md#minnesota-campaign-p
 includes local build and play commands for the dialogue, roster, and early
 fishing update on top of the Glacier Line pack.
 
-The [current Minnesota release](docs/deployment.md#minnesota-floorplans-release-2026-11-17),
-`floorplans-20261117`, rebuilds all eight Gyms. The 18 supporting Gym trainers
+The [current Minnesota release](docs/deployment.md#minnesota-story-flow-release-2026-11-17),
+`story-flow-20261117`, lets you follow Ivy's distress call as soon as the harbor
+receives the pump readings. Mina offers her date after Reed steps aside, Finn
+remembers the rescue, and ordinary trainers have new things to say when you
+come back after a battle.
+
+The [floorplan release](docs/deployment.md#minnesota-floorplans-release-2026-11-17) rebuilt all eight Gyms. The 18 supporting Gym trainers
 challenge you on sight, and each leader waits for you to speak. In Brainerd,
 wade straight north through the lake to Sivren. Lorla and Bravel watch from
 the sandy banks. In St. Paul, take a lift to the archive or the workshop before
