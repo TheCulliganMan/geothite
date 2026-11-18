@@ -21,6 +21,7 @@ mod road_trainer_save_migration;
 pub const SAVE_COMPATIBILITY_FILE: &str = "data/northstar-save-compatibility.json";
 pub const SAVE_COMPATIBILITY_MANIFEST: &str = "northstar-refinement-v1";
 const STORY_FLOW_MANIFEST: &str = "northstar-story-flow-v1";
+const LAKESIDE_MANIFEST: &str = "northstar-lakeside-v1";
 const CROSSINGS_MANIFEST: &str = "northstar-crossings-v1";
 const WAYFINDING_MANIFEST: &str = "northstar-wayfinding-v1";
 const REGIONAL_DESIGN_MANIFEST: &str = "northstar-regional-design-v1";
@@ -68,7 +69,7 @@ fn parse_compatibility(bytes: &[u8], target_id: &str) -> Result<Compatibility> {
         schema_version: u8,
     }
     let header: Header = serde_json::from_slice(bytes).context("save compatibility version")?;
-    if matches!(header.schema_version, 5..=7) {
+    if matches!(header.schema_version, 5..=8) {
         return parse_regional_compatibility(bytes, target_id, header.schema_version);
     }
     parse_prior_compatibility(bytes, target_id)
@@ -232,6 +233,19 @@ fn parse_regional_compatibility(
                 (
                     "e17218b24ad2b8292d17658b1176e7e093851f7502b2b5a6177f67edf27d97c4",
                     "123e022fc3a37f46d8f06b7bae53f8b4ad1ffc5cd1d7b9b564b6a287dcbc73ac",
+                ),
+            ],
+        ),
+        8 => (
+            LAKESIDE_MANIFEST,
+            [
+                (
+                    "caecd60747ee26510651509c6567a3490d919c0d6c9f8c2528d9445de2ad1599",
+                    "5ad096a303e84c34353f4ac61cca7e52184001f8df71c9a9de9f0cabfa115aff",
+                ),
+                (
+                    "966e3a8ac71190642addc67a010ffd4e59cb289401fc748ddd36594de4820ae3",
+                    "fd716ecef2fcc77ff97ac1f4946356c36fc19d2559b0d019735dfe74e4f15a9b",
                 ),
             ],
         ),

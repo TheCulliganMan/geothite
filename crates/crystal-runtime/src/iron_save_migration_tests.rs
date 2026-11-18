@@ -428,7 +428,20 @@ fn iron_workings_target_accepts_both_v04_parents_and_reviewed_landings() {
             .id()
             .split('+')
             .any(|id| id == super::CROSSINGS_MANIFEST);
-        let direct_count = 2 * (usize::from(wayfinding) + usize::from(crossings));
+        let direct_count = runtime
+            .modpack()
+            .id()
+            .split('+')
+            .filter(|id| {
+                matches!(
+                    *id,
+                    super::CROSSINGS_MANIFEST
+                        | super::WAYFINDING_MANIFEST
+                        | super::LAKESIDE_MANIFEST
+                )
+            })
+            .count()
+            * 2;
         assert_eq!(meta.sources.len(), 12 + direct_count);
         assert_eq!(meta.unchanged_checkpoint_parents.len(), direct_count);
         for direct in &meta.sources[..direct_count] {
