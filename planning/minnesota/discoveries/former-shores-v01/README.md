@@ -1,0 +1,17 @@
+# Former Shores
+
+Follow the three breaks in the prairie ridges from the surveyor to the outlet. The high beach exposes a broad, ribbed shell. A diagonal fracture splits the middle shell into two halves. The lowest valve is nearly edge-on. All three readings are on the existing Strandrak survey. A player can inspect them in any order and return to the surveyor with the observations.
+
+The three beach ridges curve separately around the meadow. At each height the bank breaks and the original green turf continues through it, giving the player a walking crossing beside the exposed shell. The surveyor's old route to the high reading went 18 steps around the first bank. The spillway takes six. Continuing from high to middle takes ten steps, then fourteen to the lowest shell. The return from that shell to the surveyor takes 22 steps, down from 36.
+
+At the east end of the middle ridge, a small swale holds water against the trees. The grassy western bank has room to cast a rod. All three rods use the area's existing Minnesota fishing group. The pond contains 22 water squares, and the bank adds eight standing squares. Each was formerly solid woodland. The cave entrance, Route 16 connection and all 528 old standing squares remain accessible. The terrain revision leaves the three observation scripts, the surveyor and the cave's Strandrak event in place. The Minnesota DNR describes the Lake Agassiz landscape as low, sinuous beach ridges crossing its former basin. [Red River Valley Section](https://www.dnr.state.mn.us/ecs/251A/index.html)
+
+## Visual references
+
+Rangi42's custom-map screenshot uses a dark front face and a lighter lip to show the difference between an ordinary path and a cliff crossing. In the moss-rock screenshot, the surrounding trees leave a small open space around the stone you examine. Here, the grassy openings interrupt the native ochre ridges, and each reading has its own exposed shell in the survey camera. The shared technique is visible at the original 160×144 scale. [Polished Crystal cliff crossing](https://github.com/Rangi42/polishedcrystal/blob/f8e67fbd53ad7a99870d8ab87fd73612e6c6a679/screenshots/custom-map.png) · [Polished Crystal moss rock](https://github.com/Rangi42/polishedcrystal/blob/f8e67fbd53ad7a99870d8ab87fd73612e6c6a679/screenshots/moss-rock.png)
+
+RainbowDevs' Prism screenshots place the mining button and the mine working inside a recognizable darker band of rock. The fractured middle shell in Former Shores uses a dark cut and pale fragments on either side so the player can see what the survey text describes. [Prism cave button](https://rainbowdevs.com/wp-content/uploads/2020/01/bgb00078.png) · [Prism mine working](https://rainbowdevs.com/wp-content/uploads/2020/01/bgb00082.png)
+
+## Native art
+
+The [strandline artwork and placements](strandlines.json) use the area’s original stone lip, dirt, grass, flowers, and pines. Nineteen new 8×8 glyphs draw the three fossil marks, fissure and water. Each placement gives its 32-pixel map cell, required parent block, 4×4 array of 8-pixel glyphs and native footing. A dot keeps the original glyph. The four digits select the existing small pine's corners where the swale borders the woods. Each new glyph has two bitplanes and one native four-color palette, selected from the eight existing background palettes and colored by the game clock. The shade indices in the glyph artwork run from zero through three.

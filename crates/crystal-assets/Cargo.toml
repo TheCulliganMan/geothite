@@ -60,3 +60,7 @@ required-features = ["pack-authoring"]
 [[bin]]
 name = "pack_northstar_wayfinding"
 required-features = ["pack-authoring"]
+
+[[bin]]
+name = "pack_northstar_crossings"
+required-features = ["pack-authoring"]

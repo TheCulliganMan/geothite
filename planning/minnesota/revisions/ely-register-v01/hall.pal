@@ -1,0 +1,8 @@
+RGB 30,28,26, 19,19,19, 13,13,13, 06,06,07 ; wall shadow
+RGB 30,28,26, 25,21,15, 23,18,13, 12,08,06 ; maple floor
+RGB 30,28,26, 25,19,16, 17,07,08, 10,06,07 ; burgundy and silk
+RGB 30,28,26, 20,24,22, 10,16,15, 06,09,09 ; pine lake transom
+RGB 30,28,26, 24,18,12, 17,07,08, 08,06,05 ; register on its stand
+RGB 26,23,17, 20,15,09, 14,10,06, 07,05,04 ; walnut cabinetry
+RGB 30,28,26, 24,20,14, 16,13,10, 08,07,07 ; sepia photograph
+RGB 31,31,16, 31,31,16, 14,09,00, 00,00,00 ; unused text bank
