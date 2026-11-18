@@ -1,6 +1,12 @@
 # Minnesota Pokémon
 
-## Current publication — 2026-11-04
+## Current publication — 2026-11-18
+
+The Northwoods Pokédex lists all nine regional Pokémon that learn TM41 Thunder Punch and all ten that learn TM47 Steel Wing. Both machine numbers and move names work in search. Each eligible species has its machine listed in the TM / HM tab. [Pokédex](https://geothite.ryanculligan.com/pokedex/)
+
+Release `20261118-lakeside-gym-machines-46` updates the catalog, the search index and 17 species pages. The other 2,322 files match release `20261104-rerender-181-186-45` byte for byte. All 900 active normal and shiny front/back portraits match the native art selected for Lakeside. [Release catalog](https://geothite.ryanculligan.com/pokedex/releases/20261118-lakeside-gym-machines-46/pokedex.json)
+
+## November 4 promotion record
 
 [Northwoods Pokédex](https://geothite.ryanculligan.com/pokedex/), release `20261104-promoted-225-42`: **225 active species /99 families**, with full profiles, moves and evolution rules.31 replacement candidates are promoted; requested removals remain archived.121 archived website records preserve historical designs, including the removed Agropummel final stage. Tactunnel selects `sprites/mn-f156/native-redesign-20261104-v4/manifest.json`; original sources are preserved.
 
