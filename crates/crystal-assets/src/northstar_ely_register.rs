@@ -34,7 +34,7 @@ fn install_oak_tiles(pack: &mut CompiledGamePack) -> Result<()> {
             .with_context(|| format!("Ely oak source {name}"))
     };
     let source = CompiledTilesetExtension {
-        manifest_id: "mn-ely-register".into(),
+        manifest_id: crate::northstar_crossings::MANIFEST.into(),
         tileset_id: GALLERY.into(),
         behavior_source_tileset_id: None,
         definition: pack.data.tilesets["traditional_house"].clone(),

@@ -4,7 +4,7 @@ use serde_json::{Value, json};
 
 use crate::{CompiledGamePack, LoadedCompiledGamePack};
 
-const MANIFEST: &str = "northstar-crossings-v1";
+pub(super) const MANIFEST: &str = "northstar-crossings-v1";
 const POLICY: &str = "data/northstar-save-compatibility.json";
 
 /// Installs the Crossings revision and declares its exact raw and hosted save parents.
@@ -40,8 +40,13 @@ pub fn revise_northstar_crossings(
             && inherited["target_manifest"] == "northstar-wayfinding-v1",
         "expected Wayfinding save policy"
     );
-    pack.report.manifests.push(MANIFEST.into());
+    // The Hall tileset is installed as part of this release. A separate
+    // intermediate manifest here would make an existing save name ambiguous.
     let id = pack.runtime_modpack_id()?;
+    ensure!(
+        id == format!("{}+{MANIFEST}", raw_id.id()),
+        "Crossings must directly extend the verified Wayfinding identity"
+    );
     let policy = json!({
         "schema_version": 7, "target_manifest": MANIFEST,
         "target_modpack_ids": [id, format!("{id}+realtime-clock+player-customization")],
