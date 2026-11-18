@@ -12706,7 +12706,7 @@
     "save_compatibility_source_identities": 14,
     "reviews": "planning/minnesota/revisions/wayfinding-v01/README.md",
     "runbook": "docs/game-content.md#minnesota-wayfinding",
-    "status": "Selected locally.",
+    "status": "Selected locally and published. Both pack comparisons and direct-parent save migrations passed.",
     "hosted_release": "wayfinding-20261118"
   }
 }

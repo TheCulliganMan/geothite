@@ -1,7 +1,7 @@
 # Deploy Geothite multiplayer
 
 The live browser game serves [The Northstar Survey](https://geothite.ryanculligan.com/?view=2d)
-in native 2D. See the [2026-11-17 release record](#minnesota-refinement-release-2026-11-17)
+in native 2D. See the [November 18 wayfinding release](#minnesota-wayfinding-release-2026-11-18)
 for the exact pack, image, verification scope and rollback command.
 
 ## Requirements
@@ -909,4 +909,50 @@ active, run this on the build host.
 
 ```sh
 python3 /mnt/homelab/config/geothite/releases/regional-design-20261118/deploy.py rollback
+```
+
+## Minnesota wayfinding release (2026-11-18)
+
+The wayfinding revision extends Regional Design. Its pack authoring source is
+`83664cba`. Both browser clients, both downloadable native clients and the
+server use the save-compatible runtime at `65dd2e42`. The release image is
+`sha256:54596473ca15d5abaa41dfdf35a956cdf3d3be98ecffc251fa520f25fcb4283f`.
+
+| Artifact | SHA-256 | Content identity |
+| --- | --- | --- |
+| Raw Minnesota pack | `e0638a9327e3296b214cdb8d3fdb6e25c33616cdacd2adac583bdd4eb70958bd` | `0495ee73a16a6aa6ceb180a7a349b818d86d982e52f6b41118fd8eb60ad95e7d` |
+| Hosted and installer pack | `e17218b24ad2b8292d17658b1176e7e093851f7502b2b5a6177f67edf27d97c4` | `123e022fc3a37f46d8f06b7bae53f8b4ad1ffc5cd1d7b9b564b6a287dcbc73ac` |
+
+Independent comparisons of both packs found 19 changed maps and 159 changed
+terrain blocks across 743 maps. All previous metatile pixels by day and night,
+and all previous metatile collision definitions, matched in the 15 affected
+tilesets. The 602 audio programs matched their PCM hashes, lengths and loops.
+Real prior-release checkpoint files passed the raw and hosted migration tests,
+including positions on the Route 1 and Route 10 ledges. The release accepts
+the two Regional Design identities and twelve inherited identities.
+The [map notes](../planning/minnesota/revisions/wayfinding-v01/README.md)
+document the field moves and paths. Verification used compiled maps, scripts,
+native art renders and isolated saves.
+
+Forty field-move and save tests passed. The target-pack migration test ran
+separately against each released parent. The Cut test covers both the current
+map after the tree is cut and the regrown tree when the player continues.
+Formatting and all-target Clippy completed for the asset and runtime crates.
+Clippy reported existing warnings and none on changed lines.
+
+The Mac recovered 5.56 GiB from disposable compiler output and superseded
+packs, leaving 386 GiB free. The selected raw and hosted packs, map comparisons
+and installed local clients were retained.
+
+The public `wayfinding-20261118` service returned the hosted content identity.
+Both browser binaries, 143 updated browser assets, both compressed entry pages
+and the multiplayer welcome matched the candidate. Apple Silicon and Linux
+x86-64 each completed two silent installs, preserving a scratch save. The
+running service retained its existing storage mounts.
+
+While this release is active, the build host can restore the previous
+Regional Design image and its installer manifest with the transaction tool.
+
+```sh
+python3 /mnt/homelab/config/geothite/releases/wayfinding-20261118/deploy.py rollback
 ```
