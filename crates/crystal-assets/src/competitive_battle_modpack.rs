@@ -9,7 +9,7 @@ use crystal_core::{
         turn::{
             BattleAction, BattleCombatState, BattleMovePreviewer, BattleSide, BattleTurnInput,
             EnemyMoveSelection, battle_action_locked_before_menu, battle_moves,
-            select_wild_enemy_move_slot,
+            enemy_can_select_baton_pass, select_wild_enemy_move_slot,
         },
     },
     models::{LearnedMove, Pokemon, Stat},
@@ -144,14 +144,9 @@ impl GameDataSet {
         compact_planning_species(&mut planning);
         let mut scored = Vec::new();
         let mut matrix = Vec::new();
-        for slot in competitive_move_slots(&planning, BattleSide::Enemy) {
-            let responses = self.competitive_action_values(
-                &planning,
-                &BattleAction::Move { slot },
-                true,
-                profile,
-                &mut search,
-            )?;
+        for slot in self.competitive_enemy_move_slots(&planning) {
+            let (_, responses) =
+                self.competitive_enemy_move_values(&planning, slot, true, profile, &mut search)?;
             let score = competitive_response_value(&responses);
             #[cfg(not(target_arch = "wasm32"))]
             if std::env::var_os("CRYSTAL_BATTLE_AI_TRACE").is_some() {
@@ -247,9 +242,14 @@ impl GameDataSet {
         }
         let mut planning = self.competitive_planning_state(combat, &mut search)?;
         compact_planning_species(&mut planning);
-        let mut best_score =
-            self.competitive_action_score(&planning, &selected, true, profile, &mut search)?;
-        let mut best = selected;
+        let (mut best, responses) = self.competitive_enemy_move_values(
+            &planning,
+            selected_move_slot,
+            true,
+            profile,
+            &mut search,
+        )?;
+        let mut best_score = competitive_response_value(&responses);
         for (party_index, pokemon) in planning.enemy_party.iter().enumerate() {
             if combat.enemy_escape_trap.is_some() || combat.enemy_trap.is_some() {
                 break;
@@ -415,14 +415,15 @@ impl GameDataSet {
             let mut score = self.competitive_position_value(&entered, &mut search);
             if entered.enemy.hp > 0 && entered.player.hp > 0 {
                 score = INVALID_SCORE;
-                for slot in competitive_move_slots(&entered, BattleSide::Enemy) {
-                    score = score.max(self.competitive_action_score(
+                for slot in self.competitive_enemy_move_slots(&entered) {
+                    let (_, responses) = self.competitive_enemy_move_values(
                         &entered,
-                        &BattleAction::Move { slot },
+                        slot,
                         true,
                         profile,
                         &mut search,
-                    )?);
+                    )?;
+                    score = score.max(competitive_response_value(&responses));
                 }
             }
             if best.is_none_or(|(_, value)| score > value) {
@@ -552,6 +553,58 @@ impl GameDataSet {
         }
     }
 
+    fn competitive_enemy_move_slots(&self, state: &BattleCombatState) -> Vec<usize> {
+        let mut slots = competitive_move_slots(state, BattleSide::Enemy);
+        // With no recipient, choose another usable move if possible. Forced
+        // Baton Pass still takes its normal turn and fails in the engine.
+        if slots.len() > 1
+            && state
+                .living_reserve_indices(BattleSide::Enemy)
+                .next()
+                .is_none()
+            && slots
+                .iter()
+                .any(|&slot| !enemy_can_select_baton_pass(state, slot, &self.moves))
+        {
+            slots.retain(|&slot| !enemy_can_select_baton_pass(state, slot, &self.moves));
+        }
+        slots
+    }
+
+    /// Compare complete turns, including which teammate receives the boosts
+    /// and takes the opposing attack. Choose one recipient for all possible
+    /// replies, using the same deterministic choice before and after ordering.
+    fn competitive_enemy_move_values(
+        &self,
+        state: &BattleCombatState,
+        slot: usize,
+        continuation: bool,
+        profile: TrainerBattleProfile,
+        search: &mut CompetitiveSearch<'_>,
+    ) -> Result<(BattleAction, Vec<i32>)> {
+        if enemy_can_select_baton_pass(state, slot, &self.moves) {
+            let mut best = None;
+            let mut best_score = i32::MIN;
+            for party_index in state.living_reserve_indices(BattleSide::Enemy) {
+                let action = BattleAction::MoveSwitch { slot, party_index };
+                let responses =
+                    self.competitive_action_values(state, &action, continuation, profile, search)?;
+                let score = competitive_response_value(&responses);
+                if score > best_score {
+                    best_score = score;
+                    best = Some((action, responses));
+                }
+            }
+            if let Some(best) = best {
+                return Ok(best);
+            }
+        }
+        let action = BattleAction::Move { slot };
+        let responses =
+            self.competitive_action_values(state, &action, continuation, profile, search)?;
+        Ok((action, responses))
+    }
+
     /// Risk-aware two-turn search: average sampled chance outcomes for each
     /// opposing response, then favor the worst response over the mean response.
     /// The continuation reconsiders every legal attack, including support moves.
@@ -615,16 +668,15 @@ impl GameDataSet {
                             value
                         } else {
                             let mut next = INVALID_SCORE;
-                            for enemy_slot in
-                                competitive_move_slots(&outcome.state, BattleSide::Enemy)
-                            {
-                                next = next.max(self.competitive_action_score(
+                            for enemy_slot in self.competitive_enemy_move_slots(&outcome.state) {
+                                let (_, responses) = self.competitive_enemy_move_values(
                                     &outcome.state,
-                                    &BattleAction::Move { slot: enemy_slot },
+                                    enemy_slot,
                                     false,
                                     profile,
                                     search,
-                                )?);
+                                )?;
+                                next = next.max(competitive_response_value(&responses));
                             }
                             if search.continuations.len() < search.continuation_limit {
                                 search.continuations.push((outcome.state, profile, next));
@@ -1008,6 +1060,13 @@ fn compact_planning_species(state: &mut BattleCombatState) {
         transform.species.tmhm_learnset.clear();
     }
 }
+
+#[cfg(test)]
+#[path = "competitive_baton_pass_tests.rs"]
+mod competitive_baton_pass_tests;
+#[cfg(test)]
+#[path = "flint_league_tests.rs"]
+mod flint_league_tests;
 
 #[cfg(test)]
 #[path = "competitive_search_tests.rs"]

@@ -10477,12 +10477,12 @@
             "back, CHAMPION."
           ],
           [
-            "I remember the",
-            "turn that beat me."
+            "In MANKATO, we'd",
+            "race till supper."
           ],
           [
-            "I have a new plan.",
-            "Show me yours!"
+            "We've got time.",
+            "How about a match?"
           ]
         ]
       },
@@ -35569,33 +35569,38 @@
         ],
         "MN_ST_PAUL_CIVIC_GUIDEText": [
           [
-            "CAPITOL HALL: up.",
-            "UNION DEPOT: down."
+            "That big building",
+            "behind me? That's"
           ],
           [
-            "Follow the fair",
-            "crowd for lunch."
+            "CAPITOL HALL. For",
+            "UNION DEPOT, head"
+          ],
+          [
+            "northwest. Hungry?",
+            "The annex food"
+          ],
+          [
+            "hall pours a good",
+            "lemonade."
           ]
         ],
         "MN_ST_PAUL_FAIR_STEWARDText": [
           [
-            "Public gate's",
-            "south. I know"
+            "For lemonade, try",
+            "our food hall west"
           ],
           [
-            "lunch smells just",
-            "as good from this"
+            "of here. For rides",
+            "take Route 4 west"
           ],
           [
-            "side, but the",
-            "north annex"
+            "to MINNEAPOLIS.",
+            "Head north from"
           ],
           [
-            "doesn't let you",
-            "through. Follow"
-          ],
-          [
-            "the road around."
+            "there on Route 5.",
+            "The fair is left."
           ]
         ],
         "MN_ST_PAUL_GARDENERText": [
@@ -35684,34 +35689,38 @@
         ],
         "MN_ST_PAUL_FAIR_GUARD_WESTText": [
           [
-            "You want the gate",
-            "with the crowd."
+            "The midway? Take",
+            "this lane back"
           ],
           [
-            "Stay on the road",
-            "heading south."
+            "into town. Head",
+            "west on Route 4"
           ],
           [
-            "This is the north",
-            "annex."
+            "to MINNEAPOLIS.",
+            "Take Route 5 north"
+          ],
+          [
+            "and turn left at",
+            "the woodland fork."
           ]
         ],
         "MN_ST_PAUL_FAIR_GUARD_EASTText": [
           [
-            "This is the back",
-            "of the fair."
+            "The flower show is",
+            "down this lane."
           ],
           [
-            "Follow the road",
-            "south to the"
+            "Here for rides?",
+            "Head west through"
           ],
           [
-            "public gate.",
-            "You'll hear the"
+            "MINNEAPOLIS. Take",
+            "Route 5 north,"
           ],
           [
-            "midway before you",
-            "see it."
+            "then the west fork",
+            "through the pines."
           ]
         ],
         "MN_ST_PAUL_SIGN_CLINICText": [
@@ -35746,12 +35755,19 @@
         ],
         "MN_ST_PAUL_SIGN_FAIRText": [
           [
-            "STATE FAIR CAMPUS",
-            "Public shows"
+            "ST PAUL FAIR ANNEX",
+            "Food and exhibits"
           ],
           [
-            "south.",
-            "North annex shut."
+            "STATE FAIRGROUNDS",
+            "Route 4 west to"
+          ],
+          [
+            "MINNEAPOLIS. Then",
+            "take Route 5 north"
+          ],
+          [
+            "to the west fork."
           ]
         ],
         "MN_ST_PAUL_SIGN_RIVERText": [
@@ -36160,23 +36176,24 @@
       "MnStPaulCapitolHall": {
         "MN_ST_PAUL_RECORDS_CLERKText": [
           [
-            "If you're looking",
-            "up a record, give"
+            "Looking up an old",
+            "address? Give me"
           ],
           [
-            "me a street and a",
-            "year if you know"
+            "a street and a",
+            "year. If you want"
           ],
           [
-            "them. Fair's south",
-            "of here. I only"
+            "this year's flower",
+            "show, try the fair"
           ],
           [
-            "keep records of",
-            "that after it"
+            "annex west of us.",
+            "Last year's ribbon"
           ],
           [
-            "happens."
+            "winners I can",
+            "look up."
           ]
         ],
         "MN_ST_PAUL_RECORDS_OFFICERText": [
@@ -36800,20 +36817,28 @@
       "MnStPaulFairInfoHouse": {
         "MN_SPX_FAIRINFOHOUSE_HOSTText": [
           [
-            "You're at the",
-            "north annex. The"
+            "The barns? Those",
+            "are at the main"
           ],
           [
-            "public gate's",
-            "around the south"
+            "fairgrounds.",
+            "Our garden stand"
           ],
           [
-            "side. Follow the",
-            "fence till you can"
+            "is just east of",
+            "this office."
           ],
           [
-            "see the barns",
-            "through the gate."
+            "For the barns, go",
+            "west on Route 4 to"
+          ],
+          [
+            "MINNEAPOLIS. Take",
+            "Route 5 north and"
+          ],
+          [
+            "turn west at the",
+            "woodland trail."
           ]
         ],
         "MN_SP_INTERIOR_INFO_VISITORInteriorText": [
@@ -50670,6 +50695,20 @@
           ],
           [
             "up."
+          ]
+        ],
+        "MN_R05_SOUTH_SIGNText": [
+          [
+            "ROUTE 5",
+            "RIVER BLUFFS"
+          ],
+          [
+            "WEST TO STATE FAIR",
+            "NORTH TO ST CLOUD"
+          ],
+          [
+            "SOUTH TO",
+            "MINNEAPOLIS"
           ]
         ]
       },

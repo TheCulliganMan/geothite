@@ -1,0 +1,7 @@
+{
+  "parent_pack": "content-packs/minnesota-northern-trails-v01.crystalpack",
+  "parent_pack_sha256": "d1fdb6ef1954748b9144099cc0cf68c17f6c9508ba2f20026a14265670bb20e4",
+  "output_pack": "content-packs/minnesota-league-and-fair-v01.crystalpack",
+  "expected_pack_sha256": "17fe4760fe39651e0cea26e336fd688c9bd759c781a4ae1f6d85af627f5362b2",
+  "builder": "pack_league_and_fair"
+}

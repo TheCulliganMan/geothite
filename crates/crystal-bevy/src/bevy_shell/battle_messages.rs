@@ -1177,7 +1177,8 @@ fn stage_visible_battle_messages(
             BattleEvent::PresentFailed { target, .. } => {
                 Some(format!("{} refused\nthe gift!", name(*target)))
             }
-            BattleEvent::TeleportFailed { .. }
+            BattleEvent::BatonPassFailed { .. }
+            | BattleEvent::TeleportFailed { .. }
             | BattleEvent::StatusHealFailed { .. }
             | BattleEvent::ConfusionFailed { .. }
             | BattleEvent::CurseFailed { .. }

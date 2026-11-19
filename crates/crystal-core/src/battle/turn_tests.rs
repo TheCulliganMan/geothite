@@ -6,6 +6,9 @@ mod fairy_type_tests;
 #[path = "native_stat_change_tests.rs"]
 mod native_stat_change_tests;
 
+#[path = "trainer_baton_pass_tests.rs"]
+mod trainer_baton_pass_tests;
+
 #[path = "northwoods_move_tests.rs"]
 mod northwoods_move_tests;
 use crate::battle::damage::TypeEffectivenessEntry;
@@ -18309,7 +18312,7 @@ fn airborne_target_roar_reaches_force_switch_failure_before_accuracy() {
         "ROAR",
         &roar,
         None,
-        None,
+        MoveSwitchTarget::Selected(None),
         false,
         &moves,
         &BTreeMap::new(),

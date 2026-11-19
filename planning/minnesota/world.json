@@ -7964,7 +7964,7 @@
     "status": "Accepted current-parent terrain revision: source/native pixels, strict whole-pack preservation, directional grass/ledge proof, actual2D review, native encounters/trainerPP/resources/Continue and stdio pass. CurrentR12 work preserved.",
     "scope_limit": "Sequential Minnesota grass pass remains open beyond R01-R03. Explicit local fixtures do not prove an earned statewide campaign."
   },
-  "active_local_review_revision": "northern_trails_field_revision",
+  "active_local_review_revision": "league_and_fair_field_revision",
   "script_command_repair_revision": {
     "kind": "missing_minnesota_map_command_records",
     "parent_revision": "field_hm_habitats_cyclists_revision",
@@ -12910,5 +12910,19 @@
     "map_count": 743,
     "changed_maps_from_parent": 9,
     "runbook": "revisions/northern-trails-v01/README.md"
+  },
+  "league_and_fair_field_revision": {
+    "kind": "campaign_review",
+    "parent_revision": "northern_trails_field_revision",
+    "parent_pack": "content-packs/minnesota-northern-trails-v01.crystalpack",
+    "parent_pack_sha256": "d1fdb6ef1954748b9144099cc0cf68c17f6c9508ba2f20026a14265670bb20e4",
+    "pack": "content-packs/minnesota-league-and-fair-v01.crystalpack",
+    "pack_sha256": "17fe4760fe39651e0cea26e336fd688c9bd759c781a4ae1f6d85af627f5362b2",
+    "build_recipe": "planning/minnesota/revisions/league-and-fair-v01/field-build.json",
+    "build_recipe_sha256": "2206b2e0138e38910b1c286b05458218ae4baa342ca62965107e938760bd672d",
+    "content_identity": "77c2116223e0cf68ac9cad716a99f1f809d859fb7466a9944b8ea028fa97a25a",
+    "map_count": 743,
+    "changed_maps_from_parent": 9,
+    "runbook": "revisions/league-and-fair-v01/README.md"
   }
 }

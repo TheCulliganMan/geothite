@@ -503,6 +503,20 @@ impl BattleCombatState {
         }
     }
 
+    /// Returns conscious teammates eligible to enter battle in party order.
+    pub fn living_reserve_indices(&self, side: BattleSide) -> impl Iterator<Item = usize> + '_ {
+        let (party, active) = match side {
+            BattleSide::Player => (&self.player_party, self.player_party_index),
+            BattleSide::Enemy => (&self.enemy_party, self.enemy_party_index),
+        };
+        party
+            .iter()
+            .enumerate()
+            .filter_map(move |(index, pokemon)| {
+                (index != active && pokemon.hp > 0 && !pokemon.is_egg).then_some(index)
+            })
+    }
+
     pub fn with_parties(mut self, player_party: Vec<Pokemon>, enemy_party: Vec<Pokemon>) -> Self {
         self.player_party = player_party;
         self.enemy_party = enemy_party;
@@ -2274,6 +2288,10 @@ pub enum BattleEvent {
         confusion_turns: u16,
         focus_energy: bool,
     },
+    BatonPassFailed {
+        side: BattleSide,
+        move_name: String,
+    },
     ItemUsed {
         side: BattleSide,
         item_id: String,
@@ -3021,6 +3039,13 @@ fn resolve_battle_turn_with_items_for_context(
         let action = select_enemy_action(&state, rng)?;
         let valid = match &action {
             BattleAction::Move { slot } => *slot == selected_move_slot,
+            BattleAction::MoveSwitch { slot, party_index } => {
+                *slot == selected_move_slot
+                    && enemy_can_select_baton_pass(&state, *slot, moves)
+                    && state
+                        .living_reserve_indices(BattleSide::Enemy)
+                        .any(|i| i == *party_index)
+            }
             BattleAction::TrainerSwitch {
                 selected_move_slot: action_slot,
                 ..
@@ -3029,8 +3054,7 @@ fn resolve_battle_turn_with_items_for_context(
                 selected_move_slot: action_slot,
                 ..
             } => *action_slot == selected_move_slot,
-            BattleAction::MoveSwitch { .. }
-            | BattleAction::Switch { .. }
+            BattleAction::Switch { .. }
             | BattleAction::Item { .. }
             | BattleAction::PartyItem { .. }
             | BattleAction::Ball { .. }
@@ -3499,6 +3523,34 @@ fn validate_battle_action_switch_target(
         return Err(BattleTurnError::SwitchTargetFainted { side, party_index });
     }
     Ok(())
+}
+
+/// Whether this opponent can use its selected move slot to pass to a teammate.
+///
+/// The caller separately chooses a destination from the living reserve indices.
+pub fn enemy_can_select_baton_pass(
+    state: &BattleCombatState,
+    slot: usize,
+    moves: &BTreeMap<String, Move>,
+) -> bool {
+    let learned_moves = battle_moves(state, BattleSide::Enemy);
+    let Some(learned) = learned_moves.get(slot) else {
+        return false;
+    };
+    learned.current_pp > 0
+        && !state.link_battle
+        && moves
+            .get(&learned.name)
+            .is_some_and(direct_baton_pass_effect)
+        && !battle_action_locked_before_menu(state, BattleSide::Enemy)
+        && !state
+            .enemy_disable
+            .as_ref()
+            .is_some_and(|status| status.turns_remaining > 0 && status.move_name == learned.name)
+        && !state.enemy_encore.as_ref().is_some_and(|status| {
+            status.move_name != learned.name
+                && learned_moves.iter().any(|m| m.name == status.move_name)
+        })
 }
 
 fn validate_active_battle_side_is_not_fainted(
@@ -5105,7 +5157,7 @@ fn execute_move_slot(
         &move_name,
         move_data,
         prepared_bide_release,
-        move_switch_party_index,
+        MoveSwitchTarget::Selected(move_switch_party_index),
         target_switching,
         moves,
         items,
@@ -5131,6 +5183,11 @@ fn execute_move_slot(
     Ok(())
 }
 
+enum MoveSwitchTarget {
+    Selected(Option<usize>),
+    CalledMove,
+}
+
 fn execute_move_effect(
     state: &mut BattleCombatState,
     side: BattleSide,
@@ -5138,7 +5195,7 @@ fn execute_move_effect(
     move_name: &str,
     move_data: &Move,
     prepared_bide_release: Option<u16>,
-    move_switch_party_index: Option<usize>,
+    move_switch_target: MoveSwitchTarget,
     target_switching: bool,
     moves: &BTreeMap<String, Move>,
     items: &BTreeMap<String, Item>,
@@ -5909,10 +5966,9 @@ fn execute_move_effect(
             state,
             side,
             &move_name,
-            move_switch_party_index,
+            move_switch_target,
             items,
             stat_multipliers,
-            rng,
             events,
         )?;
         return Ok(());
@@ -11895,7 +11951,9 @@ fn clear_side_volatile_conditions(state: &mut BattleCombatState, side: BattleSid
 fn clear_baton_pass_non_passable_conditions(state: &mut BattleCombatState, side: BattleSide) {
     clear_trap_state(state, BattleSide::Player);
     clear_trap_state(state, BattleSide::Enemy);
-    clear_escape_traps_sourced_by(state, side);
+    if state.link_battle {
+        clear_escape_traps_sourced_by(state, side);
+    }
     set_attracted_by_state(state, BattleSide::Player, None);
     set_attracted_by_state(state, BattleSide::Enemy, None);
     set_recharge_move_state(state, side, None);
@@ -13007,7 +13065,7 @@ fn apply_sleep_talk_effect(
         &selected_move,
         selected_data,
         None,
-        None,
+        MoveSwitchTarget::CalledMove,
         target_switching,
         moves,
         items,
@@ -13080,7 +13138,7 @@ fn apply_mirror_move_effect(
         &copied_move,
         copied_data,
         None,
-        None,
+        MoveSwitchTarget::CalledMove,
         target_switching,
         moves,
         items,
@@ -13134,7 +13192,7 @@ fn apply_metronome_effect(
         selected_move,
         selected_data,
         None,
-        None,
+        MoveSwitchTarget::CalledMove,
         target_switching,
         moves,
         items,
@@ -14711,12 +14769,27 @@ fn apply_baton_pass_effect(
     state: &mut BattleCombatState,
     side: BattleSide,
     move_name: &str,
-    party_index: Option<usize>,
+    target: MoveSwitchTarget,
     items: &BTreeMap<String, Item>,
     stat_multipliers: &BattleStatMultiplierTables,
-    _rng: &mut dyn BattleRandomSource,
     events: &mut Vec<BattleEvent>,
 ) -> Result<(), BattleTurnError> {
+    // An indirectly called move is known only at execution. Use the same
+    // party order as an ordinary trainer replacement without a nominated ally.
+    let trainer = side == BattleSide::Enemy && !state.link_battle;
+    let first_reserve = state.living_reserve_indices(side).next();
+    let party_index = match target {
+        MoveSwitchTarget::Selected(index) => index,
+        MoveSwitchTarget::CalledMove if trainer => first_reserve,
+        MoveSwitchTarget::CalledMove => None,
+    };
+    if party_index.is_none() && trainer && first_reserve.is_none() {
+        events.push(BattleEvent::BatonPassFailed {
+            side,
+            move_name: move_name.to_string(),
+        });
+        return Ok(());
+    }
     let party_index = party_index.ok_or_else(|| BattleTurnError::MissingMoveSwitchTarget {
         side,
         move_name: move_name.to_string(),
@@ -14736,10 +14809,15 @@ fn apply_baton_pass_effect(
     let stat_boosts = battle_stat_boosts(state, side).clone();
     let confusion_turns = state.pokemon(side).confusion_turns;
     let focus_energy = state.pokemon(side).focus_energy;
+    let perish_song_turns = state.pokemon(side).perish_song_turns;
     clear_baton_pass_non_passable_conditions(state, side);
     switch_battle_combat_pokemon(state, side, party_index)?;
     if side == BattleSide::Player {
         activate_amulet_coin_for_player_battler(state, items);
+    } else if trainer {
+        // The trainer's entrance calls ResetEnemyBattleVars before loading its ally.
+        set_last_counter_move(state, side, None);
+        set_last_counter_move(state, side.other(), None);
     }
     if state.pokemon(side).status.as_deref() != Some("SLEEP") {
         set_nightmare_source(state, side, None);
@@ -14747,6 +14825,9 @@ fn apply_baton_pass_effect(
     state.pokemon_mut(side).stat_boosts = stat_boosts.clone();
     state.pokemon_mut(side).confusion_turns = confusion_turns;
     state.pokemon_mut(side).focus_energy = focus_energy;
+    if !state.link_battle {
+        state.pokemon_mut(side).perish_song_turns = perish_song_turns;
+    }
     // PassedBattleMonEntrance and the enemy Baton Pass path call
     // ApplyStatLevelMultiplierOnAllStats after loading the replacement. That
     // command rebuilds the five BattleMon words from the untouched raw shadow,

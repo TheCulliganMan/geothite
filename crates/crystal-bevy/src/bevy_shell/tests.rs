@@ -562,6 +562,8 @@ mod city_exteriors;
 mod iron_approach_cache;
 #[path = "tests/iron_crosscut.rs"]
 mod iron_crosscut;
+#[path = "tests/league_cast.rs"]
+mod league_cast;
 #[path = "tests/minneapolis_citywide_cycling.rs"]
 mod minneapolis_citywide_cycling;
 #[path = "tests/minnesota_trainers.rs"]

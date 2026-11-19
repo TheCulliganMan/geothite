@@ -320,9 +320,16 @@
           ],
           "facing": "south",
           "lines": [
-            "Public records.",
-            "The fair road is",
-            "north of town."
+            "Looking up an old",
+            "address? Give me",
+            "a street and a",
+            "year. If you want",
+            "this year's flower",
+            "show, try the fair",
+            "annex west of us.",
+            "Last year's ribbon",
+            "winners I can",
+            "look up."
           ],
           "interaction_approach": [
             4,
@@ -1271,9 +1278,18 @@
           ],
           "facing": "south",
           "lines": [
-            "Public shows open.",
-            "The north annex",
-            "is still closed."
+            "The barns? Those",
+            "are at the main",
+            "fairgrounds.",
+            "Our garden stand",
+            "is just east of",
+            "this office.",
+            "For the barns, go",
+            "west on Route 4 to",
+            "MINNEAPOLIS. Take",
+            "Route 5 north and",
+            "turn west at the",
+            "woodland trail."
           ],
           "service": null
         }
@@ -4705,7 +4721,7 @@
         0
       ]
     ],
-    "status": "Northern annex remains unbound and closed by original guard pair; public fair is playable within city source proposal.",
+    "status": "The two guards mark the closed north end of the St. Paul fair annex. Its exhibits and food hall are in town. Walk west on Route 4 to Minneapolis, then north on Route 5 and west at the woodland fork to enter the separate State Fairgrounds.",
     "closed_gate_core": [
       [
         28,
@@ -4727,9 +4743,14 @@
       ],
       "facing": "south",
       "lines": [
-        "CAPITOL HALL.",
-        "The bluff road",
-        "runs to the depot."
+        "That big building",
+        "behind me? That's",
+        "CAPITOL HALL. For",
+        "UNION DEPOT, head",
+        "northwest. Hungry?",
+        "The annex food",
+        "hall pours a good",
+        "lemonade."
       ]
     },
     {
@@ -4741,9 +4762,14 @@
       ],
       "facing": "west",
       "lines": [
-        "The public fair",
-        "is down this road.",
-        "North annex shut."
+        "For lemonade, try",
+        "our food hall west",
+        "of here. For rides",
+        "take Route 4 west",
+        "to MINNEAPOLIS.",
+        "Head north from",
+        "there on Route 5.",
+        "The fair is left."
       ]
     },
     {
@@ -4823,9 +4849,14 @@
       ],
       "facing": "south",
       "lines": [
-        "North annex shut.",
-        "Public fair opens",
-        "south of this gate."
+        "The midway? Take",
+        "this lane back",
+        "into town. Head",
+        "west on Route 4",
+        "to MINNEAPOLIS.",
+        "Take Route 5 north",
+        "and turn left at",
+        "the woodland fork."
       ]
     },
     {
@@ -4837,9 +4868,14 @@
       ],
       "facing": "south",
       "lines": [
-        "North annex shut.",
-        "Public fair opens",
-        "south of this gate."
+        "The flower show is",
+        "down this lane.",
+        "Here for rides?",
+        "Head west through",
+        "MINNEAPOLIS. Take",
+        "Route 5 north,",
+        "then the west fork",
+        "through the pines."
       ]
     }
   ],
@@ -4906,9 +4942,13 @@
         7
       ],
       "lines": [
-        "STATE FAIR CAMPUS",
-        "Public shows south.",
-        "North annex shut."
+        "ST PAUL FAIR ANNEX",
+        "Food and exhibits",
+        "STATE FAIRGROUNDS",
+        "Route 4 west to",
+        "MINNEAPOLIS. Then",
+        "take Route 5 north",
+        "to the west fork."
       ]
     },
     {
