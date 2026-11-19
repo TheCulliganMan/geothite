@@ -1,0 +1,7 @@
+{
+  "parent_pack": "content-packs/minnesota-gym-walk-v01.crystalpack",
+  "parent_pack_sha256": "8ea74037ccfdd689232349729676462653a18f1f07ecf685d614b7a47eefb12a",
+  "output_pack": "content-packs/minnesota-cave-returns-v01.crystalpack",
+  "expected_pack_sha256": "0eef908509c3873d5ecc1902c0ab30dd6173379bc0c516d15bc585ec05565c72",
+  "builder": "pack_cave_returns"
+}

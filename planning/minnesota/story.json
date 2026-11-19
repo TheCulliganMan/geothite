@@ -10622,12 +10622,16 @@
             "wins, then CASEY."
           ],
           [
-            "A loss or an exit",
-            "ends the run."
+            "You can go back",
+            "to earlier rooms."
           ],
           [
-            "You can try again",
-            "from this desk."
+            "The run ends when",
+            "you lose a match"
+          ],
+          [
+            "or come back to",
+            "this lobby."
           ]
         ],
         "MnElyBadgeDeniedText": [
@@ -49369,6 +49373,73 @@
           ],
           [
             "both grooves."
+          ]
+        ],
+        "MnJawGuidePoolText": [
+          [
+            "Feel the two cuts",
+            "above the pool,"
+          ],
+          [
+            "just west of me.",
+            "Both lead east."
+          ]
+        ],
+        "MnJawGuidePillarText": [
+          [
+            "Past the boulder,",
+            "the cuts curl"
+          ],
+          [
+            "around a pillar.",
+            "See the bark in"
+          ],
+          [
+            "the split?"
+          ]
+        ],
+        "MnJawGuideBedText": [
+          [
+            "On the dry bank",
+            "past the far pool,"
+          ],
+          [
+            "look for a forked",
+            "branch on a rock."
+          ]
+        ],
+        "MnJawGuideStrengthText": [
+          [
+            "The mill foreman",
+            "in MINNEAPOLIS"
+          ],
+          [
+            "gives out STRENGTH",
+            "once you've earned"
+          ],
+          [
+            "AVRIN's CURRENT",
+            "BADGE."
+          ]
+        ],
+        "MnJawGuideFoundText": [
+          [
+            "Hear the scraping?",
+            "CASTOROCK's down"
+          ],
+          [
+            "by the far pool,",
+            "moving a branch."
+          ]
+        ],
+        "MnJawGuideCaughtText": [
+          [
+            "Look how smooth",
+            "that branch is."
+          ],
+          [
+            "One CASTOROCK did",
+            "all that work."
           ]
         ]
       },

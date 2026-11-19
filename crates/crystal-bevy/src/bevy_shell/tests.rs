@@ -1,6 +1,8 @@
 include!("tests/shell_basics.rs");
 #[path = "tests/badge_trails.rs"]
 mod badge_trails;
+#[path = "tests/cave_escape_trip.rs"]
+mod cave_escape_trip;
 #[path = "tests/dialogue_cast.rs"]
 mod dialogue_cast;
 #[path = "tests/dialogue_clock_presentation.rs"]
@@ -27,6 +29,10 @@ mod gym_walk_relays;
 mod gym_walk_stairs;
 #[path = "tests/gym_walk_wading_art.rs"]
 mod gym_walk_wading_art;
+#[path = "tests/incisor_gallery_traces.rs"]
+mod incisor_gallery_traces;
+#[path = "tests/league_return_trip.rs"]
+mod league_return_trip;
 #[path = "tests/mankato_terrace_pond.rs"]
 mod mankato_terrace_pond;
 #[path = "tests/minnesota_badges.rs"]
