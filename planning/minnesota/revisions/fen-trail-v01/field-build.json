@@ -1,0 +1,7 @@
+{
+  "parent_pack": "content-packs/minnesota-town-returns-v01.crystalpack",
+  "parent_pack_sha256": "6828d7002748aa22184834a48586d5533e3a09781dbe5b426841bb570160c7be",
+  "output_pack": "content-packs/minnesota-fen-trail-v01.crystalpack",
+  "expected_pack_sha256": "36b098ef7c57cbfaf5ca64dcf6c4407f759185efeef296c18f819ae7880b9767",
+  "builder": "pack_fen_trail"
+}

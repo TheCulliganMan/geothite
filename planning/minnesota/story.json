@@ -22246,107 +22246,89 @@
         ],
         "MnKensigardText_caretaker_intro": [
           [
-            "I found two tracks",
-            "on the field side"
+            "See that gap north",
+            "of me? My field."
           ],
           [
-            "of the standing",
-            "stone. Told the"
+            "Found two tracks",
+            "there. Told folks"
           ],
           [
-            "neighbors somebody",
-            "drove through my"
+            "someone drove over",
+            "my seedlings."
           ],
           [
-            "seed plots."
+            "Went to count what",
+            "I'd lost. Every"
           ],
           [
-            "Then I went to see",
-            "what I'd lost."
-          ],
-          [
-            "Every seedling was",
-            "still standing."
+            "last one was still",
+            "standing."
           ]
         ],
         "MnKensigardText_caretaker_partial": [
           [
-            "Look behind the",
-            "standing stone."
+            "Check the grooves",
+            "in the south plot."
           ],
           [
-            "There's a corner",
-            "sticking out of"
+            "Step out here,",
+            "then go back."
           ],
           [
-            "the dirt and two",
-            "prints beside it."
+            "See if the dirt",
+            "has moved."
           ],
           [
-            "Have a look at the",
-            "grooves, too. If"
+            "Up north, check",
+            "the bare dirt and"
           ],
           [
-            "you go back to",
-            "them after a bit,"
-          ],
-          [
-            "see if the dirt's",
-            "moved."
+            "the stone just",
+            "northwest of it."
           ]
         ],
         "MnKensigardText_caretaker_comparison": [
           [
-            "It went around the",
-            "seedling? Then I"
+            "It went around",
+            "the seedling?"
           ],
           [
-            "ought to see where",
-            "it went before I"
+            "And I went around",
+            "blaming people."
           ],
           [
-            "blame anybody",
-            "else."
+            "See the two stones",
+            "west of the dirt?"
           ],
           [
-            "Follow the fresh",
-            "grit down the low"
-          ],
-          [
-            "furrow. I'll be",
-            "here when you find"
-          ],
-          [
-            "where it ends."
+            "Check the south",
+            "one for plow cuts."
           ]
         ],
         "MnKensigardText_claim_corrected": [
           [
-            "A flat stone at",
-            "the end of the old"
+            "The old rows all",
+            "end at that stone?"
           ],
           [
-            "rows? Dad used to",
-            "stop the plow"
+            "Dad turned there.",
+            "I've gone farther"
           ],
           [
-            "there. I've been",
-            "going a little"
+            "every spring. I",
+            "owe the neighbors"
           ],
           [
-            "farther every",
-            "year."
+            "a visit."
           ],
           [
-            "I'll tell the",
-            "neighbors what you"
+            "One more thing.",
+            "Just north of the"
           ],
           [
-            "found. I was the",
-            "one who went past"
-          ],
-          [
-            "the marker."
+            "bare dirt, I saw",
+            "the turf lift up."
           ]
         ],
         "MnKensigardText_caretaker_after": [
@@ -44971,28 +44953,12 @@
         ],
         "MnPepinText_dock_intro": [
           [
-            "I was drawing the",
-            "posts when a boat"
+            "I was drawing a",
+            "boat on the bend."
           ],
           [
-            "passed. I drew its",
-            "wake, then saw a"
-          ],
-          [
-            "smaller one cut",
-            "across it going"
-          ],
-          [
-            "the other way.",
-            "Would you look"
-          ],
-          [
-            "from the end of",
-            "the dock? I want"
-          ],
-          [
-            "to know if you can",
-            "see it too."
+            "Look behind it. I",
+            "drew two wakes."
           ]
         ],
         "MnPepinText_dock_sketch": [
@@ -45014,16 +44980,16 @@
         ],
         "MnPepinText_eddy": [
           [
-            "Foam circles back",
-            "toward the posts."
+            "Foam turns in a",
+            "little circle."
           ],
           [
-            "A narrow wake cuts",
-            "through the foam"
+            "A narrow V cuts",
+            "straight through"
           ],
           [
-            "and heads upstream",
-            "without turning."
+            "the middle and",
+            "heads upstream."
           ]
         ],
         "MnPepinText_dock_complete": [
@@ -45046,6 +45012,34 @@
           [
             "was what it did to",
             "the water."
+          ]
+        ],
+        "MnPepinText_artist_foam": [
+          [
+            "See that curl of",
+            "foam beside me?"
+          ],
+          [
+            "Watch the middle.",
+            "Something cut"
+          ],
+          [
+            "through it while",
+            "I was drawing."
+          ]
+        ],
+        "MnPepinText_artist_skipper": [
+          [
+            "The skipper's on",
+            "the far east bank."
+          ],
+          [
+            "Head north by",
+            "CANOE or SURF."
+          ],
+          [
+            "Follow the big",
+            "bend to find him."
           ]
         ]
       },
@@ -45385,38 +45379,29 @@
         ],
         "MnPepinText_inlet_early": [
           [
-            "Something moves",
-            "behind the reeds."
+            "A ripple reaches",
+            "the wooded bank."
           ],
           [
-            "From here you",
-            "can't see a way"
+            "The boat skipper",
+            "might know what"
           ],
           [
-            "through. Ask the",
-            "boat operator"
-          ],
-          [
-            "where the channel",
-            "bends."
+            "made it."
           ]
         ],
         "MnPepinText_reveal": [
           [
-            "The reeds bow",
-            "toward you. A head"
+            "A head rises in",
+            "the little bay."
           ],
           [
-            "rises between",
-            "them. BARBELISK"
+            "BARBELISK holds",
+            "still while its"
           ],
           [
-            "holds still while",
-            "its wake runs on"
-          ],
-          [
-            "and breaks against",
-            "the bank."
+            "wake runs on and",
+            "breaks on shore."
           ]
         ],
         "MnPepinText_ask": [
@@ -45438,12 +45423,8 @@
             "still. The last"
           ],
           [
-            "ripple reaches the",
-            "bank and a bent"
-          ],
-          [
-            "reed slowly stands",
-            "up."
+            "ripple breaks on",
+            "the wooded bank."
           ]
         ],
         "MnPepinText_decline": [
@@ -45462,15 +45443,11 @@
         "MnPepinText_retreat": [
           [
             "BARBELISK turns",
-            "upriver. You lose"
+            "upriver. Its wake"
           ],
           [
-            "sight of its head",
-            "before the last of"
-          ],
-          [
-            "the wake slips",
-            "between the reeds."
+            "breaks against the",
+            "wooded bank."
           ]
         ]
       },
@@ -45703,106 +45680,84 @@
         ],
         "MnPepinText_operator_partial": [
           [
-            "The person on the",
-            "dock saw my boat"
+            "Someone drew my",
+            "boat from the west"
           ],
           [
-            "go by. Ask what",
-            "they drew, then"
+            "bank. Follow the",
+            "river north, then"
           ],
           [
-            "look at the foam",
-            "in the eddy. You"
+            "west around the",
+            "bend. Ask to see"
           ],
           [
-            "can paddle a CANOE",
-            "or use SURF to see"
-          ],
-          [
-            "where the wake",
-            "goes at the reeds."
+            "the sketch."
           ]
         ],
         "MnPepinText_operator_compare": [
           [
-            "The little wake",
-            "crossed mine, kept"
+            "It crossed my wake",
+            "and cut the foam?"
           ],
           [
-            "going upstream and",
-            "turned into the"
+            "Then it came by",
+            "these pines!"
           ],
           [
-            "reeds? That gap",
-            "leads to an inlet."
+            "Go north by water.",
+            "Where the river"
           ],
           [
-            "I've only ever",
-            "seen it from the"
+            "bends west, hug",
+            "the north bank."
           ],
           [
-            "channel. You'll",
-            "fit through from"
-          ],
-          [
-            "the sheltered",
-            "side."
+            "Look for a little",
+            "bay in the trees."
           ]
         ],
         "MnPepinText_operator_complete": [
           [
-            "I'll keep to the",
-            "channel now. Last"
+            "I'll leave the bay",
+            "to that wake."
           ],
           [
-            "time I swung the",
-            "stern toward the"
+            "Go north by water,",
+            "then west around"
           ],
           [
-            "reeds, the whole",
-            "bank shook. I"
+            "the bend. The bay",
+            "cuts into the"
           ],
           [
-            "didn't know",
-            "anything was back"
-          ],
-          [
-            "there."
+            "wooded north bank."
           ]
         ],
         "MnPepinText_needs_surf": [
           [
-            "You can see the",
-            "reeds bend from"
+            "Low pine branches",
+            "hide the water."
           ],
           [
-            "here, but you",
-            "can't see behind"
+            "Take a CANOE or",
+            "use SURF to look"
           ],
           [
-            "them. Take a CANOE",
-            "or use SURF to"
-          ],
-          [
-            "look from the",
-            "water."
+            "under them."
           ]
         ],
         "MnPepinText_reeds": [
           [
-            "A fin cuts through",
-            "the wake's point."
+            "A fin cuts across",
+            "your bow. The low"
           ],
           [
-            "The wake turns as",
-            "the fin does. It"
+            "pine branches dip",
+            "as it passes."
           ],
           [
-            "vanishes through",
-            "the gap in the"
-          ],
-          [
-            "reeds."
+            "It heads north."
           ]
         ],
         "MN_RIVER_FUN_LOWER_MEDICText": [
@@ -45828,6 +45783,38 @@
           ],
           [
             "home."
+          ]
+        ],
+        "MnPepinText_operator_eddy": [
+          [
+            "Where you saw the",
+            "sketch, look for"
+          ],
+          [
+            "a curl of foam by",
+            "the artist. Did"
+          ],
+          [
+            "the little wake",
+            "turn with it?"
+          ]
+        ],
+        "MnPepinText_operator_pines": [
+          [
+            "See the pines just",
+            "south of me?"
+          ],
+          [
+            "From a CANOE or",
+            "with SURF, face"
+          ],
+          [
+            "the first pine",
+            "from the water."
+          ],
+          [
+            "What brushed its",
+            "low branches?"
           ]
         ]
       },
@@ -48152,107 +48139,60 @@
       "MnLayeredFen": {
         "MnFenText_observer_intro": [
           [
-            "See the sock on",
-            "that branch? I put"
+            "Hear that squelch?",
+            "That's my boot."
           ],
           [
-            "it there to dry.",
-            "My foot went in"
+            "I was on the root",
+            "west of here when"
           ],
           [
-            "where the old",
-            "crossing used to"
-          ],
-          [
-            "be. Can you see",
-            "the step from your"
-          ],
-          [
-            "side?"
+            "something nudged",
+            "my heel."
           ]
         ],
         "MnFenText_observer_partial": [
           [
-            "Look for the",
-            "smooth spot on the"
+            "Feel the worn root",
+            "on the west side,"
           ],
           [
-            "root first. Then",
-            "look where the"
-          ],
-          [
-            "pool covers it and",
-            "where the moss"
-          ],
-          [
-            "hangs above. You",
-            "can see all three"
-          ],
-          [
-            "from the bank."
+            "just north of the",
+            "little pool."
           ]
         ],
         "MnFenText_observer_compare": [
           [
-            "There it is, under",
-            "the pool. Try the"
+            "Press the root.",
+            "Then try the pool"
           ],
           [
-            "worn spot first.",
-            "Then touch the"
+            "just south of it.",
+            "The moss on the"
           ],
           [
-            "water right above",
-            "it, then the moss."
-          ],
-          [
-            "I can see the far",
-            "end of the root"
-          ],
-          [
-            "from here. I'll",
-            "tell you if it"
-          ],
-          [
-            "moves."
+            "east ridge moves",
+            "last."
           ]
         ],
         "MnFenText_observer_after": [
           [
-            "My sock's dry now.",
-            "I'll leave it on"
+            "One wet boot is",
+            "plenty for me."
           ],
           [
-            "the branch till",
-            "I've shown the"
-          ],
-          [
-            "others where the",
-            "step is. Everybody"
-          ],
-          [
-            "thinks they",
-            "remember where it"
-          ],
-          [
-            "was."
+            "I'll take that new",
+            "path home."
           ]
         ],
         "MnFenText_folded_path": [
           [
-            "The moss folds",
-            "back against the"
+            "The trees part.",
+            "Beyond the ridge,"
           ],
           [
-            "bank. Water runs",
-            "off the stone and"
-          ],
-          [
-            "the old step stays",
-            "clear. There's"
-          ],
-          [
-            "room for a boot."
+            "fresh tracks lead",
+            "into the hollow."
           ]
         ],
         "MnFenText_reveal": [
@@ -48314,55 +48254,35 @@
         ],
         "MnFenText_early": [
           [
-            "The old root",
-            "sticks out of the"
+            "Look at the pool",
+            "just south of the"
           ],
           [
-            "far bank. You can",
-            "see where it used"
+            "worn root. Feel",
+            "the notch in its"
           ],
           [
-            "to come through,",
-            "but you can't tell"
-          ],
-          [
-            "what lies under",
-            "the moss yet."
+            "bank."
           ]
         ],
         "MnFenText_pool": [
           [
-            "Water covers the",
-            "worn step. A strip"
+            "A shallow notch",
+            "cuts the bank. One"
           ],
           [
-            "of moss hangs",
-            "above it, just"
-          ],
-          [
-            "clear of the",
-            "surface."
+            "bubble breaks in",
+            "the dark water."
           ]
         ],
         "MnFenText_pool_selected": [
           [
-            "You touch the",
-            "water above the"
+            "You touch the wet",
+            "notch. The moss on"
           ],
           [
-            "step. The ripple",
-            "runs under the"
-          ],
-          [
-            "moss. The root",
-            "tips a little"
-          ],
-          [
-            "higher and the",
-            "water spills off"
-          ],
-          [
-            "the step."
+            "the east ridge",
+            "gives a shiver."
           ]
         ],
         "MnFenText_retreat": [
@@ -48380,79 +48300,66 @@
         ],
         "MnFenText_rib": [
           [
-            "Pale roots hold",
-            "the moss together."
+            "Moss hangs over",
+            "the low ridge."
           ],
           [
-            "The edge lifts",
-            "with each ripple,"
-          ],
-          [
-            "then falls back",
-            "into place."
+            "A wet streak runs",
+            "under the moss."
           ]
         ],
         "MnFenText_rib_selected": [
           [
-            "You touch the",
-            "hanging moss."
+            "You lift the moss.",
+            "A long root tugs"
           ],
           [
-            "Something",
-            "underneath pulls"
-          ],
-          [
-            "it back. A corner",
-            "of the step comes"
-          ],
-          [
-            "clear."
+            "at the trees above",
+            "the ridge."
           ]
         ],
         "MnFenText_root": [
           [
-            "The root slopes",
-            "into the pool."
+            "A boot heel fits",
+            "the worn hollow"
           ],
           [
-            "Just under the",
-            "surface is a flat"
-          ],
-          [
-            "spot worn smooth",
-            "by feet."
+            "in the root. Damp",
+            "wood gives a bit."
           ]
         ],
         "MnFenText_root_selected": [
           [
-            "You touch the worn",
-            "spot. The root"
+            "The root dips.",
+            "A bubble breaks"
           ],
           [
-            "tips up against",
-            "your fingers."
-          ],
-          [
-            "Something shifts",
-            "beneath the moss."
+            "in the little pool",
+            "south of here."
           ]
         ],
         "MnFenText_wrong_order": [
           [
-            "The root slides",
-            "back under the"
+            "Look for the moss",
+            "on the east ridge."
           ],
           [
-            "water. Start with",
-            "the worn step."
+            "Feel along its",
+            "lower edge."
+          ]
+        ],
+        "MnFenText_layers_settle": [
+          [
+            "The root dips.",
+            "The pool ripples."
           ],
           [
-            "Then touch the",
-            "pool above it,"
+            "The moss on the",
+            "ridge stirs last."
           ],
           [
-            "then the hanging",
-            "moss."
+            "Try the worn root",
+            "again."
           ]
         ]
       },

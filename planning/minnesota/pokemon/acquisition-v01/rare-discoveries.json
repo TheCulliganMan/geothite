@@ -399,24 +399,12 @@
       "dialogue_pages": {
         "dock_intro": [
           [
-            "I was drawing the",
-            "posts when the"
+            "I was drawing a",
+            "boat on the bend."
           ],
           [
-            "boat came through.",
-            "I thought I'd"
-          ],
-          [
-            "spoiled the",
-            "drawing when I"
-          ],
-          [
-            "added this little",
-            "V. Then I saw it"
-          ],
-          [
-            "move across the",
-            "big one."
+            "Look behind it. I",
+            "drew two wakes."
           ]
         ],
         "dock_sketch": [
@@ -438,51 +426,42 @@
         ],
         "eddy": [
           [
-            "Foam circles back",
-            "toward the posts."
+            "Foam turns in a",
+            "little circle."
           ],
           [
-            "A narrow wake cuts",
-            "through the foam"
+            "A narrow V cuts",
+            "straight through"
           ],
           [
-            "and heads upstream",
-            "without turning."
+            "the middle and",
+            "heads upstream."
           ]
         ],
         "reeds": [
           [
-            "A fin cuts through",
-            "the wake's point."
+            "A fin cuts across",
+            "your bow. The low"
           ],
           [
-            "The wake turns as",
-            "the fin does. It"
+            "pine branches dip",
+            "as it passes."
           ],
           [
-            "vanishes through",
-            "the gap in the"
-          ],
-          [
-            "reeds."
+            "It heads north."
           ]
         ],
         "needs_surf": [
           [
-            "You can see the",
-            "reeds bend from"
+            "Low pine branches",
+            "hide the water."
           ],
           [
-            "here, but you",
-            "can't see behind"
+            "Take a CANOE or",
+            "use SURF to look"
           ],
           [
-            "them. Take a CANOE",
-            "or use SURF to"
-          ],
-          [
-            "look from the",
-            "water."
+            "under them."
           ]
         ],
         "operator_intro": [
@@ -501,86 +480,68 @@
         ],
         "operator_partial": [
           [
-            "The person on the",
-            "dock saw my boat"
+            "Someone drew my",
+            "boat from the west"
           ],
           [
-            "go by. Ask what",
-            "they drew, then"
+            "bank. Follow the",
+            "river north, then"
           ],
           [
-            "look at the foam",
-            "in the eddy. You"
+            "west around the",
+            "bend. Ask to see"
           ],
           [
-            "can paddle a CANOE",
-            "or use SURF to see"
-          ],
-          [
-            "where the wake",
-            "goes at the reeds."
+            "the sketch."
           ]
         ],
         "operator_compare": [
           [
-            "The little wake",
-            "crossed mine, kept"
+            "It crossed my wake",
+            "and cut the foam?"
           ],
           [
-            "going upstream and",
-            "turned into the"
+            "Then it came by",
+            "these pines!"
           ],
           [
-            "reeds? That gap",
-            "leads to an inlet."
+            "Go north by water.",
+            "Where the river"
           ],
           [
-            "I've only ever",
-            "seen it from the"
+            "bends west, hug",
+            "the north bank."
           ],
           [
-            "channel. You'll",
-            "fit through from"
-          ],
-          [
-            "the sheltered",
-            "side."
+            "Look for a little",
+            "bay in the trees."
           ]
         ],
         "inlet_early": [
           [
-            "Something moves",
-            "behind the reeds."
+            "A ripple reaches",
+            "the wooded bank."
           ],
           [
-            "From here you",
-            "can't see a way"
+            "The boat skipper",
+            "might know what"
           ],
           [
-            "through. Ask the",
-            "boat operator"
-          ],
-          [
-            "where the channel",
-            "bends."
+            "made it."
           ]
         ],
         "reveal": [
           [
-            "The reeds bow",
-            "toward you. A head"
+            "A head rises in",
+            "the little bay."
           ],
           [
-            "rises between",
-            "them. PEPIVERN"
+            "PEPIVERN holds",
+            "still while its"
           ],
           [
-            "holds still while",
-            "its wake runs on"
-          ],
-          [
-            "and breaks against",
-            "the bank."
+            "wake runs on and",
+            "breaks on shore."
           ]
         ],
         "ask": [
@@ -612,15 +573,11 @@
         "retreat": [
           [
             "PEPIVERN turns",
-            "upriver. You lose"
+            "upriver. Its wake"
           ],
           [
-            "sight of its head",
-            "before the last of"
-          ],
-          [
-            "the wake slips",
-            "between the reeds."
+            "breaks against the",
+            "wooded bank."
           ]
         ],
         "caught": [
@@ -629,33 +586,25 @@
             "still. The last"
           ],
           [
-            "ripple reaches the",
-            "bank and a bent"
-          ],
-          [
-            "reed slowly stands",
-            "up."
+            "ripple breaks on",
+            "the wooded bank."
           ]
         ],
         "operator_complete": [
           [
-            "I'll keep to the",
-            "channel now. Last"
+            "I'll leave the bay",
+            "to that wake."
           ],
           [
-            "time I swung the",
-            "stern toward the"
+            "Go north by water,",
+            "then west around"
           ],
           [
-            "reeds, the whole",
-            "bank shook. I"
+            "the bend. The bay",
+            "cuts into the"
           ],
           [
-            "didn't know",
-            "anything was back"
-          ],
-          [
-            "there."
+            "wooded north bank."
           ]
         ],
         "dock_complete": [
@@ -674,6 +623,66 @@
           [
             "than the water it",
             "pushed."
+          ]
+        ],
+        "artist_foam": [
+          [
+            "See that curl of",
+            "foam beside me?"
+          ],
+          [
+            "Watch the middle.",
+            "Something cut"
+          ],
+          [
+            "through it while",
+            "I was drawing."
+          ]
+        ],
+        "artist_skipper": [
+          [
+            "The skipper's on",
+            "the far east bank."
+          ],
+          [
+            "Head north by",
+            "CANOE or SURF."
+          ],
+          [
+            "Follow the big",
+            "bend to find him."
+          ]
+        ],
+        "operator_eddy": [
+          [
+            "Where you saw the",
+            "sketch, look for"
+          ],
+          [
+            "a curl of foam by",
+            "the artist. Did"
+          ],
+          [
+            "the little wake",
+            "turn with it?"
+          ]
+        ],
+        "operator_pines": [
+          [
+            "See the pines just",
+            "south of me?"
+          ],
+          [
+            "From a CANOE or",
+            "with SURF, face"
+          ],
+          [
+            "the first pine",
+            "from the water."
+          ],
+          [
+            "What brushed its",
+            "low branches?"
           ]
         ]
       },
@@ -1023,12 +1032,12 @@
       ],
       "region": "Big Bog-inspired northwest spur from Bemidji/Border Pines",
       "stage": "optional boardwalk and peatland loop",
-      "premise": "A field observer finds a boardwalk marker on the wrong side of a pool. Flarkindle folds remembered paths through the patterned fen. The setting is an original fantasy extension of Minnesota peatland patterns.",
+      "premise": "A walker felt something shift under one boot. A worn root, a small pool and the moss on a peat ridge move in sequence and uncover an old crossing into a northern hollow.",
       "steps": [
-        "Read three observations in separate fen viewpoints: high peat rib, open flark pool, and older buried root layer. Each has a visibly different landform.",
-        "Compare the three layer records at the entrance shelter. The observer explains the difference between a present path and a remembered one.",
-        "At the inner loop, choose the markers in layer order: older root, pool edge, living rib. An incorrect order resets only the local sequence and gives a readable clue; it never traps the player.",
-        "The folded side path appears after the final acknowledged observation. It is optional and its outer dry outer path always leads home. Flarkindle waits in the lavender island hollow."
+        "Find the worn root on the west side, the notch in the pool south of it, and the hanging moss on the east ridge. The three observations can be made in any order.",
+        "The last observation shows the root, pool and moss moving in turn. A player who already recorded all three can also compare them with the observer.",
+        "Revisit the same landmarks in root, pool, moss order. The nearby original contacts still work. A mistaken or repeated touch points to the next feature and retains completed steps.",
+        "Lifting the moss opens the path to the northern hollow. The original dry path leads back to Bemidji Northwoods. The current Minnesota encounter here is MITWIST."
       ],
       "discovery_distinction": "Layer order and repeated geography replace a real-time clock requirement. No invention that Waskish is already on R17; site connection must respect the accepted map.",
       "proposed_levels": {
@@ -1041,210 +1050,137 @@
         "LAYERS_COMPARED",
         "FOLDED_PATH_REVEALED"
       ],
-      "completion": "The observer records the three layers; encounter outcomes never remove the safe boardwalk.",
+      "completion": "The three observations reveal the sequence. The encounter and its outcome leave the open path available.",
       "dialogue_pages": {
         "observer_intro": [
           [
-            "See the sock on",
-            "that branch? I put"
+            "Hear that squelch?",
+            "That's my boot."
           ],
           [
-            "it there to dry.",
-            "My foot went in"
+            "I was on the root",
+            "west of here when"
           ],
           [
-            "where the old",
-            "crossing used to"
-          ],
-          [
-            "be. Can you see",
-            "the step from your"
-          ],
-          [
-            "side?"
+            "something nudged",
+            "my heel."
           ]
         ],
         "rib": [
           [
-            "Pale roots hold",
-            "the moss together."
+            "Moss hangs over",
+            "the low ridge."
           ],
           [
-            "The edge lifts",
-            "with each ripple,"
-          ],
-          [
-            "then falls back",
-            "into place."
+            "A wet streak runs",
+            "under the moss."
           ]
         ],
         "pool": [
           [
-            "Water covers the",
-            "worn step. A strip"
+            "A shallow notch",
+            "cuts the bank. One"
           ],
           [
-            "of moss hangs",
-            "above it, just"
-          ],
-          [
-            "clear of the",
-            "surface."
+            "bubble breaks in",
+            "the dark water."
           ]
         ],
         "root": [
           [
-            "The root slopes",
-            "into the pool."
+            "A boot heel fits",
+            "the worn hollow"
           ],
           [
-            "Just under the",
-            "surface is a flat"
-          ],
-          [
-            "spot worn smooth",
-            "by feet."
+            "in the root. Damp",
+            "wood gives a bit."
           ]
         ],
         "observer_partial": [
           [
-            "Find the worn spot",
-            "on the root, then"
+            "Feel the worn root",
+            "on the west side,"
           ],
           [
-            "look at the pool",
-            "and the moss. You"
-          ],
-          [
-            "can see them from",
-            "here. No need to"
-          ],
-          [
-            "get your feet wet",
-            "like I did."
+            "just north of the",
+            "little pool."
           ]
         ],
         "observer_compare": [
           [
-            "There it is, under",
-            "the pool. Try the"
+            "Press the root.",
+            "Then try the pool"
           ],
           [
-            "worn spot first.",
-            "Then touch the"
+            "just south of it.",
+            "The moss on the"
           ],
           [
-            "water right above",
-            "it, then the moss."
-          ],
-          [
-            "I can see the far",
-            "end of the root"
-          ],
-          [
-            "from here. I'll",
-            "tell you if it"
-          ],
-          [
-            "moves."
+            "east ridge moves",
+            "last."
           ]
         ],
         "root_selected": [
           [
-            "You mark the old",
-            "step. The root"
+            "The root dips.",
+            "A bubble breaks"
           ],
           [
-            "tips toward you.",
-            "Mud slides off and"
-          ],
-          [
-            "leaves the worn",
-            "spot just above"
-          ],
-          [
-            "the surface."
+            "in the little pool",
+            "south of here."
           ]
         ],
         "pool_selected": [
           [
-            "You mark the pool",
-            "next. Water slips"
+            "You touch the wet",
+            "notch. The moss on"
           ],
           [
-            "off the raised",
-            "root, uncovering a"
-          ],
-          [
-            "narrow strip of",
-            "stone."
+            "the east ridge",
+            "gives a shiver."
           ]
         ],
         "rib_selected": [
           [
-            "You mark the moss",
-            "last. The mat"
+            "You lift the moss.",
+            "A long root tugs"
           ],
           [
-            "folds down until",
-            "its roots rest on"
-          ],
-          [
-            "the stone."
+            "at the trees above",
+            "the ridge."
           ]
         ],
         "wrong_order": [
           [
-            "The root slips",
-            "under again. Start"
+            "Look for the moss",
+            "on the east ridge."
           ],
           [
-            "at the bottom,",
-            "with the worn"
-          ],
-          [
-            "root. Then mark",
-            "the pool over it"
-          ],
-          [
-            "and the moss above",
-            "the water."
+            "Feel along its",
+            "lower edge."
           ]
         ],
         "folded_path": [
           [
-            "Water runs off the",
-            "far edge of the"
+            "The trees part.",
+            "Beyond the ridge,"
           ],
           [
-            "stone. You can set",
-            "a boot on the worn"
-          ],
-          [
-            "root again. The",
-            "moss has settled"
-          ],
-          [
-            "along the",
-            "crossing."
+            "fresh tracks lead",
+            "into the hollow."
           ]
         ],
         "early": [
           [
-            "The old root",
-            "sticks out of the"
+            "Look at the pool",
+            "just south of the"
           ],
           [
-            "far bank. You can",
-            "see where it used"
+            "worn root. Feel",
+            "the notch in its"
           ],
           [
-            "to come through,",
-            "but you can't tell"
-          ],
-          [
-            "what lies under",
-            "the moss yet."
+            "bank."
           ]
         ],
         "reveal": [
@@ -1319,23 +1255,26 @@
         ],
         "observer_after": [
           [
-            "My sock's dry now.",
-            "I'll leave it on"
+            "One wet boot is",
+            "plenty for me."
           ],
           [
-            "the branch till",
-            "I've shown the"
+            "I'll take that new",
+            "path home."
+          ]
+        ],
+        "layers_settle": [
+          [
+            "The root dips.",
+            "The pool ripples."
           ],
           [
-            "others where the",
-            "step is. Everybody"
+            "The moss on the",
+            "ridge stirs last."
           ],
           [
-            "thinks they",
-            "remember where it"
-          ],
-          [
-            "was."
+            "Try the worn root",
+            "again."
           ]
         ]
       },
@@ -1752,27 +1691,24 @@
       "dialogue_pages": {
         "caretaker_intro": [
           [
-            "I turn the plow at",
-            "that standing"
+            "See that gap north",
+            "of me? My field."
           ],
           [
-            "stone. It looked",
-            "out of line this"
+            "Found two tracks",
+            "there. Told folks"
           ],
           [
-            "morning. I told",
-            "the neighbors"
+            "someone drove over",
+            "my seedlings."
           ],
           [
-            "somebody drove",
-            "through. Then I"
+            "Went to count what",
+            "I'd lost. Every"
           ],
           [
-            "noticed the",
-            "seedlings were all"
-          ],
-          [
-            "still standing."
+            "last one was still",
+            "standing."
           ]
         ],
         "soil": [
@@ -1858,79 +1794,67 @@
         ],
         "caretaker_partial": [
           [
-            "Look behind the",
-            "standing stone for"
+            "Check the grooves",
+            "in the south plot."
           ],
           [
-            "prints. There's",
-            "another edge"
+            "Step out here,",
+            "then go back."
           ],
           [
-            "sticking out of",
-            "the dirt. Look at"
+            "See if the dirt",
+            "has moved."
           ],
           [
-            "the grooves now,",
-            "then walk out and"
+            "Up north, check",
+            "the bare dirt and"
           ],
           [
-            "come back. I want",
-            "to know what"
-          ],
-          [
-            "changes while",
-            "nobody's here."
+            "the stone just",
+            "northwest of it."
           ]
         ],
         "caretaker_comparison": [
           [
-            "The groove points",
-            "at the seedling,"
+            "It went around",
+            "the seedling?"
           ],
           [
-            "but the fresh grit",
-            "goes around it?"
+            "And I went around",
+            "blaming people."
           ],
           [
-            "Then whatever",
-            "passed through"
+            "See the two stones",
+            "west of the dirt?"
           ],
           [
-            "took care where it",
-            "stepped. Follow"
-          ],
-          [
-            "the grit down the",
-            "low furrow. See"
-          ],
-          [
-            "where it ends."
+            "Check the south",
+            "one for plow cuts."
           ]
         ],
         "claim_corrected": [
           [
-            "A flat stone where",
-            "the old rows stop?"
+            "The old rows all",
+            "end at that stone?"
           ],
           [
-            "That's where Dad",
-            "turned. I've been"
+            "Dad turned there.",
+            "I've gone farther"
           ],
           [
-            "lining up with the",
-            "wrong stone. I"
+            "every spring. I",
+            "owe the neighbors"
           ],
           [
-            "told the neighbors",
-            "somebody drove"
+            "a visit."
           ],
           [
-            "through my field.",
-            "I'd better go show"
+            "One more thing.",
+            "Just north of the"
           ],
           [
-            "them where I went",
-            "wrong."
+            "bare dirt, I saw",
+            "the turf lift up."
           ]
         ],
         "margin_early": [
