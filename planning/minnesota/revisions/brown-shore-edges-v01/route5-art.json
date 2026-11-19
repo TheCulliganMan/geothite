@@ -1,0 +1,63 @@
+[
+  {
+    "tileset": "mn_outdoor_headwaters_stairs",
+    "id": 6000,
+    "collision_from": 135,
+    "tiles": [44, 44, 91, 157, 60, 60, 91, 157, 60, 60, 6, 6, 60, 60, 6, 6]
+  },
+  {
+    "tileset": "mn_outdoor_headwaters_stairs",
+    "id": 6001,
+    "collision_from": 113,
+    "tiles": [44, 59, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60],
+    "collision": ["UP_WALL", "FLOOR", "FLOOR", "FLOOR"]
+  },
+  {
+    "tileset": "mn_outdoor_headwaters_stairs",
+    "id": 6002,
+    "collision_from": 155,
+    "tiles": [60, 60, 61, 44, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60]
+  },
+  {
+    "tileset": "mn_outdoor_headwaters_stairs",
+    "id": 6003,
+    "collision_from": 112,
+    "tiles": [44, 44, 61, 44, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60]
+  },
+  {
+    "tileset": "mn_outdoor_headwaters_stairs",
+    "id": 6009,
+    "collision_from": 155,
+    "tiles": [5, 5, 61, 44, 5, 3, 5, 3, 3, 5, 3, 5, 5, 5, 5, 5]
+  },
+  {
+    "tileset": "mn_outdoor_headwaters_stairs",
+    "id": 6004,
+    "collision_from": 5,
+    "tiles": [43, 44, 44, 44, 30, 31, 30, 31, 46, 47, 46, 47, 62, 63, 62, 63]
+  },
+  {
+    "tileset": "mn_outdoor_headwaters_stairs",
+    "id": 6005,
+    "collision_from": 5,
+    "tiles": [44, 44, 44, 44, 30, 31, 30, 31, 46, 47, 46, 47, 62, 63, 62, 63]
+  },
+  {
+    "tileset": "mn_outdoor_headwaters_stairs",
+    "id": 6006,
+    "collision_from": 5,
+    "tiles": [44, 44, 44, 45, 30, 31, 30, 31, 46, 47, 46, 47, 62, 63, 62, 63]
+  },
+  {
+    "tileset": "mn_outdoor_headwaters_stairs",
+    "id": 6007,
+    "collision_from": 54,
+    "tiles": [20, 20, 88, 59, 20, 20, 88, 59, 20, 20, 88, 59, 20, 20, 88, 59]
+  },
+  {
+    "tileset": "mn_outdoor_headwaters_stairs",
+    "id": 6008,
+    "collision_from": 49,
+    "tiles": [61, 88, 88, 88, 61, 88, 88, 88, 61, 20, 20, 20, 61, 20, 20, 20]
+  }
+]

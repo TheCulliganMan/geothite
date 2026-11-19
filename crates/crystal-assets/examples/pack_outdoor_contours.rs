@@ -3,7 +3,7 @@ use std::path::{Path, PathBuf};
 
 use anyhow::{Result, ensure};
 use crystal_assets::{
-    CompiledGamePack, read_verified_compiled_game_pack, revise_cliff_faces,
+    CompiledGamePack, read_verified_compiled_game_pack, restore_brown_shores, revise_cliff_faces,
     revise_outdoor_contours, revise_rocky_shores,
 };
 
@@ -12,6 +12,9 @@ type Builder = fn(&CompiledGamePack, &Path) -> Result<CompiledGamePack>;
 fn main() -> Result<()> {
     let args: Vec<_> = std::env::args_os().skip(1).map(PathBuf::from).collect();
     let (builder, args): (Builder, &[PathBuf]) = match args.as_slice() {
+        [flag, inputs @ ..] if flag.as_os_str() == "--brown-shores" => {
+            (restore_brown_shores, inputs)
+        }
         [flag, inputs @ ..] if flag.as_os_str() == "--rocky-shores" => {
             (revise_rocky_shores, inputs)
         }
@@ -20,7 +23,7 @@ fn main() -> Result<()> {
     };
     ensure!(
         args.len() == 3,
-        "usage: pack_outdoor_contours [--cliffs|--rocky-shores] PARENT SOURCE_DIR FRESH_PACK"
+        "usage: pack_outdoor_contours [--cliffs|--rocky-shores|--brown-shores] PARENT SOURCE_DIR FRESH_PACK"
     );
     ensure!(!args[2].try_exists()?, "choose a fresh output pack");
     let base = read_verified_compiled_game_pack(&args[0])?;

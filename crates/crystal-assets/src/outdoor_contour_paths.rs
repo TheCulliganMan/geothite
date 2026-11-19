@@ -1,8 +1,8 @@
-//! Check outdoor stair flights and ledges on the installed blocks, without opening a session.
+//! Check outdoor stairs, ledges and connected map crossings against the installed terrain.
 use anyhow::{Context, Result, ensure};
 use crystal_core::world::map::{Direction, OverworldMapData, TilePosition};
 use crystal_core::world::movement::{
-    LedgeJumpOutcome, OccupiedTile, PlayerMovementState, StepOptions, StepOutcome,
+    LedgeJumpOutcome, MovementMode, OccupiedTile, PlayerMovementState, StepOptions, StepOutcome,
     attempt_ledge_jump_with_occupied_tiles, attempt_step_with_occupied_tiles,
 };
 
@@ -106,5 +106,48 @@ pub(super) fn check_walk(
             walked.get(&to)
         );
     }
+    Ok(())
+}
+
+pub(super) fn check_passage(
+    pack: &CompiledGamePack,
+    start: (&str, i16, i16),
+    direction: Direction,
+    mode: MovementMode,
+    steps: u16,
+    end: (&str, i16, i16),
+) -> Result<()> {
+    let mut session =
+        pack.data
+            .overworld_session(start.0, TilePosition::new(start.1, start.2), 0)?;
+    session.player.mode = mode;
+    let options = StepOptions {
+        force_step_after_turn: true,
+        ..Default::default()
+    };
+    for _ in 0..steps {
+        ensure!(
+            matches!(
+                session.step_checked(direction, options)?,
+                StepOutcome::Moved { .. }
+            ) && session.player.mode == mode,
+            "broken {mode:?} passage from {start:?} toward {direction:?} at {:?}",
+            session.player.tile
+        );
+        if let Some(trigger) = session.check_connection_checked()? {
+            let destination = pack
+                .data
+                .resolve_connection_transition(&trigger)?
+                .destination;
+            session = pack
+                .data
+                .overworld_session(&destination.map_name, destination.tile, 0)?;
+            session.player.mode = mode;
+        }
+    }
+    ensure!(
+        session.map.name == end.0 && session.player.tile == TilePosition::new(end.1, end.2),
+        "prairie bridge from {start:?} did not reach {end:?}"
+    );
     Ok(())
 }

@@ -13,7 +13,7 @@ mod shore_cave_links;
 #[path = "shore_rock_ink.rs"]
 mod shore_rock_ink;
 
-const MANIFEST: &str = "northstar-rocky-shores-v1";
+pub(super) const MANIFEST: &str = "northstar-rocky-shores-v1";
 const SECTIONS: [&str; 5] = [
     "routes",
     "places",
@@ -165,19 +165,7 @@ pub fn revise_rocky_shores(base: &CompiledGamePack, dir: &Path) -> Result<Compil
         moves.is_empty(),
         "cave warp relocation has no accompanying map edit"
     );
-    let root = dir.parent().context("missing revisions directory")?;
-    cliff_faces::verify_installed_paths(&pack, &root.join("cliff-faces-v01"))?;
-    for shoreline in [
-        "route-shore-checks.json",
-        "route-landing-edges.json",
-        "places-landing-edges.json",
-    ] {
-        cliff_faces::verify_shores(&pack, dir, shoreline)?;
-    }
-    shore_cave_links::verify(base, &pack)?;
-    for walk in source::<Vec<cliff_faces::WalkCheck>>(dir, "mouth-walks.json")? {
-        walk.verify(&pack)?;
-    }
+    verify_paths(base, &pack, dir)?;
     pack.report.manifests.push(MANIFEST.to_owned());
     pack.identity = crate::derive_compiled_game_pack_identity_from_manifest(
         pack.format_version,
@@ -188,4 +176,25 @@ pub fn revise_rocky_shores(base: &CompiledGamePack, dir: &Path) -> Result<Compil
     )?;
     crate::verify_compiled_game_pack_for_runtime(&pack)?;
     Ok(pack)
+}
+
+pub(super) fn verify_paths(
+    base: &CompiledGamePack,
+    pack: &CompiledGamePack,
+    dir: &Path,
+) -> Result<()> {
+    let root = dir.parent().context("missing revisions directory")?;
+    cliff_faces::verify_installed_paths(pack, &root.join("cliff-faces-v01"))?;
+    for shoreline in [
+        "route-shore-checks.json",
+        "route-landing-edges.json",
+        "places-landing-edges.json",
+    ] {
+        cliff_faces::verify_shores(pack, dir, shoreline)?;
+    }
+    shore_cave_links::verify(base, pack)?;
+    for walk in source::<Vec<cliff_faces::WalkCheck>>(dir, "mouth-walks.json")? {
+        walk.verify(pack)?;
+    }
+    Ok(())
 }

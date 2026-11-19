@@ -25,6 +25,9 @@ pub use cliff_faces::revise_cliff_faces;
 #[path = "northstar_rocky_shores.rs"]
 mod rocky_shores;
 pub use rocky_shores::revise_rocky_shores;
+#[path = "northstar_brown_shores.rs"]
+mod brown_shores;
+pub use brown_shores::restore_brown_shores;
 
 const MANIFEST: &str = "northstar-outdoor-contours-v4";
 type ArtIds = BTreeMap<(String, u16), u8>;

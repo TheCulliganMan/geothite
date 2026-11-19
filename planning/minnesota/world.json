@@ -7964,7 +7964,7 @@
     "status": "Accepted current-parent terrain revision: source/native pixels, strict whole-pack preservation, directional grass/ledge proof, actual2D review, native encounters/trainerPP/resources/Continue and stdio pass. CurrentR12 work preserved.",
     "scope_limit": "Sequential Minnesota grass pass remains open beyond R01-R03. Explicit local fixtures do not prove an earned statewide campaign."
   },
-  "active_local_review_revision": "rocky_shores_field_revision",
+  "active_local_review_revision": "brown_shore_edges_field_revision",
   "script_command_repair_revision": {
     "kind": "missing_minnesota_map_command_records",
     "parent_revision": "field_hm_habitats_cyclists_revision",
@@ -12822,5 +12822,20 @@
     "changed_map_chunks": 36,
     "changed_metatiles": 190,
     "runbook": "revisions/shore-rocks-cave-mouths-v01/README.md"
+  },
+  "brown_shore_edges_field_revision": {
+    "kind": "outdoor_terrain_review",
+    "parent_revision": "rocky_shores_field_revision",
+    "parent_pack": "content-packs/minnesota-rocky-shores-v01.crystalpack",
+    "parent_pack_sha256": "c6ab5ade261c413d71528f88393fe1f242bf42aeeb390a7ba227505f692f15cf",
+    "pack": "content-packs/minnesota-brown-shore-edges-v01.crystalpack",
+    "pack_sha256": "9eb8c562cdd8d16a83200e26af92a0523d31ea4c5d32b831a414287b4e02fd54",
+    "build_recipe": "planning/minnesota/revisions/brown-shore-edges-v01/field-build.json",
+    "build_recipe_sha256": "c257a3db8873720eb18a14b4426a6cd813406e246e2b5739edff286b30ab5a97",
+    "content_identity": "545413edef3a54af16203b4deeef32cad50b2576693fa6801d71c91f9e9d97da",
+    "map_count": 743,
+    "changed_map_chunks": 33,
+    "changed_metatiles": 186,
+    "runbook": "revisions/brown-shore-edges-v01/README.md"
   }
 }

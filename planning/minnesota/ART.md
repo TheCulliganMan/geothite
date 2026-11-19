@@ -152,11 +152,11 @@ side before the face turns. Check the neighboring map where the shoulder
 crosses a seam. Give the entrance a clear approach from the trail and check
 where the player stands on returning, especially near a stair or a ledge.
 
-Place shoreline stone where a player can read its setting at native scale.
-Join slabs along exposed bedrock or at a point, and let loose stones sit low
-on a beach. Leave gaps between outcrops for fishing, Surf and landing. Keep
-the animated water tiles at the waterline and use the local snow highlight
-when a stone breaks through a winter bank.
+Use the native small brown rocks to trace the water's edge, including turns
+and inside corners. Use the straight bank tile only where land meets water.
+The rocky rim can mark a perfectly usable fishing or Surf shore. Preserve the
+water animation and the original movement permissions on both sides. Keep
+the beach and the approaches to docks clear of freestanding boulders.
 
 ## Contiguous outdoor plateaus and cliff orientation
 

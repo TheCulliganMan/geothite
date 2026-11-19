@@ -1,0 +1,80 @@
+[
+  {
+    "map": "MnR05C00R00",
+    "from": [25, 12],
+    "to": [25, 17],
+    "max_steps": 5
+  },
+  {
+    "map": "MnR05C00R00",
+    "from": [37, 24],
+    "to": [37, 29],
+    "max_steps": 5
+  },
+  {
+    "map": "MnR05C00R01",
+    "from": [29, 2],
+    "to": [29, 7],
+    "max_steps": 5
+  },
+  {
+    "map": "MnR05C00R00",
+    "from": [15, 39],
+    "to": [15, 43],
+    "max_steps": 4
+  },
+  {
+    "map": "MnR05C00R01",
+    "from": [13, 27],
+    "to": [13, 31],
+    "max_steps": 4
+  },
+  {
+    "map": "MnR05C00R00",
+    "from": [24, 28],
+    "to": [30, 28],
+    "max_steps": 6
+  },
+  {
+    "map": "MnR05C00R01",
+    "from": [14, 31],
+    "to": [16, 30],
+    "max_steps": 3
+  },
+  {
+    "map": "MnR05C00R00",
+    "from": [37, 42],
+    "to": [37, 39],
+    "max_steps": 65
+  },
+  {
+    "map": "MnR05C00R01",
+    "from": [37, 30],
+    "to": [37, 27],
+    "max_steps": 89
+  },
+  {
+    "map": "MnR05C00R00",
+    "from": [15, 42],
+    "to": [28, 47],
+    "max_steps": 18
+  },
+  {
+    "map": "MnR05C00R01",
+    "from": [28, 0],
+    "to": [29, 8],
+    "max_steps": 9
+  },
+  {
+    "map": "MnR05C00R01",
+    "from": [22, 43],
+    "to": [22, 47],
+    "max_steps": 4
+  },
+  {
+    "map": "MnR05C00R02",
+    "from": [22, 0],
+    "to": [22, 15],
+    "max_steps": 15
+  }
+]
