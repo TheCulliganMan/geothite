@@ -43,7 +43,7 @@ the two sheets Hale submitted.
 
 | Stop | Main actions | Progression contract |
 | --- | --- | --- |
-| Winona | Meet Mom and Tamarack; choose Pouchid, Kindlit or Birchit at level 5; collect Ivy's envelope and five Poké Balls; meet Reed | Starter receipt opens R01. Gifts remain separate, retryable actions. The Loobit egg is optional |
+| Winona | Visit Mom, choose Pouchid, Kindlit or Birchit at level 5, and take Ivy's envelope from Tamarack. Reed challenges you at the desk. Collect five Poké Balls from the aide or on your way out. | The starter opens Route 1. The supplies remain available after a loss to Reed or a full Pack. The Loobit egg is optional. |
 | Rochester | Deliver the original readings to Ivy; learn Ellis is missing; meet Reed again; defeat Varel | Acknowledged delivery permits the first gym. R02 leads to Mankato |
 | Mankato | Defeat Torven; optionally inspect the copied-reading notebook | The gardener allows an early visitor to examine the optional notebook |
 | Minneapolis | Ask Jo about Ellis; witness Reed's recruitment; navigate ICE headquarters; disable holding power; rescue Ellis; hear his next request; defeat Avrin | Ellis points out the broken pump ring on his way home. The player can sketch its stamp at the dispatch desk |
