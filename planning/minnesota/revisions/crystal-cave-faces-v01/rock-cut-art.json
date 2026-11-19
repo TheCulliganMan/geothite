@@ -1,0 +1,4 @@
+[
+  {"tileset": "mn_outdoor_headwaters_stairs", "id": 9100, "collision_from": 185, "tiles": [5, 5, 30, 31, 5, 5, 46, 47, 5, 5, 46, 47, 5, 5, 62, 63]},
+  {"tileset": "mn_outdoor_headwaters_stairs", "id": 9101, "collision_from": 183, "tiles": [5, 43, 44, 44, 43, 59, 60, 60, 59, 59, 60, 60, 59, 59, 60, 60]}
+]

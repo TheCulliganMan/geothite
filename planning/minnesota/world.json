@@ -7964,7 +7964,7 @@
     "status": "Accepted current-parent terrain revision: source/native pixels, strict whole-pack preservation, directional grass/ledge proof, actual2D review, native encounters/trainerPP/resources/Continue and stdio pass. CurrentR12 work preserved.",
     "scope_limit": "Sequential Minnesota grass pass remains open beyond R01-R03. Explicit local fixtures do not prove an earned statewide campaign."
   },
-  "active_local_review_revision": "rock_cut_north_face_field_revision",
+  "active_local_review_revision": "crystal_cave_faces_field_revision",
   "script_command_repair_revision": {
     "kind": "missing_minnesota_map_command_records",
     "parent_revision": "field_hm_habitats_cyclists_revision",
@@ -12867,5 +12867,20 @@
     "changed_map_chunks": 1,
     "changed_metatiles": 13,
     "runbook": "revisions/rock-cut-north-height-v01/README.md"
+  },
+  "crystal_cave_faces_field_revision": {
+    "kind": "terrain_review",
+    "parent_revision": "rock_cut_north_face_field_revision",
+    "parent_pack": "content-packs/minnesota-rock-cut-north-face-v01.crystalpack",
+    "parent_pack_sha256": "37392d84900c135e925cf8c33ab2f671d6ddfcd6a45c48d5272bb1ebeb2a3c7f",
+    "pack": "content-packs/minnesota-crystal-cave-faces-v01.crystalpack",
+    "pack_sha256": "aae0ad9bc5abc43a549bd4b30f10f356a088c1c3ec2614dab6003ed6f8804938",
+    "build_recipe": "planning/minnesota/revisions/crystal-cave-faces-v01/field-build.json",
+    "build_recipe_sha256": "d16242b8a45da88938de1610504d87e492b0adfabb59784e99ed714832a590f9",
+    "content_identity": "e10bb87bd3e61d2775130671bb2b430046abd3cdbd8f7bbe5ac9e46a40a63c19",
+    "map_count": 743,
+    "changed_map_chunks": 5,
+    "changed_metatiles": 28,
+    "runbook": "revisions/crystal-cave-faces-v01/README.md"
   }
 }

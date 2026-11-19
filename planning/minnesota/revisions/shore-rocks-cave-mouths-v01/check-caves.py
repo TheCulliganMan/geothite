@@ -63,31 +63,20 @@ def check_face(pack, room, at):
     x, y = at
     token, mouth_pixels = quadrant(pack, room, x, y)
     require(token == "CAVE" and len(set(mouth_pixels)) > 1, f"{room['id']} missing cave arch at {at}")
-    if room["id"] == "MnR05C00R00" and (x, y) == (30, 27):
-        bank = room["attributes"]["tileset_name"]
-        cap, face = (native_glyph(pack, bank, glyph) for glyph in (0x3c, 0x4c))
-        if quadrant(pack, room, x+1, y)[1][:2] == [cap, cap]:
-            # The low Rock Cut wall is one native course tall. Its original deep doorway
-            # cuts into the cap; the course continues at the same height on both sides.
-            require(mouth_pixels == [native_glyph(pack, bank, g) for g in (0x46, 0x47, 0x56, 0x57)],
-                    f"{room['id']} recessed Rock Cut arch changed")
-            for dx in (-2, -1, 1, 2):
-                surface, pixels = quadrant(pack, room, x+dx, y)
-                require(surface == "WALL" and pixels == [cap, cap, face, face],
-                        f"{room['id']} broken single-course shoulder at {(x+dx,y)}")
-            return [4, 4]
-    # The last glyph of the right jamb carries the local face material, even on
-    # the Iron Range mine door. The paired walking squares flanking the portal
-    # must be solid rock with 32 px of support. Outer bevels and original timber
-    # frames may occupy three of those eight glyphs.
-    _, jamb = quadrant(pack, room, x+1, y)
-    face = jamb[-1]
+    # Compare decoded stone with the east jamb of Mt. Mortar's western entrance.
+    # The glyph number can differ across banks. Bevels and mine posts can frame
+    # the arch while a continuous column of native stone carries its full height.
+    _, original = quadrant(pack, pack["data"]["maps"]["Route42"], 11, 5)
+    face = original[0]
     counts = []
     for dx in (-1, 1):
         count = []
         for d in (1, 2):
             surface, pixels = quadrant(pack, room, x+dx*d, y)
             require(surface == "WALL", f"{room['id']} gap in the cliff at {(x+dx*d, y)}: {surface}")
+            if d == 1:
+                require(any(pixels[col] == pixels[col+2] == face for col in (0, 1)),
+                        f"{room['id']} shallow or unsupported cliff beside {at} at {(x+dx, y)}")
             count.append(pixels.count(face))
         require(min(count) > 0 and sum(count) >= 5 and max(count) == 4,
                 f"{room['id']} broken rock shoulder at {at} facing {'west' if dx < 0 else 'east'}: {count}")
@@ -95,7 +84,7 @@ def check_face(pack, room, at):
     return counts
 
 
-def check_caves(pack):
+def check_caves(pack, face_check=check_face):
     data = pack["data"]
     maps = data["maps"]
     names = {name: key for key, m in maps.items() for name in (key, m["attributes"]["map_constant"])}
@@ -145,7 +134,7 @@ def check_caves(pack):
     for r in source["mouths"]:
         name, at = r["map"], r["mouth"]
         room = maps[name]
-        check_face(pack, room, at)
+        face_check(pack, room, at)
         require(r["approach"] == [at[0], at[1]+1] and
                 quadrant(pack, room, *r["approach"])[0] in ("FLOOR", "TALL_GRASS"),
                 f"{name} non-walkable cave doorstep")

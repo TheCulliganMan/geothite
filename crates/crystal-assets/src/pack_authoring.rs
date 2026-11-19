@@ -107,7 +107,7 @@ mod northstar_trail_caches;
 mod northstar_shiner_narrows;
 mod northstar_outdoor_contours;
 mod outdoor_contour_paths;
-pub use northstar_outdoor_contours::{restore_brown_shores, revise_cliff_faces, revise_outdoor_contours, revise_rock_cut, revise_rock_cut_north_face, revise_rocky_shores};
+pub use northstar_outdoor_contours::{restore_brown_shores, revise_cliff_faces, revise_crystal_cave_faces, revise_outdoor_contours, revise_rock_cut, revise_rock_cut_north_face, revise_rocky_shores};
 mod northstar_ely_register;
 mod northstar_former_shores;
 mod northstar_gallery_strength;

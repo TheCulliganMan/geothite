@@ -1,5 +1,7 @@
 # Rock Cut north entrance
 
+The [statewide cave revision](../crystal-cave-faces-v01/README.md) supersedes this archived design.
+
 The north doorway retains its full 16-pixel opening. The front of the limestone
 beside it is one 8-pixel course high. Both sides of the doorway use the same
 stone at the same height. Pines close the back of the bluff. Its side walls

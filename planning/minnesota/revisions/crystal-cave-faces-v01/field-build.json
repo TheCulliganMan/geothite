@@ -1,0 +1,7 @@
+{
+  "parent_pack": "content-packs/minnesota-rock-cut-north-face-v01.crystalpack",
+  "parent_pack_sha256": "37392d84900c135e925cf8c33ab2f671d6ddfcd6a45c48d5272bb1ebeb2a3c7f",
+  "output_pack": "content-packs/minnesota-crystal-cave-faces-v01.crystalpack",
+  "expected_pack_sha256": "aae0ad9bc5abc43a549bd4b30f10f356a088c1c3ec2614dab6003ed6f8804938",
+  "builder": "pack_outdoor_contours --crystal-cave-faces"
+}

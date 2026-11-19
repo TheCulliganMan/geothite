@@ -28,6 +28,9 @@ pub use rocky_shores::revise_rocky_shores;
 #[path = "northstar_brown_shores.rs"]
 mod brown_shores;
 pub use brown_shores::restore_brown_shores;
+#[path = "northstar_cave_faces.rs"]
+mod cave_faces;
+pub use cave_faces::revise_crystal_cave_faces;
 #[path = "northstar_rock_cut.rs"]
 mod rock_cut;
 pub use rock_cut::{revise_rock_cut, revise_rock_cut_north_face};

@@ -103,6 +103,19 @@ def floor_network(pack):
     return road[37,29], road[24,0], road[28,47]
 
 
+def historical_face(pack, room, at):
+    """Validate the archived one-course design only when reproducing this revision."""
+    if room["id"] != NAME or tuple(at) != (30, 27):
+        return caves["check_face"](pack, room, at)
+    x, y = at
+    bank = room["attributes"]["tileset_name"]
+    cap, stone = (caves["native_glyph"](pack, bank, g) for g in (0x3c, 0x4c))
+    for dx in (-2, -1, 1, 2):
+        token, pixels = caves["quadrant"](pack, room, x+dx, y)
+        require(token == "WALL" and pixels == [cap, cap, stone, stone], "wrong archived face")
+    return [4, 4]
+
+
 def verify_face(pack):
     glyph = glyph_lookup(pack)
     # The rear sits against two full trees. These four rows are Crystal's
@@ -130,7 +143,7 @@ def verify_face(pack):
     require([glyph(x,y) for y in (54,55) for x in (60,61)] == [0x46,0x47,0x56,0x57],
             "original recessed arch changed")
     room = pack["data"]["maps"][NAME]
-    require(caves["check_face"](pack, room, (30,27)) == [4,4], "expected two solid one-course shoulders")
+    require(historical_face(pack, room, (30,27)) == [4,4], "expected two solid one-course shoulders")
 
 
 def main():
@@ -144,7 +157,7 @@ def main():
     changes = extent(parent, child)
     verify_face(child)
     lane, north, south = floor_network(child)
-    caves["check_caves"](child)
+    caves["check_caves"](child, historical_face)
     brown["route_connections"](child)
     print(f"{changes} northern placements. The recessed doorway retains 32px of solid, single-course "
           f"rock on either side. The trainer lane is {lane} steps from the entrance. The north/south "

@@ -155,7 +155,7 @@ pub fn revise_minnesota_outdoor_stair_landings(
     Ok(result)
 }
 
-fn glyph_bytes<'a>(pack: &'a CompiledGamePack, tileset: &str, glyph: u8) -> Result<&'a [u8]> {
+pub(crate) fn glyph_bytes<'a>(pack: &'a CompiledGamePack, tileset: &str, glyph: u8) -> Result<&'a [u8]> {
     let graphics = pack
         .runtime_files
         .get(&format!("gfx/tilesets/{tileset}.2bpp"))

@@ -1,0 +1,47 @@
+[
+  {
+    "map": "MnFormerShores",
+    "tileset": "mn_prairie_headwaters",
+    "placements": [
+      {"at": [10, 10], "from": 192, "to": 9500},
+      {"at": [11, 10], "from": 193, "to": 9500},
+      {"at": [12, 10], "from": 194, "to": 9501},
+      {"at": [10, 11], "from": 114, "to": 9502},
+      {"at": [11, 11], "from": 114, "to": 9503},
+      {"at": [12, 11], "from": 207, "to": 9504}
+    ]
+  },
+  {
+    "map": "MnR01C00R00",
+    "tileset": "mn_outdoor_johto_stairs",
+    "placements": [
+      {"at": [18, 10], "from": 2, "to": 9505}
+    ]
+  },
+  {
+    "map": "MnR05C00R01",
+    "tileset": "mn_outdoor_headwaters_stairs",
+    "placements": [
+      {"at": [9, 12], "from": 105, "to": 159},
+      {"at": [10, 12], "from": 5, "to": 9506},
+      {"at": [9, 13], "from": 105, "to": 113},
+      {"at": [10, 13], "from": 5, "to": 9507},
+      {"at": [9, 14], "from": 109, "to": 9508},
+      {"at": [10, 14], "from": 5, "to": 9507},
+      {"at": [9, 15], "from": 174, "to": 9509},
+      {"at": [10, 15], "from": 5, "to": 9510}
+    ]
+  },
+  {
+    "map": "MnR09C00R00",
+    "tileset": "mn_winter_iron_range",
+    "placements": [
+      {"at": [22, 20], "from": 114, "to": 110},
+      {"at": [23, 20], "from": 114, "to": 111},
+      {"at": [22, 21], "from": 2, "to": 9511},
+      {"at": [23, 21], "from": 2, "to": 9512},
+      {"at": [19, 20], "from": 114, "to": 9513},
+      {"at": [20, 20], "from": 136, "to": 9514}
+    ]
+  }
+]

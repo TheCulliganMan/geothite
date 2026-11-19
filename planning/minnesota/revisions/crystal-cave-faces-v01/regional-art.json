@@ -1,0 +1,17 @@
+[
+  {"tileset": "mn_prairie_headwaters", "id": 9500, "collision_from": 192, "tiles": [5, 5, 5, 5, 44, 44, 44, 44, 60, 60, 60, 60, 60, 60, 60, 60]},
+  {"tileset": "mn_prairie_headwaters", "id": 9501, "collision_from": 194, "tiles": [5, 5, 5, 5, 44, 44, 45, 5, 60, 60, 61, 5, 60, 60, 61, 5], "collision": ["UP_WALL", "WALL", "FLOOR", "WALL"]},
+  {"tileset": "mn_prairie_headwaters", "id": 9502, "collision_from": 114, "tiles": [60, 60, 76, 76, 60, 60, 61, 76, 76, 77, 61, 5, 76, 76, 77, 5], "collision": ["FLOOR", "WALL", "WALL", "WALL"]},
+  {"tileset": "mn_prairie_headwaters", "id": 9503, "collision_from": 114, "tiles": [76, 76, 76, 76, 76, 76, 76, 76, 5, 5, 5, 5, 5, 5, 5, 5], "collision": ["WALL", "WALL", "FLOOR", "FLOOR"]},
+  {"tileset": "mn_prairie_headwaters", "id": 9504, "collision_from": 207, "tiles": [76, 77, 61, 5, 76, 76, 77, 5, 5, 5, 5, 5, 5, 5, 5, 5], "collision": ["WALL", "WALL", "FLOOR", "FLOOR"]},
+  {"tileset": "mn_outdoor_johto_stairs", "id": 9505, "collision_from": 2, "tiles": [6, 6, 5, 5, 6, 6, 6, 6, 5, 6, 6, 6, 5, 5, 5, 5]},
+  {"tileset": "mn_outdoor_headwaters_stairs", "id": 9506, "collision_from": 5, "tiles": [44, 45, 30, 31, 60, 61, 46, 47, 60, 61, 46, 47, 60, 61, 62, 63], "collision": ["UP_WALL", "WALL", "FLOOR", "WALL"]},
+  {"tileset": "mn_outdoor_headwaters_stairs", "id": 9507, "collision_from": 5, "tiles": [60, 61, 30, 31, 60, 61, 46, 47, 60, 61, 46, 47, 60, 61, 62, 63], "collision": ["FLOOR", "WALL", "FLOOR", "WALL"]},
+  {"tileset": "mn_outdoor_headwaters_stairs", "id": 9508, "collision_from": 109, "tiles": [60, 60, 60, 60, 60, 60, 60, 60, 76, 76, 76, 60, 76, 76, 59, 60], "collision": ["FLOOR", "FLOOR", "WALL", "WALL"]},
+  {"tileset": "mn_outdoor_headwaters_stairs", "id": 9509, "collision_from": 174, "tiles": [78, 79, 59, 75, 94, 95, 75, 76, 5, 5, 5, 5, 5, 5, 5, 5], "collision": ["WALL", "WALL", "FLOOR", "FLOOR"]},
+  {"tileset": "mn_outdoor_headwaters_stairs", "id": 9510, "collision_from": 5, "tiles": [76, 61, 30, 31, 76, 77, 46, 47, 5, 5, 46, 47, 5, 5, 62, 63], "collision": ["WALL", "WALL", "FLOOR", "WALL"]},
+  {"tileset": "mn_winter_iron_range", "id": 9511, "collision_from": 2, "tiles": [6, 59, 75, 76, 6, 75, 76, 76, 6, 6, 6, 6, 6, 6, 6, 6], "collision": ["WALL", "WALL", "FLOOR", "FLOOR"]},
+  {"tileset": "mn_winter_iron_range", "id": 9512, "collision_from": 2, "tiles": [76, 77, 61, 6, 76, 76, 77, 6, 6, 6, 6, 6, 6, 6, 6, 6], "collision": ["WALL", "WALL", "FLOOR", "FLOOR"]},
+  {"tileset": "mn_winter_iron_range", "id": 9513, "collision_from": 114, "tiles": [60, 60, 60, 60, 60, 60, 60, 243, 76, 76, 76, 68, 76, 76, 76, 68]},
+  {"tileset": "mn_winter_iron_range", "id": 9514, "collision_from": 136, "tiles": [60, 60, 60, 60, 244, 244, 244, 245, 246, 247, 68, 76, 249, 250, 68, 76]}
+]

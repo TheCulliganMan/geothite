@@ -182,7 +182,7 @@ pub fn revise_rock_cut(base: &CompiledGamePack, dir: &Path) -> Result<CompiledGa
     for room in [north, south] {
         apply_room(&mut pack, base, room, &ids)?;
     }
-    finish_rock_cut(base, pack, dir, TRAIL_MANIFEST)
+    finish_cave_revision(base, pack, dir, TRAIL_MANIFEST)
 }
 
 /// Fits the north mouth into a single continuous rock face using regional native art.
@@ -211,10 +211,10 @@ pub fn revise_rock_cut_north_face(base: &CompiledGamePack, dir: &Path) -> Result
     );
     append_metatiles(&mut pack, &mut ids, art, |_, _| false)?;
     apply_room(&mut pack, base, room, &ids)?;
-    finish_rock_cut(base, pack, dir, "northstar-rock-cut-north-face-v1")
+    finish_cave_revision(base, pack, dir, "northstar-rock-cut-north-face-v1")
 }
 
-fn finish_rock_cut(
+pub(super) fn finish_cave_revision(
     base: &CompiledGamePack,
     mut pack: CompiledGamePack,
     dir: &Path,
