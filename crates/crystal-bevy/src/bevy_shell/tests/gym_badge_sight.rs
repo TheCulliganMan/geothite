@@ -81,7 +81,7 @@ const GYMS: [(&str, &[Approach]); 8] = [
     ),
     (
         "MnBrainerdGym",
-        &[approach((7, 8), Left, &[]), approach((10, 5), Right, &[])],
+        &[approach((7, 8), Left, &[]), approach((11, 6), Up, &[])],
     ),
     (
         "MnBemidjiGym",

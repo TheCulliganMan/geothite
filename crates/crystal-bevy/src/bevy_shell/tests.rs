@@ -17,6 +17,16 @@ mod dialogue_scene_fixtures;
 mod grand_marais_partner_retry;
 #[path = "tests/gym_badge_sight.rs"]
 mod gym_badge_sight;
+#[path = "tests/gym_walk_beach.rs"]
+mod gym_walk_beach;
+#[path = "tests/gym_walk_garden.rs"]
+mod gym_walk_garden;
+#[path = "tests/gym_walk_relays.rs"]
+mod gym_walk_relays;
+#[path = "tests/gym_walk_stairs.rs"]
+mod gym_walk_stairs;
+#[path = "tests/gym_walk_wading_art.rs"]
+mod gym_walk_wading_art;
 #[path = "tests/mankato_terrace_pond.rs"]
 mod mankato_terrace_pond;
 #[path = "tests/minnesota_badges.rs"]

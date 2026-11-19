@@ -71,6 +71,10 @@ name = "pack_league_journey"
 required-features = ["pack-authoring"]
 
 [[example]]
+name = "pack_gym_walk"
+required-features = ["pack-authoring"]
+
+[[example]]
 name = "pack_badge_trails"
 required-features = ["pack-authoring"]
 

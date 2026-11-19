@@ -1,0 +1,7 @@
+{
+  "parent_pack": "content-packs/minnesota-intro-badge-trails-v01.crystalpack",
+  "parent_pack_sha256": "feb0ca07288d085537c0f9bef2f763e9bcfb1a4ac1428286490bb2ad31868b17",
+  "output_pack": "content-packs/minnesota-intro-gym-walk-v01.crystalpack",
+  "expected_pack_sha256": "f6ea6d7c5972166258ec3b8cf97f58208e12f1def06f594fd7f2a884e09cadca",
+  "builder": "pack_gym_walk"
+}

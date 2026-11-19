@@ -8,6 +8,7 @@ mod minnesota_town_map;
 mod preview_audio_policy;
 mod renderer_policy;
 mod save_prompt_pages;
+mod wading_waterline;
 pub use renderer_policy::runtime_supports_voxel_view;
 #[cfg(any(test, feature = "intro-certification"))]
 mod intro_certification;
@@ -6478,6 +6479,12 @@ pub fn run_bevy_shell(
         .add_systems(
             Update,
             outdoor_precipitation::animate.after(render_playfield),
+        )
+        .add_systems(
+            Update,
+            wading_waterline::draw
+                .after(sync_visible_player_sprite)
+                .after(render_playfield),
         )
         .add_systems(Update, render_screen_fade_overlay.after(render_playfield))
         .add_systems(

@@ -88,7 +88,13 @@ fn keyboard_event(app: &mut App, direction: Direction, state: ButtonState) {
         .expect("installed keyboard input");
 }
 
-fn stride(app: &mut App, dest: TilePosition, walker: &str, rider: &str, will_mount: bool) {
+pub(super) fn stride(
+    app: &mut App,
+    dest: TilePosition,
+    walker: &str,
+    rider: &str,
+    will_mount: bool,
+) {
     let start = frame(app);
     let direction = [
         Direction::Up,

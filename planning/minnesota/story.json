@@ -32943,6 +32943,28 @@
             "You'll find her at",
             "UNION DEPOT."
           ]
+        ],
+        "MnGymWalkLenviBreakerText": [
+          [
+            "My breaker powers",
+            "the west bridge."
+          ],
+          [
+            "Give it a flip.",
+            "JOSSA's across."
+          ]
+        ],
+        "MnGymWalkWestFeederLockedText": [
+          [
+            "Beat LENVI to use",
+            "the west breaker."
+          ]
+        ],
+        "MnGymWalkEastFeederLockedText": [
+          [
+            "Beat JOSSA to use",
+            "the east breaker."
+          ]
         ]
       },
       "MnMinneapolisMart": {
@@ -39462,23 +39484,12 @@
         ],
         "MnBrainerdGymGuideText": [
           [
-            "Battle LORLA, then",
-            "choose your route."
+            "Follow the pale",
+            "sand to SIVREN."
           ],
           [
-            "CENTER goes to",
-            "BRAVEL. His win"
-          ],
-          [
-            "opens the court.",
-            "LEFT goes around"
-          ],
-          [
-            "to SIVREN. Use the",
-            "north winch to"
-          ],
-          [
-            "change your route."
+            "I paddle my canoe",
+            "in the dark pools."
           ]
         ],
         "MnBrainerdGymFLOAT_WALKRoutingPrompt": [
@@ -40770,6 +40781,73 @@
           ],
           [
             "ORLIS."
+          ]
+        ],
+        "MnGardenCutText": [
+          [
+            "Here's HM CUT."
+          ],
+          [
+            "Teach it from your",
+            "TM/HM pocket."
+          ]
+        ],
+        "MnGardenForkText": [
+          [
+            "MOSLEN's tree is",
+            "on the left."
+          ],
+          [
+            "Follow the right",
+            "path to ELVREN."
+          ],
+          [
+            "Beat both to face",
+            "ORLIS up north."
+          ],
+          [
+            "BRINDEL only",
+            "guards a shortcut."
+          ]
+        ],
+        "MnGardenWestText": [
+          [
+            "Just MOSLEN left.",
+            "The little tree on"
+          ],
+          [
+            "the left leads to",
+            "his clearing."
+          ]
+        ],
+        "MnGardenNorthText": [
+          [
+            "Just ELVREN left.",
+            "Take the path on"
+          ],
+          [
+            "the right to her",
+            "tree up north."
+          ]
+        ],
+        "MnGardenLeaderText": [
+          [
+            "Both keepers have",
+            "vouched for you."
+          ],
+          [
+            "ORLIS is past the",
+            "northern tree."
+          ]
+        ],
+        "MnGardenReturnText": [
+          [
+            "The middle gate is",
+            "open. That's your"
+          ],
+          [
+            "short way back to",
+            "the door."
           ]
         ]
       },
