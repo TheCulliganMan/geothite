@@ -7964,7 +7964,7 @@
     "status": "Accepted current-parent terrain revision: source/native pixels, strict whole-pack preservation, directional grass/ledge proof, actual2D review, native encounters/trainerPP/resources/Continue and stdio pass. CurrentR12 work preserved.",
     "scope_limit": "Sequential Minnesota grass pass remains open beyond R01-R03. Explicit local fixtures do not prove an earned statewide campaign."
   },
-  "active_local_review_revision": "headwaters_journey_field_revision",
+  "active_local_review_revision": "trail_discoveries_field_revision",
   "script_command_repair_revision": {
     "kind": "missing_minnesota_map_command_records",
     "parent_revision": "field_hm_habitats_cyclists_revision",
@@ -12980,5 +12980,19 @@
     "map_count": 743,
     "changed_maps_from_parent": 10,
     "runbook": "revisions/headwaters-journey-v01/README.md"
+  },
+  "trail_discoveries_field_revision": {
+    "kind": "campaign_review",
+    "parent_revision": "headwaters_journey_field_revision",
+    "parent_pack": "content-packs/minnesota-headwaters-journey-v01.crystalpack",
+    "parent_pack_sha256": "0fae2552c52d5b4b4854f07a63a1e7699a93b5f6cc645d37f70c1ab916422572",
+    "pack": "content-packs/minnesota-trail-discoveries-v01.crystalpack",
+    "pack_sha256": "ca45c56d88deb63161e71e051bc63715f46afdad34a051ceb21a30df0580bec2",
+    "build_recipe": "planning/minnesota/revisions/trail-discoveries-v01/field-build.json",
+    "build_recipe_sha256": "325957c489c8a77e35e3b7ab535261d35fe2cb5d9a7cd47054a721e179247d13",
+    "content_identity": "d57f04f314ef5a63f73f4b4d6b6ba820aa5efbe3722f86e931e3cfc1f58a9356",
+    "map_count": 743,
+    "changed_maps_from_parent": 14,
+    "runbook": "revisions/trail-discoveries-v01/README.md"
   }
 }

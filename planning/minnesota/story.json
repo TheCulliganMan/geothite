@@ -8297,7 +8297,8 @@
             "falls from its"
           ],
           [
-            "jaw. Step closer?"
+            "jaw.",
+            "Battle VERDIGRIM?"
           ]
         ],
         "MnVerdigrimExposedText": [
@@ -19170,8 +19171,8 @@
             "the moss on its"
           ],
           [
-            "shoulder. Step",
-            "closer?"
+            "shoulder.",
+            "Battle VERGLOOM?"
           ]
         ],
         "MnAncientRetreatText": [
@@ -45358,10 +45359,10 @@
           ],
           [
             "stay above the",
-            "surface. Go"
+            "surface."
           ],
           [
-            "closer?"
+            "Battle BARBELISK?"
           ]
         ],
         "MnPepinText_caught": [
@@ -47962,7 +47963,7 @@
             "hand off the log."
           ],
           [
-            "Go closer?"
+            "Start a battle?"
           ]
         ],
         "MnTaleText_marked_log": [
@@ -47985,11 +47986,11 @@
         ],
         "MnTaleText_ox_ask": [
           [
-            "BABEHEMOTH turns",
-            "its head toward"
+            "BABEHEMOTH lowers",
+            "its blue horns."
           ],
           [
-            "you. Go closer?"
+            "Start a battle?"
           ]
         ],
         "MnTaleText_path_refusal": [
@@ -48028,6 +48029,56 @@
           [
             "all the way down",
             "to the soil."
+          ]
+        ],
+        "MnTaleText_find_pipe": [
+          [
+            "The pipe's east of",
+            "us, by the rocks."
+          ],
+          [
+            "Is there water in",
+            "the ditch below?"
+          ]
+        ],
+        "MnTaleText_find_print": [
+          [
+            "Try the pool north",
+            "of the road."
+          ],
+          [
+            "Check its east",
+            "bank for a print."
+          ]
+        ],
+        "MnTaleText_find_stack": [
+          [
+            "See the logs where",
+            "the road bends?"
+          ],
+          [
+            "Tell me which side",
+            "of the pile's wet."
+          ]
+        ],
+        "MnTaleText_find_path": [
+          [
+            "Leave the pile be.",
+            "The loose log is"
+          ],
+          [
+            "across the trail",
+            "north of there."
+          ]
+        ],
+        "MnTaleText_find_mark": [
+          [
+            "At the old camp,",
+            "check the cut end"
+          ],
+          [
+            "of the log. We put",
+            "our marks there."
           ]
         ]
       },
@@ -48164,7 +48215,7 @@
             "among the roots."
           ],
           [
-            "Step closer?"
+            "Battle MITWIST?"
           ]
         ],
         "MnFenText_caught": [
@@ -48978,8 +49029,8 @@
             "branch with a paw"
           ],
           [
-            "and looks up. Step",
-            "closer?"
+            "and looks up.",
+            "Battle CASTOROCK?"
           ]
         ],
         "MnJawDeclineText": [
@@ -49175,7 +49226,7 @@
             "its ridged head."
           ],
           [
-            "Step closer?"
+            "Battle KENSIGARD?"
           ]
         ],
         "MnBasinText_decline": [
@@ -49251,7 +49302,8 @@
             "its shields toward"
           ],
           [
-            "you. Step closer?"
+            "you.",
+            "Battle KENSIGARD?"
           ]
         ],
         "MnKensigardText_boundary_marker": [
@@ -49902,10 +49954,10 @@
           ],
           [
             "enough to touch",
-            "the bank. Step"
+            "the bank."
           ],
           [
-            "closer?"
+            "Battle KETTLURK?"
           ]
         ],
         "MnKettleCaughtText": [
@@ -50082,24 +50134,16 @@
         ],
         "MN_INTERIOR_DOROTHYInteriorText": [
           [
-            "I'm DOROTHY. Put",
-            "your wet gloves by"
+            "I'm the medic.",
+            "Hang up your coat."
           ],
           [
-            "the door. There's",
-            "a bench here and"
+            "Your team's had a",
+            "long paddle, too."
           ],
           [
-            "ROOT BEER in the",
-            "cooler out front."
-          ],
-          [
-            "If you take a",
-            "bottle, bring it"
-          ],
-          [
-            "back. I wash them",
-            "myself."
+            "Rest on the bench.",
+            "I'll check them."
           ]
         ]
       },
@@ -50794,26 +50838,12 @@
         ],
         "BWS_REED_RETURN_RANGERText": [
           [
-            "If you're coming",
-            "in by boat, use"
+            "Take the pine path",
+            "south to basecamp."
           ],
           [
-            "the bank by the",
-            "reeds. There's"
-          ],
-          [
-            "less wash there."
-          ],
-          [
-            "Done with SAFARI?",
-            "Tell me and I'll"
-          ],
-          [
-            "take you back to",
-            "basecamp with your"
-          ],
-          [
-            "catches."
+            "Want the shelter?",
+            "Look for SURVEY."
           ]
         ]
       },
@@ -50837,6 +50867,16 @@
           ],
           [
             "basecamp."
+          ]
+        ],
+        "BWS_SIGN_05Text": [
+          [
+            "GRANITE LANDING",
+            "Stairs northwest."
+          ],
+          [
+            "Back to basecamp?",
+            "Ranger northeast."
           ]
         ]
       },
@@ -62461,16 +62501,16 @@
       "MnR08C00R00": {
         "MnDiscoveryR08ClueText": [
           [
-            "The thawed grove",
-            "got flowers first."
+            "South of here, the",
+            "snow's gone under"
           ],
           [
-            "There's a seed in",
-            "that bed bigger"
+            "the pines. I found",
+            "a seed among the"
           ],
           [
-            "than any of the",
-            "flowers."
+            "cones, big as my",
+            "thumb. Left it be."
           ]
         ],
         "MN_R08_T04Won": [

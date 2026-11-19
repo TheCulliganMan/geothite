@@ -279,11 +279,11 @@
         ],
         "ox_ask": [
           [
-            "BABEHEMOTH turns",
-            "its head toward"
+            "BABEHEMOTH lowers",
+            "its blue horns."
           ],
           [
-            "you. Go closer?"
+            "Start a battle?"
           ]
         ],
         "keeper_reveal": [
@@ -310,7 +310,7 @@
             "hand off the log."
           ],
           [
-            "Go closer?"
+            "Start a battle?"
           ]
         ],
         "retry": [
@@ -590,10 +590,10 @@
           ],
           [
             "stay above the",
-            "surface. Go"
+            "surface."
           ],
           [
-            "closer?"
+            "Battle PEPIVERN?"
           ]
         ],
         "decline": [
@@ -1274,7 +1274,7 @@
             "among the roots."
           ],
           [
-            "Step closer?"
+            "Battle FLARKINDLE?"
           ]
         ],
         "decline": [
@@ -1573,7 +1573,7 @@
             "its ridged head."
           ],
           [
-            "Step closer?"
+            "Battle STRANDRAK?"
           ]
         ],
         "decline": [
@@ -1977,7 +1977,8 @@
             "its shields toward"
           ],
           [
-            "you. Step closer?"
+            "you.",
+            "Battle KENSIGARD?"
           ]
         ],
         "decline": [

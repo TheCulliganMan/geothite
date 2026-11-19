@@ -106,6 +106,8 @@ passenger service is published. Rail grants no badge, adjacent-city visit or
 quest completion. See the [transit records](transit/README.md) for versioned
 implementation details.
 
+In the Bemidji Northwoods the Tall Tale gate leads to the road worker. Inspect the pipe, the pool print and the fallen wood in any order, then report back. The separate trunk across the camp path can be shifted from either end. Bringing the marked-log account to the worker reveals Babehemoth and Bunjant independently. Choosing to battle either is optional. [Tall Tale Trail](revisions/trail-discoveries-v01/tall-tale.md)
+
 ## Gates, teams and acceptance
 
 | Action | Required state |

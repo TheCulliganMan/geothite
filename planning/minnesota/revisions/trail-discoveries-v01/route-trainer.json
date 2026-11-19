@@ -1,0 +1,9 @@
+{
+  "trainer": "MN_R20_T09",
+  "party_slot": 2,
+  "member": {
+    "species": "CHORIP",
+    "level": 46,
+    "moves": ["AMNESIA", "SLUDGE_BOMB", "PSYCHIC_M", "WATER_GUN"]
+  }
+}

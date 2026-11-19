@@ -4,6 +4,11 @@ use std::collections::BTreeMap;
 use anyhow::{Context, Result, ensure};
 use serde::Deserialize;
 
+use crate::authored_dialogue::{self, AuthoredDialoguePage};
+use crate::authored_route_design::RouteDesign;
+use crate::authored_town_geometry::kind;
+use crate::authored_town_publication;
+use crate::grand_marais_modpack::authoring::refresh_event_section;
 use crate::{CompiledGamePack, native_tile_png, northstar_regional_design};
 
 const ART: &[u8] =
@@ -66,6 +71,102 @@ impl Landmark {
 pub(super) fn install(pack: &mut CompiledGamePack) -> Result<()> {
     install_landmark_art(pack, ART)?;
     northstar_regional_design::apply_rooms(pack, ROOMS)
+}
+
+/// Aligns the prairie boards and publishes the Birch Walker clue and Cedar Ridge cairn.
+pub(crate) fn apply(pack: &mut CompiledGamePack) -> Result<()> {
+    const CLUE: &str = "MnDiscoveryR08ClueText";
+    align_prairie_boards(pack)?;
+    let mut grove = pack
+        .data
+        .maps
+        .get("MnR08C00R00")
+        .context("Route 8 Birch Walker map")?
+        .clone();
+    let story: serde_json::Value =
+        serde_json::from_str(include_str!("../../../planning/minnesota/story.json"))?;
+    let pages: Vec<AuthoredDialoguePage> =
+        serde_json::from_value(story["story_flow_revision"]["dialogue"][&grove.id][CLUE].clone())
+            .context("canonical Birch Walker pages")?;
+    let updated = authored_dialogue::compile(&pages)?;
+    let prior = grove.scripts.get_mut(CLUE).context("Birch Walker clue")?;
+    ensure!(*prior != updated, "expected the original flower-bed clue");
+    *prior = updated;
+    grove.script_text_bodies = crate::parse_script_text_bodies(&grove.id, &grove.scripts)?;
+    authored_town_publication::replace(pack, grove)?;
+
+    let ridge = pack.data.maps.get("MnR13C00R00").context("Cedar Ridge")?;
+    ensure!(
+        ridge.attributes.tileset_name == "mn_outdoor_winter_stairs"
+            && ridge.events.bg_events.iter().any(|event| {
+                event.script == "MN_HIDDEN_R13"
+                    && event.event_type == "BGEVENT_ITEM"
+                    && [event.x, event.y] == [38, 32]
+            }),
+        "expected the hidden Hyper Potion at the Cedar Ridge trail marker"
+    );
+    install_landmark_art_at(
+        pack,
+        include_bytes!(
+            "../../../planning/minnesota/revisions/trail-discoveries-v01/cedar-cairn.json"
+        ),
+        0xc0,
+    )?;
+    northstar_regional_design::apply_rooms(
+        pack,
+        br#"[{"map":"MnR13C00R00","blocks":[{"at":[19,16],"from":136,"to":142}]}]"#,
+    )
+}
+
+fn align_prairie_boards(pack: &mut CompiledGamePack) -> Result<()> {
+    let route: RouteDesign = serde_json::from_str(include_str!(
+        "../../../planning/minnesota/routes/MN_R02.json"
+    ))?;
+    let mut road = pack
+        .data
+        .maps
+        .get("MnR02C00R00")
+        .context("Prairie Farm Road")?
+        .clone();
+    ensure!(route.signs.len() == 5, "expected five prairie noticeboards");
+    for sign in route.signs {
+        let [x, y] = sign.tile;
+        ensure!(
+            kind(pack, &road, sign.tile)? == "WALL"
+                && !road
+                    .events
+                    .bg_events
+                    .iter()
+                    .any(|e| [e.x, e.y] == sign.tile),
+            "occupied or walkable noticeboard at {x},{y}"
+        );
+        let read = road
+            .events
+            .bg_events
+            .iter_mut()
+            .find(|e| e.script == sign.id)
+            .with_context(|| format!("missing {}", sign.id))?;
+        ensure!(
+            read.event_type == "BGEVENT_READ" && read.y == y && read.x.checked_add(1) == Some(x),
+            "{} is no longer on the left post",
+            sign.id
+        );
+        read.x = x;
+    }
+    refresh_event_section(&mut road);
+    let events = road
+        .attributes
+        .map_events_label
+        .as_ref()
+        .context("prairie map event label")?;
+    if let Some(raw) = road.scripts.get_mut(events) {
+        *raw = road
+            .map_event_section_commands
+            .iter()
+            .map(|row| serde_json::json!({"command":row.command,"args":row.args}))
+            .collect();
+    }
+    authored_town_publication::replace(pack, road)
 }
 
 pub(super) fn install_landmark_art(pack: &mut CompiledGamePack, source: &[u8]) -> Result<()> {

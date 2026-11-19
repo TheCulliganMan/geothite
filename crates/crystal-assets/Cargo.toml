@@ -47,6 +47,10 @@ name = "pack_headwaters_journey"
 required-features = ["pack-authoring"]
 
 [[example]]
+name = "pack_trail_discoveries"
+required-features = ["pack-authoring"]
+
+[[example]]
 name = "pack_outdoor_contours"
 required-features = ["pack-authoring"]
 

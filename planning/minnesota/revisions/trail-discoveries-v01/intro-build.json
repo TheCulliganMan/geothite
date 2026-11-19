@@ -1,0 +1,7 @@
+{
+  "parent_pack": "content-packs/minnesota-northstar-intro-v03.crystalpack",
+  "parent_pack_sha256": "b5decf90a6a45cd87549a5f26820962ef4a521bac1246e423ccfba5ae8394afb",
+  "output_pack": "content-packs/minnesota-intro-trail-discoveries-v01.crystalpack",
+  "expected_pack_sha256": "07c75a8928bc61a44d64e76f5525656f380c0885c9eddb70d0c9212137135002",
+  "builder": "pack_trail_discoveries"
+}

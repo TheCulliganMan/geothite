@@ -466,7 +466,7 @@
     {
       "id": "MN_R02_ROCHESTER_BOARD",
       "tile": [
-        56,
+        57,
         13
       ],
       "lines": [
@@ -478,7 +478,7 @@
     {
       "id": "MN_R02_FARM_BOARD",
       "tile": [
-        14,
+        15,
         15
       ],
       "lines": [
@@ -490,7 +490,7 @@
     {
       "id": "MN_R02_BANK_BOARD",
       "tile": [
-        50,
+        51,
         19
       ],
       "lines": [
@@ -502,7 +502,7 @@
     {
       "id": "MN_R02_SHED_BOARD",
       "tile": [
-        48,
+        49,
         37
       ],
       "lines": [
@@ -513,7 +513,7 @@
     {
       "id": "MN_R02_WEST_BOARD",
       "tile": [
-        4,
+        5,
         33
       ],
       "lines": [
