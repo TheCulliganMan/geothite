@@ -414,11 +414,9 @@
         "MnLakeItasca",
         "MnBemidji"
       ],
-      "requires": [
-        "BADGE_7"
-      ],
+      "requires": [],
       "steps": [
-        "Read the accessible dry-land headwaters marker at Lake Itasca.",
+        "Take the public Route 14 from Bemidji to Lake Itasca, cross the timber bridge and copy the two water marks from the sign or striped gauge. Visiting Brainerd's ranger first supplies a date to look up.",
         "Return to the Bemidji field officer. The independent reference and the officer's comparison copies expose one instrument log relabeled as multiple station surveys. The optional Mankato notebook is an earlier clue, not a required extra flag.",
         "Investigate the tampered instruments on the Iron Range. The report does not claim Itasca drains into the northern mine."
       ],
@@ -426,10 +424,8 @@
         "EVENT_MN_HEADWATERS_READING",
         "EVENT_MN_HEADWATERS_REPORT"
       ],
-      "opens": [
-        "MN_R09"
-      ],
-      "repeat_guard": "The raw reading alone cannot open the Iron Range gate; the completed report does."
+      "opens": [],
+      "repeat_guard": "The dated reading can be copied before the Pine Badge. The officer signs it once, with or without the Mankato notebook. Route 9 is public. Its foreman requires both the signed report and the Pine Badge."
     },
     {
       "id": "Q06",
@@ -5819,7 +5815,7 @@
           ],
           [
             "BOLTS TIGHT. WATER",
-            "TWO RUNGS LOWER"
+            "TWO MARKS LOWER"
           ],
           [
             "THAN USUAL. You",
@@ -5831,88 +5827,62 @@
         ],
         "MnItascaMarkerAfterText": [
           [
-            "You have both",
+            "You've copied both",
             "ITASCA readings."
           ],
           [
-            "The field officer",
-            "in BEMIDJI can"
+            "Cross the bridge.",
+            "The east gatehouse"
           ],
           [
-            "compare your copy",
-            "with HALE's."
+            "leads to BEMIDJI.",
+            "Find the officer."
           ]
         ],
         "MnOverhaulItascaComparedText": [
           [
-            "The date you",
-            "copied is still on"
+            "Two low readings,",
+            "both on the date"
           ],
           [
-            "the page. Beside",
-            "the old numbers"
+            "you took down.",
+            "Two pale marks"
           ],
           [
-            "there's a fresh",
-            "reading. From the"
-          ],
-          [
-            "top of the ladder,",
-            "you can see a band"
-          ],
-          [
-            "of bare wood where",
-            "the rungs used to"
-          ],
-          [
-            "go under."
+            "show above the",
+            "water on the post."
           ]
         ],
         "MN_ITASCA_OBSERVERText": [
           [
-            "I thought the",
-            "gauge had shifted."
+            "See the pale marks",
+            "on that post?"
           ],
           [
-            "I put my hand on",
-            "the bolts. They"
+            "I painted the top",
+            "one with my toes"
           ],
           [
-            "were tight. Then I",
-            "went down the"
+            "in the water. Now",
+            "two marks are dry."
           ],
           [
-            "ladder. Usually my",
-            "boot leaks at the"
-          ],
-          [
-            "third rung. That",
-            "morning I got to"
-          ],
-          [
-            "the fifth before I",
-            "felt a thing."
+            "I put the date on",
+            "the sign, too."
           ]
         ],
         "MN_ITASCA_TRAIL_WALKERText": [
           [
-            "Cross on the",
-            "stones for"
+            "I stop halfway",
+            "across the bridge."
           ],
           [
-            "BEMIDJI. Stop",
-            "halfway and look"
+            "The dark boards",
+            "are the old ones."
           ],
           [
-            "down if nobody's",
-            "behind you. You"
-          ],
-          [
-            "can see the whole",
-            "river between your"
-          ],
-          [
-            "boots here."
+            "I can see minnows",
+            "beside them today."
           ]
         ],
         "MN_ITASCA_ENTRYText": [
@@ -5927,10 +5897,15 @@
         "MN_ITASCA_WEST_CLOSEDText": [
           [
             "DETROIT LAKES",
-            "Trail closed here."
+            "West to the trail."
           ],
           [
-            "Return east."
+            "Turn south at the",
+            "prairie flowers."
+          ],
+          [
+            "BEMIDJI",
+            "East over bridge."
           ]
         ],
         "MnCohesionItascaWestBadgesText": [
@@ -9381,19 +9356,16 @@
         ],
         "MnArcSCDeclinedText": [
           [
-            "SERA: If you see",
-            "the BRAINERD"
+            "SERA: All right.",
+            "I'll stay here."
           ],
           [
-            "ranger, tell her",
-            "the mine needs a"
+            "If you come back,",
+            "stand beside me."
           ],
           [
-            "winch. FINN was",
-            "still below when I"
-          ],
-          [
-            "came up."
+            "Let me do the",
+            "talking."
           ]
         ],
         "MnArcSCStandText": [
@@ -18733,27 +18705,24 @@
         ],
         "MN_R07_BIRDERText": [
           [
-            "Follow the two",
-            "bridges around the"
+            "The stone steps",
+            "southeast of here"
           ],
           [
-            "bay. If you hop",
-            "down to the"
+            "go down to the",
+            "sandbank."
           ],
           [
-            "sandbank, use the",
-            "stairs back up. I"
+            "When the bridge",
+            "boards go quiet,"
           ],
           [
-            "wait by the rail",
-            "to see what comes"
+            "listen down in the",
+            "reeds. That's when"
           ],
           [
-            "out once the",
-            "boards stop"
-          ],
-          [
-            "rattling."
+            "I hear the birds",
+            "again."
           ]
         ],
         "MN_R07_LAKE_WALKERText": [
@@ -40761,46 +40730,34 @@
       "MnItascaGatehouse": {
         "MN_ITASCA_GATE_ATTENDANTText": [
           [
-            "Cross the brook",
-            "and look west for"
+            "Take the west door",
+            "and cross the"
           ],
           [
-            "the ladder. The",
-            "observer keeps the"
+            "timber bridge. On",
+            "the far bank, look"
           ],
           [
-            "log by the gauge.",
-            "She took both"
+            "for a striped post",
+            "beside the water."
           ],
           [
-            "readings that",
-            "morning. I'd ask"
-          ],
-          [
-            "her before I asked",
-            "anybody in town."
+            "The observer keeps",
+            "her dates there."
           ]
         ],
         "MN_ITASCA_GATE_WALKERText": [
           [
-            "I used to leave my",
-            "shoes on to cross."
+            "My socks are dry",
+            "this time."
           ],
           [
-            "Then I slipped",
-            "between two stones"
+            "I used the bridge.",
+            "Last time, I went"
           ],
           [
-            "and had to walk",
-            "back with wet"
-          ],
-          [
-            "socks. Now I take",
-            "the socks off here"
-          ],
-          [
-            "and keep them dry",
-            "for the far side."
+            "off the bank to",
+            "wash my boots."
           ]
         ]
       },
@@ -56299,16 +56256,12 @@
           "after": "EVENT_MN_HEADWATERS_READING",
           "pages": [
             [
-              "Back to BEMIDJI",
-              "with the readings?"
+              "Got her readings?",
+              "Cross the bridge."
             ],
             [
-              "Cross on the",
-              "stones. That's the"
-            ],
-            [
-              "way to the field",
-              "officer."
+              "The east gatehouse",
+              "leads to BEMIDJI."
             ]
           ],
           "until": "EVENT_MN_HEADWATERS_REPORT"
@@ -56318,23 +56271,16 @@
           "after": "EVENT_MN_GYM_7_DEFEATED",
           "pages": [
             [
-              "Standing here you",
-              "can see the whole"
+              "Over the bridge.",
+              "See the striped"
             ],
             [
-              "river between your",
-              "boots."
+              "post on the bank?",
+              "Read the sign"
             ],
             [
-              "For the reading,",
-              "walk to the"
-            ],
-            [
-              "headwaters marker.",
-              "Keep your shoes"
-            ],
-            [
-              "on."
+              "beside it for the",
+              "water marks."
             ]
           ],
           "until": "EVENT_MN_HEADWATERS_READING"
@@ -68997,33 +68943,25 @@
         ],
         [
           "BEMIDJI",
-          "East via the ford."
+          "East over bridge."
         ]
       ],
       "MN_ITASCA_OBSERVERText": [
         [
-          "I checked every",
-          "bolt on the gauge."
+          "See the pale marks",
+          "on that post?"
         ],
         [
-          "Tight. Then I went",
-          "down the ladder."
+          "I painted the top",
+          "one with my toes"
         ],
         [
-          "My boot leaks at",
-          "the third rung."
+          "in the water. Now",
+          "two marks are dry."
         ],
         [
-          "Got to the fifth",
-          "before I felt it."
-        ],
-        [
-          "I wrote both marks",
-          "on the headwaters"
-        ],
-        [
-          "marker. It's just",
-          "north of here."
+          "I put the date on",
+          "the sign, too."
         ]
       ],
       "MnItascaMarkerAfterText": [
@@ -69032,12 +68970,12 @@
           "ITASCA readings."
         ],
         [
-          "Take the east road",
-          "back to BEMIDJI."
+          "Cross the bridge.",
+          "The east gatehouse"
         ],
         [
-          "The field officer",
-          "has HALE's sheets."
+          "leads to BEMIDJI.",
+          "Find the officer."
         ]
       ]
     },
@@ -69187,5 +69125,55 @@
         ]
       ]
     }
+  },
+  "central_mina_dialogue": {
+    "MnCentralMinaCompareOfferText": [
+      [
+        "MINA: That's the",
+        "ranger's lake log?"
+      ],
+      [
+        "I wrote down when",
+        "the pump failed."
+      ],
+      [
+        "Want my copy?"
+      ]
+    ],
+    "MnCentralMinaCompareGivenText": [
+      [
+        "MINA hands you the",
+        "date."
+      ],
+      [
+        "She holds the lake",
+        "log beside it."
+      ],
+      [
+        "MINA: We only saw",
+        "the water coming"
+      ],
+      [
+        "in. She saw where",
+        "it had been."
+      ]
+    ],
+    "MnCentralMinaLakeLogText": [
+      [
+        "You show MINA the",
+        "ranger's lake log."
+      ],
+      [
+        "MINA: Her boat was",
+        "hanging by a rope?"
+      ],
+      [
+        "All we could hear",
+        "was water coming"
+      ],
+      [
+        "in under our feet."
+      ]
+    ]
   }
 }

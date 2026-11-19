@@ -1,4 +1,5 @@
 //! Prior badges/party are explicit setup; all chapter progress uses native input.
+use super::super::brainerd_city::ranger_approach;
 use std::collections::BTreeMap;
 
 use crystal_assets::AssetRoot;
@@ -541,7 +542,12 @@ fn lake_country_controller_earns_wind_lake_and_ranger_then_walks_home() {
     road(&mut c, &r, 6, (42, 0));
     travel(&mut c, GameButton::Up, "MnBrainerd", (32, 47));
     travel(&mut c, GameButton::Up, "MnBrainerd", (32, 46));
-    walk_to(&mut c, &r, (25, 20));
+    let (ranger_x, ranger_y) = ranger_approach(&r);
+    let ranger_target = (
+        u16::try_from(ranger_x).expect("ranger approach has a nonnegative x"),
+        u16::try_from(ranger_y).expect("ranger approach has a nonnegative y"),
+    );
+    walk_to(&mut c, &r, ranger_target);
     press(&mut c, GameButton::Up);
     press(&mut c, GameButton::A);
     finish(&mut c);
@@ -556,7 +562,7 @@ fn lake_country_controller_earns_wind_lake_and_ranger_then_walks_home() {
         (9, 22),
     );
     c = continued(c, &root, &r, "lake-local-earned-lake");
-    walk_to(&mut c, &r, (25, 20));
+    walk_to(&mut c, &r, ranger_target);
     press(&mut c, GameButton::Up);
     press(&mut c, GameButton::A);
     for text in ["The fish moved on", "Ask the fishers"] {
@@ -570,7 +576,7 @@ fn lake_country_controller_earns_wind_lake_and_ranger_then_walks_home() {
                 .is_some_and(|s| s.contains(text))
         );
         press(&mut c, GameButton::Down);
-        at(&mut c, "MnBrainerd", (25, 20));
+        at(&mut c, "MnBrainerd", ranger_approach(&r));
         press(&mut c, GameButton::A);
     }
     finish(&mut c);

@@ -59,12 +59,12 @@ an event's historical name.
 
 | Stop | Main actions | Progression contract |
 | --- | --- | --- |
-| St. Cloud | Intervene in Sera's forced transfer; defeat Saven | Refusal leaves the intervention retryable. The station clerk can radio Nell at the mine |
-| Brainerd | Defeat Sivren; hear the ranger's conflicting report; collect the optional Surf gift | The ranger stands outside by the pier. The north shore trail is walkable |
+| St. Cloud | Intervene in Sera's forced transfer; defeat Saven | Refusal leaves the intervention retryable. After you help, Sera walks to the square just east of the station entrance. Ask the clerk to radio Nell, then speak to Sera outside. If Finn is already safe, Sera acknowledges his rescue |
+| Brainerd | Defeat Sivren; hear the ranger's conflicting report; collect the optional Surf gift | Meet the ranger on the bank beside the fishing pier. The north shore trail is walkable |
 | Leech Lake | Rest, speak to shore residents and continue north | The public trail connects Brainerd and Bemidji |
 | Bemidji | Learn Cut and complete Orlis's course; ask the officer for the independent reference | The officer can compare a reading brought from Itasca |
-| Lake Itasca | Copy the independent field readings | The marker supplies its own date on an independent visit. After meeting the ranger, the player recognizes her date |
-| Bemidji, return | Acknowledge the officer's comparison of the station records | The completed comparison is evidence for the mine investigation |
+| Lake Itasca | Copy the independent field readings | At the timber footbridge, read the bank gauge or the notice on its west side. Both record the same date. After meeting the Brainerd ranger, the player recognizes her date |
+| Bemidji, return | Acknowledge the officer's comparison of the station records | The officer signs the comparison with or without the Pine Badge. Bring the signed report and the badge to the public mine foreman |
 
 The Mankato notebook supports the comparison. Missing it must not block the
 report. Itasca is an independent reference across separate basins, not a water

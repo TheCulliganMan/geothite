@@ -6,6 +6,7 @@ use crystal_core::input::GameButton;
 use crystal_runtime::CrystalRuntime;
 
 use super::super::authored_route_fixture::indoor_walk;
+use super::super::brainerd_city::ranger_approach;
 use super::super::native_city_ports::city_port;
 use super::super::northstar_earned_gyms;
 use super::super::rochester_earned::try_battle;
@@ -200,7 +201,8 @@ fn winch(c: &mut VisibleShellController, r: &CrystalRuntime, flag: &str) {
 }
 
 fn report(c: &mut VisibleShellController, r: &CrystalRuntime, root: &AssetRoot) {
-    city_walk::walk(c, r, (25, 20));
+    let approach = ranger_approach(r);
+    city_walk::walk(c, r, approach);
     press(c, GameButton::Up);
     press(c, GameButton::A);
     if r.data()
@@ -220,7 +222,7 @@ fn report(c: &mut VisibleShellController, r: &CrystalRuntime, root: &AssetRoot) 
         assert_eq!(text.label, "MN_BRAINERD_RANGERText");
         assert!(!event(c, REPORT) && !event(c, SURF));
         press(c, GameButton::Down);
-        at(c, CITY, (25, 20));
+        at(c, CITY, approach);
         assert!(!event(c, REPORT) && !event(c, SURF));
     }
     finish(c);
@@ -276,7 +278,7 @@ pub(super) fn lake() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
         care(&mut c, &r);
     }
     if !event(&c, WON) {
-        city_walk::walk(&mut c, &r, (25, 20));
+        city_walk::walk(&mut c, &r, ranger_approach(&r));
         press(&mut c, GameButton::Up);
         press(&mut c, GameButton::A);
         if r.data()

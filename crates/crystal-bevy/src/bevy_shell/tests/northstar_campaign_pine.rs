@@ -6,6 +6,7 @@ use crystal_core::input::GameButton;
 use crystal_runtime::CrystalRuntime;
 
 use super::super::authored_route_fixture::indoor_walk;
+use super::super::brainerd_city::ranger_approach;
 use super::super::native_city_ports::city_port;
 use super::super::northstar_earned_gyms;
 use super::super::rochester_earned::try_battle;
@@ -60,7 +61,7 @@ fn arrival() -> (AssetRoot, CrystalRuntime, VisibleShellController) {
         .map_name
         .as_str()
     {
-        "MnBrainerd" => at(&mut c, "MnBrainerd", (25, 20)),
+        "MnBrainerd" => at(&mut c, "MnBrainerd", ranger_approach(&r)),
         CITY if !won
             && event(&c, REPORT)
             && super::super::northstar_dialogue::timely_evidence(&r) =>

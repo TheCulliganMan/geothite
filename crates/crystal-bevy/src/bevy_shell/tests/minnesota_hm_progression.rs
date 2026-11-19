@@ -2,6 +2,7 @@
 use crystal_core::input::GameButton;
 
 use super::super::VisibleShellController;
+use super::brainerd_city::ranger_approach;
 use super::interior_life::{load, walk};
 
 fn fixture(
@@ -225,7 +226,9 @@ fn minnesota_hm_progression_controller_all_seven_badge_denials_gifts_repeats_and
 #[ignore = "requires CRYSTAL_INTERIOR_PACK with staged Minnesota HMs"]
 fn minnesota_hm_progression_controller_early_surf_does_not_skip_the_brainerd_report() {
     let (root, runtime, _) = load();
-    let mut c = fixture(&root, &runtime, "MnBrainerd", (25, 20));
+    let approach = ranger_approach(&runtime);
+    let ranger = (approach.0, approach.1 - 1);
+    let mut c = fixture(&root, &runtime, "MnBrainerd", approach);
     // Ownership is explicit setup here; the first case earns the early Surf
     // handoff through St Paul's actual conversation. No report flag is supplied.
     assert!(
@@ -238,7 +241,7 @@ fn minnesota_hm_progression_controller_early_surf_does_not_skip_the_brainerd_rep
             .expect("early Surf fixture")
     );
     super::super::mark_runtime_snapshot_dirty(&mut c.shell);
-    talk(&mut c, (25, 19));
+    talk(&mut c, ranger);
     assert!(
         !c.shell
             .shell
@@ -250,7 +253,7 @@ fn minnesota_hm_progression_controller_early_surf_does_not_skip_the_brainerd_rep
     );
     badge_fixture(&mut c, 5);
     super::super::mark_runtime_snapshot_dirty(&mut c.shell);
-    talk(&mut c, (25, 19));
+    talk(&mut c, ranger);
     for flag in ["EVENT_MN_BRAINERD_REPORT", "EVENT_MN_SURF_GIFT_RECEIVED"] {
         assert!(
             c.shell
@@ -274,7 +277,7 @@ fn minnesota_hm_progression_controller_early_surf_does_not_skip_the_brainerd_rep
         "no duplicate HM"
     );
     c = continue_save(root, runtime.clone(), &mut c);
-    talk(&mut c, (25, 19));
+    talk(&mut c, ranger);
     assert_eq!(
         c.shell
             .shell

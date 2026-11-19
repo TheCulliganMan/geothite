@@ -1,0 +1,7 @@
+{
+  "parent_pack": "content-packs/minnesota-mothlight-battle-cafe-station-return-v01.crystalpack",
+  "parent_pack_sha256": "5ec9eeb503da0f8a3cd349b487557185e7f7a63d820230fa2b3c03c9f22bb132",
+  "output_pack": "content-packs/minnesota-mothlight-battle-cafe-headwaters-journey-v01.crystalpack",
+  "expected_pack_sha256": "2f100fa0c0d675687a972b6e759a4b6e4e3a8c66fe60011dcaf4977f60af2f95",
+  "builder": "pack_headwaters_journey"
+}

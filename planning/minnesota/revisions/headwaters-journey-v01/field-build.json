@@ -1,0 +1,7 @@
+{
+  "parent_pack": "content-packs/minnesota-station-return-v01.crystalpack",
+  "parent_pack_sha256": "57999769915d29b54a210c481a8618a501e1769f0e0c35702fe8082fcea3978f",
+  "output_pack": "content-packs/minnesota-headwaters-journey-v01.crystalpack",
+  "expected_pack_sha256": "0fae2552c52d5b4b4854f07a63a1e7699a93b5f6cc645d37f70c1ab916422572",
+  "builder": "pack_headwaters_journey"
+}

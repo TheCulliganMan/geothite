@@ -29,6 +29,17 @@ const TOWN: &str = "MnBrainerd";
 const SURF_EVENT: &str = "EVENT_MN_SURF_GIFT_RECEIVED";
 const CAMP_EVENT: &str = "EVENT_MN_BRAINERD_CAMP_REPEL";
 
+pub(super) fn ranger_approach(runtime: &CrystalRuntime) -> Point {
+    let ranger = runtime.data().maps[TOWN]
+        .objects
+        .iter()
+        .find(|actor| actor.script == "MN_BRAINERD_RANGER")
+        .expect("Brainerd's installed lake ranger");
+    let x = i16::try_from(ranger.x).expect("ranger's map column");
+    let y = i16::try_from(ranger.y).expect("ranger's map row");
+    (x, y + 1)
+}
+
 fn repo() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
         .join("../..")
@@ -710,7 +721,8 @@ fn battle(c: &mut VisibleShellController) {
 fn brainerd_city_controller_earns_gym6_badge_tm_then_ranger_surf_once_and_continue() {
     let (root, runtime) = load();
     let gym = canonical_gym();
-    let mut c = fixture(&root, &runtime, TOWN, (25, 20));
+    let approach = ranger_approach(&runtime);
+    let mut c = fixture(&root, &runtime, TOWN, approach);
     // Explicit local battle fixture: first five badges and a legal strong party
     // partner. Badge6, puzzle events, trainer wins, TM and Surf remain unearned.
     let mut partner = runtime
@@ -769,7 +781,7 @@ fn brainerd_city_controller_earns_gym6_badge_tm_then_ranger_surf_once_and_contin
     assert!(!flag(&c, "EVENT_MN_GYM_6_DEFEATED"));
     assert!(!flag(&c, SURF_EVENT));
     assert_eq!(quantity(&c, &runtime, "HM_SURF"), 0);
-    talk_from(&mut c, &runtime, (25, 20), GameButton::Up);
+    talk_from(&mut c, &runtime, approach, GameButton::Up);
     finish(&mut c);
     assert_eq!(quantity(&c, &runtime, "HM_SURF"), 0);
     assert!(!flag(&c, SURF_EVENT));
@@ -871,14 +883,14 @@ fn brainerd_city_controller_earns_gym6_badge_tm_then_ranger_surf_once_and_contin
     }
     assert_eq!(map(&mut c), TOWN);
     assert_eq!(at(&mut c), (12, 36));
-    talk_from(&mut c, &runtime, (25, 20), GameButton::Up);
+    talk_from(&mut c, &runtime, approach, GameButton::Up);
     finish(&mut c);
     assert!(flag(&c, SURF_EVENT));
     assert!(flag(&c, "EVENT_MN_BRAINERD_REPORT"));
     assert_eq!(quantity(&c, &runtime, "HM_SURF"), 1);
     let mut loaded = continue_save(&mut c, &root, &runtime);
     let before = loaded.snapshot().expect("saved earned Surf");
-    talk_from(&mut loaded, &runtime, (25, 20), GameButton::Up);
+    talk_from(&mut loaded, &runtime, approach, GameButton::Up);
     finish(&mut loaded);
     let after = loaded.snapshot().expect("repeat ranger");
     assert_eq!(before.bag, after.bag);
