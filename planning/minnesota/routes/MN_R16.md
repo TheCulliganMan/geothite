@@ -1,3 +1,5 @@
+The original build described below uses the teams and shared encounter table in `MN_R16.json`. For the current Minnesota route, the two route maps have separate encounter tables and the Prairie Run uses their installed regional teams. The [Floodwatch notes](../revisions/floodwatch-v01/README.md) identify the three trainers and Moorhead finish.
+
 > Current grass review: see [Red River verification](../revisions/route-grass-v01/current-r16-v01/README.md).
 > Existing native terrain is accepted unchanged:1016grass walking tiles,6forced
 > hayfield-climb grass steps, a dry ledge return and4forced main-route grass steps.

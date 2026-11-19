@@ -31,6 +31,10 @@ pack-authoring = []
 test-fixtures = ["crystal-core/test-fixtures", "pack-authoring"]
 
 [[example]]
+name = "pack_floodwatch"
+required-features = ["pack-authoring"]
+
+[[example]]
 name = "pack_outdoor_contours"
 required-features = ["pack-authoring"]
 

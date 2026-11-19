@@ -1,0 +1,7 @@
+{
+  "parent_pack": "content-packs/minnesota-mothlight-battle-cafe-league-and-fair-v01.crystalpack",
+  "parent_pack_sha256": "4b7d2e1efc8bd685ef9f22ae635ef0531434314b273a9dffcc4a23398a6dfe35",
+  "output_pack": "content-packs/minnesota-mothlight-battle-cafe-floodwatch-v01.crystalpack",
+  "expected_pack_sha256": "c357b64155d3def604bc9572c77c061425993be90870d910a3415848759eeda7",
+  "builder": "pack_floodwatch"
+}

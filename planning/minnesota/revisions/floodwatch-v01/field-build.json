@@ -1,0 +1,7 @@
+{
+  "parent_pack": "content-packs/minnesota-league-and-fair-v01.crystalpack",
+  "parent_pack_sha256": "17fe4760fe39651e0cea26e336fd688c9bd759c781a4ae1f6d85af627f5362b2",
+  "output_pack": "content-packs/minnesota-floodwatch-v01.crystalpack",
+  "expected_pack_sha256": "d0367944a6293074129b75fcbf1b071d8eaeb4a4364e88c055c187105136884f",
+  "builder": "pack_floodwatch"
+}

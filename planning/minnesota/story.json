@@ -572,14 +572,14 @@
         "BADGE_6"
       ],
       "steps": [
-        "Complete the optional prairie trainer circuit.",
-        "Read the Red River flood marker and return to the Moorhead depot for one NUGGET."
+        "On Route 16, defeat Finch in the eastern flowers, June on the southern hay lane and Lyle on the fishing pier, in any order.",
+        "Read the old flood mark. With the Lake Badge, collect one NUGGET from the levee helper between the Moorhead Center and Mart. The clinic volunteer keeps a separate FULL_HEAL."
       ],
       "sets": [
         "EVENT_MN_PRAIRIE_CIRCUIT_REWARDED"
       ],
       "opens": [],
-      "repeat_guard": "No west exit across the state border."
+      "repeat_guard": "The helper records the prize only after the NUGGET fits. Later visits cannot award another. The clinic tracks its FULL_HEAL separately."
     },
     {
       "id": "SQ03",
@@ -1972,7 +1972,7 @@
       "sets": [
         "EVENT_MN_PRAIRIE_CIRCUIT_REWARDED"
       ],
-      "completion": "local trainer circuit and marker interaction"
+      "completion": "three Route 16 trainer victories, the Red River marker, the Lake Badge and successful Nugget handoff"
     },
     {
       "id": "MS16",
@@ -15774,19 +15774,24 @@
         ],
         "MnIceOperationsWorkerText": [
           [
-            "IRA: I watched ADA",
-            "go through on pad"
+            "IRA: Looking for",
+            "ADA? She's still"
           ],
           [
-            "H. That's RECORDS.",
-            "If you're trying"
+            "at her desk. Take",
+            "the north stairs."
           ],
           [
-            "the blue shutters,",
-            "ask her about the"
+            "Cross RECORDS to",
+            "the next stairs."
           ],
           [
-            "CARD KEY first."
+            "In MAINTENANCE,",
+            "take pad A. Pad B"
+          ],
+          [
+            "in TRANSFER puts",
+            "you by her desk."
           ]
         ]
       },
@@ -15903,20 +15908,20 @@
         ],
         "MnIceHQCardAfterText": [
           [
-            "ADA: Pad B or E",
-            "takes you back to"
+            "ADA: Pad H takes",
+            "you to the RETURN"
           ],
           [
-            "TRANSFER. I saw",
-            "ELLIS go through a"
+            "shutter. My card",
+            "opens it."
           ],
           [
-            "blue shutter. I",
-            "stayed on this"
+            "Then open the",
+            "OPERATIONS door."
           ],
           [
-            "side when it came",
-            "down."
+            "The relay stairs",
+            "are on that side."
           ]
         ],
         "MnIceHQCardFullText": [
@@ -15939,20 +15944,20 @@
             "CARD KEY."
           ],
           [
-            "ADA: Take pad B or",
-            "E to TRANSFER."
+            "ADA: Take pad H",
+            "to OPERATIONS."
           ],
           [
-            "Look for the blue",
-            "shutters. If they"
+            "My card opens the",
+            "RETURN shutter."
           ],
           [
-            "ask whose card it",
-            "is, tell them"
+            "The next shutter",
+            "opens onto the"
           ],
           [
-            "mine. I'll be",
-            "here."
+            "relay stairs. Tell",
+            "them it's my card."
           ]
         ],
         "MnIceHQCardOfferText": [
@@ -21610,12 +21615,12 @@
       "MnR16C00R00": {
         "MN_R16_T01Seen": [
           [
-            "Two old boards",
-            "could be a bench."
+            "Watch JIGLET dive.",
+            "I taught it that"
           ],
           [
-            "First, let us see",
-            "what you can make!"
+            "by dropping my",
+            "pliers off here."
           ]
         ],
         "MN_R16_T01Won": [
@@ -21749,55 +21754,28 @@
         ],
         "MN_R16_T04Seen": [
           [
-            "Flowers where",
-            "I ski in winter."
+            "I ski this field",
+            "when it snows."
           ],
           [
-            "Stay on the path.",
-            "There is room!"
+            "In summer? I bring",
+            "my team!"
           ]
         ],
         "MN_R16_T04Won": [
           [
-            "I'm bringing my",
-            "brother out before"
-          ],
-          [
-            "it snows. He",
-            "always asks where"
-          ],
-          [
-            "we turn. It's",
-            "right where these"
-          ],
-          [
-            "flowers grow. I",
-            "never knew there"
-          ],
-          [
-            "was anything here",
-            "but a bend."
+            "Good turn! You'd",
+            "beat me on skis."
           ]
         ],
         "MN_R16_T04Lost": [
           [
-            "Good match. See",
-            "where the yellow"
+            "See the bend in",
+            "the hay lane?"
           ],
           [
-            "flowers stop?",
-            "That's where I"
-          ],
-          [
-            "start my turn on",
-            "skis. Next winter"
-          ],
-          [
-            "I'll know what's",
-            "under the snow"
-          ],
-          [
-            "there."
+            "That's where I",
+            "turn on my skis."
           ]
         ],
         "MN_R16_T05Seen": [
@@ -21898,27 +21876,20 @@
         ],
         "MN_R16_RIVER_WARDENText": [
           [
-            "MOORHEAD's west",
-            "across the bridge."
+            "MOORHEAD's just",
+            "west of here."
           ],
           [
-            "Stay above the",
-            "bend if you're"
+            "Going east? Take",
+            "the road bridge."
           ],
           [
-            "going east."
+            "A paddler waved",
+            "from the mud once."
           ],
           [
-            "A paddler waved to",
-            "me from the mud"
-          ],
-          [
-            "today. I waved",
-            "back before I"
-          ],
-          [
-            "realized he was",
-            "holding his boot."
+            "I waved back. He",
+            "held up his boot."
           ]
         ],
         "MN_R16_SEED_GROWERText": [
@@ -21950,6 +21921,20 @@
           [
             "West: MOORHEAD",
             "East: DETROIT LK."
+          ]
+        ],
+        "MN_R16_T04ReturnText": [
+          [
+            "I'm bringing my",
+            "brother out here."
+          ],
+          [
+            "He knows the turn",
+            "on skis. Let's see"
+          ],
+          [
+            "if he knows it",
+            "in the hay."
           ]
         ]
       },
@@ -22051,12 +22036,12 @@
         ],
         "MN_R16_T09Seen": [
           [
-            "Those birds clear",
-            "this fence daily."
+            "See how they turn",
+            "at the treetops?"
           ],
           [
-            "My team can",
-            "clear a challenge!"
+            "Let's see my three",
+            "pull that off!"
           ]
         ],
         "MN_R16_T09Won": [
@@ -22274,6 +22259,27 @@
           ],
           [
             "the water."
+          ]
+        ],
+        "MN_R16_SIGN_SEEDText": [
+          [
+            "PRAIRIE SEED PLOTS",
+            "Mind the sprouts."
+          ],
+          [
+            "PRAIRIE RUN",
+            "FINCH, JUNE, LYLE"
+          ],
+          [
+            "Battle all three.",
+            "Finish in MOORHEAD"
+          ],
+          [
+            "with the helper",
+            "between the CENTER"
+          ],
+          [
+            "and the MART."
           ]
         ]
       },
@@ -48367,6 +48373,102 @@
           [
             "Shops and POKEMON",
             "CENTER in town."
+          ]
+        ],
+        "MnPrairieNeedLakeText": [
+          [
+            "Cold hands? Try",
+            "the mitten basket."
+          ],
+          [
+            "For the PRAIRIE",
+            "RUN, bring your"
+          ],
+          [
+            "LAKE BADGE from",
+            "BRAINERD."
+          ]
+        ],
+        "MnPrairieLyleText": [
+          [
+            "LYLE fishes off",
+            "the short pier"
+          ],
+          [
+            "north of the road",
+            "bridge."
+          ]
+        ],
+        "MnPrairieJuneText": [
+          [
+            "JUNE takes the",
+            "south lane through"
+          ],
+          [
+            "the hay on",
+            "ROUTE 16."
+          ]
+        ],
+        "MnPrairieFinchText": [
+          [
+            "FINCH watches the",
+            "flowers by the"
+          ],
+          [
+            "cottonwoods at the",
+            "east end."
+          ]
+        ],
+        "MnPrairieGaugeText": [
+          [
+            "All three wins!",
+            "One stop left."
+          ],
+          [
+            "See the old flood",
+            "mark up north on"
+          ],
+          [
+            "the levee? That",
+            "was our finish"
+          ],
+          [
+            "line as kids. Go",
+            "take a look."
+          ]
+        ],
+        "MnPrairiePaidText": [
+          [
+            "All the way to",
+            "the flood mark!"
+          ],
+          [
+            "My dad put up a",
+            "NUGGET for the"
+          ],
+          [
+            "prairie run. It's",
+            "yours. Nice work!"
+          ]
+        ],
+        "MnPrairieFullText": [
+          [
+            "You finished! Your",
+            "PACK's full."
+          ],
+          [
+            "I'll keep your",
+            "NUGGET right here."
+          ]
+        ],
+        "MnPrairieIntroText": [
+          [
+            "We're holding the",
+            "PRAIRIE RUN!"
+          ],
+          [
+            "Still on your",
+            "route:"
           ]
         ]
       },
