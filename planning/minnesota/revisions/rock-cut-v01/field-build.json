@@ -1,0 +1,7 @@
+{
+  "parent_pack": "content-packs/minnesota-brown-shore-edges-v01.crystalpack",
+  "parent_pack_sha256": "9eb8c562cdd8d16a83200e26af92a0523d31ea4c5d32b831a414287b4e02fd54",
+  "output_pack": "content-packs/minnesota-rock-cut-trail-v01.crystalpack",
+  "expected_pack_sha256": "dd6ec788303a0ae75aed2380d18e7cf78eae04bc1e90a936cd7f3c0354509507",
+  "builder": "pack_outdoor_contours --rock-cut"
+}

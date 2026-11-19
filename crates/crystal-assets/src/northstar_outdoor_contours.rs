@@ -28,6 +28,9 @@ pub use rocky_shores::revise_rocky_shores;
 #[path = "northstar_brown_shores.rs"]
 mod brown_shores;
 pub use brown_shores::restore_brown_shores;
+#[path = "northstar_rock_cut.rs"]
+mod rock_cut;
+pub use rock_cut::revise_rock_cut;
 
 const MANIFEST: &str = "northstar-outdoor-contours-v4";
 type ArtIds = BTreeMap<(String, u16), u8>;
@@ -209,6 +212,15 @@ fn paint_room(
         .maps
         .get(&changes.map)
         .context("missing terrain map")?;
+    paint_blocks(pack, old, changes, ids)
+}
+
+fn paint_blocks(
+    pack: &CompiledGamePack,
+    old: &MapModule,
+    changes: Room,
+    ids: &ArtIds,
+) -> Result<MapModule> {
     ensure!(
         old.attributes.tileset_name == changes.tileset && !changes.placements.is_empty(),
         "unexpected terrain: {}",

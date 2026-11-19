@@ -1,0 +1,14 @@
+[
+  {"id": 7000, "tileset": "mn_outdoor_headwaters_stairs", "collision_from": 1, "tiles": [6, 6, 6, 59, 6, 6, 6, 75, 6, 6, 6, 6, 6, 6, 6, 6], "collision": ["FLOOR", "WALL", "FLOOR", "FLOOR"]},
+  {"id": 7001, "tileset": "mn_outdoor_headwaters_stairs", "collision_from": 1, "tiles": [60, 60, 61, 61, 76, 76, 76, 77, 6, 6, 6, 6, 6, 6, 6, 6], "collision": ["WALL", "WALL", "FLOOR", "FLOOR"]},
+  {"id": 7002, "tileset": "mn_outdoor_headwaters_stairs", "collision_from": 1, "tiles": [5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6, 6, 6, 6, 6, 6]},
+  {"id": 7003, "tileset": "mn_outdoor_headwaters_stairs", "collision_from": 1, "tiles": [5, 5, 5, 5, 5, 5, 5, 6, 6, 6, 6, 6, 6, 6, 6, 6]},
+  {"id": 7005, "tileset": "mn_outdoor_headwaters_stairs", "collision_from": 69, "tiles": [78, 79, 6, 6, 94, 95, 6, 6, 5, 5, 6, 6, 5, 5, 6, 6]},
+  {"id": 7006, "tileset": "mn_outdoor_headwaters_stairs", "collision_from": 1, "tiles": [5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6, 6, 5, 6, 6, 6]},
+  {"id": 7007, "tileset": "mn_outdoor_headwaters_stairs", "collision_from": 1, "tiles": [6, 6, 5, 5, 6, 6, 5, 5, 6, 6, 5, 5, 6, 5, 5, 5]},
+  {"id": 7008, "tileset": "mn_outdoor_headwaters_stairs", "collision_from": 69, "tiles": [78, 79, 5, 5, 94, 95, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5]},
+  {"id": 7009, "tileset": "mn_outdoor_headwaters_stairs", "collision_from": 5, "tiles": [6, 6, 6, 6, 6, 6, 6, 6, 30, 31, 30, 31, 62, 63, 62, 63], "collision": ["FLOOR", "FLOOR", "WALL", "WALL"]},
+  {"id": 7010, "tileset": "mn_outdoor_headwaters_stairs", "collision_from": 5, "tiles": [6, 5, 30, 31, 5, 5, 46, 47, 30, 31, 46, 47, 62, 63, 62, 63], "collision": ["FLOOR", "WALL", "WALL", "WALL"]},
+  {"id": 7011, "tileset": "mn_outdoor_headwaters_stairs", "collision_from": 114, "tiles": [60, 60, 60, 60, 60, 60, 60, 60, 76, 76, 76, 60, 76, 76, 76, 59]},
+  {"id": 7012, "tileset": "mn_outdoor_headwaters_stairs", "collision_from": 1, "tiles": [6, 6, 5, 5, 6, 6, 6, 5, 6, 6, 6, 6, 6, 6, 6, 6]}
+]

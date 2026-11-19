@@ -2585,6 +2585,12 @@
     },
     {
       "interior": "MnR05RockCut",
+      "installed_terrain": {
+        "design": "revisions/rock-cut-v01/README.md",
+        "field_receipt": "revisions/rock-cut-v01/field-build.json",
+        "mothlight_receipt": "revisions/rock-cut-v01/mothlight-build.json",
+        "exit_behavior": "Both indoor exits face south. Step toward the daylight, then continue down to emerge on the trail. Entry from either trail leaves an open step north into the cave."
+      },
       "parent": "MN_R05",
       "arrival_core": [
         5,

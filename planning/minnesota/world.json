@@ -7964,7 +7964,7 @@
     "status": "Accepted current-parent terrain revision: source/native pixels, strict whole-pack preservation, directional grass/ledge proof, actual2D review, native encounters/trainerPP/resources/Continue and stdio pass. CurrentR12 work preserved.",
     "scope_limit": "Sequential Minnesota grass pass remains open beyond R01-R03. Explicit local fixtures do not prove an earned statewide campaign."
   },
-  "active_local_review_revision": "brown_shore_edges_field_revision",
+  "active_local_review_revision": "rock_cut_trail_field_revision",
   "script_command_repair_revision": {
     "kind": "missing_minnesota_map_command_records",
     "parent_revision": "field_hm_habitats_cyclists_revision",
@@ -12837,5 +12837,20 @@
     "changed_map_chunks": 33,
     "changed_metatiles": 186,
     "runbook": "revisions/brown-shore-edges-v01/README.md"
+  },
+  "rock_cut_trail_field_revision": {
+    "kind": "terrain_review",
+    "parent_revision": "brown_shore_edges_field_revision",
+    "parent_pack": "content-packs/minnesota-brown-shore-edges-v01.crystalpack",
+    "parent_pack_sha256": "9eb8c562cdd8d16a83200e26af92a0523d31ea4c5d32b831a414287b4e02fd54",
+    "pack": "content-packs/minnesota-rock-cut-trail-v01.crystalpack",
+    "pack_sha256": "dd6ec788303a0ae75aed2380d18e7cf78eae04bc1e90a936cd7f3c0354509507",
+    "build_recipe": "planning/minnesota/revisions/rock-cut-v01/field-build.json",
+    "build_recipe_sha256": "35cf0606e5ccdc618da76a1190867409ce9aff39b11fcde62d96a7c6bfbb6267",
+    "content_identity": "2784bbf2cce9ec6d66e74b499e72facc7acaa8d81518b99336244242e53362c9",
+    "map_count": 743,
+    "changed_map_chunks": 3,
+    "changed_metatiles": 89,
+    "runbook": "revisions/rock-cut-v01/README.md"
   }
 }

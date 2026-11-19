@@ -13,7 +13,7 @@ use super::{
 };
 use crate::{CompiledGamePack, outdoor_contour_paths};
 
-const MANIFEST: &str = "northstar-brown-shore-edges-v1";
+pub(super) const MANIFEST: &str = "northstar-brown-shore-edges-v1";
 
 fn restore_edges(
     pack: &mut CompiledGamePack,
@@ -145,12 +145,31 @@ pub fn restore_brown_shores(base: &CompiledGamePack, dir: &Path) -> Result<Compi
         let map = paint_room(&pack, &pack, room, &ids)?;
         publish_room(&mut pack, base, map)?;
     }
-    rocky_shores::verify_paths(base, &pack, &previous)?;
+    verify_paths(base, &pack, dir, &previous)?;
+    pack.report.manifests.push(MANIFEST.to_owned());
+    pack.identity = crate::derive_compiled_game_pack_identity_from_manifest(
+        pack.format_version,
+        &pack.data,
+        &pack.audio_manifest,
+        &pack.runtime_files,
+        &pack.report,
+    )?;
+    crate::verify_compiled_game_pack_for_runtime(&pack)?;
+    Ok(pack)
+}
+
+pub(super) fn verify_paths(
+    base: &CompiledGamePack,
+    pack: &CompiledGamePack,
+    dir: &Path,
+    previous: &Path,
+) -> Result<()> {
+    rocky_shores::verify_paths(base, pack, previous)?;
     for walk in source::<Vec<cliff_faces::WalkCheck>>(dir, "route5-walks.json")? {
-        walk.verify(&pack)?;
+        walk.verify(pack)?;
     }
     for step in source::<Vec<RouteStep>>(dir, "route5-steps.json")? {
-        step.verify(&pack)?;
+        step.verify(pack)?;
     }
     // The south crossing includes the walking deck and the offset into Minneapolis.
     for ((north, x, y), (south, arrival_x, arrival_y), steps) in [
@@ -163,7 +182,7 @@ pub fn restore_brown_shores(base: &CompiledGamePack, dir: &Path) -> Result<Compi
             let start = (north, x + lane, y);
             let end = (south, arrival_x + lane, arrival_y);
             outdoor_contour_paths::check_passage(
-                &pack,
+                pack,
                 start,
                 Direction::Down,
                 MovementMode::Normal,
@@ -171,7 +190,7 @@ pub fn restore_brown_shores(base: &CompiledGamePack, dir: &Path) -> Result<Compi
                 end,
             )?;
             outdoor_contour_paths::check_passage(
-                &pack,
+                pack,
                 end,
                 Direction::Up,
                 MovementMode::Normal,
@@ -180,14 +199,5 @@ pub fn restore_brown_shores(base: &CompiledGamePack, dir: &Path) -> Result<Compi
             )?;
         }
     }
-    pack.report.manifests.push(MANIFEST.to_owned());
-    pack.identity = crate::derive_compiled_game_pack_identity_from_manifest(
-        pack.format_version,
-        &pack.data,
-        &pack.audio_manifest,
-        &pack.runtime_files,
-        &pack.report,
-    )?;
-    crate::verify_compiled_game_pack_for_runtime(&pack)?;
-    Ok(pack)
+    Ok(())
 }

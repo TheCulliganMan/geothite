@@ -1,0 +1,7 @@
+{
+  "parent_pack": "content-packs/minnesota-mothlight-brown-shore-edges-v01.crystalpack",
+  "parent_pack_sha256": "debc03cc5c67b19c02a0fafb53866ede7a24d726395a8ddd67f9b922b611a3c4",
+  "output_pack": "content-packs/minnesota-mothlight-rock-cut-trail-v01.crystalpack",
+  "expected_pack_sha256": "f4126c27fdcad848ff75988e3abe5a9bf064682a23f24dad525f4e476ecc29d6",
+  "builder": "pack_outdoor_contours --rock-cut"
+}
