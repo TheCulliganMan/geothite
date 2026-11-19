@@ -1,0 +1,24 @@
+[
+  {
+    "map": "MnInternationalFalls",
+    "tileset": "mn_international_falls",
+    "snow_turnout": {"at": [14, 7], "from": 129, "to": 128},
+    "guide": "MnFallsSkiGuide",
+    "sprite": "SPRITE_COOLTRAINER_M",
+    "stand": [28, 14],
+    "facing": "LEFT",
+    "offer": [["I'm taking mail to", "the warming hut."], ["Ski to RAINY RIVER", "with me?"]],
+    "arrival": [28, 15]
+  },
+  {
+    "map": "MnRainyRiverIcefields",
+    "tileset": "mn_winter_outdoor",
+    "snow_turnout": {"at": [2, 14], "from": 63, "to": 60},
+    "guide": "MnRainySkiGuide",
+    "sprite": "SPRITE_COOLTRAINER_F",
+    "stand": [5, 28],
+    "facing": "RIGHT",
+    "offer": [["The FALLS clinic", "needs these notes."], ["Ski back to town", "with me?"]],
+    "arrival": [5, 29]
+  }
+]

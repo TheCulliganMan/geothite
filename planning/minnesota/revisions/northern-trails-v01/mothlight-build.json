@@ -1,0 +1,7 @@
+{
+  "parent_pack": "content-packs/minnesota-mothlight-campaign-quality-v01.crystalpack",
+  "parent_pack_sha256": "fe3fc0a9c5407e78c1b04f7dab1b12e7704db8581312888f0bfe2ab3b80e02f4",
+  "output_pack": "content-packs/minnesota-mothlight-northern-trails-v01.crystalpack",
+  "expected_pack_sha256": "0223164262cd4590964da76e95af9af44a58b1f8088135e17e8cf44a41949a16",
+  "builder": "pack_northern_trails"
+}

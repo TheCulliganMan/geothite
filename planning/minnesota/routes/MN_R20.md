@@ -6,6 +6,14 @@
 
 # Voyageurs Border Loop — source review and integration contract
 
+## Skiing from International Falls
+
+The guide at the east end of the Falls street carries mail to the Rainy River warming hut. Accept the invitation to arrive on the west bank, beside the return guide. Both trips are free. The warming hut offers a place to heal before the crossing.
+
+From the hut, follow the lower bank east through the frostgrass. On the frozen river, the 17-square eastbound slide lands on snow. The long bank trail reaches the same shore on foot. Head south and then east to the Voyageurs warden. Continue along Route 20 and enter Boundary Waters from the west to register a qualifying circuit. The clinic ranger in International Falls handles check-in and the reward.
+
+The guides stop at Falls `(28,14)` and Rainy River `(5,28)`. The native map graph places the icefields 37 metatiles east and 64 north of the Falls origin. The guided journey spans that distance while both outdoor map borders keep their original neighbors. The plans and branch checks are recorded in the [northern trails revision](../revisions/northern-trails-v01/ski-crossing.json).
+
 ## Current executed native evidence — 2026-10-26
 
 Root published `content-packs/minnesota-voyageurs-border-loop.crystalpack` with

@@ -1,0 +1,7 @@
+{
+  "parent_pack": "content-packs/minnesota-campaign-quality-v01.crystalpack",
+  "parent_pack_sha256": "523bef2f5417aa97cd6c9703dc4de538d01a3331b2f74a4fb34296b5744015aa",
+  "output_pack": "content-packs/minnesota-northern-trails-v01.crystalpack",
+  "expected_pack_sha256": "d1fdb6ef1954748b9144099cc0cf68c17f6c9508ba2f20026a14265670bb20e4",
+  "builder": "pack_northern_trails"
+}

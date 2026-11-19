@@ -11013,6 +11013,23 @@
           [
             "LEAGUE: southwest"
           ]
+        ],
+        "MnFallsWatchArrivedText": [
+          [
+            "I radioed your",
+            "name to the FALLS"
+          ],
+          [
+            "clinic. Glad to",
+            "see you on your"
+          ],
+          [
+            "feet. Check back",
+            "with the ranger"
+          ],
+          [
+            "when you get home."
+          ]
         ]
       },
       "MnDuluth": {
@@ -14932,20 +14949,8 @@
       "MnInternationalFallsPokecenter1F": {
         "MnFallsregistered_linesText": [
           [
-            "RANGER: I've got",
-            "your name. Before"
-          ],
-          [
-            "you go out, the",
-            "crossing warden"
-          ],
-          [
-            "still needs eight",
-            "BADGES and the all"
-          ],
-          [
-            "clear from DULUTH",
-            "harbor."
+            "There. I've got",
+            "your name."
           ]
         ],
         "MN_FALLS_RANGERText": [
@@ -14972,52 +14977,40 @@
         "MnFallsregister_linesText": [
           [
             "RANGER: Going out",
-            "on the ice? Follow"
+            "on the ice?"
           ],
           [
-            "the VOYAGEURS",
-            "shore east into"
+            "I can tell the",
+            "west watch to look"
           ],
           [
-            "BOUNDARY WATERS.",
-            "The watch there"
-          ],
-          [
-            "will call when you",
-            "come through. On"
-          ],
-          [
-            "your way back,",
-            "stop here so I"
-          ],
-          [
-            "know you've made",
-            "it home. Shall I"
-          ],
-          [
-            "put you down?"
+            "out for you. Sign",
+            "the book?"
           ]
         ],
         "MnFallswaiting_linesText": [
           [
-            "RANGER: I haven't",
-            "heard from the"
+            "The ski guide is",
+            "on the east side"
           ],
           [
-            "west watch. They",
-            "won't see you from"
+            "of town. Ask for",
+            "the RAINY RIVER"
           ],
           [
-            "here. Follow the",
-            "VOYAGEURS shore"
+            "warming hut. From",
+            "there, follow the"
           ],
           [
-            "east into BOUNDARY",
-            "WATERS and they'll"
+            "bank to VOYAGEURS",
+            "and keep going to"
           ],
           [
-            "see you come",
-            "through."
+            "BOUNDARY WATERS."
+          ],
+          [
+            "Come back when the",
+            "watch sees you in."
           ]
         ],
         "MnFallscomplete_linesText": [
@@ -15139,6 +15132,29 @@
           ],
           [
             "in and get warm."
+          ]
+        ],
+        "MnFallsWatchBadgesText": [
+          [
+            "You're in my book,",
+            "but the warden"
+          ],
+          [
+            "counts all eight",
+            "BADGES before you"
+          ],
+          [
+            "cross the ice."
+          ]
+        ],
+        "MnFallsWatchHarborText": [
+          [
+            "We're waiting on",
+            "the all clear from"
+          ],
+          [
+            "DULUTH. Ask at the",
+            "harbor workshop."
           ]
         ]
       },
@@ -24315,15 +24331,15 @@
         ],
         "MN_FALLS_TRAIL_NOTICEText": [
           [
-            "BORDER LOOP. Check",
-            "in at the clinic."
+            "RAINY RIVER",
+            "Ski guide here."
           ],
           [
-            "RAINY RIVER east",
-            "to VOYAGEURS and"
+            "BORDER LOOP",
+            "Sign in at the"
           ],
           [
-            "BOUNDARY WATERS."
+            "FALLS clinic."
           ]
         ],
         "MN_FALLS_WEATHER_BOARDText": [
@@ -50750,7 +50766,7 @@
       "MnDriftlessLampGallery": {
         "MnLampFossilsText": [
           [
-            "By the east shelf,",
+            "On the west shelf,",
             "the light catches"
           ],
           [
@@ -65081,19 +65097,19 @@
       "MnR20C00R00": {
         "MnDiscoveryR20ClueText": [
           [
-            "Try the tracks on",
-            "the lower tamarack"
+            "On the lower loop,",
+            "look for the split"
           ],
           [
-            "loop. There's ice",
-            "in one print."
+            "boulder. There's",
+            "ice in the crack."
           ],
           [
-            "I held it till my",
-            "palm hurt. Didn't"
+            "I held a chip till",
+            "my palm hurt."
           ],
           [
-            "lose a drop."
+            "Never lost a drop."
           ]
         ],
         "MN_R20_T01Won": [

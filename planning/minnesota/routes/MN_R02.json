@@ -303,31 +303,38 @@
         51,
         21
       ],
-      "facing": "west",
-      "sight_range": 2,
+      "facing": "east",
+      "sight_range": 1,
       "party": [
         {
-          "species": "HOPPIP",
-          "level": 7
+          "species": "PODLET",
+          "level": 9
         },
         {
-          "species": "SUNKERN",
-          "level": 7
+          "species": "PINIT",
+          "level": 9
         }
       ],
       "defeated_flag": "EVENT_MN_R02_TRAINER_01",
       "before_lines": [
-        "A breeze carries",
-        "seeds past here.",
-        "Can you keep up?"
+        "Stand clear of",
+        "the barn today.",
+        "Underhand throw!",
+        "Here we go!"
       ],
       "after_lines": [
-        "HOPPIP drifts.",
-        "I take the lane."
+        "Looked at my",
+        "throwing hand",
+        "again, didn't I?"
       ],
       "loss_lines": [
-        "A little farther",
-        "than I expected!"
+        "I didn't hit the",
+        "barn this time!",
+        "That's the part",
+        "I'm telling my",
+        "sister first.",
+        "She'll ask how far",
+        "away the barn was."
       ],
       "block_main_lane": false
     },
