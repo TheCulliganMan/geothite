@@ -1,5 +1,7 @@
 # Minnesota campaign audit coverage
 
+The [Lake Observations review](../lake-observations-v01/README.md) covers the two Route 19 approaches, all six note orders, the Duluth workshop through the optional Devil’s Kettle return, all 57 hidden-item approaches and late League chamber resources.
+
 The subsequent [Floodwatch review](../floodwatch-v01/README.md) traces the Minneapolis rescue and Route 9 mine delivery from this ledger and implements the missing Moorhead prairie circuit. The rows below record the evidence available at League and Fair.
 
 The town and route surveys used Northern Trails and its Campaign Quality parent. The League, Casey and fair audits compared the Field release (`17fe4760fe39`) with Field Northern Trails and the final Mothlight release (`4b7d2e1efc8b`) with its Battle Café parent (`5fd62866c080`). The Route 18 review used that Café parent. The release comparison preserves its Route 18 maps, parties, event scripts, items and collision. All findings below come from scripts, geometry, still renders or isolated battle tests. [Campaign progression](../../PROGRESSION.md) · [Quest and milestone definitions](../../story.json) · [Mothlight build receipt](mothlight-build.json)

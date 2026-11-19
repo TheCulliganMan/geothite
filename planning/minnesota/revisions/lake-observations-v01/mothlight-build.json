@@ -1,0 +1,7 @@
+{
+  "parent_pack": "content-packs/minnesota-mothlight-battle-cafe-floodwatch-v01.crystalpack",
+  "parent_pack_sha256": "c357b64155d3def604bc9572c77c061425993be90870d910a3415848759eeda7",
+  "output_pack": "content-packs/minnesota-mothlight-battle-cafe-lake-observations-v01.crystalpack",
+  "expected_pack_sha256": "7a66e8a86a7981fe864b6b773192cfb380230efd3606dcb2aded65fbd12196fe",
+  "builder": "pack_lake_observations"
+}

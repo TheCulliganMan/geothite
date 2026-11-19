@@ -80,7 +80,7 @@ supply for every northern story site.
 | Grand Marais | Rest, resupply and follow Gunflint | The local lamp repair and Ryan's Baptism River cabin are optional; neither replaces the Duluth signal |
 | Boundary Waters shelter | Confront Hale after the harbor call and read the times to the skipper | The link opens access to the intake. Chief victory and link completion cannot restore the survey |
 | Boundary intake | Defeat Reed; stop the drive, close the sump and open the clean bypass; watch Kettlurk reach water and the crew move clear | Restoration follows the final acknowledged crew sequence. Declining the battle or control leaves it available |
-| Ely | Heal, stock up and register; defeat Fern, Flint, Veil, Halden and Casey; record the party in the Hall of Fame | Registration requires all eight badges and restoration. A blackout resets the active League run while preserving completed story and past championship records |
+| Ely | Heal, stock up and register; defeat Fern, Flint, Veil, Halden and Casey; record the party in the Hall of Fame | Registration requires all eight badges and restoration. With eight badges the registrar can identify the outstanding survey handoff. A blackout resets the run and preserves prior titles. Returning Champions can decline Casey’s rematch, prepare in the chamber and ask again with the same four wins. |
 
 The free Boundary basecamp, shelter and main trail junctions remain available
 without Safari admission. Catching Kettlurk, registering it in the Pokédex or

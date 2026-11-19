@@ -1,0 +1,7 @@
+{
+  "parent_pack": "content-packs/minnesota-floodwatch-v01.crystalpack",
+  "parent_pack_sha256": "d0367944a6293074129b75fcbf1b071d8eaeb4a4364e88c055c187105136884f",
+  "output_pack": "content-packs/minnesota-lake-observations-v01.crystalpack",
+  "expected_pack_sha256": "0eb24bbc802ef272464271713088adc2717c0ee61b93d0563a89e915dac8c576",
+  "builder": "pack_lake_observations"
+}

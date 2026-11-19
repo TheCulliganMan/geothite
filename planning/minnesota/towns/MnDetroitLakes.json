@@ -693,9 +693,10 @@
         4
       ],
       "lines": [
-        "WOODLAND EDGE",
-        "Leave the young",
-        "pines standing."
+        "ROUTE 19 NORTH",
+        "PRAIRIE FOREST",
+        "Follow the trail",
+        "east to ITASCA."
       ]
     },
     {
@@ -937,5 +938,5 @@
       "Seven current native exterior frames match source pixels and were personally reviewed"
     ]
   },
-  "compact_rebase": "Preserve the actual east-west Brainerd/prairie road. The formerly proposed direct R19 northern link is physically inconsistent and is not installed. R19 remains connected to Lake Itasca by its original route."
+  "compact_rebase": "The east-west road links Brainerd and the prairie. The northern gatehouse at (25,3) leads to Route 19 and Lake Itasca. Both directions through the gatehouse are public. The Lake Badge qualifies the observation reward in the ranger cabin."
 }

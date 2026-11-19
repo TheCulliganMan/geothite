@@ -276,7 +276,7 @@
       "requires": [],
       "steps": [
         "Start upstairs; the guardian introduces the field station through page-by-page dialogue.",
-        "Choose CHIKORITA, CYNDAQUIL or TOTODILE at level 5.",
+        "Choose POUCHID, KINDLIT or BIRCHIT at level 5.",
         "Receive five POKE_BALL items and a parcel of original survey readings for Rochester, recorded by the existing parcel flag."
       ],
       "sets": [
@@ -437,6 +437,7 @@
       "maps": [
         "MN_R09",
         "MnR09Cave1F",
+        "MnIronDrillCore",
         "MnGrandRapids",
         "MnGrandRapidsSurveyDepot",
         "MN_R10"
@@ -446,11 +447,10 @@
         "EVENT_MN_HEADWATERS_REPORT"
       ],
       "steps": [
-        "Investigate the stolen instruments in the Route 9 mine cache beside the fictional closed pumping site.",
-        "The Team Lode foreman admits the copper-nickel project will keep testing despite the warnings; defeat him in the reserved battle.",
-        "Separately inspect the guarded cache, confirm taking the survey meter and acknowledge the recovery text. Its saved recovery event carries the quest payload without inventing a bag item; declining remains retryable.",
-        "Return the recovered instrument to Grand Rapids; victory alone does not complete the handover.",
-        "Its records reveal pulse-pump tests and a northern control relay. Lode is deliberately driving a powerful Water Pokemon out of hiding."
+        "Meet the Team Lode foreman on Route 9 with the Pine Badge and the headwaters report. The mine crew still needs its meter.",
+        "Follow the haul and vent lines, open both valves and isolate the feed. In the drill chamber, witness the test, defeat Reed and stop the motor.",
+        "Speak to Finn after the crew is clear. He carries the survey meter. The old cache cannot give it to the player.",
+        "Give the meter to the technician in Grand Rapids. The depot keeps it and gives the player the log copy with two pump times for Duluth."
       ],
       "sets": [
         "EVENT_MN_DEPOT_FOREMAN_DEFEATED",
@@ -460,7 +460,7 @@
       "opens": [
         "MN_R10"
       ],
-      "repeat_guard": "Losing never grants the recovered instrument; after victory the foreman uses post-battle dialogue."
+      "repeat_guard": "The technician records the handoff once. Returning to the drill chamber checks the receipt to decide whether Finn is still there."
     },
     {
       "id": "Q07",
@@ -472,22 +472,22 @@
         "MnGrandMarais",
         "MN_R12",
         "MnBoundaryWaters",
-        "MnBoundaryWatersSurveyShelter"
+        "MnBoundaryWatersSurveyShelter",
+        "MnBoundaryIntake"
       ],
       "requires": [
-        "BADGE_7",
         "EVENT_MN_DEPOT_CLEARED"
       ],
       "steps": [
-        "Win Duluth gym for badge 8; bring the depot's copied meter log to the workshop receiver.",
-        "The harbor reveals the joint objective: Lode and ICE will drain the Boundary Waters for copper and nickel beneath the lakebeds. Lode intends to trap Kettlurk to power the pumps; ICE clears people and evidence out of the way. Public North Shore travel stays open. The harbor signal advances the investigation and warns the shore crew; it is not a badge-controlled road permit.",
-        "Travel through Grand Marais and Gunflint. Keeper/fisher observations foreshadow a returning current; the local lamp repair remains its own quest.",
-        "At the free Boundary Waters shelter, confront the chief. He admits knowing the risks and choosing drainage anyway, with ICE protecting the operation. Win the existing boss battle.",
-        "Use the separate receiver. Declining remains retryable; confirming and acknowledging alignment restores the public line, sends the real readings and coordinates stopping the drainage pumps before the lakes are emptied. Safari fees and legendary capture never gate this scene."
+        "Bring the copied pump times to the Duluth harbor engineer and hear Ivy on the radio. The Harbor Badge is earned separately at the gym.",
+        "Follow the North Shore through Grand Marais and Gunflint to the Boundary Waters survey shelter. The local lamp repair and the Safari are optional.",
+        "Confront Director Hale in the shelter. After defeating him, use the separate receiver to read both pump times to the skipper. This opens the intake.",
+        "At the landing, see Kettlurk and the crew. Defeat Reed, stop the drive, close the sump outlet and open the clean bypass. Stay until Kettlurk reaches water and the crew clears the works. Only then is the survey restored."
       ],
       "sets": [
         "EVENT_MN_LIGHTHOUSE_SIGNAL",
         "EVENT_MN_SURVEY_CHIEF_DEFEATED",
+        "EVENT_MN_ARC_LINK_SENT",
         "EVENT_MN_SURVEY_RESTORED"
       ],
       "opens": [
@@ -495,7 +495,7 @@
         "MN_R12",
         "MN_R13"
       ],
-      "repeat_guard": "No world flooding simulation. Local visual changes use saved block overrides; the story flag persists independently.",
+      "repeat_guard": "Declining the radio or leaving the intake preserves completed steps. The public roads remain open.",
       "safari_access_contract": "The Safari preserve is optional wildlife play; entry fee, balls, step exhaustion and rare catches cannot block Q07 or passage to the League."
     },
     {
@@ -550,8 +550,8 @@
         "BADGE_6"
       ],
       "steps": [
-        "Read the three dry-land observation signs on the Itasca and Detroit loop.",
-        "Report to the Detroit Lakes ranger for one MAX_REPEL."
+        "Read the pine, spring and prairie signs in any order. The road is public from Lake Itasca and from the north gate of Detroit Lakes.",
+        "With the Lake Badge and all three observations, report to the Detroit Lakes ranger for one MAX_REPEL."
       ],
       "sets": [
         "EVENT_MN_LAKE_OBSERVATIONS_REWARDED"
@@ -2440,6 +2440,154 @@
       "EVENT_MN_SURVEY_RESTORED"
     ],
     "status": "implementation candidate; native acceptance in progress"
+  },
+  "league_return_dialogue": {
+    "MnLeagueLobby": {
+      "MnElyLookAtItascaText": [
+        [
+          "REGISTRAR: No word",
+          "from the survey."
+        ],
+        [
+          "The marker at LAKE",
+          "ITASCA has the"
+        ],
+        [
+          "date the officer",
+          "in BEMIDJI needs."
+        ]
+      ],
+      "MnElyTakeReadingText": [
+        [
+          "You have the date",
+          "from LAKE ITASCA?"
+        ],
+        [
+          "Show it to the",
+          "officer at the"
+        ],
+        [
+          "BEMIDJI field",
+          "office."
+        ]
+      ],
+      "MnElyLookForFinnText": [
+        [
+          "The ROUTE 9 crew",
+          "has the meter."
+        ],
+        [
+          "Last I heard, FINN",
+          "was still down by"
+        ],
+        [
+          "the drill. Look",
+          "for the two valves"
+        ],
+        [
+          "on your way down."
+        ]
+      ],
+      "MnElyBringMeterText": [
+        [
+          "You got the meter",
+          "out? Take it to"
+        ],
+        [
+          "the technician in",
+          "the GRAND RAPIDS"
+        ],
+        [
+          "depot. They can",
+          "read the log."
+        ]
+      ],
+      "MnElyCallHarborText": [
+        [
+          "The harbor crew",
+          "needs those two"
+        ],
+        [
+          "pump times. Take",
+          "the log copy to"
+        ],
+        [
+          "the engineer on",
+          "the DULUTH docks."
+        ]
+      ],
+      "MnElyFindShelterText": [
+        [
+          "I heard the call",
+          "from DULUTH."
+        ],
+        [
+          "Follow ROUTE 13",
+          "north to BOUNDARY"
+        ],
+        [
+          "WATERS. They'll",
+          "need you at the"
+        ],
+        [
+          "survey shelter."
+        ]
+      ],
+      "MnElyReadPumpTimesText": [
+        [
+          "HALE's out of the",
+          "way? The skipper"
+        ],
+        [
+          "still needs both",
+          "pump times. Use"
+        ],
+        [
+          "the radio in the",
+          "survey shelter."
+        ]
+      ],
+      "MnElyGoToIntakeText": [
+        [
+          "The skipper heard",
+          "your two times."
+        ],
+        [
+          "The crew's at the",
+          "intake. Go through"
+        ],
+        [
+          "the east door in",
+          "the shelter."
+        ]
+      ],
+      "MnElyPrepareOutsideText": [
+        [
+          "REGISTRAR: Take",
+          "your time."
+        ],
+        [
+          "The clinic is",
+          "southwest of us."
+        ],
+        [
+          "The MART is south,",
+          "on the other path."
+        ]
+      ]
+    },
+    "MnLeagueChampion": {
+      "MnCaseyTakeABreathText": [
+        [
+          "CASEY: Sure.",
+          "Catch your breath."
+        ],
+        [
+          "I'll be here when",
+          "you're ready."
+        ]
+      ]
+    }
   },
   "dialogue_overhaul": {
     "schema_version": 1,
@@ -10811,15 +10959,16 @@
         ],
         "MN_BOUNDARY_SOUTH_TRAILText": [
           [
-            "ELY: South trail.",
-            "If the watch is"
+            "SOUTH TRAIL",
+            "ROUTE 13 to ELY."
           ],
           [
-            "across the path,",
-            "ask before you"
+            "For the survey",
+            "shelter, head"
           ],
           [
-            "pass."
+            "northeast from",
+            "this sign."
           ]
         ],
         "MN_BOUNDARY_BORDER_RANGERText": [
@@ -39514,11 +39663,12 @@
         ],
         "MN_DETROIT_NORTH_SIGNText": [
           [
-            "WOODLAND EDGE",
-            "Leave the young"
+            "ROUTE 19 NORTH",
+            "PRAIRIE FOREST"
           ],
           [
-            "pines standing."
+            "Follow the trail",
+            "east to ITASCA."
           ]
         ],
         "MN_DETROIT_CLINIC_SIGNText": [
@@ -39913,56 +40063,69 @@
         ],
         "MnDetroitNotesMissingText": [
           [
-            "RANGER: From",
-            "ITASCA, take"
+            "My spring map has",
+            "a few gaps."
           ],
           [
-            "PRAIRIE FOREST",
-            "west. Look at the"
+            "Take our north",
+            "gate to ROUTE 19."
+          ]
+        ],
+        "MnDetroitPrairieNoteText": [
+          [
+            "At the south bend,",
+            "see where the pink"
           ],
           [
-            "shoots under the",
-            "pines and the"
+            "flowers open up."
+          ]
+        ],
+        "MnDetroitWetlandNoteText": [
+          [
+            "From the prairie",
+            "bend, go northeast"
           ],
           [
-            "flowers at the",
-            "bend. Then take"
+            "to the pond. Which",
+            "way does the grass"
           ],
           [
-            "the south turn to",
-            "the spring. Tell"
+            "lean underwater?"
+          ]
+        ],
+        "MnDetroitPineNoteText": [
+          [
+            "Near the east road",
+            "to ITASCA, look"
           ],
           [
-            "me which way the",
-            "grass leans under"
-          ],
-          [
-            "the water."
+            "for shoots in a",
+            "gap in the pines."
           ]
         ],
         "MnDetroitNotesReviewText": [
           [
-            "RANGER: Toward the",
-            "pond? I drew the"
+            "Shoots in the pine",
+            "gap, flowers at"
           ],
           [
-            "arrow the other",
-            "way. I was"
+            "the bend... Now I",
+            "see where you"
           ],
           [
-            "watching the",
-            "ripples from the"
+            "stood. The grass",
+            "leans toward the"
           ],
           [
-            "path. If the grass",
-            "stays bent even"
+            "pond, even when",
+            "the wind drops?"
           ],
           [
-            "when the wind",
-            "drops, I drew the"
+            "My arrow points",
+            "away. I drew the"
           ],
           [
-            "wind."
+            "wind after all."
           ]
         ],
         "MnDetroitNotesAfterText": [
@@ -49937,22 +50100,6 @@
           ]
         ]
       },
-      "MnR19DetroitGate": {
-        "MnR19GateDeniedText": [
-          [
-            "This trail goes to",
-            "DETROIT LAKES."
-          ],
-          [
-            "I'll need to see",
-            "six BADGES before"
-          ],
-          [
-            "I let you through",
-            "from this side."
-          ]
-        ]
-      },
       "MnBoundaryRootBeerCabin": {
         "MN_INTERIOR_CABIN_PADDLERInteriorText": [
           [
@@ -55992,19 +56139,19 @@
           "pages": [
             [
               "FINN's crew is up.",
-              "I'm letting people"
+              "I just called ELY"
             ],
             [
-              "down the south",
-              "trail again."
+              "to tell them.",
+              "Take the south"
             ],
             [
-              "Head for ELY. The",
-              "registrar needs to"
+              "trail through to",
+              "town. Bring all"
             ],
             [
-              "see all eight",
-              "BADGES."
+              "eight BADGES to",
+              "the registrar."
             ]
           ],
           "until": "EVENT_MN_LEAGUE_CHAMPION"
@@ -56383,22 +56530,97 @@
       ]
     }
   },
+  "harbor_return_dialogue": {
+    "MnDuluthHarborWorkshop": {
+      "MnHarborIntakeReturnText": [
+        [
+          "ENGINEER: I heard",
+          "you. The boat"
+        ],
+        [
+          "would've grounded",
+          "at the post."
+        ],
+        [
+          "Take the shelter",
+          "hatch. FINN and"
+        ],
+        [
+          "IVY are still down",
+          "there."
+        ]
+      ]
+    },
+    "MnBoundaryWatersSurveyShelter": {
+      "MnShelterCrewBelowText": [
+        [
+          "I heard FINN's",
+          "boots on the iron"
+        ],
+        [
+          "steps. Take the",
+          "hatch. He'll show"
+        ],
+        [
+          "you the controls."
+        ]
+      ],
+      "MnShelterRadioBelowText": [
+        [
+          "IVY: I can hear",
+          "you. The landing"
+        ],
+        [
+          "is clear. Come on",
+          "down the hatch."
+        ],
+        [
+          "FINN's by the",
+          "controls with me."
+        ]
+      ]
+    }
+  },
   "intake_control_dialogue": {
     "MnIntakeRadioHintText": [
-      ["FINN: Try the", "shelter radio."],
-      ["Read IVY the two", "pump start times."]
+      [
+        "FINN: Try the",
+        "shelter radio."
+      ],
+      [
+        "Read IVY the two",
+        "pump start times."
+      ]
     ],
     "MnIntakeLandingHintText": [
-      ["FINN: Step north", "from the hatch."],
-      ["You'll see what's", "shaking the pipe."]
+      [
+        "FINN: Step north",
+        "from the hatch."
+      ],
+      [
+        "You'll see what's",
+        "shaking the pipe."
+      ]
     ],
     "MnIntakeDrillHintText": [
-      ["FINN: That bit's", "still turning."],
-      ["The DRILL DRIVE is", "beside REED."]
+      [
+        "FINN: That bit's",
+        "still turning."
+      ],
+      [
+        "The DRILL DRIVE is",
+        "beside REED."
+      ]
     ],
     "MnIntakeOutletHintText": [
-      ["FINN: The sump's", "still open."],
-      ["Head southeast to", "the SUMP OUTLET."]
+      [
+        "FINN: The sump's",
+        "still open."
+      ],
+      [
+        "Head southeast to",
+        "the SUMP OUTLET."
+      ]
     ]
   },
   "story_flow_revision": {
@@ -68560,155 +68782,409 @@
   "wayfinding_dialogue": {
     "MnR10Cave1F": {
       "MN_R10_GALLERY_READERText": [
-        ["Both paths meet", "at this pillar."],
-        ["For the crew, go", "west on the road."]
+        [
+          "Both paths meet",
+          "at this pillar."
+        ],
+        [
+          "For the crew, go",
+          "west on the road."
+        ]
       ],
       "MnGalleryRockSmashText": [
-        ["Loose rock breaks", "along the seams."],
-        ["Teach your partner", "ROCK SMASH."]
+        [
+          "Loose rock breaks",
+          "along the seams."
+        ],
+        [
+          "Teach your partner",
+          "ROCK SMASH."
+        ]
       ],
       "MnGalleryFullPackText": [
-        ["Your pack's full.", "I'll keep the TM."]
+        [
+          "Your pack's full.",
+          "I'll keep the TM."
+        ]
       ]
     }
   },
   "journey_landmark_dialogue": {
     "MnRochesterGym": {
       "MnRochesterGymLeaderGiftText": [
-        ["VAREL: A CARE", "BADGE for you!"],
-        ["Take this TM, too.", "It holds HEADBUTT."],
-        ["MANKATO? Head west", "on the farm road."],
-        ["Want HM FLASH?", "Head back east."],
-        ["Show the guide in", "the limestone cave"],
-        ["your CARE BADGE."]
+        [
+          "VAREL: A CARE",
+          "BADGE for you!"
+        ],
+        [
+          "Take this TM, too.",
+          "It holds HEADBUTT."
+        ],
+        [
+          "MANKATO? Head west",
+          "on the farm road."
+        ],
+        [
+          "Want HM FLASH?",
+          "Head back east."
+        ],
+        [
+          "Show the guide in",
+          "the limestone cave"
+        ],
+        [
+          "your CARE BADGE."
+        ]
       ]
     },
     "MnMankatoGym": {
       "MnMankatoGymLeaderGiftText": [
-        ["TORVEN: You earned", "the PRAIRIE BADGE."],
-        ["That TM holds", "MUD-SLAP. I keep"],
-        ["a spare shirt for", "practice days."],
-        ["Head north for", "MINNEAPOLIS."],
-        ["Want HM CUT? Take", "the east farm road"],
-        ["to the tool shed.", "Show your BADGE."]
+        [
+          "TORVEN: You earned",
+          "the PRAIRIE BADGE."
+        ],
+        [
+          "That TM holds",
+          "MUD-SLAP. I keep"
+        ],
+        [
+          "a spare shirt for",
+          "practice days."
+        ],
+        [
+          "Head north for",
+          "MINNEAPOLIS."
+        ],
+        [
+          "Want HM CUT? Take",
+          "the east farm road"
+        ],
+        [
+          "to the tool shed.",
+          "Show your BADGE."
+        ]
       ]
     },
     "MnMinneapolis": {
       "MN_MP_NORTH_GUIDEText": [
-        ["See that bluff?", "The road north"],
-        ["runs along it to", "ST CLOUD."],
-        ["Going to BRANNIC's", "GYM? Take the east"],
-        ["road to ST PAUL.", "I took the bluff"],
-        ["road once. Lovely", "view. Wrong GYM."]
+        [
+          "See that bluff?",
+          "The road north"
+        ],
+        [
+          "runs along it to",
+          "ST CLOUD."
+        ],
+        [
+          "Going to BRANNIC's",
+          "GYM? Take the east"
+        ],
+        [
+          "road to ST PAUL.",
+          "I took the bluff"
+        ],
+        [
+          "road once. Lovely",
+          "view. Wrong GYM."
+        ]
       ]
     },
     "MnBrainerd": {
       "MnBrainerdRangerBeforeText": [
-        ["RANGER: Careful.", "That's mud where"],
-        ["my boat used to", "sit. Want to see"],
-        ["the lake log? Show", "me SIVREN's LAKE"],
-        ["BADGE. She runs", "the GYM here."]
+        [
+          "RANGER: Careful.",
+          "That's mud where"
+        ],
+        [
+          "my boat used to",
+          "sit. Want to see"
+        ],
+        [
+          "the lake log? Show",
+          "me SIVREN's LAKE"
+        ],
+        [
+          "BADGE. She runs",
+          "the GYM here."
+        ]
       ],
       "MN_BRAINERD_RANGERText": [
-        ["RANGER: My boat", "was hanging by its"],
-        ["rope. I cut it.", "Dropped into mud."],
-        ["HALE said the", "gauge had slipped."],
-        ["I showed him the", "rope. He asked me"],
-        ["to check again.", "Here's my reading."],
-        ["Head north through", "LEECH LAKE to"],
-        ["BEMIDJI. Turn west", "for LAKE ITASCA."],
-        ["Check their marker", "for the same date."]
+        [
+          "RANGER: My boat",
+          "was hanging by its"
+        ],
+        [
+          "rope. I cut it.",
+          "Dropped into mud."
+        ],
+        [
+          "HALE said the",
+          "gauge had slipped."
+        ],
+        [
+          "I showed him the",
+          "rope. He asked me"
+        ],
+        [
+          "to check again.",
+          "Here's my reading."
+        ],
+        [
+          "Head north through",
+          "LEECH LAKE to"
+        ],
+        [
+          "BEMIDJI. Turn west",
+          "for LAKE ITASCA."
+        ],
+        [
+          "Check their marker",
+          "for the same date."
+        ]
       ],
       "MnBrainerdRangerRepeatText": [
-        ["RANGER: Head north", "past LEECH LAKE."],
-        ["At BEMIDJI, turn", "west for ITASCA."],
-        ["Copy the marks for", "my date. BEMIDJI's"],
-        ["field officer can", "compare the two."]
+        [
+          "RANGER: Head north",
+          "past LEECH LAKE."
+        ],
+        [
+          "At BEMIDJI, turn",
+          "west for ITASCA."
+        ],
+        [
+          "Copy the marks for",
+          "my date. BEMIDJI's"
+        ],
+        [
+          "field officer can",
+          "compare the two."
+        ]
       ]
     },
     "MnBemidji": {
       "MnBemidjiNeedReadingText": [
-        ["OFFICER: HALE sent", "me two readings."],
-        ["I want to see what", "the observer wrote"],
-        ["at LAKE ITASCA.", "Walk west from"],
-        ["town and read the", "headwaters marker."],
-        ["Bring me her marks", "and the date."]
+        [
+          "OFFICER: HALE sent",
+          "me two readings."
+        ],
+        [
+          "I want to see what",
+          "the observer wrote"
+        ],
+        [
+          "at LAKE ITASCA.",
+          "Walk west from"
+        ],
+        [
+          "town and read the",
+          "headwaters marker."
+        ],
+        [
+          "Bring me her marks",
+          "and the date."
+        ]
       ]
     },
     "MnLakeItasca": {
       "MN_ITASCA_WEST_CLOSEDText": [
-        ["DETROIT LAKES", "West to the trail."],
-        ["Turn south at the", "prairie flowers."],
-        ["BEMIDJI", "East via the ford."]
+        [
+          "DETROIT LAKES",
+          "West to the trail."
+        ],
+        [
+          "Turn south at the",
+          "prairie flowers."
+        ],
+        [
+          "BEMIDJI",
+          "East via the ford."
+        ]
       ],
       "MN_ITASCA_OBSERVERText": [
-        ["I checked every", "bolt on the gauge."],
-        ["Tight. Then I went", "down the ladder."],
-        ["My boot leaks at", "the third rung."],
-        ["Got to the fifth", "before I felt it."],
-        ["I wrote both marks", "on the headwaters"],
-        ["marker. It's just", "north of here."]
+        [
+          "I checked every",
+          "bolt on the gauge."
+        ],
+        [
+          "Tight. Then I went",
+          "down the ladder."
+        ],
+        [
+          "My boot leaks at",
+          "the third rung."
+        ],
+        [
+          "Got to the fifth",
+          "before I felt it."
+        ],
+        [
+          "I wrote both marks",
+          "on the headwaters"
+        ],
+        [
+          "marker. It's just",
+          "north of here."
+        ]
       ],
       "MnItascaMarkerAfterText": [
-        ["You've copied both", "ITASCA readings."],
-        ["Take the east road", "back to BEMIDJI."],
-        ["The field officer", "has HALE's sheets."]
+        [
+          "You've copied both",
+          "ITASCA readings."
+        ],
+        [
+          "Take the east road",
+          "back to BEMIDJI."
+        ],
+        [
+          "The field officer",
+          "has HALE's sheets."
+        ]
       ]
     },
     "MnLeagueLobby": {
       "MnElyMissingBadge1Text": [
-        ["REGISTRAR: I check", "all eight BADGES."],
-        ["For the CARE one,", "see VAREL by the"],
-        ["ROCHESTER clinic."]
+        [
+          "REGISTRAR: I check",
+          "all eight BADGES."
+        ],
+        [
+          "For the CARE one,",
+          "see VAREL by the"
+        ],
+        [
+          "ROCHESTER clinic."
+        ]
       ],
       "MnElyMissingBadge2Text": [
-        ["REGISTRAR: Still", "need the PRAIRIE"],
-        ["BADGE? TORVEN runs", "the hilltop GYM"],
-        ["in MANKATO."]
+        [
+          "REGISTRAR: Still",
+          "need the PRAIRIE"
+        ],
+        [
+          "BADGE? TORVEN runs",
+          "the hilltop GYM"
+        ],
+        [
+          "in MANKATO."
+        ]
       ],
       "MnElyMissingBadge3Text": [
-        ["REGISTRAR: Here's", "the empty spot for"],
-        ["the CURRENT BADGE.", "Look for AVRIN at"],
-        ["the MINNEAPOLIS", "GYM."]
+        [
+          "REGISTRAR: Here's",
+          "the empty spot for"
+        ],
+        [
+          "the CURRENT BADGE.",
+          "Look for AVRIN at"
+        ],
+        [
+          "the MINNEAPOLIS",
+          "GYM."
+        ]
       ],
       "MnElyMissingBadge4Text": [
-        ["REGISTRAR: For the", "CAPITOL BADGE,"],
-        ["ask for BRANNIC at", "the ST PAUL GYM."]
+        [
+          "REGISTRAR: For the",
+          "CAPITOL BADGE,"
+        ],
+        [
+          "ask for BRANNIC at",
+          "the ST PAUL GYM."
+        ]
       ],
       "MnElyMissingBadge5Text": [
-        ["REGISTRAR: Room", "for a WIND BADGE"],
-        ["right here. SAVEN", "awards it at the"],
-        ["GYM in ST CLOUD."]
+        [
+          "REGISTRAR: Room",
+          "for a WIND BADGE"
+        ],
+        [
+          "right here. SAVEN",
+          "awards it at the"
+        ],
+        [
+          "GYM in ST CLOUD."
+        ]
       ],
       "MnElyMissingBadge6Text": [
-        ["REGISTRAR: Still", "need a LAKE BADGE."],
-        ["SIVREN's the one", "to see. She runs"],
-        ["the BRAINERD GYM."]
+        [
+          "REGISTRAR: Still",
+          "need a LAKE BADGE."
+        ],
+        [
+          "SIVREN's the one",
+          "to see. She runs"
+        ],
+        [
+          "the BRAINERD GYM."
+        ]
       ],
       "MnElyMissingBadge7Text": [
-        ["REGISTRAR: I need", "to see your PINE"],
-        ["BADGE too. ORLIS", "awards it at the"],
-        ["GYM in BEMIDJI."]
+        [
+          "REGISTRAR: I need",
+          "to see your PINE"
+        ],
+        [
+          "BADGE too. ORLIS",
+          "awards it at the"
+        ],
+        [
+          "GYM in BEMIDJI."
+        ]
       ],
       "MnElyMissingBadge8Text": [
-        ["REGISTRAR: Seven!", "For the last one,"],
-        ["the HARBOR BADGE,", "look for NOREK at"],
-        ["the DULUTH GYM."]
+        [
+          "REGISTRAR: Seven!",
+          "For the last one,"
+        ],
+        [
+          "the HARBOR BADGE,",
+          "look for NOREK at"
+        ],
+        [
+          "the DULUTH GYM."
+        ]
       ]
     },
     "MnWinonaHome1F": {
       "MnWinonaChampionSupperText": [
-        ["MOM: The CHAMPION,", "in my kitchen."],
-        ["Look at those", "muddy feet!"],
-        ["Oh, leave them.", "I've missed those"],
-        ["prints on my nice", "clean floor."],
-        ["Pull up a chair.", "Stew for you,"],
-        ["and a bowl for", "every one of them."]
+        [
+          "MOM: The CHAMPION,",
+          "in my kitchen."
+        ],
+        [
+          "Look at those",
+          "muddy feet!"
+        ],
+        [
+          "Oh, leave them.",
+          "I've missed those"
+        ],
+        [
+          "prints on my nice",
+          "clean floor."
+        ],
+        [
+          "Pull up a chair.",
+          "Stew for you,"
+        ],
+        [
+          "and a bowl for",
+          "every one of them."
+        ]
       ],
       "MnWinonaChampionRestText": [
-        ["MOM: Home to eat?", "Good. Same chair."],
-        ["I still put out", "the big bowl."],
-        ["Funny how small", "it looks now."]
+        [
+          "MOM: Home to eat?",
+          "Good. Same chair."
+        ],
+        [
+          "I still put out",
+          "the big bowl."
+        ],
+        [
+          "Funny how small",
+          "it looks now."
+        ]
       ]
     }
   }
