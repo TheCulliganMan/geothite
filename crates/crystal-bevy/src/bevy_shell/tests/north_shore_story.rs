@@ -57,18 +57,14 @@ fn brainerd_nurse_continue_and_battle_whiteout_return_to_last_heal() {
     walk_to(&mut c, &r, (3, 6));
     until_map(&mut c, GameButton::Down, "MnBrainerd");
     walk_to(&mut c, &r, (12, 36));
-    travel(
-        &mut c,
-        GameButton::Up,
-        "MnBrainerdGym",
-        super::super::northstar_earned_gyms::arrival(&r, 6),
-    );
+    until_map(&mut c, GameButton::Up, "MnBrainerdGym");
     if c.snapshot().expect("gym entry").battle.is_none() {
-        super::interact(
-            &mut c,
-            &r,
-            super::super::northstar_earned_gyms::opponent(&r, 6, "MN_GYM_6_TRAINER_1"),
-        );
+        let lorla = r.data().maps["MnBrainerdGym"]
+            .objects
+            .iter()
+            .find(|actor| actor.script == "MN_GYM_6_TRAINER_1")
+            .expect("Lorla at the Brainerd shore");
+        super::interact(&mut c, &r, (lorla.x, lorla.y));
     }
     super::battle(&mut c, true);
     finish(&mut c);

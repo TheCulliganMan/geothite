@@ -1,4 +1,6 @@
 include!("tests/shell_basics.rs");
+#[path = "tests/badge_trails.rs"]
+mod badge_trails;
 #[path = "tests/dialogue_cast.rs"]
 mod dialogue_cast;
 #[path = "tests/dialogue_clock_presentation.rs"]
@@ -13,6 +15,8 @@ mod dialogue_save_prompt;
 mod dialogue_scene_fixtures;
 #[path = "tests/grand_marais_partner_retry.rs"]
 mod grand_marais_partner_retry;
+#[path = "tests/gym_badge_sight.rs"]
+mod gym_badge_sight;
 #[path = "tests/mankato_terrace_pond.rs"]
 mod mankato_terrace_pond;
 #[path = "tests/minnesota_badges.rs"]
@@ -598,6 +602,8 @@ mod minnesota_habitats;
 
 #[path = "tests/canoe.rs"]
 mod canoe;
+#[path = "tests/shore_watch_bank_walk.rs"]
+mod shore_watch_bank_walk;
 #[path = "tests/shore_watch_canoe.rs"]
 mod shore_watch_canoe;
 

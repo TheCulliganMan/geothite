@@ -1,0 +1,7 @@
+{
+  "parent_pack": "content-packs/minnesota-shore-watch-v01.crystalpack",
+  "parent_pack_sha256": "257143a0352491324a3437038f6dcf15e7ecdcd4b9276aa56f664713fc3db229",
+  "output_pack": "content-packs/minnesota-badge-trails-v01.crystalpack",
+  "expected_pack_sha256": "d5d6c970ef2782882177f4d0285ab22c143603ee8ee82c043f7475ce4582016a",
+  "builder": "pack_badge_trails"
+}

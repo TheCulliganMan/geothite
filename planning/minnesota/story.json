@@ -36652,23 +36652,54 @@
         ],
         "MnStPaulGymRequirementsText": [
           [
-            "Bring the CURRENT",
-            "BADGE from"
+            "BELVA or ORVEN can",
+            "vouch for you."
           ],
           [
-            "MINNEAPOLIS. Then",
-            "take the side pads"
+            "Bring me AVRIN's",
+            "CURRENT BADGE from"
           ],
           [
-            "to BELVA and",
-            "ORVEN. Beat both"
+            "MINNEAPOLIS and",
+            "we'll battle."
+          ]
+        ],
+        "MnBadgeBrannicMinaText": [
+          [
+            "That pump sketch?",
+            "Show it to MINA at"
           ],
           [
-            "and the middle pad",
-            "will take you to"
+            "UNION DEPOT. She's",
+            "by the shipment."
+          ]
+        ],
+        "MnBadgeBrannicWindText": [
+          [
+            "SAVEN's court is",
+            "up in ST CLOUD."
           ],
           [
-            "BRANNIC."
+            "Take ROUTE 4 west",
+            "to MINNEAPOLIS."
+          ],
+          [
+            "Then ROUTE 5 runs",
+            "north to her."
+          ]
+        ],
+        "MnBadgeBrannicBreezeText": [
+          [
+            "A WIND BADGE, eh?",
+            "How was the wind"
+          ],
+          [
+            "at SAVEN's? I went",
+            "on a calm day."
+          ],
+          [
+            "Then she turned",
+            "those fans on."
           ]
         ]
       },
@@ -39549,6 +39580,55 @@
             "it again for",
             "SIVREN."
           ]
+        ],
+        "MnBadgeSivrenItascaText": [
+          [
+            "Got the ranger's",
+            "date? Head north"
+          ],
+          [
+            "through LEECH LAKE",
+            "to BEMIDJI."
+          ],
+          [
+            "Turn west there",
+            "for LAKE ITASCA."
+          ],
+          [
+            "Check the gauge by",
+            "the little bridge."
+          ]
+        ],
+        "MnBadgeSivrenOfficerText": [
+          [
+            "Let me see. That's",
+            "the ITASCA mark."
+          ],
+          [
+            "The field officer",
+            "in BEMIDJI can"
+          ],
+          [
+            "compare it. Head",
+            "north from here,"
+          ],
+          [
+            "past LEECH LAKE."
+          ]
+        ],
+        "MnBadgeSivrenWakeText": [
+          [
+            "See that thin wake",
+            "by the sandbar?"
+          ],
+          [
+            "TORROUT swims one",
+            "lap for every cast"
+          ],
+          [
+            "I make. I've never",
+            "tired him out."
+          ]
         ]
       },
       "MnBrainerdOutfitter": {
@@ -41270,19 +41350,12 @@
         ],
         "MnDuluthGymRequirementsText": [
           [
-            "You'll need the",
-            "PINE BADGE before"
+            "Bring me the PINE",
+            "BADGE from ORLIS"
           ],
           [
-            "you face NOREK."
-          ],
-          [
-            "Beat LIVRA, TORDEL",
-            "and ANVER on your"
-          ],
-          [
-            "way through the",
-            "gym."
+            "in BEMIDJI. I'll",
+            "save you a match."
           ]
         ]
       },
@@ -49652,25 +49725,26 @@
             "the gallery."
           ],
           [
-            "See those curves",
-            "in the wall?"
+            "The ladder below",
+            "the east steps"
           ],
           [
-            "They are shells."
+            "leads down to the",
+            "shell bed."
           ]
         ],
         "MN_R01_HOLLOW_GUIDEText": [
           [
-            "This lit passage",
-            "runs to WINONA."
+            "Both bright gaps",
+            "open on ROUTE 1."
           ],
           [
-            "The ladder leads",
-            "to the shell bed."
+            "The ladder below",
+            "the east steps"
           ],
           [
-            "Bring FLASH for",
-            "those fossils."
+            "leads to the shell",
+            "bed. Bring FLASH."
           ]
         ]
       },
