@@ -1,0 +1,7 @@
+{
+  "parent_pack": "content-packs/minnesota-fen-trail-v01.crystalpack",
+  "parent_pack_sha256": "36b098ef7c57cbfaf5ca64dcf6c4407f759185efeef296c18f819ae7880b9767",
+  "output_pack": "content-packs/minnesota-trail-battles-v01.crystalpack",
+  "expected_pack_sha256": "a42a66950bee8a1bf47f479a74f5ca57d7261df61f4c46f7627907951d5e352b",
+  "builder": "pack_trail_battles"
+}

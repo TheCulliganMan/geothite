@@ -1,0 +1,181 @@
+{
+  "MnMinneapolis": {
+    "MN_EXTRA_MPLS_CYCLE_09": {
+      "name": "KAI",
+      "party": [
+        {"from": "OATLET", "level": 18, "species": "CLICKIT", "moves": ["SCREECH", "QUICK_ATTACK", "DOUBLE_KICK"]},
+        {"from": "BIRCHIT", "level": 20, "species": "DARTDUCK", "moves": ["LOW_KICK", "QUICK_ATTACK", "FOCUS_ENERGY"]}
+      ]
+    },
+    "MN_EXTRA_MPLS_CYCLE_10": {
+      "name": "RUTH",
+      "party": [
+        {"from": "NIBBIN", "level": 19, "species": "PODLET", "moves": ["COTTON_SPORE", "ACID"]},
+        {"from": "DARTDUCK", "level": 21, "species": "RILLBOW", "moves": ["BUBBLEBEAM", "AQUA_JET", "FOCUS_ENERGY"]}
+      ]
+    },
+    "MN_EXTRA_MPLS_CYCLE_11": {
+      "name": "OWEN",
+      "party": [
+        {"from": "BEETYNAMO", "level": 20, "species": "BURROWBILL", "moves": ["GUST", "MUD_SLAP", "QUICK_ATTACK"]},
+        {"from": "CHORIP", "level": 22, "species": "CADENSET", "moves": ["SPARK", "MACH_PUNCH", "FOCUS_ENERGY"]}
+      ]
+    },
+    "MN_EXTRA_MPLS_CYCLE_12": {
+      "name": "IRIS",
+      "party": [
+        {"from": "BIRCHIT", "level": 21, "species": "BERRYBOO", "moves": ["ABSORB", "BITE", "GROWTH"]},
+        {"from": "AGATOT", "level": 23, "species": "PORTABEAU", "moves": ["WATER_PULSE", "HEADBUTT", "DEFENSE_CURL"]}
+      ]
+    },
+    "MN_EXTRA_MPLS_CYCLE_13": {
+      "name": "THEO",
+      "party": [
+        {"from": "DARTDUCK", "level": 18, "species": "RIFFBIT", "moves": ["RAPID_SPIN", "SPARK", "WATER_GUN"]},
+        {"from": "CASTOROCK", "level": 20, "species": "BRISTUB", "moves": ["DEFENSE_CURL", "ROLLOUT", "HEADBUTT"]}
+      ]
+    },
+    "MN_EXTRA_MPLS_CYCLE_14": {
+      "name": "VERA",
+      "party": [
+        {"from": "CHORIP", "level": 19, "species": "PINIT", "moves": ["LEECH_SEED", "PIN_MISSILE", "EMBER"]},
+        {"from": "OATLET", "level": 21, "species": "CHORIP", "moves": ["CONFUSION", "BUBBLE", "DISARMING_VOICE"]}
+      ]
+    },
+    "MN_EXTRA_MPLS_CYCLE_15": {
+      "name": "LUKE",
+      "party": [
+        {"from": "AGATOT", "level": 20, "species": "SCUTLET", "moves": ["MUD_SLAP", "WATER_GUN", "DEFENSE_CURL"]},
+        {"from": "NIBBIN", "level": 22, "species": "PATCHEBEE", "moves": ["METAL_CLAW", "FURY_ATTACK", "LEECH_LIFE"]}
+      ]
+    },
+    "MN_EXTRA_MPLS_CYCLE_16": {
+      "name": "ZOE",
+      "party": [
+        {"from": "CASTOROCK", "level": 21, "species": "JOTLET", "moves": ["STRING_SHOT", "CONFUSION", "MIMIC"]},
+        {"from": "BEETYNAMO", "level": 23, "species": "VANECHICK", "moves": ["WING_ATTACK", "FAINT_ATTACK"]}
+      ]
+    },
+    "MN_EXTRA_MPLS_CYCLE_17": {
+      "name": "SAM",
+      "party": [
+        {"from": "OATLET", "level": 18, "species": "PINGLET", "moves": ["THUNDER_WAVE", "THUNDERSHOCK", "WATER_GUN"]},
+        {"from": "BIRCHIT", "level": 20, "species": "MILLIMP", "moves": ["RAPID_SPIN", "DIG", "MUD_SLAP"]}
+      ]
+    },
+    "MN_EXTRA_MPLS_CYCLE_18": {
+      "name": "ADA",
+      "party": [
+        {"from": "NIBBIN", "level": 19, "species": "CACHEEK", "moves": ["TAIL_WHIP", "QUICK_ATTACK", "PURSUIT"]},
+        {"from": "DARTDUCK", "level": 21, "species": "CLICKIT", "moves": ["DOUBLE_KICK", "QUICK_ATTACK", "SCREECH"]}
+      ]
+    }
+  },
+  "MnStateFairgrounds": {
+    "MN_FAIR_DAIRY_KID_TRAINER": {
+      "name": "KAI",
+      "party": [
+        {"from": "CHISLET", "level": 23, "species": "CURDLET", "moves": ["ENCORE", "DOUBLESLAP", "QUICK_ATTACK"]},
+        {"from": "CURDLET", "level": 23, "species": "SODCALF", "moves": ["STOMP", "MUD_SLAP", "HORN_ATTACK"]}
+      ]
+    },
+    "MN_FAIR_ORCHARD_TRAINER": {
+      "name": "REED",
+      "party": [
+        {"from": "CRISPIP", "level": 23, "species": "CRISPIP", "moves": ["LEECH_SEED", "ACID", "BITE"]},
+        {"from": "ZAPSAP", "level": 23, "species": "BERRYBOO", "moves": ["GROWTH", "MEGA_DRAIN", "LICK"]}
+      ]
+    },
+    "MN_FAIR_EXHIBITOR_01_TRAINER": {
+      "name": "ADA",
+      "party": [
+        {"from": "DOUGHLIN", "level": 23, "species": "FLAPIP", "moves": ["ENCORE", "SLAM", "RAPID_SPIN"]}
+      ]
+    },
+    "MN_FAIR_EXHIBITOR_02_TRAINER": {
+      "name": "BO",
+      "party": [
+        {"from": "FLAPIP", "level": 23, "species": "CHISLET", "moves": ["CHARM", "ICY_WIND", "FAIRY_WIND"]},
+        {"from": "PIPCORN", "level": 23, "species": "PUFFLARE", "moves": ["FOCUS_ENERGY", "MACH_PUNCH", "EMBER"]}
+      ]
+    },
+    "MN_FAIR_EXHIBITOR_03_TRAINER": {
+      "name": "CORA",
+      "party": [
+        {"from": "CURDLET", "level": 23, "species": "CURDLET", "moves": ["ENCORE", "DOUBLESLAP", "QUICK_ATTACK"]},
+        {"from": "TOTLIT", "level": 23, "species": "CRUMCONE", "moves": ["BITE", "EMBER", "THIEF"]}
+      ]
+    },
+    "MN_FAIR_EXHIBITOR_04_TRAINER": {
+      "name": "DALE",
+      "party": [
+        {"from": "CHISLET", "level": 23, "species": "SCUTLET", "moves": ["DEFENSE_CURL", "MUD_SLAP", "SLAM"]},
+        {"from": "CURDLET", "level": 23, "species": "PATCHEBEE", "moves": ["METAL_CLAW", "FURY_ATTACK", "HARDEN"]}
+      ]
+    },
+    "MN_FAIR_EXHIBITOR_05_TRAINER": {
+      "name": "ELI",
+      "party": [
+        {"from": "DOUGHLIN", "level": 24, "species": "BRISTUB", "moves": ["DEFENSE_CURL", "ROLLOUT", "HEADBUTT"]},
+        {"from": "OATLET", "level": 23, "species": "MILLIMP", "moves": ["DIG", "MUD_SLAP", "RAPID_SPIN"]}
+      ]
+    },
+    "MN_FAIR_EXHIBITOR_06_TRAINER": {
+      "name": "FAYE",
+      "party": [
+        {"from": "TOTLIT", "level": 23, "species": "PUFFLARE", "moves": ["MACH_PUNCH", "EMBER", "BIDE"]},
+        {"from": "LUTEBRISK", "level": 23, "species": "TOTLIT", "moves": ["HEADBUTT", "EMBER", "SWEET_SCENT"]}
+      ]
+    },
+    "MN_FAIR_EXHIBITOR_07_TRAINER": {
+      "name": "GUS",
+      "party": [
+        {"from": "OATLET", "level": 23, "species": "CHORIP", "moves": ["HYPNOSIS", "CONFUSION", "WATER_GUN"]},
+        {"from": "RICELING", "level": 24, "species": "BERRYBOO", "moves": ["MEGA_DRAIN", "BITE", "GROWTH"]}
+      ]
+    },
+    "MN_FAIR_EXHIBITOR_08_TRAINER": {
+      "name": "HOPE",
+      "party": [
+        {"from": "CRISPIP", "level": 23, "species": "RIFFBIT", "moves": ["SPARK", "WATER_GUN", "RAPID_SPIN"]},
+        {"from": "ZAPSAP", "level": 23, "species": "SODCALF", "moves": ["MAGNITUDE", "STOMP", "SPARK"]}
+      ]
+    },
+    "MN_FAIR_EXHIBITOR_09_TRAINER": {
+      "name": "IVY",
+      "party": [
+        {"from": "RICELING", "level": 23, "species": "REEDRAFT", "moves": ["LEECH_SEED", "VINE_WHIP", "GROWTH"]},
+        {"from": "CINDERFIN", "level": 23, "species": "CHORIP", "moves": ["HYPNOSIS", "DISARMING_VOICE", "WATER_GUN"]}
+      ]
+    },
+    "MN_FAIR_EXHIBITOR_10_TRAINER": {
+      "name": "JUNE",
+      "party": [
+        {"from": "PIPCORN", "level": 23, "species": "DARTDUCK", "moves": ["QUICK_ATTACK", "LOW_KICK", "FOCUS_ENERGY"]},
+        {"from": "RIFFBIT", "level": 24, "species": "SQUEAKURD", "moves": ["MACH_PUNCH", "ENCORE", "DOUBLESLAP"]}
+      ]
+    },
+    "MN_FAIR_EXHIBITOR_11_TRAINER": {
+      "name": "LEE",
+      "party": [
+        {"from": "PIPCORN", "level": 23, "species": "CHISLET", "moves": ["ICY_WIND", "ENCORE", "FAIRY_WIND"]},
+        {"from": "FLAPIP", "level": 24, "species": "SLIPPERINA", "moves": ["STUN_SPORE", "MEGA_DRAIN", "CONFUSION"]}
+      ]
+    },
+    "MN_FAIR_EXHIBITOR_12_TRAINER": {
+      "name": "MAX",
+      "party": [
+        {"from": "RIFFBIT", "level": 25, "species": "DYNARILL", "moves": ["SPARK", "RAPID_SPIN", "WATER_GUN"]},
+        {"from": "DOUGHLIN", "level": 23, "species": "CRISPIP", "moves": ["LEECH_SEED", "BITE", "ACID"]}
+      ]
+    },
+    "MN_FAIR_EXHIBITOR_13_TRAINER": {
+      "name": "NORA",
+      "party": [
+        {"from": "OATLET", "level": 23, "species": "TOTLIT", "moves": ["DEFENSE_CURL", "ROLLOUT", "HEADBUTT"]},
+        {"from": "CURDLET", "level": 23, "species": "CINDERFIN", "moves": ["WATER_GUN", "EMBER", "BITE"]},
+        {"from": "CRISPIP", "level": 23, "species": "FLAPIP", "moves": ["ENCORE", "SLAM", "RAPID_SPIN"]}
+      ]
+    }
+  }
+}

@@ -1881,10 +1881,9 @@ pub fn apply_dig_warp_memory_for_transition(
     if saved {
         state.dig_warp_map_name = Some(transition.trigger.map_name.clone());
         state.dig_warp_index = Some(transition.trigger.warp.index);
-    } else {
-        state.dig_warp_map_name = None;
-        state.dig_warp_index = None;
     }
+    // Crystal's SaveDigWarp only writes on an eligible entrance. Internal stairs,
+    // roof courtyards and the trip back outside all leave the last entrance intact.
     DigWarpMemoryOutcome {
         before_map_name,
         before_index,
@@ -3411,34 +3410,53 @@ mod tests {
         assert_eq!(state.dig_warp_map_name.as_deref(), Some("ROUTE_29"));
         assert_eq!(state.dig_warp_index, Some(3));
 
-        assert_eq!(
-            apply_dig_warp_memory_for_transition(&mut state, &transition, "CAVE", "ROUTE"),
-            DigWarpMemoryOutcome {
-                before_map_name: Some("ROUTE_29".to_string()),
-                before_index: Some(3),
-                after_map_name: None,
-                after_index: None,
-            }
+        for (source, destination) in [
+            ("CAVE", "CAVE"),
+            ("CAVE", "DUNGEON"),
+            ("DUNGEON", "CAVE"),
+            ("CAVE", "ROUTE"),
+            ("ROUTE", "TOWN"),
+        ] {
+            let memory = apply_dig_warp_memory_for_transition(
+                &mut state,
+                &warp_transition_from("ANOTHER_ROOM", 1),
+                source,
+                destination,
+            );
+            assert_eq!(memory.after_map_name, memory.before_map_name);
+            assert_eq!(memory.after_index, memory.before_index);
+            assert_eq!(state.dig_warp_map_name.as_deref(), Some("ROUTE_29"));
+            assert_eq!(state.dig_warp_index, Some(3));
+        }
+        apply_dig_warp_memory_for_transition(
+            &mut state,
+            &warp_transition_from("NEXT_TOWN", 2),
+            "TOWN",
+            "GATE",
         );
-        assert_eq!(state.dig_warp_map_name, None);
-        assert_eq!(state.dig_warp_index, None);
+        assert_eq!(state.dig_warp_map_name.as_deref(), Some("NEXT_TOWN"));
+        assert_eq!(state.dig_warp_index, Some(2));
     }
 
     #[test]
     fn dig_warp_memory_rejects_blacklisted_previous_maps() {
-        let mut state = GameState::default();
-        let transition = warp_transition_from("TinTowerRoof", 2);
-
-        assert_eq!(
-            apply_dig_warp_memory_for_transition(&mut state, &transition, "TOWN", "INDOOR"),
-            DigWarpMemoryOutcome {
-                before_map_name: None,
-                before_index: None,
-                after_map_name: None,
-                after_index: None,
+        for initial in [None, Some(("Route42".to_string(), 1))] {
+            let mut state = GameState::default();
+            if let Some((map, index)) = &initial {
+                state.dig_warp_map_name = Some(map.clone());
+                state.dig_warp_index = Some(*index);
             }
-        );
-        assert!(is_dig_previous_map_blacklisted("TinTowerRoof"));
+            for roof in ["MountMoonSquare", "TinTowerRoof"] {
+                let outcome = apply_dig_warp_memory_for_transition(
+                    &mut state,
+                    &warp_transition_from(roof, 2),
+                    "TOWN",
+                    "INDOOR",
+                );
+                assert_eq!(outcome.after_map_name, outcome.before_map_name);
+                assert_eq!(outcome.after_index, outcome.before_index);
+            }
+        }
     }
 
     #[test]

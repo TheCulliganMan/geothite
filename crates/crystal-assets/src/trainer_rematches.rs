@@ -426,7 +426,65 @@ impl GameDataSet {
             slot.moves =
                 self.rematch_moves(&original, authored_level, slot.level, &slot.species)?;
         }
+        self.retain_gym_prize_move(trainer, &mut scaled)?;
         Ok(scaled)
+    }
+
+    // A Minnesota leader demonstrates the TM they hand over after this match.
+    // Read the reward from the same gym script the player will actually run.
+    fn retain_gym_prize_move(&self, authored: &Trainer, scaled: &mut Trainer) -> Result<()> {
+        if !self.minnesota_trainer_scaling
+            || !authored
+                .trainer_id
+                .strip_prefix("MN_GYM_")
+                .is_some_and(|id| matches!(id.as_bytes(), [b'1'..=b'8']))
+        {
+            return Ok(());
+        }
+        let prize = self
+            .maps
+            .values()
+            .filter(|m| m.id.starts_with("Mn") && m.id.ends_with("Gym"))
+            .find_map(|gym| {
+                let challenge = gym
+                    .scripted_trainer_battles
+                    .iter()
+                    .find(|b| b.request.trainer_id == authored.trainer_id)?;
+                let reward = format!("{}Reward", challenge.source_script);
+                gym.script_item_grants
+                    .iter()
+                    .filter(|g| g.source_script == reward)
+                    .find_map(|g| self.items.get(&g.item_id)?.tmhm_move.as_deref())
+            });
+        let Some(prize) = prize else { return Ok(()) };
+        if scaled
+            .party
+            .iter()
+            .any(|p| p.moves.iter().any(|m| m.name == prize))
+        {
+            return Ok(());
+        }
+        if let Some((_, carrier)) = authored
+            .party
+            .iter()
+            .zip(&mut scaled.party)
+            .find(|(p, _)| p.moves.iter().any(|m| m.name == prize))
+        {
+            // Keep the newest level-up moves. The usual four-slot FIFO has
+            // already dropped this TM; give it the oldest remaining slot.
+            let pp = self.moves.get(prize).context("gym prize move missing")?.pp;
+            let lesson = LearnedMove {
+                name: prize.to_owned(),
+                current_pp: pp,
+                pp_ups: 0,
+            };
+            if carrier.moves.len() == 4 {
+                carrier.moves[0] = lesson;
+            } else {
+                carrier.moves.push(lesson);
+            }
+        }
+        Ok(())
     }
 
     // Only level-triggered evolutions are implied by training. Stones, trades,

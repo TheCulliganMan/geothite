@@ -32800,6 +32800,33 @@
           [
             "gates to AVRIN."
           ]
+        ],
+        "MnBadgeAvrinDispatchText": [
+          [
+            "AVRIN: I can't get",
+            "ELLIS on the line."
+          ],
+          [
+            "Would you try the",
+            "dispatch office?"
+          ],
+          [
+            "It's west of here."
+          ]
+        ],
+        "MnBadgeAvrinMinaText": [
+          [
+            "AVRIN: Taking that",
+            "sketch to MINA?"
+          ],
+          [
+            "Take the east road",
+            "to ST PAUL."
+          ],
+          [
+            "You'll find her at",
+            "UNION DEPOT."
+          ]
         ]
       },
       "MnMinneapolisMart": {
@@ -48143,8 +48170,8 @@
             "That's my boot."
           ],
           [
-            "I was on the root",
-            "west of here when"
+            "By the saplings",
+            "between the pools,"
           ],
           [
             "something nudged",
@@ -48153,26 +48180,22 @@
         ],
         "MnFenText_observer_partial": [
           [
-            "Feel the worn root",
-            "on the west side,"
+            "See the saplings",
+            "between the pools?"
           ],
           [
-            "just north of the",
-            "little pool."
+            "Try the one at the",
+            "northwest corner."
           ]
         ],
         "MnFenText_observer_compare": [
           [
-            "Press the root.",
-            "Then try the pool"
+            "All three moved?",
+            "Listen."
           ],
           [
-            "just south of it.",
-            "The moss on the"
-          ],
-          [
-            "east ridge moves",
-            "last."
+            "That's a pine",
+            "creaking up north."
           ]
         ],
         "MnFenText_observer_after": [
@@ -48181,17 +48204,21 @@
             "plenty for me."
           ],
           [
-            "I'll take that new",
-            "path home."
+            "The tracks go",
+            "north. I'm taking"
+          ],
+          [
+            "the east trail",
+            "back to the woods."
           ]
         ],
         "MnFenText_folded_path": [
           [
-            "The trees part.",
-            "Beyond the ridge,"
+            "The pines part at",
+            "the north end."
           ],
           [
-            "fresh tracks lead",
+            "Fresh tracks lead",
             "into the hollow."
           ]
         ],
@@ -48228,14 +48255,14 @@
         "MnFenText_caught": [
           [
             "The BALL goes",
-            "still. Water runs"
+            "still. Water drips"
           ],
           [
-            "off the far edge",
-            "of the stone. The"
+            "from the tips of",
+            "the pine needles."
           ],
           [
-            "path under the",
+            "The path under the",
             "roots stays dry."
           ]
         ],
@@ -48254,15 +48281,12 @@
         ],
         "MnFenText_early": [
           [
-            "Look at the pool",
-            "just south of the"
+            "From the saplings,",
+            "walk south to the"
           ],
           [
-            "worn root. Feel",
-            "the notch in its"
-          ],
-          [
-            "bank."
+            "cove. Try its",
+            "northwest corner."
           ]
         ],
         "MnFenText_pool": [
@@ -48278,11 +48302,11 @@
         "MnFenText_pool_selected": [
           [
             "You touch the wet",
-            "notch. The moss on"
+            "notch. Moss stirs"
           ],
           [
-            "the east ridge",
-            "gives a shiver."
+            "on the little fir",
+            "east of the cove."
           ]
         ],
         "MnFenText_retreat": [
@@ -48300,22 +48324,25 @@
         ],
         "MnFenText_rib": [
           [
-            "Moss hangs over",
-            "the low ridge."
+            "A low fir branch",
+            "sags with moss."
           ],
           [
-            "A wet streak runs",
-            "under the moss."
+            "Beneath it, a wet",
+            "streak darkens"
+          ],
+          [
+            "the bark."
           ]
         ],
         "MnFenText_rib_selected": [
           [
             "You lift the moss.",
-            "A long root tugs"
+            "The branch bobs."
           ],
           [
-            "at the trees above",
-            "the ridge."
+            "A long root pulls",
+            "tight underfoot."
           ]
         ],
         "MnFenText_root": [
@@ -48334,18 +48361,21 @@
             "A bubble breaks"
           ],
           [
-            "in the little pool",
+            "in the cove just",
             "south of here."
           ]
         ],
         "MnFenText_wrong_order": [
           [
-            "Look for the moss",
-            "on the east ridge."
+            "East of the cove,",
+            "on the north bank,"
           ],
           [
-            "Feel along its",
-            "lower edge."
+            "see the little fir",
+            "by the tall pines?"
+          ],
+          [
+            "Lift a low branch."
           ]
         ],
         "MnFenText_layers_settle": [
@@ -48354,12 +48384,8 @@
             "The pool ripples."
           ],
           [
-            "The moss on the",
-            "ridge stirs last."
-          ],
-          [
-            "Try the worn root",
-            "again."
+            "The little fir",
+            "shakes its moss."
           ]
         ]
       },
@@ -50902,19 +50928,12 @@
       "MnR05C00R02": {
         "MN_R05_WARDENText": [
           [
-            "For ST CLOUD, hop",
-            "down the ledges"
+            "ST CLOUD? Climb",
+            "the bluff stairs."
           ],
           [
-            "heading north.",
-            "Coming back south,"
-          ],
-          [
-            "use the stairs.",
-            "You can't hop back"
-          ],
-          [
-            "up."
+            "I hop the ledges",
+            "on my way south."
           ]
         ],
         "MN_R05_SOUTH_SIGNText": [
@@ -51095,6 +51114,17 @@
           [
             "in with the",
             "basecamp ranger."
+          ]
+        ]
+      },
+      "MnBemidjiNorthwoods": {
+        "MnFenTurnoffText": [
+          [
+            "LAYERED FEN - WEST",
+            "ROUTE 17 - EAST"
+          ],
+          [
+            "BEMIDJI - SOUTH"
           ]
         ]
       }

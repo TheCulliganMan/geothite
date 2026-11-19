@@ -1031,15 +1031,15 @@
         "FLARKINDLE"
       ],
       "region": "Big Bog-inspired northwest spur from Bemidji/Border Pines",
-      "stage": "optional boardwalk and peatland loop",
-      "premise": "A walker felt something shift under one boot. A worn root, a small pool and the moss on a peat ridge move in sequence and uncover an old crossing into a northern hollow.",
+      "stage": "optional peatland trail from Bemidji Northwoods",
+      "premise": "A walker felt something shift under one boot. A worn root, a small pool and the moss on a low fir branch move in sequence and uncover an old crossing into a northern hollow.",
       "steps": [
-        "Find the worn root on the west side, the notch in the pool south of it, and the hanging moss on the east ridge. The three observations can be made in any order.",
-        "The last observation shows the root, pool and moss moving in turn. A player who already recorded all three can also compare them with the observer.",
-        "Revisit the same landmarks in root, pool, moss order. The nearby original contacts still work. A mistaken or repeated touch points to the next feature and retains completed steps.",
-        "Lifting the moss opens the path to the northern hollow. The original dry path leads back to Bemidji Northwoods. The current Minnesota encounter here is MITWIST."
+        "Feel for the root at the northwest sapling between the pools. Walk south to the northwest corner of the cove. On the north bank east of that cove, look for the moss under the little fir beside the two mature pines. These three observations can be made in any order.",
+        "The third distinct observation shows the root dip, the pool ripple and the eastern fir shake its moss. The pines at the north end then part without a second circuit.",
+        "Both existing contacts at each feature record the same observation. Repeat inspections retain progress. The observer can direct a returning player to a feature they still need.",
+        "The northern hollow contains MITWIST. The east trail leads back to Bemidji Northwoods. Declining or leaving the encounter keeps the trail open; a capture leaves the hollow quiet."
       ],
-      "discovery_distinction": "Layer order and repeated geography replace a real-time clock requirement. No invention that Waskish is already on R17; site connection must respect the accepted map.",
+      "discovery_distinction": "Each of three wetland features gives one piece of evidence. The observer can help find the missing piece, and the encounter is independent of the clock.",
       "proposed_levels": {
         "FLARKINDLE": 55
       },
@@ -1050,7 +1050,7 @@
         "LAYERS_COMPARED",
         "FOLDED_PATH_REVEALED"
       ],
-      "completion": "The three observations reveal the sequence. The encounter and its outcome leave the open path available.",
+      "completion": "All three field observations open the hollow in any order. The encounter and its outcome leave the path available.",
       "dialogue_pages": {
         "observer_intro": [
           [
@@ -1058,8 +1058,8 @@
             "That's my boot."
           ],
           [
-            "I was on the root",
-            "west of here when"
+            "By the saplings",
+            "between the pools,"
           ],
           [
             "something nudged",
@@ -1068,12 +1068,15 @@
         ],
         "rib": [
           [
-            "Moss hangs over",
-            "the low ridge."
+            "A low fir branch",
+            "sags with moss."
           ],
           [
-            "A wet streak runs",
-            "under the moss."
+            "Beneath it, a wet",
+            "streak darkens"
+          ],
+          [
+            "the bark."
           ]
         ],
         "pool": [
@@ -1098,26 +1101,22 @@
         ],
         "observer_partial": [
           [
-            "Feel the worn root",
-            "on the west side,"
+            "See the saplings",
+            "between the pools?"
           ],
           [
-            "just north of the",
-            "little pool."
+            "Try the one at the",
+            "northwest corner."
           ]
         ],
         "observer_compare": [
           [
-            "Press the root.",
-            "Then try the pool"
+            "All three moved?",
+            "Listen."
           ],
           [
-            "just south of it.",
-            "The moss on the"
-          ],
-          [
-            "east ridge moves",
-            "last."
+            "That's a pine",
+            "creaking up north."
           ]
         ],
         "root_selected": [
@@ -1126,61 +1125,61 @@
             "A bubble breaks"
           ],
           [
-            "in the little pool",
+            "in the cove just",
             "south of here."
           ]
         ],
         "pool_selected": [
           [
             "You touch the wet",
-            "notch. The moss on"
+            "notch. Moss stirs"
           ],
           [
-            "the east ridge",
-            "gives a shiver."
+            "on the little fir",
+            "east of the cove."
           ]
         ],
         "rib_selected": [
           [
             "You lift the moss.",
-            "A long root tugs"
+            "The branch bobs."
           ],
           [
-            "at the trees above",
-            "the ridge."
+            "A long root pulls",
+            "tight underfoot."
           ]
         ],
         "wrong_order": [
           [
-            "Look for the moss",
-            "on the east ridge."
+            "East of the cove,",
+            "on the north bank,"
           ],
           [
-            "Feel along its",
-            "lower edge."
+            "see the little fir",
+            "by the tall pines?"
+          ],
+          [
+            "Lift a low branch."
           ]
         ],
         "folded_path": [
           [
-            "The trees part.",
-            "Beyond the ridge,"
+            "The pines part at",
+            "the north end."
           ],
           [
-            "fresh tracks lead",
+            "Fresh tracks lead",
             "into the hollow."
           ]
         ],
         "early": [
           [
-            "Look at the pool",
-            "just south of the"
+            "From the saplings,",
+            "walk south to the"
           ],
           [
-            "worn root. Feel",
-            "the notch in its"
-          ],
-          [
-            "bank."
+            "cove. Try its",
+            "northwest corner."
           ]
         ],
         "reveal": [
@@ -1242,14 +1241,14 @@
         "caught": [
           [
             "The BALL goes",
-            "still. Water runs"
+            "still. Water drips"
           ],
           [
-            "off the far edge",
-            "of the stone. The"
+            "from the tips of",
+            "the pine needles."
           ],
           [
-            "path under the",
+            "The path under the",
             "roots stays dry."
           ]
         ],
@@ -1259,8 +1258,12 @@
             "plenty for me."
           ],
           [
-            "I'll take that new",
-            "path home."
+            "The tracks go",
+            "north. I'm taking"
+          ],
+          [
+            "the east trail",
+            "back to the woods."
           ]
         ],
         "layers_settle": [
@@ -1269,12 +1272,8 @@
             "The pool ripples."
           ],
           [
-            "The moss on the",
-            "ridge stirs last."
-          ],
-          [
-            "Try the worn root",
-            "again."
+            "The little fir",
+            "shakes its moss."
           ]
         ]
       },
