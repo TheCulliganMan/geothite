@@ -15,6 +15,7 @@ sys.path.insert(0, str(HERE.parents[1] / "tools"))
 from audit_regional_design import same_except
 from audit_story_flow import require
 from render_reference import SourceArt, load_pack
+from check_garden_roofs import check_garden_roofs
 
 CITY = "MnMoorhead"
 CORE = "MnIronDrillCore"
@@ -130,6 +131,7 @@ def compare(parent, child):
     largest = max(v for k, v in sc["global"].items() if k.startswith("EVENT_"))
     require(PAID not in sc["global"] and sd["global"][PAID] == largest + 1, "new reward flag aliases another")
     check_garden(parent, child)
+    check_garden_roofs(child)
     print(f"Compared {len(new['maps'])} maps, {len(revised)} trainer teams and "
           f"{len(parent['runtime_files'])} original runtime files. All wildlife, animations, "
           "audio assets and unrelated gameplay data match.")
