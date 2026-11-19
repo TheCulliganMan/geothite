@@ -60,22 +60,30 @@ fn pages(entry: &Replacement, story: &Value, region: &Path) -> Result<Vec<Author
 }
 
 pub(super) fn install(pack: &mut CompiledGamePack, dir: &Path) -> Result<()> {
+    install_reviewed_dialogue(pack, dir, "dock-dialogue.json")
+}
+
+pub(crate) fn install_reviewed_dialogue(
+    pack: &mut CompiledGamePack,
+    dir: &Path,
+    file: &str,
+) -> Result<()> {
     let region = dir
         .parent()
         .and_then(Path::parent)
         .context("missing regional source directory")?;
     let story: Value = super::source(region, "story.json")?;
-    for entry in super::source::<Vec<Replacement>>(dir, "dock-dialogue.json")? {
+    for entry in super::source::<Vec<Replacement>>(dir, file)? {
         let map = pack
             .data
             .maps
             .get_mut(&entry.map)
-            .with_context(|| format!("dock map {}", entry.map))?;
+            .with_context(|| format!("dialogue map {}", entry.map))?;
         let old = authored_dialogue::compile(&entry.previous)?;
         ensure!(
             map.scripts.get(&entry.label) == Some(&old)
                 && pack.data.map_scripts.get(&entry.label) == Some(&old),
-            "unexpected dock text or global mirror {}/{}",
+            "unexpected dialogue or global mirror {}/{}",
             entry.map,
             entry.label
         );
@@ -83,7 +91,7 @@ pub(super) fn install(pack: &mut CompiledGamePack, dir: &Path) -> Result<()> {
         let prior = parse_script_text_bodies(&entry.map, &text)?;
         ensure!(
             map.script_text_bodies.get(&entry.label) == prior.get(&entry.label),
-            "unexpected cached dock text {}",
+            "unexpected cached dialogue {}",
             entry.label
         );
         let revised = authored_dialogue::compile(&pages(&entry, &story, region)?)?;

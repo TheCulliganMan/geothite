@@ -17,10 +17,50 @@ pub(super) struct Landmark {
     name: String,
     pub(super) tileset: String,
     pub(super) block: u8,
-    collision_from: u8,
-    background: u8,
-    foreground: Option<u8>,
+    pub(super) collision_from: u8,
+    pub(super) background: u8,
+    pub(super) foreground: Option<u8>,
     rows: [String; 32],
+}
+
+impl Landmark {
+    pub(super) fn validate_rows(&self) -> Result<()> {
+        ensure!(
+            self.rows.iter().all(|row| row.len() == 32
+                && row.bytes().all(|pixel| matches!(pixel, b'.' | b'0'..=b'3'))),
+            "invalid indexed art for {}",
+            self.name
+        );
+        Ok(())
+    }
+
+    /// Composites one 8×8 tile over its original two-bit pixel planes.
+    pub(super) fn painted_glyph(&self, index: usize, mut pixels: [u8; 16]) -> Option<[u8; 16]> {
+        let x = index % 4 * 8;
+        let y = index / 4 * 8;
+        let rows = &self.rows[y..y + 8];
+        if rows
+            .iter()
+            .all(|row| row.as_bytes()[x..x + 8] == *b"........")
+        {
+            return None;
+        }
+        for (dy, row) in rows.iter().enumerate() {
+            for (dx, pixel) in row.as_bytes()[x..x + 8].iter().copied().enumerate() {
+                if pixel == b'.' {
+                    continue;
+                }
+                let mask = 1 << (7 - dx);
+                for (plane, byte) in pixels[2 * dy..2 * dy + 2].iter_mut().enumerate() {
+                    *byte &= !mask;
+                    if ((pixel - b'0') >> plane) & 1 != 0 {
+                        *byte |= mask;
+                    }
+                }
+            }
+        }
+        Some(pixels)
+    }
 }
 
 pub(super) fn install(pack: &mut CompiledGamePack) -> Result<()> {
@@ -101,49 +141,25 @@ pub(super) fn install_art(
             "unexpected block for {}",
             design.name
         );
-        ensure!(
-            design
-                .rows
-                .iter()
-                .all(|row| row.len() == 32 && row.bytes().all(|p| matches!(p, b'.' | b'0'..=b'3'))),
-            "invalid indexed art for {}",
-            design.name
-        );
+        design.validate_rows()?;
         let start = usize::from(design.background) * 16;
         let mut block: [u8; 16] = blocks
             .get(start..start + 16)
             .context("landmark background")?
             .try_into()?;
         for (index, glyph) in block.iter_mut().enumerate() {
-            let x = index % 4 * 8;
-            let y = index / 4 * 8;
-            let grid = &design.rows[y..y + 8];
-            if grid.iter().all(|r| r.as_bytes()[x..x + 8] == *b"........") {
+            let source = *glyph;
+            let old = addr(source, definition.palette_map[usize::from(source)]) * 16;
+            let original = graphics[old..old + 16].try_into()?;
+            let Some(painted) = design.painted_glyph(index, original) else {
                 continue;
-            }
+            };
             let destination = addr(next, 8);
             ensure!(
                 destination < tiles && !occupied[destination] && !blocks.contains(&next),
                 "landmark would overwrite active art on {tileset}"
             );
-            let source = *glyph;
-            let old = addr(source, definition.palette_map[usize::from(source)]) * 16;
-            graphics.copy_within(old..old + 16, destination * 16);
-            let painted = &mut graphics[destination * 16..destination * 16 + 16];
-            for (dy, row) in grid.iter().enumerate() {
-                for (dx, pixel) in row.as_bytes()[x..x + 8].iter().copied().enumerate() {
-                    if pixel == b'.' {
-                        continue;
-                    }
-                    let mask = 1 << (7 - dx);
-                    for (plane, byte) in painted[2 * dy..2 * dy + 2].iter_mut().enumerate() {
-                        *byte &= !mask;
-                        if ((pixel - b'0') >> plane) & 1 != 0 {
-                            *byte |= mask;
-                        }
-                    }
-                }
-            }
+            graphics[destination * 16..destination * 16 + 16].copy_from_slice(&painted);
             let donor = design.foreground.unwrap_or(source);
             definition.palette_map[usize::from(next)] =
                 8 | (definition.palette_map[usize::from(donor)] & 7);

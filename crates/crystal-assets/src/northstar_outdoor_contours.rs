@@ -14,6 +14,7 @@ use crate::{CompiledGamePack, MapModule, authored_town_publication};
 mod northstar_public_piers;
 #[path = "outdoor_dock_dialogue.rs"]
 mod outdoor_dock_dialogue;
+pub(crate) use outdoor_dock_dialogue::install_reviewed_dialogue;
 #[path = "outdoor_shore_access.rs"]
 mod outdoor_shore_access;
 #[path = "shiner_dock_water.rs"]

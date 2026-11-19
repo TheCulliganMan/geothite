@@ -7,6 +7,10 @@ use crate::CompiledGamePack;
 use crate::grand_marais_modpack::authoring;
 use crate::northstar_regional_roster::RegionalRoster;
 
+const TIMEKEEPER: &str = "MN_GYM_1_TRAINER_1";
+const TIMEKEEPER_CLASS: &str = "MN_TIMEKEEPER";
+const TIMEKEEPER_SPRITE: &str = "SPRITE_MN_TIMEKEEPER";
+
 const MACHINE_LEARNERS: &[(&str, &[&str])] = &[
     (
         "THUNDERPUNCH",
@@ -48,6 +52,71 @@ const LEADER_LESSONS: &[(&str, &str, u8, &str, &str)] = &[
     ("MN_GYM_4", "PATCHEBEE", 23, "METAL_CLAW", "STEEL_WING"),
     ("MN_GYM_8", "LUTEBRISK", 42, "ICE_BEAM", "ICY_WIND"),
 ];
+
+/// Completes the gym lessons on the campaign parent that predates them and preserves the
+/// previously published lessons and native trainer art on its sibling.
+///
+/// # Errors
+/// Returns an error for incomplete gym lessons, missing actors, or incompatible original teams.
+pub(crate) fn complete(pack: &mut CompiledGamePack) -> Result<()> {
+    let tavel = pack
+        .data
+        .trainers
+        .trainers
+        .get(TIMEKEEPER)
+        .context("Rochester student")?;
+    if tavel.trainer_class != TIMEKEEPER_CLASS {
+        return install(pack);
+    }
+    let gym = pack
+        .data
+        .maps
+        .get("MnRochesterGym")
+        .context("Rochester Gym")?;
+    ensure!(
+        gym.objects.iter().any(|actor| actor.script == TIMEKEEPER
+            && actor.sprite == TIMEKEEPER_SPRITE
+            && actor.object_type == "OBJECTTYPE_TRAINER"
+            && actor.radius == 2)
+            && gym
+                .trainer_scripts
+                .get(TIMEKEEPER)
+                .is_some_and(|battle| battle.trainer_class == TIMEKEEPER_CLASS),
+        "published Timekeeper lost his native sight battle"
+    );
+    for &(machine, learners) in MACHINE_LEARNERS {
+        for &learner in learners {
+            let species = pack
+                .data
+                .pokemon
+                .get(learner)
+                .context("regional machine learner")?;
+            ensure!(
+                species.tmhm_learnset.iter().any(|name| name == machine),
+                "{learner} lost {machine}"
+            );
+        }
+    }
+    for &(trainer, species, level, previous, replacement) in LEADER_LESSONS {
+        let leader = pack
+            .data
+            .trainers
+            .trainers
+            .get(trainer)
+            .context("published Gym leader")?;
+        let member = leader
+            .party
+            .iter()
+            .find(|m| m.species == species && m.level == level)
+            .with_context(|| format!("{trainer} lost its level-{level} {species}"))?;
+        ensure!(
+            member.moves.iter().any(|m| m.name == replacement)
+                && !member.moves.iter().any(|m| m.name == previous),
+            "{trainer}'s {species} lost its {replacement} lesson"
+        );
+    }
+    Ok(())
+}
 
 pub(crate) fn install(pack: &mut CompiledGamePack) -> Result<()> {
     let roster = RegionalRoster::current()?;
@@ -129,9 +198,6 @@ pub(crate) fn install(pack: &mut CompiledGamePack) -> Result<()> {
 }
 
 fn install_timekeeper(pack: &mut CompiledGamePack) -> Result<()> {
-    const ID: &str = "MN_GYM_1_TRAINER_1";
-    const CLASS: &str = "MN_TIMEKEEPER";
-    const SPRITE: &str = "SPRITE_MN_TIMEKEEPER";
     let art = crate::minnesota_native_npc::compile(
         include_str!("../../../planning/minnesota/gyms/battle-lessons-v01/tavel.json"),
         None,
@@ -145,12 +211,12 @@ fn install_timekeeper(pack: &mut CompiledGamePack) -> Result<()> {
     ensure!(
         pack.data
             .trainer_class_names
-            .insert(CLASS.into(), "Timekeeper".into())
+            .insert(TIMEKEEPER_CLASS.into(), "Timekeeper".into())
             .is_none()
             && pack
                 .data
                 .sprite_palette_defaults
-                .insert(SPRITE.into(), 0)
+                .insert(TIMEKEEPER_SPRITE.into(), 0)
                 .is_none(),
         "duplicate Tavel class"
     );
@@ -158,13 +224,13 @@ fn install_timekeeper(pack: &mut CompiledGamePack) -> Result<()> {
         .data
         .trainers
         .trainers
-        .get_mut(ID)
+        .get_mut(TIMEKEEPER)
         .context("Rochester timekeeper")?;
     ensure!(
         trainer.trainer_class == "SCHOOLBOY" && trainer.name == "TAVEL",
         "expected Tavel"
     );
-    trainer.trainer_class = CLASS.into();
+    trainer.trainer_class = TIMEKEEPER_CLASS.into();
 
     let mut room = pack
         .data
@@ -175,7 +241,7 @@ fn install_timekeeper(pack: &mut CompiledGamePack) -> Result<()> {
     let actor = room
         .objects
         .iter_mut()
-        .find(|actor| actor.script == ID)
+        .find(|actor| actor.script == TIMEKEEPER)
         .context("Tavel's field actor")?;
     ensure!(
         actor.sprite == "SPRITE_YOUNGSTER"
@@ -183,17 +249,25 @@ fn install_timekeeper(pack: &mut CompiledGamePack) -> Result<()> {
             && actor.radius == 2,
         "expected on-sight student"
     );
-    actor.sprite = SPRITE.into();
+    actor.sprite = TIMEKEEPER_SPRITE.into();
     let tile = [actor.x, actor.y];
-    crate::minnesota_trainer_art::rebind_actor_event_source(&mut room, ID, tile, SPRITE)?;
-    let script = room.scripts.get_mut(ID).context("Tavel's trainer event")?;
+    crate::minnesota_trainer_art::rebind_actor_event_source(
+        &mut room,
+        TIMEKEEPER,
+        tile,
+        TIMEKEEPER_SPRITE,
+    )?;
+    let script = room
+        .scripts
+        .get_mut(TIMEKEEPER)
+        .context("Tavel's trainer event")?;
     ensure!(
         script[0]["command"] == "trainer"
             && script[0]["args"][0] == "SCHOOLBOY"
-            && script[0]["args"][1] == ID,
+            && script[0]["args"][1] == TIMEKEEPER,
         "expected Tavel's sight battle"
     );
-    script[0]["args"][0] = CLASS.into();
+    script[0]["args"][0] = TIMEKEEPER_CLASS.into();
     room.trainer_scripts = crate::parse_trainer_scripts(&room.id, &room.scripts)?;
     authoring::refresh_event_section(&mut room);
     crate::authored_town_publication::replace(pack, room)

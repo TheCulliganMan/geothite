@@ -6,7 +6,9 @@ use serde::Deserialize;
 
 use crate::authored_route_surface::walking_map_distances;
 use crate::authored_town_geometry::kind;
-use crate::{CompiledGamePack, authored_town_publication, northstar_trail_caches};
+use crate::{CompiledGamePack, authored_town_publication};
+
+mod art;
 
 const CONTRACTS: &str =
     include_str!("../../../planning/minnesota/discoveries/route-07-11-clues-v01/caches.json");
@@ -33,7 +35,7 @@ struct Cache {
     flag: String,
 }
 
-/// Adds original terrain clues without moving or replacing any collectible.
+/// Installs the five original terrain clues and verifies any already present.
 ///
 /// The release owner must finalize the resulting pack's identity after composing
 /// this leaf with other revisions. Existing maps, flags and item rewards retain
@@ -122,19 +124,17 @@ pub fn install_minnesota_hidden_route_clues(pack: &mut CompiledGamePack) -> Resu
             "route seam cannot reach clue approach"
         );
         let index = usize::from(y / 2) * usize::from(map.attributes.width) + usize::from(x / 2);
-        ensure!(
-            map.blocks[index] == cache.from_block,
-            "clue terrain preimage differs"
-        );
-        northstar_trail_caches::install_landmark_art_at(pack, art, cache.first_glyph)?;
-        let collision = &pack.data.tilesets[&map.attributes.tileset_name].collision;
-        ensure!(
-            collision[&format!("{:02x}", cache.from_block)]
-                == collision[&format!("{:02x}", cache.to_block)],
-            "clue changed collision"
-        );
-        map.blocks[index] = cache.to_block;
-        authored_town_publication::replace(pack, map)?;
+        let destination = art::install(
+            pack,
+            &map.attributes.tileset_name,
+            map.blocks[index],
+            cache,
+            art,
+        )?;
+        if map.blocks[index] != destination {
+            map.blocks[index] = destination;
+            authored_town_publication::replace(pack, map)?;
+        }
     }
     Ok(())
 }
@@ -150,31 +150,33 @@ mod tests {
     use crystal_core::world::session::OverworldSession;
 
     #[test]
-    #[ignore = "requires the external selected Crossings pack"]
+    #[ignore = "requires an external Minnesota pack with the five route caches"]
     fn route_clues_preserve_rewards_flags_and_native_itemfinder() -> Result<()> {
         let path = std::env::var_os("MN_CLUES_PARENT").context("set MN_CLUES_PARENT")?;
         let base = crate::read_verified_compiled_game_pack(path)?;
         let mut candidate = base.clone();
         install_minnesota_hidden_route_clues(&mut candidate)?;
         let caches: Vec<Cache> = serde_json::from_str(CONTRACTS)?;
-        let owned: BTreeSet<_> = caches.iter().map(|c| c.map.as_str()).collect();
         for (name, map) in &base.data.maps {
             let revised = &candidate.data.maps[name];
-            if !owned.contains(name.as_str()) {
+            let Some(cache) = caches.iter().find(|cache| &cache.map == name) else {
                 assert_eq!(map, revised, "unowned map changed: {name}");
-            } else {
-                let mut expected = map.clone();
-                expected.blocks.clone_from(&revised.blocks);
-                assert_eq!(&expected, revised, "non-art map data changed: {name}");
-                assert_eq!(
-                    map.blocks
-                        .iter()
-                        .zip(&revised.blocks)
-                        .filter(|(a, b)| a != b)
-                        .count(),
-                    1
+                continue;
+            };
+            let [x, y] = cache.tile;
+            let index = usize::from(y / 2) * usize::from(map.attributes.width) + usize::from(x / 2);
+            let mut expected = map.clone();
+            if expected.blocks[index] == cache.from_block {
+                assert_ne!(
+                    revised.blocks[index], cache.from_block,
+                    "missing new clue: {name}"
                 );
+                expected.blocks[index] = revised.blocks[index];
             }
+            assert_eq!(
+                &expected, revised,
+                "map data changed outside the cache: {name}"
+            );
         }
         assert_eq!(base.audio_manifest, candidate.audio_manifest);
         for cache in caches {

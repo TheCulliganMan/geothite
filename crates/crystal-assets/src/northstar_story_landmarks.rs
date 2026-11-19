@@ -22,6 +22,63 @@ struct Story {
     journey_landmark_dialogue: BTreeMap<String, BTreeMap<String, Vec<AuthoredDialoguePage>>>,
 }
 
+/// Fill the missing journey scenes in an edition that predates Lakeside.
+/// A parent that already has them must contain the complete authored scenes.
+pub(super) fn complete(pack: &mut CompiledGamePack) -> Result<()> {
+    if !pack
+        .data
+        .story_event_script_constants
+        .global
+        .contains_key(SUPPER)
+    {
+        install(pack)?;
+    }
+    let story: Story =
+        serde_json::from_str(include_str!("../../../planning/minnesota/story.json"))?;
+    for (name, labels) in story.journey_landmark_dialogue {
+        let room = pack.data.maps.get(&name).context("missing journey map")?;
+        for (label, pages) in labels {
+            let expected = authored_dialogue::compile(&pages)?;
+            ensure!(
+                room.scripts.get(&label) == Some(&expected)
+                    && pack.data.map_scripts.get(&label) == Some(&expected),
+                "missing journey dialogue in {name}/{label}"
+            );
+        }
+    }
+    let lobby = &pack.data.maps[LOBBY];
+    let registration = lobby
+        .scripts
+        .get("MnElyRegister")
+        .and_then(Value::as_array)
+        .context("Ely registration")?;
+    for (i, flag) in BADGE_ENGINE_FLAGS[..8].iter().enumerate() {
+        let branch = format!("MnElyMissingBadge{}", i + 1);
+        let start = 1 + 2 * i;
+        ensure!(
+            registration.get(start..start + 2)
+                == Some([c("checkflag", &[flag]), c("iffalse", &[&branch])].as_slice())
+                && lobby.scripts.get(&branch)
+                    == Some(&serde_json::json!([c(
+                        "jumptext",
+                        &[&format!("{branch}Text")]
+                    )])),
+            "Ely registrar cannot direct a player missing {flag}"
+        );
+    }
+    let guardian = &pack.data.maps[HOME];
+    ensure!(
+        guardian
+            .scripts
+            .get("MN_W_GUARDIAN")
+            .and_then(Value::as_array)
+            .and_then(|s| s.get(3))
+            == Some(&c("iftrue", &["MnWinonaSupper"])),
+        "missing Winona homecoming"
+    );
+    Ok(())
+}
+
 pub(super) fn install(pack: &mut CompiledGamePack) -> Result<()> {
     let story: Story =
         serde_json::from_str(include_str!("../../../planning/minnesota/story.json"))?;

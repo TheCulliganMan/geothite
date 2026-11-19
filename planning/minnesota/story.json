@@ -8121,29 +8121,21 @@
         "MnVerdigrimDeniedText": [
           [
             "FINN: If REED's",
-            "still by the"
+            "at the switch, go"
           ],
           [
-            "switch, speak to",
-            "IVY on the shelter"
+            "challenge him."
           ],
           [
-            "radio first."
+            "Once he steps",
+            "aside, stop the"
           ],
           [
-            "Once he's out of",
-            "the way, it's"
+            "drill. Then shut",
+            "the sump and open"
           ],
           [
-            "DRILL DRIVE, SUMP",
-            "OUTLET, then CLEAN"
-          ],
-          [
-            "BYPASS. If a valve",
-            "won't turn, check"
-          ],
-          [
-            "the one before it."
+            "the clean bypass."
           ]
         ],
         "MnVerdigrimDrillAskText": [
@@ -35754,11 +35746,11 @@
         ],
         "MN_ST_PAUL_SIGN_WAYFINDINGText": [
           [
-            "West: CITY CROSS",
-            "North: CAPITOL"
+            "NW - UNION DEPOT",
+            "NE - CAPITOL HALL"
           ],
           [
-            "South: UNION DEPOT"
+            "WEST - CITY CROSS"
           ]
         ],
         "MN_SPX_BRIDGE_WALKERText": [
@@ -56233,6 +56225,24 @@
         }
       ]
     }
+  },
+  "intake_control_dialogue": {
+    "MnIntakeRadioHintText": [
+      ["FINN: Try the", "shelter radio."],
+      ["Read IVY the two", "pump start times."]
+    ],
+    "MnIntakeLandingHintText": [
+      ["FINN: Step north", "from the hatch."],
+      ["You'll see what's", "shaking the pipe."]
+    ],
+    "MnIntakeDrillHintText": [
+      ["FINN: That bit's", "still turning."],
+      ["The DRILL DRIVE is", "beside REED."]
+    ],
+    "MnIntakeOutletHintText": [
+      ["FINN: The sump's", "still open."],
+      ["Head southeast to", "the SUMP OUTLET."]
+    ]
   },
   "story_flow_revision": {
     "dialogue": {

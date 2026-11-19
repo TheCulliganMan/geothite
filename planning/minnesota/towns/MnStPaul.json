@@ -4929,9 +4929,9 @@
         39
       ],
       "lines": [
-        "West: CITY CROSS",
-        "North: CAPITOL",
-        "South: UNION DEPOT"
+        "NW - UNION DEPOT",
+        "NE - CAPITOL HALL",
+        "WEST - CITY CROSS"
       ]
     }
   ],

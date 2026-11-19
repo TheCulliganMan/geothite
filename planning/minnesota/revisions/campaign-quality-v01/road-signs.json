@@ -1,0 +1,14 @@
+[
+  {
+    "map": "MnStPaul",
+    "label": "MN_ST_PAUL_SIGN_WAYFINDINGText",
+    "source": "dialogue_overhaul",
+    "previous": [["West: CITY CROSS", "North: CAPITOL"], ["South: UNION DEPOT"]]
+  },
+  {
+    "map": "MnR11C00R00",
+    "label": "MN_R11_SIGN_01Text",
+    "source": "MN_R11.json",
+    "previous": [["NORTH SHORE TRAIL", "GRAND MARAIS: N"]]
+  }
+]

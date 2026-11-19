@@ -1,0 +1,7 @@
+{
+  "parent_pack": "content-packs/minnesota-mothlight-crystal-cave-faces-v01.crystalpack",
+  "parent_pack_sha256": "3033861667705d154e70d513f2cfe4ac38d389b7d6fbdb42970a5aa0f8605338",
+  "output_pack": "content-packs/minnesota-mothlight-campaign-quality-v01.crystalpack",
+  "expected_pack_sha256": "fe3fc0a9c5407e78c1b04f7dab1b12e7704db8581312888f0bfe2ab3b80e02f4",
+  "builder": "pack_campaign_quality"
+}

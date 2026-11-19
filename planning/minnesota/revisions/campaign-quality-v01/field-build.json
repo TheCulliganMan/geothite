@@ -1,0 +1,7 @@
+{
+  "parent_pack": "content-packs/minnesota-crystal-cave-faces-v01.crystalpack",
+  "parent_pack_sha256": "aae0ad9bc5abc43a549bd4b30f10f356a088c1c3ec2614dab6003ed6f8804938",
+  "output_pack": "content-packs/minnesota-campaign-quality-v01.crystalpack",
+  "expected_pack_sha256": "523bef2f5417aa97cd6c9703dc4de538d01a3331b2f74a4fb34296b5744015aa",
+  "builder": "pack_campaign_quality"
+}
