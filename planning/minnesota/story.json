@@ -11156,6 +11156,38 @@
           [
             "when you get home."
           ]
+        ],
+        "MnAfterChampionWatchCrossingText": [
+          [
+            "I've got your name",
+            "from the FALLS."
+          ],
+          [
+            "Ride out with the",
+            "ski guide there."
+          ],
+          [
+            "Come in here from",
+            "VOYAGEURS, west"
+          ],
+          [
+            "of camp. I'll call",
+            "in your crossing."
+          ]
+        ],
+        "MnAfterChampionWatchHomeText": [
+          [
+            "The FALLS ranger",
+            "crossed you off."
+          ],
+          [
+            "Good to see you",
+            "out here again."
+          ],
+          [
+            "Drier socks this",
+            "time, I hope?"
+          ]
         ]
       },
       "MnDuluth": {
@@ -24266,6 +24298,16 @@
             "down on it",
             "carrying the salt."
           ]
+        ],
+        "MnAfterChampionReedText": [
+          [
+            "REED called from",
+            "ST CLOUD station."
+          ],
+          [
+            "He wants a battle.",
+            "Said he'd wait."
+          ]
         ]
       },
       "MnElyShorePass": {
@@ -24289,6 +24331,24 @@
           [
             "to climb back up",
             "to my own tracks."
+          ]
+        ],
+        "MnAfterChampionShoreGuideText": [
+          [
+            "West leads to ELY.",
+            "SPLIT ROCK's east."
+          ],
+          [
+            "My partner stops",
+            "at the first grass"
+          ],
+          [
+            "to shake the snow",
+            "out of her coat."
+          ],
+          [
+            "Look at my boots.",
+            "I stood too close."
           ]
         ]
       },

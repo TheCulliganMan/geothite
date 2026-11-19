@@ -1,0 +1,7 @@
+{
+  "parent_pack": "content-packs/minnesota-intro-fen-clearings-v01.crystalpack",
+  "parent_pack_sha256": "73a502444fc02ba16b61a054ff2505b9fedd55a5687a3ad5c0c0cecda869f11e",
+  "output_pack": "content-packs/minnesota-intro-league-journey-v01.crystalpack",
+  "expected_pack_sha256": "0bb9872d51da5a9da1ed80e488f351111c477293f99d33386cf6e4cc73d233a9",
+  "builder": "pack_league_journey"
+}

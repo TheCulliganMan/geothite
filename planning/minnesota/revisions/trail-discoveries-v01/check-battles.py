@@ -184,7 +184,8 @@ def award(data, member):
 
 
 def purse(team):
-    return team["base_reward"] * team["party"][-1]["level"]
+    # Trainer completion pays four shares of the final party slot's reward.
+    return 4 * team["base_reward"] * team["party"][-1]["level"]
 
 
 def check_course(data, refs):
