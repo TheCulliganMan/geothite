@@ -1,0 +1,203 @@
+[
+  {
+    "map": "MnGrandMarais",
+    "tileset": "mn_marais_shore",
+    "placements": [
+      {
+        "at": [2, 10],
+        "from": 1,
+        "to": 2000
+      },
+      {
+        "at": [2, 11],
+        "from": 1,
+        "to": 2001
+      },
+      {
+        "at": [16, 15],
+        "from": 1,
+        "to": 2002
+      },
+      {
+        "at": [17, 14],
+        "from": 1,
+        "to": 2003
+      }
+    ]
+  },
+  {
+    "map": "MnBoundarySafariC00R00",
+    "tileset": "mn_boundary_safari",
+    "placements": [
+      {
+        "at": [14, 10],
+        "from": 1,
+        "to": 2000
+      },
+      {
+        "at": [18, 21],
+        "from": 1,
+        "to": 2002
+      }
+    ]
+  },
+  {
+    "map": "MnBoundarySafariC00R01",
+    "tileset": "mn_boundary_safari",
+    "placements": [
+      {
+        "at": [18, 9],
+        "from": 1,
+        "to": 2001
+      }
+    ]
+  },
+  {
+    "map": "MnBoundarySafariC01R00",
+    "tileset": "mn_boundary_safari",
+    "placements": [
+      {
+        "at": [3, 14],
+        "from": 1,
+        "to": 2000
+      },
+      {
+        "at": [6, 16],
+        "from": 1,
+        "to": 2001
+      }
+    ]
+  },
+  {
+    "map": "MnBoundarySafariC01R01",
+    "tileset": "mn_boundary_safari",
+    "placements": [
+      {
+        "at": [10, 6],
+        "from": 1,
+        "to": 2002
+      }
+    ]
+  },
+  {
+    "map": "MnDevilsKettle",
+    "tileset": "mn_north_shore",
+    "placements": [
+      {
+        "at": [3, 5],
+        "from": 1,
+        "to": 2000
+      }
+    ]
+  },
+  {
+    "map": "MnDuluth",
+    "tileset": "mn_duluth_expanded",
+    "placements": [
+      {
+        "at": [59, 13],
+        "from": 10,
+        "to": 2002
+      },
+      {
+        "at": [59, 14],
+        "from": 10,
+        "to": 2003
+      },
+      {
+        "at": [60, 23],
+        "from": 10,
+        "to": 2001
+      },
+      {
+        "at": [60, 26],
+        "from": 10,
+        "to": 2000
+      },
+      {
+        "at": [48, 26],
+        "from": 10,
+        "to": 2000
+      },
+      {
+        "at": [55, 33],
+        "from": 10,
+        "to": 2001
+      }
+    ]
+  },
+  {
+    "map": "MnMinneapolis",
+    "tileset": "mn_minneapolis_city",
+    "placements": [
+      {
+        "at": [15, 3],
+        "from": 10,
+        "to": 2002
+      },
+      {
+        "at": [15, 4],
+        "from": 10,
+        "to": 2003
+      },
+      {
+        "at": [18, 3],
+        "from": 10,
+        "to": 2002
+      },
+      {
+        "at": [18, 4],
+        "from": 10,
+        "to": 2004
+      },
+      {
+        "at": [19, 4],
+        "from": 10,
+        "to": 2005
+      },
+      {
+        "at": [7, 17],
+        "from": 10,
+        "to": 2000
+      }
+    ]
+  },
+  {
+    "map": "MnStCloud",
+    "tileset": "mn_outdoor_modern_stairs_glacier_rail",
+    "placements": [
+      {
+        "at": [15, 11],
+        "from": 1,
+        "to": 2000
+      },
+      {
+        "at": [14, 11],
+        "from": 1,
+        "to": 2001
+      }
+    ]
+  },
+  {
+    "map": "MnLakeItasca",
+    "tileset": "mn_headwaters",
+    "placements": [
+      {
+        "at": [17, 5],
+        "from": 10,
+        "to": 2000
+      }
+    ]
+  },
+  {
+    "map": "MnMilleLacs",
+    "tileset": "mn_headwaters",
+    "placements": [
+      {
+        "at": [17, 14],
+        "from": 10,
+        "to": 2001
+      }
+    ]
+  }
+]

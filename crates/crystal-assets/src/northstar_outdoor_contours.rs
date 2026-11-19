@@ -8,7 +8,7 @@ use serde::de::DeserializeOwned;
 
 use crate::authored_town_geometry::kind;
 use crate::northstar_trail_caches::{self, Landmark};
-use crate::{CompiledGamePack, authored_town_publication};
+use crate::{CompiledGamePack, MapModule, authored_town_publication};
 
 #[path = "northstar_public_piers.rs"]
 mod northstar_public_piers;
@@ -22,6 +22,9 @@ mod shiner_dock_water;
 #[path = "northstar_cliff_faces.rs"]
 mod cliff_faces;
 pub use cliff_faces::revise_cliff_faces;
+#[path = "northstar_rocky_shores.rs"]
+mod rocky_shores;
+pub use rocky_shores::revise_rocky_shores;
 
 const MANIFEST: &str = "northstar-outdoor-contours-v4";
 type ArtIds = BTreeMap<(String, u16), u8>;
@@ -121,7 +124,12 @@ fn install_art(pack: &mut CompiledGamePack, dir: &Path) -> Result<ArtIds> {
                 );
             }
         }
-        append_metatiles(pack, &mut ids, additions)?;
+        append_metatiles(
+            pack,
+            &mut ids,
+            additions,
+            northstar_public_piers::is_timber_glyph,
+        )?;
     }
     Ok(ids)
 }
@@ -130,6 +138,7 @@ fn append_metatiles(
     pack: &mut CompiledGamePack,
     ids: &mut ArtIds,
     art: Vec<Metatile>,
+    new_glyph: impl Fn(&str, u8) -> bool,
 ) -> Result<()> {
     for art in art {
         let native = allocate(pack, ids, &art.tileset, art.id)?;
@@ -140,8 +149,7 @@ fn append_metatiles(
         ensure!(
             art.tiles
                 .iter()
-                .all(|g| layout.contains(g)
-                    || northstar_public_piers::is_timber_glyph(&art.tileset, *g)),
+                .all(|g| layout.contains(g) || new_glyph(&art.tileset, *g)),
             "recipe references unused tile in {}",
             art.tileset
         );
@@ -183,6 +191,16 @@ fn apply_room(
     changes: Room,
     ids: &ArtIds,
 ) -> Result<()> {
+    let map = paint_room(pack, base, changes, ids)?;
+    publish_room(pack, base, map)
+}
+
+fn paint_room(
+    pack: &CompiledGamePack,
+    base: &CompiledGamePack,
+    changes: Room,
+    ids: &ArtIds,
+) -> Result<MapModule> {
     let old = base
         .data
         .maps
@@ -229,19 +247,31 @@ fn apply_room(
         );
         map.blocks[at] = dest;
     }
-    for tile in map
+    Ok(map)
+}
+
+fn publish_room(
+    pack: &mut CompiledGamePack,
+    base: &CompiledGamePack,
+    map: MapModule,
+) -> Result<()> {
+    let old = base.data.maps.get(&map.id).context("missing terrain map")?;
+    ensure!(
+        old.events.warps.len() == map.events.warps.len(),
+        "terrain publication changed warp count on {}",
+        map.id
+    );
+    let warps = old
         .events
         .warps
         .iter()
-        .map(|w| [w.x, w.y])
-        .chain(map.objects.iter().map(|o| [o.x, o.y]))
-    {
-        let old_kind = kind(base, old, tile)?;
-        let new_kind = kind(pack, &map, tile)?;
+        .zip(&map.events.warps)
+        .map(|(a, b)| ([a.x, a.y], [b.x, b.y]));
+    for (from, to) in warps.chain(map.objects.iter().map(|o| ([o.x, o.y], [o.x, o.y]))) {
         ensure!(
-            old_kind == new_kind,
-            "actor or warp terrain changed on {} at {tile:?}",
-            changes.map
+            kind(base, old, from)? == kind(pack, &map, to)?,
+            "actor or warp terrain changed on {} at {to:?}",
+            map.id
         );
     }
     authored_town_publication::replace(pack, map)

@@ -7964,7 +7964,7 @@
     "status": "Accepted current-parent terrain revision: source/native pixels, strict whole-pack preservation, directional grass/ledge proof, actual2D review, native encounters/trainerPP/resources/Continue and stdio pass. CurrentR12 work preserved.",
     "scope_limit": "Sequential Minnesota grass pass remains open beyond R01-R03. Explicit local fixtures do not prove an earned statewide campaign."
   },
-  "active_local_review_revision": "cliff_faces_field_revision",
+  "active_local_review_revision": "rocky_shores_field_revision",
   "script_command_repair_revision": {
     "kind": "missing_minnesota_map_command_records",
     "parent_revision": "field_hm_habitats_cyclists_revision",
@@ -12807,5 +12807,20 @@
     "changed_metatiles": 473,
     "verified_shore_positions": 81,
     "runbook": "revisions/cliff-faces-v01/README.md"
+  },
+  "rocky_shores_field_revision": {
+    "kind": "outdoor_terrain_review",
+    "parent_revision": "cliff_faces_field_revision",
+    "parent_pack": "content-packs/minnesota-cliff-faces-v01.crystalpack",
+    "parent_pack_sha256": "a6e7147b5807f4c3c27e93293bff7f88cb29e1285b26bd7f45c4499310a97cb5",
+    "pack": "content-packs/minnesota-rocky-shores-v01.crystalpack",
+    "pack_sha256": "c6ab5ade261c413d71528f88393fe1f242bf42aeeb390a7ba227505f692f15cf",
+    "build_recipe": "planning/minnesota/revisions/shore-rocks-cave-mouths-v01/field-build.json",
+    "build_recipe_sha256": "e50774580250d6df44a5a881f58dd8436113b0e4128c39dc025128ae2a7c01c9",
+    "content_identity": "efce0aeca12a63bcc8ba01412f3c5d8f5a035e54dc85119d30ec62aba76ff333",
+    "map_count": 743,
+    "changed_map_chunks": 36,
+    "changed_metatiles": 190,
+    "runbook": "revisions/shore-rocks-cave-mouths-v01/README.md"
   }
 }

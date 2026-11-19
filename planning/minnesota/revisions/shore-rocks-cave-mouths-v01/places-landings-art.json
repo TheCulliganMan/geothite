@@ -1,0 +1,14 @@
+[
+  {
+    "tileset": "mn_boundary_safari",
+    "id": 5000,
+    "collision_from": 84,
+    "tiles": [20, 76, 76, 76, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20]
+  },
+  {
+    "tileset": "mn_boundary_safari",
+    "id": 5001,
+    "collision_from": 84,
+    "tiles": [20, 20, 20, 20, 61, 20, 20, 20, 61, 20, 20, 20, 61, 20, 20, 20]
+  }
+]

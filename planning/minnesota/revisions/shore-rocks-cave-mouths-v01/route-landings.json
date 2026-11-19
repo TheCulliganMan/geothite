@@ -1,0 +1,449 @@
+[
+  {
+    "map": "MnR01C00R00",
+    "tileset": "mn_outdoor_johto_stairs",
+    "placements": [
+      {
+        "at": [7, 15],
+        "from": 118,
+        "to": 53
+      },
+      {
+        "at": [8, 15],
+        "from": 118,
+        "to": 53
+      },
+      {
+        "at": [9, 15],
+        "from": 85,
+        "to": 53
+      },
+      {
+        "at": [9, 16],
+        "from": 89,
+        "to": 53
+      },
+      {
+        "at": [9, 18],
+        "from": 89,
+        "to": 53
+      }
+    ]
+  },
+  {
+    "map": "MnR05C00R01",
+    "tileset": "mn_outdoor_headwaters_stairs",
+    "placements": [
+      {
+        "at": [26, 18],
+        "from": 88,
+        "to": 53
+      }
+    ]
+  },
+  {
+    "map": "MnR07C00R00",
+    "tileset": "mn_outdoor_headwaters_stairs",
+    "placements": [
+      {
+        "at": [28, 20],
+        "from": 84,
+        "to": 53
+      },
+      {
+        "at": [28, 21],
+        "from": 88,
+        "to": 53
+      },
+      {
+        "at": [29, 20],
+        "from": 118,
+        "to": 53
+      },
+      {
+        "at": [30, 17],
+        "from": 88,
+        "to": 4000
+      },
+      {
+        "at": [30, 18],
+        "from": 88,
+        "to": 53
+      },
+      {
+        "at": [30, 19],
+        "from": 88,
+        "to": 53
+      },
+      {
+        "at": [30, 20],
+        "from": 121,
+        "to": 53
+      }
+    ]
+  },
+  {
+    "map": "MnR08C00R00",
+    "tileset": "mn_winter_headwaters_stairs",
+    "placements": [
+      {
+        "at": [6, 5],
+        "from": 84,
+        "to": 53
+      },
+      {
+        "at": [6, 6],
+        "from": 88,
+        "to": 53
+      },
+      {
+        "at": [6, 7],
+        "from": 88,
+        "to": 53
+      },
+      {
+        "at": [7, 5],
+        "from": 118,
+        "to": 53
+      },
+      {
+        "at": [8, 5],
+        "from": 118,
+        "to": 53
+      },
+      {
+        "at": [9, 5],
+        "from": 85,
+        "to": 53
+      },
+      {
+        "at": [9, 6],
+        "from": 89,
+        "to": 4001
+      }
+    ]
+  },
+  {
+    "map": "MnR09C00R00",
+    "tileset": "mn_winter_iron_range",
+    "placements": [
+      {
+        "at": [24, 14],
+        "from": 84,
+        "to": 118
+      },
+      {
+        "at": [24, 15],
+        "from": 88,
+        "to": 53
+      },
+      {
+        "at": [24, 16],
+        "from": 88,
+        "to": 53
+      }
+    ]
+  },
+  {
+    "map": "MnR10C00R00",
+    "tileset": "mn_iron_descent_thaw",
+    "placements": [
+      {
+        "at": [31, 14],
+        "from": 118,
+        "to": 4002
+      }
+    ]
+  },
+  {
+    "map": "MnR10C01R00",
+    "tileset": "mn_iron_descent_thaw",
+    "placements": [
+      {
+        "at": [0, 14],
+        "from": 118,
+        "to": 53
+      },
+      {
+        "at": [1, 14],
+        "from": 118,
+        "to": 53
+      },
+      {
+        "at": [2, 14],
+        "from": 85,
+        "to": 53
+      },
+      {
+        "at": [2, 15],
+        "from": 122,
+        "to": 53
+      },
+      {
+        "at": [3, 15],
+        "from": 118,
+        "to": 53
+      },
+      {
+        "at": [4, 15],
+        "from": 118,
+        "to": 53
+      },
+      {
+        "at": [5, 15],
+        "from": 118,
+        "to": 53
+      }
+    ]
+  },
+  {
+    "map": "MnR11C00R02",
+    "tileset": "mn_north_shore",
+    "placements": [
+      {
+        "at": [9, 0],
+        "from": 85,
+        "to": 4003
+      },
+      {
+        "at": [9, 1],
+        "from": 89,
+        "to": 53
+      },
+      {
+        "at": [23, 5],
+        "from": 84,
+        "to": 88
+      },
+      {
+        "at": [24, 5],
+        "from": 118,
+        "to": 53
+      },
+      {
+        "at": [25, 5],
+        "from": 118,
+        "to": 53
+      },
+      {
+        "at": [26, 5],
+        "from": 118,
+        "to": 53
+      }
+    ]
+  },
+  {
+    "map": "MnR12C00R00",
+    "tileset": "mn_winter_gunflint",
+    "placements": [
+      {
+        "at": [17, 10],
+        "from": 13,
+        "to": 4004
+      },
+      {
+        "at": [17, 11],
+        "from": 57,
+        "to": 2
+      },
+      {
+        "at": [18, 11],
+        "from": 3,
+        "to": 2
+      },
+      {
+        "at": [19, 11],
+        "from": 3,
+        "to": 2
+      },
+      {
+        "at": [20, 11],
+        "from": 3,
+        "to": 2
+      },
+      {
+        "at": [21, 11],
+        "from": 3,
+        "to": 2
+      },
+      {
+        "at": [22, 11],
+        "from": 13,
+        "to": 11
+      }
+    ]
+  },
+  {
+    "map": "MnR13C00R01",
+    "tileset": "mn_winter_north_shore",
+    "placements": [
+      {
+        "at": [21, 4],
+        "from": 88,
+        "to": 53
+      },
+      {
+        "at": [21, 5],
+        "from": 88,
+        "to": 53
+      },
+      {
+        "at": [21, 6],
+        "from": 88,
+        "to": 53
+      },
+      {
+        "at": [21, 7],
+        "from": 88,
+        "to": 53
+      }
+    ]
+  },
+  {
+    "map": "MnR14C01R00",
+    "tileset": "mn_winter_itasca_trail",
+    "placements": [
+      {
+        "at": [8, 23],
+        "from": 84,
+        "to": 53
+      },
+      {
+        "at": [9, 23],
+        "from": 85,
+        "to": 53
+      }
+    ]
+  },
+  {
+    "map": "MnR14C01R01",
+    "tileset": "mn_winter_itasca_trail",
+    "placements": [
+      {
+        "at": [9, 0],
+        "from": 89,
+        "to": 4005
+      }
+    ]
+  },
+  {
+    "map": "MnR15C00R00",
+    "tileset": "mn_shiner_narrows",
+    "placements": [
+      {
+        "at": [20, 4],
+        "from": 160,
+        "to": 4006
+      },
+      {
+        "at": [20, 5],
+        "from": 160,
+        "to": 4006
+      },
+      {
+        "at": [20, 6],
+        "from": 160,
+        "to": 4006
+      }
+    ]
+  },
+  {
+    "map": "MnR16C00R00",
+    "tileset": "mn_prairie_headwaters",
+    "placements": [
+      {
+        "at": [5, 10],
+        "from": 88,
+        "to": 53
+      },
+      {
+        "at": [6, 5],
+        "from": 88,
+        "to": 53
+      },
+      {
+        "at": [6, 6],
+        "from": 88,
+        "to": 53
+      }
+    ]
+  },
+  {
+    "map": "MnR17C00R01",
+    "tileset": "mn_winter_border_pines",
+    "placements": [
+      {
+        "at": [11, 11],
+        "from": 10,
+        "to": 2
+      },
+      {
+        "at": [11, 12],
+        "from": 10,
+        "to": 2
+      },
+      {
+        "at": [11, 13],
+        "from": 10,
+        "to": 2
+      },
+      {
+        "at": [13, 14],
+        "from": 10,
+        "to": 2
+      },
+      {
+        "at": [13, 15],
+        "from": 10,
+        "to": 2
+      }
+    ]
+  },
+  {
+    "map": "MnR19C00R00",
+    "tileset": "mn_outdoor_johto_stairs",
+    "placements": [
+      {
+        "at": [21, 17],
+        "from": 84,
+        "to": 53
+      },
+      {
+        "at": [22, 17],
+        "from": 118,
+        "to": 53
+      },
+      {
+        "at": [22, 18],
+        "from": 88,
+        "to": 53
+      },
+      {
+        "at": [22, 19],
+        "from": 88,
+        "to": 53
+      },
+      {
+        "at": [23, 16],
+        "from": 88,
+        "to": 53
+      },
+      {
+        "at": [23, 17],
+        "from": 121,
+        "to": 53
+      }
+    ]
+  },
+  {
+    "map": "MnR20C00R00",
+    "tileset": "mn_winter_tamarack",
+    "placements": [
+      {
+        "at": [15, 14],
+        "from": 88,
+        "to": 53
+      }
+    ]
+  }
+]

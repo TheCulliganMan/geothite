@@ -146,6 +146,18 @@ remove oversized cliff or rock caps rather than raising it into a wall.
 Tall terraces use continuous cliff faces and appropriate native stair descents.
 Do not put a hop strip above or inside a tall cliff face.
 
+Set outdoor cave mouths back into a straight, continuous cliff face. Leave at
+least two 16-pixel movement squares of solid, visibly rocky shoulder on each
+side before the face turns. Check the neighboring map where the shoulder
+crosses a seam. Give the entrance a clear approach from the trail and check
+where the player stands on returning, especially near a stair or a ledge.
+
+Place shoreline stone where a player can read its setting at native scale.
+Join slabs along exposed bedrock or at a point, and let loose stones sit low
+on a beach. Leave gaps between outcrops for fishing, Surf and landing. Keep
+the animated water tiles at the waterline and use the local snow highlight
+when a stone breaks through a winter bank.
+
 ## Contiguous outdoor plateaus and cliff orientation
 
 The plateau correction uses the actual Johto/Johto Modern cliff family, rather

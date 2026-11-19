@@ -1,0 +1,162 @@
+[
+  {
+    "map": "MnGrandMarais",
+    "tileset": "mn_marais_shore",
+    "placements": [
+      {
+        "at": [1, 8],
+        "from": 85,
+        "to": 53
+      },
+      {
+        "at": [1, 9],
+        "from": 89,
+        "to": 53
+      },
+      {
+        "at": [1, 10],
+        "from": 89,
+        "to": 53
+      },
+      {
+        "at": [1, 11],
+        "from": 89,
+        "to": 53
+      },
+      {
+        "at": [1, 12],
+        "from": 122,
+        "to": 53
+      },
+      {
+        "at": [2, 12],
+        "from": 118,
+        "to": 53
+      },
+      {
+        "at": [3, 11],
+        "from": 84,
+        "to": 53
+      },
+      {
+        "at": [3, 12],
+        "from": 121,
+        "to": 53
+      },
+      {
+        "at": [4, 10],
+        "from": 84,
+        "to": 53
+      },
+      {
+        "at": [4, 11],
+        "from": 121,
+        "to": 53
+      },
+      {
+        "at": [14, 16],
+        "from": 118,
+        "to": 53
+      },
+      {
+        "at": [15, 16],
+        "from": 118,
+        "to": 53
+      },
+      {
+        "at": [16, 16],
+        "from": 118,
+        "to": 53
+      },
+      {
+        "at": [18, 14],
+        "from": 84,
+        "to": 53
+      },
+      {
+        "at": [19, 13],
+        "from": 129,
+        "to": 54
+      },
+      {
+        "at": [19, 14],
+        "from": 133,
+        "to": 54
+      }
+    ]
+  },
+  {
+    "map": "MnBoundarySafariC00R00",
+    "tileset": "mn_boundary_safari",
+    "placements": [
+      {
+        "at": [15, 10],
+        "from": 84,
+        "to": 5000
+      },
+      {
+        "at": [15, 11],
+        "from": 88,
+        "to": 53
+      },
+      {
+        "at": [17, 21],
+        "from": 89,
+        "to": 53
+      }
+    ]
+  },
+  {
+    "map": "MnBoundarySafariC00R01",
+    "tileset": "mn_boundary_safari",
+    "placements": [
+      {
+        "at": [18, 10],
+        "from": 128,
+        "to": 53
+      }
+    ]
+  },
+  {
+    "map": "MnBoundarySafariC01R00",
+    "tileset": "mn_boundary_safari",
+    "placements": [
+      {
+        "at": [2, 15],
+        "from": 84,
+        "to": 5001
+      },
+      {
+        "at": [3, 15],
+        "from": 118,
+        "to": 53
+      },
+      {
+        "at": [4, 14],
+        "from": 88,
+        "to": 53
+      },
+      {
+        "at": [4, 15],
+        "from": 121,
+        "to": 53
+      },
+      {
+        "at": [5, 16],
+        "from": 89,
+        "to": 53
+      }
+    ]
+  },
+  {
+    "map": "MnBoundarySafariC01R01",
+    "tileset": "mn_boundary_safari",
+    "placements": [
+      {
+        "at": [11, 6],
+        "from": 88,
+        "to": 53
+      }
+    ]
+  }
+]

@@ -1,0 +1,7 @@
+[
+  {"tileset": "mn_prairie_headwaters", "id": 3000, "collision_from": 113, "tiles": [44, 44, 5, 5, 60, 60, 43, 44, 60, 60, 60, 60, 60, 60, 60, 60], "collision": ["UP_WALL", "UP_WALL", "FLOOR", "FLOOR"]},
+  {"tileset": "mn_prairie_headwaters", "id": 3001, "collision_from": 109, "tiles": [60, 60, 61, 5, 60, 60, 61, 5, 76, 77, 61, 5, 76, 76, 77, 5], "collision": ["FLOOR", "WALL", "WALL", "WALL"]},
+  {"tileset": "mn_outdoor_johto_stairs", "id": 3002, "collision_from": 112, "tiles": [44, 43, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60], "collision": ["UP_WALL", "FLOOR", "FLOOR", "FLOOR"]},
+  {"tileset": "mn_outdoor_headwaters_stairs", "id": 3003, "collision_from": 112, "tiles": [43, 60, 61, 44, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60], "collision": ["FLOOR", "UP_WALL", "FLOOR", "FLOOR"]},
+  {"tileset": "mn_winter_border_pines", "id": 3004, "collision_from": 51, "tiles": [72, 72, 72, 72, 72, 72, 72, 72, 77, 77, 246, 247, 77, 77, 248, 249], "collision": ["FLOOR", "FLOOR", "WALL", "WALL"]}
+]

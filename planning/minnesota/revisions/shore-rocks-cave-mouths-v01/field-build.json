@@ -1,0 +1,7 @@
+{
+  "parent_pack": "content-packs/minnesota-cliff-faces-v01.crystalpack",
+  "parent_pack_sha256": "a6e7147b5807f4c3c27e93293bff7f88cb29e1285b26bd7f45c4499310a97cb5",
+  "output_pack": "content-packs/minnesota-rocky-shores-v01.crystalpack",
+  "expected_pack_sha256": "c6ab5ade261c413d71528f88393fe1f242bf42aeeb390a7ba227505f692f15cf",
+  "builder": "pack_outdoor_contours --rocky-shores"
+}

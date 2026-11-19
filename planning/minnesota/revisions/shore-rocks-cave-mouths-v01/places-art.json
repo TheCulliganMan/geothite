@@ -1,0 +1,128 @@
+[
+  {
+    "tileset": "mn_marais_shore",
+    "id": 2000,
+    "collision_from": 1,
+    "tiles": [6, 6, 6, 6, 6, 6, 6, 6, 216, 217, 6, 6, 219, 6, 6, 6]
+  },
+  {
+    "tileset": "mn_marais_shore",
+    "id": 2001,
+    "collision_from": 1,
+    "tiles": [6, 6, 219, 6, 6, 6, 218, 6, 6, 6, 6, 6, 6, 6, 6, 6]
+  },
+  {
+    "tileset": "mn_marais_shore",
+    "id": 2002,
+    "collision_from": 1,
+    "tiles": [6, 6, 6, 6, 6, 6, 6, 6, 6, 219, 6, 6, 6, 6, 216, 217]
+  },
+  {
+    "tileset": "mn_marais_shore",
+    "id": 2003,
+    "collision_from": 1,
+    "tiles": [6, 6, 6, 6, 6, 6, 6, 6, 218, 6, 6, 6, 6, 219, 6, 6]
+  },
+  {
+    "tileset": "mn_boundary_safari",
+    "id": 2000,
+    "collision_from": 1,
+    "tiles": [6, 6, 6, 6, 6, 6, 216, 217, 6, 6, 6, 6, 6, 6, 6, 6]
+  },
+  {
+    "tileset": "mn_boundary_safari",
+    "id": 2001,
+    "collision_from": 1,
+    "tiles": [6, 6, 6, 6, 6, 6, 6, 6, 218, 6, 6, 6, 6, 219, 6, 6]
+  },
+  {
+    "tileset": "mn_boundary_safari",
+    "id": 2002,
+    "collision_from": 1,
+    "tiles": [6, 6, 6, 6, 216, 217, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6]
+  },
+  {
+    "tileset": "mn_north_shore",
+    "id": 2000,
+    "collision_from": 1,
+    "tiles": [6, 6, 6, 6, 6, 6, 157, 195, 6, 6, 6, 6, 6, 6, 6, 6]
+  },
+  {
+    "tileset": "mn_duluth_expanded",
+    "id": 2000,
+    "collision_from": 10,
+    "tiles": [43, 44, 44, 45, 59, 176, 177, 61, 59, 60, 60, 61, 75, 76, 76, 77]
+  },
+  {
+    "tileset": "mn_duluth_expanded",
+    "id": 2001,
+    "collision_from": 10,
+    "tiles": [43, 44, 44, 45, 59, 60, 60, 61, 59, 176, 177, 61, 75, 76, 76, 77]
+  },
+  {
+    "tileset": "mn_duluth_expanded",
+    "id": 2002,
+    "collision_from": 10,
+    "tiles": [43, 44, 44, 45, 59, 60, 60, 61, 59, 176, 177, 61, 59, 60, 60, 61]
+  },
+  {
+    "tileset": "mn_duluth_expanded",
+    "id": 2003,
+    "collision_from": 10,
+    "tiles": [59, 60, 60, 61, 59, 60, 60, 61, 59, 60, 60, 61, 75, 76, 76, 77]
+  },
+  {
+    "tileset": "mn_minneapolis_city",
+    "id": 2000,
+    "collision_from": 10,
+    "tiles": [43, 44, 44, 45, 59, 201, 202, 61, 59, 60, 60, 61, 75, 76, 76, 77]
+  },
+  {
+    "tileset": "mn_minneapolis_city",
+    "id": 2002,
+    "collision_from": 10,
+    "tiles": [43, 44, 44, 45, 59, 60, 60, 61, 59, 201, 202, 61, 59, 60, 60, 61]
+  },
+  {
+    "tileset": "mn_minneapolis_city",
+    "id": 2003,
+    "collision_from": 10,
+    "tiles": [59, 60, 60, 61, 59, 60, 60, 61, 59, 60, 60, 61, 75, 76, 76, 77]
+  },
+  {
+    "tileset": "mn_minneapolis_city",
+    "id": 2004,
+    "collision_from": 10,
+    "tiles": [59, 60, 60, 61, 59, 60, 60, 60, 59, 60, 60, 60, 75, 76, 76, 76]
+  },
+  {
+    "tileset": "mn_minneapolis_city",
+    "id": 2005,
+    "collision_from": 10,
+    "tiles": [44, 44, 44, 45, 60, 60, 60, 61, 60, 201, 202, 61, 76, 76, 76, 77]
+  },
+  {
+    "tileset": "mn_outdoor_modern_stairs_glacier_rail",
+    "id": 2000,
+    "collision_from": 1,
+    "tiles": [6, 6, 201, 6, 6, 6, 6, 200, 6, 6, 6, 6, 6, 6, 6, 6]
+  },
+  {
+    "tileset": "mn_outdoor_modern_stairs_glacier_rail",
+    "id": 2001,
+    "collision_from": 1,
+    "tiles": [6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 200, 6, 6, 6, 201, 6]
+  },
+  {
+    "tileset": "mn_headwaters",
+    "id": 2000,
+    "collision_from": 10,
+    "tiles": [43, 44, 44, 45, 59, 91, 60, 61, 59, 60, 91, 61, 75, 76, 76, 77]
+  },
+  {
+    "tileset": "mn_headwaters",
+    "id": 2001,
+    "collision_from": 10,
+    "tiles": [43, 44, 44, 45, 59, 60, 91, 61, 59, 60, 60, 61, 75, 76, 76, 77]
+  }
+]

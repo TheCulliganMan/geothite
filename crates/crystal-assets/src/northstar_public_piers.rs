@@ -63,7 +63,7 @@ struct TimberGlyph {
     pixels: [u8; 16],
 }
 
-fn address(glyph: u8, palette: u8, tiles: usize) -> usize {
+pub(super) fn address(glyph: u8, palette: u8, tiles: usize) -> usize {
     if palette & 8 == 0 {
         usize::from(glyph)
     } else {

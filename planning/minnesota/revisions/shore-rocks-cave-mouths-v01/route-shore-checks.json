@@ -1,0 +1,146 @@
+[
+  {
+    "map": "MnR01C00R00",
+    "from": [
+      18,
+      29
+    ],
+    "direction": "down"
+  },
+  {
+    "map": "MnR03C00R00",
+    "from": [
+      14,
+      8
+    ],
+    "direction": "up"
+  },
+  {
+    "map": "MnR05C00R01",
+    "from": [
+      51,
+      36
+    ],
+    "direction": "right"
+  },
+  {
+    "map": "MnR06C00R00",
+    "from": [
+      20,
+      33
+    ],
+    "direction": "down"
+  },
+  {
+    "map": "MnR07C00R00",
+    "from": [
+      56,
+      39
+    ],
+    "direction": "down"
+  },
+  {
+    "map": "MnR08C00R00",
+    "from": [
+      12,
+      9
+    ],
+    "direction": "down"
+  },
+  {
+    "map": "MnR09C00R00",
+    "from": [
+      47,
+      32
+    ],
+    "direction": "right"
+  },
+  {
+    "map": "MnR10C01R00",
+    "from": [
+      4,
+      27
+    ],
+    "direction": "down"
+  },
+  {
+    "map": "MnR11C00R02",
+    "from": [
+      20,
+      0
+    ],
+    "direction": "left"
+  },
+  {
+    "map": "MnR12C00R00",
+    "from": [
+      36,
+      20
+    ],
+    "direction": "left"
+  },
+  {
+    "map": "MnR13C00R01",
+    "from": [
+      41,
+      8
+    ],
+    "direction": "right"
+  },
+  {
+    "map": "MnR14C01R00",
+    "from": [
+      16,
+      45
+    ],
+    "direction": "down"
+  },
+  {
+    "map": "MnR15C00R00",
+    "from": [
+      42,
+      8
+    ],
+    "direction": "left"
+  },
+  {
+    "map": "MnR16C00R00",
+    "from": [
+      11,
+      14
+    ],
+    "direction": "right"
+  },
+  {
+    "map": "MnR17C00R01",
+    "from": [
+      21,
+      26
+    ],
+    "direction": "right"
+  },
+  {
+    "map": "MnR18C00R00",
+    "from": [
+      48,
+      19
+    ],
+    "direction": "down"
+  },
+  {
+    "map": "MnR19C00R00",
+    "from": [
+      42,
+      33
+    ],
+    "direction": "down"
+  },
+  {
+    "map": "MnR20C00R00",
+    "from": [
+      29,
+      28
+    ],
+    "direction": "right"
+  }
+]

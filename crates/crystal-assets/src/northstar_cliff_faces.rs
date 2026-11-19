@@ -15,7 +15,7 @@ use crate::{CompiledGamePack, outdoor_contour_paths};
 #[path = "cliff_south_bridges.rs"]
 mod cliff_south_bridges;
 
-const MANIFEST: &str = "northstar-cliff-faces-v1";
+pub(super) const MANIFEST: &str = "northstar-cliff-faces-v1";
 
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -34,11 +34,17 @@ struct FacingTile {
 
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
-struct WalkCheck {
+pub(super) struct WalkCheck {
     map: String,
     from: [u16; 2],
     to: [u16; 2],
     max_steps: u32,
+}
+
+impl WalkCheck {
+    pub(super) fn verify(self, pack: &CompiledGamePack) -> Result<()> {
+        outdoor_contour_paths::check_walk(pack, &self.map, self.from, self.to, self.max_steps)
+    }
 }
 
 /// Repairs Minnesota outdoor cliff faces and verifies their installed walking routes.
@@ -64,6 +70,7 @@ pub fn revise_cliff_faces(base: &CompiledGamePack, dir: &Path) -> Result<Compile
             &mut pack,
             &mut ids,
             source(dir, &format!("{region}-art.json"))?,
+            northstar_public_piers::is_timber_glyph,
         )?;
         let mut layouts: Vec<Room> = source(dir, &format!("{region}.json"))?;
         if region == "south" {
@@ -95,34 +102,7 @@ pub fn revise_cliff_faces(base: &CompiledGamePack, dir: &Path) -> Result<Compile
             apply_room(&mut pack, base, room, &ids)?;
         }
     }
-    let partner = outdoor_shore_access::surf_partner(&pack)?;
-    for region in ["north", "south", "places", "waterfronts"] {
-        for shore in source::<Vec<FacingTile>>(dir, &format!("{region}-surf.json"))? {
-            outdoor_shore_access::verify_dock_edge(
-                &pack,
-                &partner,
-                &shore.map,
-                TilePosition::new(shore.from[0], shore.from[1]),
-                shore.direction,
-            )?;
-        }
-        let checks: Checks = source(dir, &format!("{region}-checks.json"))?;
-        for drop in checks.drops {
-            outdoor_contour_paths::check_drop(&pack, &drop.map, drop.from, drop.direction)?;
-        }
-        for walk in checks.walks {
-            outdoor_contour_paths::check_walk(
-                &pack,
-                &walk.map,
-                walk.from,
-                walk.to,
-                walk.max_steps,
-            )?;
-        }
-    }
-    cliff_south_bridges::verify(&pack)?;
-    outdoor_contour_paths::verify(&pack)?;
-    outdoor_shore_access::verify(&pack)?;
+    verify_installed_paths(&pack, dir)?;
     outdoor_dock_dialogue::install(&mut pack, dir)?;
     pack.report.manifests.push(MANIFEST.to_owned());
     pack.identity = crate::derive_compiled_game_pack_identity_from_manifest(
@@ -134,4 +114,35 @@ pub fn revise_cliff_faces(base: &CompiledGamePack, dir: &Path) -> Result<Compile
     )?;
     crate::verify_compiled_game_pack_for_runtime(&pack)?;
     Ok(pack)
+}
+
+pub(super) fn verify_installed_paths(pack: &CompiledGamePack, dir: &Path) -> Result<()> {
+    for region in ["north", "south", "places", "waterfronts"] {
+        verify_shores(pack, dir, &format!("{region}-surf.json"))?;
+        let checks: Checks = source(dir, &format!("{region}-checks.json"))?;
+        for drop in checks.drops {
+            outdoor_contour_paths::check_drop(pack, &drop.map, drop.from, drop.direction)?;
+        }
+        for walk in checks.walks {
+            walk.verify(pack)?;
+        }
+    }
+    cliff_south_bridges::verify(pack)?;
+    outdoor_contour_paths::verify(pack)?;
+    outdoor_shore_access::verify(pack)?;
+    Ok(())
+}
+
+pub(super) fn verify_shores(pack: &CompiledGamePack, dir: &Path, name: &str) -> Result<()> {
+    let partner = outdoor_shore_access::surf_partner(pack)?;
+    for shore in source::<Vec<FacingTile>>(dir, name)? {
+        outdoor_shore_access::verify_dock_edge(
+            pack,
+            &partner,
+            &shore.map,
+            TilePosition::new(shore.from[0], shore.from[1]),
+            shore.direction,
+        )?;
+    }
+    Ok(())
 }

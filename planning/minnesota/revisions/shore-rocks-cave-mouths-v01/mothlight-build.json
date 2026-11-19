@@ -1,0 +1,7 @@
+{
+  "parent_pack": "content-packs/minnesota-mothlight-cliff-faces-v01.crystalpack",
+  "parent_pack_sha256": "3bc846b3006259e4eab36945cf4db3c5dc406dd9d96b9ba9d164e166ed494ff0",
+  "output_pack": "content-packs/minnesota-mothlight-rocky-shores-v01.crystalpack",
+  "expected_pack_sha256": "02f7a71261faf913b552ec83d84485cd999a57dfe70a53a6e1d6ae1a9fe7e374",
+  "builder": "pack_outdoor_contours --rocky-shores"
+}
