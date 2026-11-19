@@ -362,10 +362,19 @@ def gallery(pack, art, items, directory):
 def audit(pack, baseline, directory):
     data = pack["data"]
     items = hidden["audit"](pack, True)
-    require(
-        len(items) == 57 and len({n for n, _ in items}) == 47,
-        "hidden-item registry drift",
-    )
+    # Later editions added exactly one known receipt in each of two previously empty maps.
+    # Keep the original inventory assertion for archives built before those revisions.
+    manifests = pack["report"]["manifests"]
+    later = [
+        ("northstar-fen-clearings-v1", ("MnLayeredFen", "MnFenSouthSpareBall"),
+         ((8, 23), "ULTRA_BALL", "EVENT_MN_HIDDEN_FEN_SOUTH_BALL")),
+        ("northstar-shore-watch-v1", ("MnMilleLacs", "MnMlPicnicLure"),
+         ((18, 34), "LURE_BALL", "EVENT_MN_HIDDEN_MILLE_LACS_PICNIC_LURE")),
+    ]
+    expected = {key: value for marker, key, value in later if marker in manifests}
+    require(all(items.get(key) == value for key, value in expected.items())
+            and len(items) == 57 + len(expected)
+            and len({n for n, _ in items}) == 47 + len(expected), "hidden-item registry drift")
     legal_arrivals(data, items)
     art = SourceArt(pack)
     duplicates = false_signs(pack, art, items)

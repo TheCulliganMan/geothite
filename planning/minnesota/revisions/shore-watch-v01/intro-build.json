@@ -1,0 +1,7 @@
+{
+  "parent_pack": "content-packs/minnesota-intro-league-journey-v01.crystalpack",
+  "parent_pack_sha256": "0bb9872d51da5a9da1ed80e488f351111c477293f99d33386cf6e4cc73d233a9",
+  "output_pack": "content-packs/minnesota-intro-shore-watch-v01.crystalpack",
+  "expected_pack_sha256": "8e357cfa47f00c51f5394a252f6a84dac906462beb2be2719638ed4246b99e15",
+  "builder": "pack_shore_watch"
+}

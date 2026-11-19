@@ -622,6 +622,65 @@ fn winter_animations_preserve_source_frame_pixels_schedules_and_registration_set
     }
 }
 
+#[test]
+#[ignore = "requires a Shore Watch edition in CRYSTAL_WINTER_RENDER_TEST_PACK"]
+fn shore_watch_ripples_keep_native_water_flowers_and_grass_at_every_clock() {
+    let (root, runtime) = fixture();
+    let route = "mn_r18_shore";
+    let base = "mn_headwaters";
+    assert_eq!(rustle_tileset(route, Some(3)), base);
+    for time in TIMES {
+        let mut images = Assets::<Image>::default();
+        let mut tiles = |bank: &str| {
+            load_tileset_art(
+                &root,
+                bank,
+                time,
+                &runtime.data().tilesets[bank].palette_map,
+                &mut images,
+            )
+            .expect("installed lake artwork")
+        };
+        let original = tiles(base);
+        let revised = tiles(route);
+        for (glyph, old) in &original.animated_tiles {
+            let new = &revised.animated_tiles[glyph];
+            assert_eq!(
+                (new.frame_ticks, new.phase_offset),
+                (old.frame_ticks, old.phase_offset)
+            );
+            assert_eq!(new.frames.len(), old.frames.len());
+            for (a, b) in old.frames.iter().zip(new.frames.iter()) {
+                assert_eq!(
+                    images.get(a).expect("original frame").data,
+                    images.get(b).expect("route frame").data,
+                    "{time} native tile {glyph:x}"
+                );
+            }
+        }
+        let water = &original.animated_tiles[&0x14];
+        assert!(original.animated_tiles.contains_key(&0x03));
+        let mut moving_edges = 0;
+        for (glyph, shore) in &revised.animated_tiles {
+            if original.animated_tiles.contains_key(glyph) {
+                continue;
+            }
+            assert_eq!(
+                (shore.frame_ticks, shore.phase_offset),
+                (water.frame_ticks, water.phase_offset)
+            );
+            assert_eq!(shore.frames.len(), water.frames.len());
+            if shore.frames.windows(2).any(|pair| {
+                images.get(&pair[0]).expect("first shoreline frame").data
+                    != images.get(&pair[1]).expect("next shoreline frame").data
+            }) {
+                moving_edges += 1;
+            }
+        }
+        assert!(moving_edges > 0, "{time} lake edge should visibly ripple");
+    }
+}
+
 fn frame_pixels<'a>(frame: &SpriteFrame, images: &'a Assets<Image>) -> &'a [u8] {
     let image = images.get(&frame.handle).expect("actual rustle frame");
     assert_eq!(

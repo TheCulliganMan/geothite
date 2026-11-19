@@ -1,4 +1,5 @@
 mod boot_font;
+mod canoe_shore;
 mod evolution_dex_finalization;
 mod minnesota_atlas_routes;
 mod minnesota_badges;
@@ -1174,6 +1175,7 @@ struct BevyRuntimeShell {
     // tile so presentation can cross that boundary over real LCD frames.
     natural_movement: natural_movement::NaturalMovement,
     player_walk_from: Option<TilePosition>,
+    player_canoe_shore_step: Option<canoe_shore::CanoeShoreStep>,
     player_walk_frame_ticks: u8,
     player_walk_total_ticks: u8,
     player_walk_stride: bool,
@@ -9106,6 +9108,7 @@ fn initialize_bevy_runtime_shell(
         field_text_consumed_b: false,
         natural_movement: Default::default(),
         player_walk_from: None,
+        player_canoe_shore_step: None,
         player_walk_frame_ticks: 0,
         player_walk_total_ticks: WALK_FRAME_HOLD_TICKS,
         player_walk_stride: false,

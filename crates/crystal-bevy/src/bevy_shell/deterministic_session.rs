@@ -2129,6 +2129,18 @@ fn apply_keyboard_input(
                         from = connection_from;
                     }
                 }
+                runtime_shell.player_canoe_shore_step = movement_scene_before_final_tick
+                    .as_ref()
+                    .and_then(|before| {
+                        use crate::core::systems::field_moves::CANOE_ACTIVE_MEMORY;
+                        canoe_shore::CanoeShoreStep::between(
+                            &before.overworld,
+                            before.script_events.memory.contains_key(CANOE_ACTIVE_MEMORY),
+                            &frame.snapshot,
+                            runtime_shell.shell.session().state().script_runtime.memory
+                                .contains_key(CANOE_ACTIVE_MEMORY),
+                        )
+                    });
                 let step_ticks = (WALK_FRAME_HOLD_TICKS / speed_multiplier).max(1);
                 runtime_shell.player_walk_from = Some(from);
                 advance_player_walk_phase(&mut runtime_shell, frame.snapshot.facing);
@@ -2891,6 +2903,7 @@ fn advance_visible_walk_timers(runtime_shell: &mut BevyRuntimeShell, elapsed_tic
         .saturating_sub(elapsed_ticks);
     if runtime_shell.player_walk_frame_ticks == 0 {
         runtime_shell.player_walk_from = None;
+        runtime_shell.player_canoe_shore_step = None;
     }
     if player_landed {
         let overworld = &mut runtime_shell.shell.session_mut().overworld_mut();

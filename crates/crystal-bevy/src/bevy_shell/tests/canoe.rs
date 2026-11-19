@@ -34,6 +34,12 @@ pub(super) fn load() -> (AssetRoot, CrystalRuntime) {
         .clone()
 }
 
+// The east-facing Route 3 bank stays open in both the original canoe edition
+// and the later editions with buoys along the northern shore.
+const ROUTE_3_BANK: (i16, i16) = (17, 32);
+const ROUTE_3_LAUNCH_WATER: (i16, i16) = (18, 32);
+const ROUTE_3_CAST_WATER: (i16, i16) = (18, 33);
+
 #[test]
 #[ignore = "requires CRYSTAL_CANOE_TEST_PACK"]
 fn canoe_fishing_controller_registered_rod_catch_and_continue_afloat() {
@@ -42,7 +48,7 @@ fn canoe_fishing_controller_registered_rod_catch_and_continue_afloat() {
 
     const MAP: &str = "MnR03C00R00";
     let (root, runtime) = load();
-    let mut c = fixture(&root, &runtime, MAP, (11, 6));
+    let mut c = fixture(&root, &runtime, MAP, ROUTE_3_BANK);
     let state = c.shell.shell.session_mut().state_mut();
     let partner = runtime
         .data()
@@ -67,7 +73,7 @@ fn canoe_fishing_controller_registered_rod_catch_and_continue_afloat() {
     press(&mut c, GameButton::Right);
     press(&mut c, GameButton::Right);
     press(&mut c, GameButton::Down);
-    super::winona::at(&mut c, MAP, (12, 6));
+    super::winona::at(&mut c, MAP, ROUTE_3_LAUNCH_WATER);
     let position = c.snapshot().expect("afloat").overworld.tile;
 
     for attempt in 0..64 {
@@ -111,7 +117,7 @@ fn canoe_fishing_controller_registered_rod_catch_and_continue_afloat() {
                     Some("1")
                 );
                 press(&mut c, GameButton::Down);
-                super::winona::at(&mut c, MAP, (12, 7));
+                super::winona::at(&mut c, MAP, ROUTE_3_CAST_WATER);
                 return;
             }
             if c.shell.visible_fishing_animation.is_none()
@@ -333,7 +339,7 @@ fn canoe_controller_paddling_triggers_wild_battle_and_capture() {
 
     const MAP: &str = "MnR03C00R00";
     let (root, runtime) = load();
-    let mut c = fixture(&root, &runtime, MAP, (11, 6));
+    let mut c = fixture(&root, &runtime, MAP, ROUTE_3_BANK);
     let state = c.shell.shell.session_mut().state_mut();
     state.player_gender = 1;
     let partner = runtime
@@ -357,7 +363,7 @@ fn canoe_controller_paddling_triggers_wild_battle_and_capture() {
         .expect("ordinary wild encounters enabled");
     press(&mut c, GameButton::Right);
     press(&mut c, GameButton::Right);
-    super::winona::at(&mut c, MAP, (12, 6));
+    super::winona::at(&mut c, MAP, ROUTE_3_LAUNCH_WATER);
     if c.snapshot().expect("launch").battle.is_none() {
         c = capture(c, "kris-red-canoe.png");
     }
@@ -398,7 +404,7 @@ fn canoe_controller_paddling_triggers_wild_battle_and_capture() {
             let snapshot = c.snapshot().expect("returned afloat");
             assert_eq!(snapshot.overworld.mode, MovementMode::Surf);
             let before = snapshot.overworld.tile;
-            let direction = if before.y == 6 {
+            let direction = if before.y == ROUTE_3_LAUNCH_WATER.1 {
                 GameButton::Down
             } else {
                 GameButton::Up
@@ -412,8 +418,8 @@ fn canoe_controller_paddling_triggers_wild_battle_and_capture() {
             return;
         }
         let direction = match (s.overworld.tile.x, s.overworld.tile.y) {
-            (12, 6) => GameButton::Down,
-            (12, 7) => GameButton::Up,
+            ROUTE_3_LAUNCH_WATER => GameButton::Down,
+            ROUTE_3_CAST_WATER => GameButton::Up,
             tile => panic!("left native water loop at {tile:?}"),
         };
         press(&mut c, direction);

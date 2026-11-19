@@ -4230,6 +4230,7 @@ fn set_overworld_map_scroll(
 fn update_player_facing_art_in_place(
     snapshot: &RuntimeShellSnapshot,
     runtime_shell: &BevyRuntimeShell,
+    player_art: canoe_shore::PlayerArt,
     effective_time_of_day: &str,
     tileset_art: &mut RenderedTilesetArt,
     images: &mut Assets<Image>,
@@ -4253,47 +4254,7 @@ fn update_player_facing_art_in_place(
     else {
         return Ok(false);
     };
-    let female = snapshot.trainer.player_gender == PLAYER_GENDER_FEMALE;
-    let (sprite_id, sprite_token, palette_override) = match snapshot.overworld.mode {
-        MovementMode::Normal | MovementMode::Skate if female => {
-            ("kris", "SPRITE_KRIS", snapshot.trainer.player_palette_id)
-        }
-        MovementMode::Normal | MovementMode::Skate => {
-            ("chris", "SPRITE_CHRIS", snapshot.trainer.player_palette_id)
-        }
-        MovementMode::Bike if female => (
-            "kris_bike",
-            "SPRITE_KRIS_BIKE",
-            snapshot.trainer.player_palette_id,
-        ),
-        MovementMode::Bike => (
-            "chris_bike",
-            "SPRITE_CHRIS_BIKE",
-            snapshot.trainer.player_palette_id,
-        ),
-        MovementMode::Surf
-            if snapshot
-                .script_events
-                .memory
-                .contains_key(crate::core::systems::field_moves::CANOE_ACTIVE_MEMORY) =>
-        {
-            (
-                if female {
-                    "mn_canoe_kris"
-                } else {
-                    "mn_canoe_chris"
-                },
-                if female {
-                    "SPRITE_KRIS_BIKE"
-                } else {
-                    "SPRITE_CHRIS_BIKE"
-                },
-                snapshot.trainer.player_palette_id,
-            )
-        }
-        MovementMode::Surf => ("surf", "SPRITE_SURF", 1),
-        MovementMode::SurfPika => ("surfing_pikachu", "SPRITE_SURFING_PIKACHU", 0),
-    };
+    let (sprite_id, sprite_token, palette_override) = player_art;
     let palette_id = resolve_visible_object_palette(
         sprite_token,
         palette_override,
@@ -5447,7 +5408,8 @@ fn render_playfield(
         visible_map_block_identity(&snapshot)
     };
     let position_key = overworld_render_position_key(&snapshot);
-    let appearance_key = overworld_render_appearance_key(&snapshot);
+    let player_art = canoe_shore::player_art(&snapshot, Some((&runtime_shell, movement_subframe)));
+    let appearance_key = overworld_render_appearance_key(&snapshot, player_art.0);
     let world_key = overworld_render_world_key_from_parts(
         snapshot.overworld.facing,
         map_block_identity,
@@ -6281,6 +6243,7 @@ Transform::from_xyz(0.0, 0.0, 2.7),),
         match update_player_facing_art_in_place(
             &snapshot,
             &runtime_shell,
+            player_art,
             effective_time_of_day,
             &mut tileset_art,
             &mut images,
@@ -7833,53 +7796,7 @@ Transform::from_xyz(emote_x, emote_y, 3.2),),
         return;
     }
     let female = snapshot.trainer.player_gender == PLAYER_GENDER_FEMALE;
-    let (player_sprite_id, player_sprite_token, player_palette_override) =
-        match snapshot.overworld.mode {
-            MovementMode::Normal | MovementMode::Skate => {
-                if female {
-                    ("kris", "SPRITE_KRIS", snapshot.trainer.player_palette_id)
-                } else {
-                    ("chris", "SPRITE_CHRIS", snapshot.trainer.player_palette_id)
-                }
-            }
-            MovementMode::Bike => {
-                if female {
-                    (
-                        "kris_bike",
-                        "SPRITE_KRIS_BIKE",
-                        snapshot.trainer.player_palette_id,
-                    )
-                } else {
-                    (
-                        "chris_bike",
-                        "SPRITE_CHRIS_BIKE",
-                        snapshot.trainer.player_palette_id,
-                    )
-                }
-            }
-            MovementMode::Surf
-                if snapshot
-                    .script_events
-                    .memory
-                    .contains_key(crate::core::systems::field_moves::CANOE_ACTIVE_MEMORY) =>
-            {
-                (
-                    if female {
-                        "mn_canoe_kris"
-                    } else {
-                        "mn_canoe_chris"
-                    },
-                    if female {
-                        "SPRITE_KRIS_BIKE"
-                    } else {
-                        "SPRITE_CHRIS_BIKE"
-                    },
-                    snapshot.trainer.player_palette_id,
-                )
-            }
-            MovementMode::Surf => ("surf", "SPRITE_SURF", 1),
-            MovementMode::SurfPika => ("surfing_pikachu", "SPRITE_SURFING_PIKACHU", 0),
-        };
+    let (player_sprite_id, player_sprite_token, player_palette_override) = player_art;
     let player_palette_id = resolve_visible_object_palette(
         player_sprite_token,
         player_palette_override,

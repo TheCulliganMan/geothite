@@ -1,0 +1,13 @@
+# Picnic cove at Mille Lacs
+
+The west path and the Fly landing both reach the fishing pier and the picnic bend. The original park had a visible PP Up on the offshore roost. On the mainland, the picnic trail ended on bare grass beside a straight stretch of bank long enough to fill two screens. The five residents are park visitors. Trainer battles take place on Route 18.
+
+A shallow cove now reaches into the path south of the pier. The sheltered point carries three native flowers beside the pines. The picnicker saw her Lure Ball roll there and gives permission to keep it. Her hint ends when the player finds it. A Lure Ball helps catch Pokémon hooked by a rod, which gives it a use on the way back to the dock. Reach the separate island and its PP Up by paddling an owned canoe or using Surf.
+
+Crystal's Route 32 tucks a Great Ball at (12,67) into a break in the trees. At the Lake of Rage, the winding southwest bank has a searchable Full Restore at (11,28). Polished Crystal keeps that Full Restore beside its two tree-grotto investigation squares. At Mille Lacs, the flower patch marks a single search on the picnic walk, and the island carries a separate visible prize. [Polished Crystal’s Lake of Rage events](https://github.com/Rangi42/polishedcrystal/blob/master/maps/LakeOfRage.asm#L14-L22)
+
+The flower at (18,34) can be searched north from (18,35). That spot is 39 walking steps from Fly. From the water, come ashore south from (19,33), then face left. The 551 original water squares still connect to the open lake, along with the 15 new shallows. The pier, all 48 grass squares, two bird-hide ledge lanes, buoy boundary, fishing and encounter tables retain their original positions and behavior.
+
+The picnic trail meets the lake at a break in the brown rock. From (16,30), walk east with the canoe to reach (17,30), then paddle east into the cove. The bank bends around the flowers to the south. The surrounding rock follows the dry ground, so all 20 water contacts and all 15 new shallows show 256 water pixels across the canoe's 16-by-16 standing square.
+
+Use `check-picnic.py PARENT CANDIDATE` for the installed artwork, routes, encounters, hidden item and dialogue. Both ignored native tests use the candidate in `MN_SHORE_WATCH_PACK`. The `the_flower_point` filter runs the Ball-pocket, Itemfinder and Save/Continue regression plus the movement test. The footprint audit follows both original player and canoe sprites in all six poses, including mirrored strides, at each pixel across 318 directed steps within the cove at x14–21 and y23–35. The movement test checks walking without a canoe, launching an owned canoe and coming back ashore at all 20 crossings from the pier to the trees.

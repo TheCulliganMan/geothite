@@ -615,7 +615,7 @@
       ],
       "steps": [
         "Speak to the three shore-watch volunteers using walking access.",
-        "Return to the dock ranger for an existing fishing-rod upgrade chosen after checking base-pack item IDs."
+        "Return to the dock ranger for a Good Rod, or three Lure Balls if already carrying a Good Rod or Super Rod. If the appropriate pocket is full, make room and return."
       ],
       "sets": [
         "EVENT_MN_SHORE_WATCH_REWARDED"
@@ -23241,6 +23241,62 @@
           [
             "beach. Reach all",
             "three on foot."
+          ]
+        ],
+        "MnShoreWatchReedsText": [
+          [
+            "Is the bird still",
+            "bringing food in?"
+          ],
+          [
+            "Ask the watcher by",
+            "the reeds south"
+          ],
+          [
+            "of the marina."
+          ]
+        ],
+        "MnShoreWatchMeadowText": [
+          [
+            "Did the chicks",
+            "stay in the grass?"
+          ],
+          [
+            "Try the meadow",
+            "north of here."
+          ]
+        ],
+        "MnShoreWatchBeachText": [
+          [
+            "Can a boat turn",
+            "clear of the bank?"
+          ],
+          [
+            "Ask at the sandy",
+            "beach to the east."
+          ]
+        ],
+        "MnShoreWatchLuresText": [
+          [
+            "You've got a rod.",
+            "Take some tackle."
+          ],
+          [
+            "Three LURE BALLS.",
+            "I save mine for"
+          ],
+          [
+            "fish on the line."
+          ]
+        ],
+        "MnShoreWatchLuresHeldText": [
+          [
+            "Your BALLS pocket",
+            "can't fit three"
+          ],
+          [
+            "LURE BALLS. I'll",
+            "keep them here."
           ]
         ]
       },
@@ -50190,6 +50246,34 @@
           ],
           [
             "wait on shore."
+          ]
+        ],
+        "MnShoreWatchReturnText": [
+          [
+            "All three watchers",
+            "have had a say?"
+          ],
+          [
+            "Take their news to",
+            "the dock ranger."
+          ],
+          [
+            "The marina's west",
+            "along this shore."
+          ]
+        ],
+        "MnShoreWatchCastingText": [
+          [
+            "The chicks hide",
+            "in the grass here."
+          ],
+          [
+            "Fish from the far",
+            "end of our pier."
+          ],
+          [
+            "Face open water",
+            "when you cast."
           ]
         ]
       },

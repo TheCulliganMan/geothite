@@ -598,6 +598,8 @@ mod minnesota_habitats;
 
 #[path = "tests/canoe.rs"]
 mod canoe;
+#[path = "tests/shore_watch_canoe.rs"]
+mod shore_watch_canoe;
 
 #[path = "tests/central_lakes_grass.rs"]
 mod central_lakes_grass;

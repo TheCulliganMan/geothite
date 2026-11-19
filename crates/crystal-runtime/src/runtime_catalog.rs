@@ -857,19 +857,15 @@ impl CrystalRuntime {
         for (map_name, encounters) in &self.data.field_encounters {
             collect_field_encounter_keys(map_name, encounters, &mut keys);
         }
-        for (map_name, module) in &self.data.maps {
-            let Some(group_name) = module.attributes.fishing_group.as_deref() else {
-                continue;
-            };
-            let Some(group) = self.data.fishing.groups.get(group_name) else {
-                continue;
-            };
-            collect_fishing_encounter_keys(
-                map_name,
-                group,
-                &self.data.fishing.time_groups,
-                &mut keys,
-            );
+        for map_name in self.data.maps.keys() {
+            for group in self.data.fishing_encounter_groups_for_map(map_name) {
+                collect_fishing_encounter_keys(
+                    map_name,
+                    group,
+                    &self.data.fishing.time_groups,
+                    &mut keys,
+                );
+            }
         }
         keys
     }

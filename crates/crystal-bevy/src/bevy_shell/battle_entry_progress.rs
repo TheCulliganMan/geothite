@@ -4251,7 +4251,7 @@ fn battle_animated_shell_render_key(
 fn overworld_render_world_key(snapshot: &RuntimeShellSnapshot) -> u64 {
     let map_block_identity = visible_map_block_identity(snapshot);
     let position_key = overworld_render_position_key(snapshot);
-    let appearance_key = overworld_render_appearance_key(snapshot);
+    let appearance_key = overworld_render_appearance_key(snapshot, canoe_shore::player_art(snapshot, None).0);
     overworld_render_world_key_from_parts(
         snapshot.overworld.facing,
         map_block_identity,
@@ -4672,8 +4672,9 @@ fn overworld_render_position_key(snapshot: &RuntimeShellSnapshot) -> u64 {
     hasher.finish()
 }
 
-fn overworld_render_appearance_key(snapshot: &RuntimeShellSnapshot) -> u64 {
+fn overworld_render_appearance_key(snapshot: &RuntimeShellSnapshot, player_sprite_id: &str) -> u64 {
     let mut hasher = std::collections::hash_map::DefaultHasher::new();
+    player_sprite_id.hash(&mut hasher);
     snapshot.trainer.player_gender.hash(&mut hasher);
     snapshot.trainer.player_palette_id.hash(&mut hasher);
     for object in &snapshot.visible_objects {

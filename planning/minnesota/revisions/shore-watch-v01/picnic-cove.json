@@ -1,0 +1,37 @@
+{
+  "recipes": [
+    {"tiles": [6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 92], "collision": ["FLOOR", "FLOOR", "FLOOR", "FLOOR"]},
+    {"tiles": [5, 5, 5, 61, 5, 92, 76, 77, 5, 61, 20, 20, 76, 77, 20, 20], "collision": ["FLOOR", "FLOOR", "FLOOR", "WATER"]},
+    {"tiles": [6, 6, 6, 61, 6, 92, 76, 77, 6, 61, 20, 20, 6, 77, 20, 20], "collision": ["FLOOR", "FLOOR", "FLOOR", "WATER"]},
+    {"tiles": [6, 6, 20, 20, 6, 6, 20, 20, 6, 6, 20, 20, 6, 45, 20, 20], "collision": ["FLOOR", "WATER", "FLOOR", "WATER"]},
+    {"tiles": [5, 5, 6, 6, 5, 5, 6, 6, 5, 5, 5, 5, 5, 5, 5, 5], "collision": ["FLOOR", "FLOOR", "FLOOR", "FLOOR"]},
+    {"tiles": [6, 61, 44, 45, 6, 6, 5, 61, 6, 6, 5, 61, 6, 6, 3, 5], "collision": ["FLOOR", "FLOOR", "FLOOR", "FLOOR"]},
+    {"tiles": [20, 20, 20, 20, 20, 20, 20, 20, 44, 45, 20, 20, 5, 61, 20, 20], "collision": ["WATER", "WATER", "FLOOR", "WATER"]},
+    {"tiles": [5, 5, 5, 5, 5, 5, 3, 5, 5, 5, 5, 5, 5, 5, 5, 5], "collision": ["FLOOR", "FLOOR", "FLOOR", "FLOOR"]},
+    {"tiles": [5, 61, 44, 45, 3, 5, 5, 61, 5, 5, 5, 61, 5, 5, 5, 77], "collision": ["FLOOR", "FLOOR", "FLOOR", "FLOOR"]},
+    {"tiles": [6, 6, 6, 61, 6, 6, 6, 61, 6, 6, 6, 61, 6, 6, 6, 61], "collision": ["FLOOR", "FLOOR", "FLOOR", "FLOOR"]}
+  ],
+  "placements": [
+    [[9, 12], 1, 1009],
+    [[10, 12], 88, 53],
+    [[8, 13], 1, 1000],
+    [[9, 13], 2, 1001],
+    [[10, 13], 88, 53],
+    [[8, 14], 1, 1002],
+    [[9, 14], 1, 53],
+    [[10, 14], 88, 53],
+    [[8, 15], 1, 1003],
+    [[9, 15], 1, 53],
+    [[10, 15], 88, 53],
+    [[7, 16], 2, 1004],
+    [[8, 16], 2, 1005],
+    [[9, 16], 2, 1006],
+    [[10, 16], 88, 53],
+    [[7, 17], 2, 5],
+    [[8, 17], 2, 1007],
+    [[9, 17], 2, 1008],
+    [[10, 17], 88, 53]
+  ],
+  "picnic_pages": [["The wind took my", "lettuce. DARTDUCK"], ["caught it before", "it hit the lake."]],
+  "clue_pages": [["My spare LURE BALL", "rolled into the"], ["flowers on that", "point. It's yours."]]
+}

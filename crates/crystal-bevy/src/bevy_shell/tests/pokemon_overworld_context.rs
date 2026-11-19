@@ -225,17 +225,42 @@ fn species_overworld_art_renders_at_native_scale_with_map_and_trainer() {
 }
 
 fn pokemon_overworld_context_canvas(world: &mut World, images: &Assets<Image>) -> image::RgbaImage {
+    pokemon_overworld_context_canvas_scaled(world, images, 1)
+}
+
+// Sample the same production sprite stack directly at a chosen integer LCD scale.
+fn pokemon_overworld_context_canvas_scaled(
+    world: &mut World,
+    images: &Assets<Image>,
+    divisor: u32,
+) -> image::RgbaImage {
     let mut query = world.query::<(&Sprite, &Transform, Option<&Visibility>)>();
     let mut sprites = query
         .iter(world)
         .filter(|(_, _, visibility)| !matches!(visibility, Some(Visibility::Hidden)))
         .collect::<Vec<_>>();
     sprites.sort_by(|a, b| a.1.translation.z.total_cmp(&b.1.translation.z));
-    let mut canvas = image::RgbaImage::new(PLAYFIELD_WIDTH as u32, PLAYFIELD_HEIGHT as u32);
+    let mut canvas = image::RgbaImage::new(
+        PLAYFIELD_WIDTH as u32 / divisor,
+        PLAYFIELD_HEIGHT as u32 / divisor,
+    );
     for (sprite, transform, _) in sprites {
         let Some(size) = sprite.custom_size else {
             continue;
         };
+        let left = transform.translation.x - size.x / 2.0 - PLAYFIELD_LEFT;
+        let top = PLAYFIELD_TOP - transform.translation.y - size.y / 2.0;
+        if left >= PLAYFIELD_WIDTH
+            || top >= PLAYFIELD_HEIGHT
+            || left + size.x <= 0.0
+            || top + size.y <= 0.0
+        {
+            continue;
+        }
+        let tint = sprite.color.to_srgba();
+        if tint.alpha == 0.0 {
+            continue;
+        }
         let mut raster = if let Some(source) = images.get(&sprite.image) {
             image::RgbaImage::from_raw(
                 source.width(),
@@ -266,24 +291,26 @@ fn pokemon_overworld_context_canvas(world: &mut World, images: &Assets<Image>) -
         if sprite.flip_y {
             image::imageops::flip_vertical_in_place(&mut raster);
         }
-        let tint = sprite.color.to_srgba();
-        for pixel in raster.pixels_mut() {
-            for (channel, tint) in pixel
-                .0
-                .iter_mut()
-                .zip([tint.red, tint.green, tint.blue, tint.alpha])
-            {
-                *channel = (f32::from(*channel) * tint).round() as u8;
+        if [tint.red, tint.green, tint.blue, tint.alpha] != [1.0; 4] {
+            for pixel in raster.pixels_mut() {
+                for (channel, tint) in pixel
+                    .0
+                    .iter_mut()
+                    .zip([tint.red, tint.green, tint.blue, tint.alpha])
+                {
+                    *channel = (f32::from(*channel) * tint).round() as u8;
+                }
             }
         }
+        let scale = divisor as f32;
         let scaled = image::imageops::resize(
             &raster,
-            size.x as u32,
-            size.y as u32,
+            size.x as u32 / divisor,
+            size.y as u32 / divisor,
             image::imageops::FilterType::Nearest,
         );
-        let x = (transform.translation.x - size.x / 2.0 - PLAYFIELD_LEFT).round() as i64;
-        let y = (PLAYFIELD_TOP - transform.translation.y - size.y / 2.0).round() as i64;
+        let x = (left / scale).round() as i64;
+        let y = (top / scale).round() as i64;
         image::imageops::overlay(&mut canvas, &scaled, x, y);
     }
     canvas

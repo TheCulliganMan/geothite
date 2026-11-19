@@ -1676,21 +1676,33 @@ impl GameDataSet {
             || self.map_fishing_encounter_has(map_name, species, level)
     }
 
-    pub fn map_fishing_encounter_has(&self, map_name: &str, species: &str, level: u8) -> bool {
-        let Some(group_name) = self
+    /// Returns the native rod tables that can supply a catch on this map.
+    /// Saved battles can outlive the daily swarm that supplied the encounter.
+    pub fn fishing_encounter_groups_for_map(
+        &self,
+        map_name: &str,
+    ) -> impl Iterator<Item = &crystal_core::world::fishing::FishingGroup> {
+        let base = self
             .maps
             .get(map_name)
-            .and_then(|module| module.attributes.fishing_group.as_deref())
-        else {
-            return false;
-        };
-        let Some(group) = self.fishing.groups.get(group_name) else {
-            return false;
-        };
-        group
-            .rod_tables
-            .values()
-            .flat_map(|table| table.slots.iter())
+            .and_then(|map| map.attributes.fishing_group.as_deref())
+            .filter(|&name| name != crystal_core::world::fishing::FISHGROUP_NONE)
+            .and_then(|name| self.fishing.groups.get_key_value(name));
+        base.into_iter().flat_map(|(name, group)| {
+            let swarms = self
+                .fishing
+                .swarm_rules
+                .values()
+                .filter(move |rule| &rule.base_group == name)
+                .filter_map(|rule| self.fishing.groups.get(&rule.swarm_group));
+            std::iter::once(group).chain(swarms)
+        })
+    }
+
+    pub fn map_fishing_encounter_has(&self, map_name: &str, species: &str, level: u8) -> bool {
+        self.fishing_encounter_groups_for_map(map_name)
+            .flat_map(|group| group.rod_tables.values())
+            .flat_map(|table| &table.slots)
             .any(|slot| fishing_slot_has(&self.fishing.time_groups, slot, species, level))
     }
 
