@@ -8066,9 +8066,10 @@ Transform::from_xyz(
             return;
         }
         if let Some(rustle) = runtime_shell.visible_grass_rustle.filter(|_| {
-            runtime_shell
-                .visible_ledge_jump
-                .map_or(true, |jump| jump.frame >= WALK_FRAME_HOLD_TICKS)
+            !matches!(player_sprite_id, "mn_canoe_chris" | "mn_canoe_kris")
+                && runtime_shell
+                    .visible_ledge_jump
+                    .is_none_or(|jump| jump.frame >= WALK_FRAME_HOLD_TICKS)
         }) {
             let time_of_day = effective_time_of_day;
             let rustle_tileset = winter_render_behavior::rustle_tileset_at(

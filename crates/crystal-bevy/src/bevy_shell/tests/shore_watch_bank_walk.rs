@@ -176,8 +176,7 @@ fn glance(app: &mut App, at: TilePosition, direction: Direction, walker: &str) {
 #[test]
 #[ignore = "requires Badge Trails or Shore Watch in CRYSTAL_CANOE_TEST_PACK"]
 fn shore_watch_bank_walk_and_one_tick_water_glance_keep_the_player_on_foot() {
-    let (root, runtime) = canoe::load();
-    let banks = [
+    check_banks(&[
         Bank {
             map: "MnR18C00R00",
             trail: &[
@@ -218,7 +217,32 @@ fn shore_watch_bank_walk_and_one_tick_water_glance_keep_the_player_on_foot() {
             toward_water: Direction::Up,
             female: true,
         },
-    ];
+    ]);
+}
+
+#[test]
+#[ignore = "requires the Layered Fen pools in CRYSTAL_CANOE_TEST_PACK"]
+fn fen_south_lake_walking_the_pebble_bank_does_not_launch_the_canoe() {
+    check_banks(&[Bank {
+        map: "MnLayeredFen",
+        trail: &[
+            (20, 22),
+            (21, 22),
+            (21, 21),
+            (22, 21),
+            (23, 21),
+            (24, 21),
+            (25, 21),
+            (26, 21),
+        ],
+        launch: (24, 21),
+        toward_water: Direction::Up,
+        female: true,
+    }]);
+}
+
+fn check_banks(banks: &[Bank]) {
+    let (root, runtime) = canoe::load();
     for bank in banks {
         let room = &runtime.data().maps[bank.map];
         let shore = TilePosition::new(bank.launch.0, bank.launch.1);
@@ -259,6 +283,19 @@ fn shore_watch_bank_walk_and_one_tick_water_glance_keep_the_player_on_foot() {
             } else {
                 ("chris", "mn_canoe_chris")
             };
+            if bank.map == "MnLayeredFen"
+                && let Some(path) = std::env::var_os("MN_SHORE_MOTION_DIR")
+            {
+                let walk = if owns {
+                    "bank-walk-equipped"
+                } else {
+                    "bank-walk-on-foot"
+                };
+                super::record_overworld_frames(
+                    &mut app,
+                    &std::path::PathBuf::from(path).join(walk),
+                );
+            }
             for &(x, y) in &bank.trail[1..] {
                 let dest = TilePosition::new(x, y);
                 stride(&mut app, dest, walker, rider, false);

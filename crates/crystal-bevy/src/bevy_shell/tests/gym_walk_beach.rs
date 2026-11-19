@@ -1,6 +1,4 @@
 //! Wade to the leader, paddle every deep pocket and see the native water move.
-use std::path::Path;
-
 use bevy::input::InputPlugin;
 use bevy::prelude::*;
 use crystal_core::systems::field_moves::{CANOE_ACTIVE_MEMORY, CANOE_ITEM};
@@ -12,7 +10,7 @@ use super::badge_trails::load;
 use super::interior_life::fixture;
 use super::r10_gallery::continue_save;
 use super::shore_watch_bank_walk::stride;
-use super::{menu_render_test_app, pokemon_overworld_context_canvas_scaled};
+use super::{menu_render_test_app, record_overworld_frames};
 
 const ROOM: &str = "MnBrainerdGym";
 
@@ -22,23 +20,6 @@ fn beach(shell: BevyRuntimeShell) -> App {
     app.update();
     app.update();
     app
-}
-
-fn record(app: &mut App, directory: &Path) {
-    std::fs::create_dir_all(directory).expect("review frames directory");
-    let directory = directory.to_owned();
-    let mut tick = 0_u32;
-    app.add_systems(Last, move |world: &mut World| {
-        if tick.is_multiple_of(2) {
-            let image = world.resource_scope(|world, images: Mut<Assets<Image>>| {
-                pokemon_overworld_context_canvas_scaled(world, &images, 4)
-            });
-            image
-                .save(directory.join(format!("{tick:03}.png")))
-                .expect("save LCD frame");
-        }
-        tick += 1;
-    });
 }
 
 #[test]
@@ -61,7 +42,7 @@ fn gym_walk_brainerd_keeps_the_direct_wade_and_launches_in_each_pool() {
         }
         let mut app = beach(c.shell);
         if owns && let Some(dir) = &evidence {
-            record(&mut app, &dir.join("shoal"));
+            record_overworld_frames(&mut app, &dir.join("shoal"));
         }
         for y in (4..12).rev() {
             stride(
@@ -127,7 +108,7 @@ fn gym_walk_brainerd_keeps_the_direct_wade_and_launches_in_each_pool() {
         );
         let mut app = beach(c.shell);
         if let Some(dir) = &evidence {
-            record(&mut app, &dir.join(name));
+            record_overworld_frames(&mut app, &dir.join(name));
         }
         for (i, &(x, y)) in steps.iter().enumerate() {
             let afloat = i + 1 < steps.len();
@@ -163,7 +144,7 @@ fn gym_walk_brainerd_keeps_the_direct_wade_and_launches_in_each_pool() {
                 );
                 app = beach(resumed.shell);
                 if let Some(dir) = &evidence {
-                    record(&mut app, &dir.join("south-after-continue"));
+                    record_overworld_frames(&mut app, &dir.join("south-after-continue"));
                 }
             }
         }

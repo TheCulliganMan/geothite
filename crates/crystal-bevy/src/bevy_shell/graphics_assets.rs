@@ -3360,5 +3360,7 @@ fn source_tile_art(
         sub_x,
         sub_y,
     )?;
+    let priority = priority
+        && !minnesota_grass_priority::grass_edge_ground(source, art, block, sub_x, sub_y, index);
     Ok((block, sub_x, sub_y, index, texture, priority, foreground))
 }

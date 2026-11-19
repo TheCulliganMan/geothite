@@ -229,11 +229,11 @@ fn grass_rustle_frames_use_the_exact_two_piece_facing_oam_layout() {
 
 #[test]
 fn grass_rustle_art_composes_the_complete_source_oam_canvas() {
-    let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../..")
-        .canonicalize()
-        .expect("repository root");
-    let asset_root = AssetRoot::new(repo_root);
+    let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../..");
+    let runtime = workspace_desktop_runtime(&AssetRoot::new(repo_root));
+    let asset_root = runtime
+        .materialize_runtime_files()
+        .expect("mount grass rustle art");
     let mut rendered_art = RenderedTilesetArt::default();
     let mut images = Assets::<Image>::default();
     let frames = grass_rustle_frames_for_art(

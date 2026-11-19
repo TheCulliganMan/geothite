@@ -3,6 +3,7 @@ mod canoe_shore;
 mod evolution_dex_finalization;
 mod minnesota_atlas_routes;
 mod minnesota_badges;
+mod minnesota_grass_priority;
 mod minnesota_town_map;
 #[cfg(not(target_arch = "wasm32"))]
 mod preview_audio_policy;
@@ -6483,6 +6484,12 @@ pub fn run_bevy_shell(
         .add_systems(
             Update,
             wading_waterline::draw
+                .after(sync_visible_player_sprite)
+                .after(render_playfield),
+        )
+        .add_systems(
+            Update,
+            minnesota_grass_priority::draw
                 .after(sync_visible_player_sprite)
                 .after(render_playfield),
         )

@@ -71,6 +71,10 @@ name = "pack_league_journey"
 required-features = ["pack-authoring"]
 
 [[example]]
+name = "pack_fen_waterline"
+required-features = ["pack-authoring"]
+
+[[example]]
 name = "pack_cave_returns"
 required-features = ["pack-authoring"]
 

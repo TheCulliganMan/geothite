@@ -71,16 +71,25 @@ impl CanoeShoreStep {
         if from != Some(self.from) || scene.tile != self.to || scene.map_name != self.map {
             return None;
         }
-        // Normal movement is tile-atomic. Both native walkers' soles and both
-        // canoe keels cover pixel (8, 15) of their 16×16 sprite. Its center is
-        // close to the south edge and remains on the water until late on an
-        // upward landing. Use the same world-space point in both directions.
+        self.contact_on_departure(frames_remaining, total_frames, subframe)
+            .then_some(self.departure)
+    }
+
+    pub(super) fn landing_still_afloat(&self, frames_remaining: u8, total_frames: u8) -> bool {
+        self.departure == ShorePose::Paddling
+            && self.contact_on_departure(frames_remaining, total_frames, 0.0)
+    }
+
+    fn contact_on_departure(&self, frames_remaining: u8, total_frames: u8, subframe: f32) -> bool {
+        // Normal movement is tile-atomic. Use the bottom-center contact point
+        // between the boots or under the keel. Some poses leave that pixel
+        // clear. Its position stays fixed as the silhouette strides or paddles.
         let progress =
             visible_movement_progress_with_subframe(frames_remaining, total_frames, subframe);
         let distance = 16.0 * progress;
         let x = 8.5 + f32::from(self.to.x - self.from.x) * distance;
         let y = 15.5 + f32::from(self.to.y - self.from.y) * distance;
-        ((0.0..16.0).contains(&x) && (0.0..16.0).contains(&y)).then_some(self.departure)
+        (0.0..16.0).contains(&x) && (0.0..16.0).contains(&y)
     }
 }
 

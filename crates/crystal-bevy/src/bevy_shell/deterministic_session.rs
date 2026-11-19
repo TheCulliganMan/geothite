@@ -554,6 +554,17 @@ fn apply_keyboard_input(
                 .remove(&object_id);
         }
     }
+    // Core reports a grass landing on the first tick of the shore step. Keep both
+    // native rustle frames for the walker once the keel reaches the bank.
+    let canoe_was_afloat = runtime_shell
+        .player_canoe_shore_step
+        .as_ref()
+        .is_some_and(|step| {
+            step.landing_still_afloat(
+                runtime_shell.player_walk_frame_ticks,
+                runtime_shell.player_walk_total_ticks,
+            )
+        });
     // Presentation must cross each LCD boundary one tick at a time. A slow
     // renderer update can catch simulation time up in bulk, but consuming all
     // of those ticks here skips visible walk substeps and makes overworld
@@ -918,7 +929,7 @@ fn apply_keyboard_input(
             .visible_ledge_jump
             .is_some_and(|jump| jump.frame <= WALK_FRAME_HOLD_TICKS);
         if let Some(rustle) = runtime_shell.visible_grass_rustle.as_mut() {
-            if !landing_grass_not_started {
+            if !landing_grass_not_started && !canoe_was_afloat {
                 rustle.age = rustle.age.saturating_add(1);
                 rustle.frames_remaining = rustle.frames_remaining.saturating_sub(1);
                 if rustle.frames_remaining == 0 {

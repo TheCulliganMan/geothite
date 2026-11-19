@@ -3573,6 +3573,12 @@ fn integrated_shell_test_app(runtime_shell: BevyRuntimeShell) -> App {
                 .after(sync_visible_player_sprite)
                 .after(render_playfield),
         )
+        .add_systems(
+            Update,
+            minnesota_grass_priority::draw
+                .after(sync_visible_player_sprite)
+                .after(render_playfield),
+        )
         .add_systems(Update, refresh_status_text.after(render_playfield))
         .add_systems(Update, refresh_dialog_text.after(refresh_status_text))
         .add_systems(Update, refresh_battle_text.after(refresh_dialog_text))

@@ -1,0 +1,7 @@
+{
+  "parent_pack": "content-packs/minnesota-cave-returns-v01.crystalpack",
+  "parent_pack_sha256": "0eef908509c3873d5ecc1902c0ab30dd6173379bc0c516d15bc585ec05565c72",
+  "output_pack": "content-packs/minnesota-fen-waterline-v01.crystalpack",
+  "expected_pack_sha256": "379df4e839b7a40966514225461df76eef3bcf08657dd1648f2f9ee27608e380",
+  "builder": "pack_fen_waterline"
+}
