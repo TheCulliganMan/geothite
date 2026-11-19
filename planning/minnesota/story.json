@@ -48387,6 +48387,30 @@
             "The little fir",
             "shakes its moss."
           ]
+        ],
+        "MnFenText_hollow_open": [
+          [
+            "The pines part at",
+            "the north end."
+          ],
+          [
+            "Young firs shelter",
+            "the hollow beyond."
+          ]
+        ],
+        "MnFenText_hollow_return": [
+          [
+            "One wet boot is",
+            "plenty for me."
+          ],
+          [
+            "See that gap in",
+            "the north pines?"
+          ],
+          [
+            "I'm heading east,",
+            "back to the woods."
+          ]
         ]
       },
       "MnMoorhead": {

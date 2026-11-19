@@ -1,0 +1,43 @@
+[
+  {
+    "map": "MnLayeredFen",
+    "tileset": "johto",
+    "crowns": [
+      {"first": 120}
+    ],
+    "track": [
+      {"slot": 111, "palette": 2, "rows": ["12111100", "21110000", "11100000", "10000000", "00000000", "00000000", "00000000", "00000000"]},
+      {"slot": 112, "palette": 2, "rows": ["00000000", "00000000", "00000000", "00000000", "10000000", "11100000", "21111000", "12111110"]}
+    ],
+    "terrain": [
+      {"name": "Green pine and frost-tipped pine", "from_block": 5, "tiles": [30, 31, 120, 121, 46, 47, 122, 123, 46, 47, 122, 123, 62, 63, 124, 125], "at": [[19, 5], [19, 9], [19, 11], [19, 12], [18, 6], [18, 7]]},
+      {"name": "Two frost-tipped pines", "from_block": 5, "tiles": [120, 121, 120, 121, 122, 123, 122, 123, 122, 123, 122, 123, 124, 125, 124, 125], "at": [[19, 6], [19, 7], [19, 10]]},
+      {"name": "Moss at the mouth of the track", "from_block": 1, "tiles": [5, 111, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 112, 6, 6, 6], "at": [[18, 8]]},
+      {"name": "Retreating south verge", "from_block": 1, "tiles": [6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 112, 6, 6, 6], "at": [[19, 8]]}
+    ]
+  },
+  {
+    "map": "MnBemidjiNorthwoods",
+    "tileset": "mn_winter_bemidji_northwoods",
+    "crowns": [
+      {"first": 96},
+      {"first": 102, "foregrounds5": [[12, 21, 14], [7, 13, 9], [5, 9, 8]]}
+    ],
+    "track": [
+      {"slot": 111, "palette": 0, "source": 6},
+      {"slot": 108, "palette": 0, "melt_span": [6, 6, 7, 7, 8, 8, 8, 8]},
+      {"slot": 109, "palette": 0, "melt_span": [0, 0, 0, 0, 0, 0, 1, 2]},
+      {"slot": 110, "palette": 0, "melt_span": [3, 4, 5, 6, 7, 8, 8, 8]},
+      {"slot": 112, "palette": 0, "melt_span": [0, 0, 0, 0, 0, 0, 1, 2]},
+      {"slot": 115, "palette": 0, "melt_span": [3, 4, 5, 6, 7, 7, 6, 6]},
+      {"slot": 116, "palette": 0, "melt_span": [8, 8, 8, 8, 8, 7, 5, 4]},
+      {"slot": 117, "palette": 0, "melt_span": [5, 4, 3, 2, 0, 0, 0, 0]}
+    ],
+    "terrain": [
+      {"name": "Cool pine and snow-covered pine", "from_block": 5, "tiles": [102, 103, 228, 229, 104, 105, 230, 231, 104, 105, 230, 231, 106, 107, 232, 233], "at": [[0, 5], [0, 6], [0, 11], [0, 12], [1, 6], [1, 9]]},
+      {"name": "Two cool pines", "from_block": 5, "tiles": [102, 103, 102, 103, 104, 105, 104, 105, 104, 105, 104, 105, 106, 107, 106, 107], "at": [[0, 7], [0, 10]]},
+      {"name": "Frost-tipped pine and cool pine", "from_block": 5, "tiles": [96, 97, 102, 103, 98, 99, 104, 105, 98, 99, 104, 105, 100, 101, 106, 107], "at": [[0, 9]]},
+      {"name": "Thawing road under the snow", "from_block": 1, "tiles": [108, 109, 6, 6, 111, 110, 112, 6, 111, 111, 115, 6, 111, 116, 117, 6], "at": [[0, 8]]}
+    ]
+  }
+]

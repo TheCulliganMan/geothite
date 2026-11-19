@@ -1,0 +1,11 @@
+{
+  "tile": [8, 23],
+  "approach": [8, 22],
+  "item": "ULTRA_BALL",
+  "flag": "EVENT_MN_HIDDEN_FEN_SOUTH_BALL",
+  "observer_pages": [
+    ["South of the cove,", "see the two firs?"],
+    ["My spare ball", "rolled behind the"],
+    ["far one. Keep it", "if you find it."]
+  ]
+}
