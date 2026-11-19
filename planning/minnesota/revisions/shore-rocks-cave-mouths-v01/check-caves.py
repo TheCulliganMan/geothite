@@ -35,6 +35,13 @@ def resolve_tile(maps, room, x, y):
     return room, x, y
 
 
+def native_glyph(pack, bank, glyph):
+    bits = pack["runtime_files"][f"gfx/tilesets/{bank}.2bpp"]
+    color = pack["data"]["tilesets"][bank]["palette_map"][glyph]
+    physical = len(bits)//32 + (glyph & 127) if color & 8 else glyph
+    return bytes(bits[16*physical:16*physical+16])
+
+
 def quadrant(pack, room, x, y):
     room, x, y = resolve_tile(pack["data"]["maps"], room, x, y)
     attrs = room["attributes"]
@@ -44,14 +51,11 @@ def quadrant(pack, room, x, y):
     quad = 2*(y % 2) + x % 2
     token = definition["collision"][f"{block:02x}"][quad]
     raw = pack["runtime_files"][f"data/tilesets/{bank}_metatiles.bin"]
-    bits = pack["runtime_files"][f"gfx/tilesets/{bank}.2bpp"]
     pixels = []
     for yy in range((quad//2)*2, (quad//2)*2+2):
         for xx in range((quad%2)*2, (quad%2)*2+2):
             glyph = raw[16*block + 4*yy + xx]
-            color = definition["palette_map"][glyph]
-            physical = len(bits)//32 + (glyph & 127) if color & 8 else glyph
-            pixels.append(bytes(bits[16*physical:16*physical+16]))
+            pixels.append(native_glyph(pack, bank, glyph))
     return token, pixels
 
 
@@ -59,6 +63,19 @@ def check_face(pack, room, at):
     x, y = at
     token, mouth_pixels = quadrant(pack, room, x, y)
     require(token == "CAVE" and len(set(mouth_pixels)) > 1, f"{room['id']} missing cave arch at {at}")
+    if room["id"] == "MnR05C00R00" and (x, y) == (30, 27):
+        bank = room["attributes"]["tileset_name"]
+        cap, face = (native_glyph(pack, bank, glyph) for glyph in (0x3c, 0x4c))
+        if quadrant(pack, room, x+1, y)[1][:2] == [cap, cap]:
+            # The low Rock Cut wall is one native course tall. Its original deep doorway
+            # cuts into the cap; the course continues at the same height on both sides.
+            require(mouth_pixels == [native_glyph(pack, bank, g) for g in (0x46, 0x47, 0x56, 0x57)],
+                    f"{room['id']} recessed Rock Cut arch changed")
+            for dx in (-2, -1, 1, 2):
+                surface, pixels = quadrant(pack, room, x+dx, y)
+                require(surface == "WALL" and pixels == [cap, cap, face, face],
+                        f"{room['id']} broken single-course shoulder at {(x+dx,y)}")
+            return [4, 4]
     # The last glyph of the right jamb carries the local face material, even on
     # the Iron Range mine door. The paired walking squares flanking the portal
     # must be solid rock with 32 px of support. Outer bevels and original timber

@@ -1,0 +1,7 @@
+{
+  "parent_pack": "content-packs/minnesota-mothlight-rock-cut-trail-v01.crystalpack",
+  "parent_pack_sha256": "f4126c27fdcad848ff75988e3abe5a9bf064682a23f24dad525f4e476ecc29d6",
+  "output_pack": "content-packs/minnesota-mothlight-rock-cut-north-face-v01.crystalpack",
+  "expected_pack_sha256": "59dc62f1e3c69f8764af38d1cd217e77c8f35b1454cea0a75e98f75f1e04e4f7",
+  "builder": "pack_outdoor_contours --rock-cut-north-face"
+}

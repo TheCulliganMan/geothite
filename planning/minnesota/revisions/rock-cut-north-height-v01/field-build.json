@@ -1,0 +1,7 @@
+{
+  "parent_pack": "content-packs/minnesota-rock-cut-trail-v01.crystalpack",
+  "parent_pack_sha256": "dd6ec788303a0ae75aed2380d18e7cf78eae04bc1e90a936cd7f3c0354509507",
+  "output_pack": "content-packs/minnesota-rock-cut-north-face-v01.crystalpack",
+  "expected_pack_sha256": "37392d84900c135e925cf8c33ab2f671d6ddfcd6a45c48d5272bb1ebeb2a3c7f",
+  "builder": "pack_outdoor_contours --rock-cut-north-face"
+}

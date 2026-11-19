@@ -30,7 +30,7 @@ mod brown_shores;
 pub use brown_shores::restore_brown_shores;
 #[path = "northstar_rock_cut.rs"]
 mod rock_cut;
-pub use rock_cut::revise_rock_cut;
+pub use rock_cut::{revise_rock_cut, revise_rock_cut_north_face};
 
 const MANIFEST: &str = "northstar-outdoor-contours-v4";
 type ArtIds = BTreeMap<(String, u16), u8>;

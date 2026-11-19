@@ -1,0 +1,12 @@
+[
+  {"tileset": "mn_outdoor_headwaters_stairs", "id": 8000, "collision_from": 108, "tiles": [5, 59, 60, 60, 5, 59, 60, 60, 5, 59, 60, 60, 5, 75, 76, 76]},
+  {"tileset": "mn_outdoor_headwaters_stairs", "id": 8001, "collision_from": 114, "tiles": [60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 76, 76, 76, 76]},
+  {"tileset": "mn_outdoor_headwaters_stairs", "id": 8002, "collision_from": 115, "tiles": [60, 60, 60, 60, 60, 60, 60, 60, 70, 71, 60, 60, 86, 87, 76, 76]},
+  {"tileset": "mn_outdoor_headwaters_stairs", "id": 8003, "collision_from": 105, "tiles": [5, 5, 61, 44, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5], "collision": ["FLOOR", "UP_WALL", "FLOOR", "FLOOR"]},
+  {"tileset": "mn_outdoor_headwaters_stairs", "id": 8004, "collision_from": 106, "tiles": [6, 59, 60, 60, 6, 59, 60, 60, 6, 59, 60, 60, 5, 59, 60, 60], "collision": ["WALL", "FLOOR", "WALL", "FLOOR"]},
+  {"tileset": "mn_outdoor_headwaters_stairs", "id": 8005, "collision_from": 177, "tiles": [60, 60, 60, 61, 60, 60, 60, 61, 60, 60, 60, 61, 76, 76, 76, 77], "collision": ["FLOOR", "WALL", "WALL", "WALL"]},
+  {"tileset": "mn_outdoor_headwaters_stairs", "id": 8006, "collision_from": 2, "tiles": [5, 5, 30, 31, 5, 5, 46, 47, 5, 5, 46, 47, 5, 43, 62, 63], "collision": ["FLOOR", "WALL", "FLOOR", "WALL"]},
+  {"tileset": "mn_outdoor_headwaters_stairs", "id": 8007, "collision_from": 105, "tiles": [30, 31, 61, 61, 46, 47, 61, 61, 46, 47, 61, 61, 62, 63, 61, 61], "collision": ["WALL", "WALL", "WALL", "WALL"]},
+  {"tileset": "mn_outdoor_headwaters_stairs", "id": 8008, "collision_from": 112, "tiles": [44, 44, 44, 45, 60, 60, 60, 61, 60, 60, 60, 61, 60, 60, 60, 61], "collision": ["UP_WALL", "WALL", "FLOOR", "WALL"]},
+  {"tileset": "mn_outdoor_headwaters_stairs", "id": 8009, "collision_from": 107, "tiles": [30, 31, 45, 60, 62, 63, 61, 45, 5, 5, 61, 61, 5, 5, 61, 61], "collision": ["WALL", "WALL", "FLOOR", "WALL"]}
+]

@@ -15,6 +15,7 @@ use crate::{
 };
 
 const CAVE: &str = "MnR05RockCut";
+const TRAIL_MANIFEST: &str = "northstar-rock-cut-v1";
 const STONE: &str = "mn_r05_rock_cut";
 const PORTALS: [([u16; 2], &str, [i16; 2]); 2] = [
     ([5, 17], "MnR05C00R01", [16, 30]),
@@ -181,6 +182,44 @@ pub fn revise_rock_cut(base: &CompiledGamePack, dir: &Path) -> Result<CompiledGa
     for room in [north, south] {
         apply_room(&mut pack, base, room, &ids)?;
     }
+    finish_rock_cut(base, pack, dir, TRAIL_MANIFEST)
+}
+
+/// Fits the north mouth into a single continuous rock face using regional native art.
+///
+/// # Errors
+/// Rejects a different trail parent, stale placements, or broken walking and cave access.
+pub fn revise_rock_cut_north_face(base: &CompiledGamePack, dir: &Path) -> Result<CompiledGamePack> {
+    ensure!(
+        base.report
+            .manifests
+            .last()
+            .is_some_and(|id| id == TRAIL_MANIFEST),
+        "expected the Rock Cut trail parent"
+    );
+    let room: Room = source(dir, "room.json")?;
+    ensure!(
+        room.map == "MnR05C00R00" && room.tileset == "mn_outdoor_headwaters_stairs",
+        "expected Rock Cut's north bluff"
+    );
+    let mut pack = base.clone();
+    let mut ids = ArtIds::new();
+    let art: Vec<super::Metatile> = source(dir, "art.json")?;
+    ensure!(
+        art.iter().all(|entry| entry.tileset == room.tileset),
+        "unexpected north bluff tileset"
+    );
+    append_metatiles(&mut pack, &mut ids, art, |_, _| false)?;
+    apply_room(&mut pack, base, room, &ids)?;
+    finish_rock_cut(base, pack, dir, "northstar-rock-cut-north-face-v1")
+}
+
+fn finish_rock_cut(
+    base: &CompiledGamePack,
+    mut pack: CompiledGamePack,
+    dir: &Path,
+    manifest: &str,
+) -> Result<CompiledGamePack> {
     let revisions = dir.parent().context("expected revisions directory")?;
     brown_shores::verify_paths(
         base,
@@ -193,7 +232,7 @@ pub fn revise_rock_cut(base: &CompiledGamePack, dir: &Path) -> Result<CompiledGa
     }
     outdoor_contour_paths::check_walk(&pack, CAVE, [9, 8], [9, 6], 2)?;
     check_thresholds(&pack)?;
-    pack.report.manifests.push("northstar-rock-cut-v1".into());
+    pack.report.manifests.push(manifest.into());
     pack.identity = crate::derive_compiled_game_pack_identity_from_manifest(
         pack.format_version,
         &pack.data,
