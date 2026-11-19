@@ -108,6 +108,8 @@ implementation details.
 
 In the Bemidji Northwoods the Tall Tale gate leads to the road worker. Inspect the pipe, the pool print and the fallen wood in any order, then report back. The separate trunk across the camp path can be shifted from either end. Bringing the marked-log account to the worker reveals Babehemoth and Bunjant independently. Choosing to battle either is optional. [Tall Tale Trail](revisions/trail-discoveries-v01/tall-tale.md)
 
+In Duluth, the Ore Warehouse tally keeper and the Union Hall host can be visited in either order. The upstairs recorder enters Alma Lind and her coworkers in the open crew book as soon as the list is delivered. The player can read the names immediately and return for the Ether if their Pack is full. [Union Hall, the clinic and the Harbor Gym](revisions/return-visits-v01/README.md)
+
 ## Gates, teams and acceptance
 
 | Action | Required state |

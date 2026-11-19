@@ -123,7 +123,7 @@ fn game(map: &mut MapModule) {
     for (suffix, lines) in [
         (
             "Invite",
-            vec!["Free practice toss! Land a ring and win a CORN STICK. Try?"],
+            vec!["Free practice toss! Land a ring and win some SWEET CORN. Try?"],
         ),
         (
             "Miss",
@@ -131,7 +131,7 @@ fn game(map: &mut MapModule) {
         ),
         (
             "Win",
-            vec!["A perfect toss! One CORN STICK for your party."],
+            vec!["A perfect toss! Here's some SWEET CORN for your party."],
         ),
         (
             "Bag",

@@ -4038,16 +4038,20 @@
         ],
         "MnArcHabitatAfterText": [
           [
-            "AIDE: LOOBIT keeps",
-            "nudging its basin"
+            "AIDE: I took the",
+            "basin to the bank."
           ],
           [
-            "toward the door.",
-            "When water rises,"
+            "LOOBIT slid out",
+            "and dove."
           ],
           [
-            "we will try the",
-            "bank together."
+            "I watched the",
+            "ripples."
+          ],
+          [
+            "It came up right",
+            "behind me!"
           ]
         ],
         "MnArcRCBeforeText": [
@@ -26719,7 +26723,7 @@
           ],
           [
             "so I'll hold the",
-            "CORN STICK. Come"
+            "SWEET CORN. Come"
           ],
           [
             "back with room for",
@@ -26745,10 +26749,10 @@
         "MnFairGameInviteText": [
           [
             "One ring over the",
-            "peg gets you a"
+            "peg wins you some"
           ],
           [
-            "CORN STICK. Want a",
+            "SWEET CORN. Want a",
             "throw?"
           ]
         ],
@@ -26791,7 +26795,7 @@
         "MnFairGameWinText": [
           [
             "It stayed! Here's",
-            "your CORN STICK."
+            "your SWEET CORN."
           ],
           [
             "The napkins are",
@@ -40952,6 +40956,14 @@
           [
             "A clean finish.",
             "You earned it."
+          ],
+          [
+            "The west lane is",
+            "open now."
+          ],
+          [
+            "Skate south, then",
+            "east at the stop."
           ]
         ],
         "MnDuluthGymLeaderLostText": [
@@ -42736,6 +42748,47 @@
             "here."
           ]
         ],
+        "MnUnionRecorderUpstairsText": [
+          [
+            "The recorder's",
+            "upstairs. That's"
+          ],
+          [
+            "where we keep the",
+            "crew book."
+          ]
+        ],
+        "MnUnionListInHandText": [
+          [
+            "You've got the",
+            "night crew list?"
+          ],
+          [
+            "A boy looked for",
+            "his mum's name."
+          ],
+          [
+            "The book just said",
+            "NIGHT CREW."
+          ],
+          [
+            "Take the list up",
+            "to our recorder."
+          ]
+        ],
+        "MnUnionBookAfterText": [
+          [
+            "I went up to see",
+            "the new page."
+          ],
+          [
+            "I knew his mum by",
+            "sight. Now I know"
+          ],
+          [
+            "her name, too."
+          ]
+        ],
         "MN_DL_INTERIOR_UNION_NEIGHBORInteriorText": [
           [
             "I brought hotdish",
@@ -42842,30 +42895,45 @@
         ],
         "MN_DULUTH_X_UNIONHALL_F2_HOSTInteriorText": [
           [
-            "I'll put her name",
-            "in the book just"
+            "There's Alma Lind,",
+            "big A and all."
           ],
           [
-            "the way she wrote",
-            "it. And the names"
+            "I'll add the names",
+            "on either side."
           ],
           [
-            "on either side of",
-            "it. Next kid who"
+            "There. The next",
+            "kid can find them."
+          ]
+        ],
+        "MnUnionFirstEtherText": [
+          [
+            "Here, an ETHER."
           ],
           [
-            "comes in might be",
-            "looking for one of"
+            "Thanks for making",
+            "the walk."
+          ]
+        ],
+        "MnUnionSavedEtherText": [
+          [
+            "Here you go. I set",
+            "your ETHER aside."
+          ]
+        ],
+        "MnUnionEnteredBookText": [
+          [
+            "NIGHT CREW",
+            "Nora Berg"
           ],
           [
-            "them."
+            "Alma Lind",
+            "Gus Ward"
           ],
           [
-            "Here, take an",
-            "ETHER. Thanks for"
-          ],
-          [
-            "making the walk."
+            "The A in Alma",
+            "fills two lines."
           ]
         ],
         "MN_DULUTH_X_UNIONHALL_F2_HOSTInteriorRepeatText": [
@@ -42994,35 +43062,24 @@
         "MN_DULUTH_X_OREWAREHOUSE_F2_HOSTInteriorText": [
           [
             "Here's the night",
-            "crew. See that big"
+            "crew. Alma Lind."
           ],
           [
-            "first letter? She",
-            "writes it like"
+            "See that big A?",
+            "Gloves on, too."
           ],
           [
-            "that even with her",
-            "gloves on."
+            "I'll copy the list",
+            "for the recorder."
           ],
           [
-            "I'll copy the",
-            "whole list. Take"
-          ],
-          [
-            "it to the recorder",
-            "upstairs at UNION"
-          ],
-          [
-            "HALL."
+            "Take it upstairs",
+            "at UNION HALL."
           ]
         ],
         "MN_DULUTH_X_OREWAREHOUSE_F2_HOSTInteriorRepeatText": [
           [
-            "Have you still got",
-            "that page? The"
-          ],
-          [
-            "recorder's",
+            "The recorder's",
             "upstairs at UNION"
           ],
           [
@@ -43032,6 +43089,16 @@
           [
             "handwriting, send",
             "them to me."
+          ]
+        ],
+        "MnWarehouseBookAfterText": [
+          [
+            "I saw the book on",
+            "my way home."
+          ],
+          [
+            "Her big first",
+            "letter stood out."
           ]
         ],
         "MN_DL_INTERIOR_TALLY_APPRENTICEInteriorText": [
@@ -54360,6 +54427,14 @@
           [
             "A clean finish.",
             "You earned it."
+          ],
+          [
+            "The west lane is",
+            "open now."
+          ],
+          [
+            "Skate south, then",
+            "east at the stop."
           ]
         ],
         "MnDuluthGymLeaderAfterText": [

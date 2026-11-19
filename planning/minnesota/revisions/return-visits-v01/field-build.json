@@ -1,0 +1,7 @@
+{
+  "parent_pack": "content-packs/minnesota-trail-discoveries-v01.crystalpack",
+  "parent_pack_sha256": "ca45c56d88deb63161e71e051bc63715f46afdad34a051ceb21a30df0580bec2",
+  "output_pack": "content-packs/minnesota-town-returns-v01.crystalpack",
+  "expected_pack_sha256": "6828d7002748aa22184834a48586d5533e3a09781dbe5b426841bb570160c7be",
+  "builder": "pack_town_returns"
+}
