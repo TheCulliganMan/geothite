@@ -1,0 +1,53 @@
+{
+  "MnLeagueLobby": {
+    "MnElyRegistrationText": {
+      "before": [
+        ["REGISTRAR: Ready", "to register?"],
+        ["FERN first. Four", "wins, then CASEY."],
+        ["You can go back", "to earlier rooms."],
+        ["The run ends when", "you lose a match"],
+        ["or come back to", "this lobby."]
+      ],
+      "after": [
+        ["REGISTRAR: Ready", "to register?"],
+        ["FERN first. Four", "wins, then CASEY."],
+        ["Got your medicine?", "No nurse past me."],
+        ["You can go back", "to earlier rooms."],
+        ["The run ends when", "you lose a match"],
+        ["or come back to", "this lobby."]
+      ]
+    }
+  },
+  "MnEly": {
+    "MnWayLeagueAgainText": {
+      "before": [
+        ["ELY LEAGUE"],
+        ["Returning teams", "sign in at the"],
+        ["lobby desk."],
+        ["Four matches", "before CASEY."],
+        ["Exiting ends the", "run."]
+      ],
+      "after": [
+        ["ELY LEAGUE"],
+        ["Sign in at the", "lobby desk."],
+        ["Four wins before", "CASEY."],
+        ["You can return to", "earlier rooms."],
+        ["Returning to the", "lobby ends a run."]
+      ]
+    },
+    "MnWayLeagueHoldText": {
+      "before": [
+        ["ELY LEAGUE"],
+        ["Registration waits", "for word from the"],
+        ["intake."],
+        ["Ask at the survey", "shelter in"],
+        ["BOUNDARY WATERS."]
+      ],
+      "after": [
+        ["ELY LEAGUE"],
+        ["Waiting on the", "intake crew."],
+        ["Ask at the lobby", "desk for news."]
+      ]
+    }
+  }
+}

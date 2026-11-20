@@ -19,6 +19,7 @@ const CHAMPION: &str = "EVENT_MN_LEAGUE_CHAMPION";
 const RESTORED: &str = "EVENT_MN_SURVEY_RESTORED";
 const CLINIC: &str = "MnElyPokecenter1F";
 const LOBBY: &str = "MnLeagueLobby";
+const HALL: &str = "MnLeagueHallOfFame";
 const CHAMBERS: [(&str, &str); 5] = [
     ("MnLeagueRoom1", "MN_LEAGUE_1"),
     ("MnLeagueRoom2", "MN_LEAGUE_2"),
@@ -33,7 +34,14 @@ fn in_progress(
     stage: usize,
     prior_champion: bool,
 ) -> VisibleShellController {
-    let mut c = fixture(root, runtime, CHAMBERS[stage].0, (5, 8));
+    let (map, start) = match CHAMBERS.get(stage) {
+        Some(&(chamber, _)) => (chamber, (5, 8)),
+        None => {
+            assert_eq!(stage, CHAMBERS.len(), "all five matches precede the Hall");
+            (HALL, (4, 12))
+        }
+    };
+    let mut c = fixture(root, runtime, map, start);
     for slot in 0..8 {
         c.shell
             .shell
@@ -229,4 +237,32 @@ fn league_return_trip_backtracking_preserves_wins_until_the_lobby() {
     check_run(&c, false, 0, true);
     assert_eq!(c.shell.shell.session().state().money, 8_000);
     restart_at_fern(&mut c, &runtime, true);
+}
+
+#[test]
+#[ignore = "requires the installed Ely League in MN_BADGE_TRAILS_PACK"]
+fn ely_hall_can_be_revisited_from_both_exits_before_recording() {
+    let (root, runtime) = load();
+    for lane in [4_u8, 5] {
+        let mut c = in_progress(&root, &runtime, 5, false);
+        let before = c.snapshot().expect("five wins before induction");
+        walk_to(&mut c, &runtime, (u16::from(lane), 12));
+        let lane = i16::from(lane);
+        travel(&mut c, Down, CHAMBERS[4].0, (lane, 2));
+        check_run(&c, true, 5, false);
+        c = continue_save(root.clone(), runtime.clone(), &mut c);
+        at(&mut c, CHAMBERS[4].0, (lane, 2));
+        travel(&mut c, Up, HALL, (lane, 12));
+        check_run(&c, true, 5, false);
+        let returned = c.snapshot().expect("back in the Hall");
+        assert_eq!(returned.party, before.party);
+        assert_eq!(returned.bag, before.bag);
+        assert_eq!(c.shell.shell.session().state().money, 8_000);
+        walk_to(&mut c, &runtime, (6, 5));
+        press(&mut c, Up);
+        at(&mut c, HALL, (6, 5));
+        press(&mut c, A);
+        page(&mut c, "MnElyRecordText");
+        check_run(&c, true, 5, false);
+    }
 }

@@ -1837,17 +1837,17 @@
     },
     {
       "id": "MS12",
-      "location": "MnBoundaryWatersSurveyShelter",
+      "location": "MnBoundaryIntake",
       "requires": [
         "EVENT_MN_SURVEY_CHIEF_DEFEATED"
       ],
       "sets": [
         "EVENT_MN_SURVEY_RESTORED"
       ],
-      "completion": "restore receiver in the shelter",
-      "story_beat": "After the battle, the separate receiver action restores the public line, exposes the true readings and stops the drainage pumps before the lakes are emptied. Defeated leaders remain villains.",
-      "narrative_status": "The earlier 544-map finale remains separately verified. The revised-gym/species 554-map relay candidate adds a native Kettlurk remote picture, acknowledged console shutdown and persistent picture wait. A 6.60-second local controller course wins the actual chief and plays refusal/retry, picture Continue, input ownership, shutdown and reentry; eight prior badges/signal/Mew/divider are explicit setup. Both actual stdio replays pass, including B-close after picture Continue, with no money/badge/Pokedex changes and empty stderr. Full preservation, cached/uncached closure, matched native/source pixels and all 377 audio checks pass. This is not fresh Winona progression or physical pump animation. Native scene source: northstar-relay.json. See playable/northstar-relay.md.",
-      "native_scene_source": "northstar-relay.json",
+      "completion": "After defeating Hale, read both pump times to the skipper on the shelter radio. At the intake landing, see the counter-current, defeat Reed, stop the drill, close the sump outlet and open the clean bypass. Kettlurk escapes and the crew contains the discharge before the survey is restored.",
+      "story_beat": "The call gets the player to the intake. The crew sees the water run clear only after the player operates the bypass and Kettlurk gets free.",
+      "narrative_status": "The intake controls and rescue belong to the current finale. The six receiver pages below are retained for the earlier shelter edition documented in playable/northstar-relay.md.",
+      "native_scene_source": "pokemon/verdigrim-scene-site.json",
       "native_texts": {
         "MnBoundarySurveyReceiverLockedText": [
           "The chief guards",
@@ -1880,7 +1880,19 @@
           "The ELY trail is",
           "open again."
         ]
-      }
+      },
+      "intermediate_flags": [
+        "EVENT_MN_ARC_LINK_SENT",
+        "EVENT_MN_VERDIGRIM_COUNTER_CURRENT",
+        "EVENT_MN_REED_BOUNDARY_DEFEATED",
+        "EVENT_MN_VERDIGRIM_DRILL_STOPPED",
+        "EVENT_MN_VERDIGRIM_OUTLET_CLOSED",
+        "EVENT_MN_VERDIGRIM_CLEAN_BYPASS",
+        "EVENT_MN_VERDIGRIM_RETREATED",
+        "EVENT_MN_KETTLURK_RELEASED",
+        "EVENT_MN_VERDIGRIM_CONTAINED"
+      ],
+      "native_texts_location": "MnBoundaryWatersSurveyShelter"
     },
     {
       "id": "MS13",
@@ -1983,7 +1995,7 @@
     },
     {
       "id": "MS17",
-      "location": "MnBoundaryWaters",
+      "location": "MnInternationalFallsPokecenter1F",
       "requires": [
         "BADGE_1",
         "BADGE_2",
@@ -1999,7 +2011,10 @@
       "sets": [
         "EVENT_MN_BORDER_CIRCUIT_REWARDED"
       ],
-      "completion": "arrival by authored Voyageurs quest trigger"
+      "completion": "Enter Boundary Waters eastbound from the Voyageurs checkpoint to record the crossing. Return to the ranger in the International Falls clinic for one PP Up. If the pocket is full, the ranger keeps the reward until there is room and remembers giving it.",
+      "intermediate_flags": [
+        "EVENT_MN_FALLS_VOYAGEURS_ARRIVAL"
+      ]
     },
     {
       "id": "MS18",
@@ -10620,6 +10635,10 @@
           [
             "FERN first. Four",
             "wins, then CASEY."
+          ],
+          [
+            "Got your medicine?",
+            "No nurse past me."
           ],
           [
             "You can go back",
@@ -56598,19 +56617,20 @@
               "ELY LEAGUE"
             ],
             [
-              "Returning teams",
-              "sign in at the"
-            ],
-            [
+              "Sign in at the",
               "lobby desk."
             ],
             [
-              "Four matches",
-              "before CASEY."
+              "Four wins before",
+              "CASEY."
             ],
             [
-              "Exiting ends the",
-              "run."
+              "You can return to",
+              "earlier rooms."
+            ],
+            [
+              "Returning to the",
+              "lobby ends a run."
             ]
           ]
         },
@@ -56644,18 +56664,12 @@
               "ELY LEAGUE"
             ],
             [
-              "Registration waits",
-              "for word from the"
+              "Waiting on the",
+              "intake crew."
             ],
             [
-              "intake."
-            ],
-            [
-              "Ask at the survey",
-              "shelter in"
-            ],
-            [
-              "BOUNDARY WATERS."
+              "Ask at the lobby",
+              "desk for news."
             ]
           ],
           "until": "EVENT_MN_SURVEY_RESTORED"

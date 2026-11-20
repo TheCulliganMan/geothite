@@ -156,17 +156,18 @@ fn milestone<'a>(source: &'a Value, id: &str, map: &str) -> Result<&'a Value> {
         .collect::<Vec<_>>();
     ensure!(found.len() == 1, "one milestone required: {id}");
     let logical_map = if id == "MS01" { "MnRochester" } else { map };
-    ensure!(
-        found[0]["location"] == logical_map,
-        "moved story scene: {id}"
-    );
+    // The shelter edition retains its receiver pages after restoration moved to the intake.
+    let text_location = found[0]
+        .get("native_texts_location")
+        .unwrap_or(&found[0]["location"]);
+    ensure!(text_location == logical_map, "moved story scene: {id}");
     Ok(found[0])
 }
 
 fn add(texts: &mut Texts, map: &str, label: &str, lines: Vec<String>) -> Result<()> {
+    // The printer opens another page after each pair of native lines.
     ensure!(
         !lines.is_empty()
-            && lines.len() <= 24
             && lines.iter().all(|l| !l.is_empty()
                 && l.len() <= 18
                 && l.is_ascii()
@@ -255,15 +256,23 @@ mod tests {
         let story: Value = serde_json::from_str(&source).expect("canonical milestones");
         for milestone in story["milestones"].as_array().expect("milestones") {
             if let Some(labels) = milestone["native_texts"].as_object() {
-                let map = milestone["location"].as_str().expect("scene location");
+                let map = milestone
+                    .get("native_texts_location")
+                    .unwrap_or(&milestone["location"])
+                    .as_str()
+                    .expect("scene location");
                 for label in labels.keys() {
                     assert!(is_reviewed_story_text(map, label), "{map}/{label}");
                 }
             }
         }
-        assert!(!is_reviewed_story_text(
+        assert!(is_reviewed_story_text(
             "MnDuluthHarborWorkshop",
             "MnDuluthHarborWorkshop_MN_DULUTH_WORKSHOP_KEEPERText"
+        ));
+        assert!(!is_reviewed_story_text(
+            "MnDuluth",
+            "MnTownPainterAfterText"
         ));
     }
 

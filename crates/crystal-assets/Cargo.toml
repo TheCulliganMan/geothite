@@ -71,6 +71,10 @@ name = "pack_league_journey"
 required-features = ["pack-authoring"]
 
 [[example]]
+name = "pack_ely_challenge"
+required-features = ["pack-authoring"]
+
+[[example]]
 name = "pack_badge_battles"
 required-features = ["pack-authoring"]
 

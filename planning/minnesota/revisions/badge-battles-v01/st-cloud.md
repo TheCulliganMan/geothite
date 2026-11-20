@@ -1,6 +1,6 @@
 # St. Cloud's fifth badge
 
-At seed 1701 the ordinary Pouchid, Kindlit and Birchit parties lost in 8, 10 and 10 turns. Saven had three, three and two Pokémon left, respectively. Those results were identical in Fen Waterline and Badge Battles. All three parties lead with the starter, choose the largest estimated immediate damage every turn, and send the first available reserve after a knockout. Saven can choose setup, damage or a paid switch. The total alone cannot establish which move caused a knockout. [Trial policy](../../../../crates/crystal-assets/src/badge_battle_trials.rs)
+At seed 1701 the ordinary Pouchid, Kindlit and Birchit parties lost in 11, 10 and 10 turns with the first four badges applied through the normal gym scripts. Saven had two, three and two Pokémon left, respectively. All three parties lead with the starter, choose the largest estimated immediate damage every turn, and send the first available reserve after a knockout. Saven can choose setup, damage or a paid switch. The total alone cannot establish which move caused a knockout. [Trial policy](../../../../crates/crystal-assets/src/badge_battle_trials.rs)
 
 | Opponent | A decision the player can make |
 | --- | --- |
@@ -14,10 +14,10 @@ The paired retry changes only who walks into the gym first. Both Cacheek parties
 
 | Starter party | Starter first | Alternate first | What happened at 1701 |
 | --- | --- | --- | --- |
-| Pouchid | 0 wins in 3 | 0 wins in 3 with Cacheek | Saven switched to Silohawk on the opening Fairy Wind. It survived on 3 HP going into the last turn. Leading with Cacheek let the party take one knockout on all three seeds. |
-| Kindlit | 0 wins in 3 | 0 wins in 3 with Chorip | Saven brought in Silohawk on the first turn against either lead. Rimepelt used Icy Wind twice against it in both tries. With the starter first, Bankwing faced Flossail, Tesslarv and Chorip after Rimepelt had already fainted. |
-| Birchit | 1 win in 3 | 0 wins in 3 with Cacheek | After Silohawk, Bankwing's Quick Attack picked off Portabeau at 3 HP and Cacheek at 9 HP. Bankwing still had 18 HP when Velvawn came out. On seed 9001, Portabeau's opening instead produced a seven-turn win with three allies standing. |
+| Pouchid | 0 wins in 3 | 0 wins in 3 with Cacheek | Saven sent Silohawk into Fairy Wind on the first turn. The starter-first party eventually took one knockout. With Cacheek first the party took one knockout on every seed. |
+| Kindlit | 0 wins in 3 | 0 wins in 3 with Chorip | Rimepelt spent two Icy Winds on Silohawk. By the time Bankwing entered, Rimepelt had fainted. Neither opening recorded a knockout across the three seeds. |
+| Birchit | 0 wins in 3 | 0 wins in 3 with Cacheek | With Portabeau first, the party took one knockout on each seed. On 1701, Bankwing still had 14 HP when Velvawn came out. With Cacheek first, all three opposing Pokémon survived on each seed. |
 
-Opening against Deepulse alone misses the danger. At 1701 Silohawk was the opponent on turn two in all six trials. Changing the lead yielded **zero wins in nine tries**, including a loss for the Birchit party on its winning seed. These trials establish the pressure on an attack-only party and the limits of reordering. An ordinary player’s win rate would require a broader sample.
+The six opening traces at seed 1701 show Saven replacing Deepulse with Silohawk immediately. Across all 18 attempts the small parties won no fights. Changing the lead alone did not solve the matchup for these four-member teams. The tests use immediate damage, no bag items, and the next available partner after a faint. The earlier published trials used story badge flags without applying the combat badge awards. The table above replaces those results.
 
 A repeat that tests a different decision can use the Lv. 24 Bristub in the 10% daytime slot in Route 5's middle section. At 28 it evolves into Normal/Steel Latchquill with base Defense 115. It resists Wing Attack and Psybeam, takes neutral damage from Faint Attack, and is vulnerable to Bankwing's Dig. Compare adding it in a fifth slot against saving it for a paid switch into Silohawk. Another already-available Rock/Dark partner comes from the 10% Lv. 15 Driptip slot in Route 3's River Pocket Cave. It evolves into Sinknook at 24. Both acquisitions remain candidates for a further trial.

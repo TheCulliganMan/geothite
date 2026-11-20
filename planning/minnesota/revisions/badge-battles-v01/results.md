@@ -5,20 +5,20 @@ Each number is a count of outright wins from the three fixed seeds 1701, 4242 an
 | Opponent | Pouchid party | Kindlit party | Birchit party | Turns, all nine fights |
 | --- | ---: | ---: | ---: | ---: |
 | Varel · Rochester | 0/3 | 1/3 | 1/3 | 7–12 |
-| Torven · Mankato | 3/3 | 0/3 | 0/3 | 7–16 |
-| Avrin · Minneapolis | 3/3 | 1/3 | 2/3 | 6–13 |
-| Brannic · St. Paul | 0/3 | 0/3 | 1/3 | 8–16 |
-| Saven · St. Cloud | 0/3 | 0/3 | 1/3 | 5–11 |
-| Sivren · Brainerd | 0/3 | 1/3 | 3/3 | 10–16 |
-| Orlis · Bemidji | 1/3 | 3/3 | 0/3 | 8–14 |
-| Norek · Duluth | 0/3 | 3/3 | 1/3 | 5–21 |
-| Fern · Ely | 3/3 | 2/3 | 0/3 | 10–19 |
-| Flint · Ely | 3/3 | 3/3 | 3/3 | 7–24 |
-| Veil · Ely | 0/3 | 2/3 | 0/3 | 10–13 |
-| Halden · Ely | 0/3 | 0/3 | 0/3 | 7–14 |
-| Casey · Champion | 0/3 | 0/3 | 0/3 | 8–15 |
+| Torven · Mankato | 3/3 | 0/3 | 1/3 | 7–15 |
+| Avrin · Minneapolis | 3/3 | 1/3 | 3/3 | 5–13 |
+| Brannic · St. Paul | 0/3 | 0/3 | 2/3 | 10–15 |
+| Saven · St. Cloud | 0/3 | 0/3 | 0/3 | 5–11 |
+| Sivren · Brainerd | 0/3 | 1/3 | 2/3 | 11–14 |
+| Orlis · Bemidji | 2/3 | 3/3 | 3/3 | 8–24 |
+| Norek · Duluth | 3/3 | 2/3 | 3/3 | 5–16 |
+| Fern · Ely | 3/3 | 3/3 | 3/3 | 7–20 |
+| Flint · Ely | 3/3 | 3/3 | 3/3 | 6–22 |
+| Veil · Ely | 1/3 | 2/3 | 3/3 | 6–18 |
+| Halden · Ely | 0/3 | 1/3 | 1/3 | 8–15 |
+| Casey · Champion | 0/3 | 0/3 | 0/3 | 7–17 |
 
-St. Paul and St. Cloud each yielded one win in nine. In St. Cloud the first turn explains why a simple type-chart answer can fall short. On seed 1701 Saven sent out Silohawk immediately in every opening tested. At the League, all nine trials ended in a win against Flint. None beat Halden or Casey. Each of those fights began fully healed, so attrition from earlier rooms cannot explain those losses. At Casey, the five-member sample teams have already given up one party slot and four to eight levels per member against his Lv. 51–53 team. [St. Cloud turn details](st-cloud.md) · [Ely teams](league.md)
+The corrected fixtures grant each earlier badge through its gym script. The original benchmark set the flags used for story checks, leaving the separate combat badge record empty. These are the rerun outcomes from the Ely Challenge archives, whose trainers and battle rules match the Badge Battles parents. Saven stopped every one of these four-member teams. Casey stopped all nine five-member challengers. Halden yielded wins to both the Kindlit and Birchit parties. [St. Cloud turn details](st-cloud.md) · [Prepared six-member League challenges](../ely-challenge-v01/sequence.md)
 
 ## The late pair before and after
 
@@ -26,7 +26,7 @@ The two changed League rooms were also tested on the Fen Waterline parent with s
 
 | Opponent | Fen Waterline | Badge Battles |
 | --- | --- | --- |
-| Veil | 3, 0, 2 | 4, 0, 3 |
-| Halden | 4, 4, 4 | 4, 4, 4 |
+| Veil | 0, 0, 0 | 1, 0, 0 |
+| Halden | 4, 0, 0 | 4, 0, 0 |
 
-These samples can identify difficult openings for a particular party and move-selection policy. They cannot establish a first-time player win rate. The separate [St. Cloud lead comparison](st-cloud.md) and [Brainerd catch and switch trials](middle.md) change one preparation decision at a time. Full League attrition, move teaching, freely timed switches, bag use and the Champion’s six-member finish remain relevant for a prepared-party review.
+These samples can identify difficult openings for a particular party and move-selection policy. They cannot establish a first-time player win rate. The separate [St. Cloud lead comparison](st-cloud.md) and [Brainerd catch and switch trials](middle.md) change one preparation decision at a time. The subsequent Ely tests follow six prepared partners across consecutive rooms, paid switch turns, the stock of the Ely Mart and opposing prize money.

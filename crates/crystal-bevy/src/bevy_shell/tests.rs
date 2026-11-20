@@ -17,6 +17,8 @@ mod dialogue_overhaul;
 mod dialogue_save_prompt;
 #[path = "tests/dialogue_scene_fixtures.rs"]
 mod dialogue_scene_fixtures;
+#[path = "tests/ely_registration.rs"]
+mod ely_registration;
 #[path = "tests/grand_marais_partner_retry.rs"]
 mod grand_marais_partner_retry;
 #[path = "tests/gym_badge_sight.rs"]

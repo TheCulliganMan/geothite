@@ -31,10 +31,10 @@ Each cell gives **wins out of three battles**, followed by **opposing Pokémon k
 
 | Starter party | Original five | Reedraft sixth | Switch to Reedraft on Bankmaw |
 | --- | --- | --- | --- |
-| Pouchid | 0 wins, 1 KO | 1 win, 6 KOs | 1 win, 6 KOs |
-| Kindlit | 1 win, 3 KOs | 1 win, 3 KOs | 1 win, 3 KOs |
-| Birchit | 3 wins, 9 KOs | 3 wins, 9 KOs | 1 win, 7 KOs |
+| Pouchid | 0 wins, 2 KOs | 2 wins, 7 KOs | 3 wins, 9 KOs |
+| Kindlit | 1 win, 5 KOs | 2 wins, 7 KOs | 2 wins, 7 KOs |
+| Birchit | 2 wins, 7 KOs | 3 wins, 9 KOs | 2 wins, 8 KOs |
 
-Reedraft in reserve helped the Pouchid party across all three seeds. Seed 4242 went from a loss to a win. The two other losses went from zero knockouts to one and two. The Kindlit party still lost before taking out even one opponent on seeds 1701 and 4242 under all three policies. All nine voluntary switches put Reedraft opposite Bankmaw for at least the next move decision, but spending that turn cost the Birchit party two wins. The local catch gives players a real matchup option. Automatically switching as soon as Bankmaw appears performed worse overall in this sample.
+With the five earned badges active, Reedraft in reserve increased the combined win count from three to seven in nine. The paid switch also won seven, across different seeds. It rescued Pouchid's remaining loss and left four partners standing. Kindlit gained a win on seed 1701 and lost one on 4242 compared with simply bringing the catch. Birchit won all three with Reedraft in reserve and lost seed 9001 after committing the switch. On one Kindlit win, the paid switch never led to another move decision with Reedraft and Bankmaw still opposite one another. The guide describes a real strength while leaving the timing up to the player.
 
 These isolated fights include the opponent's actual switching policy, ordinary forced replacements, move PP and per-knockout rewards. The party used no healing items, voluntary switches beyond the one specified, or status moves. Three deterministic seeds for each starter characterize these fixtures only. The earlier four-member Brainerd run faced a different team. [Earlier battle audit](../trail-discoveries-v01/battles.md) · [Compiled encounters and move authoring](../../story-pokemon.json)

@@ -17,7 +17,7 @@ use super::{menu_render_test_app, pokemon_overworld_context_canvas_scaled};
 
 const ROOM: &str = "MnBrainerdGym";
 
-fn capture(
+pub(super) fn capture(
     controller: VisibleShellController,
     directory: Option<&Path>,
     name: &str,
@@ -50,9 +50,8 @@ fn capture(
             pokemon_overworld_context_canvas_scaled(world, &images, 4)
         });
     assert_eq!(lcd.dimensions(), (160, 144));
-    std::fs::create_dir_all(directory).expect("guide evidence directory");
-    lcd.save(directory.join(name))
-        .expect("save native gym camera");
+    std::fs::create_dir_all(directory).expect("native camera capture directory");
+    lcd.save(directory.join(name)).expect("save native camera");
     VisibleShellController {
         shell: app
             .world_mut()

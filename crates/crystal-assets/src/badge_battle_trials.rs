@@ -5,6 +5,10 @@ mod badge_battle_parties;
 mod badge_battle_retry;
 #[path = "badge_battle_saven.rs"]
 mod badge_battle_saven;
+#[path = "ely_challenge_run.rs"]
+mod ely_challenge_run;
+#[path = "ely_challenger_parties.rs"]
+mod ely_challenger_parties;
 
 use std::cell::Cell;
 use std::collections::BTreeSet;
@@ -17,6 +21,7 @@ use crystal_core::battle::turn::{
 use crystal_core::models::Pokemon;
 use crystal_core::random::DividerSource;
 use crystal_core::state::{GameState, OverworldMemory};
+use crystal_core::systems::script_flags::{BADGE_ENGINE_FLAGS, apply_script_flag_mutation};
 use crystal_core::world::map::{Direction, TilePosition};
 use crystal_core::world::movement::MovementMode;
 
@@ -80,7 +85,65 @@ fn challenge_with_party(
     trainer_id: &str,
     party: Vec<Pokemon>,
     seed: u32,
+    choose: impl FnMut(&GameDataSet, &BattleCombatState) -> BattleAction,
+) -> Finish {
+    let mut state = trial_state(data, stage, party);
+    challenge_state(
+        data,
+        &mut state,
+        trainer_id,
+        &mut TrialDivider(seed),
+        choose,
+        None,
+    )
+}
+
+fn trial_state(data: &GameDataSet, stage: usize, party: Vec<Pokemon>) -> GameState {
+    let mut state = GameState::reset_wram_for_new_game();
+    let gyms = [
+        "MnRochesterGym",
+        "MnMankatoGym",
+        "MnMinneapolisGym",
+        "MnStPaulGym",
+        "MnStCloudGym",
+        "MnBrainerdGym",
+        "MnBemidjiGym",
+        "MnDuluthGym",
+    ];
+    for (index, gym) in gyms.iter().enumerate() {
+        let badge = BADGE_ENGINE_FLAGS[index];
+        let earned = index + 1 < stage;
+        if earned {
+            let grant = data.maps[*gym]
+                .script_flag_commands
+                .iter()
+                .find(|command| command.command == "setflag" && command.flag_id == badge)
+                .expect("badge awarded by the installed gym");
+            apply_script_flag_mutation(&mut state, grant.clone())
+                .expect("native gym badge grant updates both representations");
+        }
+        assert_eq!(
+            state.flags.is_engine_flag_set(badge).expect("badge flag"),
+            earned
+        );
+        assert_eq!(state.badges.johto[index], earned);
+    }
+    for pokemon in party {
+        assert!(state.storage.party.add_pokemon(pokemon));
+    }
+    state.sync_party_from_storage();
+    state
+}
+
+// Isolated tests retain their original forced-slot order. A prepared challenger
+// can choose the next partner after a faint and keep the party across rooms.
+fn challenge_state(
+    data: &GameDataSet,
+    state: &mut GameState,
+    trainer_id: &str,
+    divider: &mut TrialDivider,
     mut choose: impl FnMut(&GameDataSet, &BattleCombatState) -> BattleAction,
+    replacement: Option<fn(&GameDataSet, &BattleCombatState) -> usize>,
 ) -> Finish {
     let (room, entry) = data
         .maps
@@ -93,38 +156,15 @@ fn challenge_with_party(
             Some((map, battle))
         })
         .expect("trainer is actually invoked by a map");
-    let mut state = GameState::reset_wram_for_new_game();
     state.overworld = OverworldMemory::Active {
         map_name: room.id.clone(),
         tile: TilePosition::new(0, 0),
         facing: Direction::Up,
         mode: MovementMode::Normal,
     };
-    for badge in [
-        "ENGINE_ZEPHYRBADGE",
-        "ENGINE_HIVEBADGE",
-        "ENGINE_PLAINBADGE",
-        "ENGINE_FOGBADGE",
-        "ENGINE_STORMBADGE",
-        "ENGINE_MINERALBADGE",
-        "ENGINE_GLACIERBADGE",
-        "ENGINE_RISINGBADGE",
-    ]
-    .iter()
-    .take(stage - 1)
-    {
-        state
-            .flags
-            .set_engine_flag(badge, true)
-            .expect("native badge");
-    }
-    for pokemon in party {
-        assert!(state.storage.party.add_pokemon(pokemon));
-    }
-    state.sync_party_from_storage();
     let started = data
         .start_scripted_trainer_battle(
-            &mut state,
+            state,
             &room.id,
             &room.id,
             &entry.source_script,
@@ -134,16 +174,15 @@ fn challenge_with_party(
     assert!(matches!(started, TrainerBattleStartStatus::Started(_)));
     let trainer = &data.trainers.trainers[trainer_id];
     let mut used = BTreeSet::new();
-    let mut divider = TrialDivider(seed);
     for turns in 1..=160 {
-        let combat = active_battle_combat_state(&state).expect("live fight");
+        let combat = active_battle_combat_state(state).expect("live fight");
         let choice = choose(data, &combat);
         let selected = Cell::new(None);
         let turn = data
             .resolve_active_battle_turn_with_enemy_ai_actions_with_divider(
-                &mut state,
+                state,
                 choice,
-                &mut divider,
+                divider,
                 &mut |c, rng| {
                     let m = data
                         .select_trainer_enemy_move_for_class(
@@ -171,7 +210,7 @@ fn challenge_with_party(
                         .expect("field trainer action"))
                 },
             )
-            .unwrap_or_else(|e| panic!("{trainer_id}, seed {seed}, turn {turns}: {e:#}"));
+            .unwrap_or_else(|e| panic!("{trainer_id}, turn {turns}: {e:#}"));
         let enemy_left = turn.state.enemy_party.iter().filter(|p| p.hp > 0).count();
         let player_left = turn.state.player_party.iter().filter(|p| p.hp > 0).count();
         if player_left == 0 {
@@ -185,21 +224,33 @@ fn challenge_with_party(
         if turn.state.player.hp == 0 {
             // Both partners can faint on one turn. Complete the player's
             // normal replacement before awarding the opposing knockout.
-            let i = state
-                .storage
-                .party
-                .pokemon
-                .iter()
-                .position(|p| p.as_ref().is_some_and(|p| p.hp > 0))
-                .expect("able partner");
-            switch_active_battle_party_index(&mut state, i, &data.items)
+            let i = replacement.map_or_else(
+                || {
+                    state
+                        .storage
+                        .party
+                        .pokemon
+                        .iter()
+                        .position(|p| p.as_ref().is_some_and(|p| p.hp > 0))
+                        .expect("able partner")
+                },
+                |replacement| replacement(data, &turn.state),
+            );
+            switch_active_battle_party_index(state, i, &data.items)
                 .expect("normal forced player switch");
         }
         if turn.state.enemy.hp == 0 {
-            data.claim_active_trainer_battle_rewards_now(&mut state)
+            data.claim_active_trainer_battle_rewards_now(state)
                 .expect("normal faint reward");
+            if replacement.is_some() {
+                // The prepared team keeps its selected four moves on a level-up.
+                while state.pending_move_learn.is_some() {
+                    data.decline_pending_move_learn(state)
+                        .expect("keep prepared moves");
+                }
+            }
             if data
-                .advance_active_trainer_battle(&mut state)
+                .advance_active_trainer_battle(state)
                 .expect("trainer replacement")
                 .trainer_defeated
             {
@@ -212,7 +263,7 @@ fn challenge_with_party(
             }
         }
     }
-    panic!("{trainer_id}, seed {seed}: exceeded 160 turns");
+    panic!("{trainer_id}: exceeded 160 turns");
 }
 
 #[test]

@@ -179,6 +179,11 @@ def check():
             exits=[e['tile'] if isinstance(e,dict) else e for e in exits]
             assert contract['return_triggers_core']==exits and contract['return_trigger_core']==exits[0],interior['id']+': stale carpet exits'
     assert seen_revisions==set(revision_sources),'unregistered current gym revision'
+    intake = room_contracts['MnBoundaryIntake']
+    assert intake['parent'] in maps and intake['paired_bindings'][0]['parent'] == intake['parent']
+    assert read(ROOT / intake['source_file'])['id'] == intake['interior']
+    maps.add(intake['interior'])
+    parent[intake['interior']] = intake['parent']
     flags=set(story['flags'])
     conditions=flags|{f'BADGE_{i}' for i in range(1,9)}
     for r in routes:
