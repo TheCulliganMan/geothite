@@ -5,6 +5,8 @@ mod fen_canoe_grass;
 mod fen_canoe_strokes;
 #[path = "fen_grassy_banks.rs"]
 mod fen_grassy_banks;
+#[path = "fen_north_inlet.rs"]
+mod fen_north_inlet;
 
 use std::path::{Path, PathBuf};
 
@@ -32,8 +34,7 @@ struct Landing {
     hour: u8,
 }
 
-fn sample(app: &mut App, output: Option<&Path>, frame: usize) -> (String, bool) {
-    let world = app.world_mut();
+fn sample(world: &mut World, output: Option<&Path>, frame: usize) -> (String, bool) {
     let mut query =
         world.query_filtered::<(&PlayerSpriteFrames, &Sprite, &Visibility), With<PlayerMarker>>();
     let (art, sprite, visibility) = query
@@ -240,7 +241,7 @@ fn check_landings(sites: &[Landing]) {
         } else {
             "mn_canoe_chris"
         };
-        assert_eq!(sample(&mut app, output.as_deref(), 0).0, walker);
+        assert_eq!(sample(app.world_mut(), output.as_deref(), 0).0, walker);
         let mut frame = 1;
         let mut walk_action = false;
         let mut paddle_action = false;
@@ -284,7 +285,7 @@ fn check_landings(sites: &[Landing]) {
                         snapshot.mode,
                     )
                 };
-                let (art, action) = sample(&mut app, output.as_deref(), frame);
+                let (art, action) = sample(app.world_mut(), output.as_deref(), frame);
                 if site.map == "MnLayeredFen" && art == rider {
                     assert_fen_keel_on_water(app.world_mut());
                 }
