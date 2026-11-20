@@ -18,11 +18,11 @@ On the original Ely lineup, Casey defeated the three prepared level 45–47 part
 
 The postgame audit exercised Reed and all eight Gym Leaders against the same level-57 Kindlit team. That party won each of the nine fights on the seed tested. Native progression fixtures, compiled invitation branches and controlled combat comparisons have different starting conditions. [Postgame results and conditions](../ely-return-v01/postgame.md)
 
-## Open follow-up at the Grand Marais field station
+## Grand Marais field station
 
 In both final Ely Return editions, Tamarack asks whether the player wants to take Birchit along. Acknowledging the page immediately starts the gift, both before and after the lighthouse repair. After Birchit joins the party or goes to the PC, the same script attempts to add five Poké Balls and three Potions, then marks the handoff complete. Either pocket can refuse its item. A return visit skips both grants, so making room later cannot recover the missing supplies. [Station invitation](../../../../crates/crystal-assets/src/northstar_marais_part.rs) · [Original supply grants](../../../../crates/crystal-assets/src/grand_marais_modpack/mod.rs) · [Bag-full outcome](../../../../crates/crystal-core/src/systems/script_items.rs)
 
-The existing controller regression checks a full party and PC, a later successful Birchit handoff, and persistence after Continue. The remaining cases are declining and returning for Birchit, and filling the Balls pocket, Items pocket or both before accepting. A successful repair should let the player claim each missing supply once after making space, including after Save/Continue, while keeping the same single Birchit. [Existing gift regression](../../../../crates/crystal-bevy/src/bevy_shell/tests/grand_marais_partner_retry.rs)
+Marais Supplies repaired both offers. Tamarack presents an optional choice, explains a boxed gift and remembers the five Poké Balls and three Potions individually. On both editions the native tests followed refusal through both exit lanes, used the clinic PC to make room, reclaimed supplies after Continue and independently collected the keeper’s medicine. [Field station results](../marais-supplies-v01/README.md) · [Native tests](../../../../crates/crystal-bevy/src/bevy_shell/tests/grand_marais_partner_supplies.rs)
 
 ## Hidden-item collection and Continue
 

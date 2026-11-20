@@ -1,4 +1,7 @@
 //! Declared League/party fixtures; gift choices and delivery use native input.
+#[path = "winona_aide_guidance.rs"]
+mod guidance;
+
 use crystal_core::input::GameButton;
 use crystal_core::models::Dv;
 

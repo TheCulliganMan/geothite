@@ -2711,6 +2711,29 @@
         ]
       },
       "MnWinonaFieldStation": {
+        "MnWinonaAideMeetText": [
+          [
+            "AIDE: Go say hello",
+            "to all three."
+          ],
+          [
+            "They can wait",
+            "while you make up"
+          ],
+          [
+            "your mind."
+          ]
+        ],
+        "MnWinonaAideReadingsText": [
+          [
+            "AIDE: TAMARACK has",
+            "the river reading"
+          ],
+          [
+            "for IVY. Catch her",
+            "before you go."
+          ]
+        ],
         "MnOverhaulTamarackIntroText": [
           [
             "TAMARACK: Come in.",
@@ -14281,6 +14304,67 @@
         ]
       },
       "MnGrandMaraisFieldStation": {
+        "MnMaraisPartnerDeclinedText": [
+          [
+            "That's all right.",
+            "It can watch the"
+          ],
+          [
+            "boats here. Come",
+            "back anytime."
+          ]
+        ],
+        "MnMaraisPartnerBoxText": [
+          [
+            "TAMARACK: You can",
+            "pick BIRCHIT up"
+          ],
+          [
+            "at the clinic PC."
+          ]
+        ],
+        "MnMaraisBallsReceivedText": [
+          [
+            "Received five",
+            "POKE BALLS!"
+          ]
+        ],
+        "MnMaraisPotionsReceivedText": [
+          [
+            "Received three",
+            "POTIONS!"
+          ]
+        ],
+        "MnMaraisBallsWaitingText": [
+          [
+            "Your BALL pocket",
+            "is full. I'll hold"
+          ],
+          [
+            "the five POKE",
+            "BALLS for you."
+          ]
+        ],
+        "MnMaraisPotionsWaitingText": [
+          [
+            "Your ITEM pocket",
+            "is full. I'll keep"
+          ],
+          [
+            "all three POTIONS",
+            "here for you."
+          ]
+        ],
+        "MnMaraisBothWaitingText": [
+          [
+            "Both pockets are",
+            "full. I'll hold"
+          ],
+          [
+            "your five BALLS",
+            "and three POTIONS."
+          ]
+        ],
         "MnMaraisPartnerAfterRepairText": [
           [
             "BIRCHIT joined",

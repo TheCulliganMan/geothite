@@ -1,16 +1,15 @@
-//! Build an Ely or Winona campaign revision and verify the written external archive.
+//! Build a Minnesota campaign revision and verify the written external archive.
 use std::path::PathBuf;
 
 use anyhow::{Result, ensure};
 use crystal_assets::{
     CompiledGamePack, read_verified_compiled_game_pack, revise_ely_challenge, revise_ely_return,
-    revise_finder_lesson,
+    revise_finder_lesson, revise_marais_supplies,
 };
 
 fn main() -> Result<()> {
     let args: Vec<_> = std::env::args_os().skip(1).map(PathBuf::from).collect();
-    const USAGE: &str =
-        "usage: pack_ely_challenge [--finder-lesson|--ely-return] PARENT FRESH_OUTPUT";
+    const USAGE: &str = "usage: pack_ely_challenge [--finder-lesson|--ely-return|--marais-supplies] PARENT FRESH_OUTPUT";
     let [options @ .., parent, output] = args.as_slice() else {
         anyhow::bail!(USAGE);
     };
@@ -18,6 +17,7 @@ fn main() -> Result<()> {
         [] => revise_ely_challenge,
         [mode] if mode.as_os_str() == "--finder-lesson" => revise_finder_lesson,
         [mode] if mode.as_os_str() == "--ely-return" => revise_ely_return,
+        [mode] if mode.as_os_str() == "--marais-supplies" => revise_marais_supplies,
         _ => anyhow::bail!(USAGE),
     };
     ensure!(!output.try_exists()?, "choose a fresh output pack");

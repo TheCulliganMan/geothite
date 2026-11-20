@@ -1,4 +1,7 @@
 //! Declared party fixtures; partner delivery and the lighthouse use native input.
+#[path = "grand_marais_partner_supplies.rs"]
+mod supplies;
+
 use crystal_core::input::GameButton;
 use crystal_core::models::{Dv, MAX_BOX_MONS, PcBox};
 
@@ -15,6 +18,9 @@ const SIGNAL: &str = "EVENT_MN_GRAND_MARAIS_SIGNAL";
 #[ignore = "requires CRYSTAL_WINONA_TEST_PACK with the Grand Marais partner retry"]
 fn marais_partner_controller_full_party_retains_offer_and_success_survives_continue() {
     let (root, runtime) = load();
+    let choice_available = runtime.data().maps["MnGrandMaraisFieldStation"]
+        .scripts
+        .contains_key("MnMaraisPartnerDeclinedText");
     for (count, full_box) in [(1, false), (6, false), (6, true)] {
         let mut c = fixture(&root, &runtime, "MnGrandMaraisFieldStation", (5, 4));
         {
@@ -58,7 +64,11 @@ fn marais_partner_controller_full_party_retains_offer_and_success_survives_conti
         assert_eq!(state.storage, original_storage);
         assert_eq!(state.bag.quantity(&runtime.data().items["MACHINE_PART"]), 1);
         c = continue_save(root.clone(), runtime.clone(), &mut c);
-        talk(&mut c, GameButton::Up, &[]);
+        talk(
+            &mut c,
+            GameButton::Up,
+            if choice_available { &[true] } else { &[] },
+        );
         let received = !full_box;
         let party_received = received && count < 6;
         let state = c.shell.shell.session().state();
@@ -92,7 +102,15 @@ fn marais_partner_controller_full_party_retains_offer_and_success_survives_conti
         let bag = state.bag.clone();
         let storage = state.storage.clone();
         c = continue_save(root.clone(), runtime.clone(), &mut c);
-        talk(&mut c, GameButton::Up, &[]);
+        talk(
+            &mut c,
+            GameButton::Up,
+            if choice_available && !received {
+                &[true]
+            } else {
+                &[]
+            },
+        );
         let state = c.shell.shell.session().state();
         assert_eq!(state.bag, bag, "repeat must not duplicate supplies");
         assert_eq!(
@@ -236,7 +254,15 @@ fn marais_partner_controller_full_party_retains_offer_and_success_survives_conti
 fn talk_after_repair(c: &mut super::super::VisibleShellController) {
     press(c, GameButton::Up);
     press(c, GameButton::A);
-    super::northstar_dialogue::acknowledge(c, "", "MnMaraisGiftAfterRepairText", WELCOME);
+    if c.shell.shell.runtime().data().maps["MnGrandMaraisFieldStation"]
+        .scripts
+        .contains_key("MnMaraisPartnerDeclinedText")
+    {
+        super::northstar_ice_lair::page(c, "MnMaraisGiftAfterRepairText");
+        super::northstar_ice_lair::choice(c, true);
+    } else {
+        super::northstar_dialogue::acknowledge(c, "", "MnMaraisGiftAfterRepairText", WELCOME);
+    }
     finish_room_dialogue(c);
 }
 

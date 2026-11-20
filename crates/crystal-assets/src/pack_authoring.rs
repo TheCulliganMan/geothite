@@ -169,6 +169,8 @@ mod northstar_finder_lesson;
 pub use northstar_finder_lesson::revise_finder_lesson;
 mod northstar_ely_return;
 pub use northstar_ely_return::revise_ely_return;
+mod northstar_marais_supplies;
+pub use northstar_marais_supplies::revise_marais_supplies;
 mod northstar_ely_challenge;
 pub use northstar_ely_challenge::revise_ely_challenge;
 mod northstar_badge_battles;

@@ -1,0 +1,10 @@
+{
+  "parent_pack": "content-packs/minnesota-intro-ely-return-v01.crystalpack",
+  "parent_pack_sha256": "39251b7720f6074faa07f66081f723dd8599999e2c5732741634459ee194de5e",
+  "output_pack": "content-packs/minnesota-intro-marais-supplies-v01.crystalpack",
+  "expected_pack_sha256": "3915f417745124197c47d0602b814e43b6830c32f7fd39282749b4986a50bda8",
+  "builder": "pack_ely_challenge",
+  "arguments": [
+    "--marais-supplies"
+  ]
+}
