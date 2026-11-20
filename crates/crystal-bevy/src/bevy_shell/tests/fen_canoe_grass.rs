@@ -1,4 +1,4 @@
-//! Observe the actual actor and grass sprites on the Fen's northern beach.
+//! Observe the actual actor and grass sprites on Minnesota's grassy shores.
 use bevy::input::InputPlugin;
 use bevy::prelude::*;
 use crystal_core::systems::field_moves::CANOE_ITEM;
@@ -19,7 +19,7 @@ struct GrassFrames(Vec<(TilePosition, bool, Option<AssetId<Image>>)>);
 /// Crystal's upper two 8×8 OAM pieces retain their own priority. Only the
 /// lower pair inherit the grass flag. Check the final LCD against the pack's
 /// walking/standing image at the actor's interpolated on-screen position.
-fn check_visible_trainer(world: &mut World) -> (usize, usize) {
+pub(super) fn check_visible_trainer(world: &mut World) -> (usize, usize) {
     let mut players =
         world.query_filtered::<(&PlayerSpriteFrames, &Sprite, &Transform), With<PlayerMarker>>();
     let (frames, sprite, transform) = players.single(world).expect("one native actor");

@@ -69,7 +69,7 @@ fn frame(app: &mut App) -> Frame {
     }
 }
 
-fn keyboard_event(app: &mut App, direction: Direction, state: ButtonState) {
+pub(super) fn keyboard_event(app: &mut App, direction: Direction, state: ButtonState) {
     let (key_code, logical_key) = match direction {
         Direction::Up => (KeyCode::ArrowUp, Key::ArrowUp),
         Direction::Down => (KeyCode::ArrowDown, Key::ArrowDown),

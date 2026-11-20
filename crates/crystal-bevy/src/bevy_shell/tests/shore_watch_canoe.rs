@@ -1,6 +1,10 @@
 //! Sample the real 2D player sprite on every tick of a shore crossing.
 #[path = "fen_canoe_grass.rs"]
 mod fen_canoe_grass;
+#[path = "fen_canoe_strokes.rs"]
+mod fen_canoe_strokes;
+#[path = "fen_grassy_banks.rs"]
+mod fen_grassy_banks;
 
 use std::path::{Path, PathBuf};
 

@@ -4,9 +4,17 @@ use super::{
     BevyRuntimeShell, MovementMode, PLAYER_GENDER_FEMALE, RuntimeShellSnapshot, TilePosition,
 };
 use crystal_core::systems::field_moves::CANOE_ACTIVE_MEMORY;
+use crystal_core::world::map::Direction;
 use crystal_core::world::session::OverworldSnapshot;
 
 pub(super) type PlayerArt = (&'static str, &'static str, u8);
+
+pub(super) fn mirrors_player_stride(sprite_id: &str, facing: Direction) -> bool {
+    // The resting and stroke frames already put the paddle on opposite sides.
+    // Mirroring the stroke would turn it back into the resting pose.
+    matches!(facing, Direction::Up | Direction::Down)
+        && !matches!(sprite_id, "mn_canoe_chris" | "mn_canoe_kris")
+}
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 enum ShorePose {

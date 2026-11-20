@@ -4329,7 +4329,7 @@ fn update_player_facing_art_in_place(
     retained_frames.standing = standing.handle;
     retained_frames.walking = Some(walking.handle);
     retained_frames.mirror_walking =
-        matches!(snapshot.overworld.facing, Direction::Up | Direction::Down);
+        canoe_shore::mirrors_player_stride(sprite_id, snapshot.overworld.facing);
     Ok(true)
 }
 
@@ -7987,9 +7987,10 @@ Transform::from_xyz(emote_x, emote_y, 3.2),),
                     ),
             );
         }
-        let player_flip_x = player_uses_action_frame
-            && runtime_shell.player_walk_mirror_stride
-            && matches!(snapshot.overworld.facing, Direction::Up | Direction::Down);
+        let mirror_walking =
+            canoe_shore::mirrors_player_stride(player_sprite_id, snapshot.overworld.facing);
+        let player_flip_x =
+            player_uses_action_frame && runtime_shell.player_walk_mirror_stride && mirror_walking;
         if retain_player_sprite && runtime_shell.visible_fly_animation.is_none() {
             if let Ok((mut transform, mut sprite, mut frames)) =
                 player_sprites.single_mut()
@@ -8015,8 +8016,7 @@ Transform::from_xyz(emote_x, emote_y, 3.2),),
                 }
                 frames.standing = standing_frame.handle.clone();
                 frames.walking = walking_frame.as_ref().map(|frame| frame.handle.clone());
-                frames.mirror_walking =
-                    matches!(snapshot.overworld.facing, Direction::Up | Direction::Down);
+                frames.mirror_walking = mirror_walking;
                 rendered.player_sprite_facing = Some(snapshot.overworld.facing);
                 rendered.player_sprite_mode = Some(snapshot.overworld.mode);
             }
@@ -8043,10 +8043,7 @@ Transform::from_xyz(
                     directional_frames,
                     standing: standing_frame.handle.clone(),
                     walking: walking_frame.as_ref().map(|frame| frame.handle.clone()),
-                    mirror_walking: matches!(
-                        snapshot.overworld.facing,
-                        Direction::Up | Direction::Down
-                    ),
+                    mirror_walking,
                 },
             ));
             rendered.player_sprite_facing = Some(snapshot.overworld.facing);
