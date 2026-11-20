@@ -8971,7 +8971,65 @@ impl GameState {
         Ok(())
     }
 
+    /// Living, hatched partners that may replace the active battler, in party order.
+    pub fn battle_switch_party_indices(&self) -> impl Iterator<Item = usize> + '_ {
+        self.storage
+            .party
+            .pokemon
+            .iter()
+            .enumerate()
+            .filter_map(|(index, pokemon)| {
+                let pokemon = pokemon.as_ref()?;
+                (Some(index) != self.battle_active_party_index && pokemon.hp > 0 && !pokemon.is_egg)
+                    .then_some(index)
+            })
+    }
+
+    /// Returns the trainer's announced, zero-based party slot while a Shift offer is pending.
+    pub fn pending_trainer_replacement(&self) -> Option<usize> {
+        self.script_runtime
+            .memory
+            .get(crate::battle::start::ENEMY_SWITCH_MON_INDEX)?
+            .parse::<usize>()
+            .ok()?
+            .checked_sub(1)
+    }
+
     fn validate_saved_battle_runtime_consistency(&self) -> Result<(), String> {
+        if let Some(raw) = self
+            .script_runtime
+            .memory
+            .get(crate::battle::start::ENEMY_SWITCH_MON_INDEX)
+        {
+            let valid = match &self.battle {
+                BattleMemory::Trainer {
+                    battle_type,
+                    enemy_pokemon,
+                    enemy_party,
+                    ..
+                } if battle_type != "BATTLETYPE_LINK" && enemy_pokemon.hp == 0 => {
+                    if raw == "0" {
+                        self.storage
+                            .party
+                            .pokemon
+                            .iter()
+                            .flatten()
+                            .any(|p| !p.is_egg && p.hp == 0)
+                    } else {
+                        self.pending_trainer_replacement().is_some_and(|next| {
+                            Some(next) != self.battle_active_enemy_party_index
+                                && enemy_party.get(next).is_some_and(|p| p.hp > 0 && !p.is_egg)
+                        }) && self.battle_active_enemy_party_index.is_some_and(|current| {
+                            self.battle_rewarded_enemy_party_indices.contains(&current)
+                        })
+                    }
+                }
+                _ => false,
+            };
+            if !valid {
+                return Err("invalid pending trainer replacement register".to_owned());
+            }
+        }
         let Some(enemy_party_len) = self.battle.enemy_party_len() else {
             if self.battle_escape_attempts != 0 {
                 return Err(

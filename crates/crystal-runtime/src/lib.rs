@@ -977,6 +977,7 @@ pub struct RuntimeBattleSnapshot {
     pub enemy_party: Vec<Pokemon>,
     pub active_player_party_index: Option<usize>,
     pub active_enemy_party_index: Option<usize>,
+    pub pending_trainer_replacement: Option<usize>,
     pub player_spikes_zero_hp_unchecked: bool,
     pub enemy_spikes_zero_hp_unchecked: bool,
     pub player_transformed_species: Option<String>,
@@ -3035,6 +3036,7 @@ impl RuntimeBattleSnapshot {
             enemy_party: enemy_party.to_vec(),
             active_player_party_index: state.battle_active_party_index,
             active_enemy_party_index: state.battle_active_enemy_party_index,
+            pending_trainer_replacement: state.pending_trainer_replacement(),
             player_spikes_zero_hp_unchecked: combat
                 .is_some_and(|combat| combat.player_spikes_zero_hp_unchecked),
             enemy_spikes_zero_hp_unchecked: combat
@@ -3203,17 +3205,7 @@ impl RuntimeBattleCommandSnapshot {
             .filter(|disable| disable.turns_remaining > 0)
             .map(|disable| disable.move_name.as_str());
         let enemy_move_slots = available_learned_move_slots(enemy_moves, enemy_disable);
-        let switch_party_indices = state
-            .storage
-            .party
-            .pokemon
-            .iter()
-            .enumerate()
-            .filter_map(|(index, pokemon)| {
-                let pokemon = pokemon.as_ref()?;
-                (Some(index) != state.battle_active_party_index && pokemon.hp > 0).then_some(index)
-            })
-            .collect();
+        let switch_party_indices = state.battle_switch_party_indices().collect();
         Ok(Self {
             player_move_slots,
             player_forced_struggle,

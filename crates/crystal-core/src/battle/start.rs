@@ -1479,6 +1479,23 @@ pub fn switch_active_battle_party_index(
     items: &BTreeMap<String, Item>,
 ) -> Result<ActiveBattlePartySwitchOutcome, ActiveBattlePartyError> {
     validate_active_battle_party_index(state, index)?;
+    // Crystal's DoubleSwitch asks for one mandatory replacement. Rewards here
+    // settle after that choice, when the new active partner is already healthy.
+    let double_knockout = state.options.battle_style == crate::state::BattleStyle::Shift
+        && state.link_session.link_mode == 0
+        && matches!(&state.battle, BattleMemory::Trainer { battle_type, enemy_pokemon, .. }
+            if battle_type != "BATTLETYPE_LINK" && enemy_pokemon.hp == 0)
+        && state
+            .battle_active_party_index
+            .and_then(|active| state.storage.party.pokemon.get(active)?.as_ref())
+            .is_some_and(|pokemon| pokemon.hp == 0)
+        && state
+            .script_runtime
+            .active_battle_combat
+            .as_ref()
+            .is_none_or(|combat| {
+                !combat.player_spikes_zero_hp_unchecked && !combat.enemy_spikes_zero_hp_unchecked
+            });
     let mut switched_hp = None;
     let mut spikes = None;
     if let Some(combat) = state.script_runtime.active_battle_combat.as_mut() {
@@ -1501,6 +1518,12 @@ pub fn switch_active_battle_party_index(
             .expect("validated active battle party slot became empty")
             .hp = hp;
         state.sync_party_from_storage();
+    }
+    if double_knockout {
+        state
+            .script_runtime
+            .memory
+            .insert(ENEMY_SWITCH_MON_INDEX.to_owned(), "0".to_owned());
     }
     state.battle_active_party_index = Some(index);
     mark_active_party_participant(state);
@@ -1619,10 +1642,15 @@ pub fn switch_active_battle_enemy_party_index(
     })
 }
 
+/// One-based enemy slot announced for Shift. Zero between a double knockout
+/// and its reward records that the player has already made the mandatory switch.
+pub const ENEMY_SWITCH_MON_INDEX: &str = "wEnemySwitchMonIndex";
+
 pub fn advance_active_trainer_battle(
     state: &mut GameState,
 ) -> Result<TrainerBattleAdvanceOutcome, ActiveBattleEnemyError> {
-    advance_active_trainer_battle_with_replacement(state, None)
+    let next = state.pending_trainer_replacement();
+    advance_active_trainer_battle_with_replacement(state, next)
 }
 
 /// Select a living replacement without changing party order or reward indexes.
@@ -1695,6 +1723,7 @@ pub fn advance_active_trainer_battle_with_replacement(
         }
         *enemy_pokemon = entered.clone();
         enemy_party[index] = entered.clone();
+        state.script_runtime.memory.remove(ENEMY_SWITCH_MON_INDEX);
         state.pokedex.record_seen_pokemon(&entered);
         Ok(TrainerBattleAdvanceOutcome {
             next_enemy: Some(entered),
@@ -1736,6 +1765,7 @@ fn reset_active_battle_slots(state: &mut GameState, items: &BTreeMap<String, Ite
     state.battle_result = 0;
     state.battle_active_party_index = first_available_battle_party_index(state);
     state.battle_active_enemy_party_index = Some(0);
+    state.script_runtime.memory.remove(ENEMY_SWITCH_MON_INDEX);
     state.battle_rewarded_enemy_party_indices.clear();
     state.battle_evolvable_party_indices.clear();
     state.battle_escape_attempts = 0;
@@ -1911,6 +1941,7 @@ fn clear_battle_participant_markers(state: &mut GameState) {
 pub fn clear_active_battle_slots(state: &mut GameState) {
     state.battle_active_party_index = None;
     state.battle_active_enemy_party_index = None;
+    state.script_runtime.memory.remove(ENEMY_SWITCH_MON_INDEX);
     state.battle_rewarded_enemy_party_indices.clear();
     state.battle_evolvable_party_indices.clear();
     state.battle_escape_attempts = 0;
@@ -2097,6 +2128,50 @@ mod tests {
             deactivate_battle_after_win(&mut state);
         }
         assert_eq!((state.pve_battles(), state.pve_wins()), (3, 1));
+    }
+
+    #[test]
+    fn trainer_shift_register_roundtrips_the_native_battle_wire() {
+        let mut state = GameState::default();
+        let pidgey = PokemonSpecies {
+            int_id: 16,
+            ..species()
+        };
+        let player = Pokemon::new_for_tests(pidgey.clone(), 10, Dv::default());
+        let enemy = Pokemon::new_for_tests(pidgey, 8, Dv::default());
+        state.script_runtime.active_battle_combat =
+            Some(crate::battle::turn::BattleCombatState::new(player, enemy));
+        let wire = bincode::config::standard()
+            .with_little_endian()
+            .with_fixed_int_encoding();
+        for slot in [None, Some(2)] {
+            if let Some(index) = slot {
+                state
+                    .script_runtime
+                    .memory
+                    .insert(ENEMY_SWITCH_MON_INDEX.to_owned(), (index + 1).to_string());
+            }
+            let bytes = bincode::serde::encode_to_vec(&state.script_runtime, wire)
+                .expect("encode native runtime including active combat");
+            let (restored, consumed) = bincode::serde::decode_from_slice(&bytes, wire)
+                .expect("decode old or announced trainer state");
+            assert_eq!(consumed, bytes.len());
+            assert_eq!(state.script_runtime, restored);
+            state.script_runtime = restored;
+            assert_eq!(state.pending_trainer_replacement(), slot);
+        }
+
+        let mut invalid = GameState::default();
+        invalid
+            .script_runtime
+            .memory
+            .insert(ENEMY_SWITCH_MON_INDEX.to_owned(), "3".into());
+        assert!(
+            invalid
+                .validate_saved_state()
+                .expect_err("a pending replacement needs a battle")
+                .contains("invalid pending trainer replacement")
+        );
     }
 
     #[test]

@@ -2728,24 +2728,96 @@ impl GameDataSet {
         })
     }
 
+    fn choose_competitive_trainer_replacement(&self, state: &GameState) -> Result<Option<usize>> {
+        let BattleMemory::Trainer {
+            trainer_class,
+            battle_type,
+            enemy_pokemon,
+            enemy_party,
+            ..
+        } = &state.battle
+        else {
+            return Ok(None);
+        };
+        if !self.competitive_battles
+            || battle_type == "BATTLETYPE_LINK"
+            || enemy_pokemon.hp > 0
+            || !enemy_party
+                .iter()
+                .any(|pokemon| pokemon.hp > 0 && !pokemon.is_egg)
+        {
+            return Ok(None);
+        }
+        let combat = active_battle_combat_state(state)?;
+        self.competitive_enemy_replacement(
+            &combat,
+            crate::TrainerBattleProfile::for_class(trainer_class),
+        )
+    }
+
+    fn reserve_trainer_shift_replacement(&self, state: &mut GameState) -> Result<()> {
+        let register = crystal_core::battle::start::ENEMY_SWITCH_MON_INDEX;
+        if state
+            .script_runtime
+            .memory
+            .get(register)
+            .is_some_and(|raw| raw == "0")
+        {
+            state.script_runtime.memory.remove(register);
+            return Ok(());
+        }
+        if state.options.battle_style != crystal_core::state::BattleStyle::Shift
+            || state.link_session.link_mode != 0
+            || state.battle_switch_party_indices().next().is_none()
+            || state
+                .script_runtime
+                .active_battle_combat
+                .as_ref()
+                .is_some_and(|combat| combat.enemy_spikes_zero_hp_unchecked)
+        {
+            return Ok(());
+        }
+        let BattleMemory::Trainer {
+            battle_type,
+            enemy_pokemon,
+            enemy_party,
+            ..
+        } = &state.battle
+        else {
+            return Ok(());
+        };
+        if battle_type == "BATTLETYPE_LINK" || enemy_pokemon.hp > 0 {
+            return Ok(());
+        }
+        let Some(first) = enemy_party
+            .iter()
+            .position(|pokemon| pokemon.hp > 0 && !pokemon.is_egg)
+        else {
+            return Ok(());
+        };
+        let next = self
+            .choose_competitive_trainer_replacement(state)?
+            .unwrap_or(first);
+        state
+            .script_runtime
+            .memory
+            .insert(register.to_owned(), (next + 1).to_string());
+        Ok(())
+    }
+
     pub fn advance_active_trainer_battle(
         &self,
         state: &mut GameState,
     ) -> Result<TrainerBattleAdvanceOutcome> {
-        if self.competitive_battles {
-            if let BattleMemory::Trainer { trainer_class, battle_type, .. } = &state.battle {
-                if battle_type != "BATTLETYPE_LINK" {
-                    let combat = active_battle_combat_state(state)?;
-                    if combat.enemy.hp == 0 {
-                        let profile = crate::TrainerBattleProfile::for_class(trainer_class);
-                        let replacement = self.competitive_enemy_replacement(&combat, profile)?;
-                        return crystal_core::battle::start::advance_active_trainer_battle_with_replacement(state, replacement)
-                            .map_err(|error| anyhow::anyhow!("advance competitive trainer battle: {error}"));
-                    }
-                }
-            }
+        if state.pending_trainer_replacement().is_some() {
+            return core_advance_active_trainer_battle(state).map_err(|error| {
+                anyhow::anyhow!("advance announced trainer replacement: {error}")
+            });
         }
-        core_advance_active_trainer_battle(state)
+        // Earlier saves and callers that have already claimed rewards without
+        // an announcement still support competitive replacement selection.
+        let next = self.choose_competitive_trainer_replacement(state)?;
+        crystal_core::battle::start::advance_active_trainer_battle_with_replacement(state, next)
             .map_err(|error| anyhow::anyhow!("advance active trainer battle: {error}"))
     }
 
@@ -4656,6 +4728,8 @@ impl GameDataSet {
             time_of_day,
         )
         .map_err(|error| anyhow::anyhow!("claim trainer battle rewards: {error:?}"))?;
+        // Crystal chooses the enemy before telling the player which partner is coming.
+        self.reserve_trainer_shift_replacement(&mut staged_state)?;
         *state = staged_state;
         Ok(outcome)
     }

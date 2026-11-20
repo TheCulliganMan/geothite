@@ -5350,41 +5350,51 @@ fn visible_active_battle_player_fainted(snapshot: &RuntimeShellSnapshot) -> bool
             .is_none_or(|battle| !battle.player_spikes_zero_hp_unchecked)
 }
 
-fn should_offer_trainer_shift_switch(
+fn present_visible_trainer_shift_prompt(
+    runtime_shell: &mut BevyRuntimeShell,
+    snapshot: &RuntimeShellSnapshot,
+) -> Result<()> {
+    let Some(battle) = snapshot.battle.as_ref() else {
+        return Ok(());
+    };
+    let RuntimeBattleKind::Trainer { trainer_name, .. } = &battle.kind else {
+        return Ok(());
+    };
+    if !trainer_shift_switch_pending(snapshot, battle) {
+        return Ok(());
+    }
+    runtime_shell.battle_action_cursor = None;
+    runtime_shell.battle_move_cursor = None;
+    runtime_shell.battle_move_swap_origin = None;
+    reset_visible_battle_item_cursors(runtime_shell);
+    visible_cursor_index(
+        &mut runtime_shell.battle_shift_prompt_cursor,
+        "battle:shift-prompt",
+        2,
+    );
+    runtime_shell.battle_switch_cursor = None;
+    let next_enemy = next_unresolved_trainer_enemy_label(battle)
+        .context("trainer Shift prompt requires the next enemy party member")?;
+    runtime_shell
+        .battle_messages
+        .push_back(format!("{trainer_name}\nis about to use\n{next_enemy}."));
+    runtime_shell.last_audio_events.push(format!(
+        "trainer shift switch prompt choices={}",
+        battle.commands.switch_party_indices.len()
+    ));
+    set_shell_action_status(runtime_shell, "SHIFT: SWITCH POKEMON?");
+    Ok(())
+}
+
+fn trainer_shift_switch_pending(
     snapshot: &RuntimeShellSnapshot,
     battle: &crate::RuntimeBattleSnapshot,
 ) -> bool {
     snapshot.trainer.options.battle_style == BattleStyle::Shift
-        // A simultaneous knockout has no active player battler to keep or
-        // recall. Crystal goes directly to the mandatory replacement flow;
-        // presenting the optional Shift prompt here aliases that forced-party
-        // cursor as a shift target and can trap the battle on a fainted row.
+        && battle.pending_trainer_replacement.is_some()
         && !visible_active_battle_player_fainted(snapshot)
-        && trainer_shift_switch_pending(snapshot, battle)
+        && !battle.enemy_spikes_zero_hp_unchecked
         && !battle.commands.switch_party_indices.is_empty()
-}
-
-fn trainer_shift_switch_pending(
-    _snapshot: &RuntimeShellSnapshot,
-    battle: &crate::RuntimeBattleSnapshot,
-) -> bool {
-    if !matches!(battle.kind, RuntimeBattleKind::Trainer { .. }) {
-        return false;
-    }
-    if battle.enemy_pokemon.hp != 0 {
-        return false;
-    }
-    let Some(enemy_index) = battle.active_enemy_party_index else {
-        return false;
-    };
-    if !battle.rewarded_enemy_party_indices.contains(&enemy_index) {
-        return false;
-    }
-    battle
-        .enemy_party
-        .iter()
-        .enumerate()
-        .any(|(index, pokemon)| index != enemy_index && pokemon.hp > 0)
 }
 
 fn confirm_visible_trainer_shift_prompt(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
@@ -6220,7 +6230,7 @@ fn claim_visible_battle_rewards(runtime_shell: &mut BevyRuntimeShell) -> Result<
             )?;
             return Ok(());
         }
-        crate::RuntimeBattleKind::Trainer { trainer_name, .. } => {
+        crate::RuntimeBattleKind::Trainer { .. } => {
             let rewards = runtime_shell.shell.claim_active_trainer_battle_rewards()?;
             stage_visible_battle_exp_tween(runtime_shell, &snapshot, &rewards.outcome)?;
             stage_visible_battle_level_stats(runtime_shell, &snapshot, &rewards.outcome)?;
@@ -6240,30 +6250,7 @@ fn claim_visible_battle_rewards(runtime_shell: &mut BevyRuntimeShell) -> Result<
                 rewards.outcome, rewards.state_checksum
             );
             let latest = runtime_shell.shell.snapshot()?;
-            if let Some(battle) = latest.battle.as_ref() {
-                if should_offer_trainer_shift_switch(&latest, battle) {
-                    runtime_shell.battle_action_cursor = None;
-                    runtime_shell.battle_move_cursor = None;
-                    runtime_shell.battle_move_swap_origin = None;
-                    reset_visible_battle_item_cursors(runtime_shell);
-                    visible_cursor_index(
-                        &mut runtime_shell.battle_shift_prompt_cursor,
-                        "battle:shift-prompt",
-                        2,
-                    );
-                    runtime_shell.battle_switch_cursor = None;
-                    let next_enemy = next_unresolved_trainer_enemy_label(battle)
-                        .context("trainer Shift prompt requires the next enemy party member")?;
-                    runtime_shell
-                        .battle_messages
-                        .push_back(format!("{trainer_name}\nis about to use\n{next_enemy}."));
-                    runtime_shell.last_audio_events.push(format!(
-                        "trainer shift switch prompt choices={}",
-                        battle.commands.switch_party_indices.len()
-                    ));
-                    set_shell_action_status(runtime_shell, "SHIFT: SWITCH POKEMON?");
-                }
-            }
+            present_visible_trainer_shift_prompt(runtime_shell, &latest)?;
             message
         }
     };

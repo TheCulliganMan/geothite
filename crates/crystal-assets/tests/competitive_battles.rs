@@ -705,6 +705,120 @@ fn competitive_replacement_selects_a_counter_without_reordering_party_or_spendin
     let before = state.clone();
     assert!(data().advance_active_trainer_battle(&mut state).is_err());
     assert_eq!(state, before);
+    // Reach the real reward boundary. Raichu's announced counter must still
+    // enter if the player changes partners or saves before the send-out.
+    let mut earned = before.clone();
+    earned.overworld = crystal_core::state::OverworldMemory::Active {
+        map_name: "NewBarkTown".into(),
+        tile: crystal_core::world::map::TilePosition::new(4, 4),
+        facing: crystal_core::world::map::Direction::Up,
+        mode: crystal_core::world::movement::MovementMode::Normal,
+    };
+    earned.battle_active_party_index = Some(0);
+    let reserve = pokemon("MEGANIUM", &["RAZOR_LEAF"]);
+    let combat = earned
+        .script_runtime
+        .active_battle_combat
+        .as_mut()
+        .expect("live battle");
+    combat.player_party.push(reserve.clone());
+    assert!(earned.storage.party.add_pokemon(combat.player.clone()));
+    assert!(earned.storage.party.add_pokemon(reserve));
+    earned.sync_party_from_storage();
+    let mut egg_only = earned.clone();
+    egg_only.storage.party.pokemon[1]
+        .as_mut()
+        .expect("reserve")
+        .is_egg = true;
+    egg_only
+        .script_runtime
+        .active_battle_combat
+        .as_mut()
+        .expect("battle")
+        .player_party[1]
+        .is_egg = true;
+    assert!(egg_only.battle_switch_party_indices().next().is_none());
+    data()
+        .claim_active_trainer_battle_rewards_now(&mut egg_only)
+        .expect("egg-only reserve");
+    assert_eq!(egg_only.pending_trainer_replacement(), None);
+
+    // Two healthy reserves are available after both leads fall. The required
+    // replacement consumes the one choice; another free switch must not follow.
+    let mut double = earned.clone();
+    let third = pokemon("TYPHLOSION", &["EMBER"]);
+    assert!(double.storage.party.add_pokemon(third.clone()));
+    double.storage.party.pokemon[0].as_mut().expect("lead").hp = 0;
+    let combat = double
+        .script_runtime
+        .active_battle_combat
+        .as_mut()
+        .expect("battle");
+    combat.player.hp = 0;
+    combat.player_party[0].hp = 0;
+    combat.player_party.push(third);
+    double.sync_party_from_storage();
+    assert!(
+        data()
+            .claim_active_trainer_battle_rewards_now(&mut double)
+            .is_err()
+    );
+    crystal_core::battle::start::switch_active_battle_party_index(&mut double, 1, &data().items)
+        .expect("complete the mandatory player replacement");
+    assert_eq!(
+        double.battle_switch_party_indices().collect::<Vec<_>>(),
+        [2]
+    );
+    assert_eq!(
+        double.script_runtime.memory[crystal_core::battle::start::ENEMY_SWITCH_MON_INDEX],
+        "0"
+    );
+    data()
+        .claim_active_trainer_battle_rewards_now(&mut double)
+        .expect("award the simultaneous knockout");
+    assert_eq!(double.pending_trainer_replacement(), None);
+    assert!(
+        !double
+            .script_runtime
+            .memory
+            .contains_key(crystal_core::battle::start::ENEMY_SWITCH_MON_INDEX)
+    );
+    assert!(
+        data()
+            .advance_active_trainer_battle(&mut double)
+            .expect("send opposing reserve")
+            .next_enemy
+            .is_some()
+    );
+
+    let mut spikes = earned.clone();
+    spikes
+        .script_runtime
+        .active_battle_combat
+        .as_mut()
+        .expect("battle")
+        .enemy_spikes_zero_hp_unchecked = true;
+    data()
+        .claim_active_trainer_battle_rewards_now(&mut spikes)
+        .expect("core reward");
+    assert_eq!(spikes.pending_trainer_replacement(), None);
+    let mut set_style = earned.clone();
+    set_style.options.battle_style = crystal_core::state::BattleStyle::Set;
+    data()
+        .claim_active_trainer_battle_rewards_now(&mut set_style)
+        .expect("Set awards the same knockout");
+    assert_eq!(set_style.pending_trainer_replacement(), None);
+    data()
+        .claim_active_trainer_battle_rewards_now(&mut earned)
+        .expect("real knockout rewards");
+    assert_eq!(earned.pending_trainer_replacement(), Some(2));
+    crystal_core::battle::start::switch_active_battle_party_index(&mut earned, 1, &data().items)
+        .expect("player changes partner between reward and entry");
+    let entered = data()
+        .advance_active_trainer_battle(&mut earned)
+        .expect("send the announced reserve");
+    assert_eq!(entered.next_enemy.expect("reserve").species.id, "DONPHAN");
+    assert_eq!(earned.pending_trainer_replacement(), None);
     state.battle_rewarded_enemy_party_indices.insert(0);
     let before_replacement = state.clone();
     assert!(

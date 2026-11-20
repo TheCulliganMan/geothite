@@ -8841,13 +8841,12 @@ fn visible_battle_shift_prompt_entries(
 
 fn next_unresolved_trainer_enemy_label(battle: &crate::RuntimeBattleSnapshot) -> Option<&str> {
     let enemy_index = battle.active_enemy_party_index?;
+    let next = battle.pending_trainer_replacement?;
     battle
         .enemy_party
-        .iter()
-        .enumerate()
-        .find_map(|(index, pokemon)| {
-            (index != enemy_index && pokemon.hp > 0).then_some(pokemon.nickname.as_str())
-        })
+        .get(next)
+        .filter(|pokemon| next != enemy_index && pokemon.hp > 0 && !pokemon.is_egg)
+        .map(|pokemon| pokemon.nickname.as_str())
 }
 
 fn visible_battle_item_entries(

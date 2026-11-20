@@ -5664,8 +5664,15 @@ fn restore_visible_loaded_runtime_state(
     runtime_shell.visible_map_name_sign = None;
     field_dialogue_resume::restore(runtime_shell)?;
     settle_visible_pending_fair_food(runtime_shell)?;
-    // The graphical host may draw immediately after Continue, before its first
-    // input tick. Restore the ordinary battle chooser at that same boundary.
+    // A save at Shift already contains the knockout rewards. Restore the
+    // announced replacement before the first input can settle that faint.
+    if snapshot
+        .battle
+        .as_ref()
+        .is_some_and(|battle| battle.pending_trainer_replacement.is_some())
+    {
+        present_visible_trainer_shift_prompt(runtime_shell, &snapshot)?;
+    }
     sync_visible_battle_action_cursor(runtime_shell);
     record_visible_runtime_action(
         runtime_shell,
