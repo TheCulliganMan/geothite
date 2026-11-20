@@ -8,10 +8,16 @@ verification saves, logs, and screenshots stay under ignored `target/`. The
 script stops its server on completion. `MP_TEST_OUTPUT` and `MP_TEST_PORT` can
 select a separate verification directory and localhost port.
 
+The browser checks use the production content-addressed WASM/audio bundle.
+They verify desktop and narrow non-touch windows, phone portrait and landscape,
+320px touch targets, unobstructed controls, and browser pinch-zoom prevention
+on the game. Screenshots and layout measurements remain in the fixture directory.
+
 The browser checks cover remote player identity and walking, public speech
 bubbles following actual rendered sprites, private whisper/reply delivery with
-a third player present, mobile touch movement/chat, held-key chat focus, all
-invitation modes, decline/cancel, busy menus, completed Trade Center and Time
+a third player present, mobile touch movement/chat, held-key chat focus after
+switching browser windows, all invitation modes, decline/cancel (including the
+visible Cancel button after closing chat), busy menus, completed Trade Center and Time
 Capsule exchanges, a synchronized link battle, save/reload/reconnect, real door
 warps, map-scoped public chat, and disconnect cleanup. Inputs use physical
 keyboard/touch, the visible social UI, and the same production joypad bridge.

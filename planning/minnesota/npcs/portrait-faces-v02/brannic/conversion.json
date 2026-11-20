@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "name": "brannic",
+  "method": "built-in-imagegen-with-rust-global-phase-conversion",
+  "previous_source": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/05-brannic/native-pixels-v3.json",
+  "source": "planning/minnesota/npcs/portrait-faces-v02/brannic/native-pixels-v1.json",
+  "image_source": "planning/minnesota/npcs/portrait-faces-v02/brannic/image-source-v1.png",
+  "prompt": "planning/minnesota/npcs/portrait-faces-v02/brannic/image-prompt-v1.txt",
+  "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/05-brannic/controller-v1.json",
+  "sampling": "whole_source_phase_d65_lab",
+  "size": [
+    56,
+    56
+  ],
+  "source_bounds": [
+    61,
+    13,
+    1190,
+    1243
+  ],
+  "fit_size": [
+    50,
+    54
+  ],
+  "phase": [
+    0.25,
+    0.75
+  ],
+  "palette_rgb555": [
+    32767,
+    29562,
+    6445,
+    0
+  ],
+  "review": "Near-frontal mature face, separate pupil and white opening in both eyes, angular nose, visible mouth framed by silver beard; shoulders over twice head width. Entire native sprite sampled at one phase; no hand-edited pixels."
+}

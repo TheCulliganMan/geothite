@@ -100,9 +100,9 @@ export function mountSocialChat(wasm, { document, window, playerId }) {
     <header class="chat-header" hidden><div><strong>Community</strong><span class="chat-status" role="status">Connecting…</span></div><button class="chat-nearby" type="button" aria-expanded="false">Nearby · 0</button><button class="chat-close" type="button" aria-label="Close chat" title="Return to game (Esc)" hidden>Close ×</button></header>
     <nav class="community-tabs" role="tablist" aria-label="Community" hidden><button type="button" role="tab" data-tab="chat" aria-selected="true" aria-controls="community-chat">Chat</button><button type="button" role="tab" data-tab="social" aria-selected="false" aria-controls="community-social" tabindex="-1">Social</button><button type="button" role="tab" data-tab="leaderboard" aria-selected="false" aria-controls="community-leaderboard" tabindex="-1">Leaderboard</button></nav>
     <section id="community-social" role="tabpanel" aria-label="All users" hidden><div class="community-toolbar"><label class="sr-only" for="social-search">Search all users</label><input id="social-search" type="search" placeholder="Find a trainer…" maxlength="128"><span class="directory-count" aria-live="polite">All users</span></div><div class="directory-list"></div><footer class="directory-pages"><button type="button" data-page="previous">‹ Previous</button><span></span><button type="button" data-page="next">Next ›</button></footer></section>
-    <section id="community-leaderboard" role="tabpanel" aria-label="Leaderboard" hidden><div class="community-toolbar"><label class="sr-only" for="leaderboard-metric">Rank by</label><select id="leaderboard-metric"><option value="pvp_wins">PvP · Battles won</option><option value="pvp_battles">PvP · Battles played</option><option value="pve_wins">PvE · Battles won</option><option value="pve_battles">PvE · Battles played</option><option value="trades">Completed player trades</option><option value="party_level">Highest combined party level</option></select></div><div class="leaderboard-list"></div><footer class="leaderboard-pages"><button type="button" data-page="previous">‹ Previous</button><span></span><button type="button" data-page="next">Next ›</button></footer><p class="leaderboard-note">Completed PvP and trades confirmed by both players. PvE totals come from game saves. Tracking starts with this update.</p></section>
+    <section id="community-leaderboard" role="tabpanel" aria-label="Leaderboard" hidden><div class="community-toolbar"><label class="sr-only" for="leaderboard-metric">Rank by</label><select id="leaderboard-metric"><option value="pvp_wins">PvP · Battles won</option><option value="pvp_battles">PvP · Battles played</option><option value="pve_wins">PvE · Battles won</option><option value="pve_battles">PvE · Battles played</option><option value="trades">Completed player trades</option><option value="party_level">Highest combined party level</option></select></div><div class="leaderboard-list"></div><footer class="leaderboard-pages"><button type="button" data-page="previous">‹ Previous</button><span></span><button type="button" data-page="next">Next ›</button></footer><p class="leaderboard-note">Completed PvP and trades confirmed by both players. PvE totals come from game saves.</p></section>
     <div id="community-chat" class="chat-log" role="log" aria-label="Chat messages" aria-live="polite" aria-relevant="additions"></div>
-    <div class="chat-requests"></div><div class="chat-actions" hidden></div><div class="chat-players" hidden></div>
+    <div class="chat-requests" aria-live="polite" aria-relevant="additions removals"></div><div class="chat-actions" hidden></div><div class="chat-players" hidden></div>
     <form hidden><label class="sr-only" for="chat-channel">Channel</label><select id="chat-channel"></select><label class="sr-only" for="chat-message">Message</label><input id="chat-message" autocomplete="off" placeholder="Say something…" enterkeyhint="send" maxlength="600"><button type="submit" aria-label="Send message">Send</button></form>`;
   document.body.append(panel);
   const log = panel.querySelector('.chat-log');
@@ -152,6 +152,7 @@ export function mountSocialChat(wasm, { document, window, playerId }) {
   let open = false;
   let rosterSignature = '';
   const requestCards = new Map();
+  let outgoingRequest = null;
   const swallowed = new Set();
   const selfUserId = `player-${playerId}`;
   const speech = mountSpeechBubbles({ document, window, canvas: document.querySelector('canvas'), selfUserId });
@@ -195,6 +196,53 @@ export function mountSocialChat(wasm, { document, window, playerId }) {
     el.type = 'button'; el.textContent = label; el.dataset.action = action;
     el.onclick = handler;
     return el;
+  };
+  const restoreRequestFocus = hadFocus => {
+    if (!hadFocus) return;
+    // WebKit need not emit focusout when a focused invitation is removed.
+    // Return ownership explicitly without disturbing a draft or another control.
+    const target = open ? activeTab === 'social' ? search : activeTab === 'leaderboard' ? metric : input
+      : document.querySelector('canvas');
+    target?.focus({ preventScroll: true });
+    syncFocus();
+  };
+  const disableRequestActions = card => {
+    const active = document.activeElement;
+    // Safari pointer clicks can blur the game without focusing the button.
+    const hadFocus = card.contains(active) || active === document.body || active === document.documentElement;
+    for (const control of card.querySelectorAll('button')) control.disabled = true;
+    // Disabling the active button can blur it before the reply removes its card.
+    restoreRequestFocus(hadFocus);
+  };
+  const removeRequestCard = card => {
+    const hadFocus = card?.contains(document.activeElement);
+    card?.remove();
+    restoreRequestFocus(hadFocus);
+  };
+  const clearOutgoingRequest = () => {
+    removeRequestCard(outgoingRequest);
+    outgoingRequest = null;
+  };
+  const clearRequests = () => {
+    const hadFocus = requests.contains(document.activeElement);
+    requests.replaceChildren();
+    requestCards.clear();
+    outgoingRequest = null;
+    restoreRequestFocus(hadFocus);
+  };
+  const showOutgoingRequest = (kind, name) => {
+    clearOutgoingRequest();
+    const card = document.createElement('div');
+    card.dataset.outgoing = 'true';
+    card.append(`${interactionLabels[kind]} invitation to ${name} `);
+    const cancel = button('Cancel', 'cancel', () => attempt(() => {
+      send({ type: 'interaction_cancel' });
+      disableRequestActions(card);
+    }));
+    card.append(cancel);
+    outgoingRequest = card;
+    requests.append(card);
+    actions.hidden = true;
   };
   const requestCommunity = (force = false) => {
     if (!open || activeTab === 'chat' || !connected) return;
@@ -288,12 +336,16 @@ export function mountSocialChat(wasm, { document, window, playerId }) {
     const online = connected && (isNearby || person?.online === true || !person);
     const whisper = button('Whisper', 'whisper', () => { setTab('chat', false); input.value = `/w ${id} `; input.focus(); });
     whisper.disabled = !online; actions.append(title, whisper);
-    for (const kind of isNearby && online ? ['battle', 'trade', 'time_capsule'] : []) actions.append(button(interactionLabels[kind], kind, () => attempt(() => {
-      send({ type: 'interaction_request', target_user_id: id, kind });
-      append(`${interactionLabels[kind]} request sent to ${name}.`);
-      actions.replaceChildren(button('Cancel request', 'cancel', () => attempt(() => { send({ type: 'interaction_cancel' }); actions.hidden = true; })));
-      input.focus();
-    })));
+    for (const kind of isNearby && online ? ['battle', 'trade', 'time_capsule'] : []) {
+      const invite = button(interactionLabels[kind], kind, () => attempt(() => {
+        send({ type: 'interaction_request', target_user_id: id, kind });
+        append(`${interactionLabels[kind]} request sent to ${name}.`);
+        showOutgoingRequest(kind, name);
+        input.focus();
+      }));
+      invite.disabled = Boolean(outgoingRequest);
+      actions.append(invite);
+    }
     if (!online) { const note = document.createElement('span'); note.textContent = 'Offline'; actions.append(note); }
     actions.hidden = false;
   };
@@ -305,8 +357,13 @@ export function mountSocialChat(wasm, { document, window, playerId }) {
       if (!['say', ...channels].includes(message.select)) throw new Error('Join that channel first.');
       select.value = message.select;
     } else {
+      if (message.type === 'interaction_request' && outgoingRequest) throw new Error('Cancel your current invitation first.');
       send(message);
-      if (message.type === 'interaction_request') append(`${interactionLabels[message.kind]} request sent.`);
+      if (message.type === 'interaction_request') {
+        append(`${interactionLabels[message.kind]} request sent.`);
+        const name = players.find(player => player.user_id === message.target_user_id)?.display_name ?? message.target_user_id;
+        showOutgoingRequest(message.kind, name);
+      }
     }
     input.value = '';
   });
@@ -395,15 +452,19 @@ export function mountSocialChat(wasm, { document, window, playerId }) {
   updateBindingLabels();
   listen(window, 'keydown', captureKeys, { capture: true });
   listen(window, 'keyup', captureKeys, { capture: true });
-  listen(panel, 'focusin', () => wasm.crystal_social_focus(true));
-  listen(panel, 'focusout', () => queueMicrotask(() => wasm.crystal_social_focus(panel.contains(document.activeElement))));
-  listen(window, 'blur', () => { swallowed.clear(); wasm.crystal_social_focus(false); });
+  let windowFocused = true;
+  const syncFocus = () => wasm.crystal_social_focus(windowFocused && !document.hidden && panel.contains(document.activeElement));
+  listen(panel, 'focusin', syncFocus);
+  listen(panel, 'focusout', () => queueMicrotask(syncFocus));
+  listen(window, 'focus', () => { windowFocused = true; syncFocus(); });
+  listen(window, 'blur', () => { windowFocused = false; swallowed.clear(); syncFocus(); });
+  listen(document, 'visibilitychange', syncFocus);
   const poll = () => {
     for (const line of log.children) line.classList.toggle('chat-faded', window.Date.now() - Number(line.dataset.receivedAt) >= 10000);
     try {
       const state = JSON.parse(wasm.crystal_social_poll());
       speech.update(state);
-      if (connected && !state.connected) { speech.clear(); requests.replaceChildren(); requestCards.clear(); actions.hidden = true; }
+      if (connected && !state.connected) { speech.clear(); clearRequests(); actions.hidden = true; }
       const connectionChanged = connected !== state.connected;
       connected = state.connected;
       if (connectionChanged) {
@@ -413,7 +474,7 @@ export function mountSocialChat(wasm, { document, window, playerId }) {
       }
       status.textContent = connected ? 'Connected' : 'Reconnecting…';
       status.dataset.connected = String(connected);
-      players = state.players ?? [];
+      players = connected ? state.players ?? [] : [];
       nearby.textContent = 'Nearby · ' + players.filter(p => p.user_id !== selfUserId).length;
       const signature = JSON.stringify(players);
       if (signature !== rosterSignature) {
@@ -438,33 +499,39 @@ export function mountSocialChat(wasm, { document, window, playerId }) {
           append(`${channel}${event.text}`, event.channel, event.from_user_id, event.from_display_name);
         } else if (event.type === 'chat_channels') {
           channels = event.channels; updateChannels();
-        } else if (event.type === 'welcome') {
+        } else if (connected && event.type === 'welcome') {
           for (const channel of channels.filter(name => !['general', 'trade', 'lfg'].includes(name))) send({ type: 'chat_join', channel });
           for (const channel of ['general', 'trade', 'lfg'].filter(name => !channels.includes(name))) send({ type: 'chat_leave', channel });
         } else if (event.type === 'error') {
           append(event.message);
           for (const control of requests.querySelectorAll('button')) control.disabled = false;
-          if (event.code === 'social_error' || event.code === 'invalid_request') actions.hidden = true;
-        } else if (event.type === 'interaction_request') {
+          if (event.code === 'social_error' || event.code === 'invalid_request') { actions.hidden = true; clearOutgoingRequest(); }
+        } else if (connected && event.type === 'interaction_request') {
           const card = document.createElement('div');
           card.append(`${event.from_display_name} · ${interactionLabels[event.kind]} `);
           for (const accepted of [true, false]) card.append(button(accepted ? 'Accept' : 'Decline', accepted ? 'accept' : 'decline', () => attempt(() => {
             send({ type: 'interaction_response', request_id: event.request_id, target_user_id: event.from_user_id, accepted });
-            for (const control of card.querySelectorAll('button')) control.disabled = true;
+            disableRequestActions(card);
           })));
-          requestCards.get(event.request_id)?.remove();
+          removeRequestCard(requestCards.get(event.request_id));
           requestCards.set(event.request_id, card); requests.append(card);
         } else if (event.type === 'interaction_response') {
-          requestCards.get(event.request_id)?.remove(); requestCards.delete(event.request_id);
+          clearOutgoingRequest();
+          removeRequestCard(requestCards.get(event.request_id)); requestCards.delete(event.request_id);
           actions.hidden = true;
           if (!event.accepted) append('Request declined or cancelled.');
           else setOpen(false);
         } else if (event.type === 'match_found') {
-          requests.replaceChildren(); requestCards.clear(); setOpen(false);
+          clearRequests(); setOpen(false);
         }
       }
       requestCommunity();
-    } catch (error) { status.textContent = 'Chat unavailable'; status.dataset.connected = 'false'; connected = false; renderCommunity(); }
+    } catch (error) {
+      status.textContent = 'Chat unavailable'; status.dataset.connected = 'false'; connected = false;
+      speech.clear(); clearRequests(); actions.hidden = true;
+      players = []; rosterSignature = ''; roster.replaceChildren(); nearby.textContent = 'Nearby · 0';
+      renderCommunity();
+    }
   };
   renderCommunity();
   const timer = window.setInterval(poll, 150);

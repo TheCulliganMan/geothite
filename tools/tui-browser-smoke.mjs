@@ -7,7 +7,7 @@ import { chromium, webkit } from 'playwright';
 import { checkMenus } from './tui-menu-checks.mjs';
 import { checkVisibleInkMotion } from './tui-motion-checks.mjs';
 import { checkHome } from './tui-home-checks.mjs';
-import { checkCodeMode, checkCodeBattle } from './tui-codemode-checks.mjs';
+import { checkCodeMode, checkCodeBattle, createStarterBattleInput } from './tui-codemode-checks.mjs';
 
 const root = resolve(process.env.TUI_TEST_ROOT ?? 'target/tui-web');
 const pack = resolve(process.env.TUI_TEST_PACK ?? 'content-packs/realtime-clock.browser.crystalpack');
@@ -191,20 +191,23 @@ try {
   assert.match((await observe()).status_line, /Battle/);
   assert(!(await page.locator('#screen').textContent()).includes('sprite unavailable'), 'Real front and back assets must load');
   assert((await page.locator('#screen').textContent()).includes('█'), 'Live HP bars are painted');
-  let sawFight = false, sawMoves = false, sawResult = false, repeated = 0;
+  let sawFight = false, sawMoves = false, sawFaint = false, sawExperience = false, repeated = 0;
   for (let i = 0; i < 256; i++) {
     const view = await observe();
     sawFight ||= view.menu.some(line => line.text.includes('FIGHT'));
     sawMoves ||= view.menu.some(line => /PP|SCRATCH|BITE|WATER GUN|RAGE/i.test(line.text));
-    sawResult ||= view.dialogue.some(line => /fainted|EXP|experience/i.test(line.text));
-    if (!view.status_line.includes('Battle') && !view.status_line.startsWith('Text')) break;
+    sawFaint ||= view.dialogue.some(line => /fainted/i.test(line.text));
+    sawExperience ||= view.dialogue.some(line => /EXP|experience/i.test(line.text));
+    // Combat settles before the player has read the final attack and rewards.
+    if (view.status_line.startsWith('Overworld') && !view.dialogue.length) break;
     const after = await press(battleButton(view));
     const state = value => JSON.stringify([value.status_line, value.menu, value.dialogue, value.viewport]);
     repeated = state(view) === state(after) ? repeated + 1 : 0;
     assert(repeated <= 1, 'Battle is waiting for invisible animation/idle frames');
   }
-  assert(sawFight && sawMoves && sawResult, `Missing battle presentation: ${JSON.stringify({ sawFight, sawMoves, sawResult, last: await observe() })}`);
+  assert(sawFight && sawMoves && sawFaint && sawExperience, `Missing battle presentation: ${JSON.stringify({ sawFight, sawMoves, sawFaint, sawExperience, last: await observe() })}`);
   assert.match((await observe()).status_line, /Overworld/);
+  assert.equal((await observe()).dialogue.length, 0, 'Read all victory pages before testing field input');
   await move('up', 2);
   await press('start');
   assert((await observe()).menu.some(line => line.text.includes('SAVE')));
@@ -234,12 +237,17 @@ try {
     await page.waitForFunction(() => !document.getElementById('screen').hidden, { timeout: 120000 });
     await page.emulateMedia({ reducedMotion: 'no-preference' });
     for (let i = 0; i < 256 && !(await observe()).status_line.includes('Battle'); i++) await press(Math.floor(i / 2) % 2 ? 'right' : 'left');
-    let turns = 0, repeats = 0, replayChecked = false;
+    let turns = 0, repeats = 0, replayChecked = false, sawExperience = false, usedPotion = false, healed = false;
+    const nextButton = createStarterBattleInput();
     for (let i = 0; i < 256; i++) {
       const before = await observe();
-      if (before.status_line.startsWith('Overworld')) break;
+      if (before.status_line.startsWith('Overworld') && !before.dialogue.length) break;
       if (before.menu.some(line => /SCRATCH|TACKLE|EMBER/.test(line.text))) turns++;
-      await page.keyboard.press('a');
+      sawExperience ||= before.dialogue.some(line => /EXP|experience/i.test(line.text));
+      healed ||= /recovered\s+\d+\s*HP/i.test(before.dialogue.map(line => line.text).join(' '));
+      const button = nextButton(before);
+      usedPotion ||= button === 'a' && before.menu.some(line => line.kind === 'selected' && /POTION/.test(line.text));
+      await page.keyboard.press(({ a: 'a', b: 'x', up: 'ArrowUp', down: 'ArrowDown' })[button]);
       const after = await observe();
       if (!replayChecked && await page.locator('#screen').getAttribute('data-animation') === 'true') {
         await page.evaluate(() => window.geothiteTui.execute('return (await tools.observe()).status_line;'));
@@ -266,13 +274,16 @@ try {
     }
     assert(turns >= 2, `Starter-level regression must execute multiple real turns; got ${turns}`);
     assert(replayChecked, 'A real starter-level turn must produce an authored ASCII replay');
+    assert(sawExperience, 'DOM lowercase A must read actual starter battle victory/EXP pages');
+    assert(!usedPotion || healed, 'DOM Potion selection must produce real HP recovery text');
     assert.match((await observe()).status_line, /^Overworld/, 'Multi-turn battle exits cleanly');
+    assert.equal((await observe()).dialogue.length, 0, 'Starter-level result pages remain player-owned until read');
     await move('up', 2);
     await press('start');
     assert((await observe()).menu.some(line => line.text.includes('SAVE')));
     await press('b');
     await page.emulateMedia({ reducedMotion: 'reduce' });
-    console.log(`Starter-level battle: ${turns} real turns, no invisible-animation wait, movement and Start afterward passed.`);
+    console.log(`Starter-level battle: ${turns} real turns, Potion recovery ${healed}, no invisible-animation wait, movement and Start afterward passed.`);
   }
   if (process.env.TUI_TEST_MENU_FIXTURE) {
     const menuFixture = await readFile(resolve(process.env.TUI_TEST_MENU_FIXTURE));
@@ -356,17 +367,21 @@ try {
     assert.match((await mobileObserve()).status_line, /Route29.*\(46, 12\)/);
     for (let i=0; i<256 && !(await mobileObserve()).status_line.includes('Battle'); i++) await tap(Math.floor(i/2)%2 ? 'right' : 'left');
     assert((await mobileObserve()).status_line.includes('Battle'));
-    let fight=false, moves=false;
+    let fight=false, moves=false, faint=false, experience=false;
     const battleMenus=[];
-    for (let i=0; i<256 && !(await mobileObserve()).status_line.startsWith('Overworld'); i++) {
+    for (let i=0; i<256; i++) {
       const view=await mobileObserve();
+      if (view.status_line.startsWith('Overworld') && !view.dialogue.length) break;
       fight ||= view.menu.some(line=>line.text.includes('FIGHT'));
       moves ||= view.menu.some(line=>/PP|SCRATCH|BITE|WATER GUN|RAGE/i.test(line.text));
+      faint ||= view.dialogue.some(line=>/fainted/i.test(line.text));
+      experience ||= view.dialogue.some(line=>/EXP|experience/i.test(line.text));
       if(view.menu.length) battleMenus.push(view.menu.map(line=>line.text));
       await tap(battleButton(view));
     }
-    assert(fight && moves, `Mobile production battle/move menus: ${JSON.stringify({fight,moves,battleMenus})}`);
+    assert(fight && moves && faint && experience, `Mobile production battle, moves and victory: ${JSON.stringify({fight,moves,faint,experience,battleMenus})}`);
     assert((await mobileObserve()).status_line.startsWith('Overworld'));
+    assert.equal((await mobileObserve()).dialogue.length, 0);
     const previous=(await mobileObserve()).marker;
     await tap('up'); await tap('up');
     assert.notDeepEqual((await mobileObserve()).marker,previous,'Mobile movement after victory');

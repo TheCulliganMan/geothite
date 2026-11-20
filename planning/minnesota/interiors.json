@@ -16397,6 +16397,58 @@
       ],
       "exterior_warp_index": 11,
       "exterior_return_warp_index": 12
+    },
+    {
+      "interior": "MnMothlightLodge",
+      "parent": "MnMaraisCedarApproach",
+      "source_file": "landmarks/mothlight-lodge/layout.json",
+      "source_room_id": "MnMothlightLodge",
+      "arrival_core": [
+        13,
+        28
+      ],
+      "return_trigger_core": [
+        13,
+        29
+      ],
+      "arrival_warp_index": 1,
+      "exterior_door_core": [
+        30,
+        9
+      ],
+      "exterior_safe_return_core": [
+        30,
+        10
+      ],
+      "exterior_warp_index": 12,
+      "exterior_door_status": "Verified Mothlight entrance and return through production controller; see landmark runbook.",
+      "requires_real_collision_check": true
+    },
+    {
+      "interior": "MnMothlightLoft",
+      "parent": "MnMothlightLodge",
+      "source_file": "landmarks/mothlight-lodge/layout.json",
+      "source_room_id": "MnMothlightLoft",
+      "arrival_core": [
+        13,
+        8
+      ],
+      "return_trigger_core": [
+        12,
+        8
+      ],
+      "arrival_warp_index": 1,
+      "exterior_door_core": [
+        20,
+        8
+      ],
+      "exterior_safe_return_core": [
+        20,
+        9
+      ],
+      "exterior_warp_index": 2,
+      "exterior_door_status": "Verified loft stair return and Continue through production controller; see landmark runbook.",
+      "requires_real_collision_check": true
     }
   ]
 }

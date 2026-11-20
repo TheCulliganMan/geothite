@@ -1,17 +1,31 @@
-//! Minnesota opens at the production game menu without a title sequence.
+//! Regional startup selection, independent of Minnesota's host-clock policy.
 
 use anyhow::{Context, Result};
 use crystal_runtime::CrystalRuntime;
 
 use super::BevyRuntimeShell;
 
-pub(super) fn skips_title_sequence(runtime: &CrystalRuntime) -> bool {
+pub(super) fn is_minnesota(runtime: &CrystalRuntime) -> bool {
     runtime
         .modpack()
         .id()
         .split('+')
         .any(|id| id.starts_with("minnesota"))
         || runtime.map_ids().iter().any(|name| name.starts_with("Mn"))
+}
+
+pub(super) fn skips_title_sequence(runtime: &CrystalRuntime) -> bool {
+    is_minnesota(runtime) && !super::northstar_opening::enabled(runtime)
+}
+
+pub(super) fn plays_source_movie(runtime: &CrystalRuntime, reduced_motion: bool) -> bool {
+    !skips_title_sequence(runtime)
+        && (runtime
+            .data()
+            .runtime_title_screen
+            .static_title_image
+            .is_none()
+            || (super::northstar_opening::enabled(runtime) && !reduced_motion))
 }
 
 pub(super) fn open_main_menu(shell: &mut BevyRuntimeShell) -> Result<()> {

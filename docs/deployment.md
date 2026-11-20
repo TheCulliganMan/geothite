@@ -35,12 +35,22 @@ curl --fail http://localhost:3003/healthz
 curl --fail http://localhost:3003/v1/clock
 ```
 
-Open `http://localhost:3003` for local play. The always-visible **2D / 3D / TUI** chooser swaps renderers in the same
-running game, preserving position, dialogue, menus, battles, and saves. Direct
+Open `http://localhost:3003` for local play. The view chooser swaps supported renderers in the same
+running game, preserving position, dialogue, menus, battles, and saves. Minnesota
+offers **2D / TUI**; packs that support 3D also show **3D**. Direct
 links use `?view=2d`, `?view=3d`, or `?view=tui`; `/tui` and `/tui/` select the
 same terminal renderer. See [web renderer views](tui.md). Remote browser play requires HTTPS
 for the per-player Web Lock. The browser obtains its identity automatically
 from `POST /v1/session`; no manually issued token or account is required.
+
+Touchscreens reserve space for all eight game buttons; narrow non-touch windows
+keep the keyboard layout. Gameplay suppresses browser pinch and double-tap zoom,
+and settings/chat fields use 16px text to avoid iOS focus zoom. Opening settings,
+switching apps, or canceling a touch releases held game inputs. Online invitations
+stay cancellable when chat is closed. Use
+`sh tools/overworld-multiplayer-smoke.sh` to build and exercise three independent
+players, actual trades and link battles, reconnects, phone layouts and pinch
+handling against a local authenticated server before releasing browser changes.
 
 The image contains the server, WASM client, browser assets, and your locally supplied
 browser pack. The repository does not distribute the game pack. The embedded modpack JSON is included in the repository.

@@ -1841,6 +1841,17 @@
       "requires": [
         "EVENT_MN_SURVEY_CHIEF_DEFEATED"
       ],
+      "intermediate_flags": [
+        "EVENT_MN_ARC_LINK_SENT",
+        "EVENT_MN_VERDIGRIM_COUNTER_CURRENT",
+        "EVENT_MN_REED_BOUNDARY_DEFEATED",
+        "EVENT_MN_VERDIGRIM_DRILL_STOPPED",
+        "EVENT_MN_VERDIGRIM_OUTLET_CLOSED",
+        "EVENT_MN_VERDIGRIM_CLEAN_BYPASS",
+        "EVENT_MN_VERDIGRIM_RETREATED",
+        "EVENT_MN_KETTLURK_RELEASED",
+        "EVENT_MN_VERDIGRIM_CONTAINED"
+      ],
       "sets": [
         "EVENT_MN_SURVEY_RESTORED"
       ],
@@ -1848,6 +1859,7 @@
       "story_beat": "The call gets the player to the intake. The crew sees the water run clear only after the player operates the bypass and Kettlurk gets free.",
       "narrative_status": "The intake controls and rescue belong to the current finale. The six receiver pages below are retained for the earlier shelter edition documented in playable/northstar-relay.md.",
       "native_scene_source": "pokemon/verdigrim-scene-site.json",
+      "native_texts_location": "MnBoundaryWatersSurveyShelter",
       "native_texts": {
         "MnBoundarySurveyReceiverLockedText": [
           "The chief guards",
@@ -1880,19 +1892,7 @@
           "The ELY trail is",
           "open again."
         ]
-      },
-      "intermediate_flags": [
-        "EVENT_MN_ARC_LINK_SENT",
-        "EVENT_MN_VERDIGRIM_COUNTER_CURRENT",
-        "EVENT_MN_REED_BOUNDARY_DEFEATED",
-        "EVENT_MN_VERDIGRIM_DRILL_STOPPED",
-        "EVENT_MN_VERDIGRIM_OUTLET_CLOSED",
-        "EVENT_MN_VERDIGRIM_CLEAN_BYPASS",
-        "EVENT_MN_VERDIGRIM_RETREATED",
-        "EVENT_MN_KETTLURK_RELEASED",
-        "EVENT_MN_VERDIGRIM_CONTAINED"
-      ],
-      "native_texts_location": "MnBoundaryWatersSurveyShelter"
+      }
     },
     {
       "id": "MS13",
@@ -2008,13 +2008,13 @@
         "EVENT_MN_BORDER_REPORT",
         "EVENT_MN_LIGHTHOUSE_SIGNAL"
       ],
+      "intermediate_flags": [
+        "EVENT_MN_FALLS_VOYAGEURS_ARRIVAL"
+      ],
       "sets": [
         "EVENT_MN_BORDER_CIRCUIT_REWARDED"
       ],
-      "completion": "Enter Boundary Waters eastbound from the Voyageurs checkpoint to record the crossing. Return to the ranger in the International Falls clinic for one PP Up. If the pocket is full, the ranger keeps the reward until there is room and remembers giving it.",
-      "intermediate_flags": [
-        "EVENT_MN_FALLS_VOYAGEURS_ARRIVAL"
-      ]
+      "completion": "Enter Boundary Waters eastbound from the Voyageurs checkpoint to record the crossing. Return to the ranger in the International Falls clinic for one PP Up. If the pocket is full, the ranger keeps the reward until there is room and remembers giving it."
     },
     {
       "id": "MS18",
@@ -2643,34 +2643,37 @@
       "MnWinonaHome1F": {
         "MnWHomeIntroText": [
           [
-            "MOM: Morning.",
-            "TAMARACK came by."
+            "MOM: Morning!",
+            "Ready to meet your"
           ],
           [
-            "Left muddy prints",
-            "on my clean floor."
+            "first POKEMON?"
           ],
           [
-            "She's waiting at",
-            "the FIELD STATION"
+            "PROF. TAMARACK",
+            "is waiting at the"
           ],
           [
-            "by the river. The",
-            "three partners"
+            "FIELD STATION",
+            "by the river."
           ],
           [
-            "are ready to",
-            "meet you."
+            "Meet all three.",
+            "I'll set out"
+          ],
+          [
+            "an extra bowl",
+            "for your partner."
           ]
         ],
         "MnWGuardianRestText": [
           [
-            "MOM: Shoes off",
-            "if they are wet."
+            "MOM: There you",
+            "are. Come on in."
           ],
           [
-            "I have a big bowl",
-            "for your team."
+            "I put a big bowl",
+            "out for your team."
           ],
           [
             "Tell me about it",
@@ -2693,20 +2696,24 @@
         ],
         "MnWHomeGearReceivedText": [
           [
-            "MOM: Open the map.",
-            "See where the"
+            "MOM: Take your",
+            "POKEGEAR."
           ],
           [
-            "river bends?",
-            "That's WINONA. You"
+            "Open the map.",
+            "That river bend"
           ],
           [
-            "can always find",
-            "that bend, even"
+            "is WINONA. That's",
+            "where we are."
           ],
           [
-            "when you can't see",
-            "our roof."
+            "When you can't see",
+            "our roof anymore,"
+          ],
+          [
+            "you can still find",
+            "your way home."
           ]
         ]
       },
@@ -2742,20 +2749,24 @@
         ],
         "MnOverhaulTamarackIntroText": [
           [
-            "TAMARACK: Come in.",
-            "I was just back"
+            "TAMARACK: There",
+            "you are! Come in."
           ],
           [
-            "from the river.",
-            "We'll talk about"
+            "I'm TAMARACK.",
+            "I study the"
           ],
           [
-            "that in a minute.",
-            "Come meet the"
+            "POKEMON along",
+            "this river."
           ],
           [
-            "three by the bench",
-            "first."
+            "Meet these three",
+            "by the bench."
+          ],
+          [
+            "One of them gets",
+            "to go with you."
           ]
         ],
         "MnWChooseText": [
@@ -2766,36 +2777,36 @@
         ],
         "MnWReadingsText": [
           [
-            "TAMARACK: I took",
-            "the waders down to"
+            "TAMARACK: The",
+            "river fell again."
           ],
           [
-            "the nest this",
-            "morning and never"
+            "I reached a nest",
+            "on foot today."
           ],
           [
-            "put them on. The",
-            "gauge was lower"
+            "Yesterday, I had",
+            "to wade out to it."
           ],
           [
-            "than yesterday.",
-            "IVY watches nests"
+            "Take this reading",
+            "to my friend IVY."
           ],
           [
-            "near ROCHESTER.",
-            "Would you take her"
+            "She watches nests",
+            "near ROCHESTER."
           ],
           [
-            "my reading and ask",
-            "whether her"
+            "Ask if her water",
+            "fell overnight."
           ],
           [
-            "water's dropped",
-            "too? She's at the"
+            "She's at the",
+            "ROCHESTER clinic."
           ],
           [
-            "clinic. Take ROUTE",
-            "01 west."
+            "Take ROUTE 01",
+            "west to get there."
           ]
         ],
         "MnOverhaulStarterReceivedText": [
@@ -2865,15 +2876,12 @@
         ],
         "MnWDeclineText": [
           [
-            "TAMARACK: That's",
-            "fine. You can come"
+            "TAMARACK: Sure.",
+            "Meet the others."
           ],
           [
-            "back to this one",
-            "after you've met"
-          ],
-          [
-            "the others."
+            "You'll know when",
+            "you're ready."
           ]
         ],
         "MnWGiftFullText": [
@@ -2890,24 +2898,20 @@
         ],
         "MnWBallsText": [
           [
-            "AIDE: Here are",
-            "five POKE BALLS."
+            "AIDE: Wait!",
+            "Five POKE BALLS."
           ],
           [
-            "Keep one where you",
-            "can grab it. The"
+            "Keep one handy.",
+            "My first wild"
           ],
           [
-            "first wild POKEMON",
-            "I met watched me"
+            "POKEMON watched me",
+            "unpack my lunch"
           ],
           [
-            "take my whole",
-            "lunch out of my"
-          ],
-          [
-            "bag, then walked",
-            "off."
+            "looking for one.",
+            "Then it left."
           ]
         ],
         "MnWBallsFullText": [
@@ -2925,24 +2929,20 @@
         ],
         "MnWReminderText": [
           [
-            "TAMARACK: Follow",
-            "ROUTE 01 west to"
+            "TAMARACK: IVY is",
+            "at the ROCHESTER"
           ],
           [
-            "the ROCHESTER",
-            "clinic. Ask IVY if"
+            "clinic. Follow",
+            "ROUTE 01 west."
           ],
           [
-            "she could reach",
-            "her nests on foot"
+            "Ask if her water",
+            "fell overnight,"
           ],
           [
-            "this morning.",
-            "That's what made"
-          ],
-          [
-            "me go back and",
-            "check the gauge."
+            "too. Give her the",
+            "sealed envelope."
           ]
         ],
         "MnWTamarackDeliveryReturnText": [
@@ -2986,14 +2986,14 @@
             "Look what I found."
           ],
           [
-            "The case was left",
-            "by the LODE gate."
+            "Left right by",
+            "the LODE gate."
           ]
         ],
         "MnNSEReedCaseText": [
           [
-            "REED: Something",
-            "tapped inside."
+            "REED: Hear that?",
+            "Something tapped."
           ],
           [
             "An EGG, maybe.",
@@ -3003,91 +3003,96 @@
         "MnNSETamarackCaseText": [
           [
             "TAMARACK: Set it",
-            "flat here. Hold"
+            "flat, REED."
           ],
           [
-            "the latch still so",
-            "we can hear."
+            "Hold the latch",
+            "still. Listen."
           ]
         ],
         "MnNSEReedDismissText": [
           [
-            "REED: You can",
-            "keep it warm."
+            "REED: You keep",
+            "it warm, then."
           ],
           [
-            "I came to ask",
-            "about paid work."
+            "I need paid work.",
+            "Are you hiring?"
           ]
         ],
         "MnNSETamarackWarmText": [
           [
-            "TAMARACK: I felt",
-            "it. Leave the case"
+            "TAMARACK: Not now,",
+            "REED. It's cold."
           ],
           [
-            "flat. I'll get a",
-            "dry towel and give"
+            "I felt it move.",
+            "I'll get a towel."
           ],
           [
-            "it a chance to",
-            "warm up."
+            "Let it warm up",
+            "before we open it."
           ]
         ],
         "MnNSEReedChallengeText": [
           [
-            "REED: You got a",
-            "partner already?"
+            "REED: So you got",
+            "a partner for"
           ],
           [
-            "Show me what",
-            "TAMARACK saw."
+            "turning up?"
+          ],
+          [
+            "Let's see what",
+            "you can do."
           ]
         ],
         "MnNSEReedAfterText": [
           [
             "REED: Keep the",
-            "case, then."
+            "case. LODE pays"
           ],
           [
-            "LODE pays well.",
-            "I will ask there."
+            "for strong teams.",
+            "I'll ask there."
           ]
         ],
         "MnNSETamarackQuestText": [
           [
-            "TAMARACK: I'll",
-            "mind the case."
+            "TAMARACK: Well.",
+            "That was REED."
           ],
           [
-            "Take the reading",
-            "to IVY when you're"
+            "Your partner kept",
+            "looking to you."
           ],
           [
-            "ready. If her",
-            "gauge dropped too,"
+            "Give each other",
+            "time. You only"
           ],
           [
-            "I want to know",
-            "whether it"
-          ],
-          [
-            "happened before",
-            "dawn or after."
+            "just met."
           ]
         ],
         "MnNSETamarackRestText": [
           [
-            "TAMARACK: Let me",
-            "see to your"
+            "TAMARACK: Here.",
+            "Let me see to"
           ],
           [
-            "partner before you",
-            "go. Sit a minute."
+            "your partner."
           ],
           [
-            "You both look like",
-            "you could use it."
+            "Then take ROUTE 01",
+            "west to ROCHESTER."
+          ],
+          [
+            "IVY is waiting",
+            "at the clinic."
+          ],
+          [
+            "The case can stay",
+            "here. Take care."
           ]
         ],
         "MnNSEEggOfferText": [
@@ -3170,12 +3175,16 @@
         ],
         "MnNSEEggAfterText": [
           [
-            "TAMARACK: The EGG",
-            "taps at breakfast."
+            "TAMARACK: How is",
+            "your passenger?"
           ],
           [
-            "I put my spoon",
-            "down and listen."
+            "I still remember",
+            "that tap through"
+          ],
+          [
+            "the towel. Right",
+            "against my thumb."
           ]
         ],
         "MnArcTamarackAfterText": [
@@ -3202,21 +3211,16 @@
         "MnNSEReedWonText": [
           [
             "REED: One match.",
-            "Enjoy it."
+            "Don't get used"
           ],
           [
-            "Next time, I want",
-            "a better team."
+            "to it."
           ]
         ],
         "MnNSEReedLostText": [
           [
             "REED: See?",
-            "We were ready."
-          ],
-          [
-            "Tell TAMARACK",
-            "who won."
+            "Mine was ready."
           ]
         ],
         "MnWPokedexReceivedText": [
@@ -3228,23 +3232,23 @@
             "and a POKEDEX!"
           ],
           [
-            "TAMARACK: Give IVY",
-            "the envelope. Keep"
+            "TAMARACK: The",
+            "envelope is for"
           ],
           [
-            "the DEX. It",
-            "remembers which"
+            "IVY. The DEX",
+            "is yours."
           ],
           [
-            "POKEMON you've",
-            "seen even if they"
+            "It keeps track of",
+            "POKEMON you've"
           ],
           [
-            "get away before",
-            "you can catch"
+            "seen and caught."
           ],
           [
-            "them."
+            "Show me who you",
+            "meet out there."
           ]
         ],
         "MnWTamarackGuideChampionText": [
@@ -3846,59 +3850,45 @@
         ],
         "MN_W_CHIKORITAText": [
           [
-            "A seed rolls out",
-            "of POUCHID's"
+            "POUCHID drops a",
+            "seed from its"
           ],
           [
             "pouch. It pats the",
-            "floor until it"
+            "floor to find it."
           ],
           [
-            "finds it."
+            "TAMARACK: POUCHID.",
+            "A GRASS type."
           ],
           [
-            "TAMARACK: That's",
-            "POUCHID. GRASS"
+            "It followed my",
+            "broom all morning,"
           ],
           [
-            "type. I swept the",
-            "floor this morning"
-          ],
-          [
-            "and it followed me",
-            "the whole way,"
-          ],
-          [
-            "picking seeds out",
-            "of the dust. Want"
-          ],
-          [
-            "to take it with",
-            "you?"
+            "rescuing seeds.",
+            "Take it with you?"
           ]
         ],
         "MN_W_CYNDAQUILText": [
           [
             "KINDLIT nudges",
-            "your knuckles"
+            "your closed hand."
           ],
           [
-            "until you open",
-            "your hand."
+            "It curls up when",
+            "you open it."
           ],
           [
-            "TAMARACK: FIRE",
-            "type. That's where"
+            "TAMARACK: KINDLIT.",
+            "A FIRE type."
           ],
           [
-            "KINDLIT likes to",
-            "sleep. You'll feel"
+            "Feel that warmth?",
+            "It trusts you."
           ],
           [
-            "it go warm in a",
-            "second. Want to"
-          ],
-          [
+            "Would you like to",
             "take it with you?"
           ]
         ],
@@ -3908,27 +3898,23 @@
             "foot out the door."
           ],
           [
-            "It looks back at",
-            "you."
+            "It looks back",
+            "to see if you are"
           ],
           [
-            "TAMARACK: WATER",
-            "type. It can hear"
+            "coming, too."
           ],
           [
-            "the river from",
-            "here. I took it"
+            "TAMARACK: BIRCHIT.",
+            "A WATER type."
           ],
           [
-            "down once and it",
-            "got in before I'd"
+            "It can hear the",
+            "river from here."
           ],
           [
-            "set my boots down.",
-            "Want to take"
-          ],
-          [
-            "BIRCHIT?"
+            "Would you like to",
+            "take it with you?"
           ]
         ],
         "MnRewardDexClaim4Text": [
@@ -13830,23 +13816,23 @@
         ],
         "MnWTrailWardenClearedText": [
           [
-            "Ah, you found",
-            "yourself a"
+            "There you are!",
+            "And who is this?"
           ],
           [
-            "partner.",
+            "Your new partner?",
+            "Stay close,"
+          ],
+          [
+            "you two.",
             "ROCHESTER's west."
           ],
           [
             "Take the worn path",
-            "till you've seen"
+            "till you've found"
           ],
           [
-            "how the two of you",
-            "do in the tall"
-          ],
-          [
-            "grass."
+            "your feet."
           ]
         ],
         "MN_W_RIVER_WATCHERText": [
@@ -13865,20 +13851,20 @@
         ],
         "MN_W_TRAIL_GUIDEText": [
           [
-            "The field station",
-            "has the low roof."
+            "The FIELD STATION?",
+            "Low roof, down"
           ],
           [
-            "I found a POTION",
-            "at a trail edge."
+            "by the river.",
+            "I could hear"
           ],
           [
-            "Face a bare patch",
-            "and press A."
+            "TAMARACK calling",
+            "BIRCHIT back from"
           ],
           [
-            "Dropped things",
-            "are hard to see."
+            "halfway up the",
+            "street."
           ]
         ],
         "MnWHomeSignText": [
@@ -40605,6 +40591,17 @@
           ]
         ]
       },
+      "MnBemidjiNorthwoods": {
+        "MnFenTurnoffText": [
+          [
+            "LAYERED FEN - WEST",
+            "ROUTE 17 - EAST"
+          ],
+          [
+            "BEMIDJI - SOUTH"
+          ]
+        ]
+      },
       "MnBemidjiPokecenter1F": {
         "MN_BEMIDJI_NURSEText": [
           [
@@ -48671,6 +48668,30 @@
             "back to the woods."
           ]
         ],
+        "MnFenText_hollow_open": [
+          [
+            "The pines part at",
+            "the north end."
+          ],
+          [
+            "Young firs shelter",
+            "the hollow beyond."
+          ]
+        ],
+        "MnFenText_hollow_return": [
+          [
+            "One wet boot is",
+            "plenty for me."
+          ],
+          [
+            "See that gap in",
+            "the north pines?"
+          ],
+          [
+            "I'm heading east,",
+            "back to the woods."
+          ]
+        ],
         "MnFenText_folded_path": [
           [
             "The pines part at",
@@ -48845,30 +48866,6 @@
           [
             "The little fir",
             "shakes its moss."
-          ]
-        ],
-        "MnFenText_hollow_open": [
-          [
-            "The pines part at",
-            "the north end."
-          ],
-          [
-            "Young firs shelter",
-            "the hollow beyond."
-          ]
-        ],
-        "MnFenText_hollow_return": [
-          [
-            "One wet boot is",
-            "plenty for me."
-          ],
-          [
-            "See that gap in",
-            "the north pines?"
-          ],
-          [
-            "I'm heading east,",
-            "back to the woods."
           ]
         ]
       },
@@ -51722,17 +51719,6 @@
           [
             "in with the",
             "basecamp ranger."
-          ]
-        ]
-      },
-      "MnBemidjiNorthwoods": {
-        "MnFenTurnoffText": [
-          [
-            "LAYERED FEN - WEST",
-            "ROUTE 17 - EAST"
-          ],
-          [
-            "BEMIDJI - SOUTH"
           ]
         ]
       }
@@ -69348,16 +69334,16 @@
       "MnWinonaFieldStation": {
         "MnNSEEggAfterText": [
           [
-            "TAMARACK: I used",
-            "to hear it tap"
+            "TAMARACK: How is",
+            "your passenger?"
           ],
           [
-            "while I ate my",
-            "breakfast."
+            "I still remember",
+            "that tap through"
           ],
           [
-            "I still put my",
-            "spoon down."
+            "the towel. Right",
+            "against my thumb."
           ]
         ],
         "MnWPokedexReceivedText": [
@@ -69369,12 +69355,23 @@
             "and a POKEDEX!"
           ],
           [
-            "TAMARACK: See one",
-            "and it gets away?"
+            "TAMARACK: The",
+            "envelope is for"
           ],
           [
-            "Your DEX will",
-            "remember it."
+            "IVY. The DEX",
+            "is yours."
+          ],
+          [
+            "It keeps track of",
+            "POKEMON you've"
+          ],
+          [
+            "seen and caught."
+          ],
+          [
+            "Show me who you",
+            "meet out there."
           ]
         ]
       }
@@ -69777,6 +69774,188 @@
         [
           "Funny how small",
           "it looks now."
+        ]
+      ]
+    }
+  },
+  "mothlight_battle_cafe": {
+    "MnCafeOfferText": [
+      [
+        "Welcome to our",
+        "BATTLE CAFE!"
+      ],
+      [
+        "My MOTHOSAIC loves",
+        "the lamps here."
+      ],
+      [
+        "MUFFIEND comes for",
+        "the berry cakes."
+      ],
+      [
+        "Beat my team for",
+        "a BERRY JUICE!"
+      ],
+      [
+        "One prize a day.",
+        "Care for a battle?"
+      ]
+    ],
+    "MnCafeWonText": [
+      [
+        "A sweet victory!",
+        "You earned a treat"
+      ]
+    ],
+    "MnCafeLostText": [
+      [
+        "Stay for a rest.",
+        "Try me again!"
+      ]
+    ],
+    "MnCafeDeclinedText": [
+      [
+        "Just supper, then?",
+        "Get cozy!"
+      ]
+    ],
+    "MnCafeTodayText": [
+      [
+        "That was a lovely",
+        "battle!"
+      ],
+      [
+        "Come back tomorrow",
+        "for another treat."
+      ]
+    ],
+    "MnCafeFullText": [
+      [
+        "Your PACK is full.",
+        "I can hold it."
+      ]
+    ],
+    "MnCafePrizeText": [
+      [
+        "A BERRY JUICE for",
+        "the winner!"
+      ]
+    ],
+    "MnCafeSignText": [
+      [
+        "MOTH LIGHT LODGE",
+        "BATTLE CAFE"
+      ],
+      [
+        "Supper, warm beds,",
+        "and daily battles!"
+      ]
+    ]
+  },
+  "intro_revision": {
+    "id": "northstar-intro-polish-v1",
+    "dialogue_labels": {
+      "MnWinonaHome1F": [
+        "MnWHomeIntroText",
+        "MnWHomeGearReceivedText",
+        "MnWGuardianRestText"
+      ],
+      "MnWinonaFieldStation": [
+        "MnOverhaulTamarackIntroText",
+        "MN_W_CHIKORITAText",
+        "MN_W_CYNDAQUILText",
+        "MN_W_TOTODILEText",
+        "MnWDeclineText",
+        "MnWReadingsText",
+        "MnWPokedexReceivedText",
+        "MnNSEReedArrivalText",
+        "MnNSEReedCaseText",
+        "MnNSETamarackCaseText",
+        "MnNSEReedDismissText",
+        "MnNSETamarackWarmText",
+        "MnNSEReedChallengeText",
+        "MnNSEReedAfterText",
+        "MnNSEReedWonText",
+        "MnNSEReedLostText",
+        "MnNSETamarackQuestText",
+        "MnNSETamarackRestText",
+        "MnWReminderText",
+        "MnWBallsText",
+        "MnNSEEggAfterText"
+      ],
+      "MnWinona": [
+        "MnWTrailWardenClearedText",
+        "MN_W_TRAIL_GUIDEText"
+      ]
+    },
+    "welcome": {
+      "OakText1": [
+        [
+          "Welcome! I'm",
+          "PROF. TAMARACK."
+        ],
+        [
+          "I study #MON",
+          "here in MINNESOTA."
+        ]
+      ],
+      "OakText2": [
+        [
+          "This is JIGLET.",
+          "Say hello!"
+        ]
+      ],
+      "OakText3": [
+        [
+          "I thought it was a",
+          "lost fishing lure."
+        ],
+        [
+          "Then its tail",
+          "twitched!"
+        ]
+      ],
+      "OakText4": [
+        [
+          "I almost walked",
+          "right past it."
+        ],
+        [
+          "Now I always stop",
+          "and look twice."
+        ]
+      ],
+      "OakText5": [
+        [
+          "Three #MON",
+          "are waiting at"
+        ],
+        [
+          "my field station",
+          "in WINONA."
+        ],
+        [
+          "One could be your",
+          "first partner."
+        ]
+      ],
+      "OakText6": [
+        [
+          "Oh! I've done all",
+          "the talking."
+        ],
+        [
+          "What is your name?"
+        ]
+      ],
+      "OakText7": [
+        [
+          "<PLAYER>! Let's",
+          "choose a partner."
+        ],
+        [
+          "Your mom will want",
+          "to meet them, too."
         ]
       ]
     }

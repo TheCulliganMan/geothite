@@ -34,8 +34,7 @@ const boot = async (page, url) => {
   await page.waitForFunction(() => document.querySelector('#loading').hidden || document.querySelector('#startup-error').open, null, {timeout:180000});
   assert.equal(await page.locator('#startup-error').evaluate(el => el.open), false, await page.locator('#startup-error').textContent());
   await page.evaluate(async () => {
-    const script = [...document.querySelectorAll('script[type="module"]')].map(node => node.textContent).join('\n');
-    const modulePath = script.match(/import\('([^']*crystal-bevy[^']*\.js)'\)/)?.[1];
+    const modulePath = globalThis.__crystalRendererBundle?.module;
     if (!modulePath) throw new Error('Game module import missing from the served page');
     const wasm = await import(modulePath);
     const {createGameBridge} = await import('./webmcp.js');
@@ -50,6 +49,34 @@ const say = async (page, message) => {
 };
 const close = async page => { if (await page.locator('.chat-close').isVisible()) await page.locator('.chat-close').click(); };
 const logHas = (page,text) => page.locator('.chat-log').textContent().then(log => log.includes(text));
+const checkLayout = async (page, label, touch) => {
+  const layout = await page.evaluate(() => {
+    const rect = element => {
+      const box = element.getBoundingClientRect();
+      return {x:box.x,y:box.y,width:box.width,height:box.height};
+    };
+    const visible = element => element.getClientRects().length && getComputedStyle(element).visibility !== 'hidden';
+    const selectors = '#touch-controls button, #view-navigation a, #view-navigation button, #player-options summary, #mute, .chat-toggle';
+    return {
+      viewport:{width:innerWidth,height:innerHeight,scale:visualViewport.scale},
+      stage:rect(document.querySelector('#game-stage')),
+      controls:[...document.querySelectorAll(selectors)].filter(visible).map(element => {
+        const box = rect(element);
+        const hit = document.elementFromPoint(box.x+box.width/2,box.y+box.height/2);
+        return {label:element.getAttribute('aria-label') ?? element.textContent.trim(),game:element.hasAttribute('data-game-button'),...box,hit:element===hit || element.contains(hit)};
+      }),
+    };
+  });
+  assert.equal(layout.controls.filter(control=>control.game).length,touch ? 8 : 0,`${label}: touch capability controls the gamepad`);
+  assert.ok(layout.stage.width>=160 && layout.stage.height>=144,`${label}: readable game screen`);
+  for (const control of layout.controls) {
+    assert.ok(control.width>=44 && control.height>=44,`${label}: target too small ${JSON.stringify(control)}`);
+    assert.ok(control.x>=0 && control.y>=0 && control.x+control.width<=layout.viewport.width+.5 && control.y+control.height<=layout.viewport.height+.5,`${label}: offscreen ${JSON.stringify(control)}`);
+    assert.ok(control.hit,`${label}: covered control ${JSON.stringify(control)}`);
+  }
+  await page.screenshot({path:path.join(directory,`${label}.png`)});
+  return layout;
+};
 try {
   for (const [index, player] of fixture.players.entries()) {
     const context = await browser.newContext({viewport:index === 2 ? {width:390,height:844} : {width:1024,height:768},hasTouch:index === 2,isMobile:index === 2});
@@ -57,9 +84,10 @@ try {
     await context.addInitScript(({key,save}) => { if (!localStorage.getItem(key)) localStorage.setItem(key,save); }, {key:`crystal.save.v1.saves/${fixture.modpack_id}-player-${player.id}.crystalsave`,save});
     const page = await context.newPage();
     page.on('pageerror', error => errors.push(`${player.name}: ${error.message}`));
+    page.on('console', message => { if (message.type()==='error') errors.push(`${player.name}: ${message.text()}`); });
     const payload = Buffer.from(JSON.stringify({user_id:`player-${player.id}`,expires_at:Math.floor(Date.now()/1000)+3600})).toString('base64url');
     const token = `${payload}.${createHmac('sha256',secret).update(payload).digest('base64url')}`;
-    const url = new URL(origin); url.searchParams.set('token',token); url.searchParams.set('player_name',player.name);
+    const url = new URL(origin); url.searchParams.set('view','2d'); url.searchParams.set('token',token); url.searchParams.set('player_name',player.name);
     clients.push({context,page,player,url:url.href});
     await boot(page,url.href);
     console.log(`READY ${player.name}`);
@@ -68,10 +96,30 @@ try {
     assert.equal(state.status.player_name,player.name);
   }
   const [a,b,c] = clients.map(client=>client.page);
+  const layouts = [];
+  layouts.push(await checkLayout(a,'desktop',false));
+  await a.setViewportSize({width:390,height:844});
+  layouts.push(await checkLayout(a,'narrow-desktop',false));
+  await a.setViewportSize({width:1024,height:768});
+  for (const [label,width,height] of [['phone',390,844],['small-phone',320,568],['phone-landscape',844,390]]) {
+    await c.setViewportSize({width,height});
+    layouts.push(await checkLayout(c,label,true));
+  }
+  await c.setViewportSize({width:390,height:844});
+  const touchSession = await clients[2].context.newCDPSession(c);
+  const stage = await c.locator('#game-stage').boundingBox();
+  await touchSession.send('Input.synthesizePinchGesture',{
+    x:stage.x+stage.width/2,y:stage.y+stage.height/2,scaleFactor:1.8,gestureSourceType:'touch',
+  });
+  assert.equal(await c.evaluate(()=>visualViewport.scale),1,'pinching the game must not zoom the page');
+  await touchSession.detach();
+  await fs.writeFile(path.join(directory,'layouts.json'),JSON.stringify(layouts,null,2)+'\n');
+  checks.push('desktop, narrow desktop, phone portrait/landscape, 320px controls, and trusted pinch zoom prevention');
   await until(async () => (await observe(a)).map_info.players.length === 2, 'all remote players visible');
   assert.deepEqual((await observe(a)).map_info.players.map(p=>p.user_id).sort(),['player-41002','player-41003']);
   checks.push('three independent authenticated players and identifiable remote sprites');
-  await a.locator('canvas').focus();
+  await a.bringToFront();
+  await a.locator('#crystal-canvas').focus();
   await a.keyboard.press('z');
   await a.locator('.chat-actions button[data-action="time_capsule"]').waitFor({state:'visible'});
   assert.deepEqual(await a.locator('.chat-actions button').allTextContents(),['Whisper','Battle','Trade','Time Capsule']);
@@ -115,24 +163,27 @@ try {
   await until(async () => (await observe(a)).map_info.players.some(p=>p.user_id==='player-41003' && p.x===mobileMoved.x),'mobile walking replicated to desktop');
   checks.push('mobile touch walking and player-to-player chat');
 
-  await close(a); await a.locator('canvas').focus();
+  await close(a); await a.locator('#crystal-canvas').focus();
   await a.keyboard.down('ArrowRight');
   await a.keyboard.press('Enter');
   await a.locator('#chat-message').waitFor({state:'visible'});
   const focused = (await settled(a)).map_info.player;
+  await b.bringToFront();
+  await a.bringToFront();
   await a.locator('#chat-message').pressSequentially('wasdzx',{delay:80});
   assert.deepEqual((await settled(a)).map_info.player,focused,'typing and held keys cannot drive gameplay');
   await a.keyboard.up('ArrowRight'); await a.keyboard.press('Escape');
   await press(a,'down',12);
   await press(a,'down',12);
   assert.notDeepEqual((await settled(a)).map_info.player,focused,'movement resumes after chat');
-  checks.push('held-key handoff, safe typing, and movement after closing chat');
+  checks.push('held-key handoff, chat focus after switching browsers, safe typing, and movement after closing chat');
 
   for (const command of ['battle','tradewith','timecapsule']) {
+    await b.bringToFront();
     await close(b);
     const beforeInvite = (await settled(b)).map_info.player;
     const walkingKey = command==='tradewith' ? 'ArrowUp' : 'ArrowDown';
-    await b.locator('canvas').focus();
+    await b.locator('#crystal-canvas').focus();
     await b.keyboard.down(walkingKey);
     await say(a,`/${command} player-41002`);
     await b.locator('.chat-requests button[data-action="decline"]').waitFor({state:'visible'});
@@ -141,6 +192,12 @@ try {
     await b.locator('.chat-requests button[data-action="decline"]').click();
     await until(async () => (await observe(b)).multiplayer?.pending_request == null,`${command} decline releases recipient`);
     await until(async () => await b.locator('.chat-requests button').count() === 0,`${command} invitation cleaned`);
+    await b.bringToFront();
+    assert.deepEqual(await b.evaluate(()=>({focused:document.hasFocus(),element:document.activeElement.id})),{focused:true,element:'crystal-canvas'});
+    await b.keyboard.press('Space',{delay:80});
+    await until(async () => (await observe(b)).observe.menus.some(menu=>menu.kind==='start'),'keyboard Start immediately after declining an invitation',5000);
+    await b.keyboard.press('x',{delay:80});
+    await until(async () => !(await observe(b)).observe.menus.length,'keyboard B closes Start after declining',5000);
     await close(a);
   }
   checks.push('Battle, Trade, and Time Capsule invitations decline and release both players');
@@ -156,10 +213,17 @@ try {
 
   await say(a,'/tradewith player-41002');
   await b.locator('.chat-requests button[data-action="accept"]').waitFor({state:'visible'});
-  await say(a,'/cancel');
+  await close(a);
+  await a.locator('.chat-requests [data-action="cancel"]').click();
   await until(async () => await b.locator('.chat-requests button').count()===0,'sender cancellation removes recipient invitation');
+  await until(async () => await a.locator('.chat-requests button').count()===0,'sender cancellation clears its card');
+  await a.bringToFront();
+  await a.keyboard.press('Space',{delay:80});
+  await until(async () => (await observe(a)).observe.menus.some(menu=>menu.kind==='start'),'keyboard Start immediately after cancelling a closed-chat invitation',5000);
+  await a.keyboard.press('x',{delay:80});
+  await until(async () => !(await observe(a)).observe.menus.length,'keyboard B closes Start after cancellation',5000);
   await close(a); await close(b);
-  checks.push('sender cancellation removes both invitation states');
+  checks.push('visible sender cancellation after closing chat removes both invitation states');
 
   for (const command of ['tradewith','timecapsule']) {
     const parties = await Promise.all([a,b].map(async page => (await observe(page)).status.party[0].nickname));
@@ -256,8 +320,10 @@ try {
   assert.deepEqual(errors,[],'no browser runtime errors');
   console.log(JSON.stringify({passed:true,checks},null,2));
 } catch (error) {
+  console.error('Browser errors:',errors);
   for (const [index,client] of clients.entries()) {
     if (client.page.isClosed()) continue;
+    console.error('Focus',client.player.name,await client.page.evaluate(()=>({focused:document.hasFocus(),element:document.activeElement?.id})).catch(()=>null));
     await client.page.screenshot({path:path.join(directory,`failure-${index}.png`)}).catch(()=>{});
     const state = await observe(client.page).catch(()=>null);
     console.error(client.player.name,JSON.stringify(state && {status:state.status,player:state.map_info.player,multiplayer:state.multiplayer,observe:state.observe,recent_events:state.recent_events}),await client.page.locator('#social-chat').textContent().catch(()=>''));

@@ -4118,6 +4118,11 @@ fn shell_render_key(runtime_shell: &BevyRuntimeShell) -> u64 {
         title.cursor.option_index.hash(&mut hasher);
         title.source_phase().hash(&mut hasher);
         title.source_suicune_frame().hash(&mut hasher);
+        title
+            .northstar_opening
+            .as_ref()
+            .map(northstar_opening::Opening::image_frame)
+            .hash(&mut hasher);
         title.source_scx().hash(&mut hasher);
         title.source_title_timer().hash(&mut hasher);
         title.crystal_oam_target.hash(&mut hasher);
@@ -5535,7 +5540,12 @@ fn spawn_title_screen(
         let _ = presented;
         return Ok(());
     }
-    let frame = title_screen_frame_for_art(rendered_art, &runtime_shell.asset_root, title, images)
+    let frame = title_screen_frame_for_art(
+        rendered_art,
+        &runtime_shell.asset_root,
+        title,
+        images,
+    )
         .ok_or_else(|| {
             let key = title_screen_art_key(title);
             let error = rendered_art

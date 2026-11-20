@@ -333,7 +333,41 @@ fn overhaul_title_showcase_uses_the_pack_species_and_cry() {
     sequence.scene_index = 1;
     start_visible_oak_intro_scene(&mut sequence, runtime.title_presentation_program())
         .expect("regional showcase portrait and embedded cry agree");
-    assert_eq!(sequence.current_sprite.as_deref(), Some("GILLPUP"));
+    let speech = runtime
+        .title_presentation_program()
+        .subprograms
+        .iter()
+        .find(|program| program.id == "oak_speech")
+        .and_then(|program| program.phases.iter().find(|phase| phase.id == "speech"))
+        .expect("installed welcome speech");
+    let portraits: Vec<_> = speech
+        .operations
+        .iter()
+        .filter(|operation| {
+            operation.op == "present_intro_portrait"
+                && operation
+                    .fields
+                    .get("kind")
+                    .and_then(serde_json::Value::as_str)
+                    == Some("pokemon")
+        })
+        .collect();
+    let [portrait] = portraits.as_slice() else {
+        panic!("welcome must have exactly one authored Pokemon showcase");
+    };
+    let species = portrait.fields["species"]
+        .as_str()
+        .expect("showcase species");
+    assert_eq!(sequence.current_sprite.as_deref(), Some(species));
+    let cries: Vec<_> = speech
+        .operations
+        .iter()
+        .filter_map(|operation| operation.fields.get("embedded_audio"))
+        .filter_map(serde_json::Value::as_array)
+        .flatten()
+        .filter_map(|audio| audio.get("cry").and_then(serde_json::Value::as_str))
+        .collect();
+    assert_eq!(cries, [species], "showcase portrait and cry must agree");
     assert!(
         !sequence.wooper_cry_queued,
         "cry waits for its authored text boundary"

@@ -1,0 +1,240 @@
+{
+  "schema_version": 1,
+  "method": "built-in-imagegen-with-rust-native-conversion",
+  "characters": [
+    {
+      "name": "varel",
+      "previous_source": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/02-varel/native-pixels-v2.json",
+      "source": "planning/minnesota/npcs/portrait-faces-v01/varel/native-pixels-v1.json",
+      "image_source": "planning/minnesota/npcs/portrait-faces-v01/varel/image-source-v1.png",
+      "palette_rgb555": [
+        32767,
+        22399,
+        13733,
+        0
+      ],
+      "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/02-varel/controller-v1.json",
+      "sampling": "source_center",
+      "crop": [
+        0,
+        0,
+        1254,
+        1254
+      ],
+      "native_fit": [
+        52,
+        54
+      ],
+      "minimum_black_samples": 32,
+      "minimum_white_samples": 16
+    },
+    {
+      "name": "torven",
+      "previous_source": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/03-torven/native-pixels-v3.json",
+      "source": "planning/minnesota/npcs/portrait-faces-v01/torven/native-pixels-v1.json",
+      "image_source": "planning/minnesota/npcs/portrait-faces-v01/torven/image-source-v1.png",
+      "palette_rgb555": [
+        32767,
+        22399,
+        3508,
+        0
+      ],
+      "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/03-torven/controller-v1.json",
+      "sampling": "source_center",
+      "crop": [
+        0,
+        0,
+        1254,
+        1254
+      ],
+      "native_fit": [
+        52,
+        54
+      ],
+      "minimum_black_samples": 32,
+      "minimum_white_samples": 16
+    },
+    {
+      "name": "avrin",
+      "previous_source": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/04-avrin/native-pixels-v3.json",
+      "source": "planning/minnesota/npcs/portrait-faces-v01/avrin/native-pixels-v1.json",
+      "image_source": "planning/minnesota/npcs/portrait-faces-v01/avrin/image-source-v1.png",
+      "palette_rgb555": [
+        32767,
+        12855,
+        24847,
+        0
+      ],
+      "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/04-avrin/controller-v1.json",
+      "sampling": "source_center",
+      "crop": [
+        0,
+        0,
+        1254,
+        1254
+      ],
+      "native_fit": [
+        52,
+        54
+      ],
+      "minimum_black_samples": 32,
+      "minimum_white_samples": 16
+    },
+    {
+      "name": "brannic",
+      "previous_source": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/05-brannic/native-pixels-v3.json",
+      "source": "planning/minnesota/npcs/portrait-faces-v01/brannic/native-pixels-v1.json",
+      "image_source": "planning/minnesota/npcs/portrait-faces-v01/brannic/image-source-v2.png",
+      "palette_rgb555": [
+        32767,
+        29562,
+        6445,
+        0
+      ],
+      "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/05-brannic/controller-v1.json",
+      "sampling": "source_center",
+      "crop": [
+        0,
+        0,
+        1254,
+        1254
+      ],
+      "native_fit": [
+        52,
+        54
+      ],
+      "minimum_black_samples": 32,
+      "minimum_white_samples": 16
+    },
+    {
+      "name": "saven",
+      "previous_source": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/06-saven/native-pixels-v3.json",
+      "source": "planning/minnesota/npcs/portrait-faces-v01/saven/native-pixels-v1.json",
+      "image_source": "planning/minnesota/npcs/portrait-faces-v01/saven/image-source-v1.png",
+      "palette_rgb555": [
+        32767,
+        22399,
+        24038,
+        0
+      ],
+      "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/06-saven/controller-v1.json",
+      "sampling": "source_center",
+      "crop": [
+        0,
+        0,
+        1254,
+        1254
+      ],
+      "native_fit": [
+        52,
+        54
+      ],
+      "minimum_black_samples": 32,
+      "minimum_white_samples": 16
+    },
+    {
+      "name": "sivren",
+      "previous_source": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/07-sivren/native-pixels-v2.json",
+      "source": "planning/minnesota/npcs/portrait-faces-v01/sivren/native-pixels-v1.json",
+      "image_source": "planning/minnesota/npcs/portrait-faces-v01/sivren/image-source-v1.png",
+      "palette_rgb555": [
+        32767,
+        22399,
+        14885,
+        0
+      ],
+      "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/07-sivren/controller-v1.json",
+      "sampling": "source_center",
+      "crop": [
+        0,
+        0,
+        1254,
+        1254
+      ],
+      "native_fit": [
+        52,
+        54
+      ],
+      "minimum_black_samples": 32,
+      "minimum_white_samples": 16
+    },
+    {
+      "name": "orlis",
+      "previous_source": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/08-orlis/native-pixels-v3.json",
+      "source": "planning/minnesota/npcs/portrait-faces-v01/orlis/native-pixels-v1.json",
+      "image_source": "planning/minnesota/npcs/portrait-faces-v01/orlis/image-source-v1.png",
+      "palette_rgb555": [
+        32767,
+        22399,
+        6565,
+        0
+      ],
+      "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/08-orlis/controller-v1.json",
+      "sampling": "source_center",
+      "crop": [
+        0,
+        0,
+        1254,
+        1254
+      ],
+      "native_fit": [
+        52,
+        54
+      ],
+      "minimum_black_samples": 32,
+      "minimum_white_samples": 16
+    },
+    {
+      "name": "norek",
+      "previous_source": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/09-norek/native-pixels-v2.json",
+      "source": "planning/minnesota/npcs/portrait-faces-v01/norek/native-pixels-v1.json",
+      "image_source": "planning/minnesota/npcs/portrait-faces-v01/norek/image-source-v1.png",
+      "palette_rgb555": [
+        32767,
+        29562,
+        22952,
+        0
+      ],
+      "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/09-norek/controller-v1.json",
+      "sampling": "source_center",
+      "crop": [
+        0,
+        0,
+        1254,
+        1254
+      ],
+      "native_fit": [
+        52,
+        54
+      ],
+      "minimum_black_samples": 32,
+      "minimum_white_samples": 16
+    },
+    {
+      "name": "tamarack",
+      "previous_source": "planning/minnesota/npcs/tamarack-ice/01-tamarack/native-pixels-v4.json",
+      "source": "planning/minnesota/npcs/portrait-faces-v01/tamarack/native-pixels-v1.json",
+      "image_source": "planning/minnesota/npcs/portrait-faces-v01/tamarack/image-source-v2.png",
+      "palette_rgb555": [
+        32767,
+        25370,
+        8683,
+        0
+      ],
+      "controller_fixture": null,
+      "sampling": "area_vote",
+      "crop": [
+        0,
+        0,
+        1254,
+        1254
+      ],
+      "native_fit": [
+        52,
+        54
+      ],
+      "minimum_black_samples": 12,
+      "minimum_white_samples": 16
+    }
+  ]
+}

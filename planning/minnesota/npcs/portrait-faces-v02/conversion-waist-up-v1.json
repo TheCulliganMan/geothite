@@ -1,0 +1,31 @@
+{
+  "status": "visual_review_candidate",
+  "character": "Tamarack",
+  "image_source": "planning/minnesota/npcs/portrait-faces-v02/tamarack/image-source-waist-up-v1.png",
+  "native_source": "planning/minnesota/npcs/portrait-faces-v02/tamarack/native-pixels-waist-up-v1.json",
+  "previous_source": "planning/minnesota/npcs/tamarack-ice/01-tamarack/native-pixels-v4.json",
+  "tool": "trainer_portrait_palette",
+  "palette_rgb555": [
+    32767,
+    25370,
+    8683,
+    0
+  ],
+  "source_bounds": [
+    77,
+    20,
+    1135,
+    1242
+  ],
+  "fit_size": [
+    47,
+    54
+  ],
+  "phase": [
+    0.25,
+    0.25
+  ],
+  "hand_pixel_edits": false,
+  "selected": false,
+  "deployed": false
+}

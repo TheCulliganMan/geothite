@@ -34,7 +34,7 @@ import { readFileSync } from 'node:fs';
 const chatStyles = readFileSync(new URL('./social-chat.css', import.meta.url), 'utf8');
 import { mountSocialChat } from './social-chat.js';
 function chatHarness() {
-  const dom = new JSDOM('<canvas tabindex="0"></canvas><input id="other">', { url: 'https://geothite.test/' });
+  const dom = new JSDOM('<canvas tabindex="0"></canvas><input id="other">', { url: 'https://geothite.test/', pretendToBeVisual: true });
   const { window } = dom;
   const style = window.document.createElement('style');
   style.textContent = chatStyles;
@@ -44,9 +44,10 @@ function chatHarness() {
   window.setInterval = fn => { poll = fn; return 1; };
   window.clearInterval = () => {};
   const sent = [];
-  const cleanup = mountSocialChat({ crystal_social_focus() {}, crystal_social_send: json => sent.push(JSON.parse(json)), crystal_social_poll: () => JSON.stringify(state) }, { window, document: window.document, playerId: 1 });
+  const focus = [];
+  const cleanup = mountSocialChat({ crystal_social_focus: value => focus.push(value), crystal_social_send: json => sent.push(JSON.parse(json)), crystal_social_poll: () => JSON.stringify(state) }, { window, document: window.document, playerId: 1 });
   const key = (key, type = 'keydown', extra = {}) => window.document.activeElement.dispatchEvent(new window.KeyboardEvent(type, { key, code: key, bubbles: true, cancelable: true, ...extra }));
-  return { window, document: window.document, sent, key, poll: next => { state = next; poll(); }, cleanup: () => { cleanup(); window.close(); } };
+  return { window, document: window.document, sent, focus, key, poll: next => { state = next; poll(); }, cleanup: () => { cleanup(); window.close(); } };
 }
 
 test('Enter opens and sends without closing chat or leaking into gameplay', () => {
@@ -433,5 +434,166 @@ test('facing-player selection opens Chat from another tab and exposes all hosted
     assert.match(h.document.querySelector('.chat-log').textContent, /Time Capsule request sent/);
     h.poll({connected:true,players:[],events:[{type:'interaction_request',request_id:'capsule',from_user_id:'player-2',from_display_name:'BOB',kind:'time_capsule'}]});
     assert.match(h.document.querySelector('.chat-requests').textContent, /Time Capsule/);
+  } finally { h.cleanup(); }
+});
+
+
+test('returning from another app restores chat input ownership without stealing game focus', async () => {
+  const h = chatHarness();
+  try {
+    h.document.querySelector('.chat-toggle').click();
+    assert.equal(h.focus.at(-1), true);
+    h.window.dispatchEvent(new h.window.Event('blur'));
+    assert.equal(h.focus.at(-1), false);
+    assert.equal(h.document.activeElement.id, 'chat-message');
+    h.window.dispatchEvent(new h.window.Event('focus'));
+    assert.equal(h.focus.at(-1), true, 'the same focused input still owns gameplay input after app switching');
+    Object.defineProperty(h.document, 'hidden', { value: true, configurable: true });
+    h.document.dispatchEvent(new h.window.Event('visibilitychange'));
+    assert.equal(h.focus.at(-1), false);
+    Object.defineProperty(h.document, 'hidden', { value: false, configurable: true });
+    h.document.dispatchEvent(new h.window.Event('visibilitychange'));
+    assert.equal(h.focus.at(-1), true);
+    h.document.querySelector('.chat-close').click();
+    await Promise.resolve();
+    h.window.dispatchEvent(new h.window.Event('blur'));
+    h.window.dispatchEvent(new h.window.Event('focus'));
+    assert.equal(h.focus.at(-1), false);
+    assert.equal(h.document.activeElement.tagName, 'CANVAS');
+  } finally { h.cleanup(); }
+});
+
+test('outgoing invitations remain cancellable after closing chat and clear when settled', () => {
+  for (const kind of ['battle', 'trade', 'time_capsule']) {
+    const h = chatHarness();
+    try {
+      const players = [{ user_id: 'player-2', display_name: 'GOLD' }];
+      h.poll({ connected: true, players, selected_player: 'player-2', events: [] });
+      h.document.querySelector(`[data-action="${kind}"]`).click();
+      const card = h.document.querySelector('[data-outgoing="true"]');
+      assert.match(card.textContent, /invitation to GOLD/);
+      h.document.querySelector('.chat-close').click();
+      assert.equal(card.isConnected, true);
+      h.document.querySelector('.chat-toggle').click();
+      card.querySelector('[data-action="cancel"]').click();
+      assert.deepEqual(h.sent.at(-1), { type: 'interaction_cancel' });
+      assert.equal(card.querySelector('button').disabled, true);
+      h.poll({ connected: true, players, events: [{ type: 'interaction_response', request_id: 'outgoing', accepted: false }] });
+      assert.equal(h.document.querySelector('[data-outgoing]'), null);
+      h.poll({ connected: true, players, selected_player: 'player-2', events: [] });
+      assert.equal(h.document.querySelector(`[data-action="${kind}"]`).disabled, false);
+      h.document.querySelector(`[data-action="${kind}"]`).click();
+      h.poll({ connected: true, players, events: [{ type: 'match_found' }] });
+      assert.equal(h.document.querySelector('[data-outgoing]'), null);
+      assert.equal(h.document.querySelector('form').hidden, true);
+    } finally { h.cleanup(); }
+  }
+});
+
+test('command invitations use the same cancel card and a rejected request can be retried', () => {
+  const h = chatHarness();
+  try {
+    h.poll({ connected: true, players: [], events: [] });
+    h.document.querySelector('.chat-toggle').click();
+    const input = h.document.querySelector('#chat-message');
+    input.value = '/battle player-2'; h.key('Enter'); h.key('Enter', 'keyup');
+    assert.ok(h.document.querySelector('[data-outgoing]'));
+    input.value = '/tradewith player-3'; h.key('Enter'); h.key('Enter', 'keyup');
+    assert.equal(h.sent.length, 1);
+    assert.equal(input.value, '/tradewith player-3', 'blocked invitations preserve the draft');
+    h.poll({ connected: true, players: [], events: [{ type: 'error', code: 'social_error', message: 'Close the current menu first.' }] });
+    assert.equal(h.document.querySelector('[data-outgoing]'), null);
+    h.key('Enter'); h.key('Enter', 'keyup');
+    assert.equal(h.sent.length, 2);
+    assert.equal(h.sent.at(-1).kind, 'trade');
+  } finally { h.cleanup(); }
+});
+
+test('disconnect and polling errors remove stale trainers and invitations while keeping drafts', () => {
+  for (const broken of [false, true]) {
+    const h = chatHarness();
+    try {
+      const players = [{ user_id: 'player-2', display_name: 'GOLD' }];
+      const invite = { type: 'interaction_request', request_id: 'incoming', from_user_id: 'player-2', from_display_name: 'GOLD', kind: 'trade' };
+      h.poll({ connected: true, players, events: [invite] });
+      h.document.querySelector('.chat-toggle').click();
+      const input = h.document.querySelector('#chat-message');
+      input.value = 'message to finish later';
+      h.poll(broken ? null : { connected: false, players, events: [invite] });
+      assert.equal(h.document.querySelector('.chat-requests').childElementCount, 0);
+      assert.equal(h.document.querySelector('.chat-players').childElementCount, 0);
+      assert.equal(h.document.querySelector('.chat-nearby').textContent, 'Nearby · 0');
+      h.key('Enter'); h.key('Enter', 'keyup');
+      assert.equal(input.value, 'message to finish later');
+      assert.deepEqual(h.sent, []);
+      h.poll({ connected: true, players, events: [] });
+      h.key('Enter'); h.key('Enter', 'keyup');
+      assert.equal(h.sent.at(-1).text, 'message to finish later');
+      assert.equal(input.value, '');
+    } finally { h.cleanup(); }
+  }
+});
+
+
+test('settled invitation controls return focus and gameplay ownership without relying on focusout', () => {
+  for (const incoming of [false, true]) {
+    for (const keepOpen of [false, true]) {
+      const h = chatHarness();
+      try {
+        const players = [{ user_id: 'player-2', display_name: 'GOLD' }];
+        const invite = { type: 'interaction_request', request_id: 'invitation', from_user_id: 'player-2', from_display_name: 'GOLD', kind: 'trade' };
+        h.poll({ connected: true, players, selected_player: incoming ? null : 'player-2', events: incoming ? [invite] : [] });
+        if (!incoming) h.document.querySelector('[data-action="trade"]').click();
+        if (keepOpen && h.document.querySelector('.chat-close').hidden) h.document.querySelector('.chat-toggle').click();
+        else if (!keepOpen && !h.document.querySelector('.chat-close').hidden) h.document.querySelector('.chat-close').click();
+        const input = h.document.querySelector('#chat-message');
+        input.value = 'unsent draft';
+        const control = h.document.querySelector(`[data-action="${incoming ? 'decline' : 'cancel'}"]`);
+        control.focus(); control.click();
+        assert.equal(control.disabled, true);
+        assert.equal(h.document.activeElement, keepOpen ? input : h.document.querySelector('canvas'), 'submitting returns focus before the server replies');
+        assert.equal(h.focus.at(-1), keepOpen);
+        h.poll({ connected: true, players, events: [{ type: 'interaction_response', request_id: 'invitation', accepted: false }] });
+        assert.equal(h.document.activeElement, keepOpen ? input : h.document.querySelector('canvas'));
+        assert.equal(h.focus.at(-1), keepOpen);
+        assert.equal(input.value, 'unsent draft');
+      } finally { h.cleanup(); }
+    }
+  }
+});
+
+test('invitation cleanup keeps an already focused draft and restores focus after disconnection', () => {
+  const h = chatHarness();
+  try {
+    const players = [{ user_id: 'player-2', display_name: 'GOLD' }];
+    h.poll({ connected: true, players, selected_player: 'player-2', events: [] });
+    h.document.querySelector('[data-action="battle"]').click();
+    const input = h.document.querySelector('#chat-message');
+    input.value = 'still typing'; input.focus(); input.setSelectionRange(4, 4);
+    h.poll({ connected: true, players, events: [{ type: 'interaction_response', request_id: 'outgoing', accepted: false }] });
+    assert.equal(h.document.activeElement, input);
+    assert.equal(input.selectionStart, 4);
+    h.poll({ connected: true, players, selected_player: 'player-2', events: [] });
+    h.document.querySelector('[data-action="battle"]').click();
+    h.document.querySelector('.chat-close').click();
+    h.document.querySelector('[data-action="cancel"]').focus();
+    h.poll({ connected: false, players: [], events: [] });
+    assert.equal(h.document.activeElement.tagName, 'CANVAS');
+    assert.equal(h.focus.at(-1), false);
+    assert.equal(input.value, 'still typing');
+  } finally { h.cleanup(); }
+});
+
+
+test('pointer invitation actions restore the game when Safari leaves focus on the page body', () => {
+  const h = chatHarness();
+  try {
+    h.poll({ connected: true, players: [], events: [{ type: 'interaction_request', request_id: 'invitation', from_user_id: 'player-2', from_display_name: 'GOLD', kind: 'trade' }] });
+    assert.equal(h.document.activeElement, h.document.body);
+    h.document.querySelector('[data-action="decline"]').click();
+    assert.equal(h.document.activeElement.tagName, 'CANVAS');
+    assert.equal(h.focus.at(-1), false);
+    h.key('x', 'keydown', { code: 'KeyX' });
+    assert.equal(h.document.activeElement.tagName, 'CANVAS');
   } finally { h.cleanup(); }
 });

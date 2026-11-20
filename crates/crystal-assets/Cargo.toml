@@ -35,6 +35,10 @@ name = "pack_floodwatch"
 required-features = ["pack-authoring"]
 
 [[example]]
+name = "pack_trainer_portraits"
+required-features = ["pack-authoring"]
+
+[[example]]
 name = "pack_lake_observations"
 required-features = ["pack-authoring"]
 
@@ -106,6 +110,10 @@ required-features = ["pack-authoring"]
 crystal-core = { workspace = true, features = ["test-fixtures"] }
 
 [[bin]]
+name = "pack_minnesota_sprite_edges"
+required-features = ["pack-authoring"]
+
+[[bin]]
 name = "pack_northstar_adventure"
 required-features = ["pack-authoring"]
 
@@ -151,4 +159,12 @@ required-features = ["pack-authoring"]
 
 [[bin]]
 name = "pack_northstar_crossings"
+required-features = ["pack-authoring"]
+
+[[bin]]
+name = "pack_mothlight_lodge"
+required-features = ["pack-authoring"]
+
+[[bin]]
+name = "pack_mothlight_battle_cafe"
 required-features = ["pack-authoring"]

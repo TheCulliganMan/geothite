@@ -4,13 +4,20 @@ A Rust implementation of Pokémon Crystal with browser and desktop clients,
 multiplayer, and an optional 2.5D overworld renderer. Game logic, rendering,
 audio, and networking are implemented in this repository.
 
-The [Pokémon Northstar opening](planning/minnesota/title/README.md) opens Minnesota
-directly at New Game/Continue, with no title sequence. Professor Tamarack
-introduces Jiglet during new-game setup.
+The [Pokémon Northstar opening](planning/minnesota/title/README.md) plays the
+original Geothite opening movie inside the game, followed by the animated
+Northstar title, Tamarack's Jiglet welcome and a revised first morning.
+Existing packs retain their current startup until rebuilt.
 
 The [Minnesota campaign polish review](docs/game-content.md#minnesota-campaign-polish-review)
 includes local build and play commands for the dialogue, roster, and early
 fishing update on top of the Glacier Line pack.
+
+[Mothlight Lodge](planning/minnesota/landmarks/mothlight-lodge/README.md) is a custom
+North Shore lodge with a painted moth-wing dining hall, a stone hearth,
+quilted guest loft, free team care, a missing-cake discovery and a daily battle
+café. The cook offers Mothosaic and Muffiend battles for Berry Juice. See the
+landmark runbook for the tested local pack and launch commands. It has not been deployed.
 
 Wade through Brainerd’s swimming beach, challenge trainers on the sandbars, and follow the lake readings from Brainerd to Itasca. [Lakeside design and comparisons](planning/minnesota/revisions/lakeside-v01/README.md)
 

@@ -1,17 +1,17 @@
 :root {
   --shell: #09090d;
-  --ink: #eee;
-  --muted: #888;
-  --accent: #bbb;
+  --ink: #edf2f7;
+  --muted: #a4afbd;
+  --accent: #9dcced;
 }
 /* Allow menu scrolling while preventing pinch and double-tap page zoom. */
 html, body { touch-action: pan-x pan-y; overscroll-behavior: none; background: var(--shell); color: var(--ink); font-family: system-ui, sans-serif; }
-#game-stage { position: fixed; inset: 0; overflow: hidden; background: #000; }
+#game-stage { position: fixed; inset: calc(60px + env(safe-area-inset-top, 0px)) 0 0; touch-action: none; overflow: hidden; background: #000; }
 #game-stage canvas { display: block; width: 100% !important; height: 100% !important; outline: none; image-rendering: pixelated; touch-action: none; }
 #loading { position: absolute; inset: 0; display: grid; place-content: center; color: #8f8a9a; font-size: 13px; background: #09090d; }
 #loading[hidden] { display: none; }
 #player-options { position: fixed; top: max(8px, env(safe-area-inset-top)); right: max(8px, env(safe-area-inset-right)); z-index: 12; }
-#player-options summary { display: grid; place-items: center; width: 44px; height: 44px; list-style: none; padding: 0; line-height: 1; border-radius: 6px; color: #eee9ff80; background: #09090d30; font-size: 22px; cursor: pointer; touch-action: manipulation; }
+#player-options summary { display: grid; place-items: center; width: 44px; height: 44px; list-style: none; padding: 0; line-height: 1; border-radius: 6px; color: #c0cbd8; background: #141c26; border: 1px solid #ffffff18; font-size: 22px; cursor: pointer; touch-action: manipulation; }
 #player-options summary svg { display: block; width: 20px; height: 20px; }
 #player-options summary::-webkit-details-marker { display: none; }
 #player-options summary:hover, #player-options[open] summary { color: #eee9ff; background: #17131ddd; }
@@ -28,7 +28,7 @@ dialog { max-height: calc(100dvh - 32px); overflow: auto; }
   #controls { top: calc(12px + env(safe-area-inset-top)); right: max(12px, env(safe-area-inset-right)); gap: 5px; max-width: calc(100vw - 110px); }
   #controls > button { width: 44px; min-width: 44px; height: 44px; padding: 0; border-color: #3b354d; border-radius: 14px; background: #242031; backdrop-filter: none; }
   #view-toggle { font-size: 11px; }
-  #social-chat { bottom: auto; top: calc(var(--top) + 8px); left: max(18px, env(safe-area-inset-left)); width: min(470px, calc(100vw - 36px)); z-index: 11; border-radius: 12px; }
+  #social-chat { top: auto; bottom: max(12px, env(safe-area-inset-bottom)); left: max(12px, env(safe-area-inset-left)); width: min(440px, calc(100vw - 24px)); z-index: 11; border-radius: 12px; }
   #social-chat input, #social-chat select { font-size: 16px; height: 44px; }
   #social-chat form button { height: 44px; }
   #social-chat .chat-log { height: min(150px, 20dvh); }
@@ -40,14 +40,14 @@ dialog { max-height: calc(100dvh - 32px); overflow: auto; }
 }
 
 
-body.controller-active #game-stage { inset: 0; }
+body.controller-active #game-stage { top: calc(60px + env(safe-area-inset-top, 0px)); }
 body.controller-active #social-chat { left: max(8px, env(safe-area-inset-left)); }
 
-@media (pointer: coarse), (max-width: 760px) { #social-chat .chat-toggle { left: 0; right: auto; top: 0; bottom: auto; } }
+
 
 /* Chat occupies its own sheet on phones; the visual viewport follows iOS's keyboard. */
 @media (pointer: coarse), (max-width: 760px), (max-width: 960px) and (max-height: 600px) {
-  #social-chat:not(.editing) { width: calc(100vw - env(safe-area-inset-left) - env(safe-area-inset-right) - 80px); left: max(12px, env(safe-area-inset-left)); }
+  #social-chat:not(.editing) { width: min(440px, calc(100vw - env(safe-area-inset-left) - env(safe-area-inset-right) - 24px)); left: max(12px, env(safe-area-inset-left)); }
   #social-chat:not(.editing) .chat-log { height: auto; max-height: 60px; padding: 0 0 0 48px; font-size: 12px; }
   #social-chat.editing {
     z-index: 20; top: auto; left: max(8px, env(safe-area-inset-left)); right: max(8px, env(safe-area-inset-right));
@@ -80,7 +80,7 @@ body.controller-active #social-chat { left: max(8px, env(safe-area-inset-left));
   #social-chat.editing select { height: 44px; }
 }
 
-#mute { position: fixed; top: max(8px, env(safe-area-inset-top)); right: calc(max(8px, env(safe-area-inset-right)) + 52px); z-index: 12; display: grid; place-items: center; width: 44px; min-width: 44px; height: 44px; padding: 0; border: 0; border-radius: 6px; background: transparent; color: #eee9ff80; backdrop-filter: none; }
+#mute { position: fixed; top: max(8px, env(safe-area-inset-top)); right: calc(max(8px, env(safe-area-inset-right)) + 52px); z-index: 12; display: grid; place-items: center; width: 44px; min-width: 44px; height: 44px; padding: 0; border: 0; border-radius: 6px; background: #141c26; border: 1px solid #ffffff18; color: #c0cbd8; backdrop-filter: none; }
 #mute svg { display: block; }
 #mute:hover, #mute:focus-visible { color: #eee9ff; background: #17131ddd; }
 #mute .sound-waves, #mute[data-audible="true"] .sound-slash { display: none; }
@@ -88,7 +88,7 @@ body.controller-active #social-chat { left: max(8px, env(safe-area-inset-left));
 #mute[aria-pressed="true"] { color: #9da6b5; }
 body.chat-open #mute { visibility: hidden; }
 @media (pointer: coarse), (max-width: 760px), (max-width: 960px) and (max-height: 600px) {
-  #social-chat:not(.editing) { width: calc(100vw - env(safe-area-inset-left) - env(safe-area-inset-right) - 132px); }
+  #social-chat:not(.editing) { width: min(440px, calc(100vw - env(safe-area-inset-left) - env(safe-area-inset-right) - 24px)); }
 }
 
 @media (pointer: coarse), (max-width: 760px), (max-width: 960px) and (max-height: 600px) {
@@ -117,16 +117,16 @@ body.chat-open #mute { visibility: hidden; }
 #player-options #controls #view-toggle[aria-pressed=true] { background: #253a48; border-color: #4e6d7f; }
 #personalization-notice { grid-column: 1 / -1; max-width: none; }
 
-#save-games-dialog, #personalization-dialog, #help-dialog { width: min(440px, calc(100vw - 24px)); max-height: min(720px, calc(100dvh - 24px)); padding: 0; border: 1px solid #354050; border-radius: 18px; background: #10151e; font: 14px/1.5 system-ui,sans-serif; overflow-y: auto; overscroll-behavior: contain; scroll-padding-top: 76px; }
+#save-games-dialog, #personalization-dialog, #help-dialog { width: min(440px, calc(100vw - 24px)); max-height: min(720px, calc(100dvh - 24px)); padding: 0; border: 1px solid #354050; border-radius: 18px; background: #10151e; font: 16px/1.5 system-ui,sans-serif; overflow-y: auto; overscroll-behavior: contain; scroll-padding-top: 76px; }
 .menu-header { position: sticky; top: 0; z-index: 2; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 18px; background: #10151ef5; border-bottom: 1px solid #ffffff10; backdrop-filter: blur(12px); }
 #save-games-dialog .menu-header h2, #personalization-dialog .menu-header h2, #help-dialog .menu-header h2 { margin: 0; font: 650 20px/1.25 system-ui,sans-serif; letter-spacing: -.025em; }
 .menu-header button { flex: 0 0 auto; width: auto; min-width: 44px; height: 44px; padding: 0 6px; border: 0; background: transparent; color: #afcddd; font-size: 14px; font-weight: 550; }
 .menu-body { padding: 18px; }
-.menu-caption { margin: 16px 0 8px; color: #98a3b3; font-size: 13px; line-height: 1.5; }
+.menu-caption { margin: 16px 0 8px; color: #98a3b3; font-size: 14px; line-height: 1.5; }
 .menu-body > .menu-caption:first-child { margin-top: 0; }
 .menu-body details { border-top: 1px solid #ffffff14; padding: 10px 0; }
-.menu-body details > summary { min-height: 36px; display: list-item; align-content: center; color: #d6dfe9; cursor: pointer; font-size: 14px; font-weight: 550; }
-.menu-body details p { margin: 10px 0 0; color: #aeb9c8; font-size: 13px; line-height: 1.6; }
+.menu-body details > summary { min-height: 44px; display: list-item; align-content: center; color: #d6dfe9; cursor: pointer; font-size: 14px; font-weight: 550; }
+.menu-body details p { margin: 10px 0 0; color: #aeb9c8; font-size: 16px; line-height: 1.6; }
 .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 #personalization-dialog .intro { margin: 0 0 16px; color: #98a3b3; font-size: 13px; }
 #personalization-dialog label { margin: 14px 0 6px; font-size: 14px; font-weight: 550; }
@@ -136,8 +136,8 @@ body.chat-open #mute { visibility: hidden; }
 #personalization-dialog .actions button { width: 100%; }
 #personalization-dialog [role=status]:empty { display: none; }
 .help-controls { display: grid; grid-template-columns: 64px minmax(0,1fr); gap: 12px; margin: 18px 0 24px; }
-.help-controls dt { color: #e6edf5; font-weight: 650; font-size: 13px; }
-.help-controls dd { margin: 0; color: #aeb9c8; font-size: 13px; }
+.help-controls dt { color: #e6edf5; font-weight: 650; font-size: 14px; }
+.help-controls dd { margin: 0; color: #aeb9c8; font-size: 16px; }
 @media (pointer: coarse), (max-width: 760px), (max-width: 960px) and (max-height: 600px) {
   #player-options #controls { position: fixed; top: calc(max(8px, env(safe-area-inset-top)) + 52px); right: max(12px, env(safe-area-inset-right)); width: min(360px, calc(100vw - 24px)); max-width: none; }
   #save-games-dialog, #personalization-dialog, #help-dialog { max-height: calc(100dvh - max(12px, env(safe-area-inset-top)) - max(12px, env(safe-area-inset-bottom))); }
@@ -164,8 +164,8 @@ body.chat-open #mute { visibility: hidden; }
   #social-chat.editing #community-social, #social-chat.editing #community-leaderboard { display: flex; flex: 1 1 auto; flex-direction: column; min-height: 0; overflow: hidden; }
   #social-chat.editing .community-toolbar, #social-chat.editing footer, #social-chat.editing .leaderboard-note { flex: 0 0 auto; }
   #social-chat.editing .directory-list, #social-chat.editing .leaderboard-list { flex: 1 1 auto; min-height: 0; height: auto; overscroll-behavior: contain; }
-  #social-chat.editing .chat-header { background: #19191b; }
-  #social-chat.editing { border-color: #78674980; background: #101114f5; }
+  #social-chat.editing .chat-header { background: #182331; }
+  #social-chat.editing { border-color: #405168; background: #111923f5; }
   #social-chat.editing.compact .leaderboard-note { display: none; }
 }
 
@@ -186,22 +186,27 @@ body.chat-open #mute { visibility: hidden; }
 .touch-actions [data-game-button=a] { margin-top: -38px; background: #44415e !important; }
 .touch-actions [data-game-button=a].held { background: #777395 !important; }
 .touch-system { display: flex; gap: 12px; }
-.touch-system button { min-width: 64px; height: 44px; padding: 0 10px; border-radius: 22px; font-size: 10px !important; letter-spacing: .08em; }
-@media (pointer: coarse), (max-width: 760px), (max-width: 960px) and (max-height: 600px) {
-  body { --control-deck-height: calc(214px + env(safe-area-inset-bottom, 0px)); }
-  #game-stage, body.controller-active #game-stage { top: calc(60px + env(safe-area-inset-top, 0px)); bottom: var(--control-deck-height); }
-  #touch-controls { display: flex; position: fixed; z-index: 5; top: auto; bottom: 0; left: 0; right: 0; height: var(--control-deck-height); box-sizing: border-box; align-items: flex-start; justify-content: space-between; padding: 18px max(20px, env(safe-area-inset-right)) calc(12px + env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left)); background: linear-gradient(#11121b, #0c0d13); border-top: 1px solid #ffffff12; }
-  .touch-actions { margin-top: 48px; }
-  .touch-system { position: absolute; bottom: calc(12px + env(safe-area-inset-bottom)); left: 50%; transform: translateX(-50%); }
-  body.chat-open #touch-controls { visibility: hidden; }
+.touch-system button { min-width: 64px; height: 44px; padding: 0 10px; border-radius: 22px; font-size: 12px !important; letter-spacing: .04em; }
+/* Reserve the deck only on touchscreens; small desktop windows keep keyboard space. */
+html.touch-capable { --control-deck-height: calc(214px + env(safe-area-inset-bottom, 0px)); }
+html.touch-capable #game-stage { bottom: var(--control-deck-height); }
+html.touch-capable #touch-controls { display: flex; position: fixed; z-index: 5; top: auto; bottom: 0; left: 0; right: 0; height: var(--control-deck-height); box-sizing: border-box; align-items: flex-start; justify-content: space-between; padding: 18px max(20px, env(safe-area-inset-right)) calc(12px + env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left)); background: linear-gradient(#141b26, #0e141d); border-top: 1px solid #ffffff16; }
+html.touch-capable .touch-actions { margin-top: 48px; }
+html.touch-capable .touch-system { position: absolute; bottom: calc(12px + env(safe-area-inset-bottom)); left: 50%; transform: translateX(-50%); }
+html.touch-capable body.chat-open #touch-controls { visibility: hidden; }
+html.touch-capable #social-chat:not(.editing) { top: auto; bottom: calc(var(--control-deck-height) + 8px); left: max(12px, env(safe-area-inset-left)); right: max(12px, env(safe-area-inset-right)); width: auto; }
+html.touch-capable #social-chat:not(.editing) .chat-log { padding: 0 4px; }
+html.touch-capable #social-chat .chat-toggle { position: fixed; left: max(16px, env(safe-area-inset-left)); right: auto; top: auto; bottom: calc(12px + env(safe-area-inset-bottom)); background: #1d2837; border: 1px solid #ffffff20; color: #d2ddea; }
+html.touch-capable #social-chat .chat-toggle:hover { background: #2c3b50; }
+body.chat-open #view-navigation { visibility: hidden; }
+@media (orientation: landscape) and (max-height: 600px) {
+  html.touch-capable #game-stage { left: calc(156px + env(safe-area-inset-left)); right: calc(156px + env(safe-area-inset-right)); bottom: calc(60px + env(safe-area-inset-bottom)); }
+  html.touch-capable #touch-controls { inset: 0; height: auto; padding: 0; background: none; border: 0; pointer-events: none; }
+  html.touch-capable #dpad { position: absolute; left: max(12px, env(safe-area-inset-left)); top: 50%; transform: translateY(-40%); pointer-events: auto; }
+  html.touch-capable .touch-actions { position: absolute; right: max(12px, env(safe-area-inset-right)); top: 50%; margin: 0; transform: translateY(-10%); pointer-events: auto; }
+  html.touch-capable .touch-system { pointer-events: auto; }
+  html.touch-capable #social-chat:not(.editing) { bottom: calc(60px + env(safe-area-inset-bottom)); left: calc(156px + env(safe-area-inset-left)); right: calc(156px + env(safe-area-inset-right)); }
 }
-@media (orientation: landscape) and (max-height: 600px) and (pointer: coarse), (orientation: landscape) and (max-height: 600px) and (max-width: 960px) {
-  #game-stage, body.controller-active #game-stage { left: calc(156px + env(safe-area-inset-left)); right: calc(156px + env(safe-area-inset-right)); top: max(8px, env(safe-area-inset-top)); bottom: calc(54px + env(safe-area-inset-bottom)); }
-  #touch-controls { inset: 0; height: auto; padding: 0; background: none; border: 0; pointer-events: none; }
-  #dpad { position: absolute; left: max(12px, env(safe-area-inset-left)); top: 50%; transform: translateY(-40%); pointer-events: auto; }
-  .touch-actions { position: absolute; right: max(12px, env(safe-area-inset-right)); top: 50%; margin: 0; transform: translateY(-10%); pointer-events: auto; }
-  .touch-system { pointer-events: auto; bottom: max(8px, env(safe-area-inset-bottom)); }
-}
-@media (pointer: coarse), (max-width: 760px), (max-width: 960px) and (max-height: 600px) {
-  #tui-surface { position: absolute; inset: 0; }
-}
+#game-stage #tui-surface { position: absolute; inset: 0; }
+/* Text entry stays readable and does not trigger iOS focus zoom. */
+dialog input, dialog textarea, dialog select, #social-chat input, #social-chat select { font-size: 16px; }

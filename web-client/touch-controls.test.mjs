@@ -165,3 +165,54 @@ test('the shipped page mounts all eight usable controls through the real touch m
     }
   } finally { window.close(); }
 });
+
+async function mountedDocument(t) {
+  const { JSDOM } = await import('jsdom');
+  const { readFile } = await import('node:fs/promises');
+  const dom = new JSDOM(await readFile(new URL('./index.html', import.meta.url), 'utf8'), { pretendToBeVisual: true });
+  t.after(() => dom.window.close());
+  const { window } = dom, { document } = window;
+  const pad = document.querySelector('#touch-controls'), canvas = document.querySelector('#crystal-canvas');
+  const events = [];
+  for (const type of ['keydown', 'keyup']) canvas.addEventListener(type, event => events.push([type, event.code]));
+  const pointer = (selector, type = 'pointerdown', id = 1) => {
+    const target = document.querySelector(selector);
+    target.setPointerCapture = () => {};
+    const event = new window.MouseEvent(type, { bubbles: true, cancelable: true, button: 0 });
+    Object.defineProperty(event, 'pointerId', { value: id });
+    target.dispatchEvent(event);
+  };
+  mountTouchControls({ document, window, canvas });
+  pad.disabled = false;
+  return { window, document, pad, events, pointer };
+}
+
+test('opening settings releases held touch input before an overlay takes control', async t => {
+  const pad = await mountedDocument(t);
+  pad.pointer('[data-game-button="a"]');
+  pad.document.querySelector('#player-options').open = true;
+  pad.document.querySelector('#player-options').dispatchEvent(new pad.window.Event('toggle'));
+  assert.deepEqual(pad.events, [['keydown', 'KeyZ'], ['keyup', 'KeyZ']]);
+  pad.pointer('[data-game-button="b"]', 'pointerdown', 2);
+  assert.equal(pad.events.length, 2, 'settings must own input even when focus stayed on the canvas');
+});
+
+test('touching interface chrome releases a held key and disabling controls releases pending taps', async t => {
+  const pad = await mountedDocument(t);
+  pad.pointer('[data-game-button="a"]');
+  pad.pointer('#help', 'pointerdown', 2);
+  assert.deepEqual(pad.events, [['keydown', 'KeyZ'], ['keyup', 'KeyZ']]);
+  pad.pointer('[data-game-button="b"]');
+  pad.pointer('[data-game-button="b"]', 'pointerup');
+  pad.pad.disabled = true;
+  await Promise.resolve();
+  assert.deepEqual(pad.events.slice(-2), [['keydown', 'KeyX'], ['keyup', 'KeyX']]);
+});
+
+test('touch capability follows hardware rather than viewport width', async t => {
+  const pad = await mountedDocument(t);
+  assert.equal(pad.document.documentElement.classList.contains('touch-capable'), false);
+  Object.defineProperty(pad.window.navigator, 'maxTouchPoints', { value: 5 });
+  mountTouchControls({ document: pad.document, window: pad.window, canvas: pad.document.querySelector('#crystal-canvas') });
+  assert.equal(pad.document.documentElement.classList.contains('touch-capable'), true);
+});

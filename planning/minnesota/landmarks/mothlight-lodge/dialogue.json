@@ -1,0 +1,18 @@
+{
+ "MnMothlightWelcomeText": ["MOTH LIGHT LODGE", "Hot supper. Dry socks. No whistling at the lamps."],
+ "MnMothlightHostText": ["I'm MARNIE. The cook's raspberry cake has vanished.", "Everyone has an alibi. Most of them are asleep.", "Have a look around? I refuse to accuse a lampshade twice."],
+ "MnMothlightRestText": ["Sit by the hearth. I'll put a fresh blanket over your team."],
+ "MnMothlightRestedText": ["There. Warm paws, full bellies. Take your time."],
+ "MnMothlightGuestText": ["I came for the ceiling. Then I saw the dessert cart.", "Now I keep looking up and down. My neck's exhausted."],
+ "MnMothlightCookText": ["That cake had six layers. SIX.", "If you find a guest six layers taller, send them over."],
+ "MnMothlightSleeperText": ["I'm not snoring. I'm keeping the moths away.", "...Is it working?"],
+ "MnMothlightCrumbsText": ["Raspberry crumbs lead from the platter toward the bookcase."],
+ "MnMothlightBookText": ["A cookbook lies open: HOW TO HIDE A CAKE.", "Every page after the title is blank."],
+ "MnMothlightFoundText": ["Behind the books: the cake, under a tea towel!", "A note: KEEP THIS AWAY FROM ME UNTIL SUPPER. -THE COOK"],
+ "MnMothlightSolvedText": ["His own handwriting! I'll let him break the news to himself.", "Here. Something for the road. Before he hides that too."],
+ "MnMothlightFullText": ["Your PACK is full. I'll keep your treat right here."],
+ "MnMothlightAfterText": ["The cook says the culprit is very sorry.", "He's also asking whether you'd like another slice."],
+ "MnMothlightHearthText": ["A great stone hearth. Someone has lined up six tiny pairs of drying socks."],
+ "MnMothlightMuralText": ["Painted moth wings open into stars, waves and orange morning light."],
+ "MnMothlightSignText": ["MOTHLIGHT LODGE", "Supper beneath the stars. Even when it's raining."]
+}

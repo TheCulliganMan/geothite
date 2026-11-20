@@ -159,6 +159,18 @@ use crate::{
 };
 
 mod intro_renderer;
+#[path = "bevy_shell/northstar_opening.rs"]
+mod northstar_opening;
+#[path = "bevy_shell/northstar_opening_art.rs"]
+mod northstar_opening_art;
+#[path = "bevy_shell/northstar_title_creature.rs"]
+mod northstar_title_creature;
+#[path = "bevy_shell/northstar_title_scene.rs"]
+mod northstar_title_scene;
+#[path = "bevy_shell/northstar_title_stage.rs"]
+mod northstar_title_stage;
+#[path = "bevy_shell/northstar_title_water.rs"]
+mod northstar_title_water;
 mod startup_policy;
 #[path = "bevy_shell/static_title.rs"]
 mod static_title;
@@ -639,7 +651,7 @@ pub struct VisibleShellController {
 // Text and MCP controllers have no Bevy update schedule. Sample local time at
 // their input and observation boundaries for Minnesota games.
 fn sync_visible_controller_host_clock(shell: &mut BevyRuntimeShell) -> Result<()> {
-    if startup_policy::skips_title_sequence(&shell.runtime) {
+    if startup_policy::is_minnesota(&shell.runtime) {
         let sample = NativeRtcSource::system_local().sample();
         let clock = &shell.shell.session().state().time;
         if clock.current_date != sample.date
@@ -2618,6 +2630,7 @@ fn record_visible_battle_item_action_frame(
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 struct TitleMenu {
+    northstar_opening: Option<northstar_opening::Opening>,
     static_title_image: Option<String>,
     spawn_identifier: u16,
     save_path: Option<PathBuf>,
@@ -4984,6 +4997,7 @@ struct MagnetTrainPlayerFrames {
 
 #[derive(Resource, Default)]
 struct RenderedTilesetArt {
+    northstar_opening_art: Option<northstar_opening_art::Art>,
     cache: HashMap<TilesetArtKey, TilesetArt>,
     errors: HashMap<TilesetArtKey, String>,
     sprite_cache: HashMap<SpriteArtKey, SpriteArt>,
@@ -6095,7 +6109,7 @@ pub fn run_bevy_shell(
     let native_rtc_source = select_native_rtc_source(
         requires_native_server_clock(
             runtime.data().server_clock,
-            startup_policy::skips_title_sequence(&runtime),
+            startup_policy::is_minnesota(&runtime),
         ),
         native_rtc_source,
     )?;
@@ -8816,6 +8830,7 @@ fn build_visible_title_menu(
         .values
         .insert("title_suicune_frame".to_string(), 0);
     let mut title = TitleMenu {
+        northstar_opening: None,
         static_title_image: static_title_image.map(str::to_owned),
         spawn_identifier: spawn_identifier,
         save_path: save_path.clone(),
@@ -8875,7 +8890,7 @@ fn initialize_bevy_runtime_shell(
     };
     let restore_loaded_visible_state = matches!(&start, BevyShellStart::LoadSave { .. });
     let initial_player_name_prompt = matches!(&start, BevyShellStart::NewGame { .. });
-    let title_menu = match &start {
+    let mut title_menu = match &start {
         BevyShellStart::Title {
             spawn_identifier,
             save_path,
@@ -8891,13 +8906,14 @@ fn initialize_bevy_runtime_shell(
         )?),
         _ => None,
     };
+    let reduced_motion = northstar_opening::prefers_reduced_motion();
+    if northstar_opening::enabled(&runtime)
+        && let Some(title) = &mut title_menu
+    {
+        title.northstar_opening = Some(northstar_opening::Opening::new(reduced_motion));
+    }
     let skip_title_sequence = startup_policy::skips_title_sequence(&runtime);
-    let source_opening = !skip_title_sequence
-        && runtime
-            .data()
-            .runtime_title_screen
-            .static_title_image
-            .is_none();
+    let source_opening = startup_policy::plays_source_movie(&runtime, reduced_motion);
     let intro_parameters = (source_opening && matches!(&start, BevyShellStart::Title { .. }))
         .then(|| {
             RuntimeIntroPresentationParameters::from_program(runtime.title_presentation_program())
@@ -8950,7 +8966,7 @@ fn initialize_bevy_runtime_shell(
     };
     // Restore civil time before loaded-map callbacks can inspect it. Text
     // frontends do not have a Bevy update before those callbacks run.
-    if restore_loaded_visible_state && skip_title_sequence {
+    if restore_loaded_visible_state && startup_policy::is_minnesota(&runtime) {
         let sample = NativeRtcSource::system_local().sample();
         shell.update_clock_from_datetime(sample.date, sample.hour, sample.minute, sample.second)?;
     }

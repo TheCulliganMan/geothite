@@ -6000,7 +6000,7 @@ fn load_visible_runtime_save(
     arrival_reason: &str,
 ) -> Result<()> {
     runtime_shell.shell.load(path)?;
-    if startup_policy::skips_title_sequence(&runtime_shell.runtime)
+    if startup_policy::is_minnesota(&runtime_shell.runtime)
         && let Some(sample) = runtime_shell.latest_rtc_sample
     {
         runtime_shell.shell.update_clock_from_datetime(

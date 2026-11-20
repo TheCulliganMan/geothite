@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { keyButton, modalInput, tuiTools, registerTuiTools } from './tui/bridge.js';
 import { tuiSession, acquireTuiSession } from './tui/session.js';
-import { mkdtemp, readFile, writeFile, readdir, rm } from 'node:fs/promises';
+import { mkdtemp, mkdir, readFile, writeFile, readdir, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { execFileSync } from 'node:child_process';
@@ -89,8 +89,11 @@ test('code-mode discovery and execution await readiness, validate and cancel', a
 });
 
 test('TUI glue, WASM, adapters and CSS deploy as one versioned bundle', async () => {
-  const dir = await mkdtemp(join(tmpdir(), 'geothite-tui-version-'));
+  const root = await mkdtemp(join(tmpdir(), 'geothite-tui-version-'));
+  const dir = join(root, 'tui');
   try {
+    await mkdir(dir);
+    await writeFile(join(root, 'game-gestures.js'), await readFile(resolve('web-client/game-gestures.js')));
     await writeFile(join(dir, 'geothite.js'), "new URL('geothite_bg.wasm', import.meta.url)");
     await writeFile(join(dir, 'geothite_bg.wasm'), 'test WASM bytes');
     await writeFile(join(dir, 'ascii-mount.js'), 'test pinned ASCII painter');
@@ -110,11 +113,14 @@ test('TUI glue, WASM, adapters and CSS deploy as one versioned bundle', async ()
     assert(browser.includes(`./bridge-${hash}.js`));
     assert(browser.includes(`./session-${hash}.js`));
     assert(browser.includes(`./ascii-frame-${hash}.js`));
+    assert(browser.includes(`./game-gestures-${hash}.js`));
+    assert.equal(await readFile(join(dir, `game-gestures-${hash}.js`), 'utf8'),
+      await readFile(resolve('web-client/game-gestures.js'), 'utf8'));
     assert((await readFile(join(dir, `ascii-frame-${hash}.js`), 'utf8')).includes(`./ascii-mount-${hash}.js`));
     assert((await readFile(join(dir, glue), 'utf8')).includes(`geothite-${hash}.wasm`));
     assert(files.includes(`geothite-${hash}.wasm.gz`));
     assert(!files.includes('geothite.js') && !files.includes('geothite_bg.wasm'));
-  } finally { await rm(dir, { recursive: true, force: true }); }
+  } finally { await rm(root, { recursive: true, force: true }); }
 });
 
 test('named sessions retain the old default and reject path/URL injection', () => {

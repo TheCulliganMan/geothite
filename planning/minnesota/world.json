@@ -7964,7 +7964,24 @@
     "status": "Accepted current-parent terrain revision: source/native pixels, strict whole-pack preservation, directional grass/ledge proof, actual2D review, native encounters/trainerPP/resources/Continue and stdio pass. CurrentR12 work preserved.",
     "scope_limit": "Sequential Minnesota grass pass remains open beyond R01-R03. Explicit local fixtures do not prove an earned statewide campaign."
   },
-  "active_local_review_revision": "fair_patrols_field_revision",
+  "trainer_portrait_faces_revision": {
+    "kind": "battle_portrait_review",
+    "status": "rejected_visuals",
+    "parent_revision": "fair_patrols_intro_revision",
+    "parent_pack": "content-packs/minnesota-intro-fair-patrols-v01.crystalpack",
+    "parent_pack_sha256": "cfb028aec4080314247063a3c8686fa2f1b361a7c84bc7df3a4f5e3413aab0bd",
+    "pack": "content-packs/minnesota-trainer-portrait-faces-v02.crystalpack",
+    "pack_sha256": "d2e8f3624ec9f30254c08ba41bc07609d7f1331e594a4ce15b55018e06a3b5f0",
+    "content_identity": "acf147c20042483ddf3c520bc59b474f819094b9a7fbe8869408751178e7be70",
+    "source_file": "npcs/portrait-faces-v01/publication.json",
+    "runbook": "npcs/portrait-faces-v01/README.md",
+    "portraits": 9,
+    "changed_battle_resources": 18,
+    "changed_maps": 0,
+    "selected": false,
+    "deployed": false
+  },
+  "active_local_review_revision": "fair_patrols_intro_revision",
   "script_command_repair_revision": {
     "kind": "missing_minnesota_map_command_records",
     "parent_revision": "field_hm_habitats_cyclists_revision",
@@ -12746,6 +12763,25 @@
     "status": "Published; both content packs, both parent save migrations and live clients verified.",
     "hosted_release": "lakeside-20261118"
   },
+  "mothlight_lodge_revision": {
+    "kind": "native_2d_custom_lodge",
+    "parent_revision": "crossings_revision",
+    "pack": "content-packs/minnesota-mothlight-v10.crystalpack",
+    "pack_sha256": "07de9efc54913119e25b461aba703e93e394b2bab755496dec65dda4faec949f",
+    "content_identity": "ad63c0f1b5d452e9d20823053c740e2931a3891aa0e0850ed7cd63954f88c10a",
+    "map_count": 745,
+    "changed_existing_maps": [
+      "MnMaraisCedarApproach"
+    ],
+    "added_maps": [
+      "MnMothlightLodge",
+      "MnMothlightLoft"
+    ],
+    "source": "landmarks/mothlight-lodge/layout.json",
+    "runbook": "landmarks/mothlight-lodge/README.md",
+    "status": "Selected locally after native 2D render and production controller verification. Four-seat table quads, GBC palettes, landscaped forecourt, healing, cake receipt, full Pack, loft return and Continue passed. Not deployed.",
+    "audio_programs_verified": 602
+  },
   "field_review_v02_revision": {
     "kind": "private_field_review",
     "parent_revision": "lakeside_revision",
@@ -12792,6 +12828,39 @@
     "runbook": "revisions/outdoor-contours-v01/README.md",
     "status": "Local native 2D review; built and checked without gameplay inputs."
   },
+  "outdoor_contours_mothlight_revision": {
+    "kind": "outdoor_terrain_review",
+    "parent_revision": "mothlight_lodge_revision",
+    "parent_pack": "content-packs/minnesota-mothlight-v10.crystalpack",
+    "parent_pack_sha256": "07de9efc54913119e25b461aba703e93e394b2bab755496dec65dda4faec949f",
+    "pack": "content-packs/minnesota-mothlight-outdoor-contours-v04.crystalpack",
+    "pack_sha256": "e84d040588692d345980e204fe6e7d1976533caf9f047e5958a91c1722e00735",
+    "build_recipe": "planning/minnesota/revisions/outdoor-contours-v01/mothlight-build.json",
+    "build_recipe_sha256": "d576a2ff6b732e90e77ad728dff3685b99fb0a045e43d7a21ff00218708848bd",
+    "content_identity": "c5f365a28cfcd33cfe81984a032475a8bdf8fbe720c1a1a38c8835d846d7d3a1",
+    "map_count": 745,
+    "revised_routes": [
+      1,
+      3,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      15,
+      16,
+      18,
+      20
+    ],
+    "changed_map_chunks": 24,
+    "changed_metatiles": 572,
+    "runbook": "revisions/outdoor-contours-v01/README.md",
+    "status": "Local native 2D review; built and checked without gameplay inputs."
+  },
   "cliff_faces_field_revision": {
     "kind": "outdoor_terrain_review",
     "parent_revision": "outdoor_contours_field_revision",
@@ -12803,6 +12872,22 @@
     "build_recipe_sha256": "796e65090ae7eeabc18e22da341ac5edc596891a474f09922c54f9c68d358539",
     "content_identity": "c862dba66df8f1f4bb979bd6a13f6fd605a23f046623b72c4654b1de696afab7",
     "map_count": 743,
+    "changed_map_chunks": 37,
+    "changed_metatiles": 473,
+    "verified_shore_positions": 81,
+    "runbook": "revisions/cliff-faces-v01/README.md"
+  },
+  "cliff_faces_mothlight_revision": {
+    "kind": "outdoor_terrain_review",
+    "parent_revision": "outdoor_contours_mothlight_revision",
+    "parent_pack": "content-packs/minnesota-mothlight-outdoor-contours-v04.crystalpack",
+    "parent_pack_sha256": "e84d040588692d345980e204fe6e7d1976533caf9f047e5958a91c1722e00735",
+    "pack": "content-packs/minnesota-mothlight-cliff-faces-v01.crystalpack",
+    "pack_sha256": "3bc846b3006259e4eab36945cf4db3c5dc406dd9d96b9ba9d164e166ed494ff0",
+    "build_recipe": "planning/minnesota/revisions/cliff-faces-v01/mothlight-build.json",
+    "build_recipe_sha256": "2fb4a501bfd8fcaf46766d75d2f569ff27a9d738b4f19b75964390a1d4606874",
+    "content_identity": "436e040b31a087a94f16f222d714dba865fbd0bdbbcd186c323c4e440eb44fd9",
+    "map_count": 745,
     "changed_map_chunks": 37,
     "changed_metatiles": 473,
     "verified_shore_positions": 81,
@@ -12823,6 +12908,21 @@
     "changed_metatiles": 190,
     "runbook": "revisions/shore-rocks-cave-mouths-v01/README.md"
   },
+  "rocky_shores_mothlight_revision": {
+    "kind": "outdoor_terrain_review",
+    "parent_revision": "cliff_faces_mothlight_revision",
+    "parent_pack": "content-packs/minnesota-mothlight-cliff-faces-v01.crystalpack",
+    "parent_pack_sha256": "3bc846b3006259e4eab36945cf4db3c5dc406dd9d96b9ba9d164e166ed494ff0",
+    "pack": "content-packs/minnesota-mothlight-rocky-shores-v01.crystalpack",
+    "pack_sha256": "02f7a71261faf913b552ec83d84485cd999a57dfe70a53a6e1d6ae1a9fe7e374",
+    "build_recipe": "planning/minnesota/revisions/shore-rocks-cave-mouths-v01/mothlight-build.json",
+    "build_recipe_sha256": "f885c81fd9fe5f4ec37e0368834ce7d76f8be49d2eac43d57dd591c58928615e",
+    "content_identity": "4e9ee39b3990571b02ad4be0eae082ae58e9da7e70ee15590be4de25e2ff6ee2",
+    "map_count": 745,
+    "changed_map_chunks": 36,
+    "changed_metatiles": 190,
+    "runbook": "revisions/shore-rocks-cave-mouths-v01/README.md"
+  },
   "brown_shore_edges_field_revision": {
     "kind": "outdoor_terrain_review",
     "parent_revision": "rocky_shores_field_revision",
@@ -12834,6 +12934,21 @@
     "build_recipe_sha256": "c257a3db8873720eb18a14b4426a6cd813406e246e2b5739edff286b30ab5a97",
     "content_identity": "545413edef3a54af16203b4deeef32cad50b2576693fa6801d71c91f9e9d97da",
     "map_count": 743,
+    "changed_map_chunks": 33,
+    "changed_metatiles": 186,
+    "runbook": "revisions/brown-shore-edges-v01/README.md"
+  },
+  "brown_shore_edges_mothlight_revision": {
+    "kind": "outdoor_terrain_review",
+    "parent_revision": "rocky_shores_mothlight_revision",
+    "parent_pack": "content-packs/minnesota-mothlight-rocky-shores-v01.crystalpack",
+    "parent_pack_sha256": "02f7a71261faf913b552ec83d84485cd999a57dfe70a53a6e1d6ae1a9fe7e374",
+    "pack": "content-packs/minnesota-mothlight-brown-shore-edges-v01.crystalpack",
+    "pack_sha256": "debc03cc5c67b19c02a0fafb53866ede7a24d726395a8ddd67f9b922b611a3c4",
+    "build_recipe": "planning/minnesota/revisions/brown-shore-edges-v01/mothlight-build.json",
+    "build_recipe_sha256": "efa397c2ccaf8d832cfcb33b4b2a9c835be4de0ddadd4f2f7decff7f6217fa91",
+    "content_identity": "a50d4830e4d4e2406089ea7858878dd8a617d16251546443bc2e57eeb28d6477",
+    "map_count": 745,
     "changed_map_chunks": 33,
     "changed_metatiles": 186,
     "runbook": "revisions/brown-shore-edges-v01/README.md"
@@ -12853,6 +12968,21 @@
     "changed_metatiles": 89,
     "runbook": "revisions/rock-cut-v01/README.md"
   },
+  "rock_cut_trail_mothlight_revision": {
+    "kind": "terrain_review",
+    "parent_revision": "brown_shore_edges_mothlight_revision",
+    "parent_pack": "content-packs/minnesota-mothlight-brown-shore-edges-v01.crystalpack",
+    "parent_pack_sha256": "debc03cc5c67b19c02a0fafb53866ede7a24d726395a8ddd67f9b922b611a3c4",
+    "pack": "content-packs/minnesota-mothlight-rock-cut-trail-v01.crystalpack",
+    "pack_sha256": "f4126c27fdcad848ff75988e3abe5a9bf064682a23f24dad525f4e476ecc29d6",
+    "build_recipe": "planning/minnesota/revisions/rock-cut-v01/mothlight-build.json",
+    "build_recipe_sha256": "6bb34f888c815c103f968658b2167b61cbd97b85635eaf7f458369ecb3b3bb05",
+    "content_identity": "0e09007a4abedf482e4dd2a501027889b84d21bb9359dd3c98d1b8ac11f63acc",
+    "map_count": 745,
+    "changed_map_chunks": 3,
+    "changed_metatiles": 89,
+    "runbook": "revisions/rock-cut-v01/README.md"
+  },
   "rock_cut_north_face_field_revision": {
     "kind": "terrain_review",
     "parent_revision": "rock_cut_trail_field_revision",
@@ -12864,6 +12994,21 @@
     "build_recipe_sha256": "fc1a6a833addb1e4e1b279a63384bc77c9f2ea09f2dd351995ece0f72bf1255b",
     "content_identity": "bc761d795c1c31d473ac0be26c35f4f83e3fae40be0ab76e1a7f702ee5d402c5",
     "map_count": 743,
+    "changed_map_chunks": 1,
+    "changed_metatiles": 13,
+    "runbook": "revisions/rock-cut-north-height-v01/README.md"
+  },
+  "rock_cut_north_face_mothlight_revision": {
+    "kind": "terrain_review",
+    "parent_revision": "rock_cut_trail_mothlight_revision",
+    "parent_pack": "content-packs/minnesota-mothlight-rock-cut-trail-v01.crystalpack",
+    "parent_pack_sha256": "f4126c27fdcad848ff75988e3abe5a9bf064682a23f24dad525f4e476ecc29d6",
+    "pack": "content-packs/minnesota-mothlight-rock-cut-north-face-v01.crystalpack",
+    "pack_sha256": "59dc62f1e3c69f8764af38d1cd217e77c8f35b1454cea0a75e98f75f1e04e4f7",
+    "build_recipe": "planning/minnesota/revisions/rock-cut-north-height-v01/mothlight-build.json",
+    "build_recipe_sha256": "2355f485d983e2d97534b6409cc1bcea6c82425e3d0fb29b43657a3692f62d08",
+    "content_identity": "ce5f6c8408b150f13c7dfbec0237dd494c59a03cb3646c6a8a04cc65838500b9",
+    "map_count": 745,
     "changed_map_chunks": 1,
     "changed_metatiles": 13,
     "runbook": "revisions/rock-cut-north-height-v01/README.md"
@@ -12883,6 +13028,21 @@
     "changed_metatiles": 28,
     "runbook": "revisions/crystal-cave-faces-v01/README.md"
   },
+  "crystal_cave_faces_mothlight_revision": {
+    "kind": "terrain_review",
+    "parent_revision": "rock_cut_north_face_mothlight_revision",
+    "parent_pack": "content-packs/minnesota-mothlight-rock-cut-north-face-v01.crystalpack",
+    "parent_pack_sha256": "59dc62f1e3c69f8764af38d1cd217e77c8f35b1454cea0a75e98f75f1e04e4f7",
+    "pack": "content-packs/minnesota-mothlight-crystal-cave-faces-v01.crystalpack",
+    "pack_sha256": "3033861667705d154e70d513f2cfe4ac38d389b7d6fbdb42970a5aa0f8605338",
+    "build_recipe": "planning/minnesota/revisions/crystal-cave-faces-v01/mothlight-build.json",
+    "build_recipe_sha256": "2cc89988055eeb7cd074217b042373885add87a6a04bc1624e27d13a4d9a20d4",
+    "content_identity": "c75013eae76cfaec859154fc0ab3843c8c2cbc04720eb03774f71e9c989a35d1",
+    "map_count": 745,
+    "changed_map_chunks": 5,
+    "changed_metatiles": 28,
+    "runbook": "revisions/crystal-cave-faces-v01/README.md"
+  },
   "campaign_quality_field_revision": {
     "kind": "campaign_review",
     "parent_revision": "crystal_cave_faces_field_revision",
@@ -12895,6 +13055,20 @@
     "content_identity": "6a4c02110761961246f5e401a1a5d979cf566801dce053ac8a3b902a6b1654bc",
     "map_count": 743,
     "changed_maps_from_parent": 3,
+    "runbook": "revisions/campaign-quality-v01/README.md"
+  },
+  "campaign_quality_mothlight_revision": {
+    "kind": "campaign_review",
+    "parent_revision": "crystal_cave_faces_mothlight_revision",
+    "parent_pack": "content-packs/minnesota-mothlight-crystal-cave-faces-v01.crystalpack",
+    "parent_pack_sha256": "3033861667705d154e70d513f2cfe4ac38d389b7d6fbdb42970a5aa0f8605338",
+    "pack": "content-packs/minnesota-mothlight-campaign-quality-v01.crystalpack",
+    "pack_sha256": "fe3fc0a9c5407e78c1b04f7dab1b12e7704db8581312888f0bfe2ab3b80e02f4",
+    "build_recipe": "planning/minnesota/revisions/campaign-quality-v01/mothlight-build.json",
+    "build_recipe_sha256": "62fdcca74eb7f1c937e430d03863aa1f14cba8cc4bc4b217abcb6746d0dff69c",
+    "content_identity": "d156d5ce98a325905d26fd03eee0e82c31f85fa368e7d63df349eaa5d2f99a8b",
+    "map_count": 745,
+    "changed_maps_from_parent": 16,
     "runbook": "revisions/campaign-quality-v01/README.md"
   },
   "northern_trails_field_revision": {
@@ -12911,6 +13085,33 @@
     "changed_maps_from_parent": 9,
     "runbook": "revisions/northern-trails-v01/README.md"
   },
+  "northern_trails_mothlight_revision": {
+    "kind": "campaign_review",
+    "parent_revision": "campaign_quality_mothlight_revision",
+    "parent_pack": "content-packs/minnesota-mothlight-campaign-quality-v01.crystalpack",
+    "parent_pack_sha256": "fe3fc0a9c5407e78c1b04f7dab1b12e7704db8581312888f0bfe2ab3b80e02f4",
+    "pack": "content-packs/minnesota-mothlight-northern-trails-v01.crystalpack",
+    "pack_sha256": "0223164262cd4590964da76e95af9af44a58b1f8088135e17e8cf44a41949a16",
+    "build_recipe": "planning/minnesota/revisions/northern-trails-v01/mothlight-build.json",
+    "build_recipe_sha256": "569346a19280dd42c009023f42ac5c3748ae49873d9efb8cc8ad7f50dee4ec72",
+    "content_identity": "3483684ad3daf84694b26639a82aed9131bb5fbcac3c3d35ea9086490ed2888a",
+    "map_count": 745,
+    "changed_maps_from_parent": 9,
+    "runbook": "revisions/northern-trails-v01/README.md"
+  },
+  "mothlight_battle_cafe_revision": {
+    "kind": "daily_battle_cafe",
+    "parent_revision": "northern_trails_mothlight_revision",
+    "parent_pack": "content-packs/minnesota-mothlight-northern-trails-v01.crystalpack",
+    "parent_pack_sha256": "0223164262cd4590964da76e95af9af44a58b1f8088135e17e8cf44a41949a16",
+    "pack": "content-packs/minnesota-mothlight-battle-cafe-v01.crystalpack",
+    "pack_sha256": "5fd62866c08058192f6f939ea7a3ce641aad19b048107a2c32ab468619613edc",
+    "content_identity": "701440cf37077155a8c690d54fddc48d91aadb3bf6f7ffcee52525dc034f04a8",
+    "map_count": 745,
+    "changed_maps_from_parent": 2,
+    "runbook": "landmarks/mothlight-lodge/README.md#battle-café",
+    "status": "Selected locally after production-controller win, loss/retry, full-Pack claim, Save/Continue, simulated daily reset, lodge regression and native 2D dialogue review. Not deployed; player saves retain their original identity."
+  },
   "league_and_fair_field_revision": {
     "kind": "campaign_review",
     "parent_revision": "northern_trails_field_revision",
@@ -12922,6 +13123,20 @@
     "build_recipe_sha256": "2206b2e0138e38910b1c286b05458218ae4baa342ca62965107e938760bd672d",
     "content_identity": "77c2116223e0cf68ac9cad716a99f1f809d859fb7466a9944b8ea028fa97a25a",
     "map_count": 743,
+    "changed_maps_from_parent": 9,
+    "runbook": "revisions/league-and-fair-v01/README.md"
+  },
+  "league_and_fair_mothlight_revision": {
+    "kind": "campaign_review",
+    "parent_revision": "mothlight_battle_cafe_revision",
+    "parent_pack": "content-packs/minnesota-mothlight-battle-cafe-v01.crystalpack",
+    "parent_pack_sha256": "5fd62866c08058192f6f939ea7a3ce641aad19b048107a2c32ab468619613edc",
+    "pack": "content-packs/minnesota-mothlight-battle-cafe-league-and-fair-v01.crystalpack",
+    "pack_sha256": "4b7d2e1efc8bd685ef9f22ae635ef0531434314b273a9dffcc4a23398a6dfe35",
+    "build_recipe": "planning/minnesota/revisions/league-and-fair-v01/mothlight-build.json",
+    "build_recipe_sha256": "beb9e466977ba93ee780238eb402b0a80dabbd89ce66b8d25cb4688bcdd1ff4d",
+    "content_identity": "8afde747949477e2526feae6479ad3b62e00af3f477134cae59c197d1a7c2d86",
+    "map_count": 745,
     "changed_maps_from_parent": 9,
     "runbook": "revisions/league-and-fair-v01/README.md"
   },
@@ -12939,6 +13154,20 @@
     "changed_maps_from_parent": 7,
     "runbook": "revisions/floodwatch-v01/README.md"
   },
+  "floodwatch_mothlight_revision": {
+    "kind": "campaign_review",
+    "parent_revision": "league_and_fair_mothlight_revision",
+    "parent_pack": "content-packs/minnesota-mothlight-battle-cafe-league-and-fair-v01.crystalpack",
+    "parent_pack_sha256": "4b7d2e1efc8bd685ef9f22ae635ef0531434314b273a9dffcc4a23398a6dfe35",
+    "pack": "content-packs/minnesota-mothlight-battle-cafe-floodwatch-v01.crystalpack",
+    "pack_sha256": "c357b64155d3def604bc9572c77c061425993be90870d910a3415848759eeda7",
+    "build_recipe": "planning/minnesota/revisions/floodwatch-v01/mothlight-build.json",
+    "build_recipe_sha256": "b3d814f10430e35653d971489c6e92574c90a6c2aa9f1b97d21abc9c7e7c3177",
+    "content_identity": "208c568738670835473b8cd3a72fa493601109498676aab99c02fc3da2dda594",
+    "map_count": 745,
+    "changed_maps_from_parent": 7,
+    "runbook": "revisions/floodwatch-v01/README.md"
+  },
   "lake_observations_field_revision": {
     "kind": "campaign_review",
     "parent_revision": "floodwatch_field_revision",
@@ -12950,6 +13179,20 @@
     "build_recipe_sha256": "76f48eb63e11fe3750edbfb3f5b6054027ff184daf32dd1369823c34cba0275c",
     "content_identity": "aa9792e2d5382e2d9b24f2c695352ddd245a74b3f870652adacf9dfe0b18bc58",
     "map_count": 743,
+    "changed_maps_from_parent": 10,
+    "runbook": "revisions/lake-observations-v01/README.md"
+  },
+  "lake_observations_mothlight_revision": {
+    "kind": "campaign_review",
+    "parent_revision": "floodwatch_mothlight_revision",
+    "parent_pack": "content-packs/minnesota-mothlight-battle-cafe-floodwatch-v01.crystalpack",
+    "parent_pack_sha256": "c357b64155d3def604bc9572c77c061425993be90870d910a3415848759eeda7",
+    "pack": "content-packs/minnesota-mothlight-battle-cafe-lake-observations-v01.crystalpack",
+    "pack_sha256": "7a66e8a86a7981fe864b6b773192cfb380230efd3606dcb2aded65fbd12196fe",
+    "build_recipe": "planning/minnesota/revisions/lake-observations-v01/mothlight-build.json",
+    "build_recipe_sha256": "715514801a1bcb53de8fb8a89d3b8ba699b3024e9ddb4b6b9ede3b86ff81baa8",
+    "content_identity": "4e0947aabf3e5c39e11b7c975400ce2020af9ba8ef6688686ba4279f8ec3952a",
+    "map_count": 745,
     "changed_maps_from_parent": 10,
     "runbook": "revisions/lake-observations-v01/README.md"
   },
@@ -12967,6 +13210,20 @@
     "changed_maps_from_parent": 1,
     "runbook": "revisions/station-return-v01/README.md"
   },
+  "station_return_mothlight_revision": {
+    "kind": "campaign_review",
+    "parent_revision": "lake_observations_mothlight_revision",
+    "parent_pack": "content-packs/minnesota-mothlight-battle-cafe-lake-observations-v01.crystalpack",
+    "parent_pack_sha256": "7a66e8a86a7981fe864b6b773192cfb380230efd3606dcb2aded65fbd12196fe",
+    "pack": "content-packs/minnesota-mothlight-battle-cafe-station-return-v01.crystalpack",
+    "pack_sha256": "5ec9eeb503da0f8a3cd349b487557185e7f7a63d820230fa2b3c03c9f22bb132",
+    "build_recipe": "planning/minnesota/revisions/station-return-v01/mothlight-build.json",
+    "build_recipe_sha256": "4536abf16825d384b5ef155d87de9170ddd21e3675148b981479d55eddfd75ae",
+    "content_identity": "1e797d332979153174dc5e8b451fcb1527f228fed6f78c6816f339e227984028",
+    "map_count": 745,
+    "changed_maps_from_parent": 1,
+    "runbook": "revisions/station-return-v01/README.md"
+  },
   "headwaters_journey_field_revision": {
     "kind": "campaign_review",
     "parent_revision": "station_return_field_revision",
@@ -12981,6 +13238,35 @@
     "changed_maps_from_parent": 10,
     "runbook": "revisions/headwaters-journey-v01/README.md"
   },
+  "headwaters_journey_mothlight_revision": {
+    "kind": "campaign_review",
+    "parent_revision": "station_return_mothlight_revision",
+    "parent_pack": "content-packs/minnesota-mothlight-battle-cafe-station-return-v01.crystalpack",
+    "parent_pack_sha256": "5ec9eeb503da0f8a3cd349b487557185e7f7a63d820230fa2b3c03c9f22bb132",
+    "pack": "content-packs/minnesota-mothlight-battle-cafe-headwaters-journey-v01.crystalpack",
+    "pack_sha256": "2f100fa0c0d675687a972b6e759a4b6e4e3a8c66fe60011dcaf4977f60af2f95",
+    "build_recipe": "planning/minnesota/revisions/headwaters-journey-v01/mothlight-build.json",
+    "build_recipe_sha256": "a5109a7c3c981118d54fdd42eb41e24986b3914e497559da8b855ce82bbb501c",
+    "content_identity": "db9f2e0db351ac0791b7bad4f940a3bda22a3d6cbf6a3817ac08f40ceb773240",
+    "map_count": 745,
+    "changed_maps_from_parent": 8,
+    "runbook": "revisions/headwaters-journey-v01/README.md"
+  },
+  "northstar_intro_revision": {
+    "kind": "campaign_review",
+    "parent_revision": "headwaters_journey_mothlight_revision",
+    "parent_pack": "content-packs/minnesota-mothlight-battle-cafe-headwaters-journey-v01.crystalpack",
+    "parent_pack_sha256": "2f100fa0c0d675687a972b6e759a4b6e4e3a8c66fe60011dcaf4977f60af2f95",
+    "pack": "content-packs/minnesota-northstar-intro-v03.crystalpack",
+    "pack_sha256": "b5decf90a6a45cd87549a5f26820962ef4a521bac1246e423ccfba5ae8394afb",
+    "build_recipe": "planning/minnesota/title/intro-build.json",
+    "build_recipe_sha256": "88d9f3adc1517da9f9a159b8a30fc7c889e7913d19fef067db5ad3f16193d61d",
+    "content_identity": "71d27e7ff029521aa17d18265cebb13e7467e13a28c0a5a80cada5f22e3ee8f0",
+    "map_count": 745,
+    "changed_maps_from_parent": 3,
+    "runbook": "title/README.md",
+    "status": "Selected locally after original in-game movie, animated title, native GUI Start/menu, New Game, Continue, reduced motion, skip and production opening dialogue verification. Existing saves retain their original identity. Not publicly deployed."
+  },
   "trail_discoveries_field_revision": {
     "kind": "campaign_review",
     "parent_revision": "headwaters_journey_field_revision",
@@ -12992,6 +13278,20 @@
     "build_recipe_sha256": "325957c489c8a77e35e3b7ab535261d35fe2cb5d9a7cd47054a721e179247d13",
     "content_identity": "d57f04f314ef5a63f73f4b4d6b6ba820aa5efbe3722f86e931e3cfc1f58a9356",
     "map_count": 743,
+    "changed_maps_from_parent": 14,
+    "runbook": "revisions/trail-discoveries-v01/README.md"
+  },
+  "trail_discoveries_intro_revision": {
+    "kind": "campaign_review",
+    "parent_revision": "northstar_intro_revision",
+    "parent_pack": "content-packs/minnesota-northstar-intro-v03.crystalpack",
+    "parent_pack_sha256": "b5decf90a6a45cd87549a5f26820962ef4a521bac1246e423ccfba5ae8394afb",
+    "pack": "content-packs/minnesota-intro-trail-discoveries-v01.crystalpack",
+    "pack_sha256": "07c75a8928bc61a44d64e76f5525656f380c0885c9eddb70d0c9212137135002",
+    "build_recipe": "planning/minnesota/revisions/trail-discoveries-v01/intro-build.json",
+    "build_recipe_sha256": "9ea5d87306cb4e56f48362006dae4387d9e80b6bf14fbfd6e1e9259698f1a9b9",
+    "content_identity": "c722e0cf0e1fd936e66cd47c552006211c61141ee8735e4cd29c6f1bc3805725",
+    "map_count": 745,
     "changed_maps_from_parent": 14,
     "runbook": "revisions/trail-discoveries-v01/README.md"
   },
@@ -13009,6 +13309,20 @@
     "changed_maps_from_parent": 6,
     "runbook": "revisions/return-visits-v01/README.md"
   },
+  "town_returns_intro_revision": {
+    "kind": "campaign_review",
+    "parent_revision": "trail_discoveries_intro_revision",
+    "parent_pack": "content-packs/minnesota-intro-trail-discoveries-v01.crystalpack",
+    "parent_pack_sha256": "07c75a8928bc61a44d64e76f5525656f380c0885c9eddb70d0c9212137135002",
+    "pack": "content-packs/minnesota-intro-town-returns-v01.crystalpack",
+    "pack_sha256": "3cf55d72462137bae019dd93859f73d17e50e20dad1b31f6e7ce4c93cdd60a44",
+    "build_recipe": "planning/minnesota/revisions/return-visits-v01/intro-build.json",
+    "build_recipe_sha256": "0d53c9c2a2e71639a5e312e6e993f70505247f99dbb96059cc560089a81a6bf6",
+    "content_identity": "a4bbfb6dc537faf987a6da5305d904d022bfcff26139b5270d1c93a5814c0392",
+    "map_count": 745,
+    "changed_maps_from_parent": 8,
+    "runbook": "revisions/return-visits-v01/README.md"
+  },
   "fen_trail_field_revision": {
     "kind": "campaign_review",
     "parent_revision": "town_returns_field_revision",
@@ -13020,6 +13334,20 @@
     "build_recipe_sha256": "a9b1a8ff1fafe69078291610057e0880e9f2f81a13b51ba8cd2b7882668590ac",
     "content_identity": "bf5a1b3788261755d18deb21eba9b6c437e5868d36b521213cbac97068f408f2",
     "map_count": 743,
+    "changed_maps_from_parent": 6,
+    "runbook": "revisions/fen-trail-v01/README.md"
+  },
+  "fen_trail_intro_revision": {
+    "kind": "campaign_review",
+    "parent_revision": "town_returns_intro_revision",
+    "parent_pack": "content-packs/minnesota-intro-town-returns-v01.crystalpack",
+    "parent_pack_sha256": "3cf55d72462137bae019dd93859f73d17e50e20dad1b31f6e7ce4c93cdd60a44",
+    "pack": "content-packs/minnesota-intro-fen-trail-v01.crystalpack",
+    "pack_sha256": "0ca23f6f1b408bf3546e9a5f8b9fbdcf484da878a926de51bc6fcc48fc9c1b0e",
+    "build_recipe": "planning/minnesota/revisions/fen-trail-v01/intro-build.json",
+    "build_recipe_sha256": "2076906cb064c1a0cff1e93e6599bf55a8dd75a9199d2af901e2e5b00640787a",
+    "content_identity": "fa7b819f1356cf33b98f6da5c5e511a1794264e7e51805c5d80751dc7c57a172",
+    "map_count": 745,
     "changed_maps_from_parent": 6,
     "runbook": "revisions/fen-trail-v01/README.md"
   },
@@ -13037,6 +13365,20 @@
     "changed_maps_from_parent": 6,
     "runbook": "revisions/trail-battles-v01/README.md"
   },
+  "trail_battles_intro_revision": {
+    "kind": "campaign_review",
+    "parent_revision": "fen_trail_intro_revision",
+    "parent_pack": "content-packs/minnesota-intro-fen-trail-v01.crystalpack",
+    "parent_pack_sha256": "0ca23f6f1b408bf3546e9a5f8b9fbdcf484da878a926de51bc6fcc48fc9c1b0e",
+    "pack": "content-packs/minnesota-intro-trail-battles-v01.crystalpack",
+    "pack_sha256": "e635990e702a4d07f14d74ca3d3b246709938f81042933fb3c4b83abf3dcd619",
+    "build_recipe": "planning/minnesota/revisions/trail-battles-v01/intro-build.json",
+    "build_recipe_sha256": "5f019f28107076cb32b8459ec068e76e44c8d4450f00d8153238e43d06d1904a",
+    "content_identity": "5eb1c3a9937a506a065e67a823667646fd9385f3f7c8b7ca232ebfd9dd622bcb",
+    "map_count": 745,
+    "changed_maps_from_parent": 6,
+    "runbook": "revisions/trail-battles-v01/README.md"
+  },
   "fen_clearings_field_revision": {
     "kind": "campaign_review",
     "parent_revision": "trail_battles_field_revision",
@@ -13048,6 +13390,20 @@
     "build_recipe_sha256": "5c7b7188d52d67d114936bf66f512b54895b975c80e31ab4f7c3c94fcc5b6e4b",
     "content_identity": "842bb44cecbf349272d15d3b39a9b3e7979f93aa488080900b5f7a1089ca9f25",
     "map_count": 743,
+    "changed_maps_from_parent": 2,
+    "runbook": "revisions/fen-clearings-v01/README.md"
+  },
+  "fen_clearings_intro_revision": {
+    "kind": "campaign_review",
+    "parent_revision": "trail_battles_intro_revision",
+    "parent_pack": "content-packs/minnesota-intro-trail-battles-v01.crystalpack",
+    "parent_pack_sha256": "e635990e702a4d07f14d74ca3d3b246709938f81042933fb3c4b83abf3dcd619",
+    "pack": "content-packs/minnesota-intro-fen-clearings-v01.crystalpack",
+    "pack_sha256": "73a502444fc02ba16b61a054ff2505b9fedd55a5687a3ad5c0c0cecda869f11e",
+    "build_recipe": "planning/minnesota/revisions/fen-clearings-v01/intro-build.json",
+    "build_recipe_sha256": "3c37224c20823569549ebc0889b169642da4d9f7107438310f21b22e61593dda",
+    "content_identity": "edfbc128227690664bfc38cc9beabdea980d3f6279ac6129b38f8c663a20078e",
+    "map_count": 745,
     "changed_maps_from_parent": 2,
     "runbook": "revisions/fen-clearings-v01/README.md"
   },
@@ -13065,6 +13421,20 @@
     "changed_maps_from_parent": 8,
     "runbook": "revisions/league-journey-v01/README.md"
   },
+  "league_journey_intro_revision": {
+    "kind": "campaign_review",
+    "parent_revision": "fen_clearings_intro_revision",
+    "parent_pack": "content-packs/minnesota-intro-fen-clearings-v01.crystalpack",
+    "parent_pack_sha256": "73a502444fc02ba16b61a054ff2505b9fedd55a5687a3ad5c0c0cecda869f11e",
+    "pack": "content-packs/minnesota-intro-league-journey-v01.crystalpack",
+    "pack_sha256": "0bb9872d51da5a9da1ed80e488f351111c477293f99d33386cf6e4cc73d233a9",
+    "build_recipe": "planning/minnesota/revisions/league-journey-v01/intro-build.json",
+    "build_recipe_sha256": "bd0c7a813f0d1ffe339609154b2428b015a92b6b516f56baad8547905d6e87a1",
+    "content_identity": "4eae9391bf06d9184fb85396b0cf35151709839f67a555973827dbf7e081a0bf",
+    "map_count": 745,
+    "changed_maps_from_parent": 8,
+    "runbook": "revisions/league-journey-v01/README.md"
+  },
   "shore_watch_field_revision": {
     "kind": "campaign_review",
     "parent_revision": "league_journey_field_revision",
@@ -13076,6 +13446,20 @@
     "build_recipe_sha256": "efd4d9100881078eaa8b0d0074edb9c27c39443e2847d93838e52c0333020478",
     "content_identity": "2700a0c1eedd85a0837e2aba92ed5093a65130a6779e34212a5abb28c36e6242",
     "map_count": 743,
+    "changed_maps_from_parent": 3,
+    "runbook": "revisions/shore-watch-v01/README.md"
+  },
+  "shore_watch_intro_revision": {
+    "kind": "campaign_review",
+    "parent_revision": "league_journey_intro_revision",
+    "parent_pack": "content-packs/minnesota-intro-league-journey-v01.crystalpack",
+    "parent_pack_sha256": "0bb9872d51da5a9da1ed80e488f351111c477293f99d33386cf6e4cc73d233a9",
+    "pack": "content-packs/minnesota-intro-shore-watch-v01.crystalpack",
+    "pack_sha256": "8e357cfa47f00c51f5394a252f6a84dac906462beb2be2719638ed4246b99e15",
+    "build_recipe": "planning/minnesota/revisions/shore-watch-v01/intro-build.json",
+    "build_recipe_sha256": "22994a829ebe1d549b2dad92db4bbd00c90dd8a1f0bbd435aab8806ff2d5411f",
+    "content_identity": "43495281251faef6a2f9f1d0ff848636a72aedaf28fc31ca7efeed5cdc7eb326",
+    "map_count": 745,
     "changed_maps_from_parent": 3,
     "runbook": "revisions/shore-watch-v01/README.md"
   },
@@ -13093,6 +13477,20 @@
     "changed_maps_from_parent": 4,
     "runbook": "revisions/badge-trails-v01/README.md"
   },
+  "badge_trails_intro_revision": {
+    "kind": "campaign_review",
+    "parent_revision": "shore_watch_intro_revision",
+    "parent_pack": "content-packs/minnesota-intro-shore-watch-v01.crystalpack",
+    "parent_pack_sha256": "8e357cfa47f00c51f5394a252f6a84dac906462beb2be2719638ed4246b99e15",
+    "pack": "content-packs/minnesota-intro-badge-trails-v01.crystalpack",
+    "pack_sha256": "feb0ca07288d085537c0f9bef2f763e9bcfb1a4ac1428286490bb2ad31868b17",
+    "build_recipe": "planning/minnesota/revisions/badge-trails-v01/intro-build.json",
+    "build_recipe_sha256": "530d2f883320af7542c11a9f03bf8a3f7295ecee77a307b62f7240c638f525ea",
+    "content_identity": "0638411d16570a320dd1e7c000063cd3b88c31d6bd99f556f784d597c5e06ed0",
+    "map_count": 745,
+    "changed_maps_from_parent": 4,
+    "runbook": "revisions/badge-trails-v01/README.md"
+  },
   "gym_walk_field_revision": {
     "kind": "campaign_review",
     "parent_revision": "badge_trails_field_revision",
@@ -13104,6 +13502,20 @@
     "build_recipe_sha256": "38ff01f89c50ab8e647e7c0b9c62387e30cb43e1b2a3e92d9ab0551573da5439",
     "content_identity": "0d52a1dcbe08929248cc59147d497103548d174da2220709e03accd490168699",
     "map_count": 743,
+    "changed_maps_from_parent": 6,
+    "runbook": "revisions/gym-walk-v01/README.md"
+  },
+  "gym_walk_intro_revision": {
+    "kind": "campaign_review",
+    "parent_revision": "badge_trails_intro_revision",
+    "parent_pack": "content-packs/minnesota-intro-badge-trails-v01.crystalpack",
+    "parent_pack_sha256": "feb0ca07288d085537c0f9bef2f763e9bcfb1a4ac1428286490bb2ad31868b17",
+    "pack": "content-packs/minnesota-intro-gym-walk-v01.crystalpack",
+    "pack_sha256": "f6ea6d7c5972166258ec3b8cf97f58208e12f1def06f594fd7f2a884e09cadca",
+    "build_recipe": "planning/minnesota/revisions/gym-walk-v01/intro-build.json",
+    "build_recipe_sha256": "cec42bbcb31fd7aaa1571bbb51a1409ace8e026aadb11736b6669a165cbc2501",
+    "content_identity": "ef670632c09b44f703f68524b1e869e5dad58590da7c9e035c19f1c6272db494",
+    "map_count": 745,
     "changed_maps_from_parent": 6,
     "runbook": "revisions/gym-walk-v01/README.md"
   },
@@ -13121,6 +13533,20 @@
     "changed_maps_from_parent": 2,
     "runbook": "revisions/cave-returns-v01/README.md"
   },
+  "cave_returns_intro_revision": {
+    "kind": "campaign_review",
+    "parent_revision": "gym_walk_intro_revision",
+    "parent_pack": "content-packs/minnesota-intro-gym-walk-v01.crystalpack",
+    "parent_pack_sha256": "f6ea6d7c5972166258ec3b8cf97f58208e12f1def06f594fd7f2a884e09cadca",
+    "pack": "content-packs/minnesota-intro-cave-returns-v01.crystalpack",
+    "pack_sha256": "23c2b164f63b8423c78fdcb88fbba4cadc34a55459ed8d1c8c8d784fb0af5b1f",
+    "build_recipe": "planning/minnesota/revisions/cave-returns-v01/intro-build.json",
+    "build_recipe_sha256": "9d87ebc75fa16226e26cacab063840a505a966d2a718cb7e2756a4a25997696f",
+    "content_identity": "cf3a1175656ae7aecd2d512c7e0985160594769011b72055314b80ca764e803f",
+    "map_count": 745,
+    "changed_maps_from_parent": 2,
+    "runbook": "revisions/cave-returns-v01/README.md"
+  },
   "fen_waterline_field_revision": {
     "kind": "campaign_review",
     "parent_revision": "cave_returns_field_revision",
@@ -13132,6 +13558,20 @@
     "build_recipe_sha256": "2a9007e4dce19bacb2a8bcb37d689ad4c5b2fdb78633665cc203c7be9b892280",
     "content_identity": "506fa0fc7fe064aa50b4451394962d60d8b67ca2519db023f057bbed02bd45b7",
     "map_count": 743,
+    "changed_maps_from_parent": 1,
+    "runbook": "revisions/fen-waterline-v01/README.md"
+  },
+  "fen_waterline_intro_revision": {
+    "kind": "campaign_review",
+    "parent_revision": "cave_returns_intro_revision",
+    "parent_pack": "content-packs/minnesota-intro-cave-returns-v01.crystalpack",
+    "parent_pack_sha256": "23c2b164f63b8423c78fdcb88fbba4cadc34a55459ed8d1c8c8d784fb0af5b1f",
+    "pack": "content-packs/minnesota-intro-fen-waterline-v01.crystalpack",
+    "pack_sha256": "e01ad94e54904dbc4e1e130ef36a49c45f13e42144fba6d8d0ecab94d5041853",
+    "build_recipe": "planning/minnesota/revisions/fen-waterline-v01/intro-build.json",
+    "build_recipe_sha256": "8393eb9797dc7d338da61da7220d623ca7a4aad76b04e5f7fe9a0626b4ec7d4c",
+    "content_identity": "987ec53d46d660214ab7866ee32ae14bdd992f791076d4d5c034188bd3fca687",
+    "map_count": 745,
     "changed_maps_from_parent": 1,
     "runbook": "revisions/fen-waterline-v01/README.md"
   },
@@ -13149,6 +13589,20 @@
     "changed_maps_from_parent": 1,
     "runbook": "revisions/badge-battles-v01/README.md"
   },
+  "badge_battles_intro_revision": {
+    "kind": "campaign_review",
+    "parent_revision": "fen_waterline_intro_revision",
+    "parent_pack": "content-packs/minnesota-intro-fen-waterline-v01.crystalpack",
+    "parent_pack_sha256": "e01ad94e54904dbc4e1e130ef36a49c45f13e42144fba6d8d0ecab94d5041853",
+    "pack": "content-packs/minnesota-intro-badge-battles-v01.crystalpack",
+    "pack_sha256": "b7aa882ff74e624b450f0ed2e51192d897ed62990d90720e7e49a05210784e50",
+    "build_recipe": "planning/minnesota/revisions/badge-battles-v01/intro-build.json",
+    "build_recipe_sha256": "bf4afa154c6f64a3fcc8f08c53c636783cf5a50cef5a81820adebdbc6a530807",
+    "content_identity": "30b7a399457a0e5e9825b21c8a79ec7d517f40d6cb40ef73c10b52c4463dab4b",
+    "map_count": 745,
+    "changed_maps_from_parent": 1,
+    "runbook": "revisions/badge-battles-v01/README.md"
+  },
   "ely_challenge_field_revision": {
     "kind": "campaign_review",
     "parent_revision": "badge_battles_field_revision",
@@ -13160,6 +13614,20 @@
     "build_recipe_sha256": "2b68218662cd11f73f3823ac1b93bfd9282e599a3fb2aaff05739dd8eed82d43",
     "content_identity": "58a5aa15d138d417dc592604644f99323aba284316989b0b323176bfb9217ca2",
     "map_count": 743,
+    "changed_maps_from_parent": 2,
+    "runbook": "revisions/ely-challenge-v01/README.md"
+  },
+  "ely_challenge_intro_revision": {
+    "kind": "campaign_review",
+    "parent_revision": "badge_battles_intro_revision",
+    "parent_pack": "content-packs/minnesota-intro-badge-battles-v01.crystalpack",
+    "parent_pack_sha256": "b7aa882ff74e624b450f0ed2e51192d897ed62990d90720e7e49a05210784e50",
+    "pack": "content-packs/minnesota-intro-ely-challenge-v01.crystalpack",
+    "pack_sha256": "7b9a044805f735de7ecd6a538158c23a5e0992640574c50257e251d7b93c944f",
+    "build_recipe": "planning/minnesota/revisions/ely-challenge-v01/intro-build.json",
+    "build_recipe_sha256": "0bcac6705c5fe48b2b99995edb581fe62a348d1bee50183c3c92be3df1f72182",
+    "content_identity": "3ab9af4c25857ce1a0b92b894e99ce777372a51129d9657a4d02aa0b5ab3757b",
+    "map_count": 745,
     "changed_maps_from_parent": 2,
     "runbook": "revisions/ely-challenge-v01/README.md"
   },
@@ -13177,6 +13645,20 @@
     "changed_maps_from_parent": 2,
     "runbook": "revisions/finder-lesson-v01/README.md"
   },
+  "finder_lesson_intro_revision": {
+    "kind": "campaign_review",
+    "parent_revision": "ely_challenge_intro_revision",
+    "parent_pack": "content-packs/minnesota-intro-ely-challenge-v01.crystalpack",
+    "parent_pack_sha256": "7b9a044805f735de7ecd6a538158c23a5e0992640574c50257e251d7b93c944f",
+    "pack": "content-packs/minnesota-intro-finder-lesson-v01.crystalpack",
+    "pack_sha256": "d73850817376303d9cd94693c1670c35ae1b12a6e0106f354fa2cc5f77cb6e3d",
+    "build_recipe": "planning/minnesota/revisions/finder-lesson-v01/intro-build.json",
+    "build_recipe_sha256": "d759b41d36de694a5d45401e805a10fb1f95821b67c06348beb15dab98219702",
+    "content_identity": "e4a7d70b987be1b21ec404cad0aeea0112822e47d6e9e34beede107a64446853",
+    "map_count": 745,
+    "changed_maps_from_parent": 2,
+    "runbook": "revisions/finder-lesson-v01/README.md"
+  },
   "ely_return_field_revision": {
     "kind": "campaign_review",
     "parent_revision": "finder_lesson_field_revision",
@@ -13188,6 +13670,20 @@
     "build_recipe_sha256": "6cb2aebe78e33554f4a0f1d0a13cb064479f5758982f4f7ef0866f69cca0360d",
     "content_identity": "c4b16e29b0e3884c96072b57fcfa9aac02f675d9142684f22759c397a0b29b1f",
     "map_count": 743,
+    "changed_maps_from_parent": 1,
+    "runbook": "revisions/ely-return-v01/README.md"
+  },
+  "ely_return_intro_revision": {
+    "kind": "campaign_review",
+    "parent_revision": "finder_lesson_intro_revision",
+    "parent_pack": "content-packs/minnesota-intro-finder-lesson-v01.crystalpack",
+    "parent_pack_sha256": "d73850817376303d9cd94693c1670c35ae1b12a6e0106f354fa2cc5f77cb6e3d",
+    "pack": "content-packs/minnesota-intro-ely-return-v01.crystalpack",
+    "pack_sha256": "39251b7720f6074faa07f66081f723dd8599999e2c5732741634459ee194de5e",
+    "build_recipe": "planning/minnesota/revisions/ely-return-v01/intro-build.json",
+    "build_recipe_sha256": "f4910179f7b894a0a4f45b55c4837ebab0cf65c0d934a8623c64a40292b1353f",
+    "content_identity": "bc3b478774e37b9aaec0270d3b1515eecf38061d6e139692832b1893a1eef271",
+    "map_count": 745,
     "changed_maps_from_parent": 1,
     "runbook": "revisions/ely-return-v01/README.md"
   },
@@ -13205,6 +13701,20 @@
     "changed_maps_from_parent": 2,
     "runbook": "revisions/marais-supplies-v01/README.md"
   },
+  "marais_supplies_intro_revision": {
+    "kind": "campaign_review",
+    "parent_revision": "ely_return_intro_revision",
+    "parent_pack": "content-packs/minnesota-intro-ely-return-v01.crystalpack",
+    "parent_pack_sha256": "39251b7720f6074faa07f66081f723dd8599999e2c5732741634459ee194de5e",
+    "pack": "content-packs/minnesota-intro-marais-supplies-v01.crystalpack",
+    "pack_sha256": "3915f417745124197c47d0602b814e43b6830c32f7fd39282749b4986a50bda8",
+    "build_recipe": "planning/minnesota/revisions/marais-supplies-v01/intro-build.json",
+    "build_recipe_sha256": "f6ac0a40f9c0343e101f4cc4782d6c4e6808c1d3a37c2bd8c67876a3dcbc5abb",
+    "content_identity": "5556a4bb8e73679ea21e9f156453f3ab554794d72f090957c2ae3c973e1e4c46",
+    "map_count": 745,
+    "changed_maps_from_parent": 2,
+    "runbook": "revisions/marais-supplies-v01/README.md"
+  },
   "research_choices_field_revision": {
     "kind": "campaign_review",
     "parent_revision": "marais_supplies_field_revision",
@@ -13219,6 +13729,20 @@
     "changed_maps_from_parent": 2,
     "runbook": "revisions/research-choices-v01/README.md"
   },
+  "research_choices_intro_revision": {
+    "kind": "campaign_review",
+    "parent_revision": "marais_supplies_intro_revision",
+    "parent_pack": "content-packs/minnesota-intro-marais-supplies-v01.crystalpack",
+    "parent_pack_sha256": "3915f417745124197c47d0602b814e43b6830c32f7fd39282749b4986a50bda8",
+    "pack": "content-packs/minnesota-intro-research-choices-v01.crystalpack",
+    "pack_sha256": "0e9ce201cdd98a5a016f6dd7b8028945c57ea0a12441b0c3dd720bc36853c31c",
+    "build_recipe": "planning/minnesota/revisions/research-choices-v01/intro-build.json",
+    "build_recipe_sha256": "d518e9fb03ca33ace636d60cfc56a2667ae6114acd53b8773dd45ddf7cbc2782",
+    "content_identity": "0c778f3fbdc475c524aede7427261093fc9728cca4bb1ca26746ce16a07a5963",
+    "map_count": 745,
+    "changed_maps_from_parent": 2,
+    "runbook": "revisions/research-choices-v01/README.md"
+  },
   "trail_signs_field_revision": {
     "kind": "campaign_review",
     "parent_revision": "research_choices_field_revision",
@@ -13230,6 +13754,20 @@
     "build_recipe_sha256": "f9b88ee1ede851477c235b926ab96e950b6dfdb76f8355ceb49306b411c11f92",
     "content_identity": "ee51847328287a66b358f951e0c49db99ae8c35dd2925441a73ac290b2ccdfb5",
     "map_count": 743,
+    "changed_maps_from_parent": 5,
+    "runbook": "revisions/trail-signs-v01/README.md"
+  },
+  "trail_signs_intro_revision": {
+    "kind": "campaign_review",
+    "parent_revision": "research_choices_intro_revision",
+    "parent_pack": "content-packs/minnesota-intro-research-choices-v01.crystalpack",
+    "parent_pack_sha256": "0e9ce201cdd98a5a016f6dd7b8028945c57ea0a12441b0c3dd720bc36853c31c",
+    "pack": "content-packs/minnesota-intro-trail-signs-v01.crystalpack",
+    "pack_sha256": "67b7391397fddd5daf6ac8ec57ff062f1312fa91b3db3e8032167180485fc079",
+    "build_recipe": "planning/minnesota/revisions/trail-signs-v01/intro-build.json",
+    "build_recipe_sha256": "f68b2f92881682d93d45391ff6b78419c219cdfb8756da848ad270ea25763687",
+    "content_identity": "db259dcaabc1753f3dffc0df7855e06a41ee8fa2d04498bfd081815529e3eaae",
+    "map_count": 745,
     "changed_maps_from_parent": 5,
     "runbook": "revisions/trail-signs-v01/README.md"
   },
@@ -13249,6 +13787,22 @@
     "trainer_parties": "planning/minnesota/revisions/leech-lake-trainers-v01/parties.json",
     "runbook": "revisions/leech-lake-trainers-v01/README.md"
   },
+  "leech_lake_trainers_intro_revision": {
+    "kind": "campaign_review",
+    "parent_revision": "trail_signs_intro_revision",
+    "parent_pack": "content-packs/minnesota-intro-trail-signs-v01.crystalpack",
+    "parent_pack_sha256": "67b7391397fddd5daf6ac8ec57ff062f1312fa91b3db3e8032167180485fc079",
+    "pack": "content-packs/minnesota-intro-leech-lake-trainers-v01.crystalpack",
+    "pack_sha256": "c41a0e9bf5b9e64b11f15a48fd89148849b8377cdada5c113fadecf034c5eb98",
+    "build_recipe": "planning/minnesota/revisions/leech-lake-trainers-v01/intro-build.json",
+    "build_recipe_sha256": "1ccbb4c54b19eb688aeab22911129ea07a134b976a3a73393ed1ef0bc59fb7c4",
+    "content_identity": "2ad46453c417efdea3cbc1c8fa33ac4a141cb9fe423769408d424689e505b4c9",
+    "map_count": 745,
+    "changed_maps_from_parent": 0,
+    "changed_trainer_parties": 3,
+    "trainer_parties": "planning/minnesota/revisions/leech-lake-trainers-v01/parties.json",
+    "runbook": "revisions/leech-lake-trainers-v01/README.md"
+  },
   "quarry_landings_field_revision": {
     "kind": "campaign_review",
     "parent_revision": "leech_lake_trainers_field_revision",
@@ -13260,6 +13814,20 @@
     "build_recipe_sha256": "167f92c90ddcc5c72fc223e0f5ee69eedea5c41de2d455a3a5ddd3f62e36a633",
     "content_identity": "e9dea645cb0b4132853ccbfc2f81bb4ee883aaef65917af9cd88fc79825ef25e",
     "map_count": 743,
+    "changed_maps_from_parent": 1,
+    "runbook": "revisions/quarry-landings-v01/README.md"
+  },
+  "quarry_landings_intro_revision": {
+    "kind": "campaign_review",
+    "parent_revision": "leech_lake_trainers_intro_revision",
+    "parent_pack": "content-packs/minnesota-intro-leech-lake-trainers-v01.crystalpack",
+    "parent_pack_sha256": "c41a0e9bf5b9e64b11f15a48fd89148849b8377cdada5c113fadecf034c5eb98",
+    "pack": "content-packs/minnesota-intro-quarry-landings-v01.crystalpack",
+    "pack_sha256": "0f3690cb2d5c2be904fa876ddfd301b646530aae22f00c43d5310ae260a4bc76",
+    "build_recipe": "planning/minnesota/revisions/quarry-landings-v01/intro-build.json",
+    "build_recipe_sha256": "eef7c8279c4f1881d2dd4f2af1c1f28d03b9e4e7fb057bc0de059de4406181fa",
+    "content_identity": "0a84a37331f95cc1d56eba9f06c7b0ed9e544d6984a82ae3c52b68c063276549",
+    "map_count": 745,
     "changed_maps_from_parent": 1,
     "runbook": "revisions/quarry-landings-v01/README.md"
   },
@@ -13277,6 +13845,20 @@
     "changed_maps_from_parent": 1,
     "runbook": "revisions/wind-lesson-v01/README.md"
   },
+  "wind_lesson_intro_revision": {
+    "kind": "campaign_review",
+    "parent_revision": "quarry_landings_intro_revision",
+    "parent_pack": "content-packs/minnesota-intro-quarry-landings-v01.crystalpack",
+    "parent_pack_sha256": "0f3690cb2d5c2be904fa876ddfd301b646530aae22f00c43d5310ae260a4bc76",
+    "pack": "content-packs/minnesota-intro-wind-lesson-v01.crystalpack",
+    "pack_sha256": "de3d6cd9f5714e3d92bc84bca770e2d3234d31d9398f84699bcef41a8a5bbe6c",
+    "build_recipe": "planning/minnesota/revisions/wind-lesson-v01/intro-build.json",
+    "build_recipe_sha256": "77e112366dbe7528dcee50c354f1aa5daca4bbf85395e1e1b2e7142e6b481221",
+    "content_identity": "2737fc05be7dee021808e6fd2e93bd44baa7b61645d058cd8a87468614a866af",
+    "map_count": 745,
+    "changed_maps_from_parent": 1,
+    "runbook": "revisions/wind-lesson-v01/README.md"
+  },
   "arcade_frontage_field_revision": {
     "kind": "campaign_review",
     "parent_revision": "wind_lesson_field_revision",
@@ -13291,6 +13873,20 @@
     "changed_maps_from_parent": 5,
     "runbook": "revisions/arcade-frontage-v01/README.md"
   },
+  "arcade_frontage_intro_revision": {
+    "kind": "campaign_review",
+    "parent_revision": "wind_lesson_intro_revision",
+    "parent_pack": "content-packs/minnesota-intro-wind-lesson-v01.crystalpack",
+    "parent_pack_sha256": "de3d6cd9f5714e3d92bc84bca770e2d3234d31d9398f84699bcef41a8a5bbe6c",
+    "pack": "content-packs/minnesota-intro-arcade-frontage-v01.crystalpack",
+    "pack_sha256": "903a0804883044e6f7f2eda44114260c86493092e2ce8b070dd338439e306a3b",
+    "build_recipe": "planning/minnesota/revisions/arcade-frontage-v01/intro-build.json",
+    "build_recipe_sha256": "a5ffb4e9b9a89cc0fcf5fb15b2630437ab96559a93b37141533690349724a288",
+    "content_identity": "a23ccea3c5bec079160017d4600a67e7e1c7d653d5891ef6775f5a5fcdab3ca8",
+    "map_count": 745,
+    "changed_maps_from_parent": 5,
+    "runbook": "revisions/arcade-frontage-v01/README.md"
+  },
   "lakeside_stops_field_revision": {
     "kind": "campaign_review",
     "parent_revision": "arcade_frontage_field_revision",
@@ -13302,6 +13898,21 @@
     "build_recipe_sha256": "351ecc9885b969a7000799b35b51405e0d73602c7c5e36830594109127c8d1bd",
     "content_identity": "14c2b902b7bfe0173bbdbea1f0baa6eff97419f30368730498869b56225adedb",
     "map_count": 744,
+    "changed_maps_from_parent": 27,
+    "runbook": "revisions/lakeside-stops-v01/README.md",
+    "added_maps_from_parent": 1
+  },
+  "lakeside_stops_intro_revision": {
+    "kind": "campaign_review",
+    "parent_revision": "arcade_frontage_intro_revision",
+    "parent_pack": "content-packs/minnesota-intro-arcade-frontage-v01.crystalpack",
+    "parent_pack_sha256": "903a0804883044e6f7f2eda44114260c86493092e2ce8b070dd338439e306a3b",
+    "pack": "content-packs/minnesota-intro-lakeside-stops-v01.crystalpack",
+    "pack_sha256": "a4d6e2aae14cd31d411169865ea3b8e44498f431996540515f3f778ecc30558b",
+    "build_recipe": "planning/minnesota/revisions/lakeside-stops-v01/intro-build.json",
+    "build_recipe_sha256": "1b1600aeb426cf24e4161e513fca4d30f71c7496657e9f931c0292e49fd1e16b",
+    "content_identity": "22d0622fc6313f1ca6c18677f1a973c541b97efcda0e2abbbd634bf9cf59591e",
+    "map_count": 746,
     "changed_maps_from_parent": 27,
     "runbook": "revisions/lakeside-stops-v01/README.md",
     "added_maps_from_parent": 1
@@ -13321,6 +13932,21 @@
     "runbook": "revisions/fair-table-v01/README.md",
     "added_maps_from_parent": 0
   },
+  "fair_table_intro_revision": {
+    "kind": "campaign_review",
+    "parent_revision": "lakeside_stops_intro_revision",
+    "parent_pack": "content-packs/minnesota-intro-lakeside-stops-v01.crystalpack",
+    "parent_pack_sha256": "a4d6e2aae14cd31d411169865ea3b8e44498f431996540515f3f778ecc30558b",
+    "pack": "content-packs/minnesota-intro-fair-table-v01.crystalpack",
+    "pack_sha256": "563baec332c64822503d8510b093d634834e57c08177af21df0edb75bab000ac",
+    "build_recipe": "planning/minnesota/revisions/fair-table-v01/intro-build.json",
+    "build_recipe_sha256": "81cc01b6dbe352107eddb454b0139d9ed30adc225ae5e1508983116bc214224b",
+    "content_identity": "301905c7887d716871827436db7204e61c4b6db96db7f197ad4f895b18ea7772",
+    "map_count": 746,
+    "changed_maps_from_parent": 5,
+    "runbook": "revisions/fair-table-v01/README.md",
+    "added_maps_from_parent": 0
+  },
   "fair_patrols_field_revision": {
     "kind": "campaign_review",
     "parent_revision": "fair_table_field_revision",
@@ -13332,6 +13958,21 @@
     "build_recipe_sha256": "c0db3a4dc1eec6605b106390daf01383ae4c9d552a7ebe31346c76bda4b71ea2",
     "content_identity": "7e7b1c6e5cbe64deb43ecb3dc5eacfa57b0d812b944bbf8060a53296900b2afe",
     "map_count": 744,
+    "changed_maps_from_parent": 3,
+    "runbook": "revisions/fair-patrols-v01/README.md",
+    "added_maps_from_parent": 0
+  },
+  "fair_patrols_intro_revision": {
+    "kind": "campaign_review",
+    "parent_revision": "fair_table_intro_revision",
+    "parent_pack": "content-packs/minnesota-intro-fair-table-v01.crystalpack",
+    "parent_pack_sha256": "563baec332c64822503d8510b093d634834e57c08177af21df0edb75bab000ac",
+    "pack": "content-packs/minnesota-intro-fair-patrols-v01.crystalpack",
+    "pack_sha256": "cfb028aec4080314247063a3c8686fa2f1b361a7c84bc7df3a4f5e3413aab0bd",
+    "build_recipe": "planning/minnesota/revisions/fair-patrols-v01/intro-build.json",
+    "build_recipe_sha256": "46aba797a8b9a2345c7cc2dc3b8a61f262a4e1b6905f5cb6f14f6d6576325b89",
+    "content_identity": "87ede8ac2da770e8b8ace3245e791eaaf1fb283f50aa4db63d7e6d2fa73fbae0",
+    "map_count": 746,
     "changed_maps_from_parent": 3,
     "runbook": "revisions/fair-patrols-v01/README.md",
     "added_maps_from_parent": 0

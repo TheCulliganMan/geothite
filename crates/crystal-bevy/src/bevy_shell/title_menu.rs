@@ -5304,6 +5304,17 @@ fn tick_visible_title_screen_state(runtime_shell: &mut BevyRuntimeShell) {
         }
         return;
     }
+    if let Some(title) = runtime_shell.title_menu.as_mut()
+        && matches!(title.source_phase(), VisibleTitlePhase::PressStart)
+        && let Some(opening) = title.northstar_opening.as_mut()
+    {
+        // Both native key sampling and direct controller input enter here.
+        // Finish the entrance before either path dispatches into the menu.
+        if title.joypad_mask & 0x09 != 0 {
+            opening.finish_reveal();
+        }
+        opening.tick();
+    }
     // A regional still has no idle movie or attract-mode timeout. Preserve the
     // production Start/menu interpreter when an actual input is pending.
     if runtime_shell.title_menu.as_ref().is_some_and(|title| {
@@ -7736,7 +7747,7 @@ fn tick_visible_gender_selection(runtime_shell: &mut BevyRuntimeShell) -> Result
         visible_gender_label(selected_gender)
     ));
     trim_event_log(&mut runtime_shell.last_audio_events);
-    if startup_policy::skips_title_sequence(&runtime_shell.runtime) {
+    if startup_policy::is_minnesota(&runtime_shell.runtime) {
         open_visible_oak_intro_sequence(runtime_shell)
     } else {
         open_visible_time_set_screen(runtime_shell, VisibleTimeSetNext::OakIntro)
@@ -8261,6 +8272,7 @@ fn press_visible_title_confirm_button(
 }
 
 fn press_visible_title_cancel_button(runtime_shell: &mut BevyRuntimeShell) -> Result<()> {
+
     if runtime_shell.visible_continue_screen.as_ref()
         .is_some_and(|screen| screen.remaining_delay_frames != 0) { return Ok(()); }
     if runtime_shell.visible_continue_screen.take().is_some() {

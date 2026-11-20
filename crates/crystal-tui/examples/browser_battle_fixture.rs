@@ -39,16 +39,27 @@ fn main() -> Result<()> {
         .as_ref()
         .map_or(("Route29", 46, 12), |key| (key.map_name.as_str(), 4, 13));
     let mut fixture = RuntimeGameShell::new_game_at_runtime_tile(root, runtime, spawn, map, x, y)?;
-    let species = std::env::var("TUI_FIXTURE_SPECIES").unwrap_or_else(|_| "TOTODILE".into());
+    // Own the fixture Pokemon so high-level renderer checks exercise attacks,
+    // rather than traded-Pokemon obedience before the first badge.
+    fixture.set_trainer_identity("CHRIS", 1)?;
+    let default_species = match level {
+        1..=17 => "TOTODILE",
+        18..=29 => "CROCONAW",
+        _ => "FERALIGATR",
+    };
+    let species = std::env::var("TUI_FIXTURE_SPECIES").unwrap_or_else(|_| default_species.into());
     fixture.add_party_pokemon(
         &species,
         level,
         None,
         None,
-        "TUI_TEST",
+        "CHRIS",
         1,
         Dv::from_non_hp(10, 10, 10, 10),
     )?;
+    if level <= 10 {
+        fixture.add_bag_item("POTION", 10)?;
+    }
     if level_up {
         let next = fixture.runtime().data().create_pokemon(
             &species,

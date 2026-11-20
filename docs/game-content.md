@@ -482,13 +482,20 @@ completion remain open.
 
 ## Minnesota startup and Tamarack welcome
 
-Minnesota opens directly at the production New Game/Continue menu. The title
-card, studio/copyright splashes and opening movie are skipped, including in older
-Minnesota packs without regional title art. B stays in the game menu. Continue,
-options and new-game setup retain their production owners; Tamarack introduces
-single-hook Jiglet with its matching cry. Other regions keep their authored
-startup. The [opening runbook](../planning/minnesota/title/README.md) also retains
-the historical title-art publisher and its verification record.
+The selected local Northstar pack plays the original Geothite opening movie
+inside the game, then a three-second Northstar title entrance: an illuminating
+star, Kettlurk gathering and releasing its current, and the complete name
+arriving with a lettering shine. Its idle head, chest and arm gestures keep
+the feet planted while body currents and falling water continue. A/Start
+remains available throughout the reveal, and reduced
+motion starts with the finished composition. This accompanies revised
+Tamarack/Mom/starter/Reed dialogue. Its opt-in
+marker preserves direct New Game/Continue startup for existing Minnesota packs.
+Continue, options and naming keep their production flows; Jiglet retains its
+matching cry. Reduced motion presents a still title. The
+[opening runbook](../planning/minnesota/title/README.md) gives the scoped Rust
+publisher, exact local candidate and verification boundaries. Other regions
+retain their authored startup.
 
 ## Early research partners and both fossils (2026-10-31)
 
@@ -3174,3 +3181,29 @@ explicitly restores Mudnip/Bankmaw before refreshing graphics for 26 installed
 families, preserving maps, scripts and audio. The ignored candidate is
 `target/native-integration-20261103/reviewed-sprites.crystalpack`; it is not the
 current `world.json` selection or a public deployment.
+
+
+## Mothlight Lodge
+
+The custom native 2D lodge north of Grand Marais adds two rooms to the exact
+Crossings parent. The private atlases include original indexed murals, stonework,
+cedar architecture and furniture. Existing source art, maps outside Cedar
+Approach and audio remain intact. See the [landmark runbook](../planning/minnesota/landmarks/mothlight-lodge/README.md)
+for door coordinates, activities, review status and art sources.
+
+Verified pack build and audio audit:
+
+```sh
+CARGO_INCREMENTAL=0 cargo run --locked -p crystal-assets --bin pack_mothlight_lodge -- \
+  content-packs/minnesota-crossings-v01.crystalpack \
+  content-packs/minnesota-mothlight-v10.crystalpack
+target/debug/verify_crystalpack content-packs/minnesota-mothlight-v10.crystalpack --audio --desktop
+```
+
+Choose a fresh ignored output when rebuilding. This locally selected revision is separate from
+the deployed Crossings pack and does not rewrite player saves.
+
+The [battle café overlay](../planning/minnesota/landmarks/mothlight-lodge/README.md#battle-café)
+adds the cook's optional daily battle on the newer Northern Trails lodge lineage.
+It preserves the cake quest and native artwork. The runbook includes pack build,
+production-controller journeys, full-Pack recovery and daily-reset verification.

@@ -276,7 +276,12 @@ fn spawn_fullscreen_title_artwork(
     rendered_art: &mut RenderedTilesetArt,
     images: &mut Assets<Image>,
 ) -> Result<()> {
-    let art = title_screen_frame_for_art(rendered_art, &runtime_shell.asset_root, title, images)
+    let art = title_screen_frame_for_art(
+        rendered_art,
+        &runtime_shell.asset_root,
+        title,
+        images,
+    )
         .context("fullscreen menu requires the native title artwork")?;
     commands.spawn((
         (Sprite { image: art.handle, ..Sprite::default() },

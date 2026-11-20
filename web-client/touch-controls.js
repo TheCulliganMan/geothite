@@ -1,3 +1,5 @@
+import { mountGameGestures } from './game-gestures.js';
+
 const keys = {
   up: ['ArrowUp', 'ArrowUp'], down: ['ArrowDown', 'ArrowDown'],
   left: ['ArrowLeft', 'ArrowLeft'], right: ['ArrowRight', 'ArrowRight'],
@@ -36,6 +38,12 @@ export function createButtonState(emit) {
 export function mountTouchControls({ document, window, canvas, onInput = () => {} }) {
   const pad = document.querySelector('#touch-controls');
   const dpad = document.querySelector('#dpad');
+  const coarsePointer = window.matchMedia?.('(any-pointer: coarse)');
+  const updateTouchCapability = () => document.documentElement?.classList.toggle('touch-capable',
+    Boolean(window.navigator?.maxTouchPoints > 0 || coarsePointer?.matches));
+  updateTouchCapability();
+  coarsePointer?.addEventListener('change', updateTouchCapability);
+  mountGameGestures({ document, surfaces: '#game-stage, #touch-controls' });
   const movement = { KeyW: 'up', KeyA: 'left', KeyS: 'down', KeyD: 'right', ArrowUp: 'up', ArrowLeft: 'left', ArrowDown: 'down', ArrowRight: 'right' };
   const heldKeyboard = new Set();
   const heldPointers = new Set();
@@ -60,9 +68,9 @@ export function mountTouchControls({ document, window, canvas, onInput = () => {
     state.clear(id => typeof id !== 'string' || id.startsWith('keyboard:'));
     heldKeyboard.clear();
   };
-  const blocked = () => Boolean(document.querySelector('dialog[open]')) ||
-    /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName);
-  const keyboardBlocked = () => blocked() || document.activeElement?.isContentEditable ||
+  const blocked = () => document.hidden || Boolean(document.querySelector('dialog[open], #player-options[open]')) ||
+    document.activeElement?.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName);
+  const keyboardBlocked = () => blocked() ||
     /^(BUTTON|A)$/.test(document.activeElement?.tagName) || document.activeElement?.closest?.('#social-chat');
   const keyboard = event => {
     if (event.crystalGameControl || !movement[event.code]) return;
@@ -80,6 +88,16 @@ export function mountTouchControls({ document, window, canvas, onInput = () => {
   window.addEventListener('keydown', keyboard, { capture: true });
   window.addEventListener('keyup', keyboard, { capture: true });
   document.addEventListener('focusin', () => { if (keyboardBlocked()) releaseAll(); });
+  // Opening an overlay need not move focus (especially with a second finger).
+  // Release before the overlay handles the gesture, not on the next game frame.
+  document.addEventListener('pointerdown', event => {
+    if (event.target !== canvas && !pad.contains(event.target)) releaseAll();
+  }, { capture: true });
+  document.addEventListener('toggle', () => { if (blocked()) releaseAll(); }, { capture: true });
+  if (window.MutationObserver) {
+    new window.MutationObserver(() => { if (pad.disabled) releaseAll(); })
+      .observe(pad, { attributes: true, attributeFilter: ['disabled'] });
+  }
   const bind = (element, resolve) => {
     element.addEventListener('pointerdown', event => {
       if (event.button !== 0 || pad.disabled || blocked()) return;
@@ -95,6 +113,7 @@ export function mountTouchControls({ document, window, canvas, onInput = () => {
       state.set(event.pointerId, resolve(event));
     });
     element.addEventListener('pointermove', event => {
+      if (pad.disabled || blocked()) { releaseAll(); return; }
       if (heldPointers.has(event.pointerId)) state.set(event.pointerId, resolve(event));
     });
     for (const type of ['pointerup', 'pointercancel', 'lostpointercapture']) {
@@ -135,7 +154,6 @@ export function mountTouchControls({ document, window, canvas, onInput = () => {
   window.addEventListener('pagehide', releaseAll);
   window.addEventListener('resize', releaseAll);
   document.addEventListener('visibilitychange', () => { if (document.hidden) releaseAll(); });
-  document.addEventListener('focusin', () => { if (blocked()) releaseAll(); });
-  document.querySelector('#help').addEventListener('click', releaseAll);
+  document.querySelector('#help')?.addEventListener('click', releaseAll);
   return { releaseAll, setButton: (id, button) => state.set(id, button) };
 }

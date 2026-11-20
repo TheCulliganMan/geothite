@@ -43,28 +43,57 @@ export async function checkCodeMode(execute, observe) {
   assert.equal((await execute('return typeof temporary;')).value, 'undefined');
 }
 
-export const battleCode = `
-  let view=await tools.observe(); let fight=false,moves=false,reward=false,turns=0;
+// Only inspect visible HP/menu rows and press ordinary buttons. Current Wild
+// Challenge fights can require healing even with a healthy level-five starter.
+export function createStarterBattleInput() {
+  let canHeal = true;
+  return view => {
+    const selected = Math.max(0, view.menu.findIndex(line => line.kind === 'selected'));
+    const choose = target => target === selected ? 'a' : target > selected ? 'down' : 'up';
+    const fight = view.menu.findIndex(line => /\bFIGHT\b/.test(line.text));
+    if (fight >= 0) {
+      const hp = view.info.map(line => line.text).join('\n').match(/L\s*\d+\s+(\d+)\/(\d+)/);
+      const pack = view.menu.findIndex(line => /\bPACK\b/.test(line.text));
+      return choose(canHeal && hp && Number(hp[1]) <= Number(hp[2]) / 2 && pack >= 0 ? pack : fight);
+    }
+    const potion = view.menu.findIndex(line => /\bPOTION\b.*x0*[1-9]/.test(line.text));
+    if (potion >= 0) return choose(potion);
+    if (view.menu.length && view.menu.every(line => /^\s*>?\s*(CANCEL|CLOSE)\s*$/.test(line.text))) {
+      canHeal = false;
+      return 'b';
+    }
+    const attack = view.menu.findIndex(line => /PP/.test(line.text) && /SCRATCH|TACKLE|EMBER|BITE|WATER GUN|RAGE/.test(line.text));
+    return attack >= 0 ? choose(attack) : 'a';
+  };
+}
+
+export const battleCode = String.raw`
+  const nextButton=(${createStarterBattleInput.toString()})();
+  let view=await tools.observe(); let fight=false,moves=false,reward=false,turns=0,usedPotion=false,healed=false;
   for(let i=0;i<100;i++) {
-    if(view.status_line.startsWith('Overworld')) break;
+    if(view.status_line.startsWith('Overworld') && !view.dialogue.length) break;
     fight ||= view.menu.some(line=>line.text.includes('FIGHT'));
     const moveMenu=view.menu.some(line=>/PP|TACKLE|SCRATCH|EMBER|BITE|WATER GUN|RAGE/.test(line.text));
     moves ||= moveMenu; if(moveMenu) turns++;
-    reward ||= view.dialogue.some(line=>/fainted|EXP|experience/i.test(line.text));
-    view=await tools.press({button:'a'});
+    reward ||= view.dialogue.some(line=>/EXP|experience/i.test(line.text));
+    healed ||= /recovered\s+\d+\s*HP/i.test(view.dialogue.map(line=>line.text).join(' '));
+    const button=nextButton(view);
+    usedPotion ||= button==='a' && view.menu.some(line=>line.kind==='selected' && /POTION/.test(line.text));
+    view=await tools.press({button});
   }
-  if(!view.status_line.startsWith('Overworld')) throw new Error('Battle did not finish');
+  if(!view.status_line.startsWith('Overworld') || view.dialogue.length) throw new Error('Battle and result pages did not finish');
   const before=view.marker;
   view=await tools.move({direction:'up',steps:2});
   const after=view.marker;
   view=await tools.press({button:'start'});
-  return {fight,moves,reward,turns,before,after,menu:view.menu.map(line=>line.text)};
+  return {fight,moves,reward,turns,usedPotion,healed,before,after,menu:view.menu.map(line=>line.text)};
 `;
 
 export async function checkCodeBattle(execute) {
   const {value} = await execute(battleCode);
   assert(value.fight && value.moves && value.reward, JSON.stringify(value));
   assert(value.turns>=2, 'Real starter-level, multi-turn battle');
+  assert(!value.usedPotion || value.healed, 'Selected Potion must produce real HP recovery text');
   assert.notDeepEqual(value.before,value.after,'Code mode restores post-battle movement');
   assert(value.menu.some(line=>line.includes('SAVE')), 'Production Start after code-mode battle');
   await execute("await tools.press({button:'b'}); return null;");

@@ -366,6 +366,17 @@ node tools/tui-stdio-smoke.mjs
 node tools/tui-terminal-smoke.mjs
 ```
 
+Use the same external pack for the build, fixtures, and browser checks. To use
+`content-packs/core-modular.browser.crystalpack`, set `TUI_LOCAL_PACK` for
+`tui-build.sh` and `TUI_TEST_PACK` for `tui-browser-smoke.mjs` to that path, and
+pass it to both fixture commands above.
+
+The battle fixture owns its Pokemon and uses the Totodile family's appropriate
+evolution for the requested level; `TUI_FIXTURE_SPECIES` still overrides it.
+Starter fixtures include ordinary Potions for the current Wild Challenge rules.
+The browser checks use the real Pack menu when healing is needed and read every
+faint/EXP page before checking movement and Start, even after combat has settled.
+
 Exercise all menu/audio boundaries with the external pack too:
 
 ```sh

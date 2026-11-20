@@ -32,6 +32,10 @@ pub use northwoods_starter_signatures::{
 };
 pub mod minnesota_overworld_sprites;
 mod minnesota_sprite_refinement;
+mod minnesota_sprite_edges;
+pub use minnesota_sprite_edges::repair_minnesota_sprite_edges;
+mod minnesota_trainer_portraits;
+pub use minnesota_trainer_portraits::revise_minnesota_trainer_portraits;
 mod minnesota_sprite_sheet;
 mod minnesota_tile_animation;
 mod minnesota_tile_art;
@@ -1104,6 +1108,8 @@ pub use comprehensive_iron_crosscut::integrate_comprehensive_iron_crosscut;
 mod northstar_title;
 mod northstar_title_art;
 pub use northstar_title::{NORTHSTAR_TITLE_IMAGE, build_northstar_title};
+mod northstar_intro_polish;
+pub use northstar_intro_polish::polish_northstar_intro;
 mod minnesota_daycares;
 #[cfg(test)]
 mod minnesota_daycares_tests;
@@ -1172,6 +1178,14 @@ mod northstar_refinement_revision;
 pub use northstar_refinement_revision::{
     NorthstarRefinementSaveSource, northstar_refinement_save_source, refine_northstar_adventure,
 };
+
+mod mothlight_lodge;
+pub use mothlight_lodge::build_mothlight_lodge;
+
+mod mothlight_art;
+
+mod mothlight_battle_cafe;
+pub use mothlight_battle_cafe::build_mothlight_battle_cafe;
 
 mod northstar_mine_return;
 pub use northstar_mine_return::build_mine_return;

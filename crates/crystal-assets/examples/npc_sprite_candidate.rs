@@ -21,8 +21,8 @@ fn main() -> Result<()> {
         return native(&args[1], &args[2]);
     }
     ensure!(
-        args.len() == 6 || args.len() == 8,
-        "usage: npc_sprite_candidate SOURCE OUTPUT X Y WIDTH HEIGHT [LIGHT_RGB555 MID_RGB555]"
+        args.len() == 6 || (8..=11).contains(&args.len()),
+        "usage: npc_sprite_candidate SOURCE OUTPUT X Y WIDTH HEIGHT [LIGHT_RGB555 MID_RGB555 [SAMPLING [MIN_BLACK_SAMPLES [MIN_WHITE_SAMPLES]]]]"
     );
     let source = MinnesotaSheet::from_png(&fs::read(&args[0])?)?;
     let output = PathBuf::from(&args[1]);
@@ -36,10 +36,34 @@ fn main() -> Result<()> {
         6 | (10 << 5) | (7 << 10),
         0,
     ];
-    if args.len() == 8 {
+    if args.len() >= 8 {
         palette[1] = args[6].parse().context("invalid light RGB555 ink")?;
         palette[2] = args[7].parse().context("invalid middle RGB555 ink")?;
     }
+    let sampling = if let Some(value) = args.get(8) {
+        serde_json::from_value(serde_json::Value::String(value.clone()))
+            .context("invalid sprite sampling policy")?
+    } else {
+        SpriteSampling::SourceCenter
+    };
+    let minimum_black_samples = args
+        .get(9)
+        .map(|value| {
+            value
+                .parse::<u16>()
+                .context("invalid black sample threshold")
+        })
+        .transpose()?
+        .unwrap_or(32);
+    let minimum_white_samples = args
+        .get(10)
+        .map(|value| {
+            value
+                .parse::<u16>()
+                .context("invalid white sample threshold")
+        })
+        .transpose()?
+        .unwrap_or(16);
     let candidate = source.candidate_with_conversion(
         SpriteCrop {
             x: values[0],
@@ -52,10 +76,10 @@ fn main() -> Result<()> {
         palette,
         SpriteView::Front,
         SpriteConversionOptions {
-            minimum_white_samples: 16,
-            minimum_black_samples: 32,
+            minimum_white_samples,
+            minimum_black_samples,
             exterior_contour: ExteriorContour::SourceBacked,
-            sampling: SpriteSampling::SourceCenter,
+            sampling,
         },
     )?;
     fs::create_dir_all(&output)?;

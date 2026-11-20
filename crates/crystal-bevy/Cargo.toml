@@ -65,6 +65,7 @@ web-sys = { workspace = true, features = [
     "AudioParam",
     "GainNode",
     "Location",
+    "MediaQueryList",
     "RequestCache",
     "RequestInit",
     "Response",

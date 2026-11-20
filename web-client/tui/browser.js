@@ -2,12 +2,14 @@ import init, { BrowserTui } from './geothite.js';
 import { keyButton, modalInput, registerTuiTools } from './bridge.js';
 import { paintTerminal } from './ascii-frame.js';
 import { tuiSession, acquireTuiSession } from './session.js';
+import { mountGameGestures } from '../game-gestures.js';
 
 const screen = document.getElementById('screen');
 const status = document.getElementById('status');
 const canvas = document.getElementById('ascii');
 const controls = document.getElementById('touch-controls');
 const viewToggle = document.getElementById('view-toggle');
+mountGameGestures({ document, surfaces: '#screen, #touch-controls, #view-toggle' });
 let painted = true;
 try { painted = localStorage.getItem('geothite.tui.view') !== 'text'; } catch {}
 let stopPainting;
@@ -204,6 +206,10 @@ screen.addEventListener('pointerup', event => {
   try { press(button); } catch (error) { report(error); }
 });
 screen.addEventListener('pointercancel', () => { touch = null; });
+screen.addEventListener('lostpointercapture', () => { touch = null; });
+window.addEventListener('blur', () => { touch = null; });
+window.addEventListener('pagehide', () => { touch = null; });
+document.addEventListener('visibilitychange', () => { if (document.hidden) touch = null; });
 window.addEventListener('resize', () => { if (game) { try { draw(); } catch (error) { report(error); } } });
 window.visualViewport?.addEventListener('resize', () => { if (game && phoneLayout) { try { draw(); } catch (error) { report(error); } } });
 

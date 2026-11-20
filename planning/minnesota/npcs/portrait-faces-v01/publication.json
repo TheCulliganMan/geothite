@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "portraits": [
+    {
+      "previous_source": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/02-varel/native-pixels-v2.json",
+      "source": "planning/minnesota/npcs/portrait-faces-v01/varel/native-pixels-v1.json"
+    },
+    {
+      "previous_source": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/03-torven/native-pixels-v3.json",
+      "source": "planning/minnesota/npcs/portrait-faces-v01/torven/native-pixels-v1.json"
+    },
+    {
+      "previous_source": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/04-avrin/native-pixels-v3.json",
+      "source": "planning/minnesota/npcs/portrait-faces-v01/avrin/native-pixels-v1.json"
+    },
+    {
+      "previous_source": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/05-brannic/native-pixels-v3.json",
+      "source": "planning/minnesota/npcs/portrait-faces-v01/brannic/native-pixels-v1.json"
+    },
+    {
+      "previous_source": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/06-saven/native-pixels-v3.json",
+      "source": "planning/minnesota/npcs/portrait-faces-v01/saven/native-pixels-v1.json"
+    },
+    {
+      "previous_source": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/07-sivren/native-pixels-v2.json",
+      "source": "planning/minnesota/npcs/portrait-faces-v01/sivren/native-pixels-v1.json"
+    },
+    {
+      "previous_source": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/08-orlis/native-pixels-v3.json",
+      "source": "planning/minnesota/npcs/portrait-faces-v01/orlis/native-pixels-v1.json"
+    },
+    {
+      "previous_source": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/09-norek/native-pixels-v2.json",
+      "source": "planning/minnesota/npcs/portrait-faces-v01/norek/native-pixels-v1.json"
+    },
+    {
+      "previous_source": "planning/minnesota/npcs/tamarack-ice/01-tamarack/native-pixels-v4.json",
+      "source": "planning/minnesota/npcs/portrait-faces-v01/tamarack/native-pixels-v1.json"
+    }
+  ]
+}

@@ -1424,6 +1424,23 @@ fn title_screen_frame_for_art(
     images: &mut Assets<Image>,
 ) -> Option<SpriteFrame> {
     let key = title_screen_art_key(title);
+    if let Some(opening) = &title.northstar_opening {
+        if rendered_art.northstar_opening_art.is_none() {
+            match northstar_opening_art::Art::load(asset_root) {
+                Ok(art) => rendered_art.northstar_opening_art = Some(art),
+                Err(error) => {
+                    rendered_art
+                        .title_screen_errors
+                        .insert(key, format!("{error:#}"));
+                    return None;
+                }
+            }
+        }
+        return rendered_art
+            .northstar_opening_art
+            .as_mut()
+            .map(|art| art.render(opening, images));
+    }
     if !rendered_art.title_screen_cache.contains_key(&key) {
         match load_title_screen_frame(asset_root, title, images) {
             Ok(frame) => {

@@ -9,7 +9,7 @@ const results = [];
 for (const [name, engine] of [['webkit', webkit], ['chromium', chromium]]) {
  if (selectedEngine && name !== selectedEngine) continue;
  const browser = await engine.launch({ headless: true, args: name === 'chromium' ? (process.platform === 'darwin' ? ['--use-angle=metal'] : ['--use-angle=swiftshader', '--enable-unsafe-swiftshader']) : undefined });
- const initialView = name === 'webkit' ? '3d' : '2d';
+ const initialView = '2d';
  const report = { engine: name, initialView, errors: [], consoleErrors: [], intro: [], layouts: [] }; results.push(report);
  try {
   const context = await browser.newContext({ ...devices['iPhone 13'] });
@@ -23,9 +23,19 @@ for (const [name, engine] of [['webkit', webkit], ['chromium', chromium]]) {
    const wasm = await import(new URL(__crystalRendererBundle.module, document.baseURI));
    const { createGameBridge } = await import('/webmcp.js');
    window.mobileTestBridge = createGameBridge(wasm, { timeoutMs: 60000 });
+   window.mobileTestAllows3D = wasm.crystal_voxel_view_allowed?.() !== false;
   });
   const observe = () => page.evaluate(() => mobileTestBridge.execute({ kind: 'observe' }));
   let state = await observe();
+  const minnesota = state.map_info.name.startsWith('Mn');
+  const startingMap = minnesota ? 'MnWinonaHome2F' : 'PlayersHouse2F';
+  report.region = minnesota ? 'minnesota' : 'johto';
+  report.allow3D = await page.evaluate(() => mobileTestAllows3D);
+  assert.equal(state.map_info.name, startingMap, 'new session must use the regional starting map');
+  if (minnesota) {
+   assert.equal(report.allow3D, false, 'Minnesota is native 2D');
+   assert.equal(await page.locator('#view-navigation [data-view="3d"]').isVisible(), false);
+  }
   // Let the complete, unskipped movie render. Fail on errors even if later scenes recover.
   for (let i = 0; state.status.screen === 'intro' && i < 180; i++) {
    assert.equal(state.recent_events.error, null, JSON.stringify(state.recent_events));
@@ -36,7 +46,11 @@ for (const [name, engine] of [['webkit', webkit], ['chromium', chromium]]) {
   }
   assert.equal(state.status.screen, 'title', 'the full intro must hand off to the title');
   assert.equal(state.recent_events.error, null);
-  for (const scene of ['IntroScene16', 'IntroScene20']) assert.ok(report.intro.some(text => text.endsWith(scene)), `${scene} must actually play`);
+  // Existing Minnesota packs open the regional menu directly; packs with the
+  // authored Northstar movie opt in. Whenever a movie starts, watch it fully.
+  if (!minnesota || report.intro.length) {
+   for (const scene of ['IntroScene16', 'IntroScene20']) assert.ok(report.intro.some(text => text.endsWith(scene)), `${scene} must actually play`);
+  } else assert.match(state.observe.text, /NEW GAME/, 'Minnesota direct startup must expose its game menu');
   const layout = async label => {
    const controls = await page.locator('#touch-controls button').evaluateAll(buttons => buttons.map(button => {
     const r = button.getBoundingClientRect();
@@ -58,10 +72,12 @@ for (const [name, engine] of [['webkit', webkit], ['chromium', chromium]]) {
   };
   await layout('portrait');
   let taps = 0;
+  const welcome = new Set();
   const tap = async button => {
    const box = await page.locator(`[data-game-button="${button}"]`).boundingBox();
    await page.touchscreen.tap(box.x + box.width / 2, box.y + box.height / 2);
    await page.waitForTimeout(180); state = await observe();
+   if (state.status.screen === 'introduction' && state.observe.text) welcome.add(state.observe.text);
    if (++taps % 15 === 0) console.log(name, 'touch', taps, button, state.status.screen, state.observe.text.slice(0,160));
    return state;
   };
@@ -75,8 +91,11 @@ for (const [name, engine] of [['webkit', webkit], ['chromium', chromium]]) {
    } else await tap('a');
    assert.equal(state.recent_events.error, null, JSON.stringify(state.recent_events));
   }
-  assert.equal(state.status.screen, 'overworld'); assert.equal(state.map_info.name, 'PlayersHouse2F');
+  assert.equal(state.status.screen, 'overworld', `touch opening did not finish: ${state.observe.text}`);
+  assert.equal(state.map_info.name, startingMap);
   assert.equal(state.status.player_name, 'CHRIS');
+  report.welcome = [...welcome];
+  report.newGame = { name: state.status.player_name, map: state.map_info.name, taps };
   const before = state.map_info.player;
   for (let i = 0; i < 4 && state.map_info.player.x === before.x; i++) await tap('right');
   assert.ok(state.map_info.player.x > before.x, 'touch D-pad must move the authoritative player');
@@ -98,10 +117,27 @@ for (const [name, engine] of [['webkit', webkit], ['chromium', chromium]]) {
    await page.waitForTimeout(350); state = await observe();
    assert.deepEqual(state.map_info.player, released, 'canceled touches must not leave movement held');
    report.multitouch = { released, stopped: state.map_info.player };
+   const stage = await page.locator('#game-stage').boundingBox();
+   const center = { x: stage.x + stage.width / 2, y: stage.y + stage.height / 2 };
+   const fingers = distance => [
+    { x: center.x - distance, y: center.y, id: 1 },
+    { x: center.x + distance, y: center.y, id: 2 },
+   ];
+   const scale = await page.evaluate(() => visualViewport.scale);
+   await session.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: fingers(20) });
+   for (let distance = 30; distance <= 110; distance += 10) {
+    await session.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: fingers(distance) });
+    await page.waitForTimeout(20);
+   }
+   await session.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+   assert.equal(await page.evaluate(() => visualViewport.scale), scale, 'pinch during play must not zoom the page');
+   state = await observe();
+   assert.deepEqual(state.map_info.player, released, 'pinching must not move the player');
+   report.pinch = { before: scale, after: await page.evaluate(() => visualViewport.scale) };
    await session.detach();
   }
-  for (let i = 0; !state.observe.menus?.length && i < 5; i++) await tap('start');
-  assert.ok(state.observe.menus?.length, 'touch START must expose the production menu');
+  for (let i = 0; !state.observe.menus?.some(menu => menu.kind === 'start') && i < 5; i++) await tap('start');
+  assert.ok(state.observe.menus?.some(menu => menu.kind === 'start'), 'touch START must expose the production Start menu');
   const menu = JSON.stringify(state.observe.menus); await tap('down');
   assert.notEqual(JSON.stringify(state.observe.menus), menu, 'D-pad must change the menu selection');
   await tap('b'); assert.equal(state.observe.menus?.length ?? 0, 0, 'B closes the menu');
@@ -110,10 +146,13 @@ for (const [name, engine] of [['webkit', webkit], ['chromium', chromium]]) {
   await layout('small-portrait');
   await page.setViewportSize({ width: 844, height: 390 }); await page.waitForTimeout(600);
   await layout('landscape');
-  for (const mode of ['3d', 'tui', '2d']) {
+  for (const mode of report.allow3D ? ['3d', 'tui', '2d'] : ['tui', '2d']) {
+   const beforeView = { map: state.map_info.name, player: state.map_info.player, name: state.status.player_name };
    await page.locator(`#view-navigation [data-view="${mode}"]`).tap(); await page.waitForTimeout(600);
    await layout(`landscape-${mode}`);
-   assert.equal((await observe()).status.screen, 'overworld');
+   state = await observe();
+   assert.equal(state.status.screen, 'overworld');
+   assert.deepEqual({ map: state.map_info.name, player: state.map_info.player, name: state.status.player_name }, beforeView, 'changing presentation must preserve the session');
   }
   assert.deepEqual(report.errors, []);
   assert.deepEqual(report.consoleErrors, []);

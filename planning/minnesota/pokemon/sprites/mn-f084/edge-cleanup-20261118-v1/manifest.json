@@ -1,0 +1,282 @@
+{
+  "schema_version": 3,
+  "family_id": "MN_F084",
+  "tool": "built-in image_gen",
+  "pokemon_palettes": {
+    "MN_182": {
+      "species_id": "MN_182",
+      "name": "Scutlet",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          20,
+          24,
+          20
+        ],
+        [
+          7,
+          12,
+          14
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        21268,
+        14727,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          165,
+          198,
+          165
+        ],
+        [
+          57,
+          99,
+          115
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#A5C6A5",
+        "#396373",
+        "#000000"
+      ]
+    },
+    "MN_183": {
+      "species_id": "MN_183",
+      "name": "Barbelisk",
+      "gbc_rgb5": [
+        [
+          31,
+          31,
+          31
+        ],
+        [
+          17,
+          23,
+          24
+        ],
+        [
+          6,
+          10,
+          17
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "gbc_rgb555_words": [
+        32767,
+        25329,
+        17734,
+        0
+      ],
+      "rgb8": [
+        [
+          255,
+          255,
+          255
+        ],
+        [
+          140,
+          189,
+          198
+        ],
+        [
+          49,
+          82,
+          140
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "hex": [
+        "#FFFFFF",
+        "#8CBDC6",
+        "#31528C",
+        "#000000"
+      ]
+    }
+  },
+  "sprites": [
+    {
+      "id": "mn-182-scutlet-v1",
+      "species_id": "MN_182",
+      "view": "front",
+      "source": "sprites/mn-f084/mn-182-183.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        0,
+        700,
+        520
+      ],
+      "fit": [
+        40,
+        40
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        21268,
+        14727,
+        0
+      ],
+      "interior_black_min_samples": 32
+    },
+    {
+      "id": "mn-182-scutlet-v1",
+      "species_id": "MN_182",
+      "view": "back",
+      "source": "sprites/mn-f084/mn-182-183.front-back.imagegen-v1.png",
+      "crop": [
+        0,
+        520,
+        768,
+        504
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        21268,
+        14727,
+        0
+      ],
+      "interior_black_min_samples": 32,
+      "pixel_edits": [
+        {
+          "x": 46,
+          "y": 44,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 46,
+          "y": 45,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 45,
+          "y": 46,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 46,
+          "y": 46,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 45,
+          "y": 47,
+          "from": 3,
+          "to": 0
+        },
+        {
+          "x": 46,
+          "y": 47,
+          "from": 3,
+          "to": 0
+        }
+      ]
+    },
+    {
+      "id": "mn-183-barbelisk-v1",
+      "species_id": "MN_183",
+      "view": "front",
+      "source": "sprites/mn-f084/native-refinement-20261103-r18/front-back.imagegen.png",
+      "crop": [
+        0,
+        0,
+        1000,
+        825
+      ],
+      "fit": [
+        54,
+        50
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        25329,
+        17734,
+        0
+      ],
+      "interior_black_min_samples": 32,
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16
+    },
+    {
+      "id": "mn-183-barbelisk-v1",
+      "species_id": "MN_183",
+      "view": "back",
+      "source": "sprites/mn-f084/native-refinement-20261103-r18/front-back.imagegen.png",
+      "crop": [
+        1050,
+        0,
+        857,
+        825
+      ],
+      "fit": [
+        46,
+        47
+      ],
+      "normal_palette_rgb555": [
+        32767,
+        25329,
+        17734,
+        0
+      ],
+      "interior_black_min_samples": 32,
+      "sampling": "source_center",
+      "exterior_contour": "source_backed",
+      "white_detail_min_samples": 16
+    }
+  ],
+  "status": "native-front-back-reviewed",
+  "original_manifest": "sprites/mn-f084/manifest.json",
+  "prompt_file": "sprites/mn-f084/native-refinement-20261103-r18/prompt.txt",
+  "back_framing": "gen2-close-rear-portrait",
+  "visual_review": {
+    "status": "reviewed",
+    "outline_profile": "source-contour-v1",
+    "sheet_sha256": "398340bfcf13d57f98055c02d9c6b139391399cf84c9fd612ee5f23ed0b9dab4",
+    "notes": "Inspected native and 2x before/after frames: detached right-edge neighboring-creature fragments removed; all other pixels, including eyes, silhouettes, shading and intentional details, are identical. Original source sheet and previous manifest retained.",
+    "reviewer": "root"
+  },
+  "shiny_review": {
+    "status": "reviewed",
+    "views": 4,
+    "notes": "Changed adult normal/shiny native fronts/backs inspected for eye/socket and material contrast. Every family shiny PNG exactly matches profile palette swap of native indices; normal bytes match canonical PNGs. Juvenile art unchanged."
+  },
+  "previous_manifest": "sprites/mn-f084/native-refinement-20261103-r18/manifest.json"
+}

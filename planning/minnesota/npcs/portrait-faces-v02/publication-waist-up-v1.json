@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "portraits": [
+    {
+      "previous_source": "planning/minnesota/npcs/tamarack-ice/01-tamarack/native-pixels-v4.json",
+      "source": "planning/minnesota/npcs/portrait-faces-v02/tamarack/native-pixels-waist-up-v1.json"
+    }
+  ]
+}

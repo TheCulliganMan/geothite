@@ -336,7 +336,7 @@
     },
     {
       "id": "MN_F084",
-      "manifest": "sprites/mn-f084/native-refinement-20261103-r18/manifest.json"
+      "manifest": "sprites/mn-f084/edge-cleanup-20261118-v1/manifest.json"
     },
     {
       "id": "MN_F085",
@@ -352,7 +352,7 @@
     },
     {
       "id": "MN_F088",
-      "manifest": "sprites/mn-f088/crop-fix-20261104-v3/manifest.json"
+      "manifest": "sprites/mn-f088/edge-cleanup-20261118-v1/manifest.json"
     },
     {
       "id": "MN_F089",
@@ -408,7 +408,7 @@
     },
     {
       "id": "MN_F102",
-      "manifest": "sprites/mn-f102/native-refinement-20261103-r12/manifest.json"
+      "manifest": "sprites/mn-f102/edge-cleanup-20261118-v1/manifest.json"
     },
     {
       "id": "MN_F103",
@@ -524,7 +524,7 @@
     },
     {
       "id": "MN_F132",
-      "manifest": "sprites/mn-f132/thematic-refinement-20261104-v2/manifest.json"
+      "manifest": "sprites/mn-f132/edge-cleanup-20261118-v1/manifest.json"
     },
     {
       "id": "MN_F133",

@@ -7,7 +7,7 @@ import subprocess
 import tempfile
 
 from check_minneapolis_mcp import Client
-from check_winona_mcp import choose, walk
+from check_winona_mcp import walk
 from render_reference import load_pack
 
 
@@ -19,15 +19,38 @@ def enter(client, direction, destination):
     raise AssertionError(('missing arrival', destination, client.status()))
 
 
-def read(client, pages):
+def read(client, pages, acknowledge_last=True):
     observed = []
-    for expected in pages:
+    for index, expected in enumerate(pages):
         lines = [line['text'] for line in client.observe()['structuredContent']['dialogue']]
         actual = '\n'.join(lines).strip()
         assert actual == '\n'.join(expected), (expected, actual)
         observed.append(actual)
-        client.press('a')
+        if acknowledge_last or index + 1 < len(pages):
+            client.press('a')
     return '\n\n'.join(observed)
+
+
+def decline_starter(client, species, pages):
+    snapshot = client.observe()['structuredContent']
+    prompt = [line['text'].strip() for line in snapshot['prompt']]
+    assert prompt == [f'Picture: {species}', 'A/B: close picture'], prompt
+    assert not snapshot['dialogue'], 'the portrait must precede the introduction'
+    assert client.status()['pokedex']['owned'] == 0, 'starter must not be granted at its portrait'
+    client.press('a')
+    # Pending YES/NO is exposed during earlier pages, but the printer still
+    # owns input. Read every reviewed page before moving the choice cursor.
+    introduction = read(client, pages, acknowledge_last=False)
+    prompt = [line['text'].strip() for line in client.observe()['structuredContent']['prompt']]
+    assert prompt == ['> YES', 'NO'], prompt
+    client.press('down')
+    snapshot = client.observe()['structuredContent']
+    prompt = [line['text'].strip() for line in snapshot['prompt']]
+    assert prompt == ['YES', '> NO'], ('choice must be interactive after the final page', prompt)
+    assert [line['text'] for line in snapshot['dialogue']] == pages[-1]
+    client.press('a')
+    assert client.status()['pokedex']['owned'] == 0, 'declining must not grant a starter'
+    return introduction
 
 
 def main():
@@ -100,18 +123,19 @@ def main():
             walk(client, pack, (7, 4))
             client.press('up')
             client.press('a')
-            choose(client, False)
-            read(client, texts['MnWinonaFieldStation']['MnWDeclineText'])
+            starter = decline_starter(
+                client, 'KINDLIT', texts['MnWinonaFieldStation']['MN_W_CYNDAQUILText'])
+            refusal = read(client, texts['MnWinonaFieldStation']['MnWDeclineText'])
             assert not client.status()['dialogue'], 'declining must return to exploration'
             client.press('start')
             assert 'PACK' in client.observe()['content'][0]['text']
-            print('\n\n'.join([mom, gear, professor, reminder]))
+            print('\n\n'.join([mom, gear, professor, reminder, starter, refusal]))
         finally:
             process.stdin.close()
             assert process.wait(timeout=30) == 0, 'client failed to exit'
         stderr.seek(0)
         assert stderr.read() == b'', 'gameplay stderr must remain byte-empty'
-    print('PASS: New Game, Mom handoff, Pokégear from Start, lab, starter decline, clean stderr.')
+    print('PASS: New Game, Mom handoff, Pokégear from Start, lab, starter portrait, exact introduction and decline, clean stderr.')
 
 
 if __name__ == '__main__':

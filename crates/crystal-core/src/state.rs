@@ -8541,6 +8541,11 @@ impl GameState {
     {
         let mut next = self.clone();
         next.fishing.daily_flags1 = 0;
+        // The café's unclaimed prize survives midnight; only battle eligibility
+        // resets. Keep the cake quest and every other permanent event intact.
+        next.flags
+            .event_flags
+            .remove("EVENT_MN_MOTHLIGHT_CAFE_WON_TODAY");
         // Fruit pickups use one saved flag per native tree. Expire the
         // harvest, while leaving item pickups and story flags permanent.
         next.flags
@@ -10899,6 +10904,41 @@ mod tests {
             assert!(flags.is_engine_flag_set(flag).unwrap(), "{flag}");
         }
         assert_eq!(flags.event_flags, events);
+    }
+
+    #[test]
+    fn mothlight_cafe_daily_reset_retains_pending_prize_and_cake() {
+        let mut state = GameState::default();
+        for flag in [
+            "EVENT_MN_MOTHLIGHT_CAFE_WON_TODAY",
+            "EVENT_MN_MOTHLIGHT_CAFE_PRIZE_PENDING",
+            "EVENT_MN_MOTHLIGHT_CAKE_REWARD",
+        ] {
+            state.flags.set_event_flag(flag, true).expect("valid event");
+        }
+        state
+            .apply_daily_reset(&mut ReplayDivider::new([0, 0]))
+            .expect("daily reset");
+        let restored: GameState =
+            serde_json::from_str(&serde_json::to_string(&state).expect("serialize daily state"))
+                .expect("restore daily state");
+        assert!(
+            !restored
+                .flags
+                .is_event_flag_set("EVENT_MN_MOTHLIGHT_CAFE_WON_TODAY")
+                .expect("daily flag")
+        );
+        for flag in [
+            "EVENT_MN_MOTHLIGHT_CAFE_PRIZE_PENDING",
+            "EVENT_MN_MOTHLIGHT_CAKE_REWARD",
+        ] {
+            assert!(
+                restored
+                    .flags
+                    .is_event_flag_set(flag)
+                    .expect("permanent receipt")
+            );
+        }
     }
 
     #[test]

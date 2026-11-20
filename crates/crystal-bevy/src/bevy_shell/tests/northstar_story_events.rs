@@ -57,6 +57,38 @@ fn reed_approaches_before_speaking_and_opening_progresses() {
     assert!(event(&c, MET) && event(&c, WON));
 }
 
+#[test]
+#[ignore = "requires the intro candidate in CRYSTAL_WINONA_TEST_PACK"]
+fn intro_earned_mom_return_repeats_rest_without_replaying_departure() {
+    let (root, runtime, mut controller) = super::dialogue_overhaul::opening(0);
+    let flags = controller.shell.shell.session().state().flags.clone();
+    let bag = controller.shell.shell.session().state().bag.clone();
+    indoor_walk(&mut controller, &runtime, (8, 4));
+    for _ in 0..2 {
+        press(&mut controller, GameButton::Left);
+        press(&mut controller, GameButton::A);
+        super::northstar_dialogue::acknowledge(
+            &mut controller,
+            "MS_HOME",
+            "MnWGuardianRestText",
+            "EVENT_MN_DELIVERED_ROCHESTER_PARCEL",
+        );
+        finish(&mut controller);
+        assert_eq!(controller.shell.shell.session().state().flags, flags);
+        assert_eq!(controller.shell.shell.session().state().bag, bag);
+        at(&mut controller, "MnWinonaHome1F", (8, 4));
+        press(&mut controller, GameButton::Start);
+        assert!(
+            !super::super::visible_start_menu_entries(&controller.shell)
+                .expect("Start works after returning to Mom")
+                .is_empty()
+        );
+        press(&mut controller, GameButton::B);
+    }
+    super::winona::continue_in_place(&mut controller, &root, &runtime, "intro-returned-to-mom");
+    travel(&mut controller, GameButton::Down, "MnWinonaHome1F", (8, 5));
+}
+
 fn event(c: &VisibleShellController, name: &str) -> bool {
     c.shell
         .shell
@@ -290,8 +322,7 @@ fn story_events_earned_reed_battle_ivy_quest_and_real_egg_decline_retry_continue
     // There are no party, level, position, result-flag or RNG writes here.
     let (root, r, mut c) = super::rochester::delivery();
     assert!(event(&c, MET) && event(&c, WON) && !event(&c, EGG));
-    indoor_walk(&mut c, &r, (10, 14));
-    travel(&mut c, GameButton::Down, "MnRochester", (15, 8));
+    super::rochester_earned::clinic_exit(&mut c, &r);
     indoor_walk(&mut c, &r, (38, 18));
     travel(&mut c, GameButton::Right, "MnR01C00R00", (0, 24));
     super::rochester::trail(&mut c, &r, (63, 24));
@@ -322,8 +353,16 @@ fn story_events_earned_reed_battle_ivy_quest_and_real_egg_decline_retry_continue
         .flatten()
         .find(|p| p.is_egg)
         .expect("real party egg");
-    assert_eq!(egg.species.id, "GILLPUP");
-    assert_eq!(egg.level, 5);
+    let gifts: Vec<_> = r.data().maps[LAB]
+        .gift_pokemon_scripts
+        .iter()
+        .filter(|gift| gift.egg && gift.source_script == "MnNSEEggOffer")
+        .collect();
+    let [gift] = gifts.as_slice() else {
+        panic!("Tamarack must have exactly one authored egg gift");
+    };
+    assert_eq!(egg.species.id, gift.species_id);
+    assert_eq!(egg.level, gift.level);
     let after = c.shell.shell.session().state().clone();
     let mut flags = before.flags;
     flags.set_event_flag(EGG, true).expect("only egg result");
@@ -338,6 +377,12 @@ fn story_events_earned_reed_battle_ivy_quest_and_real_egg_decline_retry_continue
     c = checkpoint(&mut c, &root, &r, "egg-given");
     press(&mut c, GameButton::Up);
     press(&mut c, GameButton::A);
+    super::northstar_dialogue::acknowledge(
+        &mut c,
+        "MS00",
+        "MnNSEEggAfterText",
+        "EVENT_MN_SURVEY_RESTORED",
+    );
     finish(&mut c);
     assert_eq!(
         c.shell.shell.session().state().storage,
@@ -428,8 +473,10 @@ fn story_events_first_rival_loss_keeps_the_parcel_and_recovers_without_repeating
         BevyShellStart::NewGameAtRuntimeTile {
             spawn_identifier: r.title_new_game_spawn_identifier().expect("HOME"),
             map_name: LAB.into(),
-            tile_x: 6,
-            tile_y: 4,
+            // Starter receipt returns the player here beside Tamarack. A
+            // remaining starter object cannot trigger the delivery handoff.
+            tile_x: 4,
+            tile_y: 2,
         },
         BevyShellConfig {
             smoke_player_name: Some("CHRIS".into()),
@@ -447,7 +494,11 @@ fn story_events_first_rival_loss_keeps_the_parcel_and_recovers_without_repeating
     assert!(state.storage.party.add_pokemon(partner));
     state.sync_party_from_storage();
     state.last_spawn_map_constant = Some("MN_WINONA_HOME_1F".into());
-    for f in ["EVENT_MN_HOME_INTRO", "EVENT_MN_STARTER_RECEIVED"] {
+    for f in [
+        "EVENT_MN_HOME_INTRO",
+        "EVENT_MN_TAMARACK_INTRO",
+        "EVENT_MN_STARTER_RECEIVED",
+    ] {
         state
             .flags
             .set_event_flag(f, true)
@@ -458,7 +509,7 @@ fn story_events_first_rival_loss_keeps_the_parcel_and_recovers_without_repeating
     c.wait_frames(64).expect("fixture ready");
     // No state writes beyond setup. Select its actually learned TAIL WHIP;
     // ordinary enemy attacks, rather than a result mutation, cause the loss.
-    press(&mut c, GameButton::Up);
+    press(&mut c, GameButton::Right);
     press(&mut c, GameButton::A);
     let mut saw = false;
     let mut spent_pp = false;
@@ -506,12 +557,30 @@ fn story_events_first_rival_loss_keeps_the_parcel_and_recovers_without_repeating
     );
     finish(&mut c);
     assert!(event(&c, MET) && !event(&c, WON));
-    assert!(
-        event(&c, "EVENT_MN_R01_PARCEL_RECEIVED") && event(&c, "EVENT_MN_WINONA_BALLS_RECEIVED")
-    );
+    assert!(event(&c, "EVENT_MN_R01_PARCEL_RECEIVED"));
+    // Blackout bypasses the aide's exit-lane handoff. The player keeps the
+    // envelope and can return for the unclaimed supplies after recovering.
+    assert!(!event(&c, "EVENT_MN_WINONA_BALLS_RECEIVED"));
     assert!(!event(&c, "EVENT_MN_DELIVERED_ROCHESTER_PARCEL") && !event(&c, EGG));
     at(&mut c, "MnWinonaHome1F", (7, 6));
     c = checkpoint(&mut c, &root, &r, "rival-loss-recovery");
+    assert_eq!(
+        c.shell
+            .shell
+            .session()
+            .state()
+            .bag
+            .quantity(&r.data().items["POKE_BALL"]),
+        0
+    );
+    indoor_walk(&mut c, &r, (6, 6));
+    travel(&mut c, GameButton::Down, "MnWinona", (7, 8));
+    indoor_walk(&mut c, &r, (18, 20));
+    travel(&mut c, GameButton::Up, LAB, (4, 10));
+    travel(&mut c, GameButton::Up, LAB, (4, 9));
+    super::northstar_dialogue::acknowledge(&mut c, "MS00", "MnWBallsText", WON);
+    finish(&mut c);
+    assert!(event(&c, "EVENT_MN_WINONA_BALLS_RECEIVED"));
     let balls = c
         .shell
         .shell
@@ -519,19 +588,26 @@ fn story_events_first_rival_loss_keeps_the_parcel_and_recovers_without_repeating
         .state()
         .bag
         .quantity(&r.data().items["POKE_BALL"]);
-    assert_eq!(balls, 5);
-    indoor_walk(&mut c, &r, (6, 6));
-    travel(&mut c, GameButton::Down, "MnWinona", (7, 8));
-    indoor_walk(&mut c, &r, (18, 20));
-    travel(&mut c, GameButton::Up, LAB, (4, 10));
-    indoor_walk(&mut c, &r, (6, 4));
-    press(&mut c, GameButton::Up);
+    assert_eq!(
+        balls, 5,
+        "the actual aide handoff grants exactly five Balls"
+    );
+    indoor_walk(&mut c, &r, (4, 2));
+    press(&mut c, GameButton::Right);
     press(&mut c, GameButton::A);
     finish(&mut c);
     assert!(
         !event(&c, WON),
         "repeat must not forge victory or restart the first battle"
     );
+    indoor_walk(&mut c, &r, (4, 10));
+    travel(&mut c, GameButton::Down, "MnWinona", (18, 20));
+    travel(&mut c, GameButton::Up, LAB, (4, 10));
+    indoor_walk(&mut c, &r, (4, 2));
+    press(&mut c, GameButton::Right);
+    press(&mut c, GameButton::A);
+    finish(&mut c);
+    assert!(!event(&c, WON), "another visit must retain the actual loss");
     assert_eq!(
         c.shell
             .shell

@@ -1,0 +1,32 @@
+{
+  "status": "visual_review_candidate",
+  "character": "Tamarack",
+  "image_source": "planning/minnesota/npcs/portrait-faces-v02/tamarack/image-source-waist-up-v2.png",
+  "native_source": "planning/minnesota/npcs/portrait-faces-v02/tamarack/native-pixels-waist-up-v2.json",
+  "previous_source": "planning/minnesota/npcs/tamarack-ice/01-tamarack/native-pixels-v4.json",
+  "tool": "trainer_portrait_palette",
+  "palette_rgb555": [
+    32767,
+    25370,
+    8683,
+    0
+  ],
+  "source_bounds": [
+    79,
+    14,
+    1150,
+    1249
+  ],
+  "fit_size": [
+    47,
+    54
+  ],
+  "phase": [
+    0.5,
+    0.25
+  ],
+  "hand_pixel_edits": false,
+  "selected": false,
+  "deployed": false,
+  "remaining_visual_issue": "Far pupil joins the head outline in the generated source."
+}

@@ -12,6 +12,7 @@ body { margin: 0; height: 100dvh; overflow: auto; padding: 0; display: grid; pla
 #touch-controls button { min-width: 44px; min-height: 44px; border: 1px solid #3f5d62; border-radius: 5px; background: #0b1823; color: #f6c271; font: 600 16px ui-monospace, monospace; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
 #touch-controls button:active { color: #030312; background: #f6c271; }
 #touch-controls button:focus-visible { outline: 2px solid #f6c271; outline-offset: 2px; }
+#touch-controls, #touch-controls button, #view-toggle { touch-action: none; }
 .dpad { display: grid; grid-template-columns: repeat(3, 44px); grid-template-rows: repeat(2, 44px); gap: 4px; }
 .dpad [data-button="up"] { grid-column: 2; }
 .dpad [data-button="left"] { grid-column: 1; grid-row: 2; }

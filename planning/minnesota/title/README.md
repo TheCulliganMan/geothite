@@ -1,17 +1,142 @@
 # Pokémon Northstar opening
 
-Minnesota now opens directly at the production New Game/Continue menu, without
-a title card, splashes, movie or Start prompt. B remains in that menu. This
-runtime rule applies to Minnesota content regardless of pack filename or title
-art; existing packs need no rebuild. Continue, options and new-game setup still
-use their production flows. Other regions retain their authored startup.
+The revised Northstar pack plays the original Geothite opening movie inside
+the game, using its existing native interpreter, artwork, music and timing.
+It then stages a three-second Northstar title reveal: the star illuminates,
+Kettlurk gathers its current and opens both arms, and the complete NORTHSTAR
+name arrives with a lettering shine. Native palette steps reveal the whole
+creature together. Its idle performance coordinates a rigid head dip, chest
+sway and arm gestures around fixed legs, with circulating body currents and
+continuously falling water. The reveal runs once;
+returning from the menu keeps the completed composition. The movie keeps its
+normal skip controls; A or Start at any point in the title reveal opens
+the production New Game/Continue menu. Returning from the menu does not replay
+the movie. `GEOTHITE_REDUCED_MOTION=1` starts on a still title; the graphical
+browser reads `prefers-reduced-motion`. There is no external video player.
 
-The opt-in `northstar_title_and_tamarack_opening` regression now checks immediate
-menu entry, idle/B behavior and the Tamarack welcome through Winona arrival.
-`minnesota_direct_menu_preserves_continue` checks the immediate menu with a real
-save, summary cancellation and loading the saved trainer and position. Both use
-`CRYSTAL_NORTHSTAR_TITLE_PACK`; the Continue case also supports older Minnesota
-packs without regional opening art.
+Tamarack's New Game welcome introduces Jiglet through a discovery of her own.
+The playable opening gives Mom a clear Pokégear handoff, keeps the three starter
+personalities distinct, and carries Reed's case exchange into the first battle
+and Tamarack's care afterward. All text lives in `planning/minnesota/story.json`:
+`intro_revision` selects the welcome and field labels, and
+`dialogue_overhaul.texts` owns their pages. The two existing story-flow overlaps
+are synchronized there as well.
+
+The scoped Rust publisher preserves every scene, battle, map layout, creature, existing
+runtime asset and audio program. Its only additional runtime file is the opt-in
+marker `data/title/northstar-opening-v1.json`. Existing packs without this marker
+retain their direct New Game/Continue startup. Other regions retain their own
+startup. The terminal clients still enter the playable game directly.
+
+## Build and review
+
+The intro build is `content-packs/minnesota-northstar-intro-v03.crystalpack`,
+built from the Headwaters Journey/Mothlight parent. Later selected descendants
+retain this opening; resolve `planning/minnesota/world.json` for the current
+selection. The title animation runs from these existing pack resources and
+does not require republishing their art or changing save identities. It is not a public release;
+existing player saves retain their original identity.
+The [frozen build recipe](intro-build.json) binds the parent and resulting pack
+hashes to the canonical dialogue selection. Use a fresh output path when
+repeating the publisher:
+
+```sh
+CARGO_INCREMENTAL=0 cargo build --locked -p crystal-assets \
+  --example pack_northstar_intro --bin verify_crystalpack
+target/debug/examples/pack_northstar_intro \
+  content-packs/minnesota-mothlight-battle-cafe-headwaters-journey-v01.crystalpack \
+  planning/minnesota/story.json \
+  content-packs/minnesota-northstar-intro-v03.crystalpack
+target/debug/verify_crystalpack \
+  content-packs/minnesota-northstar-intro-v03.crystalpack --audio --desktop
+```
+
+The v03 build/readback and all 602 PCM hash, frame-count and loop-range checks
+pass. Its SHA-256 is
+`b5decf90a6a45cd87549a5f26820962ef4a521bac1246e423ccfba5ae8394afb`;
+content identity is
+`71d27e7ff029521aa17d18265cebb13e7467e13a28c0a5a80cada5f22e3ee8f0`.
+The preservation test restores only selected text and the marker, then requires
+complete equality with the parent. The Station Return candidate passed all four
+starter approaches, including its new Pouchid aisle route. Canonical native page
+bounds and current-pack production stdio Mom/Pokégear/Tamarack/starter-portrait/
+refusal checks pass.
+
+The earlier v01 text-identical candidate also passed the earned three-starter
+journeys through Reed and Ivy, Mom's repeat/Start/Continue course, the egg
+refusal/retry/Continue course, a real rival loss and supplies on return, and all
+four lab entrances. These tests use installed dialogue and ordinary controller
+inputs; the rival-loss setup begins immediately after the starter gift.
+Generated packs, saves, frames and logs stay ignored under `target/` and
+`content-packs/`.
+
+Build and launch the native game with the new opening and an isolated save:
+
+```sh
+CARGO_INCREMENTAL=0 cargo build --locked -p crystal-bevy --bin crystal-bevy
+CRYSTAL_PREVIEW_AUDIO=1 target/debug/crystal-bevy \
+  --pack content-packs/minnesota-northstar-intro-v03.crystalpack \
+  --save-path target/northstar-intro-20261119/local-game.crystalsave
+```
+
+The v03 integrated native regression plays the complete original source movie,
+checks its music queue and native scene surfaces, then verifies title motion,
+menu cancellation, the complete Tamarack welcome, new-game arrival and Start.
+Separate native-key tests cover A/B/Start skip without consuming a second menu
+action. A real `GEOTHITE_REDUCED_MOTION=1` initialization skips the movie, retains
+identical title pixels and still accepts Start. The original movie and its
+cleanup own their existing timing; the Northstar clock only animates title art.
+The v03 Continue course also passes, preserving the saved player, map, position
+and host clock. The final production executable was launched on macOS: its
+original studio/movie scenes, transition into the animated Northstar title,
+physical Start input, menu and B return were visually verified in the actual
+game window. Whole-workspace formatting and affected-crate Clippy pass, with
+remaining repository warnings outside this change. Build output stays retained
+while the local game is running.
+
+```sh
+CRYSTAL_NORTHSTAR_TITLE_PACK="$PWD/content-packs/minnesota-northstar-intro-v03.crystalpack" \
+CRYSTAL_NORTHSTAR_REVIEW_DIR="$PWD/target/northstar-intro-20261119/original-in-game" \
+RUST_MIN_STACK=67108864 CARGO_INCREMENTAL=0 \
+cargo test --locked -p crystal-bevy --lib northstar_title_and_tamarack_opening \
+  -- --ignored --nocapture --test-threads=1
+```
+
+The standalone legacy Johto title test still requires its absent historical
+`apps/web/assets/data/content-packs/core-modular.crystalpack` fixture. The new
+Northstar regression executes the original movie from the verified current pack.
+
+### Animated title follow-up (2026-11-19)
+
+The three-second entrance and coordinated head, chest and arm animation were
+verified against `content-packs/minnesota-intro-fen-clearings-v01.crystalpack`
+(SHA-256
+`73a502444fc02ba16b61a054ff2505b9fedd55a5687a3ad5c0c0cecda869f11e`).
+Its original movie/title programs, 103 opening resources, audio and opening
+dialogue match the v03 build. This follow-up changes the Rust compositor and
+presentation clock; it does not rebuild the pack or migrate saves.
+
+The full original-movie/New Game course, all three native skip buttons,
+confirmation during the reveal, menu return, reduced-motion initialization and
+Continue pass. Two complete ambient cycles retain planted feet, the readable
+prompt, bounded image allocations and unchanged gameplay state. Native captures
+show a 4,906-pixel reveal and up to 2,785 changing hero-area pixels. The head
+and chest outline checks change 520 and 448 pixels respectively, independently
+of material colors. All 37 production captures exactly match the reviewed
+compositor frames. Independent visual inspection checked the connected
+silhouette, fixed feet, empty torso and readable text at native size and 3×.
+The rebuilt desktop client was observed playing the original movie, skipping
+into the entrance, completing the title reveal, accepting Start and returning
+with B. The local review app remains open; this is not a public or browser
+deployment.
+
+Whole-workspace formatting and affected-crate all-target Clippy pass, with
+existing repository warnings and no diagnostics in the title modules or test.
+Evidence stays ignored under
+`target/northstar-intro-20261119/title-performance/`. The shared build cache
+remains in use by the running game and other work. The inactive preview helper
+and its executable were removed (1.42 MiB recovered); retained frames document
+the visual review. The last disk check showed 353 GiB free.
 
 ## Historical title-art publication
 
@@ -76,7 +201,7 @@ fails against the shared TUI pack in both the current binary and the pre-task
 2026-10-31 04:33 controller binary; that existing failure is outside this regional
 still-title change. The Minnesota still-title/intro regression passes.
 
-The selected final local pack is `content-packs/minnesota-northstar-title-v03.crystalpack`
+That historical verified pack is `content-packs/minnesota-northstar-title-v03.crystalpack`
 (content identity `cccc5efd93832fa2f8353e2f564dd4e1ae70623577d50c4620cd43069edc9b47`).
 A fresh replay of the Cargo-built Rust publisher is byte-identical to that pack.
 The rebuilt production Bevy shell ran offscreen at 640×576; its title has zero
