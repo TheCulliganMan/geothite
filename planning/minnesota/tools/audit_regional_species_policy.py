@@ -22,6 +22,37 @@ FIELDS = {'species', 'species_id', 'requestedSpecies', 'offeredSpecies',
           'day_species', 'night_species'}
 
 
+def water_terrain(token):
+    # The rod samples the same Terrain::Water classification as describe_collision.
+    if all(char in '0123456789abcdefABCDEF' for char in token):
+        value = int(token, 16)
+        return ((0x20 <= value <= 0x2e and value % 4 != 3)
+                or 0x30 <= value <= 0x3f or 0xc0 <= value <= 0xcf)
+    return (token in {'WATER', 'WATER_21', 'CUT_28', 'WHIRLPOOL', 'WHIRLPOOL_2C', 'WATERFALL'}
+            or token.startswith(('CURRENT_', 'WATERFALL_')) or token.endswith('_BUOY'))
+
+
+def has_fishing_water(data, room):
+    bank = room['attributes']['tileset_name']
+    permissions = data['tilesets'][bank]['collision']
+    blocks = set(room['blocks'])
+    blocks.update(change['block_id'] for change in room['script_block_changes'])
+    moves = [move['replacements'].get(bank, {}) for move in data['field_moves'].values()
+             if move and 'replacements' in move]
+    pending = list(blocks)
+    while pending:
+        block = pending.pop()
+        if any(water_terrain(token) for token in permissions[f'{block:02x}']):
+            return True
+        for replacements in moves:
+            if block in replacements:
+                new = replacements[block]['replacement_block_id']
+                if new not in blocks:
+                    blocks.add(new)
+                    pending.append(new)
+    return False
+
+
 def audit(pack, active):
     data = pack['data']
     counts = Counter()
@@ -44,6 +75,10 @@ def audit(pack, active):
                 scan(child, source + ':' + str(index))
 
     trainers = {key for key in data['trainers']['trainers'] if key.startswith('MN_')}
+    human_sprites = {
+        trainer['trainer_class'] for trainer in data['trainers']['trainers'].values()
+        if trainer['trainer_class'] in data['trainer_class_names']
+    } | HUMANS_AND_PROPS
     groups = set()
     trades = set()
     for name, room in data['maps'].items():
@@ -71,10 +106,10 @@ def audit(pack, active):
                     trades.add(args[0])
         for actor in room['objects']:
             sprite = actor['sprite'].removeprefix('SPRITE_')
-            if sprite not in HUMANS_AND_PROPS:
+            if sprite in data['pokemon'] or sprite not in human_sprites:
                 check(sprite, name + ':visible-actor:' + actor['script'])
         group = room['attributes'].get('fishing_group')
-        if group and group != 'FISHGROUP_NONE':
+        if group and group != 'FISHGROUP_NONE' and has_fishing_water(data, room):
             groups.add(group)
     for identity in sorted(trainers):
         assert identity in data['trainers']['trainers'], ('missing trainer', identity)

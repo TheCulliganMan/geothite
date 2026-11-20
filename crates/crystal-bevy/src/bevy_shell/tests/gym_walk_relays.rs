@@ -1,4 +1,7 @@
 //! Local trainer-win fixtures isolate the actual keyboard-facing gym controls and their saved state.
+#[path = "saven_court.rs"]
+mod saven_court;
+
 use crystal_core::input::GameButton;
 use crystal_runtime::CrystalRuntime;
 

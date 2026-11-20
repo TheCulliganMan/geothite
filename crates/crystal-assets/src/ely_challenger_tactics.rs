@@ -9,7 +9,8 @@ use crystal_core::battle::turn::{
 use crystal_core::models::{Move, Pokemon};
 use crystal_core::state::GameState;
 
-use super::super::competitive_move_slots;
+use super::competitive_move_slots;
+use super::ely_challenge_run::treat;
 use crate::GameDataSet;
 
 #[derive(Clone, Copy, Default)]
@@ -291,6 +292,9 @@ impl Tactics {
         if !triage && has("HYPER_POTION") && mon.hp * 3 < mon.max_hp && strike.value >= 30 {
             return medicine("HYPER_POTION", combat.player_party_index);
         }
+        if !triage && has("SUPER_POTION") && mon.hp * 2 <= mon.max_hp && mon.max_hp - mon.hp >= 35 {
+            return medicine("SUPER_POTION", combat.player_party_index);
+        }
         if has("FULL_HEAL")
             && matches!(mon.status.as_deref(), Some("FREEZE" | "SLEEP"))
             && mon.hp * 2 > mon.max_hp
@@ -342,13 +346,13 @@ pub(super) fn regroup(data: &GameDataSet, state: &mut GameState, champion_next: 
             .as_ref()
             .expect("same six partners");
         if member.hp == 0 {
-            super::treat(data, state, slot, "REVIVE");
+            treat(data, state, slot, "REVIVE");
         }
         let member = state.storage.party.pokemon[slot]
             .as_ref()
             .expect("treated partner");
         if member.hp > 0 && member.status.is_some() {
-            super::treat(data, state, slot, "FULL_HEAL");
+            treat(data, state, slot, "FULL_HEAL");
         }
     }
     slots.sort_by_key(|&slot| {
@@ -368,7 +372,7 @@ pub(super) fn regroup(data: &GameDataSet, state: &mut GameState, champion_next: 
                 p.hp * 2 <= p.max_hp
             }
         {
-            super::treat(data, state, slot, "HYPER_POTION");
+            treat(data, state, slot, "HYPER_POTION");
         }
     }
 }

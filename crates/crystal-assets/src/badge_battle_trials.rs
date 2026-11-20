@@ -9,6 +9,8 @@ mod badge_battle_saven;
 mod ely_challenge_run;
 #[path = "ely_challenger_parties.rs"]
 mod ely_challenger_parties;
+#[path = "ely_challenger_tactics.rs"]
+mod ely_challenger_tactics;
 #[path = "leech_lake_battle_trials.rs"]
 mod leech_lake_battle_trials;
 #[path = "postgame_rematch_trials.rs"]

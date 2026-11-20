@@ -1,8 +1,6 @@
 //! Consecutive first-challenge League battles, using one party and a finite Ely shop receipt.
 #[path = "ely_badge_machines.rs"]
 mod ely_badge_machines;
-#[path = "ely_challenger_tactics.rs"]
-mod ely_challenger_tactics;
 #[path = "ely_earned_party.rs"]
 mod ely_earned_party;
 #[path = "ely_road_training.rs"]
@@ -21,7 +19,10 @@ use crystal_core::systems::script_flags::apply_script_flag_mutation;
 use crystal_core::systems::shop::close_active_shop;
 use crystal_core::world::map::TilePosition;
 
-use super::{TrialDivider, attack, challenge_state, ely_challenger_parties, trial_state};
+use super::{
+    TrialDivider, attack, challenge_state, ely_challenger_parties, ely_challenger_tactics,
+    trial_state,
+};
 use crate::{
     GameDataSet, MapModule, RuntimeMutationCommand, RuntimePartySwapCommand, ScriptedTrainerBattle,
     read_verified_compiled_game_pack,
@@ -177,7 +178,7 @@ fn party_string(state: &GameState) -> String {
         .join("|")
 }
 
-fn treat(data: &GameDataSet, state: &mut GameState, slot: usize, item: &str) {
+pub(super) fn treat(data: &GameDataSet, state: &mut GameState, slot: usize, item: &str) {
     let before = state.bag.quantity(&data.items[item]);
     if before == 0 {
         return;

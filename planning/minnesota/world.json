@@ -7964,7 +7964,7 @@
     "status": "Accepted current-parent terrain revision: source/native pixels, strict whole-pack preservation, directional grass/ledge proof, actual2D review, native encounters/trainerPP/resources/Continue and stdio pass. CurrentR12 work preserved.",
     "scope_limit": "Sequential Minnesota grass pass remains open beyond R01-R03. Explicit local fixtures do not prove an earned statewide campaign."
   },
-  "active_local_review_revision": "quarry_landings_field_revision",
+  "active_local_review_revision": "wind_lesson_field_revision",
   "script_command_repair_revision": {
     "kind": "missing_minnesota_map_command_records",
     "parent_revision": "field_hm_habitats_cyclists_revision",
@@ -13262,5 +13262,19 @@
     "map_count": 743,
     "changed_maps_from_parent": 1,
     "runbook": "revisions/quarry-landings-v01/README.md"
+  },
+  "wind_lesson_field_revision": {
+    "kind": "campaign_review",
+    "parent_revision": "quarry_landings_field_revision",
+    "parent_pack": "content-packs/minnesota-quarry-landings-v01.crystalpack",
+    "parent_pack_sha256": "eeb16bace1087aba48cb74d8d16a5dfc0de43f8e6084d65ac61af55170b12bb9",
+    "pack": "content-packs/minnesota-wind-lesson-v01.crystalpack",
+    "pack_sha256": "48795ab10f448e10f458bbad6f3cfc908bbec1411041d8f62f39def234275073",
+    "build_recipe": "planning/minnesota/revisions/wind-lesson-v01/field-build.json",
+    "build_recipe_sha256": "82f2e1ea90c6869333835c3b9616f4bccb54b957d5b560ebf9876a7399a6449a",
+    "content_identity": "b6708b138ecdda7848e9d4865b0acb2c04f807ee0a5a65d8983baf7b0ff78313",
+    "map_count": 743,
+    "changed_maps_from_parent": 1,
+    "runbook": "revisions/wind-lesson-v01/README.md"
   }
 }

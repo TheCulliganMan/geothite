@@ -1,0 +1,10 @@
+{
+  "parent_pack": "content-packs/minnesota-intro-quarry-landings-v01.crystalpack",
+  "parent_pack_sha256": "0f3690cb2d5c2be904fa876ddfd301b646530aae22f00c43d5310ae260a4bc76",
+  "output_pack": "content-packs/minnesota-intro-wind-lesson-v01.crystalpack",
+  "expected_pack_sha256": "de3d6cd9f5714e3d92bc84bca770e2d3234d31d9398f84699bcef41a8a5bbe6c",
+  "builder": "pack_ely_challenge",
+  "arguments": [
+    "--wind-lesson"
+  ]
+}

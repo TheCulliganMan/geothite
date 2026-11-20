@@ -72,7 +72,7 @@ fn accept_offers(data: &GameDataSet, pokemon: &mut Pokemon, offered: Vec<Learned
     }
 }
 
-fn train(data: &GameDataSet, pokemon: &mut Pokemon, target: u8) {
+pub(super) fn train(data: &GameDataSet, pokemon: &mut Pokemon, target: u8) {
     static ROSTER: OnceLock<RegionalRoster> = OnceLock::new();
     let roster = ROSTER.get_or_init(|| RegionalRoster::current().expect("Minnesota active roster"));
     assert!(

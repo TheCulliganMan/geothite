@@ -1,4 +1,7 @@
 //! Compare ordinary St. Cloud parties with the same partners in a different lead slot.
+#[path = "saven_route_five_catch.rs"]
+mod saven_route_five_catch;
+
 use crystal_core::battle::turn::BattleAction;
 
 use super::{attack, badge_battle_parties, challenge_with_party};
