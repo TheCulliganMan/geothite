@@ -15,7 +15,7 @@
     "target/trainer-full-body-references/grunt_f-20x.png"
   ],
   "source_sha256": "180a8bfc5f14dcf7c9bd13b1f0c8be8dfd4730eeeff48c2ff90a294a2d165ab6",
-  "native_sha256": "43e817a772eca01211eb1dbe65fbc8b6c9ff64ad9a65f8b923701efb5e1681e8",
+  "native_sha256": "f59435856728ab690bc80926728aa1a411b97d406370be641803b7cfe8930eee",
   "palette_rgb555": [
     32767,
     12855,
@@ -23,7 +23,7 @@
     0
   ],
   "sampling": "area_vote",
-  "minimum_black_samples": 24,
+  "minimum_black_samples": 32,
   "minimum_white_samples": 16,
   "exterior_contour": "source_backed",
   "source_bounds": [
@@ -43,9 +43,10 @@
     54
   ],
   "phase": null,
-  "machine_rows": "target/trainer-full-body/avrin/area-study-v3/black24-white16/battle.candidate.json",
+  "machine_rows": "target/trainer-full-body/avrin/area-study-v3/black32-white16/battle.candidate.json",
   "native_review": "target/trainer-full-body/avrin/area-study-v3/face-review.png",
-  "encoded_preview": "target/trainer-full-body/avrin/encoded/gfx/trainers/mn_leader_avrin.png",
+  "encoded_preview": "target/trainer-full-body/final-native-v2/avrin/encoded/gfx/trainers/mn_leader_avrin.png",
   "status": "candidate-native-reviewed-awaiting-independent-review-and-combined-gameplay",
-  "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/04-avrin/controller-v1.json"
+  "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/04-avrin/controller-v1.json",
+  "review": "Raw area32 preserves both pupils and their white highlights, one black nose cell, a skin row and two white tooth pixels. The heavier area24 mouth ring merged into the jaw and gave an unintended beard-like impression; area32 better preserves the authored adult woman and grin. Complete full-body stance and feet remain. No manual pixel edits."
 }

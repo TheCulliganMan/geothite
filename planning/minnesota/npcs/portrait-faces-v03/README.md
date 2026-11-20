@@ -35,12 +35,15 @@ The authentic trainer references remain external ignored review inputs.
 
 ## Native review
 
-The complete sheet is `target/trainer-full-body/all-nine-native.png`, showing
+The complete sheet is `target/trainer-full-body/all-nine-native-v2.png`, showing
 the actual encoded 56×56 sprites at 1× and nearest-neighbor 6×. Canonical encoded
-files are under `target/trainer-full-body/final-native/NAME/encoded/`.
+files are under `target/trainer-full-body/final-native-v2/NAME/encoded/`.
 
 All nine retain complete bodies, legs and feet. Facial review checks eyes, noses,
-mouths and adult character identity at game resolution. Four-color conversion
+mouths and adult character identity at game resolution. Avrin uses area32
+sampling: the earlier area24 mouth outline merged into her jaw, creating an
+unintended beard-like impression. The selected conversion retains her eyes,
+small nose and separate toothy grin. Four-color conversion
 still simplifies detail: Norek's separate tiny mouth dash is lost and the lower
 moustache contour reads as his mouth; Sivren's far eye is narrow; a few accent
 pixels remain around Orlis's beard. These are visible art limitations, not
@@ -51,9 +54,9 @@ mechanical failures. Visual review does not imply user acceptance.
 - Parent revision: `fair_release_intro_revision`
 - Parent: `content-packs/minnesota-fair-release-v01.crystalpack`
 - Parent SHA256: `18003b91597173f1d98937a0f6cc2fa82cfd2c5b3612c9803cd5f615acad2a73`
-- Candidate: `content-packs/minnesota-trainer-full-body-faces-v01.crystalpack`
-- Candidate SHA256: `9ea0205637769923a1ef6c0934fb2e8d84207d23d0f4a0f915bdc0aeaa545f1c`
-- Content identity: `fafa44765beeb4a515c13700b14f82c31317ba29a8ed3e053d8caaf3f0b1cc9d`
+- Candidate: `content-packs/minnesota-trainer-full-body-faces-v02.crystalpack`
+- Candidate SHA256: `41f90c12cf1e3356a74f9e3976248c722aee28a2d7ebab8fbb77192b4b157ae2`
+- Content identity: `003f0043367a4a29ae713759a02cfb24205ae67339a484ef6a14f84d328d5c13`
 
 The current parent was resolved again immediately before publication because
 the shared checkout's selected campaign revision changed during art authoring.
@@ -68,9 +71,9 @@ With the existing built Rust tools, reproduce to a fresh ignored output:
 target/debug/examples/pack_trainer_portraits \
   content-packs/minnesota-fair-release-v01.crystalpack \
   planning/minnesota/npcs/portrait-faces-v03/publication-all-v1.json \
-  content-packs/minnesota-trainer-full-body-faces-v02.crystalpack
+  content-packs/minnesota-trainer-full-body-faces-v03.crystalpack
 target/release/geothite play \
-  content-packs/minnesota-trainer-full-body-faces-v01.crystalpack \
+  content-packs/minnesota-trainer-full-body-faces-v02.crystalpack \
   --save target/trainer-full-body/player.crystalsave
 ```
 
@@ -88,3 +91,33 @@ They cover source reproducibility, production controller portrait rendering,
 Gym dialogue and battle flow, professor opening, and a fresh production-client
 Save/Continue check. Explicit adjacent-position Gym fixtures test mechanics;
 they do not establish earned campaign progression or battle balance.
+
+- `source-provenance-final.json`: all nine source conversions reproduce every
+  native row; all 54 canonical files match byte-for-byte; all 27 overworld files
+  match the originals.
+- `controller-20261120T155328Z-41f90c12-4_bvc4um/controller-verification.json`:
+  all nine production-controller checks pass on the exact final pack. All
+  rendered portraits have zero differing pixels from their native references.
+  Gym tests cover dialogue, intro, move/PP, save/load, victory, badge/TM and
+  repeat interaction; Tamarack uses the normal title/opening flow.
+- `preservation-final-v2.json`: independent republication matches the final pack
+  byte-for-byte, with exactly 18 changed trainer resources. Only Avrin's source
+  differs from the first full-body candidate.
+- `mcp-v2/verification.json`: actual production release executable, Start,
+  movement, ordinary Save confirmation, fresh-process exact resume, further
+  movement and Start; both processes exit successfully with empty stderr.
+- `independent-full-body-review.md`: complete-pose and facial review against
+  authentic native Crystal sprites, including remaining visual limitations.
+- Authoring-tool checks: all six focused palette tests, workspace formatting,
+  and `cargo clippy --locked -p crystal-assets --all-targets` passed. Clippy
+  reported existing warnings outside the changed example. Logs remain under
+  `chroma-study-current/`; default conversion outputs are unchanged.
+
+The initial MCP attempt used an outdated debug executable that did not recognize
+the current parent pack's save-compatibility metadata. That failure is retained
+under `mcp/first-attempt-stale-debug`; the current release executable passed
+both complete MCP runs. No user saves were touched.
+
+Both duplicate preservation-check packs were removed after verification,
+recovering about 81.9 MiB. Final disk check: 338 GiB free. Review evidence and
+source inputs are retained; active shared build caches were not removed.
