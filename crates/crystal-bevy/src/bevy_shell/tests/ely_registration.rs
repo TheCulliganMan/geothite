@@ -1,7 +1,7 @@
 //! Read the actual sign and counter from the approach a visitor uses in Ely.
 use std::path::{Path, PathBuf};
 
-use crystal_core::input::GameButton::{A, Up};
+use crystal_core::input::GameButton::{A, Right, Up};
 
 use super::super::{RuntimeBadgeRegion, VisibleShellController, mark_runtime_snapshot_dirty};
 use super::badge_trails::load;
@@ -58,6 +58,25 @@ fn read(
     c
 }
 
+fn approach_trail_sign(c: &mut VisibleShellController) {
+    // Earlier editions read the paving to the west of the standing board.
+    let x = c.shell.shell.runtime().data().maps[TOWN]
+        .events
+        .bg_events
+        .iter()
+        .find(|e| e.script == "MnElyTrailSign")
+        .expect("League directions")
+        .x;
+    travel(c, Up, TOWN, (20, 4));
+    if x == 21 {
+        travel(c, Right, TOWN, (21, 4));
+        press(c, Up);
+    } else {
+        assert_eq!(x, 20, "reviewed sign location");
+    }
+    press(c, A);
+}
+
 #[test]
 #[ignore = "requires an Ely Challenge edition in MN_BADGE_TRAILS_PACK"]
 fn ely_sign_and_registrar_explain_the_actual_run_and_survey() {
@@ -65,8 +84,7 @@ fn ely_sign_and_registrar_explain_the_actual_run_and_survey() {
     let frames = std::env::var_os("MN_ELY_CHALLENGE_FRAMES").map(PathBuf::from);
     let mut c = fixture(&root, &runtime, TOWN, (20, 5));
     prepare(&mut c, &["EVENT_MN_MINE_INSTRUMENT_RECOVERED"]);
-    travel(&mut c, Up, TOWN, (20, 4));
-    press(&mut c, A);
+    approach_trail_sign(&mut c);
     c = read(
         c,
         "MnWayLeagueHoldText",
@@ -123,8 +141,7 @@ fn ely_sign_and_registrar_explain_the_actual_run_and_survey() {
 
     let mut returning = fixture(&root, &runtime, TOWN, (20, 5));
     prepare(&mut returning, &[RESTORED, CHAMPION]);
-    travel(&mut returning, Up, TOWN, (20, 4));
-    press(&mut returning, A);
+    approach_trail_sign(&mut returning);
     returning = read(
         returning,
         "MnWayLeagueAgainText",

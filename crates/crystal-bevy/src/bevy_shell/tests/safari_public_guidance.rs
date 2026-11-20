@@ -40,44 +40,70 @@ fn close(c: &mut VisibleShellController) {
 #[ignore = "requires enabled Safari review with native public check-in guidance"]
 fn safari_public_boards_keep_trails_free_and_continue_the_actual_page() {
     let (root, runtime, _) = load();
-    for (name, map, at, facing, first, second) in [
+    let pine = &runtime.data().maps["MnPreservePineEntry"];
+    let sign = pine
+        .events
+        .bg_events
+        .iter()
+        .find(|e| e.script == "MN_COHESION_PRESERVE_NOTICE")
+        .expect("pine approach notice");
+    let pine_facing = match (sign.x, sign.y) {
+        (13, 11) => GameButton::Right,
+        (12, 10) => GameButton::Up,
+        other => panic!("unknown preserve notice {other:?}"),
+    };
+    let reviewed_text = runtime.data().maps["MnWinonaFieldStation"]
+        .scripts
+        .contains_key("MnOverhaulLabEntry");
+    for (name, map, at, facing, label, original) in [
         (
             "public-basecamp-board",
             "MnBoundaryWaters",
             (29, 10),
             GameButton::Left,
-            ["SAFARI CHECK-IN", "Ranger: just east."],
-            ["Public trails and", "survey stay free."],
+            "MN_BOUNDARY_GATE_NOTICEText",
+            [
+                "SAFARI CHECK-IN\nRanger: just east.",
+                "Public trails and\nsurvey stay free.",
+            ],
         ),
         (
             "public-pine-notice",
             "MnPreservePineEntry",
             (12, 11),
-            GameButton::Right,
-            ["PRESERVE ENTRY", "Free trail ahead."],
-            ["Safari check-in:", "Basecamp ranger."],
+            pine_facing,
+            "MN_COHESION_PRESERVE_NOTICEText",
+            [
+                "PRESERVE ENTRY\nFree trail ahead.",
+                "Safari check-in:\nBasecamp ranger.",
+            ],
         ),
     ] {
+        let pages = if reviewed_text {
+            super::super::northstar_dialogue::canonical_pages(&runtime, "MS12", label)
+        } else {
+            original.into_iter().map(str::to_owned).collect()
+        };
         // These two public reading positions are explicit local fixtures.
         // Input below reads the actual native sign, without starting a permit.
         let mut c = fixture(&root, &runtime, map, at);
         let money = c.snapshot().expect("public approach").trainer.money;
         press(&mut c, facing);
         press(&mut c, GameButton::A);
-        assert_eq!(text(&mut c), first.join("\n"));
+        assert_eq!(text(&mut c), pages[0]);
         save(&mut c, &format!("{name}-page-one"));
         c = continue_save(root.clone(), runtime.clone(), &mut c);
-        assert_eq!(text(&mut c), first.join("\n"));
+        assert_eq!(text(&mut c), pages[0]);
         press(&mut c, GameButton::Down);
         let held = c.snapshot().expect("public notice owns input");
         assert_eq!(held.overworld.tile, TilePosition::new(at.0, at.1));
         assert!(held.safari.is_none());
         assert_eq!(held.trainer.money, money);
         press(&mut c, GameButton::A);
-        assert_eq!(text(&mut c), second.join("\n"));
+        assert_eq!(text(&mut c), pages[1]);
         save(&mut c, &format!("{name}-page-two"));
         c = continue_save(root.clone(), runtime.clone(), &mut c);
-        assert_eq!(text(&mut c), second.join("\n"));
+        assert_eq!(text(&mut c), pages[1]);
         assert!(!text(&mut c).to_ascii_lowercase().contains("closed"));
         save(&mut c, &format!("{name}-page-two-continued"));
         close(&mut c);

@@ -7964,7 +7964,7 @@
     "status": "Accepted current-parent terrain revision: source/native pixels, strict whole-pack preservation, directional grass/ledge proof, actual2D review, native encounters/trainerPP/resources/Continue and stdio pass. CurrentR12 work preserved.",
     "scope_limit": "Sequential Minnesota grass pass remains open beyond R01-R03. Explicit local fixtures do not prove an earned statewide campaign."
   },
-  "active_local_review_revision": "research_choices_field_revision",
+  "active_local_review_revision": "trail_signs_field_revision",
   "script_command_repair_revision": {
     "kind": "missing_minnesota_map_command_records",
     "parent_revision": "field_hm_habitats_cyclists_revision",
@@ -13218,5 +13218,19 @@
     "map_count": 743,
     "changed_maps_from_parent": 2,
     "runbook": "revisions/research-choices-v01/README.md"
+  },
+  "trail_signs_field_revision": {
+    "kind": "campaign_review",
+    "parent_revision": "research_choices_field_revision",
+    "parent_pack": "content-packs/minnesota-research-choices-v01.crystalpack",
+    "parent_pack_sha256": "e294e54fd70d977945bf124dc7317ff95f3709d0e28ba56449b08e3b08e27e58",
+    "pack": "content-packs/minnesota-trail-signs-v01.crystalpack",
+    "pack_sha256": "6388fb4a071d8338bd4676b33ada6048af5b091508421bc8c1bac4db18684a50",
+    "build_recipe": "planning/minnesota/revisions/trail-signs-v01/field-build.json",
+    "build_recipe_sha256": "f9b88ee1ede851477c235b926ab96e950b6dfdb76f8355ceb49306b411c11f92",
+    "content_identity": "ee51847328287a66b358f951e0c49db99ae8c35dd2925441a73ac290b2ccdfb5",
+    "map_count": 743,
+    "changed_maps_from_parent": 5,
+    "runbook": "revisions/trail-signs-v01/README.md"
   }
 }

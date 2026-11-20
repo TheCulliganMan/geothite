@@ -241,16 +241,33 @@ fn ely_town_controller_public_signs_resident_four_road_lanes_and_continue() {
     let mut c = fixture(&root, &r, ELY, (27, 14));
     walk(&mut c, &r, (19, 21));
     assert!(!talk(&mut c, (19, 20)).is_empty());
-    // Facing a walkable background event must not assume solid sign collision.
-    for (x, y, label) in [(20, 3, "MnElyTrailSignText"), (14, 21, "MnElyCampSignText")] {
-        walk(&mut c, &r, (x, y + 2));
-        for _ in 0..4 {
-            if at(&mut c).1 == (x, y + 1) {
-                break;
+    for (old_x, y, script, label) in [
+        (20, 3, "MnElyTrailSign", "MnElyTrailSignText"),
+        (14, 21, "MnElyCampSign", "MnElyCampSignText"),
+    ] {
+        let target = r.data().maps[ELY]
+            .events
+            .bg_events
+            .iter()
+            .find(|e| e.script == script)
+            .expect("Ely public sign");
+        let x = i16::try_from(target.x).expect("outdoor sign x");
+        assert_eq!(i16::try_from(target.y).expect("outdoor sign y"), y);
+        assert!(x == old_x || x == old_x + 1, "reviewed paving or board");
+        if x == old_x + 1 {
+            walk(&mut c, &r, (old_x, y));
+            press(&mut c, GameButton::Right);
+            assert_eq!(at(&mut c), (ELY.into(), (old_x, y)));
+        } else {
+            walk(&mut c, &r, (x, y + 2));
+            for _ in 0..4 {
+                if at(&mut c).1 == (x, y + 1) {
+                    break;
+                }
+                press(&mut c, GameButton::Up);
             }
-            press(&mut c, GameButton::Up);
+            assert_eq!(at(&mut c), (ELY.into(), (x, y + 1)));
         }
-        assert_eq!(at(&mut c), (ELY.into(), (x, y + 1)));
         press(&mut c, GameButton::A);
         assert_eq!(
             c.snapshot()

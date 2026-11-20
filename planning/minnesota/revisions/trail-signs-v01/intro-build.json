@@ -1,0 +1,10 @@
+{
+  "parent_pack": "content-packs/minnesota-intro-research-choices-v01.crystalpack",
+  "parent_pack_sha256": "0e9ce201cdd98a5a016f6dd7b8028945c57ea0a12441b0c3dd720bc36853c31c",
+  "output_pack": "content-packs/minnesota-intro-trail-signs-v01.crystalpack",
+  "expected_pack_sha256": "67b7391397fddd5daf6ac8ec57ff062f1312fa91b3db3e8032167180485fc079",
+  "builder": "pack_ely_challenge",
+  "arguments": [
+    "--trail-signs"
+  ]
+}

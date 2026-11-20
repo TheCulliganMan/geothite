@@ -1,4 +1,7 @@
 //! Exercise the player-facing directions on either installed Badge Trails edition.
+#[path = "regional_direction_boards.rs"]
+mod regional_direction_boards;
+
 use crystal_assets::{AssetRoot, read_loaded_verified_compiled_game_pack};
 use crystal_core::input::GameButton;
 use crystal_runtime::CrystalRuntime;
