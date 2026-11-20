@@ -9,6 +9,8 @@ mod badge_battle_saven;
 mod ely_challenge_run;
 #[path = "ely_challenger_parties.rs"]
 mod ely_challenger_parties;
+#[path = "postgame_rematch_trials.rs"]
+mod postgame_rematch_trials;
 
 use std::cell::Cell;
 use std::collections::BTreeSet;

@@ -7,7 +7,9 @@ use super::super::super::{
 use super::super::northstar_ice_lair::{event, page};
 use super::super::rochester_earned::try_league_battle;
 use super::super::winona::{at, continued, load};
-use super::ely_league::{enter_lobby, registrar, restore_partner_with, run, until_map};
+use super::ely_league::{
+    accept_first_match, enter_lobby, registrar, restore_partner_with, run, until_map,
+};
 use super::north_shore_story::choice;
 use super::{finish, interact, press, walk_to};
 use crystal_core::input::GameButton;
@@ -179,22 +181,8 @@ fn league_finale_five_native_wins_hall_of_fame_and_rematch_continue() {
         c = continued(c, &root, &r, &format!("league-written-before-{index}"));
         interact(&mut c, &r, (5, 7));
         page(&mut c, &format!("{map}BeforeText"));
-        assert!(try_league_battle(
-            &mut c,
-            &r,
-            if index == 5 {
-                "MN_CHAMPION"
-            } else {
-                [
-                    "",
-                    "MN_LEAGUE_1",
-                    "MN_LEAGUE_2",
-                    "MN_LEAGUE_3",
-                    "MN_LEAGUE_4",
-                ][index as usize]
-            },
-            index
-        ));
+        let id = accept_first_match(&mut c, &r, index);
+        assert!(try_league_battle(&mut c, &r, id, index));
         finish(&mut c);
         assert_eq!(run(&c), index, "only actual win advances the run");
         assert!(!event(&c, CHAMPION), "Hall of Fame recording is separate");

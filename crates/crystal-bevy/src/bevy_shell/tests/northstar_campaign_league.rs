@@ -9,7 +9,7 @@ use crystal_runtime::CrystalRuntime;
 use super::super::native_city_ports::city_port;
 use super::super::rochester_earned::{checkout, try_league_battle};
 use super::super::winona::{at, continue_in_place, finish, load, press, travel};
-use super::ely_league::{registrar, restore_partner_with, run, until_map};
+use super::ely_league::{accept_first_match, registrar, restore_partner_with, run, until_map};
 use super::north_shore_story::choice;
 use super::northstar_campaign_finale::{finale, walk_to};
 use super::northstar_campaign_review::boost;
@@ -309,13 +309,7 @@ pub(super) fn play_chapter(
         assert!(event(&c, ACTIVE));
         continue_in_place(&mut c, &root, &r, "campaign-league-registered");
     }
-    for (index, id) in [
-        (1, "MN_LEAGUE_1"),
-        (2, "MN_LEAGUE_2"),
-        (3, "MN_LEAGUE_3"),
-        (4, "MN_LEAGUE_4"),
-        (5, "MN_CHAMPION"),
-    ] {
+    for index in 1..=5 {
         let map = if index == 5 {
             "MnLeagueChampion".into()
         } else {
@@ -336,6 +330,7 @@ pub(super) fn play_chapter(
                 assert_eq!(c.snapshot().expect("no battle skip").overworld.tile, tile);
             }
             interact(&mut c, &r, (5, 7));
+            let id = accept_first_match(&mut c, &r, index);
             assert!(try_league_battle(&mut c, &r, id, index));
             assert_eq!(run(&c), index);
             assert!(

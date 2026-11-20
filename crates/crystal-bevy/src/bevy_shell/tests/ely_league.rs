@@ -255,6 +255,31 @@ pub(super) fn registrar(c: &mut VisibleShellController, r: &crystal_runtime::Cry
     press(c, GameButton::Up);
     press(c, GameButton::A);
 }
+
+/// Accept the first-visit fight after speaking to the Elite Four member.
+pub(super) fn accept_first_match(
+    c: &mut VisibleShellController,
+    r: &crystal_runtime::CrystalRuntime,
+    stage: u8,
+) -> &'static str {
+    if stage == 4
+        && r.data().maps["MnLeagueRoom4"]
+            .scripts
+            .contains_key("MnHaldenReady")
+    {
+        super::super::northstar_ice_lair::page(c, "MnHaldenReadyText");
+        choice(c, true);
+        return "MN_HALDEN_FIRST";
+    }
+    [
+        "MN_LEAGUE_1",
+        "MN_LEAGUE_2",
+        "MN_LEAGUE_3",
+        "MN_LEAGUE_4",
+        "MN_CHAMPION",
+    ][usize::from(stage) - 1]
+}
+
 pub(super) fn enter_lobby(c: &mut VisibleShellController, r: &crystal_runtime::CrystalRuntime) {
     walk_to(c, r, (25, 14));
     travel(c, GameButton::Up, "MnLeagueLobby", (1, 4));
@@ -511,6 +536,7 @@ fn ely_league_controller_five_wins_native_hall_of_fame_and_postgame_continue() {
             .pokemon
             .clone();
         interact(&mut c, &r, (5, 7));
+        accept_first_match(&mut c, &r, index);
         play_with_selected_move(&mut c, |b| {
             let index = super::super::rochester_earned::best_attack(&r, b, &lead);
             lead.moves[index].name.as_str()

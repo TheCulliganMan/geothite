@@ -1,4 +1,6 @@
 //! Consecutive first-challenge League battles, using one party and a finite Ely shop receipt.
+#[path = "ely_badge_machines.rs"]
+mod ely_badge_machines;
 #[path = "ely_challenger_tactics.rs"]
 mod ely_challenger_tactics;
 #[path = "ely_earned_party.rs"]
@@ -21,15 +23,16 @@ use crystal_core::world::map::TilePosition;
 
 use super::{TrialDivider, attack, challenge_state, ely_challenger_parties, trial_state};
 use crate::{
-    GameDataSet, RuntimeMutationCommand, RuntimePartySwapCommand, read_verified_compiled_game_pack,
+    GameDataSet, MapModule, RuntimeMutationCommand, RuntimePartySwapCommand, ScriptedTrainerBattle,
+    read_verified_compiled_game_pack,
 };
 
-const ROOMS: [(&str, &str); 5] = [
-    ("MnLeagueRoom1", "MN_LEAGUE_1"),
-    ("MnLeagueRoom2", "MN_LEAGUE_2"),
-    ("MnLeagueRoom3", "MN_LEAGUE_3"),
-    ("MnLeagueRoom4", "MN_LEAGUE_4"),
-    ("MnLeagueChampion", "MN_CHAMPION"),
+const ROOMS: [&str; 5] = [
+    "MnLeagueRoom1",
+    "MnLeagueRoom2",
+    "MnLeagueRoom3",
+    "MnLeagueRoom4",
+    "MnLeagueChampion",
 ];
 const SHOPPING: [(&str, u16); 3] = [("HYPER_POTION", 6), ("REVIVE", 6), ("FULL_HEAL", 3)];
 const RUN: &str = "wMnLeagueRun";
@@ -418,6 +421,112 @@ fn trace_casey(
     );
 }
 
+/// Follow the accepted invitation on a registered, pre-Champion visit.
+/// The optional preparation and returning-Champion branches do not execute.
+fn first_challenge(room: &MapModule) -> &ScriptedTrainerBattle {
+    let invitation = format!("{}Challenge", room.id);
+    let mut label = invitation.as_str();
+    let mut visited = BTreeSet::new();
+    while visited.insert(label) {
+        if let Some(battle) = room
+            .scripted_trainer_battles
+            .iter()
+            .find(|b| b.source_script == label)
+        {
+            return battle;
+        }
+        let jump = room.scripts[label]
+            .as_array()
+            .and_then(|program| program.last())
+            .expect("first-challenge invitation program");
+        assert_eq!(
+            jump["command"], "sjump",
+            "first-challenge continuation in {label}"
+        );
+        label = jump["args"][0]
+            .as_str()
+            .expect("first-challenge destination");
+    }
+    panic!("first-challenge invitation loops in {}", room.id);
+}
+
+#[test]
+#[ignore = "requires the compiled Finder Lesson or Ely Return edition"]
+fn ely_first_challenge_uses_the_installed_halden_party_before_casey() {
+    let file = std::env::var_os("CRYSTAL_MINNESOTA_BATTLE_TEST_PACK").expect("Minnesota pack");
+    let pack = read_verified_compiled_game_pack(file).expect("verified League");
+    let data = pack.data();
+    let revised = pack
+        .report
+        .manifests
+        .iter()
+        .any(|m| m == "northstar-ely-return-v1");
+    let room = &data.maps["MnLeagueRoom4"];
+    let first = first_challenge(room);
+    let rematch = room.scripts["MnLeagueRoom4RematchIntro"]
+        .as_array()
+        .expect("Halden's return invitation")
+        .last()
+        .expect("return invitation target");
+    assert_eq!(rematch["args"][0], "MnLeagueRoom4BattleStart");
+    let returning = room
+        .scripted_trainer_battles
+        .iter()
+        .find(|b| b.source_script == rematch["args"][0].as_str().expect("return destination"))
+        .expect("return battle script");
+    assert_eq!(returning.request.trainer_id, "MN_LEAGUE_4");
+    let old = data
+        .trainers
+        .get(&returning.request.trainer_id)
+        .expect("returning Halden");
+    let champion = first_challenge(&data.maps["MnLeagueChampion"]);
+    let casey = data
+        .trainers
+        .get(&champion.request.trainer_id)
+        .expect("Casey");
+    let pike = casey
+        .party
+        .iter()
+        .find(|p| p.species == "MUSKETUNGE")
+        .expect("Casey's pike");
+    assert_eq!(
+        (
+            old.party[1].species.as_str(),
+            old.party[1].level,
+            pike.level
+        ),
+        ("MUSKETUNGE", 50, 52)
+    );
+    assert_eq!(old.party[1].moves, pike.moves);
+    if !revised {
+        assert_eq!(first, returning);
+        return;
+    }
+    assert_eq!(first.request.trainer_id, "MN_HALDEN_FIRST");
+    let first_team = data
+        .trainers
+        .get(&first.request.trainer_id)
+        .expect("first Halden");
+    let partner = &first_team.party[1];
+    assert_eq!((partner.species.as_str(), partner.level), ("MARSHRACK", 50));
+    assert_eq!(
+        (partner.dvs, &partner.item),
+        (old.party[1].dvs, &old.party[1].item)
+    );
+    for m in &partner.moves {
+        assert!(
+            data.learnsets["MARSHRACK"]
+                .iter()
+                .any(|entry| entry.0 <= partner.level && entry.1 == m.name)
+        );
+        assert_eq!((m.current_pp, m.pp_ups), (data.moves[&m.name].pp, 0));
+    }
+    let mut restored = first_team.clone();
+    restored.trainer_id.clone_from(&old.trainer_id);
+    restored.party[1] = old.party[1].clone();
+    assert_eq!(&restored, old, "only the second partner differs");
+}
+
 fn fight(
     data: &GameDataSet,
     state: &mut GameState,
@@ -427,7 +536,9 @@ fn fight(
     mode: &str,
     index: usize,
 ) -> bool {
-    let (map, trainer) = ROOMS[index];
+    let map = ROOMS[index];
+    let entry = first_challenge(&data.maps[map]);
+    let trainer = entry.request.trainer_id.as_str();
     let tactical = mode.starts_with("tactical");
     let scouted = tactical || matches!(mode, "scouted" | "trained");
     if scouted {
@@ -500,11 +611,6 @@ fn fight(
     if !finish.won {
         return false;
     }
-    let entry = data.maps[map]
-        .scripted_trainer_battles
-        .iter()
-        .find(|b| b.request.trainer_id == trainer)
-        .expect("installed League fight");
     let money = state.money;
     let result = data
         .complete_scripted_trainer_battle(
@@ -573,6 +679,10 @@ fn run_cases(mode: &str, starters: &[usize], seeds: &[u32]) {
         if mode != "isolated" {
             if !earned {
                 buy_ely_supplies(data, &mut departure);
+            }
+            if mode == "tactical-triage-machines" {
+                ely_badge_machines::prepare(data, &mut departure, starter);
+                assert_eq!(pack_string(data, &departure), "6/6/3");
             }
             if mode == "trained" {
                 // Pay before going out so a solo training loss never risks the
@@ -704,6 +814,12 @@ fn ely_triage_challengers_restore_a_reserve_before_caseys_next_attack() {
 #[ignore = "requires CRYSTAL_MINNESOTA_BATTLE_TEST_PACK and resolves nine five-room attempts"]
 fn ely_triage_challengers_spend_one_receipt_across_the_league() {
     run_prepared("tactical-triage");
+}
+
+#[test]
+#[ignore = "requires the compiled League, its eight badge rewards and Brainerd's Surf gift"]
+fn ely_badge_machines_challengers_spend_one_receipt_across_the_league() {
+    run_prepared("tactical-triage-machines");
 }
 
 #[test]

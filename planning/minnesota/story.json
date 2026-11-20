@@ -10443,6 +10443,18 @@
         ]
       },
       "MnLeagueRoom4": {
+        "MnHaldenReadyText": [
+          [
+            "HALDEN: Ready to",
+            "start?"
+          ]
+        ],
+        "MnHaldenWaitText": [
+          [
+            "HALDEN: All right.",
+            "On your signal."
+          ]
+        ],
         "MnLeagueRoom4BeforeText": [
           [
             "HALDEN: Three",

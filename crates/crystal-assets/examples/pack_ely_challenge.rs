@@ -1,25 +1,27 @@
-//! Build Ely’s League registration or Winona’s Itemfinder follow-up and verify the written external archive.
+//! Build an Ely or Winona campaign revision and verify the written external archive.
 use std::path::PathBuf;
 
 use anyhow::{Result, ensure};
 use crystal_assets::{
-    read_verified_compiled_game_pack, revise_ely_challenge, revise_finder_lesson,
+    CompiledGamePack, read_verified_compiled_game_pack, revise_ely_challenge, revise_ely_return,
+    revise_finder_lesson,
 };
 
 fn main() -> Result<()> {
     let args: Vec<_> = std::env::args_os().skip(1).map(PathBuf::from).collect();
-    let (parent, output, lesson) = match args.as_slice() {
-        [parent, output] => (parent, output, false),
-        [mode, parent, output] if mode.as_os_str() == "--finder-lesson" => (parent, output, true),
-        _ => anyhow::bail!("usage: pack_ely_challenge [--finder-lesson] PARENT FRESH_OUTPUT"),
+    const USAGE: &str =
+        "usage: pack_ely_challenge [--finder-lesson|--ely-return] PARENT FRESH_OUTPUT";
+    let [options @ .., parent, output] = args.as_slice() else {
+        anyhow::bail!(USAGE);
+    };
+    let revise: fn(CompiledGamePack) -> Result<CompiledGamePack> = match options {
+        [] => revise_ely_challenge,
+        [mode] if mode.as_os_str() == "--finder-lesson" => revise_finder_lesson,
+        [mode] if mode.as_os_str() == "--ely-return" => revise_ely_return,
+        _ => anyhow::bail!(USAGE),
     };
     ensure!(!output.try_exists()?, "choose a fresh output pack");
-    let pack = read_verified_compiled_game_pack(parent)?;
-    let pack = if lesson {
-        revise_finder_lesson(pack)?
-    } else {
-        revise_ely_challenge(pack)?
-    };
+    let pack = revise(read_verified_compiled_game_pack(parent)?)?;
     pack.write_preserving_storage(output)?;
     let written = read_verified_compiled_game_pack(output)?;
     ensure!(written == pack, "content changed during readback");

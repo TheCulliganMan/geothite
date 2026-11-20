@@ -1,5 +1,8 @@
 //! A run in progress is the fixture. Retreat, battle loss, clinic recovery,
 //! Save/Continue and registering again all go through the player controller.
+#[path = "halden_readiness.rs"]
+mod halden_readiness;
+
 use crystal_assets::AssetRoot;
 use crystal_core::input::GameButton::{A, Down, Up};
 use crystal_core::models::Dv;
@@ -169,7 +172,7 @@ fn league_return_trip_loss_and_withdrawal_restart_at_fern() {
     let (root, runtime) = load();
     let first_run = (0..CHAMBERS.len()).map(|stage| (stage, false));
     for (stage, champion) in first_run.chain([(4, true)]) {
-        let (map, trainer) = CHAMBERS[stage];
+        let (map, mut trainer) = CHAMBERS[stage];
         let mut c = in_progress(&root, &runtime, stage, champion);
         let carried = c.shell.shell.session().state().bag.clone();
         interact(&mut c, &runtime, (5, 7));
@@ -178,6 +181,15 @@ fn league_return_trip_loss_and_withdrawal_restart_at_fern() {
             choice(&mut c, true);
         } else {
             page(&mut c, &format!("{map}BeforeText"));
+            if stage == 3
+                && runtime.data().maps[map]
+                    .scripts
+                    .contains_key("MnHaldenReady")
+            {
+                page(&mut c, "MnHaldenReadyText");
+                choice(&mut c, true);
+                trainer = "MN_HALDEN_FIRST";
+            }
         }
         assert!(!try_league_battle(
             &mut c,

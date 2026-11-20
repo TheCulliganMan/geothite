@@ -12,10 +12,17 @@ The independent geometry and script checks below ran against Badge Battles Intro
 
 Two milestone descriptions assigned completion to the wrong place. MS12 now follows the call at the shelter through Kettlurk's release and containment at the intake bypass. MS17 distinguishes the eastbound arrival from returning to the International Falls clinic for the PP Up. The global story-plan checker still stops at an older State Fair hub assertion before reaching the milestones. The dedicated check reads the actual flag writers and examines refusal, full-pocket and repeat branches. [Milestone check](check-milestones.py)
 
-## Remaining cases
+## Later League and postgame coverage
 
-- On the original Ely lineup, Casey defeated all three prepared level 45–47 parties on all three seeds in isolated fights. Four of 18 untrained runs and five of nine Route 13 training runs reached Casey. All nine ended there. The subsequent battle audit covers paid medicine during fights and a first-registration party reconstructed from an earned campaign save. It identifies the lineup and supplies used for each result. [Original runs](sequence.md) · [Subsequent tactics and campaign evidence](tactics.md)
-- Reed's level 57–59 postgame fight and the eight five-member leader rematches have roster and invitation evidence. The regional fight matrix exercises the first challenges. The sole native rematch matchup it isolates is Norek's Rimeguard. The prepared-party results do not establish how often the postgame challengers can win those nine battles. [Postgame offers](../league-journey-v01/after-champion.md) · [Rematch teams](../badge-battles-v01/league.md)
+On the original Ely lineup, Casey defeated the three prepared level 45–47 parties in all nine isolated fights. The subsequent comparisons added paid battle medicine and reconstructed five partners from a first-registration save. Ely Return then changed Halden's first challenge. In the nine matched runs using the purchased supplies, all nine reached Casey and one cleared the League. [Original runs](sequence.md) · [Earlier tactics](tactics.md) · [Changed fourth room and matched results](../ely-return-v01/README.md)
+
+The postgame audit exercised Reed and all eight Gym Leaders against the same level-57 Kindlit team. That party won each of the nine fights on the seed tested. Native progression fixtures, compiled invitation branches and controlled combat comparisons have different starting conditions. [Postgame results and conditions](../ely-return-v01/postgame.md)
+
+## Open follow-up at the Grand Marais field station
+
+In both final Ely Return editions, Tamarack asks whether the player wants to take Birchit along. Acknowledging the page immediately starts the gift, both before and after the lighthouse repair. After Birchit joins the party or goes to the PC, the same script attempts to add five Poké Balls and three Potions, then marks the handoff complete. Either pocket can refuse its item. A return visit skips both grants, so making room later cannot recover the missing supplies. [Station invitation](../../../../crates/crystal-assets/src/northstar_marais_part.rs) · [Original supply grants](../../../../crates/crystal-assets/src/grand_marais_modpack/mod.rs) · [Bag-full outcome](../../../../crates/crystal-core/src/systems/script_items.rs)
+
+The existing controller regression checks a full party and PC, a later successful Birchit handoff, and persistence after Continue. The remaining cases are declining and returning for Birchit, and filling the Balls pocket, Items pocket or both before accepting. A successful repair should let the player claim each missing supply once after making space, including after Save/Continue, while keeping the same single Birchit. [Existing gift regression](../../../../crates/crystal-bevy/src/bevy_shell/tests/grand_marais_partner_retry.rs)
 
 ## Hidden-item collection and Continue
 
