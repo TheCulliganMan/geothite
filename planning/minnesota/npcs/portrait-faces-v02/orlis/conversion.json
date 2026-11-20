@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "name": "orlis",
+  "method": "built-in-imagegen-with-rust-global-phase-conversion",
+  "previous_source": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/08-orlis/native-pixels-v3.json",
+  "source": "planning/minnesota/npcs/portrait-faces-v02/orlis/native-pixels-v1.json",
+  "image_source": "planning/minnesota/npcs/portrait-faces-v02/orlis/image-source-v1.png",
+  "prompt": "planning/minnesota/npcs/portrait-faces-v02/orlis/image-prompt-v1.txt",
+  "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/08-orlis/controller-v1.json",
+  "sampling": "whole_source_phase_d65_lab",
+  "size": [
+    56,
+    56
+  ],
+  "source_bounds": [
+    8,
+    33,
+    1241,
+    1241
+  ],
+  "fit_size": [
+    52,
+    51
+  ],
+  "phase": [
+    0.25,
+    0.75
+  ],
+  "palette_rgb555": [
+    32767,
+    22399,
+    6565,
+    0
+  ],
+  "review": "Broad mature face framed by dark shoulder-length waves and full beard, separate pupil and white openings, strong nose and closed mouth. Asymmetrical cape, oak twig and open hand preserve Grass leader identity. All pixels sampled with one phase; no hand edits.",
+  "source_sha256": "f3fb80225e0ed90cf349c3b1f5b8204a4222e2749bf2669e01643baa96402993",
+  "image_sha256": "e82a41125f02141cac07138ecf88e06b6d76575c8451a9ef4e335108cc34a7d2",
+  "changed_native_pixels": 1549,
+  "preserved_fields": [
+    "id",
+    "schema_version",
+    "palette_rgb555",
+    "overworld_frames"
+  ]
+}

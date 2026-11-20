@@ -1,0 +1,35 @@
+{
+  "name": "torven",
+  "method": "built-in imagegen; whole-source Rust D65 Lab palette quantization and one global sampling phase; no hand pixel edits",
+  "previous_source": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/03-torven/native-pixels-v3.json",
+  "source": "planning/minnesota/npcs/portrait-faces-v02/torven/native-pixels-v1.json",
+  "image_source": "planning/minnesota/npcs/portrait-faces-v02/torven/image-source-v1.png",
+  "image_prompt": "planning/minnesota/npcs/portrait-faces-v02/torven/image-prompt-v1.txt",
+  "source_sha256": "4fc42f52cdacb1db50e4429e12dec8be2d0502c54f12df6d53d5e47285aa4cd0",
+  "native_sha256": "8a74dd90b43f2a404460a6960b3d3cb3ca9048dbd06336f97a3d765e7fc25bf2",
+  "palette_rgb555": [
+    32767,
+    22399,
+    3508,
+    0
+  ],
+  "sampling": "whole_source_phase_d65_lab",
+  "source_bounds": [
+    30,
+    18,
+    1222,
+    1249
+  ],
+  "native_fit": [
+    52,
+    54
+  ],
+  "phase": [
+    0.25,
+    0.5
+  ],
+  "machine_rows": "target/trainer-portrait-all/torven/phase-0.25-0.5.json",
+  "native_review": "target/trainer-portrait-all/torven/phase-review.png",
+  "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/03-torven/controller-v1.json",
+  "status": "candidate-native-reviewed-awaiting-combined-gameplay"
+}

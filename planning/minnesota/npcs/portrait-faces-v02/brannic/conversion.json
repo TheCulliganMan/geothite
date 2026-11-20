@@ -32,5 +32,14 @@
     6445,
     0
   ],
-  "review": "Near-frontal mature face, separate pupil and white opening in both eyes, angular nose, visible mouth framed by silver beard; shoulders over twice head width. Entire native sprite sampled at one phase; no hand-edited pixels."
+  "review": "Near-frontal mature face, separate pupil and white opening in both eyes, angular nose, visible mouth framed by silver beard; shoulders over twice head width. Entire native sprite sampled at one phase; no hand-edited pixels.",
+  "source_sha256": "f09cf2a6d823bb2457ceacef2f010910b5d4a6a4d2c588e7297683da7db05156",
+  "image_sha256": "1908b835d1a3020a53cc65b6c09f7eb4a9011622da68235e8314bb83324d7778",
+  "changed_native_pixels": 1353,
+  "preserved_fields": [
+    "id",
+    "schema_version",
+    "palette_rgb555",
+    "overworld_frames"
+  ]
 }

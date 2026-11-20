@@ -1,0 +1,35 @@
+{
+  "name": "avrin",
+  "method": "built-in imagegen; whole-source Rust D65 Lab palette quantization and one global sampling phase; no hand pixel edits",
+  "previous_source": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/04-avrin/native-pixels-v3.json",
+  "source": "planning/minnesota/npcs/portrait-faces-v02/avrin/native-pixels-v1.json",
+  "image_source": "planning/minnesota/npcs/portrait-faces-v02/avrin/image-source-v1.png",
+  "image_prompt": "planning/minnesota/npcs/portrait-faces-v02/avrin/image-prompt-v1.txt",
+  "source_sha256": "ead4e486c7004337eb7bd294c8ab55ad08a1c6642771cf70234c60021dfb2392",
+  "native_sha256": "3671d1831ccb503616adccb0e5dddd9eff5e4c9c8dcbf5620100745205ac6e8c",
+  "palette_rgb555": [
+    32767,
+    12855,
+    24847,
+    0
+  ],
+  "sampling": "whole_source_phase_d65_lab",
+  "source_bounds": [
+    110,
+    18,
+    1173,
+    1246
+  ],
+  "native_fit": [
+    47,
+    54
+  ],
+  "phase": [
+    0.75,
+    0.5
+  ],
+  "machine_rows": "target/trainer-portrait-all/avrin/phase-0.75-0.5.json",
+  "native_review": "target/trainer-portrait-all/avrin/phase-review.png",
+  "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/04-avrin/controller-v1.json",
+  "status": "candidate-native-reviewed-awaiting-combined-gameplay"
+}

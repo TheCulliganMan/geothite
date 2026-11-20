@@ -1,79 +1,99 @@
-# Trainer portrait redesign: visual review
+# Gym Leader and professor battle portraits
 
-The user rejected the previous nine-portrait set: the professor looked chibi,
-her head was too large, and native faces lacked readable eyes and noses. The
-regional asset plan has been restored to its earlier sources. The rejected
-`portrait-faces-v01` set is retained as history, not an approved replacement.
+All eight Gym Leaders and Professor Tamarack now have image-generated waist-up
+portraits, converted to the native 56×56 format. The redesign focuses on adult
+head-to-shoulder proportions, visible pupils, distinct noses and readable mouths.
+The previous full-body set remains rejected history in `portrait-faces-v01`.
 
-This revision starts with Professor Tamarack, an older woman with silver hair,
-low reading glasses and a moss field coat. The first two new full-body sources
-are rejected experiments: one remained too youthful, and the smaller adult
-version lost facial features when reduced to 56×56.
+This is a complete nine-character **local review candidate**, not user visual
+approval or a public deployment. The selected pack and regional asset-plan
+sources remain unchanged while this set is reviewed.
 
-## Current candidate
+## Sources and prompts
 
-[The current source](tamarack/image-source-waist-up-v2.png) was created with the
-built-in image tool using [this exact prompt](tamarack/image-prompt-waist-up-v2.txt).
-Waist-up framing allows an adult head-to-body ratio and more room for facial
-features. This framing is a proposed direction; user visual acceptance remains open.
+Each linked image was created with the built-in image tool. Exact prompts,
+native source and per-character conversion metadata are saved together. Native
+rows are unedited Rust conversion output; no manual pixel edits follow generation.
 
-The first waist-up source still lost its fine facial strokes. The second source
-uses coarser shapes and places the reading glasses at her collar, leaving the
-eyes and nose unobstructed. Its native eyes, nose and upturned smile are readable,
-but the far pupil still joins the face outline. This is a review candidate, not
-a claim of finished visual polish or user acceptance.
+| Character | Generated source | Exact final prompt | Native source |
+| --- | --- | --- | --- |
+| Varel | [Image](varel/image-source-v2.png) | [Prompt](varel/image-prompt-v2.txt) | [56×56](varel/native-pixels-v1.json) |
+| Torven | [Image](torven/image-source-v1.png) | [Prompt](torven/image-prompt-v1.txt) | [56×56](torven/native-pixels-v1.json) |
+| Avrin | [Image](avrin/image-source-v1.png) | [Prompt](avrin/image-prompt-v1.txt) | [56×56](avrin/native-pixels-v1.json) |
+| Brannic | [Image](brannic/image-source-v1.png) | [Prompt](brannic/image-prompt-v1.txt) | [56×56](brannic/native-pixels-v1.json) |
+| Saven | [Image](saven/image-source-v3.png) | [Prompt](saven/image-prompt-v3.txt) | [56×56](saven/native-pixels-v1.json) |
+| Sivren | [Image](sivren/image-source-v2.png) | [Prompt](sivren/image-prompt-v2.txt) | [56×56](sivren/native-pixels-v1.json) |
+| Orlis | [Image](orlis/image-source-v1.png) | [Prompt](orlis/image-prompt-v1.txt) | [56×56](orlis/native-pixels-v1.json) |
+| Norek | [Image](norek/image-source-v3.png) | [Prompt](norek/image-prompt-v3.txt) | [56×56](norek/native-pixels-v1.json) |
+| Professor Tamarack | [Image](tamarack/image-source-waist-up-v3.png) | [Prompt](tamarack/image-prompt-waist-up-v3.txt) | [56×56](tamarack/native-pixels-waist-up-v3.json) |
 
-`tamarack/native-pixels-waist-up-v2.json` contains unedited machine-converted
-battle rows. The original palette and all six overworld frames are unchanged.
-`conversion-waist-up-v2.json` records the source, crop, fit and single global
-sampling phase. No face-specific painting or head enlargement follows generation.
+`conversion-all-v1.json` and each character's `conversion.json` record exact
+sources, original sources, palettes, whole-image sampling phases and fit bounds.
+`publication-all-v1.json` is the complete pack publication plan.
 
-The optional Rust `trainer_portrait_palette` example performs whole-image Lab
-palette matching and native sampling. The selected comparison uses phase
-`0.5 0.25`; nine trial phases remain under ignored
-`target/trainer-face-diagnosis/phases-waist-up-v2/`. The other phases are not
-alternative accepted portraits. The source and actual native comparison is
-`target/trainer-portrait-rebuild/tamarack-waist-up-v2-review.png`.
+Every final native grid was reproduced from its generated image and recorded
+conversion settings. All non-battle fields match the original JSON: identity,
+palette and all six overworld poses. Encoded PNGs match those regenerated rows.
+This audit is `target/trainer-portrait-all/source-provenance.json`.
 
-## Local review pack
+## Visual review
 
-The fresh ignored `content-packs/minnesota-tamarack-waist-up-review-v02.crystalpack`
-uses `content-packs/minnesota-intro-fair-patrols-v01.crystalpack` as its parent.
-Its content identity is
-`1edb1a112b27f221759af4d6ab95d6f02f69492f561f0806a635507806d37b2d`.
-Its file SHA256 is
-`204c63411be8fbfb57f84e62c6cede8a42eb4368501e698276042e61718e0ac2`.
-Publication readback passed and exactly two resources changed: Tamarack's battle
-PNG and 2bpp bank. Gameplay, audio, maps, palettes and overworld art are preserved.
-The pack is unselected and undeployed. Tamarack remains a field professor whose
-portrait is also used in the opening; no battle or party was added.
+All nine were reviewed at native size and equal nearest-neighbor enlargement.
+An independent pass checked pupil/white separation, nose and mouth visibility,
+adult proportions and identity. Varel was regenerated to expose both eye sockets;
+Sivren and Saven needed thicker source strokes; Norek needed explicit pupils and
+continuous contours; Tamarack's final source separates the far pupil from her
+face outline. No sampling phase was used as a substitute for missing source art.
 
-The exact v02 pack passes the production-controller Tamarack opening test,
-reaching the bedroom and opening Start. Its rendered 56×56 portrait matches
-the encoded candidate pixel-for-pixel. Captures, controller log and verification
-are under `target/trainer-portrait-rebuild/waist-up-v2-gameplay/`. These checks
-verify integration, not visual approval. The prior waist-up v01 also passed
-mechanically but was superseded because its native facial detail failed review.
+These remain deliberately coarse four-color portraits. Fine eyebrow/ear details
+simplify at 56×56, and some thin source edges retain isolated accent pixels.
+Tamarack keeps her original warm-gray skin palette. These are style limitations
+visible in the native review, not claims of perfect source-image fidelity.
 
-Reproduce the candidate with the current Rust tools:
+- Complete actual native sheet: `target/trainer-portrait-all/all-nine-native.png`
+- Native sheet hashes: `target/trainer-portrait-all/all-nine-native.json`
+- Independent review: `target/trainer-portrait-all/independent-visual-review.md`
+- Encoded images: `target/trainer-portrait-all/NAME/encoded/`
+
+## Combined review pack
+
+- Parent: `content-packs/minnesota-intro-fair-patrols-v01.crystalpack`
+- Parent SHA256: `cfb028aec4080314247063a3c8686fa2f1b361a7c84bc7df3a4f5e3413aab0bd`
+- New pack: `content-packs/minnesota-trainer-waist-up-faces-v01.crystalpack`
+- SHA256: `778dc512c6559e2fcbae052c329987bf5958d80e58bf5933bf29a84d46d28fde`
+- Content identity: `496f64bfc9b64a1ad512f5e02903110b0526e17fd812c98062230829cd2a6a04`
+
+The publisher verifies all nine installed preimages, preserves gameplay/audio,
+and reads back the written pack for equality. Exactly 18 resources change: the
+nine trainer PNGs and nine 2bpp banks. Palettes, overworld banks, maps, teams,
+AI, rewards, progression and unrelated resources remain unchanged. Tamarack's
+portrait remains bound to her opening; no professor battle or party was added.
+
+`world.json` records this candidate as `trainer_portrait_waist_up_revision`.
+It is unselected and undeployed. Existing saves remain bound to their packs.
+
+## Reproduce and run
+
+With the existing built Rust tools, from the repository root:
 
 ```sh
-target/trainer-face-diagnosis/tools/trainer_portrait_palette \
-  planning/minnesota/npcs/portrait-faces-v02/tamarack/image-source-waist-up-v2.png \
-  target/tamarack-fresh-review/native.png 25370 8683 --native 0.5 0.25
 target/debug/examples/pack_trainer_portraits \
   content-packs/minnesota-intro-fair-patrols-v01.crystalpack \
-  planning/minnesota/npcs/portrait-faces-v02/publication-waist-up-v2.json \
-  content-packs/minnesota-tamarack-waist-up-review-v03.crystalpack
+  planning/minnesota/npcs/portrait-faces-v02/publication-all-v1.json \
+  content-packs/minnesota-trainer-waist-up-faces-v02.crystalpack
+target/debug/geothite play \
+  content-packs/minnesota-trainer-waist-up-faces-v01.crystalpack \
+  --save target/trainer-portrait-all/player.crystalsave
 ```
 
-Output paths must be fresh. The first command illustrates native sampling; the
-publication plan uses the recorded native source with preserved field frames.
-The optional importer passes four focused tests, the focused example Clippy
-check, and workspace formatting. Existing library Clippy warnings remain.
+Publication output must be a fresh ignored path; the example uses v02 to retain
+the verified v01 pack. Native encoding uses `npc_sprite_candidate --native`.
+The optional `trainer_portrait_palette` importer takes an image, fresh output,
+original light/accent RGB555 values and `--native PHASE_X PHASE_Y`. Its four
+focused tests, focused Clippy and workspace formatting passed during the prior
+Tamarack iteration; this expansion changes artwork/data, not Rust code.
 
-## Remaining scope
+## Verification status
 
-Varel, Torven, Avrin, Brannic, Saven, Sivren, Orlis and Norek remain pending a
-successful visual direction. No new leader design has been accepted in this
-revision. Mechanical checks of the earlier set are not evidence of visual quality.
+The exact combined-pack controller and production-client checks are in progress.
+Final results and evidence paths will be recorded here before delivery.

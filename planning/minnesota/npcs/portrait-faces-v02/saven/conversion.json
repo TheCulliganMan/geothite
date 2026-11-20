@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "name": "saven",
+  "method": "built-in-imagegen-with-rust-global-phase-conversion",
+  "previous_source": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/06-saven/native-pixels-v3.json",
+  "source": "planning/minnesota/npcs/portrait-faces-v02/saven/native-pixels-v1.json",
+  "image_source": "planning/minnesota/npcs/portrait-faces-v02/saven/image-source-v3.png",
+  "prompts": [
+    "planning/minnesota/npcs/portrait-faces-v02/saven/image-prompt-v1.txt",
+    "planning/minnesota/npcs/portrait-faces-v02/saven/image-prompt-v2.txt",
+    "planning/minnesota/npcs/portrait-faces-v02/saven/image-prompt-v3.txt"
+  ],
+  "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/06-saven/controller-v1.json",
+  "sampling": "whole_source_phase_d65_lab",
+  "size": [
+    56,
+    56
+  ],
+  "source_bounds": [
+    16,
+    0,
+    1247,
+    1246
+  ],
+  "fit_size": [
+    52,
+    53
+  ],
+  "phase": [
+    0.25,
+    0.5
+  ],
+  "palette_rgb555": [
+    32767,
+    22399,
+    24038,
+    0
+  ],
+  "review": "Image-generated refinement increased all contour thickness and simplified hair/jacket. Native eyes with pupils and whites, distinct angular nose and grin; adult jaw, forehead goggles and falconry glove remain distinct. All pixels sampled at one global phase; no manual edits.",
+  "source_sha256": "7c80ae804a6a6f384590d501dccd38dca678905dde91a92598c0b87b572ce9d8",
+  "image_sha256": "a796070dc064ae4ff9454ced965dd8127607f6fd89b0ab4334bcc38daa085ca6",
+  "changed_native_pixels": 1639,
+  "preserved_fields": [
+    "id",
+    "schema_version",
+    "palette_rgb555",
+    "overworld_frames"
+  ]
+}

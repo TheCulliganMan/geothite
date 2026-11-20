@@ -1,0 +1,346 @@
+{
+  "schema_version": 1,
+  "method": "built-in-imagegen-with-rust-global-phase-conversion",
+  "characters": [
+    {
+      "name": "varel",
+      "method": "built-in imagegen; whole-source Rust D65 Lab palette quantization and one global sampling phase; no hand pixel edits",
+      "previous_source": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/02-varel/native-pixels-v2.json",
+      "source": "planning/minnesota/npcs/portrait-faces-v02/varel/native-pixels-v1.json",
+      "image_source": "planning/minnesota/npcs/portrait-faces-v02/varel/image-source-v2.png",
+      "image_prompt": "planning/minnesota/npcs/portrait-faces-v02/varel/image-prompt-v2.txt",
+      "source_sha256": "81471362ffa645eafb88280911edaeb3bcdcb209cc9812239141a50bb51c547d",
+      "native_sha256": "5cfe97d649e6a26855aae018a18f8d20c0fbfde4e95aa7010c6731125ed45e3c",
+      "palette_rgb555": [
+        32767,
+        22399,
+        13733,
+        0
+      ],
+      "sampling": "whole_source_phase_d65_lab",
+      "source_bounds": [
+        69,
+        15,
+        1214,
+        1239
+      ],
+      "native_fit": [
+        51,
+        54
+      ],
+      "phase": [
+        0.5,
+        0.75
+      ],
+      "machine_rows": "target/trainer-portrait-all/varel/v2/phase-0.5-0.75.json",
+      "native_review": "target/trainer-portrait-all/varel/v2/phase-review.png",
+      "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/02-varel/controller-v1.json",
+      "status": "candidate-native-reviewed-awaiting-combined-gameplay"
+    },
+    {
+      "name": "torven",
+      "method": "built-in imagegen; whole-source Rust D65 Lab palette quantization and one global sampling phase; no hand pixel edits",
+      "previous_source": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/03-torven/native-pixels-v3.json",
+      "source": "planning/minnesota/npcs/portrait-faces-v02/torven/native-pixels-v1.json",
+      "image_source": "planning/minnesota/npcs/portrait-faces-v02/torven/image-source-v1.png",
+      "image_prompt": "planning/minnesota/npcs/portrait-faces-v02/torven/image-prompt-v1.txt",
+      "source_sha256": "4fc42f52cdacb1db50e4429e12dec8be2d0502c54f12df6d53d5e47285aa4cd0",
+      "native_sha256": "8a74dd90b43f2a404460a6960b3d3cb3ca9048dbd06336f97a3d765e7fc25bf2",
+      "palette_rgb555": [
+        32767,
+        22399,
+        3508,
+        0
+      ],
+      "sampling": "whole_source_phase_d65_lab",
+      "source_bounds": [
+        30,
+        18,
+        1222,
+        1249
+      ],
+      "native_fit": [
+        52,
+        54
+      ],
+      "phase": [
+        0.25,
+        0.5
+      ],
+      "machine_rows": "target/trainer-portrait-all/torven/phase-0.25-0.5.json",
+      "native_review": "target/trainer-portrait-all/torven/phase-review.png",
+      "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/03-torven/controller-v1.json",
+      "status": "candidate-native-reviewed-awaiting-combined-gameplay"
+    },
+    {
+      "name": "avrin",
+      "method": "built-in imagegen; whole-source Rust D65 Lab palette quantization and one global sampling phase; no hand pixel edits",
+      "previous_source": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/04-avrin/native-pixels-v3.json",
+      "source": "planning/minnesota/npcs/portrait-faces-v02/avrin/native-pixels-v1.json",
+      "image_source": "planning/minnesota/npcs/portrait-faces-v02/avrin/image-source-v1.png",
+      "image_prompt": "planning/minnesota/npcs/portrait-faces-v02/avrin/image-prompt-v1.txt",
+      "source_sha256": "ead4e486c7004337eb7bd294c8ab55ad08a1c6642771cf70234c60021dfb2392",
+      "native_sha256": "3671d1831ccb503616adccb0e5dddd9eff5e4c9c8dcbf5620100745205ac6e8c",
+      "palette_rgb555": [
+        32767,
+        12855,
+        24847,
+        0
+      ],
+      "sampling": "whole_source_phase_d65_lab",
+      "source_bounds": [
+        110,
+        18,
+        1173,
+        1246
+      ],
+      "native_fit": [
+        47,
+        54
+      ],
+      "phase": [
+        0.75,
+        0.5
+      ],
+      "machine_rows": "target/trainer-portrait-all/avrin/phase-0.75-0.5.json",
+      "native_review": "target/trainer-portrait-all/avrin/phase-review.png",
+      "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/04-avrin/controller-v1.json",
+      "status": "candidate-native-reviewed-awaiting-combined-gameplay"
+    },
+    {
+      "schema_version": 1,
+      "name": "brannic",
+      "method": "built-in-imagegen-with-rust-global-phase-conversion",
+      "previous_source": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/05-brannic/native-pixels-v3.json",
+      "source": "planning/minnesota/npcs/portrait-faces-v02/brannic/native-pixels-v1.json",
+      "image_source": "planning/minnesota/npcs/portrait-faces-v02/brannic/image-source-v1.png",
+      "prompt": "planning/minnesota/npcs/portrait-faces-v02/brannic/image-prompt-v1.txt",
+      "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/05-brannic/controller-v1.json",
+      "sampling": "whole_source_phase_d65_lab",
+      "size": [
+        56,
+        56
+      ],
+      "source_bounds": [
+        61,
+        13,
+        1190,
+        1243
+      ],
+      "fit_size": [
+        50,
+        54
+      ],
+      "phase": [
+        0.25,
+        0.75
+      ],
+      "palette_rgb555": [
+        32767,
+        29562,
+        6445,
+        0
+      ],
+      "review": "Near-frontal mature face, separate pupil and white opening in both eyes, angular nose, visible mouth framed by silver beard; shoulders over twice head width. Entire native sprite sampled at one phase; no hand-edited pixels.",
+      "source_sha256": "f09cf2a6d823bb2457ceacef2f010910b5d4a6a4d2c588e7297683da7db05156",
+      "image_sha256": "1908b835d1a3020a53cc65b6c09f7eb4a9011622da68235e8314bb83324d7778",
+      "changed_native_pixels": 1353,
+      "preserved_fields": [
+        "id",
+        "schema_version",
+        "palette_rgb555",
+        "overworld_frames"
+      ]
+    },
+    {
+      "schema_version": 1,
+      "name": "saven",
+      "method": "built-in-imagegen-with-rust-global-phase-conversion",
+      "previous_source": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/06-saven/native-pixels-v3.json",
+      "source": "planning/minnesota/npcs/portrait-faces-v02/saven/native-pixels-v1.json",
+      "image_source": "planning/minnesota/npcs/portrait-faces-v02/saven/image-source-v3.png",
+      "prompts": [
+        "planning/minnesota/npcs/portrait-faces-v02/saven/image-prompt-v1.txt",
+        "planning/minnesota/npcs/portrait-faces-v02/saven/image-prompt-v2.txt",
+        "planning/minnesota/npcs/portrait-faces-v02/saven/image-prompt-v3.txt"
+      ],
+      "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/06-saven/controller-v1.json",
+      "sampling": "whole_source_phase_d65_lab",
+      "size": [
+        56,
+        56
+      ],
+      "source_bounds": [
+        16,
+        0,
+        1247,
+        1246
+      ],
+      "fit_size": [
+        52,
+        53
+      ],
+      "phase": [
+        0.25,
+        0.5
+      ],
+      "palette_rgb555": [
+        32767,
+        22399,
+        24038,
+        0
+      ],
+      "review": "Image-generated refinement increased all contour thickness and simplified hair/jacket. Native eyes with pupils and whites, distinct angular nose and grin; adult jaw, forehead goggles and falconry glove remain distinct. All pixels sampled at one global phase; no manual edits.",
+      "source_sha256": "7c80ae804a6a6f384590d501dccd38dca678905dde91a92598c0b87b572ce9d8",
+      "image_sha256": "a796070dc064ae4ff9454ced965dd8127607f6fd89b0ab4334bcc38daa085ca6",
+      "changed_native_pixels": 1639,
+      "preserved_fields": [
+        "id",
+        "schema_version",
+        "palette_rgb555",
+        "overworld_frames"
+      ]
+    },
+    {
+      "name": "sivren",
+      "previous_source": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/07-sivren/native-pixels-v2.json",
+      "source": "planning/minnesota/npcs/portrait-faces-v02/sivren/native-pixels-v1.json",
+      "image_source": "planning/minnesota/npcs/portrait-faces-v02/sivren/image-source-v2.png",
+      "image_prompt": "planning/minnesota/npcs/portrait-faces-v02/sivren/image-prompt-v2.txt",
+      "tool": "trainer_portrait_palette",
+      "sampling": "global_phase_nearest_lab",
+      "phase": [
+        0.25,
+        0.5
+      ],
+      "source_bounds": [
+        156,
+        115,
+        1191,
+        1254
+      ],
+      "fit_size": [
+        49,
+        54
+      ],
+      "palette_rgb555": [
+        32767,
+        22399,
+        14885,
+        0
+      ],
+      "hand_pixel_edits": false,
+      "selected": false,
+      "deployed": false
+    },
+    {
+      "schema_version": 1,
+      "name": "orlis",
+      "method": "built-in-imagegen-with-rust-global-phase-conversion",
+      "previous_source": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/08-orlis/native-pixels-v3.json",
+      "source": "planning/minnesota/npcs/portrait-faces-v02/orlis/native-pixels-v1.json",
+      "image_source": "planning/minnesota/npcs/portrait-faces-v02/orlis/image-source-v1.png",
+      "prompt": "planning/minnesota/npcs/portrait-faces-v02/orlis/image-prompt-v1.txt",
+      "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/08-orlis/controller-v1.json",
+      "sampling": "whole_source_phase_d65_lab",
+      "size": [
+        56,
+        56
+      ],
+      "source_bounds": [
+        8,
+        33,
+        1241,
+        1241
+      ],
+      "fit_size": [
+        52,
+        51
+      ],
+      "phase": [
+        0.25,
+        0.75
+      ],
+      "palette_rgb555": [
+        32767,
+        22399,
+        6565,
+        0
+      ],
+      "review": "Broad mature face framed by dark shoulder-length waves and full beard, separate pupil and white openings, strong nose and closed mouth. Asymmetrical cape, oak twig and open hand preserve Grass leader identity. All pixels sampled with one phase; no hand edits.",
+      "source_sha256": "f3fb80225e0ed90cf349c3b1f5b8204a4222e2749bf2669e01643baa96402993",
+      "image_sha256": "e82a41125f02141cac07138ecf88e06b6d76575c8451a9ef4e335108cc34a7d2",
+      "changed_native_pixels": 1549,
+      "preserved_fields": [
+        "id",
+        "schema_version",
+        "palette_rgb555",
+        "overworld_frames"
+      ]
+    },
+    {
+      "name": "norek",
+      "previous_source": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/09-norek/native-pixels-v2.json",
+      "source": "planning/minnesota/npcs/portrait-faces-v02/norek/native-pixels-v1.json",
+      "image_source": "planning/minnesota/npcs/portrait-faces-v02/norek/image-source-v3.png",
+      "image_prompt": "planning/minnesota/npcs/portrait-faces-v02/norek/image-prompt-v3.txt",
+      "tool": "trainer_portrait_palette",
+      "sampling": "global_phase_nearest_lab",
+      "phase": [
+        0.75,
+        0.25
+      ],
+      "source_bounds": [
+        41,
+        12,
+        1213,
+        1254
+      ],
+      "fit_size": [
+        51,
+        54
+      ],
+      "palette_rgb555": [
+        32767,
+        29562,
+        22952,
+        0
+      ],
+      "hand_pixel_edits": false,
+      "selected": false,
+      "deployed": false
+    },
+    {
+      "name": "tamarack",
+      "previous_source": "planning/minnesota/npcs/tamarack-ice/01-tamarack/native-pixels-v4.json",
+      "source": "planning/minnesota/npcs/portrait-faces-v02/tamarack/native-pixels-waist-up-v3.json",
+      "image_source": "planning/minnesota/npcs/portrait-faces-v02/tamarack/image-source-waist-up-v3.png",
+      "image_prompt": "planning/minnesota/npcs/portrait-faces-v02/tamarack/image-prompt-waist-up-v3.txt",
+      "tool": "trainer_portrait_palette",
+      "sampling": "global_phase_nearest_lab",
+      "phase": [
+        0.25,
+        0.5
+      ],
+      "source_bounds": [
+        78,
+        14,
+        1149,
+        1250
+      ],
+      "fit_size": [
+        47,
+        54
+      ],
+      "palette_rgb555": [
+        32767,
+        25370,
+        8683,
+        0
+      ],
+      "hand_pixel_edits": false,
+      "selected": false,
+      "deployed": false
+    }
+  ]
+}

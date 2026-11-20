@@ -1,0 +1,32 @@
+{
+  "name": "sivren",
+  "previous_source": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/07-sivren/native-pixels-v2.json",
+  "source": "planning/minnesota/npcs/portrait-faces-v02/sivren/native-pixels-v1.json",
+  "image_source": "planning/minnesota/npcs/portrait-faces-v02/sivren/image-source-v2.png",
+  "image_prompt": "planning/minnesota/npcs/portrait-faces-v02/sivren/image-prompt-v2.txt",
+  "tool": "trainer_portrait_palette",
+  "sampling": "global_phase_nearest_lab",
+  "phase": [
+    0.25,
+    0.5
+  ],
+  "source_bounds": [
+    156,
+    115,
+    1191,
+    1254
+  ],
+  "fit_size": [
+    49,
+    54
+  ],
+  "palette_rgb555": [
+    32767,
+    22399,
+    14885,
+    0
+  ],
+  "hand_pixel_edits": false,
+  "selected": false,
+  "deployed": false
+}

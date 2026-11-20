@@ -1,0 +1,32 @@
+{
+  "name": "norek",
+  "previous_source": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/09-norek/native-pixels-v2.json",
+  "source": "planning/minnesota/npcs/portrait-faces-v02/norek/native-pixels-v1.json",
+  "image_source": "planning/minnesota/npcs/portrait-faces-v02/norek/image-source-v3.png",
+  "image_prompt": "planning/minnesota/npcs/portrait-faces-v02/norek/image-prompt-v3.txt",
+  "tool": "trainer_portrait_palette",
+  "sampling": "global_phase_nearest_lab",
+  "phase": [
+    0.75,
+    0.25
+  ],
+  "source_bounds": [
+    41,
+    12,
+    1213,
+    1254
+  ],
+  "fit_size": [
+    51,
+    54
+  ],
+  "palette_rgb555": [
+    32767,
+    29562,
+    22952,
+    0
+  ],
+  "hand_pixel_edits": false,
+  "selected": false,
+  "deployed": false
+}
