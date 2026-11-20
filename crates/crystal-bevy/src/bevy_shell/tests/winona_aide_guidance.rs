@@ -5,6 +5,7 @@ use crystal_runtime::RuntimeShellPhase;
 
 use super::super::brainerd_guide::capture;
 use super::super::interior_life::fixture;
+use super::super::minnesota_research_access::choices;
 use super::super::northstar_ice_lair::{choice, event};
 use super::super::winona::{load, press};
 use super::mark_runtime_snapshot_dirty;
@@ -18,11 +19,16 @@ fn winona_aide_uses_the_players_actual_stage_of_ivys_errand() {
     const BALLS: &str = "EVENT_MN_WINONA_BALLS_RECEIVED";
     let (root, runtime) = load();
     let frames = std::env::var_os("MN_MARAIS_PARTNER_FRAMES").map(std::path::PathBuf::from);
+    let modern_choices = choices::installed(&runtime);
     for (index, expected) in [
         "MnWinonaAideMeetText",
         "MnWinonaAideReadingsText",
         "MnEarlyPartnerWaitText",
-        "MnEarlyPartnerPOUCHIDText",
+        if modern_choices {
+            "MnEarlyPartnerBIRCHITText"
+        } else {
+            "MnEarlyPartnerPOUCHIDText"
+        },
     ]
     .into_iter()
     .enumerate()
@@ -75,7 +81,13 @@ fn winona_aide_uses_the_players_actual_stage_of_ivys_errand() {
                     c = capture(c, frames.as_deref(), "winona-research-aide.png");
                 }
             }
-            if snap.ui.pending_yes_no.is_some() {
+            if index == 3
+                && modern_choices
+                && c.shell.menu_cursor.is_some()
+                && snap.ui.menu.as_ref().is_some_and(|menu| menu.window_open)
+            {
+                choices::select(&mut c, Some("BIRCHIT"));
+            } else if snap.ui.pending_yes_no.is_some() {
                 assert_eq!(index, 3);
                 choice(&mut c, false);
             } else if snap.phase == RuntimeShellPhase::Overworld && !c.has_pending_script_work() {

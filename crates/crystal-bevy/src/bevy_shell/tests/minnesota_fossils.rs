@@ -34,7 +34,7 @@ fn quantity(c: &VisibleShellController, item: &str) -> u16 {
         .quantity(&c.shell.shell.runtime().data().items[item])
 }
 
-fn finish(c: &mut VisibleShellController) {
+pub(super) fn finish(c: &mut VisibleShellController) {
     for _ in 0..128 {
         c.wait_frames(64).expect("fossil text presentation");
         if let Some(name) = &c.shell.pending_name_choice {

@@ -185,10 +185,13 @@ fn read(c: &mut VisibleShellController, r: &CrystalRuntime) {
     press(c, GameButton::Right);
     press(c, GameButton::A);
 }
-fn cache(c: &mut VisibleShellController, r: &CrystalRuntime) {
+fn examine_cache(c: &mut VisibleShellController, r: &CrystalRuntime) {
     walk(c, r, (18, 9));
     press(c, GameButton::Right);
     press(c, GameButton::A);
+}
+fn cache(c: &mut VisibleShellController, r: &CrystalRuntime) {
+    examine_cache(c, r);
     finish(c);
 }
 fn acknowledge_fossils(c: &mut VisibleShellController) {
@@ -418,7 +421,25 @@ fn fossil_gallery_controller_full_pocket_claim_survives_native_toss_retry_and_co
     read(&mut c, &r);
     finish(&mut c);
     assert!(event(&c, READ) && visible_cache(&mut c));
-    cache(&mut c, &r);
+    examine_cache(&mut c, &r);
+    if r.data().maps[ROOM]
+        .scripts
+        .contains_key("MnLampCacheBagFullText")
+    {
+        c.wait_frames(240).expect("print the capacity notice");
+        let screen = c.snapshot().expect("native cache feedback");
+        assert_eq!(
+            screen.ui.text.as_ref().map(|t| t.label.as_str()),
+            Some("MnLampCacheBagFullText")
+        );
+        assert_eq!(
+            super::super::r10_gallery::completed_visible_page(&mut c),
+            Some((0, "No room for the\nRARE CANDY.".into()))
+        );
+        let frames = std::env::var_os("MN_RESEARCH_CHOICE_FRAMES").map(PathBuf::from);
+        c = super::super::brainerd_guide::capture(c, frames.as_deref(), "lamp-cache-full.png");
+    }
+    finish(&mut c);
     assert!(!event(&c, CLAIMED) && visible_cache(&mut c));
     assert_eq!(
         c.snapshot().expect("refused award preserves bag").bag,

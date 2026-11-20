@@ -1,4 +1,7 @@
 //! Declared gate/capacity cases plus an earned first-delivery return.
+#[path = "winona_research_choices.rs"]
+pub(super) mod choices;
+
 use crystal_core::input::GameButton;
 use crystal_core::models::Dv;
 
@@ -40,6 +43,61 @@ fn quantity(c: &VisibleShellController, item: &str) -> u16 {
         .quantity(&c.shell.shell.runtime().data().items[item])
 }
 
+fn lab_fixture(
+    root: &crystal_assets::AssetRoot,
+    runtime: &crystal_runtime::CrystalRuntime,
+    chosen: &str,
+    initial: &str,
+    count: usize,
+    delivered: bool,
+    claims: &[&str],
+) -> VisibleShellController {
+    let mut c = fixture(root, runtime, "MnWinonaFieldStation", (3, 9));
+    let state = c.shell.shell.session_mut().state_mut();
+    for name in [
+        "EVENT_MN_STARTER_RECEIVED",
+        "EVENT_MN_WINONA_BALLS_RECEIVED",
+        &format!("EVENT_MN_WINONA_{initial}"),
+    ] {
+        state
+            .flags
+            .set_event_flag(name, true)
+            .expect("declared opening choice");
+    }
+    state
+        .flags
+        .set_event_flag(DELIVERED, delivered)
+        .expect("declared first parcel");
+    state
+        .flags
+        .set_engine_flag("ENGINE_POKEDEX", true)
+        .expect("research access");
+    for index in 0..count {
+        assert!(
+            state.storage.party.add_pokemon(
+                runtime
+                    .data()
+                    .create_pokemon(
+                        if index == 0 { chosen } else { "CROOKIT" },
+                        5,
+                        Dv::default()
+                    )
+                    .expect("legal initial starter")
+            )
+        );
+    }
+    state.sync_party_from_storage();
+
+    for flag in claims {
+        state
+            .flags
+            .set_event_flag(&format!("EVENT_MN_{flag}_RESEARCH_RECEIVED"), true)
+            .expect("earlier research receipt");
+    }
+    mark_runtime_snapshot_dirty(&mut c.shell);
+    c
+}
+
 #[test]
 #[ignore = "requires CRYSTAL_WINONA_TEST_PACK with early research access"]
 fn early_research_starters_all_choices_decline_full_party_and_continue() {
@@ -50,39 +108,12 @@ fn early_research_starters_all_choices_decline_full_party_and_continue() {
         ("BIRCHIT", "TOTODILE"),
     ] {
         for (delivered, count) in [(false, 1), (true, 6), (true, 1)] {
-            let mut c = fixture(&root, &runtime, "MnWinonaFieldStation", (3, 9));
-            let state = c.shell.shell.session_mut().state_mut();
-            for name in [
-                "EVENT_MN_STARTER_RECEIVED",
-                "EVENT_MN_WINONA_BALLS_RECEIVED",
-                &format!("EVENT_MN_WINONA_{initial}"),
-            ] {
-                state
-                    .flags
-                    .set_event_flag(name, true)
-                    .expect("declared opening choice");
+            let mut c = lab_fixture(&root, &runtime, chosen, initial, count, delivered, &[]);
+            let money = c.shell.shell.session().state().money;
+            if delivered && choices::installed(&runtime) {
+                choices::review_visit(&root, &runtime, c, chosen, count);
+                continue;
             }
-            state
-                .flags
-                .set_event_flag(DELIVERED, delivered)
-                .expect("declared first parcel");
-            state
-                .flags
-                .set_engine_flag("ENGINE_POKEDEX", true)
-                .expect("research access");
-            for _ in 0..count {
-                assert!(
-                    state.storage.party.add_pokemon(
-                        runtime
-                            .data()
-                            .create_pokemon(chosen, 5, Dv::default())
-                            .expect("legal initial starter")
-                    )
-                );
-            }
-            state.sync_party_from_storage();
-            let money = state.money;
-            mark_runtime_snapshot_dirty(&mut c.shell);
             // No progress, position, party, resources or RNG writes after setup.
             if delivered {
                 talk(&mut c, GameButton::Left, &[false]);
@@ -135,23 +166,36 @@ fn early_research_starters_all_choices_decline_full_party_and_continue() {
 #[test]
 #[ignore = "requires CRYSTAL_WINONA_TEST_PACK with early research access"]
 fn early_research_starters_earned_first_delivery_returns_before_any_badge() {
-    let (root, runtime, mut c) = super::winona::opening(1, "CYNDAQUIL");
-    indoor_walk(&mut c, &runtime, (6, 6));
-    travel(&mut c, GameButton::Down, "MnWinona", (7, 8));
-    indoor_walk(&mut c, &runtime, (4, 18));
-    travel(&mut c, GameButton::Left, "MnR01C00R00", (63, 24));
-    super::rochester::trail(&mut c, &runtime, (0, 24));
-    travel(&mut c, GameButton::Left, "MnRochester", (39, 18));
-    indoor_walk(&mut c, &runtime, (15, 8));
-    travel(&mut c, GameButton::Up, "MnRochesterPokecenter1F", (10, 13));
-    indoor_walk(&mut c, &runtime, (11, 9));
-    press(&mut c, GameButton::Up);
-    press(&mut c, GameButton::A);
-    assert!(
-        !event(&c, DELIVERED),
-        "the first visible page cannot grant delivery"
-    );
-    super::winona::finish(&mut c);
+    let (root, runtime) = load();
+    let mut c = if runtime.data().maps["MnWinonaFieldStation"]
+        .scripts
+        .contains_key("MnOverhaulLabEntry")
+    {
+        // This production journey starts at home, chooses KINDLIT in Winona,
+        // walks Route 1 and hands the original readings to IVY in person.
+        super::dialogue_overhaul::delivery(1).2
+    } else {
+        let (_, _, mut c) = super::winona::opening(1, "CYNDAQUIL");
+        indoor_walk(&mut c, &runtime, (6, 6));
+        travel(&mut c, GameButton::Down, "MnWinona", (7, 8));
+        indoor_walk(&mut c, &runtime, (4, 18));
+        travel(&mut c, GameButton::Left, "MnR01C00R00", (63, 24));
+        super::rochester::trail(&mut c, &runtime, (0, 24));
+        travel(&mut c, GameButton::Left, "MnRochester", (39, 18));
+        indoor_walk(&mut c, &runtime, (15, 8));
+        travel(
+            &mut c,
+            GameButton::Up,
+            "MnRochesterPokecenter1F",
+            super::rochester_earned::clinic_arrival(&runtime),
+        );
+        indoor_walk(&mut c, &runtime, (11, 9));
+        press(&mut c, GameButton::Up);
+        press(&mut c, GameButton::A);
+        assert!(!event(&c, DELIVERED));
+        super::winona::finish(&mut c);
+        c
+    };
     assert!(event(&c, DELIVERED));
     assert!(
         !c.shell
@@ -163,8 +207,7 @@ fn early_research_starters_earned_first_delivery_returns_before_any_badge() {
             .iter()
             .any(|b| *b)
     );
-    indoor_walk(&mut c, &runtime, (10, 14));
-    travel(&mut c, GameButton::Down, "MnRochester", (15, 8));
+    super::rochester_earned::clinic_exit(&mut c, &runtime);
     indoor_walk(&mut c, &runtime, (38, 18));
     travel(&mut c, GameButton::Right, "MnR01C00R00", (0, 24));
     super::rochester::trail(&mut c, &runtime, (63, 24));
@@ -174,8 +217,16 @@ fn early_research_starters_earned_first_delivery_returns_before_any_badge() {
     travel(&mut c, GameButton::Up, "MnWinonaFieldStation", (4, 10));
     indoor_walk(&mut c, &runtime, (3, 9));
     let money = c.shell.shell.session().state().money;
-    talk(&mut c, GameButton::Left, &[true]);
-    talk(&mut c, GameButton::Left, &[true]);
+    if choices::installed(&runtime) {
+        choices::open(&mut c, ["POUCHID", "BIRCHIT"]);
+        choices::select(&mut c, Some("BIRCHIT"));
+        choices::confirm(&mut c, "BIRCHIT", true);
+        choices::start(&mut c);
+        choices::confirm(&mut c, "POUCHID", true);
+    } else {
+        talk(&mut c, GameButton::Left, &[true]);
+        talk(&mut c, GameButton::Left, &[true]);
+    }
     let mut species = c
         .snapshot()
         .expect("earned early team")

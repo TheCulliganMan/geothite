@@ -1,0 +1,10 @@
+{
+  "parent_pack": "content-packs/minnesota-marais-supplies-v01.crystalpack",
+  "parent_pack_sha256": "acb4684044621b27913d1e5c97a0dcce632766925e6e9a44393d5569194a3e1a",
+  "output_pack": "content-packs/minnesota-research-choices-v01.crystalpack",
+  "expected_pack_sha256": "e294e54fd70d977945bf124dc7317ff95f3709d0e28ba56449b08e3b08e27e58",
+  "builder": "pack_ely_challenge",
+  "arguments": [
+    "--research-choices"
+  ]
+}

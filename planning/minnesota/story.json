@@ -2711,6 +2711,12 @@
         ]
       },
       "MnWinonaFieldStation": {
+        "MnResearchChoiceText": [
+          [
+            "AIDE: Which one",
+            "caught your eye?"
+          ]
+        ],
         "MnWinonaAideMeetText": [
           [
             "AIDE: Go say hello",
@@ -51607,6 +51613,12 @@
         ]
       },
       "MnDriftlessLampGallery": {
+        "MnLampCacheBagFullText": [
+          [
+            "No room for the",
+            "RARE CANDY."
+          ]
+        ],
         "MnLampFossilsText": [
           [
             "On the west shelf,",

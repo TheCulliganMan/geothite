@@ -171,6 +171,8 @@ mod northstar_ely_return;
 pub use northstar_ely_return::revise_ely_return;
 mod northstar_marais_supplies;
 pub use northstar_marais_supplies::revise_marais_supplies;
+mod northstar_research_choices;
+pub use northstar_research_choices::revise_research_choices;
 mod northstar_ely_challenge;
 pub use northstar_ely_challenge::revise_ely_challenge;
 mod northstar_badge_battles;
