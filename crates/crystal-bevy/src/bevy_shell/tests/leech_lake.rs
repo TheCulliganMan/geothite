@@ -179,7 +179,7 @@ impl Drop for OwnedSave {
     }
 }
 
-fn battle_button(
+pub(super) fn battle_button(
     controller: &VisibleShellController,
     runtime: &CrystalRuntime,
     snapshot: &crystal_runtime::RuntimeShellSnapshot,

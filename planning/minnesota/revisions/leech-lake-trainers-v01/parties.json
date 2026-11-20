@@ -1,0 +1,57 @@
+[
+  {
+    "trainer": "MN_R07_T05",
+    "slots": [
+      {
+        "index": 1,
+        "original": "CHORIP",
+        "new_member": {
+          "species": "VELVAWN",
+          "level": 30,
+          "moves": ["STOMP", "RAZOR_LEAF", "LEECH_SEED", "TAKE_DOWN"],
+          "item": null
+        }
+      }
+    ]
+  },
+  {
+    "trainer": "MN_R07_T07",
+    "slots": [
+      {
+        "index": 0,
+        "original": "CHORIP",
+        "new_member": {
+          "species": "JIGLET",
+          "level": 30,
+          "moves": ["WATER_PULSE", "METAL_CLAW", "SWIFT", "PURSUIT"],
+          "item": null
+        }
+      }
+    ]
+  },
+  {
+    "trainer": "MN_R07_T08",
+    "slots": [
+      {
+        "index": 0,
+        "original": "FLOSSAIL",
+        "new_member": {
+          "species": "DARTDUCK",
+          "level": 30,
+          "moves": ["QUICK_ATTACK", "LOW_KICK", "PURSUIT", "SLAM"],
+          "item": null
+        }
+      },
+      {
+        "index": 1,
+        "original": "CHORIP",
+        "new_member": {
+          "species": "FLOSSAIL",
+          "level": 30,
+          "moves": ["GUST", "ACID", "COTTON_SPORE", "GIGA_DRAIN"],
+          "item": null
+        }
+      }
+    ]
+  }
+]

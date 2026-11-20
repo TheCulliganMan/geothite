@@ -28,7 +28,7 @@ The finished editions retain all 329 Field and 330 Intro reading points, now on 
 
 At South Lake, the eight-square walk on the pebble bank produced 119 consecutive frames with a canoe and 110 without. Both sequences matched the preceding Intro edition pixel for pixel. The equipped walker turns on the stones, launches into the narrows, lands and walks east. The unequipped walker can face the lake and continue along the same bank. All four grassy approaches passed between-tick camera checks, and Chris at noon and Kris at night each completed the two-lake portage. The daytime [footing check](../fen-waterline-v01/check-footing.py) found zero mismatches across 85 bank-to-water contacts and 787 walking or paddling strides in each edition. A separate [Route 15 west bank review](terrain-review.md) traces its high shore and the three usable drops into the meadow.
 
-One battle-design finding remains open on Route 7. Five of its eight trainers carry a level-30 Chorip with Disarming Voice, Water Gun, Psybeam and Sludge. Dean and Wren field the same pair of Pokémon in reverse order. Both editions reproduce the overlap.
+In both Trail Signs editions, five of Route 7’s eight trainers carry a level-30 Chorip with Disarming Voice, Water Gun, Psybeam and Sludge. Dean and Wren field the same pair of Pokémon in reverse order. The subsequent [Leech Lake trainer revision](../leech-lake-trainers-v01/README.md) gives Nell, Silas and Wren distinct partners.
 
 Use absolute paths for the appropriate parent, a fresh child output and a capture directory.
 

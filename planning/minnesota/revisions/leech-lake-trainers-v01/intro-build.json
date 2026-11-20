@@ -1,0 +1,10 @@
+{
+  "parent_pack": "content-packs/minnesota-intro-trail-signs-v01.crystalpack",
+  "parent_pack_sha256": "67b7391397fddd5daf6ac8ec57ff062f1312fa91b3db3e8032167180485fc079",
+  "output_pack": "content-packs/minnesota-intro-leech-lake-trainers-v01.crystalpack",
+  "expected_pack_sha256": "c41a0e9bf5b9e64b11f15a48fd89148849b8377cdada5c113fadecf034c5eb98",
+  "builder": "pack_ely_challenge",
+  "arguments": [
+    "--leech-lake-trainers"
+  ]
+}

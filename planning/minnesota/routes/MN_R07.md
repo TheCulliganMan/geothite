@@ -1,3 +1,7 @@
+# Leech Lake trainer parties, 2026-11-19
+
+Nell brings Velvawn, Silas casts with Jiglet, and Wren leads with Dartduck. Each battle starts when its trainer spots the player. The [current trainer revision](../revisions/leech-lake-trainers-v01/README.md) records the selected teams, moves and sightlines on the trail from Brainerd. The earlier map and party milestones follow.
+
 # Current installed review, 2026-10-28
 
 The earlier grass pass is already present. [Current 2D/native review](../revisions/route-grass-v01/current-r07-audit-v01/README.md) verifies eight outward meadow grass steps and a dry sandbank return. Direct current collision count is192walking grass tiles; historical196below is superseded. Active selection is preserved. Earlier pack claims below are historical.

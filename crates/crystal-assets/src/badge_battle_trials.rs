@@ -9,6 +9,8 @@ mod badge_battle_saven;
 mod ely_challenge_run;
 #[path = "ely_challenger_parties.rs"]
 mod ely_challenger_parties;
+#[path = "leech_lake_battle_trials.rs"]
+mod leech_lake_battle_trials;
 #[path = "postgame_rematch_trials.rs"]
 mod postgame_rematch_trials;
 
@@ -16,7 +18,9 @@ use std::cell::Cell;
 use std::collections::BTreeSet;
 use std::convert::Infallible;
 
-use crystal_core::battle::start::{TrainerBattleStartStatus, switch_active_battle_party_index};
+use crystal_core::battle::start::{
+    TrainerBattleRequest, TrainerBattleStartStatus, switch_active_battle_party_index,
+};
 use crystal_core::battle::turn::{
     BattleAction, BattleCombatState, BattleEvent, BattleSide, active_battle_combat_state,
 };
@@ -146,7 +150,7 @@ fn challenge_state(
     state: &mut GameState,
     trainer_id: &str,
     divider: &mut TrialDivider,
-    mut choose: impl FnMut(&GameDataSet, &GameState, &BattleCombatState) -> BattleAction,
+    choose: impl FnMut(&GameDataSet, &GameState, &BattleCombatState) -> BattleAction,
     replacement: Option<fn(&GameDataSet, &BattleCombatState) -> usize>,
     use_shift: bool,
 ) -> Finish {
@@ -177,6 +181,27 @@ fn challenge_state(
         )
         .expect("native boss script");
     assert!(matches!(started, TrainerBattleStartStatus::Started(_)));
+    fight_active_trainer(
+        data,
+        state,
+        &entry.request,
+        divider,
+        choose,
+        replacement,
+        use_shift,
+    )
+}
+
+fn fight_active_trainer(
+    data: &GameDataSet,
+    state: &mut GameState,
+    request: &TrainerBattleRequest,
+    divider: &mut TrialDivider,
+    mut choose: impl FnMut(&GameDataSet, &GameState, &BattleCombatState) -> BattleAction,
+    replacement: Option<fn(&GameDataSet, &BattleCombatState) -> usize>,
+    use_shift: bool,
+) -> Finish {
+    let trainer_id = request.trainer_id.as_str();
     let trainer = &data.trainers.trainers[trainer_id];
     let mut used = BTreeSet::new();
     for turns in 1..=160 {
@@ -224,7 +249,7 @@ fn challenge_state(
                             c,
                             trainer_id,
                             &trainer.trainer_class,
-                            &entry.request.battle_type,
+                            &request.battle_type,
                             trainer.ai_item_switch_flags,
                             &mut used,
                             selected.get().expect("preselected move"),

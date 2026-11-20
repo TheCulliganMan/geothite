@@ -1,4 +1,6 @@
 //! Exercise the player-facing directions on either installed Badge Trails edition.
+#[path = "leech_lake_trainer_partners.rs"]
+mod leech_lake_trainer_partners;
 #[path = "regional_direction_boards.rs"]
 mod regional_direction_boards;
 

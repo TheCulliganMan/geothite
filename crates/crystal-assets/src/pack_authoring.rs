@@ -175,6 +175,8 @@ mod northstar_research_choices;
 pub use northstar_research_choices::revise_research_choices;
 mod northstar_trail_signs;
 pub use northstar_trail_signs::revise_trail_signs;
+mod northstar_leech_lake_trainers;
+pub use northstar_leech_lake_trainers::revise_leech_lake_trainers;
 mod northstar_ely_challenge;
 pub use northstar_ely_challenge::revise_ely_challenge;
 mod northstar_badge_battles;
