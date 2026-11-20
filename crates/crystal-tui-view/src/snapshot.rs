@@ -505,16 +505,25 @@ fn menu_lines(source: &RuntimeShellSnapshot, selected: usize) -> Vec<SnapshotLin
                 option.as_str()
             };
             let option = crate::visible_script_menu_option_label(menu, option);
-            SnapshotLine::new(
-                format!("{} {option}", if active { ">" } else { " " }),
-                if active {
-                    LineKind::Selected
-                } else {
-                    LineKind::Normal
-                },
-            )
+            text_menu_option_line(option, active)
         })
         .collect()
+}
+
+fn text_menu_option_line(option: &str, selected: bool) -> SnapshotLine {
+    let (indent, label) = option.split_at(option.len() - option.trim_start().len());
+    let label = match label {
+        "#MON" => "POKéMON",
+        "#DEX" => "POKéDEX",
+        "<POKE>GEAR" => "POKéGEAR",
+        _ => label,
+    };
+    let (marker, kind) = if selected {
+        ('>', LineKind::Selected)
+    } else {
+        (' ', LineKind::Normal)
+    };
+    SnapshotLine::new(format!("{marker} {indent}{label}"), kind)
 }
 
 fn prompt_lines(source: &RuntimeShellSnapshot, selected: usize) -> Vec<SnapshotLine> {
@@ -888,5 +897,26 @@ mod tests {
             "KRIS found RARE CANDY on TUE!"
         );
         assert_eq!(render_text_args(&["#MON!@".to_string()]), "#MON!");
+    }
+
+    #[test]
+    fn semantic_start_menu_expands_pokemon_font_labels() {
+        for (raw, visible) in [
+            ("#MON", "POKéMON"),
+            ("#DEX", "POKéDEX"),
+            ("<POKE>GEAR", "POKéGEAR"),
+            ("PACK", "PACK"),
+            ("LOT #1", "LOT #1"),
+            ("#MONITOR", "#MONITOR"),
+        ] {
+            assert_eq!(
+                text_menu_option_line(raw, true),
+                SnapshotLine::new(format!("> {visible}"), LineKind::Selected)
+            );
+            assert_eq!(
+                text_menu_option_line(&format!(" {raw}"), false),
+                SnapshotLine::new(format!("   {visible}"), LineKind::Normal)
+            );
+        }
     }
 }

@@ -18,6 +18,10 @@ export async function checkMenus(observe, drivePress, capture = async () => {}) 
     assert.fail(`Cannot select ${pattern}: ${text(await observe())}`);
   }
   await press('start');
+  const startLabels = (await observe()).menu.map(row => row.text.replace(/^\s*>?\s*/, ''));
+  for (const label of ['POKéMON', 'POKéDEX', 'POKéGEAR']) {
+    assert(startLabels.includes(label), `Start menu should display ${label}`);
+  }
   await choose(/\bPACK\b/);
   assert.match(text(await observe()), /POTION.*x02/);
   for (let i = 0; i < 3; i++) await press('a');
