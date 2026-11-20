@@ -104,7 +104,7 @@ fn check_thresholds(pack: &CompiledGamePack) -> Result<()> {
         let clear = threshold.moved(Direction::Up);
         let mut session = pack.data.overworld_session(CAVE, clear, 0)?;
         session.player.facing = Direction::Down;
-        let mut state = GameState::default();
+        let mut state = GameState::reset_wram_for_new_game();
         let mut divider = ReplayDivider::new([0; 64]);
         let music_ids = BTreeSet::new();
         let mut press = |session: &mut _, button| {
