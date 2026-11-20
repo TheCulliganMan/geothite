@@ -1,14 +1,17 @@
 use crystal_core::systems::script_text::ScriptTextBody;
 use crystal_core::world::{
-    map::{Direction, TilePosition, determine_quadrant_index},
+    map::{Direction, TilePosition},
     session::raw_event_tile_to_runtime_tile_checked,
 };
-use crystal_runtime::{RuntimeMapCatalogSnapshot, RuntimeShellPhase, RuntimeShellSnapshot};
+use crystal_runtime::{RuntimeShellPhase, RuntimeShellSnapshot};
 
 #[path = "safari_snapshot.rs"]
 mod safari;
+#[path = "terrain_glyph.rs"]
+mod terrain;
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
+pub(crate) use terrain::terrain_glyph;
 
 pub const ACTION_LOG_LIMIT: usize = 8;
 const MAX_RENDER_CHARS: usize = 240;
@@ -304,79 +307,6 @@ fn player_token(facing: Direction) -> &'static str {
         Direction::Down => "@v",
         Direction::Left => "@<",
         Direction::Right => "@>",
-    }
-}
-
-pub(crate) fn terrain_glyph(
-    source: &RuntimeShellSnapshot,
-    map: &RuntimeMapCatalogSnapshot,
-    tile: TilePosition,
-) -> (char, LineKind) {
-    if tile.x < 0 || tile.y < 0 {
-        return (' ', LineKind::Normal);
-    }
-    let metatile_x = usize::try_from(tile.x / 2).ok();
-    let metatile_y = usize::try_from(tile.y / 2).ok();
-    let map_width = usize::from(map.attributes.width);
-    let Some(block) = metatile_y
-        .and_then(|y| metatile_x.and_then(|x| y.checked_mul(map_width)?.checked_add(x)))
-        .and_then(|index| map.blocks.get(index))
-        .copied()
-    else {
-        return (' ', LineKind::Normal);
-    };
-    let Some(quadrant) = determine_quadrant_index(tile.x, tile.y) else {
-        return (' ', LineKind::Normal);
-    };
-    let Some(tileset) = source
-        .tilesets
-        .iter()
-        .find(|tileset| tileset.tileset_id == map.attributes.tileset_name)
-    else {
-        return ('?', LineKind::Danger);
-    };
-    let key = format!("{block:02x}");
-    let Some(token) = tileset
-        .collision
-        .get(&key)
-        .and_then(|entries| entries.get(quadrant))
-    else {
-        return ('?', LineKind::Danger);
-    };
-    classify_collision_token(token)
-}
-
-fn classify_collision_token(token: &str) -> (char, LineKind) {
-    use crystal_core::world::collision::{
-        Terrain, describe_collision, is_grass_encounter_permission, is_warp_permission,
-    };
-    let token = token.strip_prefix("COLL_").unwrap_or(token);
-    let Ok(permission) = crystal_assets::resolve_collision_token(token) else {
-        return ('?', LineKind::Danger); // Unknown terrain must never pretend to be floor.
-    };
-    match permission {
-        0xa0 => return ('→', LineKind::Hint),
-        0xa1 => return ('←', LineKind::Hint),
-        0xa2 => return ('↑', LineKind::Hint),
-        0xa3 => return ('↓', LineKind::Hint),
-        0xa4 => return ('↘', LineKind::Hint),
-        0xa5 => return ('↙', LineKind::Hint),
-        0xa6 => return ('↗', LineKind::Hint),
-        0xa7 => return ('↖', LineKind::Hint),
-        0xb0..=0xbf | 0xc0..=0xcf => return ('║', LineKind::Hint),
-        0x12 | 0x15 | 0x1a | 0x1d => return ('T', LineKind::Hint),
-        _ => {}
-    }
-    if describe_collision(permission).terrain == Terrain::Wall {
-        ('#', LineKind::Normal)
-    } else if is_warp_permission(permission) {
-        ('D', LineKind::Hint)
-    } else if describe_collision(permission).terrain == Terrain::Water {
-        ('≈', LineKind::Water)
-    } else if is_grass_encounter_permission(permission) {
-        ('\"', LineKind::Grass)
-    } else {
-        ('.', LineKind::Normal)
     }
 }
 
@@ -895,39 +825,6 @@ pub fn wrap_lines(lines: &[SnapshotLine], max_chars: usize) -> Vec<SnapshotLine>
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    #[test]
-    fn collision_tokens_have_distinct_accessible_glyphs() {
-        assert_eq!(classify_collision_token("WATER"), ('≈', LineKind::Water));
-        assert_eq!(
-            classify_collision_token("TALL_GRASS"),
-            ('\"', LineKind::Grass)
-        );
-        assert_eq!(classify_collision_token("WALL"), ('#', LineKind::Normal));
-        assert_eq!(classify_collision_token("DOOR"), ('D', LineKind::Hint));
-        assert_eq!(classify_collision_token("HOP_DOWN"), ('↓', LineKind::Hint));
-        assert_eq!(classify_collision_token("a5"), ('↙', LineKind::Hint));
-        for token in ["07", "0f", "27", "62", "ff", "COLL_07"] {
-            assert_eq!(
-                classify_collision_token(token).0,
-                '#',
-                "hidden wall {token}"
-            );
-        }
-        for token in ["CUT_TREE", "HEADBUTT_TREE_1D", "12"] {
-            assert_eq!(
-                classify_collision_token(token).0,
-                'T',
-                "hidden tree {token}"
-            );
-        }
-        assert_eq!(classify_collision_token("RIGHT_WALL").0, '║');
-        assert_eq!(classify_collision_token("CURRENT_UP").0, '≈');
-        assert_eq!(
-            classify_collision_token("unsupported"),
-            ('?', LineKind::Danger)
-        );
-    }
 
     #[test]
     fn selection_wraps_in_both_directions() {

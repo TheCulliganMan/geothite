@@ -676,7 +676,7 @@ impl PaintedRenderer {
                     }
                 }
                 let area = Rect::new(bx, by, cw, ch);
-                let sizes = crate::ink::tile(
+                let mut sizes = crate::ink::tile(
                     b,
                     area,
                     &pixels,
@@ -684,21 +684,17 @@ impl PaintedRenderer {
                     tile.y,
                     if self.dense { 0. } else { self.ink_phase },
                 );
-                // No floating map labels in painted art. Text/MCP retain the
-                // exact collision tokens; painted ledges use small dot chevrons.
-                crate::ink::collision(b, area, glyph);
+                // A terrain hint belongs underneath a trainer or rider.
+                if actor.is_none() {
+                    crate::ink::collision(b, area, &mut sizes, glyph);
+                }
                 if self.dense {
                     for row in 0..ch {
                         for col in 0..cw {
                             let dst = usize::from(by + row) * usize::from(self.dot_width)
                                 + usize::from(bx + col);
                             let local = usize::from(row) * usize::from(cw) + usize::from(col);
-                            self.dot_sizes[dst] =
-                                if sizes[local] == 0 && b[(bx + col, by + row)].symbol() == "●" {
-                                    210
-                                } else {
-                                    sizes[local]
-                                };
+                            self.dot_sizes[dst] = sizes[local];
                         }
                     }
                 }

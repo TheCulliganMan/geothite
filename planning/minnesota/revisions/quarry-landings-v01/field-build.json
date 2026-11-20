@@ -1,0 +1,10 @@
+{
+  "parent_pack": "content-packs/minnesota-leech-lake-trainers-v01.crystalpack",
+  "parent_pack_sha256": "7f581c82ed1d15be9a3275197ceb1b77f13064f8c7f75a94fa7ff465470c1b4d",
+  "output_pack": "content-packs/minnesota-quarry-landings-v01.crystalpack",
+  "expected_pack_sha256": "eeb16bace1087aba48cb74d8d16a5dfc0de43f8e6084d65ac61af55170b12bb9",
+  "builder": "pack_ely_challenge",
+  "arguments": [
+    "--quarry-landings"
+  ]
+}

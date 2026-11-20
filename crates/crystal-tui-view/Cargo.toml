@@ -21,3 +21,4 @@ crossterm = "0.29"
 
 [dev-dependencies]
 crystal-bevy.workspace = true
+crystal-runtime = { workspace = true, features = ["test-fixtures"] }

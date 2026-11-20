@@ -7964,7 +7964,7 @@
     "status": "Accepted current-parent terrain revision: source/native pixels, strict whole-pack preservation, directional grass/ledge proof, actual2D review, native encounters/trainerPP/resources/Continue and stdio pass. CurrentR12 work preserved.",
     "scope_limit": "Sequential Minnesota grass pass remains open beyond R01-R03. Explicit local fixtures do not prove an earned statewide campaign."
   },
-  "active_local_review_revision": "leech_lake_trainers_field_revision",
+  "active_local_review_revision": "quarry_landings_field_revision",
   "script_command_repair_revision": {
     "kind": "missing_minnesota_map_command_records",
     "parent_revision": "field_hm_habitats_cyclists_revision",
@@ -13248,5 +13248,19 @@
     "changed_trainer_parties": 3,
     "trainer_parties": "planning/minnesota/revisions/leech-lake-trainers-v01/parties.json",
     "runbook": "revisions/leech-lake-trainers-v01/README.md"
+  },
+  "quarry_landings_field_revision": {
+    "kind": "campaign_review",
+    "parent_revision": "leech_lake_trainers_field_revision",
+    "parent_pack": "content-packs/minnesota-leech-lake-trainers-v01.crystalpack",
+    "parent_pack_sha256": "7f581c82ed1d15be9a3275197ceb1b77f13064f8c7f75a94fa7ff465470c1b4d",
+    "pack": "content-packs/minnesota-quarry-landings-v01.crystalpack",
+    "pack_sha256": "eeb16bace1087aba48cb74d8d16a5dfc0de43f8e6084d65ac61af55170b12bb9",
+    "build_recipe": "planning/minnesota/revisions/quarry-landings-v01/field-build.json",
+    "build_recipe_sha256": "167f92c90ddcc5c72fc223e0f5ee69eedea5c41de2d455a3a5ddd3f62e36a633",
+    "content_identity": "e9dea645cb0b4132853ccbfc2f81bb4ee883aaef65917af9cd88fc79825ef25e",
+    "map_count": 743,
+    "changed_maps_from_parent": 1,
+    "runbook": "revisions/quarry-landings-v01/README.md"
   }
 }

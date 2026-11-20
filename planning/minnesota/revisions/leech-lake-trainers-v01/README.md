@@ -40,6 +40,8 @@ uv run --offline --no-project --with cbor2 --with pillow python planning/minneso
 MN_BADGE_TRAILS_PACK="$child" MN_LEECH_PARTNER_FRAMES="$frames" cargo test --locked -j1 -p crystal-bevy --lib leech_lake_trainer_partners_see_the_walker_and_send_their_teams -- --ignored --test-threads=1
 ```
 
-## Remaining terrain review
+## Shiner Narrows follow-up
 
 On Route 15’s Shiner Narrows west bank (`MnR15C00R00`), the terminal’s text and painted views point east from (24,10) through (24,17) and southeast from (24,18). Each eastward jump crosses a wall at x=25 and would land in water at x=26, so a walker cannot make it. The three southward drops from (22,18), (23,18) and (24,18) do land on the meadow at y=20. Both terminal views use the same terrain glyph. It can check each indicated direction against the walking permission two squares away, preserving valid map-edge connections. At this bank that would remove eight arrows and turn the corner arrow south while preserving the native artwork and all walking and canoe routes. Both Trail Signs and Leech Lake Trainers editions have these permissions. [Bank survey](../trail-signs-v01/terrain-review.md) · [Shared terrain glyph](../../../../crates/crystal-tui-view/src/snapshot.rs) · [Native landing rule](../../../../crates/crystal-core/src/world/movement.rs)
+
+The [Quarry Landings review](../quarry-landings-v01/terminal-ledges.md) implemented the landing check and verified the corrected cues in both terminal views.

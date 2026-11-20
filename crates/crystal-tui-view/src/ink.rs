@@ -203,9 +203,17 @@ pub(crate) fn rasterize_dots(
     image
 }
 
-/// Ledge chevrons and unresolved/barrier silhouettes use dots, not floating
-/// letters or punctuation. Core collision resolution supplies the direction.
-pub(crate) fn collision(b: &mut Buffer, a: Rect, permission: char) {
+// The tip lies near the indicated edge. Round the arms to the actual grid so
+// a 6×3 text tile and a 12×12 fine tile point the same way.
+fn chevron(across: i32, forward: i32, width: i32, length: i32) -> bool {
+    let arm = (2 * across + 1 - width).abs() / 2;
+    let tip = length - 1 - length / 6;
+    arm <= (width / 6).max(1) && forward == tip - (arm * length + width / 2) / width
+}
+
+/// Marks the shared text-cell and circle buffers with the available cardinal
+/// jumps. A corner with two exits gets a chevron toward each landing.
+pub(crate) fn collision(b: &mut Buffer, a: Rect, diameters: &mut [u8], permission: char) {
     let direction = match permission {
         '→' => (1, 0),
         '←' => (-1, 0),
@@ -224,24 +232,20 @@ pub(crate) fn collision(b: &mut Buffer, a: Rect, permission: char) {
     let h = i32::from(a.height);
     for y in 0..h {
         for x in 0..w {
-            let u = (x as f64 + 0.5) / w as f64;
-            let v = (y as f64 + 0.5) / h as f64;
             let mark = if permission == '?' {
                 (x + y).rem_euclid(4) == 0
             } else if permission == '║' {
                 x == w / 2 || x == w / 2 - 1
             } else {
-                let (u, v) = match direction {
-                    (1, 0) => (v, 1. - u),
-                    (-1, 0) => (v, u),
-                    (0, -1) => (u, 1. - v),
-                    _ => (u, v),
-                };
-                (0.32..0.68).contains(&u) && (v - (0.78 - (u - 0.5).abs())).abs() < 1.1 / h as f64
+                let (dx, dy) = direction;
+                (dx != 0 && chevron(y, if dx > 0 { x } else { w - 1 - x }, h, w))
+                    || (dy != 0 && chevron(x, if dy > 0 { y } else { h - 1 - y }, w, h))
             };
             if mark {
                 let cell = &mut b[(a.x + x as u16, a.y + y as u16)];
                 cell.set_symbol("●");
+                let diameter = &mut diameters[(y * w + x) as usize];
+                *diameter = (*diameter).max(210);
                 // Keep the actual tile hue; boost the cue only against dark ink.
                 if let Color::Rgb(r, g, blue) = cell.fg {
                     cell.set_fg(Color::Rgb(r.max(80), g.max(80), blue.max(80)));
@@ -254,6 +258,55 @@ pub(crate) fn collision(b: &mut Buffer, a: Rect, permission: char) {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn ledge_marks_point_to_each_cardinal_landing_in_both_dot_buffers() {
+        use std::collections::BTreeSet;
+
+        for (w, h) in [(6, 3), (8, 4), (12, 12), (16, 16)] {
+            let marks = |glyph| {
+                let area = Rect::new(0, 0, w, h);
+                let mut cells = Buffer::empty(area);
+                let mut sizes = vec![80; usize::from(w * h)];
+                collision(&mut cells, area, &mut sizes, glyph);
+                let mut points = BTreeSet::new();
+                for y in 0..h {
+                    for x in 0..w {
+                        let marked = cells[(x, y)].symbol() == "●";
+                        assert_eq!(sizes[usize::from(y * w + x)], if marked { 210 } else { 80 });
+                        if marked {
+                            points.insert((x, y));
+                        }
+                    }
+                }
+                points
+            };
+            let east = marks('→');
+            let south = marks('↓');
+            assert!(east.contains(&(w - 1 - w / 6, h / 2)));
+            assert!(south.contains(&(w / 2, h - 1 - h / 6)));
+            assert!(east.iter().any(|&(x, y)| y < h / 2 && x < w - 1 - w / 6));
+            assert!(south.iter().any(|&(x, y)| x < w / 2 && y < h - 1 - h / 6));
+            assert_eq!(
+                marks('←'),
+                east.iter().map(|&(x, y)| (w - 1 - x, y)).collect()
+            );
+            assert_eq!(
+                marks('↑'),
+                south.iter().map(|&(x, y)| (x, h - 1 - y)).collect()
+            );
+            for (corner, horizontal, vertical) in [
+                ('↘', '→', '↓'),
+                ('↙', '←', '↓'),
+                ('↗', '→', '↑'),
+                ('↖', '←', '↑'),
+            ] {
+                assert_eq!(marks(corner), &marks(horizontal) | &marks(vertical));
+            }
+            assert!(marks('.').is_empty());
+        }
+    }
+
     #[test]
     fn terminal_packs_all_eight_shared_dot_positions_without_raster_blocks() {
         let mut fine = Buffer::empty(Rect::new(0, 0, 2, 4));

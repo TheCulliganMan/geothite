@@ -177,6 +177,8 @@ mod northstar_trail_signs;
 pub use northstar_trail_signs::revise_trail_signs;
 mod northstar_leech_lake_trainers;
 pub use northstar_leech_lake_trainers::revise_leech_lake_trainers;
+mod northstar_mankato_landing;
+pub use northstar_mankato_landing::revise_quarry_landings;
 mod northstar_ely_challenge;
 pub use northstar_ely_challenge::revise_ely_challenge;
 mod northstar_badge_battles;

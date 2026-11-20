@@ -1,5 +1,7 @@
 use serde::{Deserialize, Serialize};
 
+use crate::map::MapConnection;
+
 use super::bridge;
 use super::collision::{
     PlayerTraversalState, Terrain, TilesetCollision, can_enter_tile, can_jump_ledge,
@@ -327,7 +329,17 @@ pub fn is_declared_connection_step(
     target: TilePosition,
     direction: Direction,
 ) -> bool {
-    let (width, height) = map.tile_bounds();
+    crosses_declared_map_edge(map.tile_bounds(), map.connections(), target, direction)
+}
+
+/// Whether a target outside these runtime-tile bounds crosses a connected map edge.
+/// Use this after checking walking permission at an in-bounds destination.
+pub fn crosses_declared_map_edge(
+    (width, height): (u16, u16),
+    connections: &[MapConnection],
+    target: TilePosition,
+    direction: Direction,
+) -> bool {
     let width = i32::from(width);
     let height = i32::from(height);
     let target_x = i32::from(target.x);
@@ -339,7 +351,7 @@ pub fn is_declared_connection_step(
         Direction::Down if target_y >= height => "south",
         _ => return false,
     };
-    map.connections()
+    connections
         .iter()
         .any(|connection| connection.direction == required_direction)
 }

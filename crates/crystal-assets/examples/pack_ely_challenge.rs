@@ -5,12 +5,12 @@ use anyhow::{Result, ensure};
 use crystal_assets::{
     CompiledGamePack, read_verified_compiled_game_pack, revise_ely_challenge, revise_ely_return,
     revise_finder_lesson, revise_leech_lake_trainers, revise_marais_supplies,
-    revise_research_choices, revise_trail_signs,
+    revise_quarry_landings, revise_research_choices, revise_trail_signs,
 };
 
 fn main() -> Result<()> {
     let args: Vec<_> = std::env::args_os().skip(1).map(PathBuf::from).collect();
-    const USAGE: &str = "usage: pack_ely_challenge [--finder-lesson|--ely-return|--marais-supplies|--research-choices|--trail-signs|--leech-lake-trainers] PARENT FRESH_OUTPUT";
+    const USAGE: &str = "usage: pack_ely_challenge [--finder-lesson|--ely-return|--marais-supplies|--research-choices|--trail-signs|--leech-lake-trainers|--quarry-landings] PARENT FRESH_OUTPUT";
     let [options @ .., parent, output] = args.as_slice() else {
         anyhow::bail!(USAGE);
     };
@@ -22,6 +22,7 @@ fn main() -> Result<()> {
         [mode] if mode.as_os_str() == "--research-choices" => revise_research_choices,
         [mode] if mode.as_os_str() == "--trail-signs" => revise_trail_signs,
         [mode] if mode.as_os_str() == "--leech-lake-trainers" => revise_leech_lake_trainers,
+        [mode] if mode.as_os_str() == "--quarry-landings" => revise_quarry_landings,
         _ => anyhow::bail!(USAGE),
     };
     ensure!(!output.try_exists()?, "choose a fresh output pack");

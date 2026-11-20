@@ -1,4 +1,7 @@
 //! Walking inputs at the actual Rochester and Mankato stair shoulders.
+#[path = "quarry_landings.rs"]
+mod quarry_landings;
+
 use crystal_assets::AssetRoot;
 use crystal_core::input::GameButton::{self, Down, Left, Right, Up};
 use crystal_runtime::CrystalRuntime;
