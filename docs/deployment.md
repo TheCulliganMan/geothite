@@ -1,7 +1,7 @@
 # Deploy Geothite multiplayer
 
 The live browser game serves [The Northstar Survey](https://geothite.ryanculligan.com/?view=2d)
-in native 2D. See the [November 18 Crossings release](#minnesota-crossings-release-2026-11-18)
+in native 2D. See the [November 20 Fair Patrols release](#minnesota-fair-patrols-release-2026-11-20)
 for the exact pack, image, verification scope and rollback command.
 
 ## Requirements
@@ -988,4 +988,25 @@ The rollback for this release restores the preceding Wayfinding service and inst
 
 ```sh
 python3 /mnt/homelab/config/geothite/releases/crossings-20261118/deploy.py rollback
+```
+
+## Minnesota Fair Patrols release (2026-11-20)
+
+The browser game, browser terminal, and macOS arm64 and Linux x86-64 installers use `northstar-fair-20261120`. The server and clients were built from `e5d497aae0f4cbd2fd1e6a0de12a6ccc58890105`. The selected edition has 358 Minnesota maps, including the Mothlight Battle Café, the Minneapolis Game Corner and the State Fair. The Game Corner gives out the Coin Case and exchanges coins for prizes. All 32 Fair counters are reachable with the crowd in place. [Pack recipe and save migration](../planning/minnesota/revisions/fair-release-v01/README.md)
+
+| Edition | Archive SHA-256 | Content identity |
+| --- | --- | --- |
+| Raw Minnesota | `18003b91597173f1d98937a0f6cc2fa82cfd2c5b3612c9803cd5f615acad2a73` | `d81cdb3d46bd72ffd22a2793c66f1d2f7ff2b8500674bca1ec68e1ee230a3078` |
+| Browser and installer | `9fbfa371972f6b3cdbd9d0ca9689aa5a66ee43d1d17e7650982da88d4e57f58e` | `415294715e2f50c60b3696966441a98a7b869fde34f6a3acbf94b4ab64bb8b4a` |
+
+The save migration recognizes 20 previous identities. It copies eligible overworld checkpoints into a new slot and preserves the original. Raw and hosted Lakeside fixtures covered reopened gates, a newly walled road, a former water tile, a mounted canoe and the Fair crowd. Both new archives passed the audio checks for all 602 programs.
+
+Public checks verified 74 selected web assets, including six compiled browser modules, and a multiplayer handshake. Fresh installs and reinstalls completed silently on each supported native platform and preserved an existing save marker. The four immutable Lakeside downloads checked after the switch still returned their previous bytes. These checks used zero gameplay inputs.
+
+The public Pokédex uses `20261120-fair-patrols-sprite-edges-47`. The normal and shiny images on the four revised species pages match the game artwork. The game retains the selected trainer portraits. The separate full-body portrait set is available in the project for review. [Trainer art review](../planning/minnesota/npcs/portrait-faces-v03/README.md)
+
+The production image is `sha256:cbdf6d6098581e2c8e12c1f08911ca90d5e04a43cdcbafc51ba720321f742984`. The installer manifest SHA-256 is `2924bf4f8b0cbfd4b476598a24931955184e371796efb09392e553463fa75f33`. To restore the previous Lakeside game and installer while this release is active, run the following command on the deployment host. The existing player-data volume stays attached.
+
+```sh
+python3 /mnt/homelab/config/geothite/releases/northstar-fair-20261120/deploy.py rollback
 ```

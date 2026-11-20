@@ -1,5 +1,7 @@
 # Northstar Fair release
 
+Published November 20, 2026 as `northstar-fair-20261120`. [Public checks and rollback](../../../../docs/deployment.md#minnesota-fair-patrols-release-2026-11-20)
+
 The cumulative Intro Fair Patrols edition includes the State Fair trainers and concessions, the Minneapolis Game Corner, the Mothlight Battle Café challenge, and the restored native Pokémon sprite outlines. The release uses the Intro edition’s original trainer portraits. The hosted edition uses the existing clock and player-customization overlays.
 
 The [build recipe](build.json) pins the external inputs and both outputs by checksum. Build the local and hosted archives together in a fresh ignored directory. Use the external lakeside archive from the previous public release for the hosted input. The sprite tool requires a fresh output path.

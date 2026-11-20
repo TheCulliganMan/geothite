@@ -8017,6 +8017,8 @@
   },
   "fair_release_intro_revision": {
     "kind": "campaign_release",
+    "deployed": true,
+    "release": "northstar-fair-20261120",
     "parent_revision": "fair_patrols_intro_revision",
     "parent_pack": "content-packs/minnesota-intro-fair-patrols-v01.crystalpack",
     "parent_pack_sha256": "cfb028aec4080314247063a3c8686fa2f1b361a7c84bc7df3a4f5e3413aab0bd",
