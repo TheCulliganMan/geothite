@@ -1,4 +1,7 @@
 //! Cross the open paving, then face and read each regional board or plaque.
+#[path = "south_arrival_directory.rs"]
+mod south_arrival_directory;
+
 use std::path::{Path, PathBuf};
 
 use crystal_assets::AssetRoot;
@@ -76,12 +79,21 @@ const CEDAR: Board = Board {
     reading: (22, 5),
     facing: Down,
 };
+const CYCLIST_WON: &str = "EVENT_MN_EXTRA_MPLS_CYCLE_17";
 const GAME_CORNER: Board = Board {
     map: "MnMinneapolis",
     script: "MnCornerSign",
     standing: (55, 51),
     paving: (55, 52),
     reading: (55, 52),
+    facing: Up,
+};
+const CEDAR_BRIDGE: Board = Board {
+    map: CEDAR.map,
+    script: CEDAR.script,
+    standing: (32, 4),
+    paving: (24, 6),
+    reading: (32, 5),
     facing: Up,
 };
 
@@ -128,15 +140,12 @@ fn read_board(
         .events
         .bg_events
         .iter()
-        .find(|event| event.script == board.script)
+        .find(|event| {
+            (i16::try_from(event.x).ok(), i16::try_from(event.y).ok())
+                == (Some(board.standing.0), Some(board.standing.1))
+        })
         .expect("installed direction board");
-    assert_eq!(
-        (
-            i16::try_from(event.x).expect("regional x"),
-            i16::try_from(event.y).expect("regional y")
-        ),
-        board.standing
-    );
+    assert_eq!(event.script, board.script);
     assert_eq!(event.event_type, "BGEVENT_READ");
     assert!(!room.events.bg_events.iter().any(|e| (
         i16::try_from(e.x).expect("regional x"),
@@ -155,7 +164,7 @@ fn read_board(
             .state_mut()
             .flags
             .set_event_flag(flag, true)
-            .expect("declared League stage");
+            .expect("declared visit flag");
     }
     mark_runtime_snapshot_dirty(&mut c.shell);
     travel(&mut c, Up, board.map, board.paving);
@@ -290,24 +299,35 @@ fn regional_direction_boards_native_read_walk_and_follow_the_sign() {
     travel(&mut city, Down, ARRIVAL.map, (43, 60));
     travel(&mut city, Left, ARRIVAL.map, ARRIVAL.paving);
 
+    let relocated = runtime.data().maps[CEDAR.map]
+        .events
+        .bg_events
+        .iter()
+        .any(|e| e.script == CEDAR.script && (e.x, e.y) == (32, 4));
     let mut cedar = read_board(
         &root,
         &runtime,
-        &CEDAR,
+        if relocated { &CEDAR_BRIDGE } else { &CEDAR },
         "MN_R08_SIGN_02Text",
         "CEDAR INLET BRIDGE OR SHORE",
         &[],
         dir,
     );
-    travel(&mut cedar, Right, CEDAR.map, (24, 5));
-    travel(&mut cedar, Down, CEDAR.map, (24, 7));
+    if relocated {
+        travel(&mut cedar, Right, CEDAR.map, (33, 5));
+        travel(&mut cedar, Up, CEDAR.map, (33, 2));
+        travel(&mut cedar, Right, CEDAR.map, (42, 2));
+    } else {
+        travel(&mut cedar, Right, CEDAR.map, (24, 5));
+        travel(&mut cedar, Down, CEDAR.map, (24, 7));
+    }
     let mut corner = read_board(
         &root,
         &runtime,
         &GAME_CORNER,
         "MnCornerSignText",
         "MINNEAPOLIS GAME CORNER Slots! Card Flip! Coin prizes!",
-        &[],
+        &[CYCLIST_WON],
         dir,
     );
     travel(&mut corner, Right, GAME_CORNER.map, (56, 52));
@@ -403,7 +423,6 @@ fn graphical_game_corner(root: &AssetRoot, runtime: &CrystalRuntime, already_def
         );
     }
     const RIDER: &str = "MN_EXTRA_MPLS_CYCLE_17";
-    const WON: &str = "EVENT_MN_EXTRA_MPLS_CYCLE_17";
     let mut c = fixture(root, runtime, GAME_CORNER.map, (55, 53));
     let state = c.shell.shell.session_mut().state_mut();
     let partner = runtime
@@ -415,7 +434,7 @@ fn graphical_game_corner(root: &AssetRoot, runtime: &CrystalRuntime, already_def
     if already_defeated {
         state
             .flags
-            .set_event_flag(WON, true)
+            .set_event_flag(CYCLIST_WON, true)
             .expect("return visitor has already battled SAM");
     }
     mark_runtime_snapshot_dirty(&mut c.shell);
@@ -509,7 +528,7 @@ fn graphical_game_corner(root: &AssetRoot, runtime: &CrystalRuntime, already_def
             .session()
             .state()
             .flags
-            .is_event_flag_set(WON)
+            .is_event_flag_set(CYCLIST_WON)
             .expect("unbeaten cyclist")
     );
     for _ in 0..24 {
@@ -531,4 +550,74 @@ fn graphical_game_corner(root: &AssetRoot, runtime: &CrystalRuntime, already_def
         confirm(&mut app);
     }
     panic!("accepting SAM's challenge never entered his battle");
+}
+
+#[test]
+#[ignore = "requires the freestanding Cedar Inlet board in MN_BADGE_TRAILS_PACK"]
+fn cedar_inlet_board_reads_from_the_bridge_and_the_shore() {
+    let (root, runtime) = load();
+    let board = &CEDAR_BRIDGE;
+    let room = &runtime.data().maps[board.map];
+    assert_eq!(collision(&runtime, room, CEDAR.standing), Some("WALL"));
+    assert!(!room.events.bg_events.iter().any(|e| (e.x, e.y) == (22, 6)));
+    for tile in [(32, 3), (33, 4), (32, 5), (31, 4)] {
+        assert_eq!(collision(&runtime, room, tile), Some("FLOOR"));
+    }
+    let frames = std::env::var_os("MN_DIRECTION_BOARD_FRAMES").map(PathBuf::from);
+    let mut c = read_board(
+        &root,
+        &runtime,
+        board,
+        "MN_R08_SIGN_02Text",
+        "CEDAR INLET BRIDGE OR SHORE",
+        &[],
+        frames.as_deref(),
+    );
+    travel(&mut c, Right, board.map, (33, 5));
+    travel(&mut c, Up, board.map, (33, 2));
+    travel(&mut c, Right, board.map, (42, 2));
+    travel(&mut c, Left, board.map, (33, 2));
+    travel(&mut c, Down, board.map, (33, 4));
+    press(&mut c, Left);
+    at(&mut c, board.map, (33, 4));
+    press(&mut c, A);
+    assert_eq!(
+        c.snapshot()
+            .expect("reading from the bridge")
+            .ui
+            .text
+            .expect("Cedar Inlet directions")
+            .label,
+        "MN_R08_SIGN_02Text"
+    );
+    settle(&mut c, "return to the shoreline path");
+    travel(&mut c, Down, board.map, (33, 7));
+    travel(&mut c, Left, board.map, (24, 7));
+}
+
+#[test]
+#[ignore = "requires the wider Minneapolis Game Corner in MN_BADGE_TRAILS_PACK"]
+fn arcade_marquee_reads_on_both_sides_and_leads_into_the_game_room() {
+    let (root, runtime) = load();
+    let frames = std::env::var_os("MN_DIRECTION_BOARD_FRAMES").map(PathBuf::from);
+    for x in [54, 55] {
+        let board = Board {
+            standing: (x, 51),
+            paving: (x, 52),
+            reading: (x, 52),
+            ..GAME_CORNER
+        };
+        let mut c = read_board(
+            &root,
+            &runtime,
+            &board,
+            "MnCornerSignText",
+            "Slots! Card Flip! Coin prizes!",
+            &[CYCLIST_WON],
+            frames.as_deref(),
+        );
+        travel(&mut c, Right, board.map, (56, 52));
+        travel(&mut c, Up, "MnMinneapolisCornerHome", (3, 12));
+        travel(&mut c, Down, board.map, (56, 52));
+    }
 }

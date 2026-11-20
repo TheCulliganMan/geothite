@@ -34833,51 +34833,66 @@
       "MnMinneapolisArrivalInfo": {
         "MN_MP_ARRIVALINFO_HOSTText": [
           [
-            "Need the clinic?",
-            "Look for the"
+            "Where are you",
+            "headed?"
+          ]
+        ],
+        "MnSouthDeskClinicText": [
+          [
+            "Go west to the",
+            "river. Turn north."
           ],
           [
-            "powerhouse GYM in",
-            "the middle of"
+            "Pass the first",
+            "bridge you see."
           ],
           [
-            "town. The clinic's",
-            "just north of it."
+            "At the second one,",
+            "turn east."
           ],
           [
-            "That's how I find",
-            "it when I come in"
+            "I look for the",
+            "powerhouse GYM."
           ],
           [
-            "from the south."
+            "The clinic's just",
+            "north of it."
+          ]
+        ],
+        "MnSouthDeskArcadeText": [
+          [
+            "The inn's east of",
+            "us. Walk that way."
+          ],
+          [
+            "Take the lane on",
+            "its west side."
+          ],
+          [
+            "One block north,",
+            "then turn east."
+          ],
+          [
+            "Look for the reels",
+            "out front."
+          ]
+        ],
+        "MnSouthDeskMarketText": [
+          [
+            "The market's two",
+            "doors east of us."
+          ],
+          [
+            "I pass the inn and",
+            "use the next door."
           ]
         ]
       },
       "MnMinneapolisRiverInn": {
         "MN_MP_RIVERINN_HOSTText": [
           [
-            "The mill crews",
-            "used to ask for"
-          ],
-          [
-            "rooms by the",
-            "stairs so they"
-          ],
-          [
-            "could leave",
-            "without waking"
-          ],
-          [
-            "anybody. Now I",
-            "save those rooms"
-          ],
-          [
-            "for guests who",
-            "want to beat the"
-          ],
-          [
-            "first boat to the",
-            "river."
+            "Take a break here.",
+            "Rest your team?"
           ]
         ],
         "MN_MP_INTERIOR_INN_GUESTInteriorText": [
@@ -34900,6 +34915,11 @@
           [
             "where to get",
             "lunch."
+          ]
+        ],
+        "MnMillInnRestedText": [
+          [
+            "Everyone's rested."
           ]
         ]
       },
@@ -35405,20 +35425,8 @@
         ],
         "MnCornerCoinsBoughtText": [
           [
-            "There you go. Snap",
-            "the case shut"
-          ],
-          [
-            "before you take",
-            "the stairs. I"
-          ],
-          [
-            "spent half a shift",
-            "picking coins out"
-          ],
-          [
-            "of the treads",
-            "once."
+            "Hear that jingle?",
+            "All yours."
           ]
         ],
         "MnCornerFull": [
@@ -35433,43 +35441,30 @@
         ],
         "MnCornerItemsConfirm0": [
           [
-            "That's 300 coins",
-            "for the MOON"
-          ],
-          [
-            "STONE. Want it?"
+            "A QUICK CLAW for",
+            "300 coins?"
           ]
         ],
         "MnCornerItemsConfirm1": [
           [
-            "That's 500 coins",
-            "for the RARE"
-          ],
-          [
-            "CANDY. Want it?"
+            "A RARE CANDY for",
+            "500 coins?"
           ]
         ],
         "MnCornerItemsConfirm2": [
           [
-            "That's 1000 coins",
-            "for the PP UP."
-          ],
-          [
-            "Want it?"
+            "A PP UP for",
+            "1000 coins?"
           ]
         ],
         "MnCornerItemsText": [
           [
-            "I've got stones,",
-            "candy and PP UP"
+            "Quick Claw, Candy",
+            "or PP Up?"
           ],
           [
-            "here. The next",
-            "counter has the"
-          ],
-          [
-            "TMs. What are you",
-            "after?"
+            "The next counter",
+            "has the TMs."
           ]
         ],
         "MnCornerMoneyShortText": [
@@ -35489,14 +35484,11 @@
         "MnCornerNeedCase": [
           [
             "You'll need a COIN",
-            "CASE. Ask the"
+            "CASE. The greeter"
           ],
           [
-            "attendant by the",
-            "stairs. The first"
-          ],
-          [
-            "one's free."
+            "by the door has",
+            "one for you."
           ]
         ],
         "MnCornerPoor": [
@@ -35514,28 +35506,20 @@
         ],
         "MnCornerRulesText": [
           [
-            "Buy coins at the",
-            "left counter."
+            "Slots on the left,",
+            "Card Flip on the"
           ],
           [
-            "Downstairs, Slots",
-            "are on the left"
+            "right. See those",
+            "back counters?"
           ],
           [
-            "and Card Flip's on",
+            "Buy coins on the",
+            "left. Trade them"
+          ],
+          [
+            "for prizes on",
             "the right."
-          ],
-          [
-            "If you win",
-            "something you want"
-          ],
-          [
-            "to keep, bring the",
-            "coins upstairs to"
-          ],
-          [
-            "the prize",
-            "counters."
           ]
         ],
         "MnCornerThanks": [
@@ -35550,29 +35534,20 @@
         ],
         "MnCornerTmsConfirm0": [
           [
-            "TM25 THUNDER costs",
-            "5500 coins. Want"
-          ],
-          [
-            "it?"
+            "TM25 THUNDER for",
+            "5500 coins?"
           ]
         ],
         "MnCornerTmsConfirm1": [
           [
-            "TM14 BLIZZARD",
-            "costs 5500 coins."
-          ],
-          [
-            "Want it?"
+            "TM14 BLIZZARD for",
+            "5500 coins?"
           ]
         ],
         "MnCornerTmsConfirm2": [
           [
-            "TM38 teaches FIRE",
-            "BLAST. That's 5500"
-          ],
-          [
-            "coins. Want it?"
+            "TM38 FIRE BLAST",
+            "for 5500 coins?"
           ]
         ],
         "MnCornerTmsText": [
@@ -35590,54 +35565,24 @@
         ],
         "MnCornerWelcomeText": [
           [
-            "First visit? I'll",
-            "start you with 20"
+            "First visit? Have",
+            "20 coins on us."
           ],
           [
-            "coins. If you",
-            "haven't got a COIN"
+            "Use the COIN CASE",
+            "in your KEY ITEMS"
           ],
           [
-            "CASE, this one's",
-            "yours."
-          ],
-          [
-            "Have a look at the",
-            "prizes first. It's"
-          ],
-          [
-            "easier to know",
-            "when you're done"
-          ],
-          [
-            "if you know what",
-            "you came for."
+            "to see your coins."
           ]
         ],
         "MnMinneapolisCornerHomePatronText": [
           [
-            "I came upstairs to",
-            "count where I"
+            "Three cherries!"
           ],
           [
-            "couldn't hear the",
-            "machines. I'm"
-          ],
-          [
-            "still short of the",
-            "TM."
-          ],
-          [
-            "I think I'll get",
-            "lunch. Last time I"
-          ],
-          [
-            "skipped it, I",
-            "couldn't remember"
-          ],
-          [
-            "which TM I was",
-            "saving for."
+            "Six coins closer",
+            "to BLIZZARD."
           ]
         ]
       },

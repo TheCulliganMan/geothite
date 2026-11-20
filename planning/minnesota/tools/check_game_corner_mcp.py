@@ -17,16 +17,23 @@ from check_winona_mcp import finish, travel, walk
 from render_reference import load_pack
 
 ROOM = "MnMinneapolisCornerHome"
-PRIZES = [("MOON_STONE", 300), ("RARE_CANDY", 500), ("PP_UP", 1000),
-          ("TM_THUNDER", 5500), ("TM_BLIZZARD", 5500), ("TM_FIRE_BLAST", 5500)]
+OTHER_PRIZES = [("RARE_CANDY", 500), ("PP_UP", 1000), ("TM_THUNDER", 5500),
+                ("TM_BLIZZARD", 5500), ("TM_FIRE_BLAST", 5500)]
 
 
 class Review:
     def __init__(self, args):
         self.args = args
         self.pack = load_pack(args.pack)
+        current = "northstar-arcade-frontage-v1" in self.pack["report"]["manifests"]
+        self.offers = [("QUICK_CLAW" if current else "MOON_STONE", 300), *OTHER_PRIZES]
         self.results = []
         args.output.mkdir(parents=True, exist_ok=False)
+
+    def speech(self, label):
+        lines = self.pack["data"]["maps"][ROOM]["scripts"][label]
+        return " ".join(json.loads(row["args"][0]) for row in lines
+                        if row["command"] in {"text", "para", "line", "cont"})
 
     def fixture(self, kind, label):
         path = self.args.output / f"{label}-fixture.crystalsave"
@@ -77,8 +84,21 @@ class Review:
         for _ in range(index % 3):
             client.press("down")
         client.press("a")
-        if client.status()["mode"] == "yesno":
-            client.choose(accept)
+        if accept is not None:
+            # YES/NO can be visible behind an unread page. Select NO first to
+            # distinguish a live cursor from a prompt still waiting on the text.
+            for _ in range(16):
+                if client.status()["mode"] == "yesno":
+                    client.press("down")
+                    prompt = client.observe()["structuredContent"]["prompt"]
+                    if any(line["text"].strip() == "> NO" for line in prompt):
+                        if accept:
+                            client.press("up")
+                        client.press("a")
+                        break
+                client.press("a")
+            else:
+                raise AssertionError(f"prize {index} never produced a selectable confirmation")
         return finish(client)
 
     def passed(self, label, **evidence):
@@ -100,11 +120,13 @@ class Review:
                 c.press("down")
                 c.at(ROOM, 3, 9)
                 pages = finish(c)
-                assert "COIN CASE" in pages if repeat == 0 else "prizes" in pages
+                assert self.speech("MnCornerRulesText") in pages, pages
+                if repeat == 0:
+                    assert self.speech("MnCornerWelcomeText") in pages, pages
                 state = self.inspect(active)
                 assert state["coins"] == 20 and state["items"]["COIN_CASE"] == 1 and state["welcome"]
-            pages = self.prize(c, 0)
-            assert "more coins" in pages, pages
+            pages = self.prize(c, 0, accept=None)
+            assert self.speech("MnCornerPoor") in pages, pages
             assert self.inspect(active)["coins"] == 20
             walk(c, self.pack, (5, 6))
             c.press("right")
@@ -134,7 +156,7 @@ class Review:
     def prizes(self, full=False):
         fixture = self.fixture("full" if full else "rich", "full" if full else "rich")
         baseline = self.inspect(fixture)
-        for index, (item, price) in enumerate(PRIZES):
+        for index, (item, price) in enumerate(self.offers):
             c, active, errors = self.open(fixture, f"{'full' if full else 'buy'}-{item}")
             try:
                 self.enter(c)
@@ -146,7 +168,7 @@ class Review:
                 state = self.inspect(active)
                 assert state["coins"] == (9999 if full else 9999-price), (item, state, pages)
                 assert state["items"][item] == (baseline["items"][item] if full else 1), (item, state, pages)
-                assert ("full" if full else "Enjoy") in pages, pages
+                assert self.speech("MnCornerFull" if full else "MnCornerThanks") in pages, pages
                 assert state["money"] == 100000
             finally:
                 self.close(c, errors)
@@ -188,7 +210,8 @@ class Review:
                 pages = finish(c)
                 state = self.inspect(active)
                 assert state["coins"] == before["coins"] and state["money"] == before["money"], pages
-                assert ("money" if kind == "poor" else "9999") in pages, pages
+                label = "MnCornerMoneyShortText" if kind == "poor" else "MnCornerCoinLimitText"
+                assert self.speech(label) in pages, pages
             finally:
                 self.close(c, errors)
             self.passed(f"coin exchange rejects {kind} wallet without charging", state=state)
@@ -198,53 +221,65 @@ class Review:
         c, active, errors = self.open(fixture, "games")
         def wait(frames=120):
             c.call("hold_button", button="select", frames=frames)
+        def display():
+            return [row["text"] for row in c.observe()["structuredContent"]["dialogue"]]
+
+        def play(button):
+            c.press(button)
+            wait()
+
         try:
             self.enter(c)
             walk(c, self.pack, (3, 9)); c.press("left"); c.press("a"); finish(c)
-            walk(c, self.pack, (5, 6)); c.press("right"); c.press("a")
-            wait()
-            state = self.inspect(active)
-            print("slots entered", state, flush=True)
-            assert state["slots"]["phase"] == "betting"
-            c.press("a"); wait()
-            state = self.inspect(active)
-            assert state["slots"]["phase"] == "spinning" and state["coins"] == 17, state
-            assert state["slots"]["bet"] == 3
+            walk(c, self.pack, (5, 6)); c.press("right"); play("a")
+            assert display() == ["SLOT MACHINE", "COINS 0020", "BET 3 PAY 0000", "BET 3"]
+            play("a")
+            assert display() == ["SLOT MACHINE", "COINS 0017", "BET 3 PAY 0000", "PRESS A"]
             for _ in range(3):
-                c.press("a"); wait()
+                play("a")
             for _ in range(10):
                 wait()
-            state = self.inspect(active)
-            print("slots resolved", state, flush=True)
-            assert state["slots"]["phase"] == "result" and state["slots"]["next_reel"] == 4, state
-            c.press("a"); c.press("b"); wait(); finish(c)
+            slot_result = display()
+            slot_coins = int(slot_result[1].removeprefix("COINS "))
+            slot_payout = slot_coins - 17
+            assert slot_payout in (0, 6, 8, 10, 15, 50, 300), slot_result
+            assert slot_result[-1] == (f"WIN {slot_payout}" if slot_payout else "DARN"), slot_result
+            play("a")
+            assert display()[-1] == "PLAY AGAIN?"
+            play("b"); finish(c)
             c.at(ROOM, 5, 6)
-            slot_coins = self.inspect(active)["coins"]
-            walk(c, self.pack, (14, 6)); c.press("left"); c.press("a"); wait()
-            c.press("a"); wait()
+            walk(c, self.pack, (14, 6))
+            # The native client writes its autosave after control returns to the map.
             state = self.inspect(active)
-            print("cards staked", state, flush=True)
-            assert state["cards"]["phase"] == "choose_card" and len(state["cards"]["deck"]) == 24, state
-            assert state["coins"] == slot_coins-3
-            c.press("a"); wait()
+            assert state["coins"] == slot_coins, state
+            c.press("left"); play("a")
+            assert display() == ["CARD FLIP", f"COINS {slot_coins:04} PAY 00", "PLAY WITH THREE", "COINS?"]
+            play("a")
+            assert display() == ["CARD FLIP", f"COINS {slot_coins-3:04} PAY 00", "CHOOSE A CARD."]
+            play("a")
+            assert display()[-1] == "PLACE YOUR BET."
             # The native top-row group wager covers half the deck and pays six.
-            c.press("up"); c.press("up"); c.press("a")
+            play("up"); play("up"); play("a")
             for _ in range(10):
                 wait()
-            state = self.inspect(active)
-            print("cards resolved", state, flush=True)
-            assert state["cards"]["phase"] == "result" and sum(state["cards"]["discard_pile"]) == 1, state
-            payout = 6 if state["cards"]["face_up_card"] & 3 < 2 else 0
-            assert state["coins"] == slot_coins - 3 + payout, state
-            c.press("a")
-            assert self.inspect(active)["cards"]["phase"] == "play_again"
-            c.press("b"); wait(); finish(c)
+            card_result = display()
+            play("a")
+            assert display()[-2:] == ["WANT TO PLAY", "AGAIN?"]
+            play("b"); finish(c)
             c.at(ROOM, 14, 6)
             c.move("down")
             c.at(ROOM, 14, 7)
+            state = self.inspect(active)
+            cards = state["cards"]
+            assert cards["phase"] == "quit" and len(cards["deck"]) == 24, cards
+            assert sum(cards["discard_pile"]) == 1, cards
+            payout = 6 if cards["face_up_card"] & 3 < 2 else 0
+            assert state["coins"] == slot_coins - 3 + payout, state
+            assert card_result[-1] == ("YEAH!" if payout else "DARN…"), card_result
         finally:
             self.close(c, errors)
-        self.passed("slots stake, three reel stops and result; Card Flip stake, reveal and result; quit to movement", state=state)
+        self.passed("slots stake, three reel stops and result; Card Flip stake, reveal and result; quit to movement",
+                    slot_result=slot_result, card_result=card_result, state=state)
 
 
 def main():

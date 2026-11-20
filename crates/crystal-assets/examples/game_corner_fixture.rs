@@ -24,6 +24,7 @@ fn main() -> Result<()> {
         let items = [
             "COIN_CASE",
             "MOON_STONE",
+            "QUICK_CLAW",
             "RARE_CANDY",
             "PP_UP",
             "TM_THUNDER",
@@ -83,8 +84,19 @@ fn main() -> Result<()> {
         );
     }
     if args[1] == "full" {
+        let first_prize = if loaded
+            .pack()
+            .report()
+            .manifests
+            .iter()
+            .any(|m| m == "northstar-arcade-frontage-v1")
+        {
+            "QUICK_CLAW"
+        } else {
+            "MOON_STONE"
+        };
         for id in [
-            "MOON_STONE",
+            first_prize,
             "RARE_CANDY",
             "PP_UP",
             "TM_THUNDER",
@@ -103,7 +115,7 @@ fn main() -> Result<()> {
             ensure!(
                 state
                     .bag
-                    .add_item(&data.items["MOON_STONE"], 99)
+                    .add_item(&data.items[first_prize], 99)
                     .map_err(anyhow::Error::msg)?,
                 "fill every physical Item pocket slot"
             );

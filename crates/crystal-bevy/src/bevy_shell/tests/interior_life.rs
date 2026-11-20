@@ -1,6 +1,8 @@
 //! Local placement/party are fixtures; conversations, errands and care use input.
 #[path = "glacier_line_controller.rs"]
 mod glacier_line;
+#[path = "mill_inn_rest.rs"]
+mod mill_inn_rest;
 #[path = "interior_regional_flavor.rs"]
 mod regional_flavor;
 use std::collections::{BTreeMap, BTreeSet, VecDeque};

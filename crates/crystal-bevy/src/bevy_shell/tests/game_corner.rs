@@ -1,5 +1,8 @@
 //! Explicit placement/wallet fixtures; all game actions use production input.
 
+#[path = "game_corner_wallet.rs"]
+mod wallet;
+
 use crystal_core::input::GameButton;
 use crystal_core::state::SlotSymbol;
 

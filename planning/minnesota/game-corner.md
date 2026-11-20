@@ -1,15 +1,17 @@
 # Minneapolis Game Corner
 
-The Game Corner occupies the former Corner Home facade in southern Minneapolis.
-Enter at walking tile **(56, 51)**; the safe outside return is **(56, 52)**.
-Read the wall immediately left of the entrance for the Game Corner sign.
+Look for three yellow sevens on the wide brick building in southern Minneapolis.
+The marquee can be read from either of the two sidewalk tiles beneath it.
+The door is at **(56, 51)** and opens onto the sidewalk at **(56, 52)**.
+The South Arrival Desk gives walking directions to the arcade.
 The internal map identity remains `MnMinneapolisCornerHome`; the playable room
 is a native 2D, 10-by-7-metatile Game Corner. Its arrival is (3, 12), with paired
 carpet exits at (2, 13) and (3, 13). The publisher checks a walking connection
 from the Minneapolis clinic, every game approach and all three counters.
 
 The attendant at (2, 9) provides a free Coin Case and **20 starter coins once**.
-The left counter sells 50 coins for 1,000 money or 500 for 10,000. Purchases
+Open **Pack → Key Items → Coin Case → Use** to see your current balance.
+The back-left counter sells 50 coins for 1,000 money or 500 for 10,000. Purchases
 require the case, sufficient money and room below the 9,999-coin limit.
 
 The left machines run native **slots**, with one-to-three-coin bets and three
@@ -17,11 +19,11 @@ individually stopped reels. The right machines run native **Card Flip**, with
 a three-coin stake, a shuffled 24-card deck and the original group/card wagers.
 Both use the authoritative coin balance and return control when quitting.
 
-The two right counters offer repeatable prizes:
+The two back-right counters offer six repeatable prizes.
 
 | Counter | Prize | Coins |
 | --- | --- | ---: |
-| Items | Moon Stone | 300 |
+| Items | Quick Claw | 300 |
 | Items | Rare Candy | 500 |
 | Items | PP Up | 1,000 |
 | TMs | TM25 Thunder | 5,500 |
@@ -34,16 +36,24 @@ residents become the attendant and a patron. Native art and machine geometry
 are read from the supplied pack's Goldenrod Game Corner; Johto/Kanto maps,
 regional encounters, trainers, Pokemon, art and audio are preserved.
 
-## Source and publication
+Give the Quick Claw to a partner from the Items pocket for a chance to move first.
+Thunder, Blizzard and Fire Blast have 22, 23 and 31 eligible Minnesota species respectively.
+
+## Editions
+
+Arcade Frontage revises the two Wind Lesson editions. Its guide covers the exterior,
+current prizes and verification. [Arcade Frontage](revisions/arcade-frontage-v01/README.md)
+
+## Original room and publication
 
 The authored contract is [game-corner.json](game-corner.json). Apply this Rust
-stage after rebuilding Minneapolis interiors. Its current local result is
+stage after rebuilding Minneapolis interiors. Its original v06 result was
 `content-packs/minnesota-game-corner-v06.crystalpack`, published over
 `content-packs/minnesota-current-r16-bank-guidance-v02.crystalpack`. The selected
 regional revision is recorded in [world.json](world.json); its cumulative source
 index is [revisions/game-corner-v01/sources.json](revisions/game-corner-v01/sources.json).
 
-Executed local build and publication commands:
+The original room was built with the following commands.
 
 ```sh
 CARGO_TARGET_DIR=target/game-corner-ui CARGO_INCREMENTAL=0 cargo build --locked \
@@ -68,7 +78,7 @@ asset and restore the native board, portraits, cards and readable prompts.
 Renderer-neutral input advances the same slot/card animation clocks once per
 frame; the graphical client retains its regular update schedule.
 
-## Verification
+## Original v06 verification
 
 Local verification output is retained under
 `planning/minnesota/renders/game-corner-v01/`. Position and wallet fixtures are
@@ -84,7 +94,7 @@ slot and Card Flip rounds, payouts, and returning to movement. Every spawned
 client must leave stderr empty. Native screenshots and the final regression
 results are retained alongside its receipt.
 
-The retained local native client includes the current renderer and controller:
+The retained v06 review client can still open its matching pack.
 
 ```sh
 .local/minnesota-game-corner-client/crystal-bevy \

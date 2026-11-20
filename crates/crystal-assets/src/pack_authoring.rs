@@ -181,6 +181,8 @@ mod northstar_mankato_landing;
 pub use northstar_mankato_landing::revise_quarry_landings;
 mod northstar_wind_lesson;
 pub use northstar_wind_lesson::revise_wind_lesson;
+mod northstar_arcade_frontage;
+pub use northstar_arcade_frontage::revise_arcade_frontage;
 mod northstar_ely_challenge;
 pub use northstar_ely_challenge::revise_ely_challenge;
 mod northstar_badge_battles;

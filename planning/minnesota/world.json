@@ -7964,7 +7964,7 @@
     "status": "Accepted current-parent terrain revision: source/native pixels, strict whole-pack preservation, directional grass/ledge proof, actual2D review, native encounters/trainerPP/resources/Continue and stdio pass. CurrentR12 work preserved.",
     "scope_limit": "Sequential Minnesota grass pass remains open beyond R01-R03. Explicit local fixtures do not prove an earned statewide campaign."
   },
-  "active_local_review_revision": "wind_lesson_field_revision",
+  "active_local_review_revision": "arcade_frontage_field_revision",
   "script_command_repair_revision": {
     "kind": "missing_minnesota_map_command_records",
     "parent_revision": "field_hm_habitats_cyclists_revision",
@@ -13276,5 +13276,19 @@
     "map_count": 743,
     "changed_maps_from_parent": 1,
     "runbook": "revisions/wind-lesson-v01/README.md"
+  },
+  "arcade_frontage_field_revision": {
+    "kind": "campaign_review",
+    "parent_revision": "wind_lesson_field_revision",
+    "parent_pack": "content-packs/minnesota-wind-lesson-v01.crystalpack",
+    "parent_pack_sha256": "48795ab10f448e10f458bbad6f3cfc908bbec1411041d8f62f39def234275073",
+    "pack": "content-packs/minnesota-arcade-frontage-v01.crystalpack",
+    "pack_sha256": "0ecb8da6f5809c78f4c39bb5fbf559ef7a3199bcdd04363900651c608c218246",
+    "build_recipe": "planning/minnesota/revisions/arcade-frontage-v01/field-build.json",
+    "build_recipe_sha256": "044a760b6873c0fbad5f89d06fb304ca362b9178be9113d80503e3209697dcfa",
+    "content_identity": "0886c571cd0dd9b49906b995d7ab9570f754e575a460a0291875a18a17554e66",
+    "map_count": 743,
+    "changed_maps_from_parent": 5,
+    "runbook": "revisions/arcade-frontage-v01/README.md"
   }
 }

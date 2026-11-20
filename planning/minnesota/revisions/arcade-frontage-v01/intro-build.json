@@ -1,0 +1,10 @@
+{
+  "parent_pack": "content-packs/minnesota-intro-wind-lesson-v01.crystalpack",
+  "parent_pack_sha256": "de3d6cd9f5714e3d92bc84bca770e2d3234d31d9398f84699bcef41a8a5bbe6c",
+  "output_pack": "content-packs/minnesota-intro-arcade-frontage-v01.crystalpack",
+  "expected_pack_sha256": "903a0804883044e6f7f2eda44114260c86493092e2ce8b070dd338439e306a3b",
+  "builder": "pack_ely_challenge",
+  "arguments": [
+    "--arcade-frontage"
+  ]
+}

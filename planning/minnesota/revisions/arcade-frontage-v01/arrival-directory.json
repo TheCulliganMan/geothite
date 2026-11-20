@@ -1,0 +1,14 @@
+[
+  {
+    "choice": "CLINIC",
+    "label": "MnSouthDeskClinic"
+  },
+  {
+    "choice": "GAME CORNER",
+    "label": "MnSouthDeskArcade"
+  },
+  {
+    "choice": "SOUTH MARKET",
+    "label": "MnSouthDeskMarket"
+  }
+]
