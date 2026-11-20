@@ -229,11 +229,15 @@ fn pokemon_overworld_context_canvas(world: &mut World, images: &Assets<Image>) -
 }
 
 fn record_overworld_frames(app: &mut App, directory: &std::path::Path) {
+    record_overworld_frames_every(app, directory, 2);
+}
+
+fn record_overworld_frames_every(app: &mut App, directory: &std::path::Path, interval: u32) {
     std::fs::create_dir_all(directory).expect("review frames directory");
     let directory = directory.to_owned();
     let mut tick = 0_u32;
     app.add_systems(Last, move |world: &mut World| {
-        if tick.is_multiple_of(2) {
+        if tick.is_multiple_of(interval) {
             let image = world.resource_scope(|world, images: Mut<Assets<Image>>| {
                 pokemon_overworld_context_canvas_scaled(world, &images, 4)
             });

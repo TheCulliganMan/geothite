@@ -16,7 +16,7 @@ use super::super::super::{
     PlayfieldTile, RenderedViewport, RuntimeTickTimer, SOURCE_TILE_SIZE, TILE_SIZE,
 };
 use super::super::shore_watch_bank_walk::{keyboard_event, stride};
-use super::super::{canoe, interior_life, menu_render_test_app, record_overworld_frames};
+use super::super::{canoe, interior_life, menu_render_test_app, record_overworld_frames_every};
 use super::assert_fen_keel_on_water;
 use super::fen_canoe_grass::check_visible_trainer;
 
@@ -101,6 +101,9 @@ fn hold_across_bank(
     let inland = if launching { previous } else { steps[2] };
     let mut last_sample = None;
     let mut intermediate_frames = 0;
+    let interpolated = app.world().resource::<RuntimeTickTimer>().step_seconds > 0.0;
+    let (dx, dy) = direction.delta();
+    let one_pixel = Vec2::new(f32::from(dx), f32::from(dy));
     keyboard_event(app, direction, ButtonState::Pressed);
     for _ in 0..64 {
         app.update();
@@ -124,19 +127,25 @@ fn hold_across_bank(
             contact.aboard, on_land,
             "{direction:?} at visible foot or keel {foot:?}"
         );
-        if let Some((old_tile, old_remaining, old_subframe, old_pixel)) = last_sample
-            && position == old_tile
-            && remaining == old_remaining
-            && !settled
-            && subframe > old_subframe
-        {
-            let (dx, dy) = direction.delta();
-            let expected = Vec2::new(f32::from(dx), f32::from(dy));
-            assert!(
-                pixel.abs_diff_eq(old_pixel + expected, 0.01),
-                "{direction:?} at {position:?}, between ticks: expected a one-pixel step from {old_pixel:?}, saw {pixel:?}"
-            );
-            intermediate_frames += 1;
+        if let Some((old_tile, old_remaining, old_subframe, old_pixel)) = last_sample {
+            let advanced = pixel.abs_diff_eq(old_pixel + one_pixel, 0.01);
+            if interpolated {
+                assert!(
+                    advanced || pixel.abs_diff_eq(old_pixel, 0.01),
+                    "{direction:?} at {position:?}: feet or keel jumped from {old_pixel:?} to {pixel:?}"
+                );
+            }
+            if position == old_tile
+                && remaining == old_remaining
+                && !settled
+                && subframe > old_subframe
+            {
+                assert!(
+                    advanced,
+                    "{direction:?} at {position:?}: missing between-tick step"
+                );
+                intermediate_frames += 1;
+            }
         }
         last_sample = Some((position, remaining, subframe, pixel));
         // Walking through two adjoining grass tiles can finish its rustle
@@ -153,7 +162,7 @@ fn hold_across_bank(
             }
         }
         if position == steps[2] && settled {
-            if app.world().resource::<RuntimeTickTimer>().step_seconds > 0.0 {
+            if interpolated {
                 assert!(
                     intermediate_frames >= 16,
                     "too few between-tick samples on {steps:?}"
@@ -284,7 +293,8 @@ fn check_grassy_banks(host_frame: Option<Duration>) {
             if host_frame.is_some() {
                 directory.push("between-ticks");
             }
-            record_overworld_frames(&mut app, &directory.join(name));
+            let interval = if host_frame.is_some() { 1 } else { 2 };
+            record_overworld_frames_every(&mut app, &directory.join(name), interval);
         }
         for &(x, y) in &approach[1..] {
             stride(&mut app, TilePosition::new(x, y), walker, rider, false);
