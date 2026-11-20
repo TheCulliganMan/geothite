@@ -105,10 +105,10 @@ pub(super) fn reconcile(
         let room = data.map_module(map)?;
         if let Some(blocks) = state.map_block_overrides.get_mut(map) {
             for &[x, y, prior, next] in &change.replacements {
-                if let Some(value) = blocks.get_mut(&(x, y)) {
-                    if *value == prior {
-                        *value = next;
-                    }
+                if let Some(value) = blocks.get_mut(&(x, y))
+                    && *value == prior
+                {
+                    *value = next;
                 }
             }
             blocks.retain(|&(x, y), id| {
