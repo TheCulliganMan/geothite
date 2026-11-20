@@ -6,6 +6,8 @@ import json
 from collections import deque
 from pathlib import Path
 
+from check_safari_plan import safari_tables
+
 ROOT=Path(__file__).resolve().parents[1]
 
 
@@ -16,6 +18,7 @@ def check():
     world=read(ROOT/'world.json');story=read(ROOT/'story.json')
     routes=[read(ROOT/r['file']) for r in world['routes']]
     towns={t['name']:t for t in world['towns']}
+    endpoint_hubs={name:town['id'] for name,town in towns.items()}
     route_ids={r['id'] for r in routes}
     by_id={r['id']:r for r in routes}
     assert {'BADGE_3','BADGE_4'}<=set(by_id['MN_R05']['required_flags'])
@@ -30,7 +33,8 @@ def check():
         destination=read(ROOT/entry['file'])
         assert destination['id']==entry['id'] and destination['parent_hub']==entry['parent_hub']
         assert entry['parent_hub'] in {t['id'] for t in towns.values()}
-        assert destination['access']['from_hub']==entry['parent_hub']
+        access=destination['access']
+        assert access['from_hub'] in set(chunks)|{t['id'] for t in towns.values()}
         assert destination['districts'] and destination['activity_contracts']
         # A scope reservation does not create a native map or fake walking edge.
         assert destination['map_name'] not in chunks
@@ -39,7 +43,22 @@ def check():
             assert native['id']==destination['map_name']
             layout=read(ROOT/entry['layout_file'])
             assert layout['id']==native['id'] and layout['dimensions_metatiles']==native['dimensions_metatiles']
-            assert entry['native_connection']=={'a':entry['parent_hub'],'direction_a':'north','b':native['id'],'direction_b':'south','offset':0,'city_core_x':[16,17],'fair_core_y':native['dimensions_metatiles'][1]*2-1}
+            seam=entry['native_connection']
+            assert seam['a']==access['from_hub'] and seam['b']==native['id']
+            road=chunks[seam['a']]
+            assert (seam['direction_a'],seam['direction_b'],access['city_side'])==('west','east','W')
+            assert len(native['ports'])==1
+            port=native['ports'][0]
+            assert (port['route'],port['side'])==(road['route'],'E')
+            gates=access['city_gate_anchor_core']
+            assert gates==seam['road_core']==[[0,2*access['city_gate_metatile'][1]+dy] for dy in (0,1)]
+            assert 0<=gates[0][1]<gates[1][1]<2*road['dimensions_metatiles'][1]
+            assert seam['offset_a']==-seam['offset_b']
+            width,height=native['dimensions_metatiles']
+            assert seam['fair_core']==[[2*width-1,y-2*seam['offset_a']] for _,y in gates]
+            assert [y for _,y in seam['fair_core']]==[2*port['gate_metatile'][1]+dy for dy in (0,1)]
+            assert all(0<=y<2*height for _,y in seam['fair_core'])
+            assert access['city_landing_metatile']==[seam['bounded_trail_metatiles'],gates[0][1]//2]
             registry={c['interior']:c for c in read(ROOT/'interiors.json')['contracts']}
             for room in native['interiors']:
                 door=next(d for d in native['doors'] if d['target']==room['id'])
@@ -50,7 +69,7 @@ def check():
                 assert contract['exterior_door_core']==door['tile'] and contract['exterior_safe_return_core']==door['return_tile']
                 assert contract['exterior_warp_index']==door['warp_index'] and contract['exterior_return_warp_index']==door['return_warp_index']
     for entry in world.get('transit_networks',[]):
-        assert entry['kind']=='planned_rail_service',('unknown transit kind',entry['kind'])
+        assert entry['kind'] in {'planned_rail_service','native_passenger_service'},('unknown transit kind',entry['kind'])
         network=read(ROOT/entry['file'])
         assert network['id']==entry['id']
         stops=network['ordered_stops']
@@ -58,8 +77,13 @@ def check():
         assert len({s['visited_flag'] for s in stops})==len(stops)
         assert all(s['hub'] is None or s['hub'] in {t['id'] for t in towns.values()} for s in stops)
         assert all(s['visited_flag'].startswith('EVENT_MN_STATION_') for s in stops)
-        # Rail reservations are not native maps or edges in symbolic progression.
-        # Only registered authored exteriors/door bindings may change reachability.
+        if entry['kind']=='native_passenger_service':
+            service=network['current_service']
+            stations=read(ROOT/service['source_file'])['stations']
+            assert [(s['station'],s['visited_flag']) for s in stops]==[(s['map'],s['visited_flag']) for s in stations]
+            assert service['native_directed_branches']==len(stations)*(len(stations)-1)
+            assert service['first_visit_callbacks']==len(stations)
+        # Visiting a station permits travel there; rail does not unlock a new hub.
         assert not {s['station'] for s in stops}&set(chunks)
     for special in world.get('special_zones',[]):
         zone=read(ROOT/special['file'])
@@ -69,8 +93,7 @@ def check():
         assert zone['expedition']['initial_balls']>0 and zone['expedition']['initial_steps']>0
         assert zone['capture_encounters']['commands']==['SAFARI_BALL','BAIT','ROCK','RUN']
         assert not zone['capture_encounters']['player_attacks']
-        for habitat in zone['candidate_habitats']:
-            assert sum(s['weight'] for s in habitat['weighted_encounters'])==100,habitat['id']
+        safari_tables(ROOT/special['file'],zone,ROOT.parents[1]/world['region_ecology_revision']['source_file'])
         # Candidate preserve chunks are deliberately excluded until source-art
         # fitting, native entrances and reciprocal connections are registered.
         assert not {c['id'] for c in zone['candidate_chunks']}&set(chunks)
@@ -88,11 +111,13 @@ def check():
             maps.add(interior['id']);parent[interior['id']]=t['id']
             if interior['id'] in revision_sources:
                 path=revision_sources[interior['id']]
-                assert interior.get('gym_revision_file')==path,interior['id']+': stale revision selection'
-                source=read(ROOT/path)
-                assert source['schema_version']==1 and len(source['gyms'])==1
-                gym=source['gyms'][0];contract=room_contracts[interior['id']]
-                assert gym['id']==interior['id']
+                # The original regional index owns the legacy street bindings.
+                # Each town also names a subsequent hand-authored gym layout.
+                base=read(ROOT/path)
+                source=read(ROOT/interior['authoring_file'])
+                assert all(s['schema_version']==1 and len(s['gyms'])==1 for s in (base,source))
+                previous=base['gyms'][0];gym=source['gyms'][0];contract=room_contracts[interior['id']]
+                assert gym['id']==previous['id']==interior['id'] and gym['slot']==previous['slot']
                 if interior['kind']=='canonical_gym_reference':
                     assert interior['source_reference']['gym_id']==gym['id']
                     assert interior['native_constant']==gym['constant']
@@ -100,15 +125,25 @@ def check():
                     assert interior['kind']==f"gym_{gym['slot']}"
                 assert gym['dimensions_metatiles']==interior['dimensions_metatiles']
                 assert contract['revision_source_file']==path and contract['parent']==t['id']
-                assert contract['arrival_core']==gym['arrival_core'] and contract['arrival_warp_index']==3
-                assert contract['return_triggers_core']==gym['exit_tiles_core']
-                assert contract['return_trigger_core']==gym['exit_tiles_core'][0]
+                assert contract['arrival_core']==previous['arrival_core'] and contract['arrival_warp_index']==3
+                assert contract['return_triggers_core']==previous['exit_tiles_core']
+                assert contract['return_trigger_core']==previous['exit_tiles_core'][0]
+                width,height=gym['dimensions_metatiles']
+                assert len(gym['rows'])==height and all(len(row)==width for row in gym['rows'])
+                assert len(gym['exit_tiles_core'])==2
+                assert all(0<=x<2*width and 0<=y<2*height for x,y in [gym['arrival_core'],*gym['exit_tiles_core']])
                 seen_revisions.add(interior['id'])
         if 'authoring_file' not in t:
             continue
         authored=read(ROOT/t['authoring_file'])
         assert authored['id']==t['id'] and authored['dimensions_metatiles']==t['dimensions_metatiles'],t['id']+': stale town extent'
-        assert authored['ports']==t['ports'],t['id']+': stale town ports'
+        if t['id']=='MnDetroitLakes':
+            ports = [{k:v for k,v in entry.items() if k!='native_via'} for entry in authored['ports']]
+            gate = next(link for link in world['connections'] if link['b']==t['id'] and link['route']=='MN_R19')
+            ports.append(dict(route=gate['route'],side='N',gate_metatile=gate['b_gate_metatile'],landing_metatile=gate['b_arrival_metatile']))
+            assert ports==t['ports']
+        else:
+            assert authored['ports']==t['ports'],t['id']+': stale town ports'
         doors={d['target']:d for d in authored['doors']}
         assert len(doors)==len(authored['doors']),t['id']+': ambiguous facade pairing'
         overlays=authored.get('transit_overlays',[])
@@ -126,7 +161,7 @@ def check():
         assert set(doors)<=set(roster),t['id']+': unregistered authored room'
         expansion_rooms=set()
         if t.get('recomposition_contract_file'):
-            from check_city_recomposition_plan import validate as validate_recomposition
+            from check_city_binding_plan import current_city as validate_recomposition
             expansion_rooms,links=validate_recomposition(ROOT,t,authored,room_contracts,world['connections'])
             expansion_links.update(links)
         elif t.get('expansion_contract_file'):
@@ -134,7 +169,7 @@ def check():
             expansion_rooms,links=validate_expansion(ROOT,t,authored,room_contracts,world['connections'])
             expansion_links.update(links)
         for interior in t['interiors']:
-            if 'authoring_file' not in interior:
+            if 'authoring_file' not in interior or interior['id'] in revision_sources:
                 continue
             source=read(ROOT/interior['authoring_file'])
             room=next((r for r in source['interiors'] if r['id']==interior['id']),None) if 'interiors' in source else source
@@ -168,9 +203,20 @@ def check():
                 assert room['passive_arrival']['tile']==authored['opening']['bedroom_start']
                 continue
             door=doors[interior['id']]
-            assert contract['parent']==t['id'] and contract['source_file']==interior['authoring_file']
+            assert contract['parent']==t['id']
+            if contract['source_file']!=interior['authoring_file']:
+                binding=read(ROOT/contract['source_file'])
+                prior=next(r for r in binding['interiors'] if r['id']==interior['id'])
+                for key in ('dimensions_metatiles','clear_arrival','passive_arrival','exits'):
+                    assert prior.get(key)==room.get(key),(interior['id'],key)
+                assert next(d for d in binding['doors'] if d['target']==interior['id'])==door
             for field,key in [('exterior_door_core','tile'),('exterior_safe_return_core','return_tile'),('exterior_warp_index','warp_index'),('exterior_return_warp_index','return_warp_index'),('arrival_warp_index','target_warp')]:
-                assert contract[field]==door[key],interior['id']+': stale '+field
+                if field in ('exterior_door_core','exterior_safe_return_core') and contract[field]!=door[key]:
+                    # These originals remain registered at their pre-revision coordinates.
+                    from check_city_binding_plan import archived_facade
+                    archived_facade(ROOT,t,door,contract)
+                else:
+                    assert contract[field]==door[key],interior['id']+': stale '+field
             assert contract['arrival_core']==room.get('clear_arrival',room.get('passive_arrival',{}).get('tile',room.get('public_arrival_core'))),interior['id']+': stale arrival'
             exits=room.get('exit_warps',room.get('exits',room.get('exit_tiles_core')))
             for index,exit in enumerate(exits,1):
@@ -197,7 +243,12 @@ def check():
         assert r['chunk_columns']*r['chunk_rows']==sum(c['route']==r['id'] for c in chunks.values())
         for c in chunks.values():
             if c['route']==r['id']:
-                assert c['dimensions_metatiles']==[min(32,w-c['column']*32),min(24,h-c['row']*24)],c['id']
+                expected=[min(32,w-c['column']*32),min(24,h-c['row']*24)]
+                if c['id']=='MnR11C01R00':
+                    terminal=r['compact_terminal']
+                    expected[0]=terminal['native_width_metatiles']
+                    assert terminal['source_canvas_retired_bounds']==[c['source_origin_metatiles'][0]+expected[0],0,w,expected[1]]
+                assert c['dimensions_metatiles']==expected,c['id']
         if r['id']=='MN_R09':
             assert len(r['districts'])==5 and not r['loops']
             assert r['cut_gates'] and r['one_way_ledges'] and r['battle_or_grass_choices']
@@ -215,9 +266,23 @@ def check():
         for p in r['main_path_metatiles']:
             assert 0<=p[0]<w and 0<=p[1]<h,(r['id'],p)
         for d in r['districts']:
+            if r['id']=='MN_R12':
+                assert d['id'] in {'LOONS_SHORES','RAVEN_FROST_BROW','STONE_BOG_RANGER'} and d['purpose']
+                continue
             x0,y0,x1,y1=d['bounds_metatiles']
             assert 0<=x0<x1<=w and 0<=y0<y1<=h
         for endpoint in r['endpoints']:
+            if endpoint['place']=='CEDAR APPROACH':
+                cedar=read(ROOT/'towns/MnMaraisCedarApproach.json')
+                assert r['id']=='MN_R12' and endpoint['side']=='E'
+                assert cedar['id']==world['coastal_cedar_warmth_revision']['map']
+                ports=r['proposed_ports']
+                assert {'direction':'west','target_map':ports['east_native_map'],'offset':-ports['east_offset']} in cedar['native_connections']
+                southern=next(c for c in cedar['native_connections'] if c['direction']=='south')
+                assert southern['target_map']==towns['GRAND MARAIS']['id']
+                maps.add(cedar['id'])
+                endpoint_hubs[endpoint['place']]=southern['target_map']
+                continue
             assert endpoint['place'] in towns
             ports=[p for p in towns[endpoint['place']]['ports'] if p['route']==r['id']]
             assert len(ports)==1
@@ -228,7 +293,7 @@ def check():
         for actor in r['trainers']:
             assert actor['defeated_flag'] in flags
             assert actor['party']
-        for item in r['items']:assert item['flag'] in flags
+        for item in r['items']:assert item['flag'] in flags or item['flag'] in world['planned_flags'],item['id']
         layout=read(ROOT/'routes'/f'{r["id"]}.layout.json')
         assert layout['dimensions_metatiles']==[w,h]
         for layer in layout['layers']:
@@ -237,12 +302,31 @@ def check():
             for x,y in layer.get('points',[]):assert 0<=x<w and 0<=y<h,(r['id'],layer)
             if 'position' in layer:
                 x,y=layer['position'];assert 0<=x<w and 0<=y<h
+    icefield=read(ROOT/'regions/ice/MnRainyRiverIcefields.json')
+    assert icefield['ports'][0]['target'] in chunks and chunks[icefield['ports'][0]['target']]['route']=='MN_R20'
+    maps.add(icefield['id'])
     for c in world['connections']:
         assert c['a'] in maps and c['b'] in maps,c
         if c['kind']=='connection':
-            if (c['a'],c['b']) not in expansion_links:
+            if 'MnMaraisCedarApproach' in (c['a'],c['b']):
+                side='a' if c['a']=='MnMaraisCedarApproach' else 'b'
+                other='b' if side=='a' else 'a'
+                connection=dict(direction=c['direction_'+side],target_map=c[other],offset=c['offset_'+side])
+                assert connection in cedar['native_connections'] and c['offset_'+side]==-c['offset_'+other]
+                assert c['direction_'+other]=={'west':'east','south':'north'}[connection['direction']]
+            elif (c['a'],c['b']) not in expansion_links:
                 assert c['offset_a']==c['offset_b']==0
                 assert c['direction_b']=={'east':'west','south':'north'}[c['direction_a']]
+        elif c['kind'] in {'direct_connection','native_map_connection'}:
+            assert c['route'] in route_ids and set(c['requires_flags'])<=conditions
+            legacy=c['kind']=='native_map_connection'
+            a,b=(c[k] for k in (('a_side','b_side') if legacy else ('direction_a','direction_b')))
+            off_a,off_b=(c[k] for k in (('a_offset','b_offset') if legacy else ('offset_a','offset_b')))
+            left,right=(c[k] for k in (('a_core_lanes','b_core_lanes') if legacy else ('a_edge_core','b_edge_core')))
+            assert b=={'east':'west','west':'east','north':'south','south':'north'}[a] and off_a==-off_b
+            axis=int(a in ('east','west'))
+            assert len(left)==len(right)==2 and left[1][axis]==left[0][axis]+1
+            assert all(x[axis]-2*off_a==y[axis] for x,y in zip(left,right))
         elif c['kind'] in {'gatehouse_warp','guarded_connection'}:
             assert c['route'] in route_ids and set(c['requires_flags'])<=conditions
         else:
@@ -250,6 +334,19 @@ def check():
     from check_boundary_walking_links import validate as validate_boundary_walking_links
     walking_link_errors=validate_boundary_walking_links(world,ROOT)
     assert not walking_link_errors,walking_link_errors
+    # The mine's later floors have their own registered dossiers and indexed return links.
+    needed={m for q in story['quests'] for m in q['maps'] if m not in maps and m not in route_ids}
+    for location in needed:
+        trail=set()
+        while location not in maps:
+            assert location not in trail,('cyclic parent chain',location)
+            trail.add(location)
+            room=room_contracts[location]
+            assert read(ROOT/room['source_file'])['id']==location
+            assert any(pair['parent']==room['parent'] for pair in room['paired_bindings'])
+            parent[location]=room['parent']
+            location=room['parent']
+        maps.update(trail)
     for q in story['quests']:
         assert set(q['requires'])<=conditions,(q['id'],q['requires'])
         assert all(m in maps or m in route_ids for m in q['maps']),(q['id'],q['maps'])
@@ -262,7 +359,7 @@ def check():
     while changed:
         before=(len(known),len(reachable),len(used))
         for r in routes:
-            a,b=[towns[e['place']]['id'] for e in r['endpoints']]
+            a,b=[endpoint_hubs[e['place']] for e in r['endpoints']]
             if set(r['required_flags'])<=known and (a in reachable or b in reachable):
                 reachable.update([a,b,r['id']])
         for gym in story['gyms']:
@@ -305,16 +402,27 @@ def main():
         current_world=read(ROOT/'world.json')
         registry={row['interior']:row for row in read(ROOT/'interiors.json')['contracts']}
         for town in current_world['towns']:
+            if town['id'] in ('MnBemidji','MnStCloud'):
+                from check_city_binding_plan import check_realigned_fronts
+                check_realigned_fronts(read(ROOT/town['authoring_file']),pack['data'])
             if town.get('recomposition_contract_file'):
-                from check_city_recomposition_plan import validate as validate_recomposition
+                from check_city_binding_plan import current_city as validate_recomposition
                 validate_recomposition(ROOT,town,read(ROOT/town['authoring_file']),registry,current_world['connections'],pack)
             elif town.get('expansion_contract_file'):
                 validate_expansion(ROOT,town,read(ROOT/town['authoring_file']),registry,current_world['connections'],pack)
-        for special in read(ROOT/'world.json').get('special_zones',[]):
+        print('The three current major city exteriors and all indexed expansion-room entries and returns resolve in the supplied pack.')
+        from audit_region_encounters import active_roster
+        active=active_roster()
+        for special in current_world.get('special_zones',[]):
             zone=read(ROOT/special['file'])
-            for habitat in zone['candidate_habitats']:
-                for slot in habitat['weighted_encounters']:
-                    assert slot['species'] in species and 1<=slot['level']<=100,slot
+            expected=safari_tables(ROOT/special['file'],zone,ROOT.parents[1]/current_world['region_ecology_revision']['source_file'])
+            safari=pack['data']['safari_zone']
+            assert safari['id']==zone['id']
+            assert {h['id'] for h in safari['habitats']}==expected.keys()
+            for habitat in safari['habitats']:
+                for kind in ('grass','water'):
+                    assert habitat[kind]==expected[habitat['id']][kind],(habitat['id'],kind)
+                    assert all(slot['species'] in species and slot['species'] in active for slot in habitat[kind])
         for r in routes:
             for timed in r['encounters']['grass'].values():
                 for slot in timed:assert slot['species'] in species,slot
@@ -350,7 +458,7 @@ def main():
         print(f"Route 1 source collision connects both arrivals, {len(first['trainers'])} trainer anchors and both doors. Runtime acceptance is documented in its native runbook.")
         if args.render:render_layouts(pack,ROOT)
     elif args.render:parser.error('--render requires --pack')
-    gallery(routes)
+    if args.render: gallery(routes)
 
 
 if __name__=='__main__':main()

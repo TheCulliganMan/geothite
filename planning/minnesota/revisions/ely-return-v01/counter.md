@@ -21,7 +21,7 @@ uv run --offline --no-project --with cbor2 --with pillow python planning/minneso
 uv run --offline --no-project --with cbor2 --with pillow python planning/minnesota/revisions/ely-return-v01/check-halden.py "$parent" "$child"
 ```
 
-The native regression seeds a three-win run with a wounded CINDORE. It checks immediate acceptance, declining and healing 35 HP with one Super Potion, saving and continuing, and reaching the first battle command after both openings.
+The native regression seeds a three-win run with a wounded CINDORE. It checks immediate acceptance, declining and healing 35 HP with one Super Potion, saving and continuing, and reaching the first battle command after both openings. Both selected editions passed. The Intro LCD showed KNOTITAN at level 50 against CINDORE at level 45 with 65/100 HP on immediate acceptance and 100/100 HP after using the medicine. Both images showed the four commands.
 
 ```sh
 MN_BADGE_TRAILS_PACK="$child" MN_ELY_RETURN_FRAMES="$frames" cargo test --locked -p crystal-bevy --lib halden_readiness_ -- --ignored --test-threads=1

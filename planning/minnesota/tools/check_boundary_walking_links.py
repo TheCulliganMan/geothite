@@ -18,10 +18,10 @@ BADGES_AND_SIGNAL = [f'BADGE_{i}' for i in range(1, 9)] + [
 # Frozen native resolver contracts; offsets count 32px metatiles, coordinates
 # count 16px walking tiles. Existing internal zero-offset links are out of scope.
 LINKS = (
-    dict(route='MN_R12', a='MnR12C00R01', checkpoint='gunflint',
-         direction_a='west', direction_b='east', offset_a=-8, offset_b=8,
-         a_edge_core=[[0, 8], [0, 9]], b_edge_core=[[63, 24], [63, 25]],
-         script='MnBoundaryGunflintCheck', chunk=[0, 1], side='W',
+    dict(route='MN_R12', a='MnR12C00R00', checkpoint='gunflint',
+         direction_a='west', direction_b='east', offset_a=2, offset_b=-2,
+         a_edge_core=[[0, 28], [0, 29]], b_edge_core=[[63, 24], [63, 25]],
+         script='MnBoundaryGunflintCheck', chunk=[0, 0], side='W',
          inner=[[60, 24], [60, 25]], inward='LEFT', outward='RIGHT',
          guard_ids=['MN_BOUNDARY_GUNFLINT_GUARD_NORTH',
                     'MN_BOUNDARY_GUNFLINT_GUARD_SOUTH']),
@@ -239,7 +239,7 @@ def self_test(world, root=ROOT):
         ('huge offset', 'offset_a', 999999),
         ('nonreciprocal offset', 'offset_b', 5),
         ('wrong lane coordinate', 'a_edge_core', [[0, 10], [0, 11]]),
-        ('noninteger lane coordinate', 'a_edge_core', [[0.0, 8], [0, 9]]),
+        ('noninteger lane coordinate', 'a_edge_core', [[0.0, 28], [0, 29]]),
         ('wrong script', 'gate_script', 'NOT_A_NATIVE_SCRIPT'),
         ('missing badge', 'requires_flags', BADGES_AND_SIGNAL[1:]),
         ('duplicate requirement', 'requires_flags', BADGES_AND_SIGNAL + ['BADGE_1']),
