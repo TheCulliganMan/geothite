@@ -1,12 +1,15 @@
 //! Optional source-color and whole-sprite sampling-alignment experiment.
 //!
 //! Usage: trainer_portrait_palette SOURCE OUTPUT LIGHT_RGB555 ACCENT_RGB555
-//!        [--native PHASE_X PHASE_Y]
+//!        [--native PHASE_X PHASE_Y] [--chroma-weight WEIGHT]
 //! Native mode fits the whole source to 52x54 inside a 56x56 canvas, using one
 //! sampling phase for every pixel. It adds no outlines or region-specific edits.
 //! A phase of 0.5 samples the center of each footprint. Native mode also writes
 //! same-stem JSON rows and 2bpp graphics. Plain mode preserves source dimensions;
 //! both modes composite source transparency onto white through MinnesotaSheet.
+//! Chroma weight defaults to 1 (Delta E 76). Optional positive weights multiply
+//! both squared chroma differences, uniformly across the image; lightness keeps
+//! weight 1. This does not change source bounds, dimensions or sampling positions.
 //! Keep OUTPUT in an ignored review directory. The output must not already exist.
 #[allow(dead_code)]
 #[path = "../src/minnesota_pokemon_pixel_art.rs"]
@@ -20,15 +23,15 @@ use std::fs;
 use std::io::Write;
 use std::path::Path;
 
-use anyhow::{Context, Result, ensure};
+use anyhow::{Context, Result, bail, ensure};
 use minnesota_sprite_sheet::MinnesotaSheet;
 use serde::Serialize;
 
 fn main() -> Result<()> {
     let args: Vec<String> = std::env::args().skip(1).collect();
     ensure!(
-        args.len() == 4 || (args.len() == 7 && args[4] == "--native"),
-        "usage: trainer_portrait_palette SOURCE OUTPUT LIGHT_RGB555 ACCENT_RGB555 [--native PHASE_X PHASE_Y]"
+        args.len() >= 4,
+        "usage: trainer_portrait_palette SOURCE OUTPUT LIGHT_RGB555 ACCENT_RGB555 [--native PHASE_X PHASE_Y] [--chroma-weight WEIGHT]"
     );
     let light = args[2].parse::<u16>().context("invalid light RGB555 ink")?;
     let accent = args[3]
@@ -38,19 +41,51 @@ fn main() -> Result<()> {
         (1..32767).contains(&light) && (1..32767).contains(&accent) && light != accent,
         "light and accent must be distinct RGB555 inks other than black and white"
     );
+    let mut native_phase = None;
+    let mut chroma_weight = 1.0;
+    let mut supplied_chroma_weight = false;
+    let mut options = args[4..].iter();
+    while let Some(option) = options.next() {
+        match option.as_str() {
+            "--native" => {
+                ensure!(native_phase.is_none(), "--native must not be repeated");
+                native_phase = Some([
+                    options
+                        .next()
+                        .context("missing horizontal phase")?
+                        .parse::<f64>()
+                        .context("invalid horizontal sampling phase")?,
+                    options
+                        .next()
+                        .context("missing vertical phase")?
+                        .parse::<f64>()
+                        .context("invalid vertical sampling phase")?,
+                ]);
+            }
+            "--chroma-weight" => {
+                ensure!(
+                    !supplied_chroma_weight,
+                    "--chroma-weight must not be repeated"
+                );
+                chroma_weight = options
+                    .next()
+                    .context("missing chroma weight")?
+                    .parse::<f64>()
+                    .context("invalid chroma weight")?;
+                ensure!(
+                    chroma_weight.is_finite() && chroma_weight > 0.0,
+                    "chroma weight must be finite and positive"
+                );
+                supplied_chroma_weight = true;
+            }
+            _ => bail!("unknown option: {option}"),
+        }
+    }
     let source = MinnesotaSheet::from_png(&fs::read(&args[0]).context("read source PNG")?)?;
     let inks = [32767, light, accent, 0];
-    let palette = PortraitPalette::new(inks);
+    let palette = PortraitPalette::new(inks, chroma_weight);
     let output = Path::new(&args[1]);
-    if args.len() == 7 {
-        let phase = [
-            args[5]
-                .parse::<f64>()
-                .context("invalid horizontal sampling phase")?,
-            args[6]
-                .parse::<f64>()
-                .context("invalid vertical sampling phase")?,
-        ];
+    if let Some(phase) = native_phase {
         let native = sample_native(&source, &palette, inks, phase)?;
         let paths = [
             output.to_path_buf(),
@@ -78,7 +113,7 @@ fn main() -> Result<()> {
             &minnesota_pokemon_pixel_art::bitplanes(&native.indices, 56, 56),
         )?;
         println!(
-            "56x56 {:?} phase={phase:?} {}",
+            "56x56 {:?} phase={phase:?} chroma_weight={chroma_weight} {}",
             native.source_bounds,
             output.display()
         );
@@ -108,13 +143,18 @@ fn write_new(output: &Path, bytes: &[u8]) -> Result<()> {
 struct PortraitPalette {
     colors: Vec<[u8; 3]>,
     labs: Vec<[f64; 3]>,
+    chroma_weight: f64,
 }
 
 impl PortraitPalette {
-    fn new(inks: [u16; 4]) -> Self {
+    fn new(inks: [u16; 4], chroma_weight: f64) -> Self {
         let colors = minnesota_pokemon_pixel_art::colored(&[0, 1, 2, 3], inks);
         let labs = colors.iter().copied().map(srgb_to_lab).collect();
-        Self { colors, labs }
+        Self {
+            colors,
+            labs,
+            chroma_weight,
+        }
     }
 
     fn nearest(&self, pixel: [u8; 3]) -> [u8; 3] {
@@ -129,7 +169,15 @@ impl PortraitPalette {
             let squared_delta_e = lab
                 .iter()
                 .zip(candidate)
-                .map(|(value, target)| (value - target).powi(2))
+                .enumerate()
+                .map(|(channel, (value, target))| {
+                    let weight = if channel == 0 {
+                        1.0
+                    } else {
+                        self.chroma_weight
+                    };
+                    (value - target).powi(2) * weight
+                })
                 .sum::<f64>();
             if squared_delta_e < distance {
                 best = index;
@@ -147,6 +195,7 @@ struct NativePortrait {
     source_bounds: [usize; 4],
     fit_size: [usize; 2],
     phase: [f64; 2],
+    chroma_weight: f64,
     palette_rgb555: [u16; 4],
     rows: Vec<String>,
     #[serde(skip)]
@@ -226,6 +275,7 @@ fn sample_native(
         source_bounds: bounds,
         fit_size: [width, height],
         phase,
+        chroma_weight: palette.chroma_weight,
         palette_rgb555: inks,
         rows,
         indices,
@@ -293,7 +343,7 @@ mod tests {
 
     #[test]
     fn neutral_antialias_edges_do_not_acquire_the_moss_accent() {
-        let palette = PortraitPalette::new([32767, 25370, 8683, 0]);
+        let palette = PortraitPalette::new([32767, 25370, 8683, 0], 1.0);
         assert_eq!(palette.nearest([70, 70, 70]), palette.colors[3]);
         assert_eq!(palette.nearest([200, 200, 200]), palette.colors[1]);
         for ink in &palette.colors {
@@ -304,7 +354,7 @@ mod tests {
 
     #[test]
     fn normalization_preserves_dimensions_and_pixel_locations() {
-        let palette = PortraitPalette::new([32767, 25370, 8683, 0]);
+        let palette = PortraitPalette::new([32767, 25370, 8683, 0], 1.0);
         let input = [
             [255, 255, 255],
             [70, 70, 70],
@@ -329,7 +379,7 @@ mod tests {
     #[test]
     fn native_phase_applies_uniformly_without_adding_contours() {
         let inks = [32767, 25370, 8683, 0];
-        let palette = PortraitPalette::new(inks);
+        let palette = PortraitPalette::new(inks, 1.0);
         let mut input = vec![[255, 255, 255]; 208 * 216];
         input[0] = [0, 0, 0];
         input[208 * 216 - 1] = [0, 0, 0];
@@ -353,6 +403,39 @@ mod tests {
                 minnesota_pokemon_pixel_art::bitplanes(&native.indices, 56, 56).len(),
                 784
             );
+        }
+    }
+
+    #[test]
+    fn optional_chroma_weight_keeps_dark_neutral_edges_neutral() {
+        let inks = [32767, 25370, 8683, 0];
+        let original = PortraitPalette::new(inks, 1.0);
+        let weighted = PortraitPalette::new(inks, 4.0);
+        // Keep the original default's result reproducible, including this known
+        // antialias blend. Weighting chroma is an explicit authoring experiment.
+        assert_eq!(original.nearest([102, 92, 91]), original.colors[2]);
+        assert_eq!(weighted.nearest([102, 92, 91]), weighted.colors[3]);
+        assert_eq!(weighted.nearest([200, 200, 200]), weighted.colors[1]);
+        assert_eq!(weighted.nearest([90, 120, 65]), weighted.colors[2]);
+    }
+
+    #[test]
+    fn chroma_weight_preserves_every_exact_native_ink() {
+        for inks in [
+            [32767, 25370, 8683, 0],
+            [32767, 22399, 14885, 0],
+            [32767, 29562, 22952, 0],
+        ] {
+            for weight in [1.0, 4.0] {
+                let palette = PortraitPalette::new(inks, weight);
+                for color in &palette.colors {
+                    assert_eq!(
+                        palette.nearest(*color),
+                        *color,
+                        "weight {weight} must preserve native ink"
+                    );
+                }
+            }
         }
     }
 }

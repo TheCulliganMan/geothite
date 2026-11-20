@@ -7981,6 +7981,23 @@
     "selected": false,
     "deployed": false
   },
+  "trainer_portrait_full_body_revision": {
+    "kind": "battle_portrait_review",
+    "status": "full_body_candidate_native_reviewed",
+    "parent_revision": "fair_release_intro_revision",
+    "parent_pack": "content-packs/minnesota-fair-release-v01.crystalpack",
+    "parent_pack_sha256": "18003b91597173f1d98937a0f6cc2fa82cfd2c5b3612c9803cd5f615acad2a73",
+    "pack": "content-packs/minnesota-trainer-full-body-faces-v01.crystalpack",
+    "pack_sha256": "9ea0205637769923a1ef6c0934fb2e8d84207d23d0f4a0f915bdc0aeaa545f1c",
+    "content_identity": "fafa44765beeb4a515c13700b14f82c31317ba29a8ed3e053d8caaf3f0b1cc9d",
+    "source_file": "npcs/portrait-faces-v03/publication-all-v1.json",
+    "runbook": "npcs/portrait-faces-v03/README.md",
+    "portraits": 9,
+    "changed_battle_resources": 18,
+    "changed_maps": 0,
+    "selected": false,
+    "deployed": false
+  },
   "trainer_portrait_waist_up_revision": {
     "kind": "battle_portrait_review",
     "status": "rejected_visuals_wrong_waist_up_format",

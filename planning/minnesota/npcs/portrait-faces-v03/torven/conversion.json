@@ -1,0 +1,46 @@
+{
+  "name": "torven",
+  "method": "built-in imagegen full-body generation; existing Rust whole-source area-vote sampling with source-backed contours; no hand pixel edits",
+  "previous_source": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/03-torven/native-pixels-v3.json",
+  "source": "planning/minnesota/npcs/portrait-faces-v03/torven/native-pixels-v1.json",
+  "image_source": "planning/minnesota/npcs/portrait-faces-v03/torven/image-source-v1.png",
+  "image_prompt": "planning/minnesota/npcs/portrait-faces-v03/torven/image-prompt-v1.txt",
+  "authentic_references": [
+    "target/trainer-full-body-references/sailor-20x.png",
+    "target/trainer-full-body-references/hiker-20x.png"
+  ],
+  "source_sha256": "7f6734af7438d83bb4be1671528c4a767faeffb7fabfaa36eca2dd76b75aba00",
+  "native_sha256": "3587e801c53364a5eea6a4b7fceba1cf25bd7e092317abdbc54bedc043796b5c",
+  "palette_rgb555": [
+    32767,
+    22399,
+    3508,
+    0
+  ],
+  "sampling": "area_vote",
+  "minimum_black_samples": 32,
+  "minimum_white_samples": 16,
+  "exterior_contour": "source_backed",
+  "source_bounds": [
+    126,
+    18,
+    1098,
+    1231
+  ],
+  "crop": [
+    0,
+    0,
+    1254,
+    1254
+  ],
+  "native_fit_limit": [
+    52,
+    54
+  ],
+  "phase": null,
+  "machine_rows": "target/trainer-full-body/torven/area-study-v1/black32-white16/battle.candidate.json",
+  "native_review": "target/trainer-full-body/torven/area-study-v1/face-review.png",
+  "encoded_preview": "target/trainer-full-body/torven/encoded/gfx/trainers/mn_leader_torven.png",
+  "status": "candidate-native-reviewed-awaiting-independent-review-and-combined-gameplay",
+  "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/03-torven/controller-v1.json"
+}

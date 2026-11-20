@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "name": "saven",
+  "method": "built-in-imagegen-with-rust-global-phase-conversion",
+  "previous_source": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/06-saven/native-pixels-v3.json",
+  "source": "planning/minnesota/npcs/portrait-faces-v03/saven/native-pixels-v1.json",
+  "image_source": "planning/minnesota/npcs/portrait-faces-v03/saven/image-source-v1.png",
+  "prompt": "planning/minnesota/npcs/portrait-faces-v03/saven/image-prompt-v1.txt",
+  "authentic_references": [
+    "target/trainer-full-body-references/falkner-20x.png",
+    "target/trainer-full-body-references/cooltrainer_m-20x.png"
+  ],
+  "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/06-saven/controller-v1.json",
+  "sampling": "whole_source_phase_d65_lab",
+  "size": [
+    56,
+    56
+  ],
+  "source_bounds": [
+    252,
+    16,
+    1115,
+    1238
+  ],
+  "fit_size": [
+    38,
+    54
+  ],
+  "phase": [
+    0.5,
+    0.25
+  ],
+  "palette_rgb555": [
+    32767,
+    22399,
+    24038,
+    0
+  ],
+  "review": "Full-body source generated with authentic56px Crystal references. Chosen phase reviewed close-up for white/pupil eyes, distinct black nose and separate mouth. Complete adult silhouette, legs and feet. Palette and overworld frames unchanged. No manual pixel edits."
+}

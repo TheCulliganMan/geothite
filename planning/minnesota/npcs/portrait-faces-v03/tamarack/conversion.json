@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "name": "tamarack",
+  "method": "built-in-imagegen-with-rust-native-conversion",
+  "previous_source": "planning/minnesota/npcs/tamarack-ice/01-tamarack/native-pixels-v4.json",
+  "source": "planning/minnesota/npcs/portrait-faces-v03/tamarack/native-pixels-v1.json",
+  "image_source": "planning/minnesota/npcs/portrait-faces-v03/tamarack/image-source-v3.png",
+  "prompt": "planning/minnesota/npcs/portrait-faces-v03/tamarack/image-prompt-v3.txt",
+  "controller_fixture": null,
+  "machine_rows": "target/trainer-full-body/tamarack/v3/area-study/black32-white16/battle.candidate.json",
+  "review": "Full-body older woman, silver bun and field coat, notebook and specimen case. Native pupils, compact nose and separate mouth survive with a skin row between nose and mouth. Raw area sampling preserves hair and coat contours better than point sampling. No hand pixel edits. Original palette and all overworld frames preserved.",
+  "sampling": "area_vote",
+  "size": [
+    56,
+    56
+  ],
+  "source_bounds": [
+    327,
+    18,
+    974,
+    1247
+  ],
+  "palette_rgb555": [
+    32767,
+    25370,
+    8683,
+    0
+  ],
+  "minimum_black_samples": 32,
+  "minimum_white_samples": 16,
+  "crop": [
+    0,
+    0,
+    1254,
+    1254
+  ],
+  "native_fit_limit": [
+    52,
+    54
+  ],
+  "exterior_contour": "source_backed",
+  "source_sha256": "f2f4e7522ea7f5b03007fdca35789310ef30cac819c1264702ae788dfaa876d9",
+  "native_sha256": "9aeb35672a9eddc257659446662bb42cdd0b6cc74a7ba8d1a132abf68615a0e1"
+}

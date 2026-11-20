@@ -1,0 +1,51 @@
+{
+  "name": "avrin",
+  "method": "built-in imagegen full-body generation and imagegen-only corrections; existing Rust whole-source area-vote sampling with source-backed contours; no hand pixel edits",
+  "previous_source": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/04-avrin/native-pixels-v3.json",
+  "source": "planning/minnesota/npcs/portrait-faces-v03/avrin/native-pixels-v1.json",
+  "image_source": "planning/minnesota/npcs/portrait-faces-v03/avrin/image-source-v3.png",
+  "image_prompt": "planning/minnesota/npcs/portrait-faces-v03/avrin/image-prompt-v3.txt",
+  "image_prompt_history": [
+    "planning/minnesota/npcs/portrait-faces-v03/avrin/image-prompt-v1.txt",
+    "planning/minnesota/npcs/portrait-faces-v03/avrin/image-prompt-v2.txt",
+    "planning/minnesota/npcs/portrait-faces-v03/avrin/image-prompt-v3.txt"
+  ],
+  "authentic_references": [
+    "target/trainer-full-body-references/executive_f-20x.png",
+    "target/trainer-full-body-references/grunt_f-20x.png"
+  ],
+  "source_sha256": "180a8bfc5f14dcf7c9bd13b1f0c8be8dfd4730eeeff48c2ff90a294a2d165ab6",
+  "native_sha256": "43e817a772eca01211eb1dbe65fbc8b6c9ff64ad9a65f8b923701efb5e1681e8",
+  "palette_rgb555": [
+    32767,
+    12855,
+    24847,
+    0
+  ],
+  "sampling": "area_vote",
+  "minimum_black_samples": 24,
+  "minimum_white_samples": 16,
+  "exterior_contour": "source_backed",
+  "source_bounds": [
+    321,
+    57,
+    900,
+    1193
+  ],
+  "crop": [
+    0,
+    0,
+    1254,
+    1254
+  ],
+  "native_fit_limit": [
+    52,
+    54
+  ],
+  "phase": null,
+  "machine_rows": "target/trainer-full-body/avrin/area-study-v3/black24-white16/battle.candidate.json",
+  "native_review": "target/trainer-full-body/avrin/area-study-v3/face-review.png",
+  "encoded_preview": "target/trainer-full-body/avrin/encoded/gfx/trainers/mn_leader_avrin.png",
+  "status": "candidate-native-reviewed-awaiting-independent-review-and-combined-gameplay",
+  "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/04-avrin/controller-v1.json"
+}

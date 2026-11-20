@@ -6,14 +6,13 @@ proportions and poses. This entire set is retained only as rejected history.
 Mechanical passes and the previous internal visual review did not establish
 correct art direction. No regional source selection or active pack uses it.
 
-All eight Gym Leaders and Professor Tamarack now have image-generated waist-up
-portraits, converted to the native 56×56 format. The redesign focuses on adult
+This rejected set contains image-generated waist-up portraits for all eight
+Gym Leaders and Professor Tamarack, converted to native 56×56. It focused on adult
 head-to-shoulder proportions, visible pupils, distinct noses and readable mouths.
 The previous full-body set remains rejected history in `portrait-faces-v01`.
 
-This is a complete nine-character **local review candidate**, not user visual
-approval or a public deployment. The selected pack and regional asset-plan
-sources remain unchanged while this set is reviewed.
+This is rejected history, superseded by the full-body set in
+`portrait-faces-v03`. It was never selected or deployed.
 
 ## Sources and prompts
 
@@ -75,7 +74,7 @@ nine trainer PNGs and nine 2bpp banks. Palettes, overworld banks, maps, teams,
 AI, rewards, progression and unrelated resources remain unchanged. Tamarack's
 portrait remains bound to her opening; no professor battle or party was added.
 
-`world.json` records this candidate as `trainer_portrait_waist_up_revision`.
+`world.json` records the rejection as `trainer_portrait_waist_up_revision`.
 It is unselected and undeployed. Existing saves remain bound to their packs.
 
 ## Reproduce and run
@@ -101,5 +100,8 @@ Tamarack iteration; this expansion changes artwork/data, not Rust code.
 
 ## Verification status
 
-The exact combined-pack controller and production-client checks are in progress.
-Final results and evidence paths will be recorded here before delivery.
+The old combined pack passed all nine production controller checks, exact
+rendered-portrait comparisons, production MCP Start/movement/Save/resume, and
+independent byte-identical republication. Evidence remains under
+`target/trainer-portrait-all/`. Those mechanical passes do not validate the
+rejected waist-up format.

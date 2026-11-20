@@ -1,0 +1,46 @@
+{
+  "name": "varel",
+  "method": "built-in imagegen full-body generation and imagegen-only corrections; whole-source Rust D65 Lab palette conversion and global point sampling; no hand pixel edits",
+  "previous_source": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/02-varel/native-pixels-v2.json",
+  "source": "planning/minnesota/npcs/portrait-faces-v03/varel/native-pixels-v1.json",
+  "image_source": "planning/minnesota/npcs/portrait-faces-v03/varel/image-source-v4.png",
+  "image_prompt": "planning/minnesota/npcs/portrait-faces-v03/varel/image-prompt-v4.txt",
+  "image_prompt_history": [
+    "planning/minnesota/npcs/portrait-faces-v03/varel/image-prompt-v1.txt",
+    "planning/minnesota/npcs/portrait-faces-v03/varel/image-prompt-v2.txt",
+    "planning/minnesota/npcs/portrait-faces-v03/varel/image-prompt-v3.txt",
+    "planning/minnesota/npcs/portrait-faces-v03/varel/image-prompt-v4.txt"
+  ],
+  "authentic_references": [
+    "target/trainer-full-body-references/teacher-20x.png",
+    "target/trainer-full-body-references/whitney-20x.png"
+  ],
+  "source_sha256": "60ceed9dccc2e0023a3a6d12227ba07011095a970ded228356d2ebd50b9a6f0d",
+  "native_sha256": "123c5b3b1b6352c038d60e9fb7644079fa8a7dd510f05c1572c186548f040637",
+  "palette_rgb555": [
+    32767,
+    22399,
+    13733,
+    0
+  ],
+  "sampling": "whole_source_phase_d65_lab",
+  "source_bounds": [
+    254,
+    17,
+    1046,
+    1235
+  ],
+  "native_fit": [
+    35,
+    54
+  ],
+  "phase": [
+    0.25,
+    0.75
+  ],
+  "machine_rows": "target/trainer-full-body/varel/v4/phase-0.25-0.75.json",
+  "native_review": "target/trainer-full-body/varel/v4/face-review.png",
+  "encoded_preview": "target/trainer-full-body/varel/encoded/gfx/trainers/mn_leader_varel.png",
+  "status": "candidate-native-reviewed-awaiting-independent-review-and-combined-gameplay",
+  "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/02-varel/controller-v1.json"
+}
