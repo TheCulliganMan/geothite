@@ -165,7 +165,7 @@ pub(super) fn use_move(c: &mut VisibleShellController, field: PartyFieldMove) {
     press(c, GameButton::A);
 }
 
-fn itemfinder(c: &mut VisibleShellController, found: bool) {
+pub(super) fn scan_with_itemfinder(c: &mut VisibleShellController, found: bool) {
     use super::super::{FieldPackAction, FieldPackPocket, visible_selected_pack_item_actions};
     let bag = c.snapshot().expect("before detector").bag;
     press(c, GameButton::Start);
@@ -202,12 +202,39 @@ fn itemfinder(c: &mut VisibleShellController, found: bool) {
     }
     assert_eq!(c.shell.field_pack_pocket, Some(FieldPackPocket::KeyItems));
     let snapshot = c.snapshot().expect("key items");
+    let slot = snapshot
+        .bag
+        .key_items
+        .iter()
+        .position(|row| row.item_id == "ITEMFINDER")
+        .expect("carried detector");
+    for _ in 0..=snapshot.bag.key_items.len() {
+        let selected = c
+            .shell
+            .key_item_cursor
+            .as_ref()
+            .expect("key item cursor")
+            .option_index;
+        if selected == slot {
+            break;
+        }
+        press(
+            c,
+            if selected < slot {
+                GameButton::Down
+            } else {
+                GameButton::Up
+            },
+        );
+    }
     assert_eq!(
-        snapshot.bag.key_items.len(),
-        1,
-        "only the declared detector"
+        c.shell
+            .key_item_cursor
+            .as_ref()
+            .expect("selected key item")
+            .option_index,
+        slot
     );
-    assert_eq!(snapshot.bag.key_items[0].item_id, "ITEMFINDER");
     press(c, GameButton::A);
     let snapshot = c.snapshot().expect("detector actions");
     let target =
@@ -257,6 +284,9 @@ fn itemfinder(c: &mut VisibleShellController, found: bool) {
         snapshot.bag, bag,
         "detector neither consumes items nor awards the cache"
     );
+}
+
+pub(super) fn close_itemfinder(c: &mut VisibleShellController) {
     finish(c);
     for _ in 0..8 {
         if !super::super::has_visible_shell_direction_action(&mut c.shell) {
@@ -265,6 +295,24 @@ fn itemfinder(c: &mut VisibleShellController, found: bool) {
         press(c, GameButton::B);
     }
     panic!("detector did not return native movement");
+}
+
+fn itemfinder(c: &mut VisibleShellController, found: bool) {
+    scan_with_itemfinder(c, found);
+    close_itemfinder(c);
+}
+
+pub(super) fn clear_whirlpool(c: &mut VisibleShellController) {
+    use_move(c, PartyFieldMove::Whirlpool);
+    if c.snapshot()
+        .expect("Whirlpool confirmation")
+        .ui
+        .pending_yes_no
+        .is_some()
+    {
+        super::northstar_ice_lair::choice(c, true);
+    }
+    finish(c);
 }
 
 fn flash(c: &VisibleShellController) -> bool {
@@ -491,16 +539,7 @@ fn native_field_lake_teaches_whirlpool_collects_hidden_cache_and_returns() {
         .bag
         .quantity(&runtime.data().items["PP_UP"]);
     retain(&mut c, "native-field-lake-current-closed.crystalsave");
-    use_move(&mut c, PartyFieldMove::Whirlpool);
-    if c.snapshot()
-        .expect("Whirlpool confirmation")
-        .ui
-        .pending_yes_no
-        .is_some()
-    {
-        super::northstar_ice_lair::choice(&mut c, true);
-    }
-    finish(&mut c);
+    clear_whirlpool(&mut c);
     retain(&mut c, "native-field-lake-current-cleared.crystalsave");
     super::winona::travel(&mut c, GameButton::Right, "MnLeechLake", (60, 20));
     assert_eq!(

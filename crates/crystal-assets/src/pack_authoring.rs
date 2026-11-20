@@ -165,6 +165,8 @@ mod northstar_gym_walk_relays;
 mod northstar_gym_walk_north;
 mod northstar_gym_walk_pools;
 pub use northstar_gym_walk::revise_gym_walk;
+mod northstar_finder_lesson;
+pub use northstar_finder_lesson::revise_finder_lesson;
 mod northstar_ely_challenge;
 pub use northstar_ely_challenge::revise_ely_challenge;
 mod northstar_badge_battles;

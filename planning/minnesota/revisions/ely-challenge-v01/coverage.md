@@ -14,6 +14,21 @@ Two milestone descriptions assigned completion to the wrong place. MS12 now foll
 
 ## Remaining cases
 
-- Casey defeated all three prepared level 45–47 parties on all three seeds in fresh, isolated fights. Four of the 18 untrained runs and five of the nine Route 13 training runs reached Casey. All nine ended there. An earned preparation that wins the full run while retaining HP, PP, consumed items and levels across rooms remains unverified by these fixtures. [Battle results and policies](sequence.md)
+- On the original Ely lineup, Casey defeated all three prepared level 45–47 parties on all three seeds in isolated fights. Four of 18 untrained runs and five of nine Route 13 training runs reached Casey. All nine ended there. The subsequent battle audit covers paid medicine during fights and a first-registration party reconstructed from an earned campaign save. It identifies the lineup and supplies used for each result. [Original runs](sequence.md) · [Subsequent tactics and campaign evidence](tactics.md)
 - Reed's level 57–59 postgame fight and the eight five-member leader rematches have roster and invitation evidence. The regional fight matrix exercises the first challenges. The sole native rematch matchup it isolates is Norek's Rimeguard. The prepared-party results do not establish how often the postgame challengers can win those nine battles. [Postgame offers](../league-journey-v01/after-champion.md) · [Rematch teams](../badge-battles-v01/league.md)
-- The statewide hidden-item check proves local access and persistent receipt bindings. The earlier native TM test covers its 20 authored caches, and the southern Fen test exercises Itemfinder, a full pocket and Continue. A single current-pack evidence set for collection, a full-pocket retry and Continue at all 59 sites remains open. [TM cache test](../../../../crates/crystal-bevy/src/bevy_shell/tests/minnesota_tmhm.rs) · [Fen cache test](../../../../crates/crystal-assets/src/northstar_fen_cache_tests.rs)
+
+## Hidden-item collection and Continue
+
+The Ely Intro archive contains 59 native hidden-item events across 49 maps, with 48 ordinary items and 11 balls. Fifty-six search positions are on floor. Route 12's grotto Revive is searchable from the water at (28,15), and Route 20's seep cache from the water at (12,19). The two cave fixtures start on a dry tile in their own room, then use the native Surf occupancy check to place the rider at the surveyed search position. All 59 positions are clear of warps and coordinate triggers. Each reward has one background event at its target and no competing object. The access graph checks the paths from nearby entrances. Each native fixture starts separately with a full pocket and frees one slot through the inventory operation. [Access graph](../trail-discoveries-v01/check-clues.py) · [Native reward test](../../../../crates/crystal-bevy/src/bevy_shell/tests/ely_hidden_items.rs)
+
+At Leech Lake, the last search position lies in a whirlpool at (60,20). The fixture supplies a Reedraft with Surf and Whirlpool and seven badges. The player disperses the current through the Party menu, paddles to the buoy and searches with A. Before each save, the player paddles back to safe open water. Continue restores the current, which Reedraft must disperse again. Random water encounters are suppressed during those short paddles.
+
+The native test passed all 59 sites on each Finder Lesson edition, Intro (content ID `e4a7d70b987b`) and Field (`fe29eee156e0`). Across both editions it verified 118 full-pocket refusals, 118 successful retries, 118 spent-site searches and 236 Save/Continue cycles. It checked the entire bag and the individual receipt at each stage. The separate Winona test earned the Itemfinder, walked from the aide to the river, scanned before and after the pickup, and passed on both editions. [Intro pack receipt](../finder-lesson-v01/intro-build.json) · [Field pack receipt](../finder-lesson-v01/field-build.json) · [Winona aide test](../../../../crates/crystal-bevy/src/bevy_shell/tests/winona_itemfinder_aide.rs)
+
+```sh
+for edition in minnesota-intro minnesota; do
+  MN_BADGE_TRAILS_PACK="$PWD/content-packs/$edition-finder-lesson-v01.crystalpack" \
+    cargo test --locked -j1 -p crystal-bevy --lib ely_hidden_items_survive_full_pockets_and_continue \
+    -- --ignored --test-threads=1 --nocapture || exit 1
+done
+```

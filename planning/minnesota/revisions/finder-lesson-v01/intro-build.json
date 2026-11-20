@@ -1,0 +1,10 @@
+{
+  "parent_pack": "content-packs/minnesota-intro-ely-challenge-v01.crystalpack",
+  "parent_pack_sha256": "7b9a044805f735de7ecd6a538158c23a5e0992640574c50257e251d7b93c944f",
+  "output_pack": "content-packs/minnesota-intro-finder-lesson-v01.crystalpack",
+  "expected_pack_sha256": "d73850817376303d9cd94693c1670c35ae1b12a6e0106f354fa2cc5f77cb6e3d",
+  "builder": "pack_ely_challenge",
+  "arguments": [
+    "--finder-lesson"
+  ]
+}

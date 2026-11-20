@@ -70,6 +70,10 @@ fn sample(world: &mut World, output: Option<&Path>, frame: usize) -> (String, bo
 /// Read the terrain under the keel from the actual composited ground texture.
 /// In particular, a valid Surf square may have been painted solid brown.
 fn assert_fen_keel_on_water(world: &mut World) {
+    assert_keel_on_water(world, "johto");
+}
+
+fn assert_keel_on_water(world: &mut World, tileset: &str) {
     let mut player = world.query_filtered::<(&Sprite, &Transform), With<PlayerMarker>>();
     let (rider, transform) = player.single(world).expect("displayed Fen canoe");
     let size = rider.custom_size.expect("native rider size");
@@ -109,12 +113,12 @@ fn assert_fen_keel_on_water(world: &mut World) {
         .cache
         .iter()
         .find_map(|(key, art)| {
-            (key.tileset_id == "johto"
+            (key.tileset_id == tileset
                 && VisualWorldLighting::from_source_palette(&key.time_of_day)
                     == viewport.visual_lighting)
                 .then(|| art.transition_tiles[0x14].palette)
         })
-        .expect("current Fen open-water palette");
+        .expect("current open-water palette");
     assert!(
         palette.iter().any(|rgb| rgb == pixel),
         "keel is resting on {pixel:?} at canvas ({x},{y}), outside the native water palette {palette:?}"
@@ -198,6 +202,19 @@ fn fen_south_lake_walk_launch_paddle_and_land_in_native_frames() {
             hour: 21,
         },
     ]);
+}
+
+#[test]
+#[ignore = "requires the Winona riverside in CRYSTAL_CANOE_TEST_PACK"]
+fn winona_walk_over_the_riverside_ball_launch_and_land() {
+    check_landings(&[Landing {
+        name: "winona-riverside-fir",
+        map: "MnWinona",
+        start: (23, 8),
+        outward: Direction::Right,
+        female: false,
+        hour: 12,
+    }]);
 }
 
 fn check_landings(sites: &[Landing]) {
@@ -288,8 +305,9 @@ fn check_landings(sites: &[Landing]) {
                     )
                 };
                 let (art, action) = sample(app.world_mut(), output.as_deref(), frame);
-                if site.map == "MnLayeredFen" && art == rider {
-                    assert_fen_keel_on_water(app.world_mut());
+                if art == rider && matches!(site.map, "MnLayeredFen" | "MnWinona") {
+                    let tileset = &runtime.data().maps[site.map].attributes.tileset_name;
+                    assert_keel_on_water(app.world_mut(), tileset);
                 }
                 walk_action |= art == walker && action;
                 paddle_action |= art == rider && action;

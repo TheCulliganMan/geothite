@@ -3647,23 +3647,27 @@
         ],
         "MnRewardDexClaim1Text": [
           [
-            "AIDE: Twenty-five.",
+            "AIDE: Twenty-five!",
             "Take my spare"
           ],
           [
-            "ITEMFINDER. Try it",
-            "outdoors. If you"
+            "ITEMFINDER."
           ],
           [
-            "use it a lot,",
-            "register it to"
+            "It beeped in a",
+            "cave once. I found"
           ],
           [
-            "SELECT so you can",
-            "find it without"
+            "a BALL by a rock",
+            "I'd passed twice."
           ],
           [
-            "opening your bag."
+            "Face the spot and",
+            "press A to search."
+          ],
+          [
+            "Register it to",
+            "SELECT for later."
           ]
         ],
         "MnRewardDexClaim2Text": [
@@ -3914,6 +3918,33 @@
           [
             "one raises a",
             "partner a level."
+          ]
+        ],
+        "MnRewardFinderBankText": [
+          [
+            "Want to try it?",
+            "East of the clinic"
+          ],
+          [
+            "a pair of firs",
+            "grows by the bank."
+          ],
+          [
+            "Check the grass",
+            "under the one"
+          ],
+          [
+            "nearest the water."
+          ]
+        ],
+        "MnRewardAideFullText": [
+          [
+            "AIDE: Out of room?",
+            "I'll hang on to"
+          ],
+          [
+            "your reward. Come",
+            "back for it."
           ]
         ]
       },

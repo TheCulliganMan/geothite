@@ -1,5 +1,10 @@
 //! Explicit local fixtures; purchases, discoveries and Continue use production input.
 
+#[path = "ely_hidden_items.rs"]
+mod ely_hidden_items;
+#[path = "winona_itemfinder_aide.rs"]
+mod winona_itemfinder_aide;
+
 use std::path::PathBuf;
 use std::sync::OnceLock;
 

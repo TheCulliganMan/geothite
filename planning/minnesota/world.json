@@ -7964,7 +7964,7 @@
     "status": "Accepted current-parent terrain revision: source/native pixels, strict whole-pack preservation, directional grass/ledge proof, actual2D review, native encounters/trainerPP/resources/Continue and stdio pass. CurrentR12 work preserved.",
     "scope_limit": "Sequential Minnesota grass pass remains open beyond R01-R03. Explicit local fixtures do not prove an earned statewide campaign."
   },
-  "active_local_review_revision": "ely_challenge_field_revision",
+  "active_local_review_revision": "finder_lesson_field_revision",
   "script_command_repair_revision": {
     "kind": "missing_minnesota_map_command_records",
     "parent_revision": "field_hm_habitats_cyclists_revision",
@@ -13162,5 +13162,19 @@
     "map_count": 743,
     "changed_maps_from_parent": 2,
     "runbook": "revisions/ely-challenge-v01/README.md"
+  },
+  "finder_lesson_field_revision": {
+    "kind": "campaign_review",
+    "parent_revision": "ely_challenge_field_revision",
+    "parent_pack": "content-packs/minnesota-ely-challenge-v01.crystalpack",
+    "parent_pack_sha256": "41a4280cc74ec3c3a88f9a3a369d55be63c1d14cf3efc703aa42e6eb627a3ce4",
+    "pack": "content-packs/minnesota-finder-lesson-v01.crystalpack",
+    "pack_sha256": "d3f17a49a94e6a7cffad51e35b9f33dac70b7ed3efe3dff6d7fc59a10ce403b0",
+    "build_recipe": "planning/minnesota/revisions/finder-lesson-v01/field-build.json",
+    "build_recipe_sha256": "98c089a0073e16e84c6dd88eb91e0e88cc234a0ac0ecda42ed90cd5603709d8e",
+    "content_identity": "fe29eee156e0fe1a2985075c1bf7258eb0c5ae98a0acfed7815e6a26677e878b",
+    "map_count": 743,
+    "changed_maps_from_parent": 2,
+    "runbook": "revisions/finder-lesson-v01/README.md"
   }
 }
