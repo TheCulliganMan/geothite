@@ -1,6 +1,6 @@
 //! Explicit release compatibility and non-destructive slot selection.
 
-use std::collections::BTreeSet;
+use std::collections::{BTreeMap, BTreeSet};
 use std::path::{Path, PathBuf};
 
 use anyhow::{Context, Result, ensure};
@@ -14,6 +14,9 @@ use crate::CrystalRuntime;
 use crate::cave_save_migration::{self, CaveReentry};
 use crate::gym_save_migration::{self, GymReentry};
 use crate::iron_save_migration::{self, IronRelocations};
+
+#[path = "fair_save_migration.rs"]
+mod fair_save_migration;
 
 #[path = "road_trainer_save_migration.rs"]
 mod road_trainer_save_migration;
@@ -47,6 +50,8 @@ struct Compatibility {
     iron_relocations: Option<IronRelocations>,
     layout_reentry: Option<Vec<String>>,
     #[serde(skip)]
+    fair_layouts: BTreeMap<String, fair_save_migration::MapChange>,
+    #[serde(skip)]
     regional_parents: Vec<String>,
     #[serde(skip)]
     unchanged_checkpoint_parents: Vec<String>,
@@ -69,6 +74,9 @@ fn parse_compatibility(bytes: &[u8], target_id: &str) -> Result<Compatibility> {
         schema_version: u8,
     }
     let header: Header = serde_json::from_slice(bytes).context("save compatibility version")?;
+    if header.schema_version == 9 {
+        return fair_save_migration::parse(bytes, target_id);
+    }
     if matches!(header.schema_version, 5..=8) {
         return parse_regional_compatibility(bytes, target_id, header.schema_version);
     }
@@ -367,8 +375,9 @@ pub fn prepare_runtime_save_slot(
                 &identity,
                 &source.content_hash,
             )?;
-            let upgraded =
+            let mut upgraded =
                 upgrade_source_checkpoint(saved.into_state(), &metadata, source, runtime.data())?;
+            fair_save_migration::reconcile(&mut upgraded, runtime.data(), &metadata.fair_layouts)?;
             runtime.validate_save_state_for_runtime_pack(&upgraded)?;
             Ok(upgraded)
         }) else {

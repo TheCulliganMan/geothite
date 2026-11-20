@@ -128,6 +128,7 @@ mod tests {
             cave_reentry: None,
             iron_relocations: None,
             layout_reentry: None,
+            fair_layouts: Default::default(),
             regional_parents: vec!["direct-story".into()],
             unchanged_checkpoint_parents: vec!["direct-regional".into()],
         };
