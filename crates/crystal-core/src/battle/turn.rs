@@ -8103,9 +8103,20 @@ fn apply_held_hp_healing(
     }
     let hp_before = pokemon.hp;
     let amount = item.parameter as u16;
-    let hp_after = hp_before.saturating_add(amount).min(pokemon.max_hp);
     let pokemon = state.pokemon_mut(side);
-    pokemon.hp = hp_after;
+    let hp_after = if item.confusion_inflict_turns.is_some() {
+        // Held servings retain the same side effect and validation as Pack use.
+        apply_active_battle_item_effect(pokemon, item, true)
+            .map_err(|error| BattleTurnError::BattleItem {
+                side,
+                item_id: item_id.clone(),
+                error: format!("{error:?}"),
+            })?
+            .hp_after
+    } else {
+        pokemon.hp = hp_before.saturating_add(amount).min(pokemon.max_hp);
+        pokemon.hp
+    };
     pokemon.item = None;
     events.push(BattleEvent::HeldItemHpHealed {
         side,

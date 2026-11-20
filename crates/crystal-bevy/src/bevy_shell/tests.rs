@@ -402,6 +402,8 @@ mod grand_rapids;
 mod grand_rapids_depot_quay;
 #[path = "tests/haulage_rock.rs"]
 mod haulage_rock;
+#[path = "tests/held_picnic.rs"]
+mod held_picnic;
 #[path = "tests/interior_layouts.rs"]
 mod interior_layouts;
 #[path = "tests/interior_life.rs"]

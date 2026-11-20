@@ -1,0 +1,12 @@
+{
+  "parent_pack": "content-packs/minnesota-lakeside-stops-v01.crystalpack",
+  "parent_pack_sha256": "47d0791b626f062206549d4b0679ca5ce2912ff4e5e242727b2ea625eecefe5a",
+  "parent_content_id": "14c2b902b7bfe0173bbdbea1f0baa6eff97419f30368730498869b56225adedb",
+  "output_pack": "content-packs/minnesota-fair-table-v01.crystalpack",
+  "expected_pack_sha256": "c1ab0d2a65aedbdc634a695239abb336a0ef91df3b2b6c8ec8a1f6960301b51b",
+  "expected_content_id": "c7b7cde4020895fd8062c50b67ab9be3e984be5b34cb980e77c1ca4eeeb62abf",
+  "builder": "pack_ely_challenge",
+  "arguments": [
+    "--fair-table"
+  ]
+}

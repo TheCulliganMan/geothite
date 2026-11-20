@@ -23620,6 +23620,49 @@ fn held_hp_berry_requires_strictly_less_than_half_hp() {
 }
 
 #[test]
+fn held_healing_food_preserves_its_confusion_effect_and_is_consumed_only_once() {
+    let food = "REGIONAL_DRINK";
+    let mut drink = battle_item(food, 100, true);
+    drink.held_effect = "HELD_BERRY".into();
+    drink.confusion_inflict_turns = Some(4);
+    let items = BTreeMap::from([(food.to_owned(), drink)]);
+    for side in [BattleSide::Player, BattleSide::Enemy] {
+        let mut state = battle_state(
+            pokemon("HOOTHOOT", 50, pokemon_type("NORMAL"), "TACKLE"),
+            pokemon("RATTATA", 40, pokemon_type("NORMAL"), "TACKLE"),
+            1,
+        );
+        let holder = state.pokemon_mut(side);
+        holder.max_hp = 150;
+        holder.hp = 75;
+        holder.item = Some(food.into());
+        holder.confusion_turns = 1;
+        let mut events = Vec::new();
+        apply_held_hp_healing(&mut state, side, &items, &mut events).expect("exactly half");
+        assert_eq!(state.pokemon(side).item.as_deref(), Some(food));
+        assert_eq!(state.pokemon(side).confusion_turns, 1);
+        state.pokemon_mut(side).hp = 74;
+        apply_held_hp_healing(&mut state, side, &items, &mut events).expect("held recovery");
+        assert_eq!(state.pokemon(side).hp, 150);
+        assert_eq!(state.pokemon(side).confusion_turns, 4);
+        assert!(state.pokemon(side).item.is_none());
+        state.pokemon_mut(side).hp = 20;
+        apply_held_hp_healing(&mut state, side, &items, &mut events).expect("already consumed");
+        assert_eq!(state.pokemon(side).hp, 20);
+        assert_eq!(
+            events,
+            [BattleEvent::HeldItemHpHealed {
+                side,
+                item_id: food.into(),
+                hp_before: 74,
+                hp_after: 150,
+                amount: 76,
+            }]
+        );
+    }
+}
+
+#[test]
 fn focus_band_uses_its_exact_asm_held_parameter() {
     let mut player = pokemon("HOOTHOOT", 50, pokemon_type("NORMAL"), "TACKLE");
     player.item = Some("FOCUS_BAND".to_string());

@@ -1,6 +1,6 @@
 # Minnesota playtest task list
 
-User-reported issues from live play on November 1, 2026. All tasks are open.
+User-reported issues from live play on November 1, 2026. Checked entries have fix records below.
 Keep these numbers stable when adding reports or recording fixes.
 
 - [ ] **1. Rewrite unnatural, repetitive dialogue.** Reduce exposition across the cast. Give characters distinct, concise lines with a purpose. Remove duplicated NPC/sign messages, including repeated “we keep records” language.
@@ -12,7 +12,7 @@ Keep these numbers stable when adding reports or recording fixes.
 - [ ] **7. Fix trainer-to-battle music transitions.** Trainer encounter music begins but is not replaced by battle music when the battle starts.
 - [ ] **8. Correct ordinary trainer behavior.** Increase sight distance, make trainers turn more frequently, and have ordinary trainers initiate battles without asking the player whether to battle.
 - [ ] **9. Contain battle presentation.** Rain effects and overworld sprites remain visible outside the main battle screen. Hide overworld presentation while the battle interface owns the screen.
-- [ ] **10. Correct Mart arrival positions.** Entering a Mart places the player several tiles too far inside. Align each affected entrance warp with its intended arrival tile.
+- [x] **10. Correct Mart arrival positions.** Entering a Mart places the player several tiles too far inside. Align each affected entrance warp with its intended arrival tile.
 - [ ] **11. Stop region-transition and prompt flicker.** Region transitions and their accompanying prompts visibly flicker.
 - [ ] **12. Remove HM moves from generated wild Pokémon.** Wild Pokémon should not arrive with HM moves that leave the player stuck with an unwanted move. Review wild moveset generation and affected regional encounters.
 - [ ] **13. Review the early Winona–Rochester cave.** The route appears to force the player through a confusing, poorly laid-out cave that seems to require Flash too early. Confirm whether this cave belongs on the route, remove unintended progression blockers, and make the intended passage understandable and traversable.
@@ -43,6 +43,7 @@ Keep these numbers stable when adding reports or recording fixes.
 When resolving a task, record the source commit, deployed release when applicable,
 and the evidence that addresses the reported behavior before checking it off.
 
+- **Task 10, Lakeside Stops.** Source `6c606744`. Corrected 19 storefront entrances in Duluth, Minneapolis and St. Paul. Each arrival lands one step inside the exit carpets. Focused controller tests enter from the public street and use each carpet to return to the same doorstep in both editions. [Build and verification](revisions/lakeside-stops-v01/README.md)
 - **Task 1 re-opened (November 1 review):** The selected `minnesota-reviewed-maps-v11.crystalpack` and unselected `minnesota-story-review-fixes-v09.crystalpack` both still contain `MN_W_RIVER_WATCHERText` ("We keep a record.") and `MnWStationSignText` ("Keep original records."). Both also contain `MnRCCitySignText` ("Please keep a copy."), despite the different Rochester sign in the town source. Pack text bodies were inspected; those branches have not yet been replayed or visually reviewed. Task 27 separately tracks the Rochester and fishing-house reports.
 - **Task 1 follow-up, source only:** `minnesota_ambient_dialogue` revises the Winona river watcher, Winona station sign and Grand Rapids river watcher in a fresh review pack. It does not select or publish a pack. The builder and exact-page controller checks must pass against the resulting pack before these changes can be counted as installed or report 1 closed.
 - **Existing story candidate replay:** `check_dialogue_overhaul_mcp.py` passed against `target/debug/geothite` and the unselected `minnesota-story-review-fixes-v09.crystalpack`: exact New Game Mom and Tamarack pages, Pokégear, starter refusal, Start, and empty stderr. This opening replay does not verify the ambient revision or the rest of the campaign.

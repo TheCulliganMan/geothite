@@ -1482,10 +1482,18 @@ fn minimal_runtime_data() -> GameDataSet {
 }
 
 fn populate_minimal_runtime_presence_catalogs(data: &mut GameDataSet) {
+    // HandleNewMap clears the eight bits in the first event-flag byte.
+    for bit in 0..8 {
+        data.story_event_script_constants.global.insert(
+            format!("EVENT_TEMPORARY_UNTIL_MAP_RELOAD_{}", bit + 1),
+            bit,
+        );
+    }
     for (constant, value) in [
         ("ENGINE_STRENGTH_ACTIVE", 24),
         ("ENGINE_ALWAYS_ON_BIKE", 25),
         ("ENGINE_DOWNHILL", 26),
+        ("ENGINE_ZEPHYRBADGE", 27),
         ("ENGINE_BUG_CONTEST_TIMER", 17),
         ("ENGINE_SAFARI_ZONE", 18),
         ("STATUSFLAGS_FLASH", 2),
@@ -8537,6 +8545,7 @@ fn runtime_game_shell_ticks_snapshots_and_saves_against_exact_pack_impl() {
     shell.session_mut().state.money = 3000;
     shell.session_mut().state.coins = 12;
     shell.session_mut().state.badges.johto[0] = true;
+    crystal_core::systems::script_flags::reconcile_saved_badge_flags(&mut shell.session_mut().state);
     shell
         .session_mut()
         .state

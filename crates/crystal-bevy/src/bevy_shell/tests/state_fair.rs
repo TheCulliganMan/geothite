@@ -3,6 +3,8 @@
 mod crowd;
 #[path = "state_fair_food.rs"]
 mod food;
+#[path = "state_fair_food_vendors.rs"]
+mod food_vendors;
 #[path = "state_fair_rooms.rs"]
 mod rooms;
 #[path = "fair_food_surprise.rs"]
@@ -454,6 +456,26 @@ fn close_shop(c: &mut VisibleShellController) {
 }
 fn buy(c: &mut VisibleShellController, r: &CrystalRuntime, approach: Point, id: &str) {
     counter(c, r, approach);
+    buy_units(c, r, id, 1);
+}
+fn buy_units(c: &mut VisibleShellController, r: &CrystalRuntime, id: &str, units: u16) {
+    let money = c.shell.shell.session().state().money;
+    let count = quantity(c, r, id);
+    order_units(c, r, id, units);
+    assert_eq!(
+        c.shell.shell.session().state().money,
+        money,
+        "unconfirmed purchase costs nothing"
+    );
+    press(c, GameButton::A);
+    assert_eq!(
+        c.shell.shell.session().state().money,
+        money - u32::from(r.data().items[id].price) * u32::from(units)
+    );
+    assert_eq!(quantity(c, r, id), count + units);
+    close_shop(c);
+}
+fn order_units(c: &mut VisibleShellController, r: &CrystalRuntime, id: &str, units: u16) {
     for _ in 0..64 {
         if c.shell.shop_top_cursor.is_some()
             && c.shell.shop_welcome_seen
@@ -472,8 +494,6 @@ fn buy(c: &mut VisibleShellController, r: &CrystalRuntime, approach: Point, id: 
         .iter()
         .position(|item| item == id)
         .expect("vendor stocks food");
-    let money = c.shell.shell.session().state().money;
-    let count = quantity(c, r, id);
     press(c, GameButton::A);
     cursor(c, target, |c| {
         c.shell
@@ -483,23 +503,13 @@ fn buy(c: &mut VisibleShellController, r: &CrystalRuntime, approach: Point, id: 
             .option_index
     });
     press(c, GameButton::A);
-    assert_eq!(
-        c.shell.shop_quantity.as_ref().expect("quantity").item_id,
-        id
-    );
+    let quote = c.shell.shop_quantity.as_ref().expect("quantity and price");
+    assert_eq!(quote.item_id, id);
+    assert_eq!(quote.unit_price, r.data().items[id].price);
+    for _ in 1..units {
+        press(c, GameButton::Up);
+    }
     press(c, GameButton::A);
-    assert_eq!(
-        c.shell.shell.session().state().money,
-        money,
-        "unconfirmed purchase costs nothing"
-    );
-    press(c, GameButton::A);
-    assert_eq!(
-        c.shell.shell.session().state().money,
-        money - u32::from(r.data().items[id].price)
-    );
-    assert_eq!(quantity(c, r, id), count + 1);
-    close_shop(c);
 }
 fn cursor(
     c: &mut VisibleShellController,
@@ -525,6 +535,15 @@ fn cursor(
 fn eat(c: &mut VisibleShellController, r: &CrystalRuntime, id: &str, healing: u16) {
     let before = c.snapshot().expect("before food").party.slots[0].pokemon.hp;
     let carried = quantity(c, r, id);
+    target_food(c, id, FieldPackAction::Use);
+    assert_eq!(
+        c.snapshot().expect("food effect").party.slots[0].pokemon.hp,
+        before + healing
+    );
+    assert_eq!(quantity(c, r, id), carried - 1, "food is consumed");
+    close_food_pack(c);
+}
+fn target_food(c: &mut VisibleShellController, id: &str, action: FieldPackAction) {
     press(c, GameButton::Start);
     let s = c.snapshot().expect("Start");
     let target = visible_start_menu_options(&c.shell, &s)
@@ -560,8 +579,8 @@ fn eat(c: &mut VisibleShellController, r: &CrystalRuntime, id: &str, healing: u1
     let target = visible_selected_pack_item_actions(&s, &c.shell, &FieldPackPocket::Items, false)
         .expect("native actions")
         .iter()
-        .position(|a| *a == FieldPackAction::Use)
-        .expect("USE");
+        .position(|a| *a == action)
+        .expect("purchased food action");
     cursor(c, target, |c| {
         c.shell
             .field_pack_action_cursor
@@ -573,11 +592,8 @@ fn eat(c: &mut VisibleShellController, r: &CrystalRuntime, id: &str, healing: u1
     cursor(c, 0, |c| c.shell.party_cursor);
     c.wait_frames(120).expect("target presentation");
     press(c, GameButton::A);
-    assert_eq!(
-        c.snapshot().expect("food effect").party.slots[0].pokemon.hp,
-        before + healing
-    );
-    assert_eq!(quantity(c, r, id), carried - 1, "food is consumed");
+}
+fn close_food_pack(c: &mut VisibleShellController) {
     for _ in 0..64 {
         if c.shell.field_notice.is_some()
             || c.snapshot().expect("notice").ui.pending_text_wait.is_some()

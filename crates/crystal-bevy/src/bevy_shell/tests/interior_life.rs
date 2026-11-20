@@ -1,6 +1,8 @@
 //! Local placement/party are fixtures; conversations, errands and care use input.
 #[path = "capitol_river_chart.rs"]
 mod capitol_river_chart;
+#[path = "food_neighbors.rs"]
+mod food_neighbors;
 #[path = "glacier_line_controller.rs"]
 mod glacier_line;
 #[path = "mill_inn_rest.rs"]

@@ -69830,5 +69830,152 @@
         "in under our feet."
       ]
     ]
+  },
+  "fair_table_food_dialogue": {
+    "MnBrainerdMart": {
+      "MnFairTableMartLunchText": [
+        [
+          "Last time I bought",
+          "ULTRA BALLS and"
+        ],
+        [
+          "forgot lunch. We",
+          "split one apple."
+        ],
+        [
+          "Today I packed two",
+          "sandwiches. My"
+        ],
+        [
+          "partner's already",
+          "found hers."
+        ]
+      ]
+    },
+    "MnMinneapolisBridgeHome": {
+      "MnFairTableBridgeWalkText": [
+        [
+          "Take the middle",
+          "bridge for the GYM"
+        ],
+        [
+          "road. Dad used to",
+          "stop on the bridge"
+        ],
+        [
+          "and wave at boats.",
+          "I used to hide."
+        ],
+        [
+          "Somebody waved at",
+          "me this morning."
+        ],
+        [
+          "I waved back."
+        ]
+      ]
+    },
+    "MnDuluthHillsideHostel1F": {
+      "MnHostelButterRollOfferText": [
+        [
+          "A WINONA guest",
+          "taught me to bake."
+        ],
+        [
+          "My first batch had",
+          "to lean on the pan"
+        ],
+        [
+          "to stay up. Want a",
+          "warm butter roll?"
+        ]
+      ],
+      "MnHostelButterRollFullText": [
+        [
+          "Your bag's full.",
+          "I'll wrap one up."
+        ],
+        [
+          "Come back for it."
+        ]
+      ],
+      "MnHostelButterRollLaterText": [
+        [
+          "I'll keep one",
+          "in the cloth."
+        ]
+      ],
+      "MnHostelButterRollRepeatText": [
+        [
+          "I turned the pan",
+          "around this time."
+        ],
+        [
+          "Now they lean the",
+          "other way."
+        ]
+      ]
+    },
+    "MnStateFairgrounds": {
+      "MnFairPavilionSignText": [
+        [
+          "FOOD PAVILION"
+        ],
+        [
+          "Give your partner",
+          "a snack to hold."
+        ],
+        [
+          "Below half HP in",
+          "battle, it eats."
+        ],
+        [
+          "Milk or lemonade?",
+          "Use the PACK."
+        ],
+        [
+          "Look for DOUGHLIN,",
+          "CRUMCONE and"
+        ],
+        [
+          "PAILBARON in the",
+          "grass out back."
+        ]
+      ],
+      "MnFairTwoBeersText": [
+        [
+          "Fair beer heals",
+          "100 HP."
+        ],
+        [
+          "It also confuses",
+          "for four turns."
+        ],
+        [
+          "Root beer? 60 HP,",
+          "no confusion."
+        ]
+      ]
+    },
+    "MnNorthShorePieShop": {
+      "MN_SHORE_PIE_GUESTText": [
+        [
+          "One slice for me,",
+          "one for KEYPOUT."
+        ],
+        [
+          "He saves his for",
+          "a tough battle."
+        ],
+        [
+          "I'm saving mine",
+          "for my brother."
+        ],
+        [
+          "...Better make",
+          "that three."
+        ]
+      ]
+    }
   }
 }

@@ -1989,19 +1989,20 @@ fn stage_visible_battle_messages(
             }
             BattleEvent::HeldItemHpHealed { side, item_id, .. } => {
                 let message = format!(
-                    "{}\nrecovered with\n{}.",
+                    "{} healed\nwith {}!",
                     name(*side),
                     item_display_name(snapshot, item_id)
                 );
-                let uses_recovery_animation = snapshot
-                    .items
-                    .iter()
-                    .find(|item| item.item_id == *item_id)
-                    .is_some_and(|item| item.held_effect != "HELD_LEFTOVERS");
-                if uses_recovery_animation {
+                let item = snapshot.items.iter().find(|item| item.item_id == *item_id);
+                if item.is_some_and(|item| item.held_effect != "HELD_LEFTOVERS") {
                     queue_visible_item_recovery_animation(runtime_shell, snapshot, &message, *side);
                 }
-                Some(message)
+                if item.is_some_and(|item| item.confusion_inflict_turns.is_some()) {
+                    runtime_shell.battle_messages.push_back(message);
+                    Some(format!("{}\nbecame confused!", name(*side)))
+                } else {
+                    Some(message)
+                }
             }
             BattleEvent::HeldItemPpRestored { side, item_id, .. } => {
                 let message = format!(
