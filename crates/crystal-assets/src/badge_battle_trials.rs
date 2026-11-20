@@ -16,11 +16,12 @@ use std::convert::Infallible;
 
 use crystal_core::battle::start::{TrainerBattleStartStatus, switch_active_battle_party_index};
 use crystal_core::battle::turn::{
-    BattleAction, BattleCombatState, BattleSide, active_battle_combat_state,
+    BattleAction, BattleCombatState, BattleEvent, BattleSide, active_battle_combat_state,
 };
 use crystal_core::models::Pokemon;
 use crystal_core::random::DividerSource;
 use crystal_core::state::{GameState, OverworldMemory};
+use crystal_core::systems::item_use::ItemUseContext;
 use crystal_core::systems::script_flags::{BADGE_ENGINE_FLAGS, apply_script_flag_mutation};
 use crystal_core::world::map::{Direction, TilePosition};
 use crystal_core::world::movement::MovementMode;
@@ -85,7 +86,7 @@ fn challenge_with_party(
     trainer_id: &str,
     party: Vec<Pokemon>,
     seed: u32,
-    choose: impl FnMut(&GameDataSet, &BattleCombatState) -> BattleAction,
+    mut choose: impl FnMut(&GameDataSet, &BattleCombatState) -> BattleAction,
 ) -> Finish {
     let mut state = trial_state(data, stage, party);
     challenge_state(
@@ -93,8 +94,9 @@ fn challenge_with_party(
         &mut state,
         trainer_id,
         &mut TrialDivider(seed),
-        choose,
+        |data, _, combat| choose(data, combat),
         None,
+        false,
     )
 }
 
@@ -142,8 +144,9 @@ fn challenge_state(
     state: &mut GameState,
     trainer_id: &str,
     divider: &mut TrialDivider,
-    mut choose: impl FnMut(&GameDataSet, &BattleCombatState) -> BattleAction,
+    mut choose: impl FnMut(&GameDataSet, &GameState, &BattleCombatState) -> BattleAction,
     replacement: Option<fn(&GameDataSet, &BattleCombatState) -> usize>,
+    use_shift: bool,
 ) -> Finish {
     let (room, entry) = data
         .maps
@@ -176,7 +179,25 @@ fn challenge_state(
     let mut used = BTreeSet::new();
     for turns in 1..=160 {
         let combat = active_battle_combat_state(state).expect("live fight");
-        let choice = choose(data, &combat);
+        let choice = choose(data, state, &combat);
+        // The live ResolveActiveBattleTurn mutation spends the Bag item before
+        // the ordinary battle engine applies its effect and the opposing action.
+        let item_used = if let BattleAction::PartyItem {
+            item_id,
+            party_index,
+            ..
+        } = &choice
+        {
+            let before = state.bag.quantity(&data.items[item_id]);
+            let receipt = data
+                .use_bag_item(state, item_id, ItemUseContext::Battle)
+                .expect("spend a purchased item");
+            assert!(receipt.consumed && before > 0);
+            assert_eq!(state.bag.quantity(&data.items[item_id]), before - 1);
+            Some((item_id.clone(), *party_index))
+        } else {
+            None
+        };
         let selected = Cell::new(None);
         let turn = data
             .resolve_active_battle_turn_with_enemy_ai_actions_with_divider(
@@ -211,6 +232,10 @@ fn challenge_state(
                 },
             )
             .unwrap_or_else(|e| panic!("{trainer_id}, turn {turns}: {e:#}"));
+        if let Some((item, slot)) = item_used {
+            assert!(turn.events.iter().any(|event| matches!(event, BattleEvent::BattlePartyItemEffect { side: BattleSide::Player, party_index, .. } if *party_index == slot)));
+            println!("ely-used,{trainer_id},{turns},{item},{slot}");
+        }
         let enemy_left = turn.state.enemy_party.iter().filter(|p| p.hp > 0).count();
         let player_left = turn.state.player_party.iter().filter(|p| p.hp > 0).count();
         if player_left == 0 {
@@ -249,6 +274,25 @@ fn challenge_state(
                         .expect("keep prepared moves");
                 }
             }
+            let shift = if use_shift
+                && turn.state.player.hp > 0
+                && state.options.battle_style == crystal_core::state::BattleStyle::Shift
+            {
+                let current = active_battle_combat_state(state).expect("trainer's announcement");
+                // This battle began on the current build. Only a published
+                // trainer announcement actually gives its player a Shift turn.
+                state.pending_trainer_replacement().map(|index| {
+                    let preview = crystal_core::battle::turn::preview_battle_replacement(
+                        &current,
+                        BattleSide::Enemy,
+                        index,
+                    )
+                    .expect("announced partner");
+                    (index, replacement.expect("Shift decision")(data, &preview))
+                })
+            } else {
+                None
+            };
             if data
                 .advance_active_trainer_battle(state)
                 .expect("trainer replacement")
@@ -260,6 +304,21 @@ fn challenge_state(
                     enemy_left,
                     player_left,
                 };
+            }
+            // Shift is an optional action after an enemy knockout. A double
+            // knockout has already taken its mandatory player replacement.
+            if let Some((announced, slot)) = shift {
+                let next = active_battle_combat_state(state)
+                    .expect("trainer sent out the announced partner");
+                assert_eq!(next.enemy_party_index, announced);
+                if slot != next.player_party_index {
+                    switch_active_battle_party_index(state, slot, &data.items)
+                        .expect("normal Shift switch");
+                    println!(
+                        "ely-shift,{trainer_id},{turns},{},{}",
+                        next.player.species.id, next.player_party[slot].species.id
+                    );
+                }
             }
         }
     }

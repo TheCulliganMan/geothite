@@ -19,7 +19,7 @@ use crate::{
 const ROUTE: &str = "MnR13C00R02";
 const CLINIC: &str = "MnElyPokecenter1F";
 
-fn field_battle(
+pub(super) fn field_battle(
     data: &GameDataSet,
     state: &mut GameState,
     grass: &OverworldSession,

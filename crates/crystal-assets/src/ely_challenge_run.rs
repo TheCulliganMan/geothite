@@ -1,4 +1,8 @@
 //! Consecutive first-challenge League battles, using one party and a finite Ely shop receipt.
+#[path = "ely_challenger_tactics.rs"]
+mod ely_challenger_tactics;
+#[path = "ely_earned_party.rs"]
+mod ely_earned_party;
 #[path = "ely_road_training.rs"]
 mod ely_road_training;
 
@@ -340,7 +344,7 @@ fn prepared_action(
     attack(data, combat)
 }
 
-fn scouted_lead(data: &GameDataSet, state: &mut GameState, room: &str, id: &str) {
+fn scouted_lead(data: &GameDataSet, state: &mut GameState, room: &str, id: &str, tactical: bool) {
     let team = materialize_trainer_party(
         &data.trainers.trainers[id],
         &data.pokemon,
@@ -349,16 +353,19 @@ fn scouted_lead(data: &GameDataSet, state: &mut GameState, room: &str, id: &str)
         &data.growth_rates,
     )
     .expect("previously seen opening partner");
-    let slot = state
+    let party = state
         .storage
         .party
         .pokemon
         .iter()
-        .enumerate()
-        .filter_map(|(i, p)| p.as_ref().filter(|p| p.hp > 0).map(|p| (i, p)))
-        .max_by_key(|(i, p)| (matchup(data, p, &team[0]).0, std::cmp::Reverse(*i)))
-        .expect("living member")
-        .0;
+        .flatten()
+        .cloned()
+        .collect::<Vec<_>>();
+    let slot = if tactical {
+        ely_challenger_tactics::lead(data, &party, &team[0])
+    } else {
+        best_partner(data, &party, &team[0])
+    };
     if slot > 0 {
         let mut session = data
             .overworld_session(room, TilePosition::new(4, 4), 0)
@@ -421,9 +428,10 @@ fn fight(
     index: usize,
 ) -> bool {
     let (map, trainer) = ROOMS[index];
-    let scouted = matches!(mode, "scouted" | "trained");
+    let tactical = mode.starts_with("tactical");
+    let scouted = tactical || matches!(mode, "scouted" | "trained");
     if scouted {
-        scouted_lead(data, state, map, trainer);
+        scouted_lead(data, state, map, trainer, tactical);
     }
     println!(
         "ely-enter,{mode},{starter},{seed},{trainer},{},{}",
@@ -432,24 +440,35 @@ fn fight(
     );
     let mut switched_on = BTreeSet::new();
     let mut support = BTreeSet::new();
-    let trace = mode == "isolated"
+    let trace = (mode == "isolated" || tactical)
         && trainer == "MN_CHAMPION"
         && std::env::var("MN_ELY_CASEY_TRACE")
             .ok()
             .and_then(|s| s.parse::<u32>().ok())
             == Some(seed);
     let mut turn = 0;
+    let mut tactics = ely_challenger_tactics::Tactics::default();
     let finish = challenge_state(
         data,
         state,
         trainer,
         divider,
-        |data, combat| {
-            let choice = prepared_action(data, combat, &mut switched_on);
-            let choice = if scouted && matches!(choice, BattleAction::Move { .. }) {
-                scouted_support(data, combat, &mut support).unwrap_or(choice)
+        |data, current, combat| {
+            let choice = if tactical {
+                tactics.choose(
+                    data,
+                    current,
+                    combat,
+                    mode != "tactical-moves",
+                    mode.contains("triage"),
+                )
             } else {
-                choice
+                let choice = prepared_action(data, combat, &mut switched_on);
+                if scouted && matches!(choice, BattleAction::Move { .. }) {
+                    scouted_support(data, combat, &mut support).unwrap_or(choice)
+                } else {
+                    choice
+                }
             };
             turn += 1;
             if trace && turn <= 20 {
@@ -457,7 +476,12 @@ fn fight(
             }
             choice
         },
-        Some(choose_replacement),
+        Some(if tactical {
+            ely_challenger_tactics::best
+        } else {
+            choose_replacement
+        }),
+        tactical,
     );
     let end_party = party_string(state);
     if !support.is_empty() {
@@ -515,7 +539,10 @@ fn fight(
             .all(|p| p.stat_boosts == crystal_core::models::pokemon::default_stat_boosts()),
         "between rooms all temporary stat changes clear"
     );
-    if mode != "isolated" {
+    if !matches!(
+        mode,
+        "isolated" | "tactical-fresh" | "tactical-moves" | "tactical-triage-fresh"
+    ) {
         apply_run_counter(data, state, map, &entry.source_script, index + 1);
     }
     println!(
@@ -526,14 +553,27 @@ fn fight(
 }
 
 fn run_prepared(mode: &str) {
+    run_cases(mode, &[0, 1, 2], &[1701, 4242, 9001]);
+}
+
+fn run_cases(mode: &str, starters: &[usize], seeds: &[u32]) {
     let file = std::env::var_os("CRYSTAL_MINNESOTA_BATTLE_TEST_PACK").expect("Minnesota pack");
     let pack = read_verified_compiled_game_pack(file).expect("verified pack");
     let data = pack.data();
-    for starter in 0..3 {
-        let team = ely_challenger_parties::party(data, starter);
-        let mut departure = trial_state(data, 9, team);
+    let earned = mode == "tactical-triage-earned";
+    for &starter in starters {
+        if earned && starter != 1 {
+            continue; // The archived starter is Kindlit.
+        }
+        let mut departure = if earned {
+            ely_earned_party::departure(data)
+        } else {
+            trial_state(data, 9, ely_challenger_parties::party(data, starter))
+        };
         if mode != "isolated" {
-            buy_ely_supplies(data, &mut departure);
+            if !earned {
+                buy_ely_supplies(data, &mut departure);
+            }
             if mode == "trained" {
                 // Pay before going out so a solo training loss never risks the
                 // budget reserved for these items. No bag supplies go on the outing.
@@ -543,9 +583,13 @@ fn run_prepared(mode: &str) {
             }
             register(data, &mut departure);
         }
-        for seed in [1701, 4242, 9001] {
-            if mode == "isolated" {
-                for index in 3..5 {
+        for &seed in seeds {
+            if matches!(
+                mode,
+                "isolated" | "tactical-fresh" | "tactical-moves" | "tactical-triage-fresh"
+            ) {
+                let first = if mode == "isolated" { 3 } else { 4 };
+                for index in first..5 {
                     fight(
                         data,
                         &mut departure.clone(),
@@ -574,7 +618,11 @@ fn run_prepared(mode: &str) {
                 }
                 wins += 1;
                 if wins < 5 {
-                    recover_between_rooms(data, &mut state);
+                    if mode.starts_with("tactical") {
+                        ely_challenger_tactics::regroup(data, &mut state, wins == 4);
+                    } else {
+                        recover_between_rooms(data, &mut state);
+                    }
                 }
             }
             println!(
@@ -626,4 +674,46 @@ fn ely_prepared_challengers_face_halden_and_casey_at_full_strength() {
 #[ignore = "requires CRYSTAL_MINNESOTA_BATTLE_TEST_PACK and runs Route 13 preparation and nine League sequences"]
 fn ely_scouted_parties_return_after_route_thirteen_training() {
     run_prepared("trained");
+}
+
+#[test]
+#[ignore = "requires CRYSTAL_MINNESOTA_BATTLE_TEST_PACK and resolves nine fresh Champion battles"]
+fn ely_tactical_challengers_face_casey_with_the_bag() {
+    run_prepared("tactical-fresh");
+}
+
+#[test]
+#[ignore = "requires CRYSTAL_MINNESOTA_BATTLE_TEST_PACK and resolves nine fresh Champion battles"]
+fn ely_tactical_challengers_face_casey_without_opening_the_bag() {
+    run_prepared("tactical-moves");
+}
+
+#[test]
+#[ignore = "requires CRYSTAL_MINNESOTA_BATTLE_TEST_PACK and resolves nine five-room attempts"]
+fn ely_tactical_challengers_spend_one_receipt_across_the_league() {
+    run_prepared("tactical");
+}
+
+#[test]
+#[ignore = "requires CRYSTAL_MINNESOTA_BATTLE_TEST_PACK and resolves nine fresh Champion battles"]
+fn ely_triage_challengers_restore_a_reserve_before_caseys_next_attack() {
+    run_prepared("tactical-triage-fresh");
+}
+
+#[test]
+#[ignore = "requires CRYSTAL_MINNESOTA_BATTLE_TEST_PACK and resolves nine five-room attempts"]
+fn ely_triage_challengers_spend_one_receipt_across_the_league() {
+    run_prepared("tactical-triage");
+}
+
+#[test]
+#[ignore = "requires a current Minnesota League archive and the original earned V16 archive and save"]
+fn ely_history_five_earned_partners_and_a_new_catch_face_the_circuit() {
+    run_prepared("tactical-triage-earned");
+}
+
+#[test]
+#[ignore = "requires a current Minnesota League archive"]
+fn ely_casey_final_partner_receives_only_an_actual_shift_offer() {
+    run_cases("tactical-triage-fresh", &[2], &[1701]);
 }
