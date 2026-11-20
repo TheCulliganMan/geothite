@@ -1,17 +1,19 @@
 //! Follow held directional input across each grassy shoreline arrangement.
 use std::path::PathBuf;
+use std::time::Duration;
 
 use bevy::input::{ButtonState, InputPlugin};
 use bevy::prelude::{App, Entity, Transform, Vec2, With, Without, World};
+use bevy::time::TimeUpdateStrategy;
 use crystal_core::systems::field_moves::CANOE_ITEM;
 use crystal_core::systems::time::GameDate;
 use crystal_core::world::map::{Direction, TilePosition};
 use crystal_runtime::RuntimeRtcSample;
 
 use super::super::super::{
-    BevyRuntimeShell, GrassRustleMarker, NativeRtcSource, PLAYFIELD_LEFT, PLAYFIELD_TOP,
-    PlayerMarker, PlayerSpriteFrames, PlayfieldBridgeTile, PlayfieldPriorityTile, PlayfieldTile,
-    RenderedViewport, SOURCE_TILE_SIZE, TILE_SIZE,
+    BevyRuntimeShell, GAME_TICK_SECONDS, GrassRustleMarker, NativeRtcSource, PLAYFIELD_LEFT,
+    PLAYFIELD_TOP, PlayerMarker, PlayerSpriteFrames, PlayfieldBridgeTile, PlayfieldPriorityTile,
+    PlayfieldTile, RenderedViewport, RuntimeTickTimer, SOURCE_TILE_SIZE, TILE_SIZE,
 };
 use super::super::shore_watch_bank_walk::{keyboard_event, stride};
 use super::super::{canoe, interior_life, menu_render_test_app, record_overworld_frames};
@@ -20,7 +22,7 @@ use super::fen_canoe_grass::check_visible_trainer;
 
 // On held input the controller can begin the next step on the very frame
 // the boots reach the previous tile. Read their position from the camera.
-fn foot_tile(world: &mut World, center: Vec2) -> TilePosition {
+fn foot_position(world: &mut World, center: Vec2) -> Vec2 {
     let ground = world
         .query_filtered::<&Transform, (
             With<PlayfieldTile>,
@@ -39,11 +41,11 @@ fn foot_tile(world: &mut World, center: Vec2) -> TilePosition {
     let local = center - ground;
     let x = f32::from(left) * 8.0 + (local.x - PLAYFIELD_LEFT) / scale + 0.5;
     let y = f32::from(top) * 8.0 + (PLAYFIELD_TOP - local.y) / scale + 7.5;
-    TilePosition::new((x / 16.0).floor() as i16, (y / 16.0).floor() as i16)
+    Vec2::new(x, y)
 }
 
 struct Contact {
-    tile: TilePosition,
+    position: Vec2,
     aboard: bool,
     rustling: bool,
 }
@@ -70,7 +72,7 @@ fn sample(world: &mut World, walker: &str, rider: &str) -> Contact {
     }
     check_visible_trainer(world);
     Contact {
-        tile: foot_tile(world, center),
+        position: foot_position(world, center),
         aboard,
         rustling: grass,
     }
@@ -97,23 +99,49 @@ fn hold_across_bank(
     let mut stirred_grass = false;
     let launching = steps[0] == shore;
     let inland = if launching { previous } else { steps[2] };
+    let mut last_sample = None;
+    let mut intermediate_frames = 0;
     keyboard_event(app, direction, ButtonState::Pressed);
     for _ in 0..64 {
         app.update();
         let shell = app.world().resource::<BevyRuntimeShell>();
         assert_eq!(shell.last_error, None);
         let position = shell.shell.session().overworld().player.tile;
-        let settled = shell.player_walk_frame_ticks == 0;
+        let remaining = shell.player_walk_frame_ticks;
+        let settled = remaining == 0;
+        let subframe = app
+            .world()
+            .resource::<RuntimeTickTimer>()
+            .presentation_subframe();
         let contact = sample(app.world_mut(), walker, rider);
-        let on_land = contact.tile == shore || contact.tile == inland;
+        let pixel = contact.position;
+        let foot = TilePosition::new(
+            (pixel.x / 16.0).floor() as i16,
+            (pixel.y / 16.0).floor() as i16,
+        );
+        let on_land = foot == shore || foot == inland;
         assert_ne!(
             contact.aboard, on_land,
-            "{direction:?} at visible foot or keel {:?}",
-            contact.tile
+            "{direction:?} at visible foot or keel {foot:?}"
         );
+        if let Some((old_tile, old_remaining, old_subframe, old_pixel)) = last_sample
+            && position == old_tile
+            && remaining == old_remaining
+            && !settled
+            && subframe > old_subframe
+        {
+            let (dx, dy) = direction.delta();
+            let expected = Vec2::new(f32::from(dx), f32::from(dy));
+            assert!(
+                pixel.abs_diff_eq(old_pixel + expected, 0.01),
+                "{direction:?} at {position:?}, between ticks: expected a one-pixel step from {old_pixel:?}, saw {pixel:?}"
+            );
+            intermediate_frames += 1;
+        }
+        last_sample = Some((position, remaining, subframe, pixel));
         // Walking through two adjoining grass tiles can finish its rustle
         // before the soles leave the first. Landing should stir the bank itself.
-        stirred_grass |= contact.rustling && (launching || contact.tile == shore);
+        stirred_grass |= contact.rustling && (launching || foot == shore);
         if poses.last() != Some(&contact.aboard) {
             poses.push(contact.aboard);
         }
@@ -125,6 +153,12 @@ fn hold_across_bank(
             }
         }
         if position == steps[2] && settled {
+            if app.world().resource::<RuntimeTickTimer>().step_seconds > 0.0 {
+                assert!(
+                    intermediate_frames >= 16,
+                    "too few between-tick samples on {steps:?}"
+                );
+            }
             assert_eq!(
                 visited, steps,
                 "held {direction:?} from the bank at {shore:?}"
@@ -145,6 +179,18 @@ fn hold_across_bank(
 #[test]
 #[ignore = "requires the Layered Fen in CRYSTAL_CANOE_TEST_PACK"]
 fn fen_grassy_banks_keep_the_trainer_and_canoe_visible_under_held_input() {
+    check_grassy_banks(None);
+}
+
+#[test]
+#[ignore = "requires the Layered Fen in CRYSTAL_CANOE_TEST_PACK"]
+fn fen_grassy_banks_walk_launch_and_land_between_game_ticks() {
+    check_grassy_banks(Some(Duration::from_secs_f64(
+        f64::from(GAME_TICK_SECONDS) * 0.5,
+    )));
+}
+
+fn check_grassy_banks(host_frame: Option<Duration>) {
     use Direction::{Down, Left, Right, Up};
     let (root, runtime) = canoe::load();
     let map = "MnLayeredFen";
@@ -229,8 +275,16 @@ fn fen_grassy_banks_keep_the_trainer_and_canoe_visible_under_held_input() {
         }));
         app.update();
         app.update();
+        if let Some(duration) = host_frame {
+            app.insert_resource(RuntimeTickTimer::new(2.0 * duration.as_secs_f64()));
+            app.insert_resource(TimeUpdateStrategy::ManualDuration(duration));
+        }
         if let Some(directory) = std::env::var_os("MN_SHORE_MOTION_DIR") {
-            record_overworld_frames(&mut app, &PathBuf::from(directory).join(name));
+            let mut directory = PathBuf::from(directory);
+            if host_frame.is_some() {
+                directory.push("between-ticks");
+            }
+            record_overworld_frames(&mut app, &directory.join(name));
         }
         for &(x, y) in &approach[1..] {
             stride(&mut app, TilePosition::new(x, y), walker, rider, false);
