@@ -7,6 +7,8 @@ mod fen_canoe_strokes;
 mod fen_grassy_banks;
 #[path = "fen_north_inlet.rs"]
 mod fen_north_inlet;
+#[path = "fen_portage.rs"]
+mod fen_portage;
 
 use std::path::{Path, PathBuf};
 
