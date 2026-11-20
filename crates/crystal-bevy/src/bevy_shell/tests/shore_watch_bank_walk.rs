@@ -291,9 +291,10 @@ fn check_banks(banks: &[Bank]) {
                 } else {
                     "bank-walk-on-foot"
                 };
-                super::record_overworld_frames(
+                super::record_overworld_frames_every(
                     &mut app,
                     &std::path::PathBuf::from(path).join(walk),
+                    1,
                 );
             }
             for &(x, y) in &bank.trail[1..] {
