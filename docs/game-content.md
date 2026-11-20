@@ -1,5 +1,9 @@
 # Build and run game content
 
+The [Fair Patrols build instructions](../planning/minnesota/revisions/fair-patrols-v01/README.md)
+reproduce the Field and Intro editions from their respective Fair Table packs.
+The archive checks cover the trainer circuits, vendor access and Route 15 shortcut.
+
 The local Minnesota typing child `content-packs/minnesota-typing-continuity-v02.crystalpack`
 was built over the selected R06 reviewed-map v11 pack. Its 22 installed species
 typing changes match the roster; all other game data matches the parent, all 602

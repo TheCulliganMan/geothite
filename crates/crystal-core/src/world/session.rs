@@ -16,9 +16,10 @@ use crate::state::{EventFlagMemory, GameState, RoamingPokemonState};
 use crate::systems::special_routines::BugContestEncounterEntry;
 
 use super::collision::{
-    Terrain, TilesetCollision, can_jump_ledge, describe_collision, directional_warp_facing,
-    is_direction_blocked, is_direction_blocked_leaving, is_warp_permission, permissions,
-    sample_collision, standard_interaction_script,
+    PlayerTraversalState, Terrain, TilesetCollision, allows_ledge_direction, can_jump_ledge,
+    describe_collision, directional_warp_facing, is_direction_blocked,
+    is_direction_blocked_leaving, is_warp_permission, permissions, sample_collision,
+    standard_interaction_script,
 };
 use super::encounters::{
     EncounterError, EncounterMusicModifiers, EncounterSlotTables, EncounterSurface,
@@ -50,6 +51,8 @@ pub struct OverworldSession {
     pub map: OverworldMapData,
     pub map_events: MapEvents,
     pub objects: Vec<ObjectEvent>,
+    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    trainer_patrol_origins: BTreeMap<String, TilePosition>,
     pub object_runtime_tiles: BTreeMap<String, TilePosition>,
     /// Presentation-only poses retained when actors leave the LCD simulation
     /// viewport but remain on an expanded camera. Never used by gameplay.
@@ -617,6 +620,7 @@ impl OverworldSession {
             initial_object_runtime_state(&objects);
         let mut session = Self {
             frame: 0,
+            trainer_patrol_origins: super::object_patrol::trainer_origins(&map.name, &objects),
             map,
             map_events,
             objects,
@@ -2024,14 +2028,27 @@ impl OverworldSession {
                 movement,
                 "SPRITEMOVEDATA_PATROL_CLOCKWISE" | "SPRITEMOVEDATA_PATROL_CLOCKWISE_SLOW"
             ) {
-                let anchor = object_tile_position_checked(object)
-                    .expect("loaded patrol has valid event coordinates");
-                let Some(next) = super::object_patrol::clockwise_step(
+                let origin = self.trainer_patrol_origins.get(object_id).copied();
+                let anchor = origin.unwrap_or_else(|| {
+                    object_tile_position_checked(object)
+                        .expect("loaded patrol has valid event coordinates")
+                });
+                let next = super::object_patrol::clockwise_step(
                     anchor,
                     current,
                     object.move_range_x,
                     object.move_range_y,
-                ) else {
+                );
+                let next = if next.is_none() && origin.is_some() {
+                    self.trainer_patrol_return_step(object, anchor, current)
+                        .map_err(AutonomousObjectAdvanceError::Coordinate)?
+                } else {
+                    next
+                };
+                let Some(next) = next else {
+                    if origin.is_some() {
+                        self.object_step_durations.insert(object_id.to_owned(), 8);
+                    }
                     continue;
                 };
                 direction = next;
@@ -2209,6 +2226,26 @@ impl OverworldSession {
                         .insert(object_id.to_string());
                 }
                 let moved_object_id = object_id.to_string();
+                if let Some(&origin) = self.trainer_patrol_origins.get(object_id) {
+                    let on_circuit = |tile| {
+                        super::object_patrol::clockwise_step(
+                            origin,
+                            tile,
+                            object.move_range_x,
+                            object.move_range_y,
+                        )
+                        .is_some()
+                    };
+                    let raw = object_tile_position_checked(object)
+                        .expect("loaded trainer has valid event coordinates");
+                    if !on_circuit(raw) && on_circuit(target) {
+                        // Reallocation uses the raw event coordinates after
+                        // the live sprite scrolls out of view. Once back on
+                        // duty, retire the aisle position written by battle.
+                        self.objects[index].x = u16::try_from(target.x).expect("on-map patrol x");
+                        self.objects[index].y = u16::try_from(target.y).expect("on-map patrol y");
+                    }
+                }
                 self.update_follow_after_entity_move(&moved_object_id, current, target);
             } else if let Some(random_add) = random_add.as_mut() {
                 let duration_roll =
@@ -3110,7 +3147,9 @@ impl OverworldSession {
                 if !tile_is_in_sightline(object_tile, direction, self.player.tile, radius) {
                     return Ok(None);
                 }
-                if regional && !self.regional_trainer_path_clear(object_tile, direction)? {
+                if self.map.name.starts_with("Mn")
+                    && !self.regional_trainer_path_clear(object, object_tile, direction)?
+                {
                     return Ok(None);
                 }
                 Ok(Some(self.object_interaction(
@@ -3123,32 +3162,43 @@ impl OverworldSession {
 
     fn regional_trainer_path_clear(
         &self,
+        trainer: &ObjectEvent,
         from: TilePosition,
         direction: Direction,
     ) -> Result<bool, OverworldCoordinateError> {
+        let traversal = if trainer.spritemovedata == "SPRITEMOVEDATA_SWIM_WANDER" {
+            PlayerTraversalState::Surf
+        } else {
+            PlayerTraversalState::Walk
+        };
         let mut current = from;
         while current != self.player.tile {
             let Some(next) = checked_move_by_stride(current, direction, 1) else {
                 return Ok(false);
             };
-            let Some(source) = sample_collision(&self.map, &self.tileset, current) else {
+            // The landing tile can be on a bridge even when neither the
+            // trainer's starting tile nor the player's river tile is.
+            if next == self.player.tile && !self.object_shares_player_layer(trainer, current) {
                 return Ok(false);
-            };
-            let Some(target) = sample_collision(&self.map, &self.tileset, next) else {
-                return Ok(false);
-            };
-            if is_direction_blocked_leaving(source.permission, direction)
-                || is_direction_blocked(target.permission, direction)
-                || describe_collision(target.permission).terrain != Terrain::Land
-                || is_warp_permission(target.permission)
-            {
+            }
+            // St. Paul's fixed lane ends at a warp panel. The trainer stops
+            // beside the player, so only intervening tiles must support it.
+            let authored_endpoint =
+                next == self.player.tile && trainer.sightline_direction_override.is_some();
+            if !self.trainer_step_terrain_clear(
+                current,
+                direction,
+                next,
+                traversal,
+                authored_endpoint,
+            ) {
                 return Ok(false);
             }
             if next != self.player.tile {
                 for (index, object) in self.objects.iter().enumerate() {
                     if !self.is_object_visible(object)
                         || object_event_starts_as_emote_object(&object.spritemovedata)
-                        || !self.object_shares_player_layer(object, next)
+                        || !self.objects_share_layer_at(trainer, object, next)
                     {
                         continue;
                     }
@@ -3156,11 +3206,106 @@ impl OverworldSession {
                     if object_current_occupied_tiles_checked(index, object, tile)?.contains(&next) {
                         return Ok(false);
                     }
+                    // A moving guest still occupies their departure tile for
+                    // the duration of the step, just as for ordinary walking.
+                    if object.object_identifier.as_ref().is_some_and(|id| {
+                        self.object_last_runtime_tiles.get(id) == Some(&next)
+                            && self
+                                .object_last_tiles_occupied_until_frame
+                                .get(id)
+                                .is_some_and(|until| self.frame < *until)
+                    }) {
+                        return Ok(false);
+                    }
                 }
             }
             current = next;
         }
         Ok(true)
+    }
+
+    fn trainer_step_terrain_clear(
+        &self,
+        from: TilePosition,
+        direction: Direction,
+        to: TilePosition,
+        traversal: PlayerTraversalState,
+        authored_endpoint: bool,
+    ) -> bool {
+        let Some(source) = sample_collision(&self.map, &self.tileset, from) else {
+            return false;
+        };
+        let Some(target) = sample_collision(&self.map, &self.tileset, to) else {
+            return false;
+        };
+        let opposite = match direction {
+            Direction::Up => Direction::Down,
+            Direction::Down => Direction::Up,
+            Direction::Left => Direction::Right,
+            Direction::Right => Direction::Left,
+        };
+        if is_direction_blocked_leaving(source.permission, direction)
+            || super::bridge::blocks_exit(source.permission, direction, traversal)
+            || allows_ledge_direction(source.permission, direction)
+            || allows_ledge_direction(target.permission, opposite)
+        {
+            return false;
+        }
+        if authored_endpoint {
+            return super::collision::is_permission_passable(
+                target.permission,
+                direction,
+                self.player.mode.traversal_state(),
+            );
+        }
+        let terrain = describe_collision(super::bridge::layer_permission(
+            target.permission,
+            traversal,
+        ))
+        .terrain;
+        let required = match traversal {
+            PlayerTraversalState::Walk => Terrain::Land,
+            PlayerTraversalState::Surf => Terrain::Water,
+        };
+        terrain == required
+            && !is_warp_permission(target.permission)
+            && super::collision::is_permission_passable(target.permission, direction, traversal)
+    }
+
+    fn trainer_patrol_return_step(
+        &self,
+        trainer: &ObjectEvent,
+        anchor: TilePosition,
+        current: TilePosition,
+    ) -> Result<Option<Direction>, OverworldObjectCoordinateError> {
+        use super::collision::PlayerTraversalState::Walk;
+        let occupied = self.collect_occupied_tiles_checked(Some((current, Walk)))?;
+        Ok(super::object_patrol::return_step(
+            anchor,
+            current,
+            trainer.move_range_x,
+            trainer.move_range_y,
+            |from, direction, to| {
+                self.trainer_step_terrain_clear(from, direction, to, Walk, false)
+                    && !(self.object_shares_player_layer(trainer, to)
+                        && (to == self.player.tile
+                            || (self.player_last_runtime_tile == Some(to)
+                                && self.frame < self.player_last_tile_occupied_until_frame)))
+                    && !occupied.iter().any(|other| {
+                        other.tile == to && other.object_identifier != trainer.object_identifier
+                    })
+            },
+        ))
+    }
+
+    /// True when a regional trainer finished a patrol stride since the last
+    /// overworld update. A walker may challenge from its settled position.
+    pub fn trainer_patrol_landed_since(&self, previous_frame: u64) -> bool {
+        self.trainer_patrol_origins.keys().any(|id| {
+            self.object_last_tiles_occupied_until_frame
+                .get(id)
+                .is_some_and(|until| previous_frame < *until && *until <= self.frame)
+        })
     }
 
     fn visible_object_on_player_layer_at_checked(
@@ -4356,6 +4501,7 @@ impl WarpTransition {
             initial_object_runtime_state(&objects);
         OverworldSession {
             frame,
+            trainer_patrol_origins: super::object_patrol::trainer_origins(&map.name, &objects),
             map,
             map_events,
             objects,
@@ -4414,6 +4560,7 @@ impl ConnectionTransition {
             initial_object_runtime_state(&objects);
         OverworldSession {
             frame,
+            trainer_patrol_origins: super::object_patrol::trainer_origins(&map.name, &objects),
             map,
             map_events,
             objects,
@@ -7621,6 +7768,10 @@ mod tests {
                 .expect("wall sight check")
                 .is_none()
         );
+    }
+
+    mod regional_trainers {
+        include!("regional_trainer_tests.rs");
     }
 
     #[test]

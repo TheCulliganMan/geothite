@@ -4797,11 +4797,17 @@ impl CrystalRuntime {
     }
 
     fn pokemon_catalog_snapshot(&self) -> Vec<RuntimePokemonCatalogSnapshot> {
+        let regional = self.data.minnesota_dex_numbers();
         let mut pokemon = self
             .data
             .pokemon
             .iter()
-            .map(RuntimePokemonCatalogSnapshot::from_species)
+            .map(|(name, species)| {
+                RuntimePokemonCatalogSnapshot::from_species(
+                    (name, species),
+                    regional.get(name.as_str()).copied(),
+                )
+            })
             .collect::<Vec<_>>();
         pokemon.sort_by_key(|species| species.int_id);
         pokemon

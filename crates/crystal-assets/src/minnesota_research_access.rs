@@ -11,6 +11,72 @@ const MANIFEST: &str = "minnesota-early-research-access-v1";
 const DELIVERED: &str = "EVENT_MN_DELIVERED_ROCHESTER_PARCEL";
 const EXCHANGED: &str = "EVENT_MN_FOSSIL_EXCHANGED";
 
+/// Syncs the three Field Station balls with the original gift and later adoptions.
+pub(crate) fn refresh_adopted_starter_benches(pack: &mut CompiledGamePack) -> Result<()> {
+    let mut room = map(pack, "MnWinonaFieldStation")?;
+    const SYNC: &str = "MnWinonaResearchBenches";
+    ensure!(
+        !room.scripts.contains_key(SYNC),
+        "starter benches already revised"
+    );
+    let mut sync = Vec::new();
+    for (species, original) in [
+        ("POUCHID", "CHIKORITA"),
+        ("KINDLIT", "CYNDAQUIL"),
+        ("BIRCHIT", "TOTODILE"),
+    ] {
+        let actor = format!("MN_W_{original}");
+        let picked = format!("EVENT_MN_WINONA_{original}");
+        let adopted = format!("EVENT_MN_{species}_RESEARCH_RECEIVED");
+        let ball = room
+            .objects
+            .iter_mut()
+            .find(|obj| obj.object_identifier.as_deref() == Some(actor.as_str()))
+            .with_context(|| format!("missing Winona starter ball for {species}"))?;
+        ensure!(
+            ball.event_flag == picked,
+            "expected original starter visibility for {species}"
+        );
+        // 'disappear' writes the object's event flag. An adoption must never count as
+        // the player's original starter choice. Reconstruct temporary visibility on entry.
+        ball.event_flag = "-1".into();
+        let program = room
+            .scripts
+            .get_mut(&format!("MnEarlyPartner{species}"))
+            .and_then(serde_json::Value::as_array_mut)
+            .context("research adoption program")?;
+        let success = program
+            .iter()
+            .position(|row| row == &c("setevent", &[&adopted]))
+            .context("successful starter adoption")?;
+        program.insert(success + 1, c("disappear", &[&actor]));
+
+        let check = format!("MnWinonaBench{species}");
+        let hide = format!("{check}Hide");
+        sync.push(c("scall", &[&check]));
+        put(
+            &mut room,
+            &check,
+            vec![
+                c("checkevent", &[&picked]),
+                c("iftrue", &[&hide]),
+                c("checkevent", &[&adopted]),
+                c("iftrue", &[&hide]),
+                c("end", &[]),
+            ],
+        );
+        put(
+            &mut room,
+            &hide,
+            vec![c("disappear", &[&actor]), c("end", &[])],
+        );
+    }
+    sync.push(c("endcallback", &[]));
+    put(&mut room, SYNC, sync);
+    crate::northstar_lair_authoring::callback(&mut room, "MAPCALLBACK_OBJECTS", SYNC);
+    publish(pack, room)
+}
+
 /// Rewrites the existing Rochester lab conversations on a completed pack.
 ///
 /// # Errors

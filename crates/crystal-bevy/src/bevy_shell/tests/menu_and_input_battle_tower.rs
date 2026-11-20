@@ -5354,6 +5354,45 @@ fn pokedex_select_and_start_stay_inside_dex_and_search_caught_species() {
 }
 
 #[test]
+#[ignore = "requires the numbered regional pack in MN_FIELD_GUIDE_PACK"]
+fn regional_pokedex_rows_counts_and_order_follow_the_pack_numbers() -> anyhow::Result<()> {
+    let path = PathBuf::from(std::env::var_os("MN_FIELD_GUIDE_PACK").expect("regional pack"));
+    let root = AssetRoot::new(path.parent().expect("pack directory"));
+    let runtime = CrystalRuntime::from_loaded_compiled_pack(
+        &root,
+        crystal_assets::read_loaded_verified_compiled_game_pack(&path)?,
+    )?;
+    let spawn = runtime.title_new_game_spawn_identifier()?;
+    let mut snapshot =
+        crystal_runtime::RuntimeGameShell::new_game(root, runtime, spawn)?.snapshot()?;
+    snapshot.overworld.map_name = "MnWinonaFieldStation".into();
+    let progress = &mut snapshot.progression;
+    progress.pokedex_seen_species = ["KINDLIT", "POUCHID", "BULBASAUR"]
+        .map(str::to_owned)
+        .into();
+    progress.pokedex_caught_species = ["KINDLIT", "BULBASAUR"].map(str::to_owned).into();
+    progress.pokedex_seen = 3;
+    progress.pokedex_owned = 2;
+    assert_eq!(visible_pokedex_counts(&snapshot), (2, 1));
+    for mode in [VisiblePokedexMode::New, VisiblePokedexMode::Old] {
+        let order = visible_pokedex_order(&snapshot, mode);
+        assert_eq!(order.len(), 4);
+        let line = |index| pokedex_entry_row(&snapshot, &snapshot.pokemon[index], ">");
+        assert_eq!(line(order[0]), "> 001 POUCHID");
+        assert_eq!(line(order[1]), "> 002 -----");
+        assert_eq!(line(order[3]), ">C004 KINDLIT");
+    }
+    let alpha = visible_pokedex_order(&snapshot, VisiblePokedexMode::Alphabetical);
+    assert_eq!(snapshot.pokemon[alpha[0]].species_id, "KINDLIT");
+    assert_eq!(snapshot.pokemon[alpha[1]].species_id, "POUCHID");
+    snapshot.overworld.map_name = "NewBarkTown".into();
+    assert_eq!(visible_pokedex_counts(&snapshot), (3, 2));
+    let kindlit = &snapshot.pokemon[alpha[0]];
+    assert_eq!(visible_pokedex_number(&snapshot, kindlit), kindlit.int_id);
+    Ok(())
+}
+
+#[test]
 fn pokedex_orders_end_at_last_seen_and_alphabetical_omits_unseen() {
     let shell = initialized_mail_reader_shell("FLOWER_MAIL");
     let mut snapshot = shell.shell.snapshot().unwrap();

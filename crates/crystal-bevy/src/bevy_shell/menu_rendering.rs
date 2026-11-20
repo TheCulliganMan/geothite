@@ -1101,7 +1101,7 @@ fn trainer_card_art_key(
             .progression
             .active_engine_flags
             .contains(ENGINE_POKEDEX_FLAG),
-        pokedex_owned: snapshot.progression.pokedex_owned,
+        pokedex_owned: visible_pokedex_counts(snapshot).1,
         game_time_hours: snapshot.progression.time.game_time_hours,
         game_time_minutes: snapshot.progression.time.game_time_minutes,
         colon_visible: page == VisibleTrainerCardPage::Info && colon_visible,
@@ -1317,7 +1317,7 @@ fn load_trainer_card_frame(
             &mut data,
             15,
             10,
-            &format!("{:>3}", snapshot.progression.pokedex_owned.min(999)),
+            &format!("{:>3}", visible_pokedex_counts(snapshot).1.min(999)),
             3,
         )?;
     }

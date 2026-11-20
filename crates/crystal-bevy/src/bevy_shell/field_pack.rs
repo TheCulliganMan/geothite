@@ -591,7 +591,7 @@ fn pokedex_entry_row(
     format!(
         "{marker}{}{:03} {name}",
         if caught { "C" } else { " " },
-        species.int_id
+        visible_pokedex_number(snapshot, species)
     )
 }
 

@@ -4,14 +4,15 @@ use std::path::PathBuf;
 use anyhow::{Result, ensure};
 use crystal_assets::{
     CompiledGamePack, read_verified_compiled_game_pack, revise_arcade_frontage,
-    revise_ely_challenge, revise_ely_return, revise_fair_table, revise_finder_lesson,
-    revise_lakeside_stops, revise_leech_lake_trainers, revise_marais_supplies,
-    revise_quarry_landings, revise_research_choices, revise_trail_signs, revise_wind_lesson,
+    revise_ely_challenge, revise_ely_return, revise_fair_patrols, revise_fair_table,
+    revise_finder_lesson, revise_lakeside_stops, revise_leech_lake_trainers,
+    revise_marais_supplies, revise_quarry_landings, revise_research_choices, revise_trail_signs,
+    revise_wind_lesson,
 };
 
 fn main() -> Result<()> {
     let args: Vec<_> = std::env::args_os().skip(1).map(PathBuf::from).collect();
-    const USAGE: &str = "usage: pack_ely_challenge [--finder-lesson|--ely-return|--marais-supplies|--research-choices|--trail-signs|--leech-lake-trainers|--quarry-landings|--wind-lesson|--arcade-frontage|--lakeside-stops|--fair-table] PARENT FRESH_OUTPUT";
+    const USAGE: &str = "usage: pack_ely_challenge [--finder-lesson|--ely-return|--marais-supplies|--research-choices|--trail-signs|--leech-lake-trainers|--quarry-landings|--wind-lesson|--arcade-frontage|--lakeside-stops|--fair-table|--fair-patrols] PARENT FRESH_OUTPUT";
     let [options @ .., parent, output] = args.as_slice() else {
         anyhow::bail!(USAGE);
     };
@@ -28,6 +29,7 @@ fn main() -> Result<()> {
         [mode] if mode.as_os_str() == "--arcade-frontage" => revise_arcade_frontage,
         [mode] if mode.as_os_str() == "--lakeside-stops" => revise_lakeside_stops,
         [mode] if mode.as_os_str() == "--fair-table" => revise_fair_table,
+        [mode] if mode.as_os_str() == "--fair-patrols" => revise_fair_patrols,
         _ => anyhow::bail!(USAGE),
     };
     ensure!(!output.try_exists()?, "choose a fresh output pack");

@@ -481,6 +481,10 @@ fn open_visible_pokedex_menu(runtime_shell: &mut BevyRuntimeShell) -> Result<()>
         .unwrap_or(0);
     if let Some(&index) = order.get(position) {
         runtime_shell.pokedex_cursor = index;
+    } else if minnesota_map_active(&snapshot)
+        && let Some(index) = snapshot.pokemon.iter().position(|p| p.minnesota_dex_number.is_some())
+    {
+        runtime_shell.pokedex_cursor = index;
     }
     runtime_shell.pokedex_scroll = position.min(order.len().saturating_sub(7));
     runtime_shell.pokedex_controls = VisiblePokedexControls {
@@ -533,6 +537,12 @@ fn move_visible_pokedex_cursor(runtime_shell: &mut BevyRuntimeShell, delta: isiz
         return Ok(());
     }
     if runtime_shell.pokedex_controls.unown_cursor.is_some() {
+        return Ok(());
+    }
+    if runtime_shell.pokedex_controls.area_region.is_some()
+        && runtime_shell.shell.session().overworld().map.name.starts_with("Mn")
+    {
+        move_regional_area_cursor(&mut runtime_shell.pokedex_controls, delta);
         return Ok(());
     }
     if runtime_shell.pokedex_controls.printer_open
@@ -644,6 +654,10 @@ fn page_visible_pokedex_cursor(runtime_shell: &mut BevyRuntimeShell, delta: isiz
         return Ok(());
     }
     if runtime_shell.pokedex_controls.area_region.is_some() {
+        if runtime_shell.shell.session().overworld().map.name.starts_with("Mn") {
+            move_regional_area_cursor(&mut runtime_shell.pokedex_controls, delta);
+            return Ok(());
+        }
         if delta < 0 {
             runtime_shell.pokedex_controls.area_region = Some(false);
         } else if runtime_shell
@@ -721,7 +735,7 @@ fn inspect_visible_pokedex_selection(runtime_shell: &mut BevyRuntimeShell) -> Re
     runtime_shell.pokedex_controls.entry_action = 0;
     runtime_shell.last_audio_events.push(format!(
         "opened Pokedex detail #{} {} class={} h={} w={} pages={}",
-        species.int_id,
+        visible_pokedex_number(&snapshot, species),
         species.species_id,
         entry.classification,
         entry.height_digits,

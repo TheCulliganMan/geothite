@@ -589,6 +589,11 @@ current gameplay, preservation and native visual verification. The candidate
 pack stays separate from later regional integration lineages. All source/native
 render generations are retained for reuse.
 
+On the [Fair Patrols editions](planning/minnesota/revisions/fair-patrols-v01/README.md),
+six trainers patrol the midway and can challenge you from eight clear squares away.
+The crowd and booths break their line of sight. Baker Ada’s
+Doughlin carries a blueberry slice it can eat during battle.
+
 The [current fair building repair](planning/minnesota/playable/state-fairgrounds.md#contiguous-building-repair-2026-10-29)
 joins the grandstand, livestock barn and dairy hall facades in the selected local
 730-map pack. Its Rust publisher changes15 solid cells while preserving all

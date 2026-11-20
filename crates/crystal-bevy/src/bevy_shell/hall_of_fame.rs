@@ -103,11 +103,25 @@ fn queue_visible_hall_of_fame_music(shell: &mut BevyRuntimeShell) -> Result<()> 
     Ok(())
 }
 
+#[path = "northstar_hall_rating.rs"]
+mod northstar_hall_rating;
+
 fn prepare_visible_hall_of_fame_rating(shell: &BevyRuntimeShell, ceremony: &mut VisibleHallOfFame) -> Result<()> {
     let state = shell.shell.session().state();
+    let data = shell.runtime.data();
+    if let Some(rating) = northstar_hall_rating::rating(
+        &shell.shell.session().overworld().map.name,
+        &state.pokedex,
+        data.minnesota_dex_members(),
+    ) {
+        ceremony.rating_text = rating.counts;
+        ceremony.rating_pages = rating.pages;
+        ceremony.rating_sound = rating.fanfare.into();
+        return Ok(());
+    }
     let seen = state.pokedex.seen_count();
     let caught = state.pokedex.caught_count();
-    let rating = shell.runtime.data().oak_ratings.iter()
+    let rating = data.oak_ratings.iter()
         .find(|rating| caught <= rating.caught_count_limit)
         .context("Hall of Fame has no matching Oak rating")?;
     let buffers = BTreeMap::from([("wStringBuffer3".into(), seen.to_string()),

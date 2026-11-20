@@ -1817,6 +1817,14 @@ fn press_visible_pokedex_a_button(runtime_shell: &mut BevyRuntimeShell) -> Resul
     if runtime_shell.pokedex_detail_open && !runtime_shell.pokedex_scripted_entry {
         match runtime_shell.pokedex_controls.entry_action {
             1 => {
+                let snapshot = runtime_shell.shell.snapshot()?;
+                if minnesota_map_active(&snapshot) {
+                    let species = selected_pokedex_catalog_species(&snapshot, runtime_shell.pokedex_cursor)?;
+                    runtime_shell.pokedex_controls.regional_areas = regional_dex_areas::collect(
+                        runtime_shell.shell.runtime().data(), &species.species_id, &snapshot.roaming_pokemon,
+                    )?;
+                    runtime_shell.pokedex_controls.area_cursor = 0;
+                }
                 runtime_shell.pokedex_controls.area_region = Some(false);
                 return Ok(());
             }

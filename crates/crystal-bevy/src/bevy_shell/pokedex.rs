@@ -528,6 +528,8 @@ struct VisiblePokedexControls {
     search_not_found: bool,
     entry_action: usize,
     area_region: Option<bool>,
+    regional_areas: Vec<regional_dex_areas::Area>,
+    area_cursor: usize,
     area_frames: u8,
     area_show_player: bool,
     printer_open: bool,
@@ -537,15 +539,62 @@ struct VisiblePokedexControls {
     not_found_frames: u16,
 }
 
+fn move_regional_area_cursor(controls: &mut VisiblePokedexControls, delta: isize) {
+    controls.area_cursor = controls.area_cursor.saturating_add_signed(delta)
+        .min(controls.regional_areas.len().saturating_sub(1));
+}
+
+fn visible_pokedex_number(
+    snapshot: &RuntimeShellSnapshot,
+    species: &crate::RuntimePokemonCatalogSnapshot,
+) -> u16 {
+    if minnesota_map_active(snapshot) {
+        return species.minnesota_dex_number.unwrap_or(species.int_id);
+    }
+    species.int_id
+}
+
+fn visible_pokedex_counts(snapshot: &RuntimeShellSnapshot) -> (usize, usize) {
+    let progress = &snapshot.progression;
+    if minnesota_map_active(snapshot)
+        && snapshot
+            .pokemon
+            .iter()
+            .any(|p| p.minnesota_dex_number.is_some())
+    {
+        let regional = snapshot
+            .pokemon
+            .iter()
+            .filter(|p| p.minnesota_dex_number.is_some());
+        return regional.fold((0, 0), |(seen, owned), p| {
+            (
+                seen + usize::from(progress.pokedex_seen_species.contains(&p.species_id)),
+                owned + usize::from(progress.pokedex_caught_species.contains(&p.species_id)),
+            )
+        });
+    }
+    (progress.pokedex_seen, progress.pokedex_owned)
+}
+
 fn visible_pokedex_order(snapshot: &RuntimeShellSnapshot, mode: VisiblePokedexMode) -> Vec<usize> {
-    let mut order: Vec<usize> = (0..snapshot.pokemon.len()).collect();
+    let regional = minnesota_map_active(snapshot)
+        && snapshot
+            .pokemon
+            .iter()
+            .any(|p| p.minnesota_dex_number.is_some());
+    let mut order: Vec<usize> = (0..snapshot.pokemon.len())
+        .filter(|&index| !regional || snapshot.pokemon[index].minnesota_dex_number.is_some())
+        .collect();
     match mode {
+        VisiblePokedexMode::New | VisiblePokedexMode::Old if regional => {
+            order.sort_by_key(|&i| snapshot.pokemon[i].minnesota_dex_number);
+        }
         VisiblePokedexMode::New => order.sort_by_key(|&i| {
             (
                 POKEDEX_NEW_ORDER
                     .iter()
                     .position(|&id| id == snapshot.pokemon[i].species_id)
-                    .expect("compiled species must exist in the source NEW Pokédex order"),
+                    .unwrap_or(usize::MAX),
                 snapshot.pokemon[i].int_id,
             )
         }),
@@ -557,12 +606,20 @@ fn visible_pokedex_order(snapshot: &RuntimeShellSnapshot, mode: VisiblePokedexMo
                     .pokedex_seen_species
                     .contains(&snapshot.pokemon[i].species_id)
             });
+            if regional {
+                order.sort_by(|&a, &b| {
+                    snapshot.pokemon[a]
+                        .species_id
+                        .cmp(&snapshot.pokemon[b].species_id)
+                });
+                return order;
+            }
             order.sort_by_key(|&i| {
                 (
                     POKEDEX_ALPHA_ORDER
                         .iter()
                         .position(|&id| id == snapshot.pokemon[i].species_id)
-                        .expect("compiled species must exist in the source alphabetical Pokédex order"),
+                        .unwrap_or(usize::MAX),
                     snapshot.pokemon[i].species_id.clone(),
                 )
             });

@@ -2089,6 +2089,8 @@ pub struct RuntimeMoveCatalogSnapshot {
 pub struct RuntimePokemonCatalogSnapshot {
     pub species_id: String,
     pub int_id: u16,
+    /// Player-facing regional Pokédex number in Minnesota, when the species belongs to its roster.
+    pub minnesota_dex_number: Option<u16>,
     pub base_stats: crystal_core::models::BaseStats,
     pub type1: String,
     pub type2: String,
@@ -3520,10 +3522,14 @@ impl RuntimeMoveCatalogSnapshot {
 }
 
 impl RuntimePokemonCatalogSnapshot {
-    fn from_species((species_id, species): (&String, &PokemonSpecies)) -> Self {
+    fn from_species(
+        (species_id, species): (&String, &PokemonSpecies),
+        minnesota_dex_number: Option<u16>,
+    ) -> Self {
         Self {
             species_id: species_id.clone(),
             int_id: species.int_id,
+            minnesota_dex_number,
             base_stats: species.base_stats,
             type1: species.type1.clone(),
             type2: species.type2.clone(),

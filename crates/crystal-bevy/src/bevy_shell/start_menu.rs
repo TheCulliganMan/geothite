@@ -548,6 +548,25 @@ fn visible_pokedex_menu_entries(
     }
     if let Some(kanto) = runtime_shell.pokedex_controls.area_region {
         let species = selected_pokedex_catalog_species(snapshot, runtime_shell.pokedex_cursor)?;
+        if minnesota_map_active(snapshot) {
+            let controls = &runtime_shell.pokedex_controls;
+            let mut lines = vec![format!("{} AREA", species.species_id), "MINNESOTA".into()];
+            if let Some(area) = controls.regional_areas.get(controls.area_cursor) {
+                lines.push(format!(
+                    "{} / {}",
+                    controls.area_cursor + 1,
+                    controls.regional_areas.len()
+                ));
+                lines.push(area.name.clone());
+                lines.push(area.method.clone());
+                if !area.time.is_empty() {
+                    lines.push(area.time.into());
+                }
+            } else {
+                lines.push("AREA UNKNOWN".into());
+            }
+            return Ok(lines);
+        }
         let mut entries = vec![
             format!(
                 "{}'S NEST",
@@ -642,7 +661,7 @@ fn visible_pokedex_detail_entries(
     let mut entries = vec![
         format!(
             "No.{:03} {}",
-            species.int_id,
+            visible_pokedex_number(snapshot, species),
             crate::core::models::pokemon_species_display_name(&species.species_id)
         ),
         entry.classification.clone(),
@@ -999,7 +1018,7 @@ fn visible_trainer_card_entries(
     {
         entries.push(format!(
             "#DEX {:>3}",
-            snapshot.progression.pokedex_owned.min(999)
+            visible_pokedex_counts(snapshot).1.min(999)
         ));
     }
     entries.extend([

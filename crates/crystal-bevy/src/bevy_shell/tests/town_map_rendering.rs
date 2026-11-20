@@ -611,3 +611,38 @@ fn save_minnesota_screen_sprites(world: &mut World, filename: &str) {
         .save(directory.join(filename.replace(".png", "-4x.png")))
         .expect("save enlarged production sprites");
 }
+
+#[test]
+#[ignore = "requires a Minnesota pack in MN_FIELD_GUIDE_PACK and CRYSTAL_TOWN_MAP_RENDER_DIR"]
+fn regional_pokedex_area_renders_the_same_fishing_site_as_the_text_view() -> anyhow::Result<()> {
+    let path = PathBuf::from(std::env::var_os("MN_FIELD_GUIDE_PACK").expect("regional pack"));
+    let root = AssetRoot::new(path.parent().expect("pack directory"));
+    let runtime = CrystalRuntime::from_loaded_compiled_pack(
+        &root,
+        crystal_assets::read_loaded_verified_compiled_game_pack(&path)?,
+    )?;
+    let mut shell = interior_life::fixture(&root, &runtime, "MnStateFairgrounds", (36, 28)).shell;
+    let snapshot = shell.shell.snapshot()?;
+    shell.pokedex_cursor = snapshot
+        .pokemon
+        .iter()
+        .position(|p| p.species_id == "PADDARRAY")
+        .expect("regional ray");
+    shell.pokedex_menu_open = true;
+    shell.pokedex_detail_open = true;
+    shell.pokedex_controls.area_region = Some(false);
+    let areas = regional_dex_areas::collect(runtime.data(), "PADDARRAY", &[])?;
+    shell.pokedex_controls.area_cursor = areas
+        .iter()
+        .position(|a| a.name == "WINONA" && a.method == "SUPER ROD")
+        .expect("Winona fishing site");
+    shell.pokedex_controls.regional_areas = areas;
+    let labels = visible_pokedex_menu_entries(&snapshot, &shell)?;
+    for label in ["PADDARRAY AREA", "WINONA", "SUPER ROD"] {
+        assert!(labels.iter().any(|row| row == label), "{label}");
+    }
+    let mut app = integrated_shell_test_app(shell);
+    app.update();
+    save_minnesota_screen_sprites(app.world_mut(), "paddarray-area.png");
+    Ok(())
+}

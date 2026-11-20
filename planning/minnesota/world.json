@@ -7964,7 +7964,7 @@
     "status": "Accepted current-parent terrain revision: source/native pixels, strict whole-pack preservation, directional grass/ledge proof, actual2D review, native encounters/trainerPP/resources/Continue and stdio pass. CurrentR12 work preserved.",
     "scope_limit": "Sequential Minnesota grass pass remains open beyond R01-R03. Explicit local fixtures do not prove an earned statewide campaign."
   },
-  "active_local_review_revision": "fair_table_field_revision",
+  "active_local_review_revision": "fair_patrols_field_revision",
   "script_command_repair_revision": {
     "kind": "missing_minnesota_map_command_records",
     "parent_revision": "field_hm_habitats_cyclists_revision",
@@ -13319,6 +13319,21 @@
     "map_count": 744,
     "changed_maps_from_parent": 5,
     "runbook": "revisions/fair-table-v01/README.md",
+    "added_maps_from_parent": 0
+  },
+  "fair_patrols_field_revision": {
+    "kind": "campaign_review",
+    "parent_revision": "fair_table_field_revision",
+    "parent_pack": "content-packs/minnesota-fair-table-v01.crystalpack",
+    "parent_pack_sha256": "c1ab0d2a65aedbdc634a695239abb336a0ef91df3b2b6c8ec8a1f6960301b51b",
+    "pack": "content-packs/minnesota-fair-patrols-v01.crystalpack",
+    "pack_sha256": "8bd5356f23cc88e9ba0df076a087ae7397a169ca422fcb4425ad78d257870499",
+    "build_recipe": "planning/minnesota/revisions/fair-patrols-v01/field-build.json",
+    "build_recipe_sha256": "c0db3a4dc1eec6605b106390daf01383ae4c9d552a7ebe31346c76bda4b71ea2",
+    "content_identity": "7e7b1c6e5cbe64deb43ecb3dc5eacfa57b0d812b944bbf8060a53296900b2afe",
+    "map_count": 744,
+    "changed_maps_from_parent": 3,
+    "runbook": "revisions/fair-patrols-v01/README.md",
     "added_maps_from_parent": 0
   }
 }

@@ -3403,18 +3403,19 @@ fn spawn_field_pokedex_screen(
         }
         labels
     } else {
+        let (seen, owned) = visible_pokedex_counts(snapshot);
         vec![
             (0.375, 11.0, "SEEN".to_string()),
             (
                 4.375,
                 12.0,
-                format!("{:3}", snapshot.progression.pokedex_seen),
+                format!("{seen:3}"),
             ),
             (0.375, 14.0, "OWN".to_string()),
             (
                 4.375,
                 15.0,
-                format!("{:3}", snapshot.progression.pokedex_owned),
+                format!("{owned:3}"),
             ),
         ]
     };
@@ -3539,7 +3540,7 @@ Transform::from_xyz(x, y, 3.8),),
                 list_col,
                 row,
                 if runtime_shell.pokedex_controls.mode == VisiblePokedexMode::Old {
-                    format!("{:03}", entry.int_id)
+                    format!("{:03}", visible_pokedex_number(snapshot, entry))
                 } else {
                     String::new()
                 },
@@ -4561,7 +4562,7 @@ Transform::from_xyz(x, y, 3.8),),
         rendered_art,
         asset_root,
         images,
-        &format!("{:03}", species.int_id),
+        &format!("{:03}", visible_pokedex_number(snapshot, species)),
         x,
         y,
         3.8,
@@ -13996,6 +13997,71 @@ Transform::from_xyz(x, y, 3.8),),
     Ok(())
 }
 
+fn spawn_regional_pokedex_area(
+    commands: &mut Commands,
+    snapshot: &RuntimeShellSnapshot,
+    shell: &BevyRuntimeShell,
+    art: &mut RenderedTilesetArt,
+    root: &AssetRoot,
+    images: &mut Assets<Image>,
+) -> Result<()> {
+    let frame = minnesota_map_frame(snapshot, art, root, images, true)?;
+    commit_presented_fullscreen_frame(
+        commands,
+        art,
+        &frame,
+        PresentedFullscreenFrameSource::Cached,
+        3.4,
+        images,
+    )?;
+    let controls = &shell.pokedex_controls;
+    let area = controls.regional_areas.get(controls.area_cursor);
+    let title = area.map_or("AREA UNKNOWN", |a| a.name.as_str());
+    for (row, line) in town_map_label_lines(title).iter().enumerate() {
+        let (x, y) = battle_hud_tile_origin(9.0, row as f32);
+        spawn_field_command_bitmap_text(commands, art, root, images, line, x, y, 3.8);
+    }
+    if let Some(area) = area {
+        let index = format!(
+            "{}/{}",
+            controls.area_cursor + 1,
+            controls.regional_areas.len()
+        );
+        let (x, y) = battle_hud_tile_origin((7.0 - index.len() as f32) * 0.5, 1.0);
+        spawn_field_command_bitmap_text(commands, art, root, images, &index, x, y, 3.8);
+        for (row, line) in [&*area.method, area.time].into_iter().enumerate() {
+            let (x, y) = battle_hud_tile_origin(2.0, 16.0 + row as f32);
+            spawn_field_command_bitmap_text(commands, art, root, images, line, x, y, 3.8);
+        }
+    }
+    let marker = if controls.area_show_player {
+        let player =
+            projected_minnesota_landmark(snapshot, visible_pokegear_player_landmark(snapshot)?);
+        Some((player.x, player.y))
+    } else {
+        area.map(|a| (a.x, a.y))
+    };
+    if let Some((x, y)) = marker {
+        let scale = TILE_SIZE / SOURCE_TILE_SIZE as f32;
+        for (size, color, depth) in [(6.0, Color::BLACK, 3.7), (4.0, Color::WHITE, 3.8)] {
+            commands.spawn((
+                Sprite {
+                    color,
+                    custom_size: Some(Vec2::splat(size * scale)),
+                    ..default()
+                },
+                Transform::from_xyz(
+                    PLAYFIELD_LEFT + f32::from(x - 8) * scale,
+                    PLAYFIELD_TOP - f32::from(y - 16) * scale,
+                    depth,
+                ),
+                FieldCommandMarker,
+            ));
+        }
+    }
+    Ok(())
+}
+
 fn spawn_pokedex_nest_screen(
     commands: &mut Commands,
     snapshot: &RuntimeShellSnapshot,
@@ -14005,6 +14071,9 @@ fn spawn_pokedex_nest_screen(
     images: &mut Assets<Image>,
     kanto: bool,
 ) -> Result<()> {
+    if minnesota_map_active(snapshot) {
+        return spawn_regional_pokedex_area(commands, snapshot, shell, art, root, images);
+    }
     let palettes = &snapshot.presentation.pokegear_town_map_palette_map;
     let frame = load_town_map_frame_with_nests(
         root,

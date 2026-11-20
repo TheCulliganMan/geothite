@@ -1,6 +1,98 @@
 use super::build_minnesota_research_access;
 
 #[test]
+#[ignore = "requires the original Fair Table pack in MN_STARTER_BENCH_PARENT"]
+fn winona_benches_follow_each_starter_choice_and_adoption() -> anyhow::Result<()> {
+    use crystal_core::state::GameState;
+    use crystal_core::world::map::TilePosition;
+
+    use crate::grand_marais_modpack::authoring::command;
+
+    const STATION: &str = "MnWinonaFieldStation";
+    let mut pack = crate::read_verified_compiled_game_pack(
+        std::env::var_os("MN_STARTER_BENCH_PARENT").expect("external Fair Table pack"),
+    )?;
+    let before = pack.data.maps[STATION].clone();
+    super::refresh_adopted_starter_benches(&mut pack)?;
+    let room = &pack.data.maps[STATION];
+    let starters = [
+        ("POUCHID", "CHIKORITA"),
+        ("KINDLIT", "CYNDAQUIL"),
+        ("BIRCHIT", "TOTODILE"),
+    ];
+    for (species, original) in starters {
+        let gift = format!("MnEarlyPartner{species}");
+        let ball = format!("MN_W_{original}");
+        let claim = command(
+            "setevent",
+            &[&format!("EVENT_MN_{species}_RESEARCH_RECEIVED")],
+        );
+        let mut expected = before.scripts[&gift]
+            .as_array()
+            .expect("original gift script")
+            .clone();
+        let success = expected
+            .iter()
+            .position(|row| row == &claim)
+            .expect("successful adoption");
+        expected.insert(success + 1, command("disappear", &[&ball]));
+        assert_eq!(
+            room.scripts[&gift].as_array(),
+            Some(&expected),
+            "only successful gifts hide a ball"
+        );
+        assert_eq!(
+            room.scripts[&ball], before.scripts[&ball],
+            "preserve first-choice encounters"
+        );
+    }
+    for chosen in [None, Some(0), Some(1), Some(2)] {
+        for adoptions in 0..8 {
+            let mut state = GameState::reset_wram_for_new_game();
+            for (index, (species, original)) in starters.iter().enumerate() {
+                state.flags.set_event_flag(
+                    &format!("EVENT_MN_WINONA_{original}"),
+                    Some(index) == chosen,
+                )?;
+                state.flags.set_event_flag(
+                    &format!("EVENT_MN_{species}_RESEARCH_RECEIVED"),
+                    adoptions & (1 << index) != 0,
+                )?;
+            }
+            let mut session = pack
+                .data
+                .overworld_session(STATION, TilePosition::new(4, 6), 0)?;
+            pack.data.apply_map_setup_callbacks(
+                &mut state,
+                &mut session,
+                STATION,
+                "MAPSETUP_WARP",
+            )?;
+            for (index, (_, original)) in starters.iter().enumerate() {
+                let actor = format!("MN_W_{original}");
+                let ball = session
+                    .objects
+                    .iter()
+                    .find(|obj| obj.object_identifier.as_deref() == Some(actor.as_str()))
+                    .expect("native ball");
+                let picked = Some(index) == chosen;
+                assert_eq!(
+                    session.is_object_visible(ball),
+                    !picked && adoptions & (1 << index) == 0
+                );
+                assert_eq!(
+                    state
+                        .flags
+                        .is_event_flag_set(&format!("EVENT_MN_WINONA_{original}"))?,
+                    picked
+                );
+            }
+        }
+    }
+    Ok(())
+}
+
+#[test]
 #[ignore = "requires the external selected Minnesota review pack"]
 fn fossil_lab_dialogue_revision_preserves_the_existing_room() {
     let base = crate::read_verified_compiled_game_pack(

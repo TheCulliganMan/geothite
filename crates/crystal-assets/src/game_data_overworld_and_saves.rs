@@ -1668,7 +1668,8 @@ impl GameDataSet {
             != staged_session.object_runtime_tiles
             || session.object_facings != staged_session.object_facings;
         if staged_session.map.name.starts_with("Mn")
-            && autonomous_objects_changed
+            && (autonomous_objects_changed
+                || staged_session.trainer_patrol_landed_since(session.frame))
             && !overworld_input_locked
             && trainer_sight.is_none()
             && interaction.is_none()

@@ -9,7 +9,7 @@ use crate::{CompiledGamePack, MapModule};
 
 #[derive(Deserialize)]
 pub(crate) struct Patrol {
-    id: String,
+    pub(crate) id: String,
     size_core: [u16; 2],
     #[serde(default)]
     behavior: Behavior,
@@ -22,6 +22,8 @@ enum Behavior {
     Run,
     Walk,
     Rotate,
+    TrainerWalk,
+    TrainerRun,
 }
 
 pub(crate) fn install(
@@ -43,10 +45,25 @@ pub(crate) fn install(
             .position(|actor| actor.object_identifier.as_deref() == Some(patrol.id.as_str()))
             .context("fair patrol actor")?;
         let actor = &map.objects[index];
-        ensure!(
-            actor.object_type == "OBJECTTYPE_SCRIPT",
-            "patrol must be a non-trainer"
+        let trainer = matches!(
+            patrol.behavior,
+            Behavior::TrainerWalk | Behavior::TrainerRun
         );
+        if trainer {
+            ensure!(
+                actor.object_type == "OBJECTTYPE_TRAINER"
+                    && actor.radius > 0
+                    && actor.sightline_direction_override.is_none()
+                    && map.trainer_scripts.contains_key(&patrol.id),
+                "expected an ordinary sight trainer for {}",
+                patrol.id
+            );
+        } else {
+            ensure!(
+                actor.object_type == "OBJECTTYPE_SCRIPT",
+                "expected a visitor"
+            );
+        }
         if matches!(patrol.behavior, Behavior::Rotate) {
             ensure!(
                 patrol.size_core == [0, 0],
@@ -89,8 +106,8 @@ pub(crate) fn install(
         }
         let actor = &mut map.objects[index];
         actor.spritemovedata = match patrol.behavior {
-            Behavior::Walk => "SPRITEMOVEDATA_PATROL_CLOCKWISE_SLOW",
-            Behavior::Run => "SPRITEMOVEDATA_PATROL_CLOCKWISE",
+            Behavior::Walk | Behavior::TrainerWalk => "SPRITEMOVEDATA_PATROL_CLOCKWISE_SLOW",
+            Behavior::Run | Behavior::TrainerRun => "SPRITEMOVEDATA_PATROL_CLOCKWISE",
             Behavior::Rotate => unreachable!("rotating visitors were handled above"),
         }
         .into();

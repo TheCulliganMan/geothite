@@ -7,6 +7,7 @@ mod minnesota_grass_priority;
 mod minnesota_town_map;
 #[cfg(not(target_arch = "wasm32"))]
 mod preview_audio_policy;
+mod regional_dex_areas;
 mod renderer_policy;
 mod save_prompt_pages;
 mod wading_waterline;
