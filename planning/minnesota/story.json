@@ -39494,6 +39494,34 @@
           [
             "I paddle my canoe",
             "in the dark pools."
+          ],
+          [
+            "My REEDRAFT drains",
+            "BANKMAW's HP."
+          ],
+          [
+            "East of town, try",
+            "the grass by day."
+          ]
+        ],
+        "MnBrainerdGymGuideAfterBadgeText": [
+          [
+            "The ranger wants",
+            "to see that badge."
+          ],
+          [
+            "She's out by the",
+            "fishing pier."
+          ]
+        ],
+        "MnBrainerdGymGuideAfterReportText": [
+          [
+            "Take the north",
+            "road out of town."
+          ],
+          [
+            "The sign says",
+            "LEECH LAKE TRAIL."
           ]
         ],
         "MnBrainerdGymFLOAT_WALKRoutingPrompt": [

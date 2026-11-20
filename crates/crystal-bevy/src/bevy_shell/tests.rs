@@ -1,6 +1,8 @@
 include!("tests/shell_basics.rs");
 #[path = "tests/badge_trails.rs"]
 mod badge_trails;
+#[path = "tests/brainerd_guide.rs"]
+mod brainerd_guide;
 #[path = "tests/cave_escape_trip.rs"]
 mod cave_escape_trip;
 #[path = "tests/dialogue_cast.rs"]

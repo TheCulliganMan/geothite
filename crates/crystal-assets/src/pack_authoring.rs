@@ -165,6 +165,8 @@ mod northstar_gym_walk_relays;
 mod northstar_gym_walk_north;
 mod northstar_gym_walk_pools;
 pub use northstar_gym_walk::revise_gym_walk;
+mod northstar_badge_battles;
+pub use northstar_badge_battles::revise_badge_battles;
 mod northstar_fen_waterline;
 pub use northstar_fen_waterline::revise_fen_waterline;
 mod northstar_cave_trip;

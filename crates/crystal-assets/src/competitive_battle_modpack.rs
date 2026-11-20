@@ -1062,6 +1062,9 @@ fn compact_planning_species(state: &mut BattleCombatState) {
 }
 
 #[cfg(test)]
+#[path = "badge_battle_trials.rs"]
+mod badge_battle_trials;
+#[cfg(test)]
 #[path = "competitive_baton_pass_tests.rs"]
 mod competitive_baton_pass_tests;
 #[cfg(test)]

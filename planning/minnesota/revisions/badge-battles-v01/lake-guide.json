@@ -1,0 +1,34 @@
+[
+  {
+    "map": "MnBrainerdGym",
+    "label": "MnBrainerdGymGuideText",
+    "before": [
+      ["Follow the pale", "sand to SIVREN."],
+      ["I paddle my canoe", "in the dark pools."]
+    ],
+    "after": [
+      ["Follow the pale", "sand to SIVREN."],
+      ["I paddle my canoe", "in the dark pools."],
+      ["My REEDRAFT drains", "BANKMAW's HP."],
+      ["East of town, try", "the grass by day."]
+    ]
+  },
+  {
+    "map": "MnBrainerdGym",
+    "label": "MnBrainerdGymGuideAfterBadgeText",
+    "before": null,
+    "after": [
+      ["The ranger wants", "to see that badge."],
+      ["She's out by the", "fishing pier."]
+    ]
+  },
+  {
+    "map": "MnBrainerdGym",
+    "label": "MnBrainerdGymGuideAfterReportText",
+    "before": null,
+    "after": [
+      ["Take the north", "road out of town."],
+      ["The sign says", "LEECH LAKE TRAIL."]
+    ]
+  }
+]

@@ -7964,7 +7964,7 @@
     "status": "Accepted current-parent terrain revision: source/native pixels, strict whole-pack preservation, directional grass/ledge proof, actual2D review, native encounters/trainerPP/resources/Continue and stdio pass. CurrentR12 work preserved.",
     "scope_limit": "Sequential Minnesota grass pass remains open beyond R01-R03. Explicit local fixtures do not prove an earned statewide campaign."
   },
-  "active_local_review_revision": "fen_waterline_field_revision",
+  "active_local_review_revision": "badge_battles_field_revision",
   "script_command_repair_revision": {
     "kind": "missing_minnesota_map_command_records",
     "parent_revision": "field_hm_habitats_cyclists_revision",
@@ -13134,5 +13134,19 @@
     "map_count": 743,
     "changed_maps_from_parent": 1,
     "runbook": "revisions/fen-waterline-v01/README.md"
+  },
+  "badge_battles_field_revision": {
+    "kind": "campaign_review",
+    "parent_revision": "fen_waterline_field_revision",
+    "parent_pack": "content-packs/minnesota-fen-waterline-v01.crystalpack",
+    "parent_pack_sha256": "379df4e839b7a40966514225461df76eef3bcf08657dd1648f2f9ee27608e380",
+    "pack": "content-packs/minnesota-badge-battles-v01.crystalpack",
+    "pack_sha256": "23fe8538fcebadf608caf5901acb44fd6cce5695927837696c60d63e7fff59f4",
+    "build_recipe": "planning/minnesota/revisions/badge-battles-v01/field-build.json",
+    "build_recipe_sha256": "452e78df980454133fc6d63e2f7e55fe210b0dcd9819e5984735c48c91c8b020",
+    "content_identity": "579cbbcb04d527db2fec1dbec2c09bddc978f7449b51977cb259797330125d8a",
+    "map_count": 743,
+    "changed_maps_from_parent": 1,
+    "runbook": "revisions/badge-battles-v01/README.md"
   }
 }

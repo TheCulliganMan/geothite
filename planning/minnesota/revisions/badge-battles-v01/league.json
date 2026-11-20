@@ -1,0 +1,22 @@
+{
+  "parties": [
+    {
+      "trainer_id": "MN_LEAGUE_3",
+      "move_edits": [
+        { "species": "DOUBLEHEX", "level": 49, "slot": 0, "before": "SCREECH", "after": "IRON_HEAD" }
+      ]
+    },
+    {
+      "trainer_id": "MN_LEAGUE_4",
+      "move_edits": [
+        { "species": "KNOTITAN", "level": 50, "slot": 2, "before": "ENDURE", "after": "GLARE" }
+      ]
+    },
+    {
+      "trainer_id": "MN_GYM_8_REMATCH",
+      "move_edits": [
+        { "species": "RIMEGUARD", "level": 59, "slot": 0, "before": "ICE_BEAM", "after": "ICE_PUNCH" }
+      ]
+    }
+  ]
+}

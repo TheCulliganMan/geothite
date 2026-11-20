@@ -1,0 +1,7 @@
+{
+  "parent_pack": "content-packs/minnesota-fen-waterline-v01.crystalpack",
+  "parent_pack_sha256": "379df4e839b7a40966514225461df76eef3bcf08657dd1648f2f9ee27608e380",
+  "output_pack": "content-packs/minnesota-badge-battles-v01.crystalpack",
+  "expected_pack_sha256": "23fe8538fcebadf608caf5901acb44fd6cce5695927837696c60d63e7fff59f4",
+  "builder": "pack_badge_battles"
+}
