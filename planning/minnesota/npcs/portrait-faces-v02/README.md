@@ -1,5 +1,11 @@
 # Gym Leader and professor battle portraits
 
+**Rejected by the user.** The waist-up format is wrong for trainer battle
+sprites. All nine require full-body replacements with actual game trainer
+proportions and poses. This entire set is retained only as rejected history.
+Mechanical passes and the previous internal visual review did not establish
+correct art direction. No regional source selection or active pack uses it.
+
 All eight Gym Leaders and Professor Tamarack now have image-generated waist-up
 portraits, converted to the native 56×56 format. The redesign focuses on adult
 head-to-shoulder proportions, visible pupils, distinct noses and readable mouths.

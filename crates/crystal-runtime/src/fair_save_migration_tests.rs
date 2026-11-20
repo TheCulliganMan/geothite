@@ -77,6 +77,7 @@ fn fair_release_copies_checkpoints_across_exact_archives() -> Result<()> {
             ("MnR15C00R00", 22, 8, MovementMode::Normal, true),
             ("MnR07C00R00", 28, 20, MovementMode::Surf, true),
             ("MnIronSump", 9, 10, MovementMode::Surf, false),
+            ("MnStateFairgrounds", 36, 28, MovementMode::Normal, false),
         ]
         .into_iter()
         .enumerate()
@@ -94,6 +95,20 @@ fn fair_release_copies_checkpoints_across_exact_archives() -> Result<()> {
             *map_name = map.into();
             *tile = TilePosition::new(x, y);
             *m = mode;
+            let old_room = parent.data().overworld_session_for_traversal_with_state(
+                map,
+                *tile,
+                fixture.frame_counter,
+                mode.traversal_state(),
+                None,
+            )?;
+            fixture.map_object_overrides.clear();
+            fixture
+                .map_object_overrides
+                .entry(map.into())
+                .or_default()
+                .object_structs = old_room.object_struct_roster_memory()?;
+
             if mode == MovementMode::Surf {
                 fixture
                     .script_runtime

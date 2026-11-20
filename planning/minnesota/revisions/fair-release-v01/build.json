@@ -1,0 +1,19 @@
+{
+  "parent_pack": "content-packs/minnesota-intro-fair-patrols-v01.crystalpack",
+  "parent_pack_sha256": "cfb028aec4080314247063a3c8686fa2f1b361a7c84bc7df3a4f5e3413aab0bd",
+  "parent_content_id": "87ede8ac2da770e8b8ace3245e791eaaf1fb283f50aa4db63d7e6d2fa73fbae0",
+  "sprite_builder": "pack_minnesota_sprite_edges",
+  "sprite_output": "content-packs/minnesota-intro-fair-patrols-sprite-edges-v01.crystalpack",
+  "sprite_output_sha256": "a92e6c85b4ae35b33959458b181417a3271fd3d60d3c96ac19b75f05a809d05d",
+  "prior_raw_pack": "content-packs/minnesota-lakeside-v01.crystalpack",
+  "prior_raw_sha256": "e56ded3d55b8364e8756a4a02eb530fb74f52c03951c1c01d962441f7e2193d9",
+  "prior_hosted_pack": "target/lakeside-20261118/hosted.crystalpack",
+  "prior_hosted_sha256": "ad775429c71fc48aabbc8e1e2db40d3594a209dbc81e8b959fed1b73f5486426",
+  "builder": "pack_northstar_fair_release",
+  "output_pack": "content-packs/minnesota-fair-release-v01.crystalpack",
+  "expected_pack_sha256": "18003b91597173f1d98937a0f6cc2fa82cfd2c5b3612c9803cd5f615acad2a73",
+  "expected_content_id": "d81cdb3d46bd72ffd22a2793c66f1d2f7ff2b8500674bca1ec68e1ee230a3078",
+  "hosted_output": "target/fair-release-20261120/hosted.crystalpack",
+  "expected_hosted_sha256": "9fbfa371972f6b3cdbd9d0ca9689aa5a66ee43d1d17e7650982da88d4e57f58e",
+  "expected_hosted_content_id": "415294715e2f50c60b3696966441a98a7b869fde34f6a3acbf94b4ab64bb8b4a"
+}

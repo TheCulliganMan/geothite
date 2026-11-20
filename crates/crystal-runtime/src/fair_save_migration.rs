@@ -198,8 +198,15 @@ pub(super) fn reconcile(
     let original = [u16::try_from(tile.x)?, u16::try_from(tile.y)?];
     if !occupied.contains(&(tile.x, tile.y))
         && !change.triggers.contains(&original)
-        && sample_collision(&session.map, &session.tileset, start)
-            .is_some_and(|s| on_traversal_layer(s.permission, mode))
+        && sample_collision(&session.map, &session.tileset, start).is_some_and(|s| {
+            // Connected maps permit special border arrival tiles when restoring a save.
+            // A changed interior quadrant must itself support the player's movement mode.
+            on_traversal_layer(s.permission, mode)
+                && (!old_terrain.contains_key(&(start.x, start.y))
+                    || DIRECTIONS
+                        .into_iter()
+                        .any(|dir| is_permission_passable(s.permission, dir, mode)))
+        })
         && data
             .overworld_session_for_traversal_with_state(
                 map_name,
