@@ -240,9 +240,20 @@ pub(crate) fn callback(map: &mut MapModule, kind: &str, script: &str) {
 
 pub(crate) fn publish(
     pack: &mut CompiledGamePack,
+    map: MapModule,
+    anchor: &str,
+    tile: [u16; 2],
+) -> Result<()> {
+    let manifest = format!("northstar-lair-{}", map.id.to_ascii_lowercase());
+    publish_interior(pack, map, anchor, tile, manifest)
+}
+
+pub(crate) fn publish_interior(
+    pack: &mut CompiledGamePack,
     mut map: MapModule,
     anchor: &str,
     tile: [u16; 2],
+    manifest: String,
 ) -> Result<()> {
     crate::ely_league_rooms::finish(pack, &mut map)?;
     map.script_audio_commands = crate::parse_script_audio_commands(&map.id, &map.scripts)?;
@@ -312,7 +323,7 @@ pub(crate) fn publish(
         subtile_y: i16::try_from(tile[1] % 2)?,
     };
     let extension = CompiledMapExtension {
-        manifest_id: format!("northstar-lair-{}", map.id.to_ascii_lowercase()),
+        manifest_id: manifest,
         map_name: meta.name.clone(),
         map_constant: meta.constant.clone(),
         metadata: meta,

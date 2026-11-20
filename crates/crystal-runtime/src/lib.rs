@@ -2372,6 +2372,8 @@ pub struct RuntimeCompiledScriptStep {
 pub enum RuntimeCompiledScriptBoundary {
     /// The frontend must grant the gift and present its nickname/storage flow.
     GiftPokemon,
+    /// The controller must present the floor choices before the elevator script resumes.
+    ElevatorPrompt,
     /// The controller must confirm the trade and obtain a fresh party selection.
     NpcTrade,
     DayOfWeekPrompt,

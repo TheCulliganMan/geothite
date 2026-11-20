@@ -1,6 +1,6 @@
 //! Responsive terminal illustration. Reads real pack art and controller
 //! collision, but never dispatches input or replaces authoritative state.
-use crate::{TextSnapshot, snapshot::terrain_glyph};
+use crate::{SnapshotLine, TextSnapshot, snapshot::terrain_glyph};
 use crystal_core::world::{
     encounters::TimeOfDay,
     map::{Direction, TilePosition},
@@ -106,6 +106,22 @@ fn wrap(text: &str, width: usize) -> Vec<String> {
     }
     lines
 }
+// The elevator's current-floor notice stays visible beside its destination list.
+fn menu_context<'a>(
+    s: &RuntimeShellSnapshot,
+    t: &'a TextSnapshot,
+) -> impl Iterator<Item = &'a SnapshotLine> {
+    let elevator =
+        s.ui.menu
+            .as_ref()
+            .is_some_and(|menu| menu.menu_id == "visible-shell:elevator");
+    t.dialogue
+        .iter()
+        .filter(move |_| elevator)
+        .chain(&t.menu)
+        .chain(&t.prompt)
+}
+
 impl PaintedRenderer {
     /// Same layout, camera, source art and controller snapshot; denser glyphs
     /// only for real terminals. Browser circles/ASCII battle art stay unchanged.
@@ -378,9 +394,7 @@ impl PaintedRenderer {
                 "# wall  T tree  arrows: ledges  | barrier  ? unknown".into(),
             ]
         } else if !t.menu.is_empty() || !t.prompt.is_empty() {
-            t.menu
-                .iter()
-                .chain(&t.prompt)
+            menu_context(s, t)
                 .flat_map(|l| wrap(&l.text, usize::from(cols - 4)))
                 .collect()
         } else if !t.dialogue.is_empty() {
@@ -881,11 +895,7 @@ impl PaintedRenderer {
                 "Two fingers B. Hold START.".to_owned(),
             ]
         } else if !t.menu.is_empty() || !t.prompt.is_empty() {
-            t.menu
-                .iter()
-                .chain(&t.prompt)
-                .map(|line| line.text.clone())
-                .collect()
+            menu_context(s, t).map(|line| line.text.clone()).collect()
         } else if !t.dialogue.is_empty() {
             t.dialogue.iter().map(|line| line.text.clone()).collect()
         } else {

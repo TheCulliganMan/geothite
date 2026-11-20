@@ -5353,24 +5353,16 @@
         ],
         "MN_ST_PAUL_DEPOT_CLERKText": [
           [
-            "For a train, ask",
-            "the conductor at"
+            "The conductor's up",
+            "on the platform."
           ],
           [
-            "the platform. If",
-            "you need MINA,"
+            "See the timetable",
+            "by the garden?"
           ],
           [
-            "she's by the open",
-            "car. Watch your"
-          ],
-          [
-            "step around the",
-            "pump hose. I"
-          ],
-          [
-            "nearly put a foot",
-            "through the loop."
+            "MINA's just to",
+            "the left of it."
           ]
         ],
         "MN_ST_PAUL_DEPOT_COURIERText": [
@@ -34337,6 +34329,22 @@
             "before I got in",
             "the lift."
           ]
+        ],
+        "MnStoreFloor1SignText": [
+          [
+            "STORE DIRECTORY"
+          ],
+          [
+            "1F  Balls & Repels",
+            "2F  Medicine"
+          ],
+          [
+            "3F  Battle gear",
+            "4F  Vitamins"
+          ],
+          [
+            "5F  Move machines"
+          ]
         ]
       },
       "MnMinneapolisBattleClub": {
@@ -35054,6 +35062,15 @@
           [
             "till it wakes."
           ]
+        ],
+        "MnStoreFloor2SignText": [
+          [
+            "2F  MEDICINE"
+          ],
+          [
+            "Potions and cures",
+            "at the counter."
+          ]
         ]
       },
       "MnMinneapolisDepartmentStore3F": {
@@ -35101,6 +35118,15 @@
             "before I go",
             "shopping again."
           ]
+        ],
+        "MnStoreFloor3SignText": [
+          [
+            "3F  BATTLE GEAR"
+          ],
+          [
+            "X items and gear",
+            "for your partner."
+          ]
         ]
       },
       "MnMinneapolisDepartmentStore4F": {
@@ -35146,6 +35172,15 @@
           [
             "the list."
           ]
+        ],
+        "MnStoreFloor4SignText": [
+          [
+            "4F  VITAMINS"
+          ],
+          [
+            "Protein, Iron and",
+            "more this floor."
+          ]
         ]
       },
       "MnMinneapolisDepartmentStore5F": {
@@ -35190,6 +35225,15 @@
           [
             "I'd left at the",
             "PC."
+          ]
+        ],
+        "MnStoreFloor5SignText": [
+          [
+            "5F  MOVE MACHINES"
+          ],
+          [
+            "Punches, weather",
+            "and more on TMs."
           ]
         ]
       },
@@ -37564,23 +37608,16 @@
         ],
         "MN_SPX_CAPITOLLIBRARY_HOSTText": [
           [
-            "You can unfold the",
-            "charts on the back"
+            "The river chart is",
+            "by the far window."
           ],
           [
-            "desk. Take the",
-            "lamp with you. I"
+            "I mistook a three",
+            "for an eight once."
           ],
           [
-            "copied a three as",
-            "an eight once and"
-          ],
-          [
-            "gave a whole lake",
-            "five feet it"
-          ],
-          [
-            "didn't have."
+            "Gave a whole lake",
+            "five extra feet!"
           ]
         ],
         "MN_SP_INTERIOR_LIBRARY_READERInteriorText": [
@@ -37603,6 +37640,32 @@
           [
             "soon as you see",
             "it."
+          ]
+        ],
+        "MnCapitolRiverChartText": [
+          [
+            "ST. PAUL RIVER",
+            "Canoe chart"
+          ],
+          [
+            "RIVER PARK sits on",
+            "the north bank."
+          ],
+          [
+            "The dashed line",
+            "passes under both"
+          ],
+          [
+            "bridges. Canoes",
+            "can follow it."
+          ],
+          [
+            "On foot, take the",
+            "west bridge south."
+          ],
+          [
+            "Turn west for the",
+            "CANOE SHOP."
           ]
         ]
       },
@@ -51214,24 +51277,8 @@
       "MnNorthShorePieShop": {
         "MN_SHORE_BAKERText": [
           [
-            "That blueberry",
-            "with the split"
-          ],
-          [
-            "crust is mine. Mom",
-            "used to save the"
-          ],
-          [
-            "cracked one for us",
-            "kids. I got older"
-          ],
-          [
-            "and found out she",
-            "could make it"
-          ],
-          [
-            "crack whenever she",
-            "liked."
+            "Blueberry pie!",
+            "A slice for 350?"
           ]
         ],
         "MN_SHORE_PIE_GUESTText": [
@@ -51250,6 +51297,45 @@
           [
             "the house. I don't",
             "THINK I can."
+          ]
+        ],
+        "MnShorePieTableText": [
+          [
+            "A split-crust pie.",
+            "A note beside it:"
+          ],
+          [
+            "Mom always saved",
+            "the cracked one"
+          ],
+          [
+            "for us kids. Took",
+            "me years to learn"
+          ],
+          [
+            "she could crack it",
+            "when she liked."
+          ],
+          [
+            "- The baker"
+          ]
+        ],
+        "MnShorePiePoorText": [
+          [
+            "A slice is 350.",
+            "I can save one."
+          ]
+        ],
+        "MnShorePieFullText": [
+          [
+            "Your bag is full.",
+            "I can hold it."
+          ]
+        ],
+        "MnShorePiePaidText": [
+          [
+            "Here, a PIE SLICE.",
+            "Mind the filling!"
           ]
         ]
       },

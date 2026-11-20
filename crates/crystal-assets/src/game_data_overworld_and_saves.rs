@@ -2906,11 +2906,7 @@ impl GameDataSet {
                 .backup_warp_map_name
                 .as_deref()
                 .with_context(|| format!("saved {path} dynamic warpcheck has no backup map"))?;
-            let destination_warp_id = Self::required_dynamic_backup_warp_index(
-                state,
-                trigger.warp.index,
-                &trigger.map_name,
-            )?;
+            let destination_warp_id = self.dynamic_exit_index(state, &trigger)?;
             self.resolve_warp_destination(destination_map, destination_warp_id, &trigger)?
         };
         if warp.target_map != destination.map_name || warp.tile != destination.tile {

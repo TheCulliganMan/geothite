@@ -18,6 +18,7 @@ pub use intro_certification::certify_source_intro_timeline;
 mod battle_anim_graphics;
 #[cfg(feature = "dev-tools")]
 mod dev_tools;
+mod elevator_menu;
 mod field_fly;
 mod field_move_prompt_projection;
 mod field_notice_effects;
@@ -9717,6 +9718,10 @@ fn visible_controller_snapshot(
     runtime_shell: &mut BevyRuntimeShell,
 ) -> Result<RuntimeShellSnapshot> {
     let mut snapshot = runtime_shell.shell.presentation_snapshot()?;
+    if runtime_shell.elevator_cursor.is_some() {
+        elevator_menu::project(runtime_shell, &mut snapshot)?;
+        return Ok(snapshot);
+    }
     if let Some(scene) = visible_controller_fishing_scene(runtime_shell) {
         snapshot.clone_from(scene);
     }

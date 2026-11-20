@@ -6707,13 +6707,22 @@ impl GameDataSet {
             .script_runtime
             .memory
             .insert("wScriptVar".to_string(), script_value.clone());
-        state.script_runtime.pending_script_warp = Some(ScriptWarpRequest {
-            target_map: selected_target_map.clone(),
-            tile: destination_tile,
-            facing: None,
-            source_script: elevator.source_script.clone(),
-            command_index: elevator.elevator_command_index,
-        });
+        if module.attributes.map_constant.as_deref().is_some_and(|id| id.ends_with("_ELEVATOR"))
+            && module.events.warps.iter().any(|warp| warp.target_warp_id < 1)
+        {
+            // The ride changes where the cab doors open. The player stays at the
+            // controls through the sound and movement, then walks out normally.
+            state.backup_warp_map_name = Some(selected_target_map.clone());
+            state.backup_warp_index = Some(selected_warp);
+        } else {
+            state.script_runtime.pending_script_warp = Some(ScriptWarpRequest {
+                target_map: selected_target_map.clone(),
+                tile: destination_tile,
+                facing: None,
+                source_script: elevator.source_script.clone(),
+                command_index: elevator.elevator_command_index,
+            });
+        }
         Ok(RuntimeElevatorFloorSelection {
             map_name: command.map_name,
             data_label: command.data_label,

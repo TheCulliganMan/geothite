@@ -1,10 +1,20 @@
 //! Local placement/party are fixtures; conversations, errands and care use input.
+#[path = "capitol_river_chart.rs"]
+mod capitol_river_chart;
 #[path = "glacier_line_controller.rs"]
 mod glacier_line;
 #[path = "mill_inn_rest.rs"]
 mod mill_inn_rest;
 #[path = "interior_regional_flavor.rs"]
 mod regional_flavor;
+#[path = "shore_bakery.rs"]
+mod shore_bakery;
+#[path = "st_paul_public_rooms.rs"]
+mod st_paul_public_rooms;
+#[path = "store_elevator.rs"]
+mod store_elevator;
+#[path = "store_landings.rs"]
+mod store_landings;
 use std::collections::{BTreeMap, BTreeSet, VecDeque};
 use std::path::PathBuf;
 

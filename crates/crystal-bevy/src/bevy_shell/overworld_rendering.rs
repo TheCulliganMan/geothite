@@ -5853,6 +5853,9 @@ fn spawn_scene_dialog(
     if scene_dialog_surface_active(snapshot, runtime_shell) {
         require_bitmap_font_art(rendered_art, asset_root, images)?;
     }
+    if runtime_shell.elevator_cursor.is_some() {
+        return elevator_menu::draw(commands, snapshot, runtime_shell, rendered_art, asset_root, images);
+    }
     if spawn_visible_incoming_phone(commands, snapshot, runtime_shell, rendered_art, asset_root, images)? {
         return Ok(());
     }
@@ -10992,8 +10995,8 @@ fn update_scene_dialog_text_content_in_place<F: QueryFilter>(
     asset_root: &AssetRoot,
     images: &mut Assets<Image>,
 ) -> bool {
-    // The caller header owns glyphs outside the ordinary speech window.
-    if runtime_shell.incoming_phone_contact.is_some() {
+    // These surfaces also own glyphs outside the ordinary speech window.
+    if runtime_shell.incoming_phone_contact.is_some() || runtime_shell.elevator_cursor.is_some() {
         return false;
     }
     let Ok(entries) = visible_scene_dialog_entries(snapshot, runtime_shell) else {
@@ -12404,6 +12407,9 @@ fn visible_scene_dialog_entries(
     snapshot: &RuntimeShellSnapshot,
     runtime_shell: &BevyRuntimeShell,
 ) -> Result<Vec<String>> {
+    if runtime_shell.elevator_cursor.is_some() {
+        return elevator_menu::entries(snapshot, runtime_shell);
+    }
     let mut entries = Vec::new();
     if visible_pokecenter_pc_text_boundary(runtime_shell).is_some() {
         if let Some(text) = visible_field_dialog_text(snapshot, runtime_shell) {
@@ -12602,11 +12608,6 @@ fn visible_scene_dialog_entries(
     }
     if snapshot.pending_move_learn.is_some() {
         push_visible_pending_move_learn_entries(&mut entries, snapshot, runtime_shell)?;
-        entries.truncate(SCENE_MENU_VISIBLE_ROWS);
-        return Ok(entries);
-    }
-    if runtime_shell.elevator_cursor.is_some() {
-        push_visible_elevator_entries(&mut entries, snapshot, runtime_shell)?;
         entries.truncate(SCENE_MENU_VISIBLE_ROWS);
         return Ok(entries);
     }
@@ -12940,57 +12941,6 @@ fn push_visible_name_choice_entries(entries: &mut Vec<String>, runtime_shell: &B
             format!("  {option}")
         }
     }));
-}
-
-fn push_visible_elevator_entries(
-    entries: &mut Vec<String>,
-    snapshot: &RuntimeShellSnapshot,
-    runtime_shell: &BevyRuntimeShell,
-) -> Result<()> {
-    let elevators = visible_elevator_prompt_options(snapshot, runtime_shell);
-    let option_count = visible_elevator_option_count(snapshot, runtime_shell);
-    if option_count == 0 {
-        let surface_id = runtime_shell
-            .elevator_cursor
-            .as_ref()
-            .map(|cursor| cursor.surface_id.as_str())
-            .context("elevator prompt is active without a cursor")?;
-        anyhow::bail!(
-            "retained elevator surface {surface_id} has no matching compiled floors on map {}",
-            snapshot.overworld.map_name
-        );
-    }
-    let cursor = runtime_shell
-        .elevator_cursor
-        .as_ref()
-        .context("elevator prompt is active without a cursor")?;
-    let selected = strict_readonly_cursor_index(
-        &runtime_shell.elevator_cursor,
-        &cursor.surface_id,
-        option_count,
-    )
-    .context("elevator prompt is active without a valid cursor")?;
-    entries.push(compact_scene_label(
-        &format!("ELEVATOR {}/{}", selected + 1, option_count),
-        30,
-    ));
-    let mut flat_index = 0usize;
-    for elevator in elevators {
-        for floor in &elevator.floors {
-            if windowed_index_range(selected, option_count).contains(&flat_index) {
-                let marker = if flat_index == selected { ">" } else { " " };
-                entries.push(compact_scene_label(
-                    &format!(
-                        "{marker}{} -> {} warp{}",
-                        floor.floor, floor.target_map, floor.warp
-                    ),
-                    30,
-                ));
-            }
-            flat_index += 1;
-        }
-    }
-    Ok(())
 }
 
 fn push_visible_pending_move_learn_entries(

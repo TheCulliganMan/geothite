@@ -18,7 +18,7 @@ All six purchases show the prize and price together on one confirmation page. Al
 - The South Arrival Desk has a visitor menu. Directions to the Game Corner use the inn and marquee as landmarks. The South Market is two doors east. The clinic route passes the first river bridge and turns at the second one.
 - The Mill Workers Inn has a single bed along the east wall. Speak to the host or face either half of the bed. Accepting restores HP, PP and status across the party, including fainted partners. The inn charges nothing and preserves the player's registered clinic.
 
-An inventory of actors and readable scenery covered 357 Minnesota maps in the parent. Direct checks focused on the services above. Two further gaps are the Route 11 pie shop, where the sign advertises fresh pies and the staff only talk, and the Capitol Library, where the librarian describes charts the player cannot read.
+An inventory of actors and readable scenery covered 357 Minnesota maps in the parent. Direct checks focused on the services above. Two further gaps are the Route 11 pie shop, where the sign advertises fresh pies and the staff only talk, and the Capitol Library, where the librarian describes charts the player cannot read. Both services were completed in [Lakeside Stops](../lakeside-stops-v01/README.md).
 
 ## Rebuilding and verifying an edition
 

@@ -1,0 +1,12 @@
+{
+  "parent_pack": "content-packs/minnesota-arcade-frontage-v01.crystalpack",
+  "parent_pack_sha256": "0ecb8da6f5809c78f4c39bb5fbf559ef7a3199bcdd04363900651c608c218246",
+  "parent_content_id": "0886c571cd0dd9b49906b995d7ab9570f754e575a460a0291875a18a17554e66",
+  "output_pack": "content-packs/minnesota-lakeside-stops-v01.crystalpack",
+  "expected_pack_sha256": "47d0791b626f062206549d4b0679ca5ce2912ff4e5e242727b2ea625eecefe5a",
+  "expected_content_id": "14c2b902b7bfe0173bbdbea1f0baa6eff97419f30368730498869b56225adedb",
+  "builder": "pack_ely_challenge",
+  "arguments": [
+    "--lakeside-stops"
+  ]
+}

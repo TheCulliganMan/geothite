@@ -1316,19 +1316,21 @@ impl RuntimeGameShell {
             }
             let commands = self.runtime.compiled_script_commands(&current.source_script)?;
             let command = commands.get(current.command_index);
-            // Gifts own a nickname or storage presentation in the production
-            // controller. A composed continuation must leave the opcode for
-            // that controller, just as a directly reached gift command does.
-            if matches!(
-                command
-                    .and_then(|command| command.get("command"))
-                    .and_then(serde_json::Value::as_str),
-                Some("givepoke" | "giveegg")
-            ) {
+            // These opcodes need a fresh player choice even when a background
+            // interaction or a script jump reaches them inside a composed run.
+            let input_boundary = match command
+                .and_then(|command| command.get("command"))
+                .and_then(serde_json::Value::as_str)
+            {
+                Some("givepoke" | "giveegg") => Some(RuntimeCompiledScriptBoundary::GiftPokemon),
+                Some("elevator") => Some(RuntimeCompiledScriptBoundary::ElevatorPrompt),
+                _ => None,
+            };
+            if let Some(boundary) = input_boundary {
                 return Ok(RuntimeCompiledScriptRun {
                     steps,
                     next_cursor: Some(current),
-                    boundary: Some(RuntimeCompiledScriptBoundary::GiftPokemon),
+                    boundary: Some(boundary),
                     ended: false,
                 });
             }

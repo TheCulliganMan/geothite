@@ -3548,11 +3548,7 @@ impl GameDataSet {
                     trigger.warp.index, trigger.map_name
                 )
             })?;
-            let destination_warp_id = Self::required_dynamic_backup_warp_index(
-                state,
-                trigger.warp.index,
-                &trigger.map_name,
-            )?;
+            let destination_warp_id = self.dynamic_exit_index(state, trigger)?;
             let destination =
                 self.resolve_warp_destination(&destination_map, destination_warp_id, trigger)?;
             WarpTransition {
@@ -3588,12 +3584,39 @@ impl GameDataSet {
         if !moving_between_link_room_and_center && !leaving_dynamic_elevator {
             state.backup_warp_map_name = Some(trigger.map_name.clone());
         }
-        if destination_constant == "POKECENTER_2F" && !source_is_link_room {
+        // An elevator's two exit carpets return to the doorway used to enter.
+        // Remember the floor and its doorway together even if no floor is selected.
+        if (destination_constant == "POKECENTER_2F" && !source_is_link_room)
+            || destination_constant.ends_with("_ELEVATOR")
+        {
             state.backup_warp_index = Some(trigger.warp.index);
         }
         state.previous_warp_map_name = Some(trigger.map_name.clone());
         state.previous_warp_index = Some(trigger.warp.index);
         Ok(transition)
+    }
+
+    fn dynamic_exit_index(&self, state: &GameState, trigger: &WarpTrigger) -> Result<u16> {
+        // Older saves made in a cab stored the boarding door in previous_warp.
+        // Use it only if the explicit return is absent or refers to another place.
+        let constant = self.map_constant(&trigger.map_name)?;
+        if constant.ends_with("_ELEVATOR")
+            && let Some(floor) = state.backup_warp_map_name.as_deref()
+            && state.previous_warp_map_name.as_deref() == Some(floor)
+            && let Some(room) = self.maps.get(floor)
+        {
+            let cabin_door = |index: u16| {
+                room.events.warps.iter().any(|warp| {
+                    warp.index == index && warp.target_map_constant == constant
+                })
+            };
+            if !state.backup_warp_index.is_some_and(cabin_door)
+                && let Some(door) = state.previous_warp_index.filter(|&index| cabin_door(index))
+            {
+                return Ok(door);
+            }
+        }
+        Self::required_dynamic_backup_warp_index(state, trigger.warp.index, &trigger.map_name)
     }
 
     fn required_dynamic_backup_warp_index(
