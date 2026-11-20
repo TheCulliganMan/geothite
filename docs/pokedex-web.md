@@ -1,6 +1,8 @@
 # Northwoods Pokédex web app
 
-Current publication: `20261104-rerender-181-186-45` —225 active species,99 families,121 archives,225 normal/shiny walking thumbnails and225 original cries. Current #181–186 have re-rendered front/back art using source-tone dithering. Includes Cindore-line refinement and Cascavolt crop repair from release44. [Art and media verification](../planning/minnesota/pokemon/NATIVE-ART-20261104.md). Static publication preserves the running game server.
+The live guide serves `20261120-fair-patrols-sprite-edges-47`. It keeps the 225 active species and Lakeside Gym machine data from release 46. Scutlet’s back, Dynarill’s front, Emberm’s back and Mudnip’s front now use the repaired sprites in both normal and shiny colors. The publisher updates image links inherited from older releases when replacing those sprites. [Artwork and verification](../planning/minnesota/pokemon/sprite-edge-cleanup-20261118/README.md)
+
+Release 45 updated the front and back sprites for entries 181–186 and retained the Cindore refinement and Cascavolt crop repair from release 44. [Native art and media verification](../planning/minnesota/pokemon/NATIVE-ART-20261104.md)
 
 ## Evolution typing revision (2026-11-04)
 

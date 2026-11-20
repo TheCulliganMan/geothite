@@ -74,3 +74,9 @@ MINNESOTA_SPRITE_EDGE_PACK="$PWD/content-packs/minnesota-crossings-v01.crystalpa
 RUST_MIN_STACK=67108864 CARGO_INCREMENTAL=0 cargo test --locked -p crystal-assets \
   --lib sprite_edge_repair_preserves_pack_and_is_idempotent
 ```
+
+## November 20 publication
+
+The Fair Patrols Intro artwork child is `content-packs/minnesota-intro-fair-patrols-sprite-edges-v01.crystalpack` (SHA256 `a92e6c85b4ae35b33959458b181417a3271fd3d60d3c96ac19b75f05a809d05d`). Comparing all 8,528 runtime resources against the selected Intro parent found the twelve expected PNG/2bpp changes. The six views lost exactly 54 stray pixels in total. Gameplay, all other artwork and audio matched the parent.
+
+The public Pokédex release `20261120-fair-patrols-sprite-edges-47` was built on the live Lakeside Gym machine guide (release 46). Across 2,341 files, eight PNGs changed. The four front/back images lost 49 pixels in each of the normal and shiny palettes. The release updates older immutable sprite links on the species pages as well as the catalog. The index and the eight served images matched the local release during a public browser check.
