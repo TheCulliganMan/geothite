@@ -8032,7 +8032,20 @@
     "hosted_pack_sha256": "9fbfa371972f6b3cdbd9d0ca9689aa5a66ee43d1d17e7650982da88d4e57f58e",
     "hosted_content_identity": "415294715e2f50c60b3696966441a98a7b869fde34f6a3acbf94b4ab64bb8b4a"
   },
-  "active_local_review_revision": "fair_release_intro_revision",
+  "fair_presentation_revision": {
+    "kind": "campaign_release",
+    "deployed": false,
+    "parent_revision": "fair_release_intro_revision",
+    "pack": "content-packs/minnesota-fair-presentation-v01.crystalpack",
+    "pack_sha256": "c28b37a15c0ae59151da94d4d70dde6ac3cc066b47afe993665cb071e7a4b3d4",
+    "content_identity": "d09a77f306578627e661a0811d2bacc12d22552e5e84041e0f002f6635db46c2",
+    "hosted_pack_sha256": "1301921f28aa988d6a4ee9733284bbd99545903e9faa21305504d8bcaeefe8ff",
+    "hosted_content_identity": "0f0e0a202bafb3e1e33e276c849c8d9099e792d21bc1c50a04c00d0be4d0554d",
+    "runbook": "revisions/fair-presentation-v01/README.md",
+    "map_count": 746,
+    "save_sources": 22
+  },
+  "active_local_review_revision": "fair_presentation_revision",
   "script_command_repair_revision": {
     "kind": "missing_minnesota_map_command_records",
     "parent_revision": "field_hm_habitats_cyclists_revision",
