@@ -9349,6 +9349,7 @@ fn synthetic_runtime_mount_fixture(name: &str) -> (PathBuf, AssetRoot, CrystalRu
         data,
         runtime_files,
         runtime_asset_mount: Arc::new(RuntimeAssetMountCache::default()),
+        trainer_portraits: crystal_assets::TrainerPortraitOverrides::default(),
         audio,
         viewport: GameViewport::default(),
         map_catalog: Vec::new(),

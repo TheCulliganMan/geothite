@@ -218,7 +218,7 @@ fn replace_dialogue(
     Ok(())
 }
 
-fn replace_welcome(
+pub(crate) fn replace_welcome(
     text: &mut RuntimePresentationText,
     pages: &[AuthoredDialoguePage],
 ) -> Result<()> {

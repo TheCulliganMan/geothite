@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "name": "sivren",
+  "method": "built-in-imagegen-face-correction-with-whole-image-area-vote",
+  "previous_source": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/07-sivren/native-pixels-v2.json",
+  "source": "planning/minnesota/npcs/portrait-faces-v03/sivren/native-pixels-v2.json",
+  "image_source": "planning/minnesota/npcs/portrait-faces-v03/sivren/image-source-v3.png",
+  "prompt": "planning/minnesota/npcs/portrait-faces-v03/sivren/image-prompt-v3.txt",
+  "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/07-sivren/controller-v1.json",
+  "machine_rows": "target/trainer-full-body/sivren/v3/area-study/black24-white16/battle.candidate.json",
+  "review": "Independent native review by faces_north passed area24/16: two matched eyes read at1x, with black pupil cells over white openings on both sides; separate black nose on row13 and skin before smile. Pupils meet upper lids, but both eyes remain equally legible and the asymmetric cyclops reading is resolved. Point .25/.5 rejected for awkward nose/mouth/chin; area32 rejected for lost nose. Full-body pose and both feet retain proportions. No manual pixel edits; original palette,id,overworld preserved.",
+  "sampling": "area_vote",
+  "crop": [
+    0,
+    0,
+    1254,
+    1254
+  ],
+  "native_fit": [
+    52,
+    54
+  ],
+  "minimum_black_samples": 24,
+  "minimum_white_samples": 16,
+  "outline_profile": "source-contour-v1",
+  "view": "front",
+  "size": [
+    56,
+    56
+  ],
+  "source_bounds": [
+    249,
+    16,
+    1038,
+    1238
+  ],
+  "palette_rgb555": [
+    32767,
+    22399,
+    14885,
+    0
+  ],
+  "source_sha256": "c87e81ab377949cef25929674a16520a368918bbd2c012664fcc96e7dc135091",
+  "native_sha256": "c61939ec4d0e8e89fe5e5e57ba3953a17e72c2d98e5cb892764938bda21883a0",
+  "independent_reviewer": "/root/faces_north",
+  "review_status": "passed-two-eye-native-correction"
+}

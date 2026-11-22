@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "name": "fern",
+  "method": "built-in imagegen and whole-image Rust conversion; no hand pixel edits",
+  "previous_source": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/10-fern/native-pixels-v3.json",
+  "previous_source_sha256": "87769d4f5840712da24fe4908c7c10551e8ab5d030c432c3b807df37a5993b56",
+  "source": "planning/minnesota/npcs/portrait-cast-v01/fern/native-pixels-v1.json",
+  "native_sha256": "380bc46299690ec1657b48c6b716a81d256e89a37fe7309e1d0e78394f6bdefe",
+  "image_source": "planning/minnesota/npcs/portrait-cast-v01/fern/image-source-v2.png",
+  "source_sha256": "5ccb0cd26bd343f7fd90e896f3a8e560ae14fefc08c17fddf54013bc356d04a3",
+  "image_prompt": "planning/minnesota/npcs/portrait-cast-v01/fern/image-prompt-v2.txt",
+  "image_prompt_history": [
+    "planning/minnesota/npcs/portrait-cast-v01/fern/image-prompt-v1.txt",
+    "planning/minnesota/npcs/portrait-cast-v01/fern/image-prompt-v2.txt"
+  ],
+  "authentic_and_style_references": [
+    "target/trainer-full-body-references/clair-20x.png",
+    "planning/minnesota/npcs/portrait-faces-v03/varel/image-source-v4.png"
+  ],
+  "palette_rgb555": [
+    32767,
+    22399,
+    1401,
+    0
+  ],
+  "sampling": "whole_source_phase_d65_lab",
+  "source_bounds": [
+    150,
+    22,
+    1087,
+    1237
+  ],
+  "machine_rows": "target/trainer-cast-rest/fern/v2/point-w4-x0.5-y0.25.json",
+  "replay_command": [
+    "target/trainer-face-diagnosis/tools/trainer_portrait_palette",
+    "planning/minnesota/npcs/portrait-cast-v01/fern/image-source-v2.png",
+    "target/trainer-cast-rest/fern/v2/point-w4-x0.5-y0.25.png",
+    "22399",
+    "1401",
+    "--native",
+    "0.5",
+    "0.25",
+    "--chroma-weight",
+    "4"
+  ],
+  "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/10-fern/controller-v1.json",
+  "integration": "planning/minnesota/npcs/regional-trainers-v01/story-bindings/10-fern.json",
+  "encoded_preview": "target/trainer-cast-rest/fern/encoded/gfx/trainers/mn_elite_fern.png",
+  "status": "native visual candidate; combined pack gameplay and user review pending",
+  "phase": [
+    0.5,
+    0.25
+  ],
+  "chroma_weight": 4.0,
+  "native_fit": [
+    42,
+    54
+  ]
+}

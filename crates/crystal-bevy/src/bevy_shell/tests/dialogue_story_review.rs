@@ -201,8 +201,11 @@ fn story_review_tamarack_returns_show_the_current_lead_after_continue() {
 }
 
 #[test]
-#[ignore = "requires revised external pack in CRYSTAL_WINONA_TEST_PACK"]
+#[ignore = "declared St. Paul return fixture; requires revised CRYSTAL_WINONA_TEST_PACK"]
 fn story_review_tamarack_guides_before_reoffering_a_declined_egg() {
+    // This return follows the initial lab departure and Rochester delivery.
+    // The aide's five-Ball handoff has already happened, though the player may
+    // have used those Balls. The egg remains unclaimed after an earlier refusal.
     let (_, _, mut c) = fixture(
         "MnWinonaFieldStation",
         (4, 2),
@@ -212,9 +215,17 @@ fn story_review_tamarack_guides_before_reoffering_a_declined_egg() {
             "EVENT_MN_STARTER_RECEIVED",
             "EVENT_MN_R01_PARCEL_RECEIVED",
             "EVENT_MN_DELIVERED_ROCHESTER_PARCEL",
+            "EVENT_MN_WINONA_BALLS_RECEIVED",
             "EVENT_MN_REED_FIRST_MET",
             "EVENT_MN_COURIER_DEFEATED",
         ],
+    );
+    let before = c.shell.shell.session().state().clone();
+    assert!(
+        !before
+            .flags
+            .is_event_flag_set("EVENT_MN_TAMARACK_EGG_RECEIVED")
+            .expect("egg remains unclaimed")
     );
     press(&mut c, GameButton::Right);
     press(&mut c, GameButton::A);
@@ -250,6 +261,18 @@ fn story_review_tamarack_guides_before_reoffering_a_declined_egg() {
     press(&mut c, GameButton::Down);
     press(&mut c, GameButton::A);
     read(&mut c, "MnNSEEggDeclineText");
+    let after = c.shell.shell.session().state();
+    assert_eq!(after.bag, before.bag, "no repeated supply handoff");
+    assert_eq!(
+        after.storage.party, before.storage.party,
+        "no egg on refusal"
+    );
+    assert!(
+        !after
+            .flags
+            .is_event_flag_set("EVENT_MN_TAMARACK_EGG_RECEIVED")
+            .expect("declining does not claim the egg")
+    );
     press(&mut c, GameButton::Start);
     assert!(
         c.snapshot()

@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "name": "reed",
+  "method": "built-in imagegen and whole-image Rust conversion; no hand pixel edits",
+  "previous_source": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/01-reed/native-pixels-v2.json",
+  "previous_source_sha256": "bec855744e7a7f7fc321ba088f16bbb1c61609d85b16573a7c4c9145222dc8f0",
+  "source": "planning/minnesota/npcs/portrait-cast-v01/reed/native-pixels-v1.json",
+  "native_sha256": "e89598783e64e897f98cf2a644e56e3ed53cad4cba67e073b135a0cdfa815842",
+  "image_source": "planning/minnesota/npcs/portrait-cast-v01/reed/image-source-v1.png",
+  "source_sha256": "d18c1b76a4bef16d84cb7670f582468759e9bf87caf6bbc155b1d865e3d21dde",
+  "image_prompt": "planning/minnesota/npcs/portrait-cast-v01/reed/image-prompt-v1.txt",
+  "image_prompt_history": [
+    "planning/minnesota/npcs/portrait-cast-v01/reed/image-prompt-v1.txt"
+  ],
+  "authentic_and_style_references": [
+    "target/trainer-full-body-references/hiker-20x.png",
+    "planning/minnesota/npcs/portrait-faces-v03/torven/image-source-v1.png"
+  ],
+  "palette_rgb555": [
+    32767,
+    22399,
+    10420,
+    0
+  ],
+  "sampling": "area_vote",
+  "source_bounds": [
+    135,
+    15,
+    1072,
+    1242
+  ],
+  "machine_rows": "target/trainer-cast-rest/reed/v1/area32-16/battle.candidate.json",
+  "replay_command": [
+    "target/trainer-full-body/tamarack/sampling-study-v1/npc_sprite_candidate",
+    "planning/minnesota/npcs/portrait-cast-v01/reed/image-source-v1.png",
+    "target/trainer-cast-rest/reed/v1/area32-16",
+    "0",
+    "0",
+    "1254",
+    "1254",
+    "22399",
+    "10420",
+    "area_vote",
+    "32",
+    "16"
+  ],
+  "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/controller-fixtures/reed-rochester.json",
+  "integration": "planning/minnesota/npcs/regional-trainers-v01/story-bindings/01-reed.json",
+  "encoded_preview": "target/trainer-cast-rest/reed/encoded/gfx/trainers/mn_rival_reed.png",
+  "status": "native visual candidate; combined pack gameplay and user review pending",
+  "crop": [
+    0,
+    0,
+    1254,
+    1254
+  ],
+  "minimum_black_samples": 32,
+  "minimum_white_samples": 16,
+  "exterior_contour": "source_backed",
+  "native_fit_limit": [
+    52,
+    54
+  ]
+}

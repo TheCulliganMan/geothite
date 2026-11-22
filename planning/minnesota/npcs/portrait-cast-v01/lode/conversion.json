@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "name": "lode",
+  "source": "planning/minnesota/npcs/portrait-cast-v01/lode/native-pixels-v1.json",
+  "previous_source": null,
+  "image_source": "planning/minnesota/npcs/portrait-cast-v01/lode/image-source-v3.png",
+  "prompt": "planning/minnesota/npcs/portrait-cast-v01/lode/image-prompt-v3.txt",
+  "method": "built-in-imagegen-and-whole-source-rust-conversion",
+  "source_sha256": "fdc8e8a2dce7a24f6a4acc8d237aef8c025117288f6828d040d8bb8df04742a0",
+  "native_sha256": "959a8e1e2ed5ab3fc834da5432b56cbd617f6d71df18905bdd024b7ef8a16666",
+  "machine_rows": "target/trainer-cast-rest/lode/v3/point0.25-0.75.json",
+  "conversion_command": [
+    "target/trainer-face-diagnosis/tools/trainer_portrait_palette",
+    "planning/minnesota/npcs/portrait-cast-v01/lode/image-source-v3.png",
+    "target/trainer-cast-rest/lode/v3/point0.25-0.75.png",
+    "15933",
+    "5396",
+    "--native",
+    "0.25",
+    "0.75",
+    "--chroma-weight",
+    "4"
+  ],
+  "sampling": "whole_source_phase_d65_lab",
+  "source_bounds": [
+    218,
+    4,
+    1033,
+    1245
+  ],
+  "fit_size": [
+    35,
+    54
+  ],
+  "phase": [
+    0.25,
+    0.75
+  ],
+  "chroma_weight": 4.0,
+  "palette_rgb555": [
+    32767,
+    15933,
+    5396,
+    0
+  ],
+  "review": "Sourcev3 imagegen facial correction. Actual56 point(.25,.75): both pupils survive as upper-attached black eye columns beside white openings on rows11\u201312. Nose row13, clear skin row14, mouth row15. Source mature male full body/helmet/workwear/boots retained. Point sampling adds minor contour gaps; no hand-edited pixels."
+}

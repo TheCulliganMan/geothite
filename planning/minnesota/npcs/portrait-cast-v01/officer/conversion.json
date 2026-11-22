@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "name": "officer",
+  "source": "planning/minnesota/npcs/portrait-cast-v01/officer/native-pixels-v1.json",
+  "previous_source": null,
+  "image_source": "planning/minnesota/npcs/portrait-cast-v01/officer/image-source-v2.png",
+  "prompt": "planning/minnesota/npcs/portrait-cast-v01/officer/image-prompt-v2.txt",
+  "method": "built-in-imagegen-and-whole-source-rust-conversion",
+  "source_sha256": "d53ba2bb4050b6bda25b8893a9a9f947cbac8780e10e70f9323dfb85b72dfd04",
+  "native_sha256": "8faadcb29f708039b892ad2da76e8b2bd50b4252bc1fa8aa6674223ae670bea7",
+  "machine_rows": "target/trainer-cast-rest/officer/choices-v2/point0.75-0.5.json",
+  "conversion_command": [
+    "target/trainer-face-diagnosis/tools/trainer_portrait_palette",
+    "planning/minnesota/npcs/portrait-cast-v01/officer/image-source-v2.png",
+    "target/trainer-cast-rest/officer/choices-v2/point0.75-0.5.png",
+    "8990",
+    "19756",
+    "--native",
+    "0.75",
+    "0.5",
+    "--chroma-weight",
+    "4"
+  ],
+  "sampling": "whole_source_phase_d65_lab",
+  "source_bounds": [
+    269,
+    12,
+    974,
+    1242
+  ],
+  "fit_size": [
+    31,
+    54
+  ],
+  "phase": [
+    0.75,
+    0.5
+  ],
+  "chroma_weight": 4.0,
+  "palette_rgb555": [
+    32767,
+    8990,
+    19756,
+    0
+  ],
+  "trainer_class": "OFFICER",
+  "trainer_ids": [
+    "MN_R20_T01"
+  ],
+  "actual_reference_path": "target/trainer-cast-rest/reference/officer.png",
+  "review": "Source v2 imagegen face correction; actual56/8x point(.75,.5) has two equally distinct white openings with black pupils, a separate one-cell black nose at row12, skin row13, and three-cell mouth at row14. Mature full body, props and both feet preserved. Native contour has some minor gaps from point sampling. No hand-edited pixels."
+}

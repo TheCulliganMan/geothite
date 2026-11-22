@@ -1,5 +1,15 @@
 # Repository rules
 
+## Minnesota map and flow reviews
+
+- Never play through the campaign or use a gameplay session to review the
+  region, including when delegating to other agents. Inspect authored maps,
+  compiled collision, connections, warps, event scripts, and native renders
+  directly. Improve layouts and progression where the review finds defects.
+- Use isolated, targeted verification for a specific change. Keep automated
+  fixtures and controller checks scoped to the mechanic or map under test and
+  separate from player saves. This rule applies to release verification too.
+
 - The browser TUI uses pinned `ascii.rest` 0.2.1 from bas3line/ascii to paint
   the Rust Ratatui buffer as a custom colored canvas piece. This is a painter,
   not a second game engine. Keep its frame rate zero. Inputs/resize render the

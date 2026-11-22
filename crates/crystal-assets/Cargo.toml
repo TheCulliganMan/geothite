@@ -39,6 +39,14 @@ name = "pack_trainer_portraits"
 required-features = ["pack-authoring"]
 
 [[example]]
+name = "trainer_battle_native"
+required-features = ["pack-authoring"]
+
+[[example]]
+name = "pack_trainer_portrait_overrides"
+required-features = ["pack-authoring"]
+
+[[example]]
 name = "pack_lake_observations"
 required-features = ["pack-authoring"]
 
@@ -171,4 +179,8 @@ required-features = ["pack-authoring"]
 
 [[example]]
 name = "pack_northstar_fair_release"
+required-features = ["pack-authoring"]
+
+[[bin]]
+name = "revise_northstar_dialogue_clarity"
 required-features = ["pack-authoring"]

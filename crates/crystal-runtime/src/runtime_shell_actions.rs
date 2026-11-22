@@ -4804,7 +4804,21 @@ impl RuntimeGameShell {
             battle: if battle_tower_opponent_is_staged(&self.session.state) {
                 None
             } else {
-                RuntimeBattleSnapshot::from_state(&self.session.state)?
+                let mut battle = RuntimeBattleSnapshot::from_state(&self.session.state)?;
+                if let Some(battle) = &mut battle
+                    && let RuntimeBattleKind::Trainer {
+                        trainer_id,
+                        trainer_class,
+                        ..
+                    } = &battle.kind
+                {
+                    battle.trainer_portrait = Some(
+                        self.runtime
+                            .trainer_portraits
+                            .resolve(trainer_id, trainer_class),
+                    );
+                }
+                battle
             },
             pending_move_learn: RuntimePendingMoveLearnSnapshot::from_state(&self.session.state),
             party: RuntimePartySnapshot::from_state(&self.session.state),

@@ -1,5 +1,10 @@
 # Build and run game content
 
+The [concise dialogue review](../planning/minnesota/revisions/dialogue-clarity-v01/README.md)
+builds a local candidate over the selected Fair release. It shortens campaign,
+town and trainer dialogue and gives Winona's paired wardens separate replies.
+The public release and existing saves remain on their current pack.
+
 The [Fair Patrols build instructions](../planning/minnesota/revisions/fair-patrols-v01/README.md)
 reproduce the Field and Intro editions from their respective Fair Table packs.
 The archive checks cover the trainer circuits, vendor access and Route 15 shortcut.
@@ -58,6 +63,27 @@ alongside a client also enables its builders. Build production packages and pack
 tools in separate commands; retain one target directory so common dependencies
 remain cached. The no-default-feature command above intentionally checks only
 the runtime library, rather than the authoring CLI targets.
+
+## Trainer battle artwork
+
+The `trainer_battle_native` authoring example accepts a battle-only source with
+`schema_version: 1`, an `mn_portrait_` ID, four `palette_rgb555` inks and 56
+`battle_rows` of 56 `.123` pixels. It writes only the trainer PNG, 2bpp bank and
+GBC palette. It neither requires nor creates overworld poses. Run
+`target/debug/examples/trainer_battle_native SOURCE_JSON FRESH_OUTPUT_ROOT` after
+building it with `cargo build --locked -p crystal-assets --example trainer_battle_native`.
+
+`pack_trainer_portrait_overrides PARENT PLAN_JSON FRESH_OUTPUT` adds these banks
+and `gfx/trainers/portrait-overrides.json` to an ignored pack. Build the matching
+`crystal-assets` example first. Its version-one plan contains `portraits` entries
+with `source`, `trainer_class`, exact `trainer_ids`, and `expected_art` containing
+the original class resource `id` and its `png_sha256`, `tiles_sha256` and
+`palette_sha256`. Stale art, wrong IDs/classes and resource collisions fail the
+build. Existing game data, stock/field artwork and audio remain unchanged;
+trainers retain their class AI, style and music. The runtime resolves the
+optional map by exact trainer ID and class for graphical and painted TUI
+portraits. Missing bindings retain the original class artwork. The manifest is
+part of the existing pack identity; old packs need no schema migration.
 
 ## Minnesota Lakeside
 

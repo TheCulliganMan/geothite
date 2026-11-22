@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "name": "ice_agent",
+  "source": "planning/minnesota/npcs/portrait-cast-v01/ice_agent/native-pixels-v1.json",
+  "previous_source": null,
+  "image_source": "planning/minnesota/npcs/portrait-cast-v01/ice_agent/image-source-v2.png",
+  "prompt": "planning/minnesota/npcs/portrait-cast-v01/ice_agent/image-prompt-v2.txt",
+  "method": "built-in-imagegen-and-whole-source-rust-conversion",
+  "source_sha256": "a5e75436af789622e3fcbfd3d8d5bb01f939527afc094e782f64080383ef2058",
+  "native_sha256": "b6ea19ebfcd948627858e19570af821df84568176d8516eea906961b952b57f2",
+  "machine_rows": "target/trainer-cast-rest/ice_agent/v2/point0.5-0.5.json",
+  "conversion_command": [
+    "target/trainer-face-diagnosis/tools/trainer_portrait_palette",
+    "planning/minnesota/npcs/portrait-cast-v01/ice_agent/image-source-v2.png",
+    "target/trainer-cast-rest/ice_agent/v2/point0.5-0.5.png",
+    "20286",
+    "18758",
+    "--native",
+    "0.5",
+    "0.5",
+    "--chroma-weight",
+    "4"
+  ],
+  "sampling": "whole_source_phase_d65_lab",
+  "source_bounds": [
+    81,
+    33,
+    1201,
+    1242
+  ],
+  "fit_size": [
+    50,
+    54
+  ],
+  "phase": [
+    0.5,
+    0.5
+  ],
+  "chroma_weight": 4.0,
+  "palette_rgb555": [
+    32767,
+    20286,
+    18758,
+    0
+  ]
+}

@@ -4,6 +4,7 @@ User-reported issues from live play on November 1, 2026. Checked entries have fi
 Keep these numbers stable when adding reports or recording fixes.
 
 - [ ] **1. Rewrite unnatural, repetitive dialogue.** Reduce exposition across the cast. Give characters distinct, concise lines with a purpose. Remove duplicated NPC/sign messages, including repeated “we keep records” language.
+  - November 20: [Full dialogue clarity review](revisions/dialogue-clarity-v01/README.md) revises 1,625 passages across 318 maps, introduces Reed and separates Winona's two wardens. Candidate remains local and unselected; this release-level report stays open pending integration.
 - [x] **2. Clarify Tamarack's story and the current objective.** Explain what is happening, why the player is involved, and what to do next. Update NPC guidance as the player completes story milestones.
 - [x] **3. Restore Tamarack's expected overworld sprites.** The authored sprites appear to be missing from the deployed game. Check the deployed content and sprite bindings against the intended artwork.
 - [x] **4. Fix unexplained guard disappearance.** Guards disappear after the player receives a Pokémon. Give that progression change a clear story explanation and coherent behavior.

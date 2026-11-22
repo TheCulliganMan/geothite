@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "name": "champion",
+  "source": "planning/minnesota/npcs/portrait-cast-v01/champion/native-pixels-v1.json",
+  "previous_source": null,
+  "image_source": "planning/minnesota/npcs/portrait-cast-v01/champion/image-source-v2.png",
+  "prompt": "planning/minnesota/npcs/portrait-cast-v01/champion/image-prompt-v2.txt",
+  "method": "built-in-imagegen-and-whole-source-rust-conversion",
+  "source_sha256": "d3eed418e1d307a74184c1ef7849b45f270dea00c3093d181b92714858f58ea8",
+  "native_sha256": "8928d458a7f189b4213f5f55fd1218e460d71c294d9ab53ca7de9ea31ca89bee",
+  "machine_rows": "target/trainer-cast-rest/champion/v2/area32/battle.candidate.json",
+  "conversion_command": [
+    "target/trainer-full-body/tamarack/sampling-study-v1/npc_sprite_candidate",
+    "planning/minnesota/npcs/portrait-cast-v01/champion/image-source-v2.png",
+    "target/trainer-cast-rest/champion/v2/area32",
+    "0",
+    "0",
+    "1254",
+    "1254",
+    "15997",
+    "5429",
+    "area_vote",
+    "32",
+    "16"
+  ],
+  "sampling": "area_vote",
+  "source_bounds": [
+    69,
+    15,
+    1151,
+    1238
+  ],
+  "palette_rgb555": [
+    32767,
+    15997,
+    5429,
+    0
+  ],
+  "minimum_black_samples": 32,
+  "minimum_white_samples": 16,
+  "crop": [
+    0,
+    0,
+    1254,
+    1254
+  ]
+}

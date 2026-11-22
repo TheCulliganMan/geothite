@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "name": "pokemaniac",
+  "source": "planning/minnesota/npcs/portrait-cast-v01/pokemaniac/native-pixels-v1.json",
+  "previous_source": null,
+  "image_source": "planning/minnesota/npcs/portrait-cast-v01/pokemaniac/image-source-v2.png",
+  "prompt": "planning/minnesota/npcs/portrait-cast-v01/pokemaniac/image-prompt-v2.txt",
+  "method": "built-in-imagegen-and-whole-source-rust-conversion",
+  "source_sha256": "cb6fa775e09218a53989688f6870afbb06fe2af4328c0c0ed5747cac01098399",
+  "native_sha256": "c3cffe7ca202f9645173e8518a924431097fc6e70a63a943ae38cf21dd1ee20c",
+  "machine_rows": "target/trainer-cast-rest/pokemaniac/face-fix-v2/point0.5-0.25.json",
+  "conversion_command": [
+    "target/trainer-face-diagnosis/tools/trainer_portrait_palette",
+    "planning/minnesota/npcs/portrait-cast-v01/pokemaniac/image-source-v2.png",
+    "target/trainer-cast-rest/pokemaniac/face-fix-v2/point0.5-0.25.png",
+    "13980",
+    "18605",
+    "--native",
+    "0.5",
+    "0.25",
+    "--chroma-weight",
+    "4"
+  ],
+  "sampling": "whole_source_phase_d65_lab",
+  "source_bounds": [
+    120,
+    10,
+    999,
+    1241
+  ],
+  "fit_size": [
+    39,
+    54
+  ],
+  "phase": [
+    0.5,
+    0.25
+  ],
+  "chroma_weight": 4.0,
+  "palette_rgb555": [
+    32767,
+    13980,
+    18605,
+    0
+  ],
+  "actual_reference_path": "target/trainer-cast-rest/reference/pokemaniac.png",
+  "trainer_ids": [
+    "MN_R05_T05",
+    "MN_R08_T08"
+  ],
+  "new_art_id": "mn_portrait_pokemaniac",
+  "encoded_png": "target/trainer-cast-rest/pokemaniac/encoded/gfx/trainers/mn_portrait_pokemaniac.png",
+  "battle_only": true
+}

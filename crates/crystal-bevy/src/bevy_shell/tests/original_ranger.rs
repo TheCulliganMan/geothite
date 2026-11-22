@@ -202,32 +202,37 @@ fn original_npc_controller_talk_battle_turn_and_save() {
     let class = row["trainer_class"].as_str().unwrap();
     let sprite = row["sprite"].as_str().unwrap();
     let actor_script = row["actor_script"].as_str().unwrap_or(id);
-    let stem = class.to_ascii_lowercase();
+    let portrait_override = row["portrait"].as_str();
+    let stem = portrait_override
+        .map(str::to_owned)
+        .unwrap_or_else(|| crystal_assets::trainer_class_portrait(class));
     let palette = load_gbcpal_palette(
         &root
             .runtime_assets()
-            .join(format!("gfx/sprites/{stem}.gbcpal")),
+            .join(format!("gfx/trainers/{stem}.gbcpal")),
     )
     .unwrap();
     let visible_light = [palette[1][0], palette[1][1], palette[1][2], 255];
     let mut images = Assets::<Image>::default();
-    let overworld_art = load_sprite_art(&root, &stem, 0, "day", &mut images)
-        .expect("original NPC six-pose art and own palette load through production renderer");
-    for direction in [
-        &overworld_art.down,
-        &overworld_art.up,
-        &overworld_art.left,
-        &overworld_art.right,
-    ] {
-        assert!(direction.walking.is_some());
-        let image = images
-            .get(&direction.standing.handle)
-            .expect("standing frame");
-        let pixels = image.data.as_ref().expect("CPU review pixels");
-        assert!(
-            pixels.as_chunks::<4>().0.contains(&visible_light),
-            "authored light palette survives map rendering"
-        );
+    if portrait_override.is_none() {
+        let overworld_art = load_sprite_art(&root, &stem, 0, "day", &mut images)
+            .expect("original NPC six-pose art and own palette load through production renderer");
+        for direction in [
+            &overworld_art.down,
+            &overworld_art.up,
+            &overworld_art.left,
+            &overworld_art.right,
+        ] {
+            assert!(direction.walking.is_some());
+            let image = images
+                .get(&direction.standing.handle)
+                .expect("standing frame");
+            let pixels = image.data.as_ref().expect("CPU review pixels");
+            assert!(
+                pixels.as_chunks::<4>().0.contains(&visible_light),
+                "authored light palette survives map rendering"
+            );
+        }
     }
     let battle_art = load_oak_intro_frame(&root, &format!("battle-trainer:{stem}"), &mut images)
         .expect("original trainer battle art loads through production renderer");
@@ -305,6 +310,14 @@ fn original_npc_controller_talk_battle_turn_and_save() {
             "fixture must not award this victory"
         );
         mark_runtime_snapshot_dirty(&mut c.shell);
+        if portrait_override.is_some()
+            && let Some(directory) = std::env::var_os("POKEGEAR_PC_RENDER_DIR")
+        {
+            let directory = std::path::PathBuf::from(directory);
+            std::fs::create_dir_all(&directory).expect("ignored portrait review directory");
+            c.save(directory.join("before-trainer.crystalsave"))
+                .expect("retain adjacent setup for actual browser controller inputs");
+        }
         c.press(GameButton::A).unwrap();
         let before = c.snapshot().unwrap();
         assert!(
@@ -353,12 +366,41 @@ fn original_npc_controller_talk_battle_turn_and_save() {
             Some(expected_level)
         );
         c.wait_frames(60).unwrap();
+        let intro = c.snapshot().expect("production intro snapshot");
+        let battle = intro.battle.as_ref().expect("active trainer intro");
+        assert_eq!(battle.trainer_portrait.as_deref(), Some(stem.as_str()));
+        assert!(
+            battle.trainer_portrait_visible,
+            "shared controller exposes the trainer intro"
+        );
+        assert_eq!(super::super::battle_trainer_portrait(battle, class), stem);
+        #[cfg(feature = "voxel-view")]
+        {
+            let participants = super::super::immersive_battle_trainers(&intro, battle, &c.shell);
+            assert_eq!(
+                participants[1]
+                    .as_ref()
+                    .expect("opponent portrait")
+                    .source_id
+                    .as_ref(),
+                stem
+            );
+        }
         c = capture_battle(c, "original-npc-trainer-intro.png");
         let path = std::env::temp_dir().join(format!(
             "original-npc-{}-{id}.crystalsave",
             std::process::id()
         ));
         c.save(&path).unwrap();
+        if portrait_override.is_some()
+            && let Some(directory) = std::env::var_os("POKEGEAR_PC_RENDER_DIR")
+        {
+            std::fs::copy(
+                &path,
+                std::path::PathBuf::from(directory).join("battle-intro.crystalsave"),
+            )
+            .expect("retain ignored battle-only presentation fixture");
+        }
         let saved = runtime.load_save(&path).unwrap();
         assert_eq!(
             saved.battle,

@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "name": "guitarist",
+  "source": "planning/minnesota/npcs/portrait-cast-v01/guitarist/native-pixels-v1.json",
+  "previous_source": null,
+  "image_source": "planning/minnesota/npcs/portrait-cast-v01/guitarist/image-source-v3.png",
+  "prompt": "planning/minnesota/npcs/portrait-cast-v01/guitarist/image-prompt-v3.txt",
+  "method": "built-in-imagegen-and-whole-source-rust-conversion",
+  "source_sha256": "945ceab3586f4142b41cbab2c8069d598f17356a79c77819c2937a0730eadb97",
+  "native_sha256": "59f497feebaf7746f4a16fc5856d85e56665358238e024b1d25c3e48a55d2637",
+  "machine_rows": "target/trainer-cast-rest/guitarist/choices-v3/point0.25-0.25.json",
+  "conversion_command": [
+    "target/trainer-face-diagnosis/tools/trainer_portrait_palette",
+    "planning/minnesota/npcs/portrait-cast-v01/guitarist/image-source-v3.png",
+    "target/trainer-cast-rest/guitarist/choices-v3/point0.25-0.25.png",
+    "20191",
+    "5407",
+    "--native",
+    "0.25",
+    "0.25",
+    "--chroma-weight",
+    "4"
+  ],
+  "sampling": "whole_source_phase_d65_lab",
+  "source_bounds": [
+    206,
+    18,
+    1078,
+    1236
+  ],
+  "fit_size": [
+    39,
+    54
+  ],
+  "phase": [
+    0.25,
+    0.25
+  ],
+  "chroma_weight": 4.0,
+  "palette_rgb555": [
+    32767,
+    20191,
+    5407,
+    0
+  ],
+  "trainer_class": "GUITARIST",
+  "trainer_ids": [
+    "MN_MP_CLUB_RIVET"
+  ],
+  "actual_reference_path": "target/trainer-cast-rest/reference/guitarist.png",
+  "review": "Imagegenface revised twice after rawconversion lostfeatures. Selectedglobalpoint .25/.25 retains both white/pupil eyes, blacksteppednose, skinrow12, mouthrow13. Fullbody musicianpose, guitarhands, bentknees and bothbootsread. Nativeoutlines retain occasional fine gaps; faceclearlyreads. No handpixels."
+}

@@ -3258,7 +3258,7 @@ fn spawn_battle_battler_markers(
                 images,
                 &format!(
                     "battle-trainer:{}",
-                    normalize_battle_trainer_sprite_id(trainer_class)
+                    battle_trainer_portrait(battle, trainer_class)
                 ),
                 Vec3::new(PLAYFIELD_LEFT + TILE_SIZE * 12.0, PLAYFIELD_TOP, 3.0),
             )?;
@@ -3312,7 +3312,7 @@ fn spawn_battle_battler_markers(
                     images,
                     &format!(
                         "battle-trainer:{}",
-                        normalize_battle_trainer_sprite_id(trainer_class)
+                        battle_trainer_portrait(battle, trainer_class)
                     ),
                     Vec3::new(
                         PLAYFIELD_LEFT + TILE_SIZE * 12.0 + exit.x_offset(),
@@ -3340,7 +3340,7 @@ fn spawn_battle_battler_markers(
                 images,
                 &format!(
                     "battle-trainer:{}",
-                    normalize_battle_trainer_sprite_id(trainer_class)
+                    battle_trainer_portrait(battle, trainer_class)
                 ),
                 Vec3::new(
                     PLAYFIELD_LEFT + TILE_SIZE * f32::from(left_column),
@@ -3491,21 +3491,15 @@ fn visible_pending_faint_sides(shell: &BevyRuntimeShell) -> [bool; 2] {
     sides
 }
 
+fn battle_trainer_portrait(battle: &crate::RuntimeBattleSnapshot, trainer_class: &str) -> String {
+    battle
+        .trainer_portrait
+        .clone()
+        .unwrap_or_else(|| normalize_battle_trainer_sprite_id(trainer_class))
+}
+
 fn normalize_battle_trainer_sprite_id(trainer_class: &str) -> String {
-    let normalized = trainer_class.trim().to_ascii_lowercase();
-    if normalized == "pokemon_prof" {
-        return "oak".to_string();
-    }
-    if normalized == "medium" {
-        return normalized;
-    }
-    if normalized.ends_with('m') && !normalized.ends_with("_m") {
-        format!("{}_m", &normalized[..normalized.len() - 1])
-    } else if normalized.ends_with('f') && !normalized.ends_with("_f") {
-        format!("{}_f", &normalized[..normalized.len() - 1])
-    } else {
-        normalized
-    }
+    crystal_assets::trainer_class_portrait(trainer_class)
 }
 
 fn spawn_battle_trainer_marker(

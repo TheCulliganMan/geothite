@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "name": "youngster",
+  "source": "planning/minnesota/npcs/portrait-cast-v01/youngster/native-pixels-v1.json",
+  "previous_source": null,
+  "image_source": "planning/minnesota/npcs/portrait-cast-v01/youngster/image-source-v1.png",
+  "prompt": "planning/minnesota/npcs/portrait-cast-v01/youngster/image-prompt-v1.txt",
+  "method": "built-in-imagegen-and-whole-source-rust-conversion",
+  "source_sha256": "88364d720ed5596e74f173ac3e97ecaf64f29dc417f98c9a5d700e943e14deb5",
+  "native_sha256": "b53d7c95e0936cc00639276096ac69b58422fa598ee7515a80ad9473780acbf7",
+  "machine_rows": "target/trainer-cast-rest/youngster/v1/point0.25-0.75.json",
+  "conversion_command": [
+    "target/trainer-face-diagnosis/tools/trainer_portrait_palette",
+    "planning/minnesota/npcs/portrait-cast-v01/youngster/image-source-v1.png",
+    "target/trainer-cast-rest/youngster/v1/point0.25-0.75.png",
+    "9884",
+    "23945",
+    "--native",
+    "0.25",
+    "0.75",
+    "--chroma-weight",
+    "4"
+  ],
+  "sampling": "whole_source_phase_d65_lab",
+  "source_bounds": [
+    168,
+    30,
+    1026,
+    1240
+  ],
+  "fit_size": [
+    38,
+    54
+  ],
+  "phase": [
+    0.25,
+    0.75
+  ],
+  "chroma_weight": 4.0,
+  "palette_rgb555": [
+    32767,
+    9884,
+    23945,
+    0
+  ]
+}

@@ -857,6 +857,7 @@ pub fn verify_compiled_game_pack_for_runtime(pack: &CompiledGamePack) -> Result<
         );
     }
     validate_compiled_game_pack_identity(pack)?;
+    TrainerPortraitOverrides::from_runtime_files(&pack.runtime_files, &pack.data.trainers)?;
     if let Some(path) = &pack.data.runtime_title_screen.static_title_image {
         let bytes = pack
             .runtime_files

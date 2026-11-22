@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "name": "camper",
+  "source": "planning/minnesota/npcs/portrait-cast-v01/camper/native-pixels-v1.json",
+  "previous_source": null,
+  "image_source": "planning/minnesota/npcs/portrait-cast-v01/camper/image-source-v2.png",
+  "prompt": "planning/minnesota/npcs/portrait-cast-v01/camper/image-prompt-v2.txt",
+  "method": "built-in-imagegen-and-whole-source-rust-conversion",
+  "source_sha256": "754b6d3aa58a044c7e40e961b6565059e22e04be925b06b57567106fae39e599",
+  "native_sha256": "406a0c93801c086ec404a6cef65a75084d38fb6ab7a7ddabf469111e70f369a7",
+  "machine_rows": "target/trainer-cast-rest/camper/v2/point0.25-0.5.json",
+  "conversion_command": [
+    "target/trainer-face-diagnosis/tools/trainer_portrait_palette",
+    "planning/minnesota/npcs/portrait-cast-v01/camper/image-source-v2.png",
+    "target/trainer-cast-rest/camper/v2/point0.25-0.5.png",
+    "8831",
+    "2863",
+    "--native",
+    "0.25",
+    "0.5",
+    "--chroma-weight",
+    "4"
+  ],
+  "sampling": "whole_source_phase_d65_lab",
+  "source_bounds": [
+    225,
+    18,
+    947,
+    1237
+  ],
+  "fit_size": [
+    32,
+    54
+  ],
+  "phase": [
+    0.25,
+    0.5
+  ],
+  "chroma_weight": 4.0,
+  "palette_rgb555": [
+    32767,
+    8831,
+    2863,
+    0
+  ],
+  "actual_reference_path": "target/trainer-cast-rest/reference/camper.png",
+  "trainer_ids": [
+    "MN_EXTRA_MPLS_CYCLE_01",
+    "MN_EXTRA_MPLS_CYCLE_03",
+    "MN_EXTRA_MPLS_CYCLE_05",
+    "MN_EXTRA_MPLS_CYCLE_07",
+    "MN_EXTRA_MPLS_CYCLE_09",
+    "MN_EXTRA_MPLS_CYCLE_11",
+    "MN_EXTRA_MPLS_CYCLE_13",
+    "MN_EXTRA_MPLS_CYCLE_15",
+    "MN_EXTRA_MPLS_CYCLE_17",
+    "MN_GYM_2_TRAINER_1",
+    "MN_R01_T03",
+    "MN_R03_T04",
+    "MN_R06_T02",
+    "MN_R07_T02",
+    "MN_R08_T01",
+    "MN_R08_T07",
+    "MN_R12_T09",
+    "MN_R14_T01",
+    "MN_R15_T03",
+    "MN_R16_T07",
+    "MN_RIVER_FUN_LOWER_EDDY",
+    "MN_RIVER_FUN_LOWER_FERN",
+    "MN_RIVER_FUN_LOWER_TOM",
+    "MN_RIVER_FUN_UPSTREAM_ALDER",
+    "MN_RIVER_FUN_UPSTREAM_MAPLE",
+    "MN_RIVER_FUN_UPSTREAM_PETAL",
+    "MN_SPX_TRAINER_8"
+  ],
+  "new_art_id": "mn_portrait_camper",
+  "encoded_png": "target/trainer-cast-rest/camper/encoded/gfx/trainers/mn_portrait_camper.png",
+  "battle_only": true
+}

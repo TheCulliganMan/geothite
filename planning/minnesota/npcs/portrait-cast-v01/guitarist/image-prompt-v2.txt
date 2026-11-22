@@ -1,0 +1,7 @@
+Edit ONLY the face and immediate hairline of this exact FULL-BODY male Guitarist. Keep the complete pose, wholebody, head OUTER SIZE, guitar, arms, trousers, boots, hair silhouette, palette and layout unchanged. BOTH feet stay visible. Do not enlarge head or crop.
+
+At56x56 reduction the current face becomes blank: its features are much thinner than one pixel. Correct by drawing significantly HEAVIER pureBLACK block features. This1254image has23x23sourcepixels per nativepixel. Each eye must be at least70sourcepixels WIDE and46HIGH: white23px column +black23px PUPIL column +white23px column. TWO eyes equally clear, separated by46px skin. Separate from hair outline by23px skin on both sides. Nearfrontal face, no occlusion. Do not leave plain white patches without pupils.
+
+Nose must be a BLACK rectangular stepped mark at least30px wide and38px high, NOT the current tiny thin stroke. Mouth must be a separate solidBLACK horizontal mark at least65px WIDE and30px HIGH, with at least23px skin gap below nose. Simple confident smile; omit thin curved lip line. Bold brows in separate black blocks aboveeyes. There must visibly be two white/pupil eyes, a nose, a mouth before shrink and after.
+
+REMOVE all fine facial curves and subpixel strokes. Bold crisp rectangular source blocks only, no AA, no gradients. Exactlyexisting4colors white, peach,red,black. Keep adult masculine angular jaw and existingheadsize. Do not alterany other partof sprite. Fullbody onwhite.

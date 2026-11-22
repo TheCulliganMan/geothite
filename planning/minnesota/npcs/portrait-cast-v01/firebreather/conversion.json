@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "name": "firebreather",
+  "source": "planning/minnesota/npcs/portrait-cast-v01/firebreather/native-pixels-v1.json",
+  "previous_source": null,
+  "image_source": "planning/minnesota/npcs/portrait-cast-v01/firebreather/image-source-v1.png",
+  "prompt": "planning/minnesota/npcs/portrait-cast-v01/firebreather/image-prompt-v1.txt",
+  "method": "built-in-imagegen-and-whole-source-rust-conversion",
+  "source_sha256": "2ed0f9f2fff2d426082dfe6aa18c6244348f6a1aa9571176cb75d95d0a5d6f87",
+  "native_sha256": "46c6a18960d9be43a86886cc83449a582017f4ef37e0976e71af8135e23e68b8",
+  "machine_rows": "target/trainer-cast-rest/firebreather/v1/area32/battle.candidate.json",
+  "conversion_command": [
+    "target/trainer-full-body/tamarack/sampling-study-v1/npc_sprite_candidate",
+    "planning/minnesota/npcs/portrait-cast-v01/firebreather/image-source-v1.png",
+    "target/trainer-cast-rest/firebreather/v1/area32",
+    "0",
+    "0",
+    "1254",
+    "1254",
+    "11835",
+    "12473",
+    "area_vote",
+    "32",
+    "16"
+  ],
+  "sampling": "area_vote",
+  "source_bounds": [
+    32,
+    16,
+    1228,
+    1238
+  ],
+  "palette_rgb555": [
+    32767,
+    11835,
+    12473,
+    0
+  ],
+  "minimum_black_samples": 32,
+  "minimum_white_samples": 16,
+  "crop": [
+    0,
+    0,
+    1254,
+    1254
+  ],
+  "actual_reference_path": "target/trainer-cast-rest/reference/firebreather.png",
+  "trainer_ids": [
+    "MN_R05_T04",
+    "MN_R10_T02"
+  ],
+  "new_art_id": "mn_portrait_firebreather",
+  "encoded_png": "target/trainer-cast-rest/firebreather/encoded/gfx/trainers/mn_portrait_firebreather.png",
+  "battle_only": true
+}

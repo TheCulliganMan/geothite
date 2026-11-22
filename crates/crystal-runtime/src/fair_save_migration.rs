@@ -16,6 +16,9 @@ use super::{Compatibility, CompatibleSaveSource, parse_regional_compatibility};
 
 const MARKER: &str = "northstar-fair-release-v1";
 const SUFFIX: &str = "+realtime-clock+player-customization";
+const LAKESIDE_RAW_HASH: &str = "e56ded3d55b8364e8756a4a02eb530fb74f52c03951c1c01d962441f7e2193d9";
+const LAKESIDE_HOSTED_HASH: &str =
+    "ad775429c71fc48aabbc8e1e2db40d3594a209dbc81e8b959fed1b73f5486426";
 const DIRECTIONS: [Direction; 4] = [
     Direction::Down,
     Direction::Up,
@@ -68,11 +71,10 @@ pub(super) fn parse(bytes: &[u8], target: &str) -> Result<Compatibility> {
     }
     let [prior, live] = &release.sources;
     ensure!(
-        prior.modpack_hash == "e56ded3d55b8364e8756a4a02eb530fb74f52c03951c1c01d962441f7e2193d9"
+        prior.modpack_hash == LAKESIDE_RAW_HASH
             && prior.content_hash
                 == "a9d128babd0de1a48bdd6caf35fcc505965002d596181c13a35f424dcac0f55a"
-            && live.modpack_hash
-                == "ad775429c71fc48aabbc8e1e2db40d3594a209dbc81e8b959fed1b73f5486426"
+            && live.modpack_hash == LAKESIDE_HOSTED_HASH
             && live.content_hash
                 == "70d8a66374dfeca5eed7a3a33fd6885b43aa9afaa0be300b60381ca7aacc99f4"
             && live.modpack_id.strip_prefix(&prior.modpack_id) == Some(SUFFIX),
@@ -100,6 +102,7 @@ pub(super) fn reconcile(
     state: &mut GameState,
     data: &GameDataSet,
     layouts: &BTreeMap<String, MapChange>,
+    source: &CompatibleSaveSource,
 ) -> Result<()> {
     for (map, change) in layouts {
         let room = data.map_module(map)?;
@@ -225,30 +228,67 @@ pub(super) fn reconcile(
             .copied()
             .or_else(|| sample_collision(&native, &tiles, p).map(|sample| sample.permission))
     };
+    let target_permission =
+        |p| sample_collision(&session.map, &session.tileset, p).map(|sample| sample.permission);
+    let clear_landing = |p: TilePosition| {
+        !occupied.contains(&(p.x, p.y)) && !blocked_triggers.contains(&[p.x as u16, p.y as u16])
+    };
+    let landing = nearest_reachable_landing(start, mode, old, |p| {
+        clear_landing(p)
+            && target_permission(p).is_some_and(|permission| match mode {
+                PlayerTraversalState::Walk => matches!(
+                    permission,
+                    permissions::FLOOR | permissions::TALL_GRASS | permissions::LONG_GRASS
+                ),
+                PlayerTraversalState::Surf => {
+                    bridge::layer_permission(permission, mode) == permissions::WATER
+                }
+            })
+    })
+    .or_else(|| {
+        // Both pockets were reachable with a field move. With the pocket gone,
+        // the walker's old connected component has no surviving landing.
+        if !matches!(
+            source.modpack_hash.as_str(),
+            LAKESIDE_RAW_HASH | LAKESIDE_HOSTED_HASH
+        ) || mode != PlayerTraversalState::Walk
+            || old_terrain.get(&(start.x, start.y)) != Some(&permissions::FLOOR)
+            || target_permission(start) != Some(permissions::WALL)
+        {
+            return None;
+        }
+        let approach = match (map_name.as_str(), start.x, start.y) {
+            ("MnR12Cave1F", 28..=29, 16..=17) => TilePosition::new(21, 16),
+            ("MnR15C00R00", 49, 18) => TilePosition::new(47, 18),
+            _ => return None,
+        };
+        [approach, approach.moved(Direction::Left)]
+            .into_iter()
+            .find(|&p| {
+                clear_landing(p)
+                    && old(p) == Some(permissions::FLOOR)
+                    && target_permission(p) == Some(permissions::FLOOR)
+            })
+    })
+    .with_context(|| format!("no reachable safe {mode:?} landing on {map_name}"))?;
+    if let OverworldMemory::Active { tile, .. } = &mut state.overworld {
+        *tile = landing;
+    }
+    Ok(())
+}
+
+fn nearest_reachable_landing(
+    start: TilePosition,
+    mode: PlayerTraversalState,
+    old: impl Fn(TilePosition) -> Option<u8>,
+    safe_landing: impl Fn(TilePosition) -> bool,
+) -> Option<TilePosition> {
     let mut seen = BTreeSet::from([(start.x, start.y)]);
     let mut queue = VecDeque::from([start]);
     while let Some(p) = queue.pop_front() {
         let Some(source) = old(p) else { continue };
-        if p != start
-            && !occupied.contains(&(p.x, p.y))
-            && !blocked_triggers.contains(&[p.x as u16, p.y as u16])
-        {
-            let safe =
-                sample_collision(&session.map, &session.tileset, p).is_some_and(|s| match mode {
-                    PlayerTraversalState::Walk => matches!(
-                        s.permission,
-                        permissions::FLOOR | permissions::TALL_GRASS | permissions::LONG_GRASS
-                    ),
-                    PlayerTraversalState::Surf => {
-                        bridge::layer_permission(s.permission, mode) == permissions::WATER
-                    }
-                });
-            if safe {
-                if let OverworldMemory::Active { tile, .. } = &mut state.overworld {
-                    *tile = p;
-                }
-                return Ok(());
-            }
+        if p != start && safe_landing(p) {
+            return Some(p);
         }
         for dir in DIRECTIONS {
             let q = p.moved(dir);
@@ -268,7 +308,7 @@ pub(super) fn reconcile(
             }
         }
     }
-    anyhow::bail!("no reachable safe {:?} landing on {map_name}", mode)
+    None
 }
 
 #[cfg(test)]

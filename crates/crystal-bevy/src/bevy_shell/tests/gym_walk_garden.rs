@@ -1,8 +1,22 @@
 //! The Bemidji guide's real HM handoff and directions for the two possible keeper orders.
+use crystal_runtime::CrystalRuntime;
+
 use super::super::mark_runtime_snapshot_dirty;
 use super::badge_trails::load;
 use super::interior_life::{fixture, talk};
+use super::northstar_dialogue::canonical_pages;
 use super::r10_gallery::continue_save;
+
+fn assert_authored_pages(runtime: &CrystalRuntime, transcript: &str, label: &str) {
+    let mut remaining = transcript;
+    for page in canonical_pages(runtime, "MnBemidjiGym", label) {
+        let entry = format!("{label}{page}\n");
+        let position = remaining
+            .find(&entry)
+            .unwrap_or_else(|| panic!("missing or out-of-order page {entry:?}: {transcript}"));
+        remaining = &remaining[position + entry.len()..];
+    }
+}
 
 #[test]
 #[ignore = "requires an installed Gym Walk edition in MN_BADGE_TRAILS_PACK"]
@@ -18,10 +32,23 @@ fn gym_walk_garden_guide_remembers_each_keeper_and_hands_over_one_cut() {
     let fork = pages
         .find("MnGardenForkText")
         .expect("actual left/right directions");
-    assert!(
-        gift < fork && pages.contains("TM/HM pocket.") && pages.contains("path to ELVREN."),
-        "{pages}"
-    );
+    assert!(gift < fork && pages.contains("TM/HM pocket."), "{pages}");
+    assert_authored_pages(&runtime, &pages, "MnGardenCutText");
+    assert_authored_pages(&runtime, &pages, "MnGardenForkText");
+    let directions = canonical_pages(&runtime, gym, "MnGardenForkText")
+        .join(" ")
+        .replace('\n', " ");
+    for detail in [
+        "MOSLEN on the left",
+        "ELVREN on the right",
+        "ORLIS up north",
+        "BRINDEL only guards a shortcut",
+    ] {
+        assert!(
+            directions.contains(detail),
+            "the guide must explain {detail:?}: {directions}"
+        );
+    }
     assert_eq!(first.shell.shell.session().state().bag.quantity(cut), 1);
     assert!(
         first
@@ -80,6 +107,7 @@ fn gym_walk_garden_guide_remembers_each_keeper_and_hands_over_one_cut() {
             pages.contains(label) && pages.contains(words) && !pages.contains("MnGardenCutText"),
             "{wins:?}: {pages}"
         );
+        assert_authored_pages(&runtime, &pages, label);
         assert_eq!(c.shell.shell.session().state().bag.quantity(cut), 1);
         assert!(
             !c.shell

@@ -29,7 +29,8 @@ RESIDENTS = {
     "MnBrainerdMart": ("MN_BRAINERD_MART_CUSTOMER", "MnFairTableMartLunchText"),
 }
 GIFT_BRANCHES = {"MnHostelRollRepeat", "MnHostelRollLater", "MnHostelRollFull"}
-PAGES = json.loads((HERE.parents[1] / "story.json").read_text())["fair_table_food_dialogue"]
+# These editions have fixed archive hashes and fixed dialogue.
+PAGES = json.loads((HERE / "expected-food-dialogue.json").read_text())
 
 
 def check_pages(old, room, labels):

@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "name": "beauty",
+  "source": "planning/minnesota/npcs/portrait-cast-v01/beauty/native-pixels-v1.json",
+  "previous_source": null,
+  "image_source": "planning/minnesota/npcs/portrait-cast-v01/beauty/image-source-v1.png",
+  "prompt": "planning/minnesota/npcs/portrait-cast-v01/beauty/image-prompt-v1.txt",
+  "method": "built-in-imagegen-and-whole-source-rust-conversion",
+  "source_sha256": "2c9a71843103a9cf4976ca14b361e914ff770b53d6c3eb9dc63db481ea26c127",
+  "native_sha256": "aa3bf1a8ebf0d7e403d8f96f65414a07ff00537d34af7a8c14d2b3d471f6ec9e",
+  "machine_rows": "target/trainer-cast-rest/beauty/v1/area32/battle.candidate.json",
+  "conversion_command": [
+    "target/trainer-full-body/tamarack/sampling-study-v1/npc_sprite_candidate",
+    "planning/minnesota/npcs/portrait-cast-v01/beauty/image-source-v1.png",
+    "target/trainer-cast-rest/beauty/v1/area32",
+    "0",
+    "0",
+    "1254",
+    "1254",
+    "11832",
+    "17704",
+    "area_vote",
+    "32",
+    "16"
+  ],
+  "sampling": "area_vote",
+  "source_bounds": [
+    65,
+    47,
+    1194,
+    1240
+  ],
+  "palette_rgb555": [
+    32767,
+    11832,
+    17704,
+    0
+  ],
+  "minimum_black_samples": 32,
+  "minimum_white_samples": 16,
+  "crop": [
+    0,
+    0,
+    1254,
+    1254
+  ],
+  "actual_reference_path": "target/trainer-cast-rest/reference/beauty.png",
+  "trainer_ids": [
+    "MN_DULUTH_X_T08"
+  ],
+  "new_art_id": "mn_portrait_beauty",
+  "encoded_png": "target/trainer-cast-rest/beauty/encoded/gfx/trainers/mn_portrait_beauty.png",
+  "battle_only": true
+}

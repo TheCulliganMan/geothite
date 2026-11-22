@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "name": "teacher",
+  "source": "planning/minnesota/npcs/portrait-cast-v01/teacher/native-pixels-v1.json",
+  "previous_source": null,
+  "image_source": "planning/minnesota/npcs/portrait-cast-v01/teacher/image-source-v2.png",
+  "prompt": "planning/minnesota/npcs/portrait-cast-v01/teacher/image-prompt-v2.txt",
+  "method": "built-in-imagegen-and-whole-source-rust-conversion",
+  "source_sha256": "cf793347d1f634c48368ac8466b9eaec5095003473a4129cc930ec29144fa497",
+  "native_sha256": "583e2dc7dfac5144f54c3b0074062aa421bd73521ba92d5b216b2df76a64cab1",
+  "machine_rows": "target/trainer-cast-rest/teacher/v2/point0.5-0.75.json",
+  "conversion_command": [
+    "target/trainer-face-diagnosis/tools/trainer_portrait_palette",
+    "planning/minnesota/npcs/portrait-cast-v01/teacher/image-source-v2.png",
+    "target/trainer-cast-rest/teacher/v2/point0.5-0.75.png",
+    "17055",
+    "7528",
+    "--native",
+    "0.5",
+    "0.75",
+    "--chroma-weight",
+    "4"
+  ],
+  "sampling": "whole_source_phase_d65_lab",
+  "source_bounds": [
+    138,
+    21,
+    869,
+    1229
+  ],
+  "fit_size": [
+    33,
+    54
+  ],
+  "phase": [
+    0.5,
+    0.75
+  ],
+  "chroma_weight": 4.0,
+  "palette_rgb555": [
+    32767,
+    17055,
+    7528,
+    0
+  ]
+}

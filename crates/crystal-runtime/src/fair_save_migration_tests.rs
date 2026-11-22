@@ -5,7 +5,8 @@ use anyhow::{Context, Result, ensure};
 use crystal_assets::{AssetRoot, read_loaded_verified_compiled_game_pack};
 use crystal_core::save;
 use crystal_core::state::OverworldMemory;
-use crystal_core::world::map::TilePosition;
+use crystal_core::world::collision::{permissions, sample_collision};
+use crystal_core::world::map::{Direction, TilePosition};
 use crystal_core::world::movement::MovementMode;
 
 use crate::{CrystalRuntime, RuntimeGameShell};
@@ -72,12 +73,22 @@ fn fair_release_copies_checkpoints_across_exact_archives() -> Result<()> {
             .or_default()
             .extend([((6, 3), 17), ((1, 7), 18)]);
         let absent = tmp.join("absent.crystalsave");
-        for (i, (map, x, y, mode, must_move)) in [
-            ("MnR10C00R00", 24, 20, MovementMode::Normal, false),
-            ("MnR15C00R00", 22, 8, MovementMode::Normal, true),
-            ("MnR07C00R00", 28, 20, MovementMode::Surf, true),
-            ("MnIronSump", 9, 10, MovementMode::Surf, false),
-            ("MnStateFairgrounds", 36, 28, MovementMode::Normal, false),
+        use ExpectedLanding::{At, Declined, Relocated, WithPierWatcher};
+        use MovementMode::{Normal, Surf};
+        for (i, (map, x, y, mode, expected)) in [
+            ("MnR10C00R00", 24, 20, Normal, At(24, 20)),
+            ("MnR15C00R00", 22, 8, Normal, Relocated),
+            ("MnR07C00R00", 28, 20, Surf, Relocated),
+            ("MnIronSump", 9, 10, Surf, At(9, 10)),
+            ("MnStateFairgrounds", 36, 28, Normal, At(36, 28)),
+            // Saving after disembarking on the old island records walking mode.
+            ("MnR12Cave1F", 28, 16, Normal, At(21, 16)),
+            ("MnR12Cave1F", 29, 16, Normal, At(21, 16)),
+            ("MnR12Cave1F", 28, 17, Normal, At(21, 16)),
+            ("MnR12Cave1F", 29, 17, Normal, At(21, 16)),
+            ("MnR15C00R00", 49, 18, Normal, At(47, 18)),
+            ("MnR15C00R00", 49, 18, Normal, WithPierWatcher),
+            ("MnR13C00R02", 42, 18, Normal, Declined),
         ]
         .into_iter()
         .enumerate()
@@ -87,7 +98,7 @@ fn fair_release_copies_checkpoints_across_exact_archives() -> Result<()> {
                 map_name,
                 tile,
                 mode: m,
-                ..
+                facing,
             } = &mut fixture.overworld
             else {
                 anyhow::bail!("uninitialized fixture")
@@ -95,13 +106,45 @@ fn fair_release_copies_checkpoints_across_exact_archives() -> Result<()> {
             *map_name = map.into();
             *tile = TilePosition::new(x, y);
             *m = mode;
-            let old_room = parent.data().overworld_session_for_traversal_with_state(
+            *facing = Direction::Right;
+            let beyond_cut_tree = (map, x, y) == ("MnR15C00R00", 49, 18);
+            if beyond_cut_tree {
+                // Cut opens the west side of this two-square block in Lakeside.
+                fixture
+                    .map_block_overrides
+                    .entry(map.into())
+                    .or_default()
+                    .insert((24, 9), 0x6f);
+            }
+            let mut old_room = parent.data().overworld_session_for_traversal_with_state(
                 map,
-                *tile,
+                TilePosition::new(x, y),
                 fixture.frame_counter,
                 mode.traversal_state(),
-                None,
+                Some(&fixture),
             )?;
+            if beyond_cut_tree {
+                for x in [48, 49] {
+                    let ground = sample_collision(
+                        &old_room.map,
+                        &old_room.tileset,
+                        TilePosition::new(x, 18),
+                    )
+                    .context("old Cut passage")?;
+                    assert_eq!(ground.permission, permissions::FLOOR);
+                }
+            }
+            let pier_watcher = "MN_R15_PIER_WATCHER";
+            let bank = TilePosition::new(47, 18);
+            if matches!(expected, WithPierWatcher) {
+                // Exercise a saved actor pose on the preferred landing.
+                old_room
+                    .object_runtime_tiles
+                    .insert(pier_watcher.into(), bank);
+                assert!(old_room.occupied_tiles_checked()?.iter().any(|actor| {
+                    actor.tile == bank && actor.object_identifier.as_deref() == Some(pier_watcher)
+                }));
+            }
             fixture.map_object_overrides.clear();
             fixture
                 .map_object_overrides
@@ -127,6 +170,8 @@ fn fair_release_copies_checkpoints_across_exact_archives() -> Result<()> {
                 &parent.pack_identity().content_hash,
             )?;
             let before = std::fs::read(&source)?;
+            let backup = save::save_backup_path(&source);
+            let before_backup = std::fs::read(&backup)?;
             let migrated = crate::prepare_runtime_save_slot(&target, &dest, |s| {
                 if s.modpack_hash == parent.modpack().hash() {
                     source.clone()
@@ -134,6 +179,22 @@ fn fair_release_copies_checkpoints_across_exact_archives() -> Result<()> {
                     absent.clone()
                 }
             })?;
+            assert_eq!(
+                std::fs::read(&source)?,
+                before,
+                "source save for {map} ({x},{y})"
+            );
+            assert_eq!(
+                std::fs::read(&backup)?,
+                before_backup,
+                "source backup for {map} ({x},{y})"
+            );
+            if matches!(expected, Declined) {
+                assert!(!migrated, "sealed source corridor on {map} ({x},{y})");
+                assert!(!dest.exists());
+                assert!(!save::save_backup_path(&dest).exists());
+                continue;
+            }
             if !migrated {
                 let policy = super::parse(
                     target
@@ -151,7 +212,7 @@ fn fair_release_copies_checkpoints_across_exact_archives() -> Result<()> {
                     src,
                     target.data(),
                 )?;
-                super::reconcile(&mut state, target.data(), &policy.fair_layouts)?;
+                super::reconcile(&mut state, target.data(), &policy.fair_layouts, src)?;
                 target.validate_save_state_for_runtime_pack(&state)?;
                 anyhow::bail!("copy failed for {map} ({x},{y})");
             }
@@ -160,14 +221,46 @@ fn fair_release_copies_checkpoints_across_exact_archives() -> Result<()> {
                 map_name,
                 tile,
                 mode: new_mode,
-                ..
+                facing,
             } = &saved.overworld
             else {
                 anyhow::bail!("lost overworld")
             };
             assert_eq!(map_name, map);
             assert_eq!(*new_mode, mode);
-            assert_eq!(*tile != TilePosition::new(x, y), must_move, "{map}");
+            assert_eq!(*facing, Direction::Right);
+            match expected {
+                At(dx, dy) => assert_eq!(*tile, TilePosition::new(dx, dy), "{map} ({x},{y})"),
+                Relocated => assert_ne!(*tile, TilePosition::new(x, y), "{map}"),
+                WithPierWatcher => {
+                    assert_eq!(*tile, TilePosition::new(46, 18));
+                    let mut room = target.data().overworld_session_for_traversal_with_state(
+                        map,
+                        *tile,
+                        saved.frame_counter,
+                        mode.traversal_state(),
+                        Some(&saved),
+                    )?;
+                    target
+                        .data()
+                        .apply_saved_overworld_overrides(&mut room, &saved)?;
+                    let occupied = room.occupied_tiles_checked()?;
+                    assert!(occupied.iter().any(|actor| actor.tile == bank
+                        && actor.object_identifier.as_deref() == Some(pier_watcher)));
+                    assert!(occupied.iter().all(|actor| actor.tile != *tile));
+                }
+                Declined => unreachable!("checked before loading the destination save"),
+            }
+            if beyond_cut_tree {
+                assert!(
+                    saved
+                        .map_block_overrides
+                        .get(map)
+                        .and_then(|b| b.get(&(24, 9)))
+                        .is_none(),
+                    "the removed Route 15 Cut tree should use the new block"
+                );
+            }
             if mode == MovementMode::Surf {
                 let room = target.data().overworld_session_for_traversal_with_state(
                     map,
@@ -203,7 +296,6 @@ fn fair_release_copies_checkpoints_across_exact_archives() -> Result<()> {
             assert!(crate::prepare_runtime_save_slot(&target, &dest, |_| {
                 absent.clone()
             })?);
-            assert_eq!(std::fs::read(&source)?, before);
             let wrong = tmp.join(format!("wrong-{i}.crystalsave"));
             assert!(!crate::prepare_runtime_save_slot(&target, &wrong, |s| {
                 if s.modpack_hash != parent.modpack().hash() {
@@ -218,4 +310,11 @@ fn fair_release_copies_checkpoints_across_exact_archives() -> Result<()> {
     })();
     std::fs::remove_dir_all(tmp)?;
     result
+}
+
+enum ExpectedLanding {
+    At(i16, i16),
+    Relocated,
+    WithPierWatcher,
+    Declined,
 }

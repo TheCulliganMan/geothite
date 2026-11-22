@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "name": "schoolboy",
+  "source": "planning/minnesota/npcs/portrait-cast-v01/schoolboy/native-pixels-v1.json",
+  "previous_source": null,
+  "image_source": "planning/minnesota/npcs/portrait-cast-v01/schoolboy/image-source-v1.png",
+  "prompt": "planning/minnesota/npcs/portrait-cast-v01/schoolboy/image-prompt-v1.txt",
+  "method": "built-in-imagegen-and-whole-source-rust-conversion",
+  "source_sha256": "8570da0f20834a403132e085fea235ec8aad3ab5365e29a46c77b3bfc14e40ff",
+  "native_sha256": "282c4443ce11e9a6ee6e00cb7d52e23d5f5170c4edc142aa31c7fab2e606a0e6",
+  "machine_rows": "target/trainer-cast-rest/schoolboy/choices-v1/point0.25-0.25.json",
+  "conversion_command": [
+    "target/trainer-face-diagnosis/tools/trainer_portrait_palette",
+    "planning/minnesota/npcs/portrait-cast-v01/schoolboy/image-source-v1.png",
+    "target/trainer-cast-rest/schoolboy/choices-v1/point0.25-0.25.png",
+    "11801",
+    "24909",
+    "--native",
+    "0.25",
+    "0.25",
+    "--chroma-weight",
+    "4"
+  ],
+  "sampling": "whole_source_phase_d65_lab",
+  "source_bounds": [
+    274,
+    13,
+    950,
+    1231
+  ],
+  "fit_size": [
+    30,
+    54
+  ],
+  "phase": [
+    0.25,
+    0.25
+  ],
+  "chroma_weight": 4.0,
+  "palette_rgb555": [
+    32767,
+    11801,
+    24909,
+    0
+  ],
+  "trainer_class": "SCHOOLBOY",
+  "trainer_ids": [
+    "MN_FAIR_COOKIE_TRAINER",
+    "MN_FAIR_EXHIBITOR_01_TRAINER",
+    "MN_FAIR_EXHIBITOR_04_TRAINER",
+    "MN_FAIR_EXHIBITOR_07_TRAINER",
+    "MN_FAIR_EXHIBITOR_08_TRAINER",
+    "MN_FAIR_GRAIN_KID_TRAINER",
+    "MN_FAIR_JUNIOR_TRAINER",
+    "MN_FAIR_MILK_TRAINER",
+    "MN_FAIR_NORTH_KID_TRAINER",
+    "MN_GYM_1_TRAINER_2",
+    "MN_R04_T02",
+    "MN_R16_T06"
+  ],
+  "actual_reference_path": "target/trainer-cast-rest/reference/schoolboy.png",
+  "review": "Selected point(.25,.25): actual56 shows two distinct white/pupil eyes, smallblacknose and separateclosed smile; area24 merged nose/mouth,32 droppedfeatures. Youthfulmale schooluniform, bag, ball andbothfeetread."
+}

@@ -1,0 +1,7 @@
+Fix only the HEAD INTERIOR of this full-body adult male Guitarist sprite while retaining the exact overall head outline size, flowing white hair silhouette, body, pose, guitar, clothing, boots, feet and white background. This is a56x56 game sprite: the face must be11nativepixels WIDE by11HIGH within the existing14–16pixel head. Currently the visible face is too narrow/tiny, so use more of the interior of the hair for SKIN. Move hairline slightly outward and upward to reveal a wider forehead and cheeks WITHOUT increasing the outer head. Keep masculine adult angular face.
+
+Redraw using enormous coarse square face pixels, at least30x30sourcepixels each on1254canvas. The face must have two eyes each about90pxWIDE by60pxHIGH: white30px, pureBLACK30px pupil, white30px. Keep60pxwarmpeach bridge between eyes, skin space on both outer sides. Put both eyes at sameheight, no eye hidingunderhair. Above each, one separate shortblack brow.
+
+Nose is a bold pureblack40x40square below eye bridge. Mouth is a separate pureblack90pxwide by30pxHIGH horizontal rectangular smile with30pxskin gap beneath nose. This bold black nose and black mouth MUSTremain separate aftershrink. NOT thin curves. NOT blank face. NOT a unibrow. Do not use black outline to substitute for eye pupils.
+
+Exactlyfourflatcolorswhite,peach,red,black. NoAA, texture,gradient, fine hairline strokes or details. Keep adult fullbodyproportions and BOTH FEETvisible. Do not alter anynonheadpixels or crop. The requestedchangeis roomierfaceinsideexistinghair with muchboldernativepixel facialfeatures.

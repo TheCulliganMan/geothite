@@ -8,12 +8,14 @@ use crystal_core::models::Dv;
 use crystal_runtime::CrystalRuntime;
 
 use super::super::{
-    VisibleShellController, mark_runtime_snapshot_dirty, visible_start_menu_entries,
+    VisibleShellController, mark_runtime_snapshot_dirty, visible_field_dialog_pages,
+    visible_start_menu_entries,
 };
 use super::interior_life::fixture;
+use super::northstar_dialogue::canonical_pages;
 use super::northstar_ice_lair::choice;
 use super::r10_gallery::continue_save;
-use super::winona::{load, press};
+use super::winona::{at, load, press};
 
 fn event(c: &VisibleShellController, name: &str) -> bool {
     c.shell
@@ -119,30 +121,44 @@ fn fossil_hunter_cliff_conversation_and_route_remain_accessible() {
     // Climb from the lower road via the relocated stair, beside the new cave
     // mouth. This must not warp into the cave or require a field move.
     super::rochester::trail(&mut c, &runtime, (39, 20));
+    at(&mut c, "MnR01C00R00", (39, 20));
     super::rochester::trail(&mut c, &runtime, (39, 18));
-    let climbed = c.snapshot().expect("climbed fossil terrace");
-    assert_eq!(climbed.overworld.map_name, "MnR01C00R00");
-    assert_eq!(
-        (climbed.overworld.tile.x, climbed.overworld.tile.y),
-        (39, 18)
-    );
+    at(&mut c, "MnR01C00R00", (39, 18));
     super::rochester::trail(&mut c, &runtime, (26, 15));
+    at(&mut c, "MnR01C00R00", (26, 15));
     press(&mut c, GameButton::Up);
     press(&mut c, GameButton::A);
-    for (index, expected) in [
-        "Look, a shell!\nRight in the rock.",
-        "This cliff used to\nlie under a sea.",
-        "Two fossils came\nout. Want one?",
-    ]
-    .into_iter()
-    .enumerate()
-    {
+    let expected_pages = canonical_pages(&runtime, "MnR01C00R00", "MnFossilSlabText");
+    let speech = expected_pages.join(" ").replace('\n', " ");
+    for detail in [
+        "Two fossils",
+        "steps",
+        "ROCHESTER lab",
+        "revive",
+        "Want to take one?",
+    ] {
+        assert!(
+            speech.contains(detail),
+            "the hunter must explain {detail:?}: {speech}"
+        );
+    }
+    let presentation = c
+        .shell
+        .shell
+        .presentation_snapshot()
+        .expect("hunter opens fossil offer");
+    assert_eq!(
+        visible_field_dialog_pages(&presentation, &c.shell).expect("hunter's native pages"),
+        expected_pages,
+        "the installed fossil offer must match all authored pages"
+    );
+    for (index, expected) in expected_pages.iter().enumerate() {
         c.wait_frames(64).expect("fossil page presentation");
         let page = c.snapshot().expect("hunter dialogue");
         let text = page.ui.text.expect("hunter's visible page");
         assert_eq!(text.label, "MnFossilSlabText");
-        assert_eq!(text.asm_text.as_deref(), Some(expected));
-        if index < 2 {
+        assert_eq!(text.asm_text.as_deref(), Some(expected.as_str()));
+        if index + 1 < expected_pages.len() {
             press(&mut c, GameButton::A);
         }
     }
@@ -153,8 +169,21 @@ fn fossil_hunter_cliff_conversation_and_route_remain_accessible() {
     talk(&mut c, GameButton::Up, &[true, true, true]);
     assert!(event(&c, "EVENT_MN_FOSSIL_CHOSEN"));
     assert_eq!(quantity(&c, "LENS_FOSSIL"), 1);
-    super::rochester::trail(&mut c, &runtime, (0, 24));
-    super::rochester::trail(&mut c, &runtime, (63, 24));
+    // Retrace the eastern stair before crossing the lower road. A direct path
+    // west from the terrace enters the second cave mouth at (36, 19).
+    for tile in [
+        (26, 16),
+        (31, 16),
+        (31, 18),
+        (39, 18),
+        (39, 20),
+        (39, 24),
+        (0, 24),
+        (63, 24),
+    ] {
+        super::rochester::trail(&mut c, &runtime, tile);
+        at(&mut c, "MnR01C00R00", tile);
+    }
     press(&mut c, GameButton::Start);
     assert!(c.snapshot().expect("Start after route").ui.menu.is_some());
 }

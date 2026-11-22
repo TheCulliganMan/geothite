@@ -109,11 +109,16 @@ impl CrystalRuntime {
             audio_compression.as_deref(),
         )?;
         let map_catalog = Self::base_map_catalog_snapshot(&data);
+        let trainer_portraits = crystal_assets::TrainerPortraitOverrides::from_runtime_files(
+            &runtime_files,
+            &data.trainers,
+        )?;
         let runtime = Self {
             modpack,
             pack_identity,
             data,
             runtime_files,
+            trainer_portraits,
             runtime_asset_mount: Arc::new(RuntimeAssetMountCache::default()),
             audio,
             viewport: GameViewport::default(),

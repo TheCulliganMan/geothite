@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "portraits": [
+    {
+      "previous_source": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/02-varel/native-pixels-v2.json",
+      "source": "planning/minnesota/npcs/portrait-faces-v03/varel/native-pixels-v1.json"
+    },
+    {
+      "previous_source": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/03-torven/native-pixels-v3.json",
+      "source": "planning/minnesota/npcs/portrait-faces-v03/torven/native-pixels-v1.json"
+    },
+    {
+      "previous_source": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/04-avrin/native-pixels-v3.json",
+      "source": "planning/minnesota/npcs/portrait-faces-v03/avrin/native-pixels-v1.json"
+    },
+    {
+      "previous_source": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/05-brannic/native-pixels-v3.json",
+      "source": "planning/minnesota/npcs/portrait-faces-v03/brannic/native-pixels-v1.json"
+    },
+    {
+      "previous_source": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/06-saven/native-pixels-v3.json",
+      "source": "planning/minnesota/npcs/portrait-faces-v03/saven/native-pixels-v1.json"
+    },
+    {
+      "previous_source": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/07-sivren/native-pixels-v2.json",
+      "source": "planning/minnesota/npcs/portrait-faces-v03/sivren/native-pixels-v2.json"
+    },
+    {
+      "previous_source": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/08-orlis/native-pixels-v3.json",
+      "source": "planning/minnesota/npcs/portrait-faces-v03/orlis/native-pixels-v1.json"
+    },
+    {
+      "previous_source": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/09-norek/native-pixels-v2.json",
+      "source": "planning/minnesota/npcs/portrait-faces-v03/norek/native-pixels-v1.json"
+    },
+    {
+      "previous_source": "planning/minnesota/npcs/tamarack-ice/01-tamarack/native-pixels-v4.json",
+      "source": "planning/minnesota/npcs/portrait-faces-v03/tamarack/native-pixels-v1.json"
+    },
+    {
+      "previous_source": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/10-fern/native-pixels-v3.json",
+      "source": "planning/minnesota/npcs/portrait-cast-v01/fern/native-pixels-v1.json"
+    },
+    {
+      "previous_source": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/11-flint/native-pixels-v2.json",
+      "source": "planning/minnesota/npcs/portrait-cast-v01/flint/native-pixels-v1.json"
+    },
+    {
+      "previous_source": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/13-halden/native-pixels-v4.json",
+      "source": "planning/minnesota/npcs/portrait-cast-v01/halden/native-pixels-v1.json"
+    },
+    {
+      "previous_source": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/12-veil/native-pixels-v3.json",
+      "source": "planning/minnesota/npcs/portrait-cast-v01/veil/native-pixels-v1.json"
+    },
+    {
+      "previous_source": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/01-reed/native-pixels-v2.json",
+      "source": "planning/minnesota/npcs/portrait-cast-v01/reed/native-pixels-v1.json"
+    },
+    {
+      "previous_source": "planning/minnesota/gyms/battle-lessons-v01/tavel.json",
+      "source": "planning/minnesota/npcs/portrait-cast-v01/timekeeper/native-pixels-v1.json"
+    }
+  ]
+}

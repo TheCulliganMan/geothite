@@ -25,7 +25,7 @@ fn immersive_battle_trainers(
     let enemy = match &battle.kind {
         RuntimeBattleKind::Trainer { trainer_class, .. } => {
             Some(crystal_render_api::VisualBattleTrainer {
-                source_id: Arc::from(normalize_battle_trainer_sprite_id(trainer_class)),
+                source_id: Arc::from(battle_trainer_portrait(battle, trainer_class)),
                 visible: shell.visible_battle_sliding_intro.is_some()
                     || shell.battle_entry_messages_remaining >= 3
                     || visible_trainer_result_frame(shell).is_some()

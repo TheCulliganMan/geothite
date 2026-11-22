@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "name": "scientist",
+  "source": "planning/minnesota/npcs/portrait-cast-v01/scientist/native-pixels-v1.json",
+  "previous_source": null,
+  "image_source": "planning/minnesota/npcs/portrait-cast-v01/scientist/image-source-v2.png",
+  "prompt": "planning/minnesota/npcs/portrait-cast-v01/scientist/image-prompt-v2.txt",
+  "method": "built-in-imagegen-and-whole-source-rust-conversion",
+  "source_sha256": "e1f1ea15f215fb623d8f578a636f1d9253a0c220d04ad15b82f6800eff2a29ee",
+  "native_sha256": "d9a844566b2ee1c84de36bbee8b0a0baf2f1177a5182ac6590485f415c4048fb",
+  "machine_rows": "target/trainer-cast-rest/scientist/face-fix-v2/point0.25-0.25.json",
+  "conversion_command": [
+    "target/trainer-face-diagnosis/tools/trainer_portrait_palette",
+    "planning/minnesota/npcs/portrait-cast-v01/scientist/image-source-v2.png",
+    "target/trainer-cast-rest/scientist/face-fix-v2/point0.25-0.25.png",
+    "11896",
+    "17834",
+    "--native",
+    "0.25",
+    "0.25",
+    "--chroma-weight",
+    "4"
+  ],
+  "sampling": "whole_source_phase_d65_lab",
+  "source_bounds": [
+    237,
+    20,
+    1025,
+    1234
+  ],
+  "fit_size": [
+    35,
+    54
+  ],
+  "phase": [
+    0.25,
+    0.25
+  ],
+  "chroma_weight": 4.0,
+  "palette_rgb555": [
+    32767,
+    11896,
+    17834,
+    0
+  ],
+  "actual_reference_path": "target/trainer-cast-rest/reference/scientist.png",
+  "trainer_ids": [
+    "MN_GYM_3_TRAINER_1"
+  ],
+  "new_art_id": "mn_portrait_scientist",
+  "encoded_png": "target/trainer-cast-rest/scientist/encoded/gfx/trainers/mn_portrait_scientist.png",
+  "battle_only": true
+}

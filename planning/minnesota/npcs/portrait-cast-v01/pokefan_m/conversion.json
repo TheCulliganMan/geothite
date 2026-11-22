@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "name": "pokefan_m",
+  "method": "built-in-imagegen-with-whole-image-area-conversion",
+  "source": "planning/minnesota/npcs/portrait-cast-v01/pokefan_m/native-pixels-v1.json",
+  "image_source": "planning/minnesota/npcs/portrait-cast-v01/pokefan_m/image-source-v1.png",
+  "prompt": "planning/minnesota/npcs/portrait-cast-v01/pokefan_m/image-prompt-v1.txt",
+  "trainer_class": "POKEFANM",
+  "trainer_ids": [
+    "MN_FAIR_EXHIBITOR_12_TRAINER",
+    "MN_FAIR_MIDWAY_C_TRAINER",
+    "MN_FAIR_SHOW_TRAINER",
+    "MN_GYM_4_TRAINER_2",
+    "MN_R09_T05",
+    "MN_R16_T03",
+    "MN_R17_T05"
+  ],
+  "actual_reference_path": "target/trainer-cast-rest/reference/pokefan_m.png",
+  "machine_rows": "target/trainer-cast-rest/pokefan_m/area24/battle.candidate.json",
+  "crop": [
+    0,
+    0,
+    1254,
+    1254
+  ],
+  "native_fit": [
+    52,
+    54
+  ],
+  "minimum_black_samples": 24,
+  "minimum_white_samples": 16,
+  "outline_profile": "source-contour-v1",
+  "sampling": "area_vote",
+  "view": "front",
+  "size": [
+    56,
+    56
+  ],
+  "source_bounds": [
+    214,
+    29,
+    1030,
+    1236
+  ],
+  "palette_rgb555": [
+    32767,
+    13949,
+    8469,
+    0
+  ],
+  "review": "Native56/8x: two open white/pupil eyes, stepped blacknose and separate whitegrin clearlyread. Broad middleaged male fan build, recedinghair, dualtrainerballs, shirt emblem and both legs/shoes visible. Area24 preserves nose and hands betterthan32; originalpaletteexact.",
+  "source_sha256": "a6547724c8478f458501bdcde73ce378eae1d4a9bfd121e1bd99ba5b5ac989d8",
+  "native_sha256": "9c88d773a5ca5d8d44ce872da42b823e0c9bb8269287e2c5f3de88531a1bc88b"
+}

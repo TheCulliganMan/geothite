@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "name": "super_nerd",
+  "source": "planning/minnesota/npcs/portrait-cast-v01/super_nerd/native-pixels-v1.json",
+  "previous_source": null,
+  "image_source": "planning/minnesota/npcs/portrait-cast-v01/super_nerd/image-source-v1.png",
+  "prompt": "planning/minnesota/npcs/portrait-cast-v01/super_nerd/image-prompt-v1.txt",
+  "method": "built-in-imagegen-and-whole-source-rust-conversion",
+  "source_sha256": "34fedb182b09340243dbc2634e03f3bd44513acb66e372e6b8f03ffdfc472390",
+  "native_sha256": "abeae7e57d2e62e96f3c461b1315ebf16557a66bf35e1488dba51fc87cd24050",
+  "machine_rows": "target/trainer-cast-rest/super_nerd/v1-native/point0.5-0.25.json",
+  "conversion_command": [
+    "target/trainer-face-diagnosis/tools/trainer_portrait_palette",
+    "planning/minnesota/npcs/portrait-cast-v01/super_nerd/image-source-v1.png",
+    "target/trainer-cast-rest/super_nerd/v1-native/point0.5-0.25.png",
+    "18142",
+    "10539",
+    "--native",
+    "0.5",
+    "0.25",
+    "--chroma-weight",
+    "4"
+  ],
+  "sampling": "whole_source_phase_d65_lab",
+  "source_bounds": [
+    150,
+    28,
+    1039,
+    1238
+  ],
+  "fit_size": [
+    40,
+    54
+  ],
+  "phase": [
+    0.5,
+    0.25
+  ],
+  "chroma_weight": 4.0,
+  "palette_rgb555": [
+    32767,
+    18142,
+    10539,
+    0
+  ]
+}

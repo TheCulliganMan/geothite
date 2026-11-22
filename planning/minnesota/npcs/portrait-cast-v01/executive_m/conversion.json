@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "name": "executive_m",
+  "source": "planning/minnesota/npcs/portrait-cast-v01/executive_m/native-pixels-v1.json",
+  "previous_source": null,
+  "image_source": "planning/minnesota/npcs/portrait-cast-v01/executive_m/image-source-v2.png",
+  "prompt": "planning/minnesota/npcs/portrait-cast-v01/executive_m/image-prompt-v2.txt",
+  "method": "built-in-imagegen-and-whole-source-rust-conversion",
+  "source_sha256": "d8cbd40b40a553a9e778094bfbde366a09a1e364cf16799346a2786211fbe9b4",
+  "native_sha256": "9a2c98184f3a0a22a23304412b8a7d8386ae2fa0cd691fd243a0970fae979243",
+  "machine_rows": "target/trainer-cast-rest/executive_m/v2/point0.5-0.5.json",
+  "conversion_command": [
+    "target/trainer-face-diagnosis/tools/trainer_portrait_palette",
+    "planning/minnesota/npcs/portrait-cast-v01/executive_m/image-source-v2.png",
+    "target/trainer-cast-rest/executive_m/v2/point0.5-0.5.png",
+    "5689",
+    "14510",
+    "--native",
+    "0.5",
+    "0.5",
+    "--chroma-weight",
+    "4"
+  ],
+  "sampling": "whole_source_phase_d65_lab",
+  "source_bounds": [
+    294,
+    17,
+    991,
+    1236
+  ],
+  "fit_size": [
+    31,
+    54
+  ],
+  "phase": [
+    0.5,
+    0.5
+  ],
+  "chroma_weight": 4.0,
+  "palette_rgb555": [
+    32767,
+    5689,
+    14510,
+    0
+  ]
+}

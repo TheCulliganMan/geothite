@@ -27,6 +27,8 @@ for case in held_picnic:: food_vendors:: food_neighbors:: shore_bakery::; do
 done
 ```
 
+Commit `7717e1590` contains the builder and story used to produce these two archives. The archive check reads the [nine Fair Table passages](expected-food-dialogue.json) from that revision, so later edits to the story can be tested separately.
+
 The location check starts at the woodland gate with every fairgoer in place. It follows floor tiles to all 32 stalls and matches each seller, counter face, interaction and stock list to the authored fair. There are 13 stands selling the 16 specialties. The comparison also checks the regional items, shop inventories, dialogue, gift flag, map geometry and artwork against the parent edition.
 
 Both editions passed 25 focused checks each, covering the food counters, hostel, bakery, Game Corner and Lakeside services. For each of the 20 foods, two battle turns checked healing, consumption and the empty held slot on the following turn. A separate test bought a slice, gave it to Keypout, took it back, gave it again and saved. After Continue, Keypout ate the slice in Bird Keeper Ivo’s battle and went from 15/180 to 65/180 HP. Its held slot stayed empty after switching and after a post-battle save. Chrome displayed the same purchased item in the Pack and on the second party stats page.

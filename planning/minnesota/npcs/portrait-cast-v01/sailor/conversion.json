@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "name": "sailor",
+  "method": "built-in-imagegen-with-whole-image-area-conversion",
+  "source": "planning/minnesota/npcs/portrait-cast-v01/sailor/native-pixels-v1.json",
+  "image_source": "planning/minnesota/npcs/portrait-cast-v01/sailor/image-source-v1.png",
+  "prompt": "planning/minnesota/npcs/portrait-cast-v01/sailor/image-prompt-v1.txt",
+  "trainer_class": "SAILOR",
+  "trainer_ids": [
+    "MN_DULUTH_X_T01",
+    "MN_GYM_8_TRAINER_2",
+    "MN_R10_T04",
+    "MN_R18_T05"
+  ],
+  "actual_reference_path": "target/trainer-cast-rest/reference/sailor.png",
+  "machine_rows": "target/trainer-cast-rest/sailor/area24/battle.candidate.json",
+  "crop": [
+    0,
+    0,
+    1254,
+    1254
+  ],
+  "native_fit": [
+    52,
+    54
+  ],
+  "minimum_black_samples": 24,
+  "minimum_white_samples": 16,
+  "outline_profile": "source-contour-v1",
+  "sampling": "area_vote",
+  "view": "front",
+  "size": [
+    56,
+    56
+  ],
+  "source_bounds": [
+    158,
+    7,
+    1140,
+    1244
+  ],
+  "palette_rgb555": [
+    32767,
+    7640,
+    13539,
+    0
+  ],
+  "review": "Native56/8x reviewed: two equal readable eyeopenings/pupils, smallblacknose and whitegrin read. Broadadult sailor shoulders, cap, neckerchief, flexedarm, ballhand and bothbootedlegs clear. Area24 keeps facialmarks anduniform details betterthan32. Exactoriginalpalette.",
+  "source_sha256": "11b0d4227409841aab2fef9f315138511b5446de807d2a198c26b9c87d9537bb",
+  "native_sha256": "31016b683a80faa9ba9ef0e1fd635cf12da69ce3749dcb0ea59601c86eb00df8"
+}

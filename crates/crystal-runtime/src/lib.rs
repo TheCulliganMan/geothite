@@ -369,6 +369,7 @@ pub struct CrystalRuntime {
     pack_identity: CompiledGamePackIdentity,
     data: GameDataSet,
     runtime_files: BTreeMap<String, Vec<u8>>,
+    trainer_portraits: crystal_assets::TrainerPortraitOverrides,
     runtime_asset_mount: Arc<RuntimeAssetMountCache>,
     audio: RuntimeAudioCatalog,
     viewport: GameViewport,
@@ -971,6 +972,10 @@ pub enum RuntimeMenuSource {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct RuntimeBattleSnapshot {
     pub kind: RuntimeBattleKind,
+    /// Pack-resolved battle art; never changes trainer class or battle behavior.
+    pub trainer_portrait: Option<String>,
+    /// Presentation ownership projected by the shared visible controller.
+    pub trainer_portrait_visible: bool,
     pub battle_music: String,
     pub battle_type: String,
     pub enemy_pokemon: Pokemon,
@@ -3033,6 +3038,13 @@ impl RuntimeBattleSnapshot {
             })
             .unwrap_or_else(|| enemy_pokemon.moves.clone());
         Ok(Self {
+            trainer_portrait: match &kind {
+                RuntimeBattleKind::Trainer { trainer_class, .. } => {
+                    Some(crystal_assets::trainer_class_portrait(trainer_class))
+                }
+                _ => None,
+            },
+            trainer_portrait_visible: false,
             kind,
             battle_music,
             battle_type: battle_type.to_string(),

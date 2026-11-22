@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "name": "skier",
+  "method": "built-in-imagegen-with-whole-image-area-conversion",
+  "source": "planning/minnesota/npcs/portrait-cast-v01/skier/native-pixels-v1.json",
+  "image_source": "planning/minnesota/npcs/portrait-cast-v01/skier/image-source-v1.png",
+  "prompt": "planning/minnesota/npcs/portrait-cast-v01/skier/image-prompt-v1.txt",
+  "trainer_class": "SKIER",
+  "trainer_ids": [
+    "MN_EXTRA_FALLS_SKIER",
+    "MN_ICE_SKIER_ELSA"
+  ],
+  "actual_reference_path": "target/trainer-cast-rest/reference/skier.png",
+  "machine_rows": "target/trainer-cast-rest/skier/area24/battle.candidate.json",
+  "crop": [
+    0,
+    0,
+    1254,
+    1254
+  ],
+  "native_fit": [
+    52,
+    54
+  ],
+  "minimum_black_samples": 24,
+  "minimum_white_samples": 16,
+  "outline_profile": "source-contour-v1",
+  "sampling": "area_vote",
+  "view": "front",
+  "size": [
+    56,
+    56
+  ],
+  "source_bounds": [
+    116,
+    0,
+    1102,
+    1221
+  ],
+  "palette_rgb555": [
+    32767,
+    15996,
+    14552,
+    0
+  ],
+  "review": "Native56/8x: two distinct eyes with white/pupil marks, smallblacknose and separatemouth read belowhat. Athleticadultwoman, hair, jacket, poles, both boots and two skis remain clear. Area24 retains face details betterthan32. Exactoriginalpalette; no handpixels.",
+  "source_sha256": "ae932af05bff7095d9a5d7eb07d703837ac01624759b182e2edb685fa2c59d9d",
+  "native_sha256": "005b508e7d53edb8936aa057fdc60794b93d8755f10719e05ed84369343a66f9"
+}

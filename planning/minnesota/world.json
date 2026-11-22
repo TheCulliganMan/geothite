@@ -14027,5 +14027,34 @@
     "changed_maps_from_parent": 3,
     "runbook": "revisions/fair-patrols-v01/README.md",
     "added_maps_from_parent": 0
+  },
+  "trainer_portrait_full_cast_revision": {
+    "kind": "battle_portrait_review",
+    "status": "full_body_candidate_visual_and_runtime_checks_passed",
+    "parent_revision": "fair_release_intro_revision",
+    "parent_pack": "content-packs/minnesota-fair-release-v01.crystalpack",
+    "parent_pack_sha256": "18003b91597173f1d98937a0f6cc2fa82cfd2c5b3612c9803cd5f615acad2a73",
+    "pack": "content-packs/minnesota-trainer-full-cast-v03.crystalpack",
+    "pack_sha256": "d98c7f6352d6c258af7b98c3284b834bcbae76f6e18be9e9cf467b71e719a722",
+    "content_identity": "b3de9604cfa8c8a681e32847e9f84088b6393fae799423f8c4a80b1a2eb57b46",
+    "save_manifest": "northstar-trainer-portraits-v3-b096786c02a13c3b595c2bc74f9b0adcb460166c2e2b1e25c6dda709d88ce4f6",
+    "previous_art_review": {
+      "pack": "content-packs/minnesota-trainer-full-cast-v02.crystalpack",
+      "pack_sha256": "19b48eae691384ef9301aa932a15869ee42947b5a1f745614317d5dab20de9b0",
+      "content_identity": "b096786c02a13c3b595c2bc74f9b0adcb460166c2e2b1e25c6dda709d88ce4f6"
+    },
+    "source_file": "npcs/portrait-cast-v01/cast-v1.json",
+    "runbook": "npcs/portrait-cast-v01/README.md",
+    "portraits": 49,
+    "remaining_trainer_designs": 40,
+    "corrected_prior_portraits": [
+      "sivren"
+    ],
+    "minnesota_trainers_covered": 337,
+    "changed_battle_resources": 30,
+    "added_resources": 103,
+    "changed_maps": 0,
+    "selected": false,
+    "deployed": false
   }
 }

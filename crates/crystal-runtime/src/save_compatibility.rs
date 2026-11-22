@@ -377,7 +377,12 @@ pub fn prepare_runtime_save_slot(
             )?;
             let mut upgraded =
                 upgrade_source_checkpoint(saved.into_state(), &metadata, source, runtime.data())?;
-            fair_save_migration::reconcile(&mut upgraded, runtime.data(), &metadata.fair_layouts)?;
+            fair_save_migration::reconcile(
+                &mut upgraded,
+                runtime.data(),
+                &metadata.fair_layouts,
+                source,
+            )?;
             runtime.validate_save_state_for_runtime_pack(&upgraded)?;
             Ok(upgraded)
         }) else {

@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "name": "lass",
+  "method": "built-in-imagegen-with-whole-image-area-conversion",
+  "source": "planning/minnesota/npcs/portrait-cast-v01/lass/native-pixels-v1.json",
+  "image_source": "planning/minnesota/npcs/portrait-cast-v01/lass/image-source-v1.png",
+  "prompt": "planning/minnesota/npcs/portrait-cast-v01/lass/image-prompt-v1.txt",
+  "trainer_class": "LASS",
+  "trainer_ids": [
+    "MN_COHESION_DETROIT_WALKER",
+    "MN_COHESION_MARAIS_WALKER",
+    "MN_FAIR_BAKER_TRAINER",
+    "MN_FAIR_EXHIBITOR_02_TRAINER",
+    "MN_FAIR_EXHIBITOR_05_TRAINER",
+    "MN_FAIR_EXHIBITOR_11_TRAINER",
+    "MN_FAIR_GARDEN_TRAINER",
+    "MN_FAIR_MIDWAY_B_TRAINER",
+    "MN_FAIR_PRETZEL_TRAINER",
+    "MN_FAIR_STAGE_TRAINER",
+    "MN_MP_CLUB_CEDAR",
+    "MN_R01_T02",
+    "MN_R02_T01",
+    "MN_R03_T02",
+    "MN_R16_T10",
+    "MN_R18_T03"
+  ],
+  "actual_reference_path": "target/trainer-cast-rest/reference/lass.png",
+  "machine_rows": "target/trainer-cast-rest/lass/area24/battle.candidate.json",
+  "crop": [
+    0,
+    0,
+    1254,
+    1254
+  ],
+  "native_fit": [
+    52,
+    54
+  ],
+  "minimum_black_samples": 24,
+  "minimum_white_samples": 16,
+  "outline_profile": "source-contour-v1",
+  "sampling": "area_vote",
+  "view": "front",
+  "size": [
+    56,
+    56
+  ],
+  "source_bounds": [
+    222,
+    22,
+    1048,
+    1247
+  ],
+  "palette_rgb555": [
+    32767,
+    6713,
+    25869,
+    0
+  ],
+  "review": "Native56 and8x: youthful female class, two distinct white/dark eyes, black nose and separate friendly mouth retained. Full blouse/skirt/socks/shoes and trainerball read. Compact youthful proportions comparable to original Lass; area32 loses nose and was rejected. Exactoriginalpalette.",
+  "source_sha256": "67fdd63fdfb0e4946feff42f76cda7a32d34aabc7a481919348047a45a92e3b7",
+  "native_sha256": "fb0516eccc9a09534d8a9e7b76a09eb9566396b07b25228c8187f213538b9029"
+}

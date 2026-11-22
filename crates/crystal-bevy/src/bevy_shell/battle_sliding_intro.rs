@@ -169,7 +169,7 @@ fn spawn_visible_battle_sliding_intro(
     let enemy_id = match &battle.kind {
         RuntimeBattleKind::Trainer { trainer_class, .. } => format!(
             "battle-trainer:{}",
-            normalize_battle_trainer_sprite_id(trainer_class)
+            battle_trainer_portrait(battle, trainer_class)
         ),
         RuntimeBattleKind::Wild { .. } | RuntimeBattleKind::StaticWild { .. } => format!(
             "pokemon:{}",

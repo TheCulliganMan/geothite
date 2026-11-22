@@ -537,6 +537,10 @@ pub mod modpack {
 }
 
 include!("content_pack.rs");
+mod trainer_portrait_overrides;
+pub use trainer_portrait_overrides::{
+    TRAINER_PORTRAIT_OVERRIDES_PATH, TrainerPortraitOverrides, trainer_class_portrait,
+};
 mod cbor_identity_hash;
 include!("map_modules.rs");
 include!("runtime_pack.rs");

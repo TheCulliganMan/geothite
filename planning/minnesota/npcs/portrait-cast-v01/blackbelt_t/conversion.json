@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "name": "blackbelt_t",
+  "source": "planning/minnesota/npcs/portrait-cast-v01/blackbelt_t/native-pixels-v1.json",
+  "previous_source": null,
+  "image_source": "planning/minnesota/npcs/portrait-cast-v01/blackbelt_t/image-source-v2.png",
+  "prompt": "planning/minnesota/npcs/portrait-cast-v01/blackbelt_t/image-prompt-v2.txt",
+  "method": "built-in-imagegen-and-whole-source-rust-conversion",
+  "source_sha256": "92faa36c3d2e7255b9303c06fdde56a8568a023cccf351887ccd27c39cd2eadf",
+  "native_sha256": "b4d2692b414ab88753d9b733c8e98ac595d8ecd394595ed153d5d9aded9f8e1b",
+  "machine_rows": "target/trainer-cast-rest/blackbelt_t/v2/point0.5-0.25.json",
+  "conversion_command": [
+    "target/trainer-face-diagnosis/tools/trainer_portrait_palette",
+    "planning/minnesota/npcs/portrait-cast-v01/blackbelt_t/image-source-v2.png",
+    "target/trainer-cast-rest/blackbelt_t/v2/point0.5-0.25.png",
+    "8698",
+    "12621",
+    "--native",
+    "0.5",
+    "0.25",
+    "--chroma-weight",
+    "4"
+  ],
+  "sampling": "whole_source_phase_d65_lab",
+  "source_bounds": [
+    97,
+    13,
+    1143,
+    1240
+  ],
+  "fit_size": [
+    46,
+    54
+  ],
+  "phase": [
+    0.5,
+    0.25
+  ],
+  "chroma_weight": 4.0,
+  "palette_rgb555": [
+    32767,
+    8698,
+    12621,
+    0
+  ],
+  "actual_reference_path": "target/trainer-cast-rest/reference/blackbelt_t.png",
+  "trainer_ids": [
+    "MN_DULUTH_X_T04",
+    "MN_R13_T04",
+    "MN_SPX_TRAINER_7"
+  ],
+  "new_art_id": "mn_portrait_blackbelt_t",
+  "encoded_png": "target/trainer-cast-rest/blackbelt_t/encoded/gfx/trainers/mn_portrait_blackbelt_t.png",
+  "battle_only": true
+}

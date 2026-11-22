@@ -9735,6 +9735,12 @@ fn visible_controller_snapshot(
     runtime_shell: &mut BevyRuntimeShell,
 ) -> Result<RuntimeShellSnapshot> {
     let mut snapshot = runtime_shell.shell.presentation_snapshot()?;
+    if let Some(battle) = &mut snapshot.battle {
+        battle.trainer_portrait_visible = battle.trainer_portrait.is_some()
+            && (runtime_shell.visible_battle_sliding_intro.is_some()
+                || runtime_shell.battle_entry_messages_remaining >= 3
+                || visible_trainer_result_frame(runtime_shell).is_some());
+    }
     if runtime_shell.elevator_cursor.is_some() {
         elevator_menu::project(runtime_shell, &mut snapshot)?;
         return Ok(snapshot);

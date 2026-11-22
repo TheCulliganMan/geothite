@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "name": "bug_catcher",
+  "source": "planning/minnesota/npcs/portrait-cast-v01/bug_catcher/native-pixels-v1.json",
+  "previous_source": null,
+  "image_source": "planning/minnesota/npcs/portrait-cast-v01/bug_catcher/image-source-v1.png",
+  "prompt": "planning/minnesota/npcs/portrait-cast-v01/bug_catcher/image-prompt-v1.txt",
+  "method": "built-in-imagegen-and-whole-source-rust-conversion",
+  "source_sha256": "eb5ee7e4602de3457db8b890edd8cb5a3d7bc14bba8546682b49bc6868e7be9f",
+  "native_sha256": "530915032f89d4f427c5cacd7ac8811f2be69f9e3dcf71d0c4495219f4404e8b",
+  "machine_rows": "target/trainer-cast-rest/bug_catcher/v1/point0.25-0.25.json",
+  "conversion_command": [
+    "target/trainer-face-diagnosis/tools/trainer_portrait_palette",
+    "planning/minnesota/npcs/portrait-cast-v01/bug_catcher/image-source-v1.png",
+    "target/trainer-cast-rest/bug_catcher/v1/point0.25-0.25.png",
+    "10811",
+    "18758",
+    "--native",
+    "0.25",
+    "0.25",
+    "--chroma-weight",
+    "4"
+  ],
+  "sampling": "whole_source_phase_d65_lab",
+  "source_bounds": [
+    233,
+    24,
+    1126,
+    1235
+  ],
+  "fit_size": [
+    40,
+    54
+  ],
+  "phase": [
+    0.25,
+    0.25
+  ],
+  "chroma_weight": 4.0,
+  "palette_rgb555": [
+    32767,
+    10811,
+    18758,
+    0
+  ],
+  "actual_reference_path": "target/trainer-cast-rest/reference/bug_catcher.png",
+  "trainer_ids": [
+    "MN_R06_T01",
+    "MN_R07_T04",
+    "MN_R08_T04",
+    "MN_R12_T07",
+    "MN_R14_T03",
+    "MN_R14_T06",
+    "MN_R17_T02",
+    "MN_R18_T04"
+  ],
+  "new_art_id": "mn_portrait_bug_catcher",
+  "encoded_png": "target/trainer-cast-rest/bug_catcher/encoded/gfx/trainers/mn_portrait_bug_catcher.png",
+  "battle_only": true
+}

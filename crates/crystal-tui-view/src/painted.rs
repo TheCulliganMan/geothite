@@ -25,6 +25,9 @@ struct Art {
     palette: Vec<u8>,
 }
 type Palette = [[u8; 3]; 4];
+#[cfg(test)]
+#[path = "painted_trainer_portrait_tests.rs"]
+mod trainer_portrait_tests;
 #[derive(Default)]
 pub struct PaintedRenderer {
     // Native clients read directly from the supplied pack, never the build checkout.
@@ -814,68 +817,79 @@ impl PaintedRenderer {
         let mut scene = Buffer::empty(Rect::new(0, 0, split - 2, b.area.height));
         scene.set_style(scene.area, Style::default().fg(INK).bg(PAPER));
         if let Some(battle) = s.battle.as_ref() {
-            let half = controls.saturating_sub(4) / 2;
-            let bounds = Rect::new(0, 3, scene.area.width, controls.saturating_sub(3));
-            let enemy_offset = self
-                .replay_frame
-                .as_ref()
-                .map_or([0; 2], |f| f.enemy_offset);
-            let player_offset = self
-                .replay_frame
-                .as_ref()
-                .map_or([0; 2], |f| f.player_offset);
-            self.portrait(
-                &mut scene,
-                &battle.enemy_pokemon.species.id,
-                false,
-                portrait_motion_rect(bounds, Rect::new(2, 3, split - 6, half), enemy_offset),
-            );
-            put(
-                &mut b,
-                split,
-                3,
-                &format!(
-                    "{} Lv{}",
-                    battle.enemy_pokemon.nickname, battle.enemy_pokemon.level
-                ),
-                GOLD,
-            );
-            health(
-                &mut b,
-                Rect::new(split, 4, split - 2, 2),
-                battle.enemy_pokemon.hp,
-                battle.enemy_pokemon.max_hp,
-            );
-            if let Some(index) = battle.active_player_party_index
-                && let Some(slot) = s.party.slots.iter().find(|slot| slot.index == index)
-            {
+            if battle.trainer_portrait_visible {
+                let label = match &battle.kind {
+                    crystal_runtime::RuntimeBattleKind::Trainer { trainer_name, .. } => {
+                        trainer_name.as_str()
+                    }
+                    _ => "TRAINER",
+                };
+                put(&mut b, split, 3, label, GOLD);
+                let area = Rect::new(2, 3, split - 6, controls.saturating_sub(3));
+                self.enemy_portrait(&mut scene, battle, area);
+            } else {
+                let half = controls.saturating_sub(4) / 2;
+                let bounds = Rect::new(0, 3, scene.area.width, controls.saturating_sub(3));
+                let enemy_offset = self
+                    .replay_frame
+                    .as_ref()
+                    .map_or([0; 2], |f| f.enemy_offset);
+                let player_offset = self
+                    .replay_frame
+                    .as_ref()
+                    .map_or([0; 2], |f| f.player_offset);
+                self.enemy_portrait(
+                    &mut scene,
+                    battle,
+                    portrait_motion_rect(bounds, Rect::new(2, 3, split - 6, half), enemy_offset),
+                );
                 put(
                     &mut b,
                     split,
-                    7,
-                    &format!("{} Lv{}", slot.pokemon.nickname, slot.pokemon.level),
-                    GREEN,
+                    3,
+                    &format!(
+                        "{} Lv{}",
+                        battle.enemy_pokemon.nickname, battle.enemy_pokemon.level
+                    ),
+                    GOLD,
                 );
                 health(
                     &mut b,
-                    Rect::new(split, 8, split - 2, 2),
-                    slot.pokemon.hp,
-                    slot.pokemon.max_hp,
+                    Rect::new(split, 4, split - 2, 2),
+                    battle.enemy_pokemon.hp,
+                    battle.enemy_pokemon.max_hp,
                 );
-                self.portrait(
-                    &mut scene,
-                    &slot.pokemon.species.id,
-                    true,
-                    portrait_motion_rect(
-                        bounds,
-                        Rect::new(2, 3 + half, split - 6, half),
-                        player_offset,
-                    ),
-                );
-            }
-            if let Some(frame) = &self.replay_frame {
-                for piece in &frame.pieces {
-                    paint_effect(&mut scene, bounds, piece);
+                if let Some(index) = battle.active_player_party_index
+                    && let Some(slot) = s.party.slots.iter().find(|slot| slot.index == index)
+                {
+                    put(
+                        &mut b,
+                        split,
+                        7,
+                        &format!("{} Lv{}", slot.pokemon.nickname, slot.pokemon.level),
+                        GREEN,
+                    );
+                    health(
+                        &mut b,
+                        Rect::new(split, 8, split - 2, 2),
+                        slot.pokemon.hp,
+                        slot.pokemon.max_hp,
+                    );
+                    self.portrait(
+                        &mut scene,
+                        &slot.pokemon.species.id,
+                        true,
+                        portrait_motion_rect(
+                            bounds,
+                            Rect::new(2, 3 + half, split - 6, half),
+                            player_offset,
+                        ),
+                    );
+                }
+                if let Some(frame) = &self.replay_frame {
+                    for piece in &frame.pieces {
+                        paint_effect(&mut scene, bounds, piece);
+                    }
                 }
             }
         } else if let Some(species) = s.ui.active_pokemon_picture.as_deref() {
@@ -942,6 +956,29 @@ impl PaintedRenderer {
         let Some(battle) = &s.battle else { return };
         let half = area.width / 2;
         let height = area.height / 2;
+        if battle.trainer_portrait_visible {
+            let label = match &battle.kind {
+                crystal_runtime::RuntimeBattleKind::Trainer { trainer_name, .. } => {
+                    trainer_name.as_str()
+                }
+                _ => "TRAINER",
+            };
+            put(b, area.x, area.y, label, GOLD);
+            let portrait = if b.area.width < 68 {
+                let available_height = area.height.saturating_sub(2);
+                let height = available_height.min(area.width.div_ceil(2));
+                Rect::new(
+                    area.x,
+                    area.y + 2 + (available_height - height) / 2,
+                    area.width,
+                    height,
+                )
+            } else {
+                Rect::new(area.x + half, area.y, half, area.height)
+            };
+            self.enemy_portrait(b, battle, portrait);
+            return;
+        }
         let enemy = &battle.enemy_pokemon;
         put(
             b,
@@ -965,10 +1002,9 @@ impl PaintedRenderer {
             .replay_frame
             .as_ref()
             .map_or([0; 2], |f| f.player_offset);
-        self.portrait(
+        self.enemy_portrait(
             b,
-            &enemy.species.id,
-            false,
+            battle,
             shift(Rect::new(area.x + half, area.y, half, height), enemy_offset),
         );
         if let Some(index) = battle.active_player_party_index
@@ -1037,6 +1073,20 @@ impl PaintedRenderer {
             );
         }
     }
+    fn enemy_portrait(
+        &mut self,
+        b: &mut Buffer,
+        battle: &crystal_runtime::RuntimeBattleSnapshot,
+        area: Rect,
+    ) {
+        if battle.trainer_portrait_visible
+            && let Some(portrait) = &battle.trainer_portrait
+        {
+            self.portrait_asset(b, &format!("gfx/trainers/{portrait}.png"), false, area);
+        } else {
+            self.portrait(b, &battle.enemy_pokemon.species.id, false, area);
+        }
+    }
     fn portrait(&mut self, b: &mut Buffer, species: &str, back: bool, area: Rect) {
         if area.height == 0 || area.width == 0 {
             return;
@@ -1047,13 +1097,19 @@ impl PaintedRenderer {
         } else {
             species
         };
-        let key = (species.clone(), back);
+        let path = format!(
+            "gfx/pokemon/{species}/{}.png",
+            if back { "back" } else { "front" }
+        );
+        self.portrait_asset(b, &path, back, area);
+    }
+    fn portrait_asset(&mut self, b: &mut Buffer, path: &str, back: bool, area: Rect) {
+        if area.height == 0 || area.width == 0 {
+            return;
+        }
+        let key = (path.to_owned(), back);
         if !self.sprites.contains_key(&key) {
-            let path = format!(
-                "gfx/pokemon/{species}/{}.png",
-                if back { "back" } else { "front" }
-            );
-            let sprite = self.image(&path).map(|image| Sprite {
+            let sprite = self.image(path).map(|image| Sprite {
                 size: image.width().min(image.height()),
                 width: image.width(),
                 pixels: image.into_raw(),

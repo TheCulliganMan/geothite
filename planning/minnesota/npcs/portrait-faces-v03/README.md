@@ -7,6 +7,8 @@ body proportions, outlined faces, clothing and feet within the 56×56 frame.
 
 This is a separate local review candidate. It is not selected or deployed.
 The current regional source selection and all overworld frames are unchanged.
+
+Follow-up: the complete [trainer cast candidate](../portrait-cast-v01/README.md) replaces Sivren with `sivren/native-pixels-v2.json` from generated source v3, correcting the missing-eye appearance. The other eight selections below are carried forward. This document retains the earlier nine-portrait candidate and its historical verification.
 Tamarack remains an older woman and a field-only professor; her portrait is used
 in the opening. No professor battle was added.
 

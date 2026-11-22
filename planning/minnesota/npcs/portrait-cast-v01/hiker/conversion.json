@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "name": "hiker",
+  "method": "built-in-imagegen-with-whole-image-area-conversion",
+  "source": "planning/minnesota/npcs/portrait-cast-v01/hiker/native-pixels-v1.json",
+  "image_source": "planning/minnesota/npcs/portrait-cast-v01/hiker/image-source-v1.png",
+  "prompt": "planning/minnesota/npcs/portrait-cast-v01/hiker/image-prompt-v1.txt",
+  "trainer_class": "HIKER",
+  "trainer_ids": [
+    "MN_CAVE_ORE_CLIMBER",
+    "MN_DULUTH_X_T07",
+    "MN_EXTRA_R10_SURVEY",
+    "MN_R05_T01",
+    "MN_R06_T05",
+    "MN_R09_T01",
+    "MN_R09_T03",
+    "MN_R09_T04",
+    "MN_R09_T06",
+    "MN_R09_T07",
+    "MN_R10_T01",
+    "MN_R10_T05",
+    "MN_R11_T01",
+    "MN_R11_T04",
+    "MN_R11_T07",
+    "MN_R12_T01",
+    "MN_R12_T04",
+    "MN_R13_T02",
+    "MN_R19_T04",
+    "MN_R20_T03",
+    "MN_R20_T08",
+    "MN_RIVER_FUN_LOWER_BEAU",
+    "MN_RIVER_FUN_LOWER_BIRCH",
+    "MN_RIVER_FUN_LOWER_CLAY",
+    "MN_RIVER_FUN_LOWER_LARK",
+    "MN_RIVER_FUN_UPSTREAM_FLINT",
+    "MN_RIVER_FUN_UPSTREAM_HANK",
+    "MN_RIVER_FUN_UPSTREAM_KIP"
+  ],
+  "actual_reference_path": "target/trainer-cast-rest/reference/hiker.png",
+  "machine_rows": "target/trainer-cast-rest/hiker/area24/battle.candidate.json",
+  "crop": [
+    0,
+    0,
+    1254,
+    1254
+  ],
+  "native_fit": [
+    52,
+    54
+  ],
+  "minimum_black_samples": 24,
+  "minimum_white_samples": 16,
+  "outline_profile": "source-contour-v1",
+  "sampling": "area_vote",
+  "view": "front",
+  "size": [
+    56,
+    56
+  ],
+  "source_bounds": [
+    107,
+    13,
+    1147,
+    1238
+  ],
+  "palette_rgb555": [
+    32767,
+    9719,
+    23821,
+    0
+  ],
+  "review": "Native56/8x reviewed: two separate white eyes with black pupils, black nose above white grin, broad bearded adult face. Stocky body with backpack straps, staff and complete legs/boots. Area24 preserves shirt and vest separation better than32. Original palette and class binding metadata retained.",
+  "source_sha256": "0998bb99e93c345742262d7353a719cdbe9438c0ac0c943a38a9d1092a6b7c2f",
+  "native_sha256": "6672dabb10e456b75654d6da5ffc4f8aea6f281222d5e33c52dd8076f9dc3bd2"
+}

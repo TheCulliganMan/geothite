@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "name": "cooltrainer_f",
+  "source": "planning/minnesota/npcs/portrait-cast-v01/cooltrainer_f/native-pixels-v1.json",
+  "previous_source": null,
+  "image_source": "planning/minnesota/npcs/portrait-cast-v01/cooltrainer_f/image-source-v2.png",
+  "prompt": "planning/minnesota/npcs/portrait-cast-v01/cooltrainer_f/image-prompt-v2.txt",
+  "method": "built-in-imagegen-and-whole-source-rust-conversion",
+  "source_sha256": "4cb41bd07f3934427131a3f70e4b7902d8d9249a3c7586cced0938941fb84723",
+  "native_sha256": "398cb32b2d075eae470e37e26abdd911d90334d4d2e3f880ca93548e0fc3703c",
+  "machine_rows": "target/trainer-cast-rest/cooltrainer_f/v2/point0.25-0.25.json",
+  "conversion_command": [
+    "target/trainer-face-diagnosis/tools/trainer_portrait_palette",
+    "planning/minnesota/npcs/portrait-cast-v01/cooltrainer_f/image-source-v2.png",
+    "target/trainer-cast-rest/cooltrainer_f/v2/point0.25-0.25.png",
+    "15962",
+    "3382",
+    "--native",
+    "0.25",
+    "0.25",
+    "--chroma-weight",
+    "4"
+  ],
+  "sampling": "whole_source_phase_d65_lab",
+  "source_bounds": [
+    229,
+    9,
+    1040,
+    1245
+  ],
+  "fit_size": [
+    35,
+    54
+  ],
+  "phase": [
+    0.25,
+    0.25
+  ],
+  "chroma_weight": 4.0,
+  "palette_rgb555": [
+    32767,
+    15962,
+    3382,
+    0
+  ],
+  "actual_reference_path": "target/trainer-cast-rest/reference/cooltrainer_f.png",
+  "trainer_ids": [
+    "MN_DULUTH_X_T02",
+    "MN_EXTRA_LEECH_ISLAND_NATURALIST",
+    "MN_GYM_4_TRAINER_1",
+    "MN_GYM_5_TRAINER_1",
+    "MN_GYM_7_TRAINER_2",
+    "MN_GYM_8_TRAINER_1",
+    "MN_MP_CLUB_COACH_INEZ",
+    "MN_R11_T02",
+    "MN_R11_T03",
+    "MN_R11_T08",
+    "MN_R12_T03",
+    "MN_R12_T06",
+    "MN_R12_T10",
+    "MN_R13_T01",
+    "MN_R13_T03",
+    "MN_R13_T05",
+    "MN_R13_T07",
+    "MN_R14_T04",
+    "MN_R17_T04",
+    "MN_R20_T07",
+    "MN_RIVER_FUN_LOWER_BROOK",
+    "MN_RIVER_FUN_UPSTREAM_HOLLY"
+  ],
+  "new_art_id": "mn_portrait_cooltrainer_f",
+  "encoded_png": "target/trainer-cast-rest/cooltrainer_f/encoded/gfx/trainers/mn_portrait_cooltrainer_f.png",
+  "battle_only": true
+}

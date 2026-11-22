@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "name": "pokefan_f",
+  "method": "built-in-imagegen-with-whole-image-area-conversion",
+  "source": "planning/minnesota/npcs/portrait-cast-v01/pokefan_f/native-pixels-v1.json",
+  "image_source": "planning/minnesota/npcs/portrait-cast-v01/pokefan_f/image-source-v1.png",
+  "prompt": "planning/minnesota/npcs/portrait-cast-v01/pokefan_f/image-prompt-v1.txt",
+  "trainer_class": "POKEFANF",
+  "trainer_ids": [
+    "MN_FAIR_CURDS_TRAINER",
+    "MN_FAIR_EXHIBITOR_03_TRAINER",
+    "MN_R09_T08",
+    "MN_R16_T08",
+    "MN_R19_T03",
+    "MN_SPX_TRAINER_2"
+  ],
+  "actual_reference_path": "target/trainer-cast-rest/reference/pokefan_f.png",
+  "machine_rows": "target/trainer-cast-rest/pokefan_f/area24/battle.candidate.json",
+  "crop": [
+    0,
+    0,
+    1254,
+    1254
+  ],
+  "native_fit": [
+    52,
+    54
+  ],
+  "minimum_black_samples": 24,
+  "minimum_white_samples": 16,
+  "outline_profile": "source-contour-v1",
+  "sampling": "area_vote",
+  "view": "front",
+  "size": [
+    56,
+    56
+  ],
+  "source_bounds": [
+    271,
+    23,
+    1028,
+    1228
+  ],
+  "palette_rgb555": [
+    32767,
+    14910,
+    15503,
+    0
+  ],
+  "review": "Native56/8x reviewed: distinct maturewomanface with two white/pupil eyes, black nose and white smile in darkmouthoutline. Delighted cheekhand, trainerball, tote and complete dress/legs/flatsread. Area24 holds expressionbetterthan32. Exactoriginalpalette; no external creature props added.",
+  "source_sha256": "6657d2db4602bb3768f7f81aff4ab7383171f95b10bb3630bef9ab525e977803",
+  "native_sha256": "d8ed715339593541a82fc55235a23f0f909516754ae7d98c6514fb186d7c547a"
+}

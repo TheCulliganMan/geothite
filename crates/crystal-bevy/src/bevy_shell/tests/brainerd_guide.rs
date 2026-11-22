@@ -11,6 +11,7 @@ use super::super::{
 use super::badge_trails::load;
 use super::duluth_story::press;
 use super::interior_life::fixture;
+use super::northstar_dialogue::canonical_pages;
 use super::r10_gallery::settle;
 use super::winona::{at, travel};
 use super::{menu_render_test_app, pokemon_overworld_context_canvas_scaled};
@@ -84,29 +85,26 @@ fn badge_battles_brainerd_guide_pages_follow_the_lake_journey() {
             &[],
             "MnBrainerdGymGuideText",
             &[
-                "Follow the pale\nsand to SIVREN.",
-                "I paddle my canoe\nin the dark pools.",
-                "My REEDRAFT drains\nBANKMAW's HP.",
-                "East of town, try\nthe grass by day.",
+                "sand",
+                "sivren",
+                "canoe",
+                "dark pools",
+                "reedraft drains bankmaw's hp",
+                "east of town",
+                "day",
             ],
         ),
         (
             6,
             &["EVENT_MN_GYM_6_DEFEATED"],
             "MnBrainerdGymGuideAfterBadgeText",
-            &[
-                "The ranger wants\nto see that badge.",
-                "She's out by the\nfishing pier.",
-            ],
+            &["ranger", "badge", "fishing pier"],
         ),
         (
             6,
             &["EVENT_MN_GYM_6_DEFEATED", "EVENT_MN_BRAINERD_REPORT"],
             "MnBrainerdGymGuideAfterReportText",
-            &[
-                "Take the north\nroad out of town.",
-                "The sign says\nLEECH LAKE TRAIL.",
-            ],
+            &["north", "leech lake trail"],
         ),
         (
             8,
@@ -116,13 +114,18 @@ fn badge_battles_brainerd_guide_pages_follow_the_lake_journey() {
                 "EVENT_MN_LEAGUE_CHAMPION",
             ],
             "MnBrainerdGymCircuitIntroText",
-            &[
-                "CHAMPION circuit.\nAsk each leader",
-                "for a return bout.\nWins still needed:",
-            ],
+            &["leader", "need"],
         ),
     ];
-    for (badges, events, label, pages) in scenarios {
+    for (badges, events, label, required_details) in scenarios {
+        let pages = canonical_pages(&runtime, ROOM, label);
+        let speech = pages.join(" ").replace('\n', " ").to_ascii_lowercase();
+        for detail in required_details {
+            assert!(
+                speech.contains(detail),
+                "{label} must retain the journey detail {detail:?}: {speech}"
+            );
+        }
         let mut c = fixture(&root, &runtime, ROOM, (8, 12));
         for slot in 0..badges {
             c.shell
@@ -162,7 +165,7 @@ fn badge_battles_brainerd_guide_pages_follow_the_lake_journey() {
             let snapshot = c.snapshot().expect("reached a guide page");
             let text = snapshot.ui.text.expect("guide still speaking");
             assert_eq!(text.label, label);
-            assert_eq!(text.asm_text.as_deref(), Some(*words));
+            assert_eq!(text.asm_text.as_deref(), Some(words.as_str()));
             if before_badge && index >= 2 {
                 c = capture(
                     c,

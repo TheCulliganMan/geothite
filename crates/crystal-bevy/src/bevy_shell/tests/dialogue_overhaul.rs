@@ -160,15 +160,16 @@ pub(super) fn opening(index: usize) -> (AssetRoot, CrystalRuntime, VisibleShellC
     assert!(event(&c, "EVENT_MN_TAMARACK_INTRO"));
     press(&mut c, GameButton::Right);
     press(&mut c, GameButton::A);
-    assert_eq!(
-        c.snapshot()
-            .expect("brief repeat")
-            .ui
-            .text
-            .expect("reminder")
-            .asm_text,
-        Some("TAMARACK: No rush.\nTake your time.".into())
-    );
+    let reminder = c
+        .snapshot()
+        .expect("brief repeat")
+        .ui
+        .text
+        .expect("reminder");
+    assert_eq!(reminder.label, "MnWChooseText");
+    let reminder_pages = super::northstar_dialogue::canonical_pages(&r, "MS00", "MnWChooseText");
+    assert_eq!(reminder_pages.len(), 1, "the repeat should stay brief");
+    assert_eq!(reminder.asm_text.as_ref(), reminder_pages.first());
     capture_checkpoint(&mut c, &format!("tamarack-choice-reminder-{index}"));
     super::northstar_dialogue::acknowledge(
         &mut c,
@@ -359,38 +360,53 @@ fn winona_wardens_explain_partner_requirement_and_remain_after_starter() {
     for id in ["MN_W_TRAIL_WARDEN_NORTH", "MN_W_TRAIL_WARDEN_SOUTH"] {
         assert!(before.visible_object_runtime_tiles.contains_key(id), "{id}");
     }
-    for _ in 0..4 {
-        if c.snapshot().expect("warden check").ui.text.is_some() {
-            break;
+    let north_warning =
+        super::northstar_dialogue::canonical_pages(&r, "MS00", "MnWTrailWardenText");
+    let south_warning =
+        super::northstar_dialogue::canonical_pages(&r, "MS00", "MnWTrailWardenSouthText");
+    assert_ne!(
+        north_warning, south_warning,
+        "the wardens have distinct voices"
+    );
+    for (y, label, pages) in [
+        (18, "MnWTrailWardenText", north_warning),
+        (19, "MnWTrailWardenSouthText", south_warning),
+    ] {
+        indoor_walk(&mut c, &r, (4, y));
+        for _ in 0..4 {
+            if c.snapshot().expect("warden check").ui.text.is_some() {
+                break;
+            }
+            press(&mut c, GameButton::Left);
         }
-        press(&mut c, GameButton::Left);
+        assert!(pages.join(" ").contains("TAMARACK"));
+        for (index, expected) in pages.iter().enumerate() {
+            let page = c
+                .snapshot()
+                .expect("warden warning")
+                .ui
+                .text
+                .expect("warning page");
+            assert_eq!(page.label, label);
+            assert_eq!(page.asm_text.as_ref(), Some(expected));
+            capture_checkpoint(&mut c, &format!("warden-before-{y}-{index}"));
+            press(&mut c, GameButton::A);
+        }
+        finish(&mut c);
+        at(&mut c, "MnWinona", (4, y));
+        assert!(!event(&c, "EVENT_MN_STARTER_RECEIVED"));
     }
-    for (index, expected) in [
-        "Hold up! You need\na POKEMON partner",
-        "for this trail.\nAsk TAMARACK at",
-        "the field station\nby the river.",
-    ]
-    .into_iter()
-    .enumerate()
-    {
-        let page = c
-            .snapshot()
-            .expect("warden warning")
-            .ui
-            .text
-            .expect("warning page");
-        assert_eq!(page.label, "MnWTrailWardenText");
-        assert_eq!(page.asm_text.as_deref(), Some(expected));
-        capture_checkpoint(&mut c, &format!("warden-before-{index}"));
-        press(&mut c, GameButton::A);
-    }
-    finish(&mut c);
-    at(&mut c, "MnWinona", (4, 18));
 
     let (root, r, mut c) = opening(0);
     travel(&mut c, GameButton::Down, "MnWinona", (7, 8));
     continue_in_place(&mut c, &root, &r, "warden-after-starter");
+    // The wardens move from the road to the north side after the starter.
+    // This helper plans with their source positions, so approach along the
+    // open eastern lane before walking west below their current positions.
+    indoor_walk(&mut c, &r, (7, 18));
+    at(&mut c, "MnWinona", (7, 18));
     indoor_walk(&mut c, &r, (5, 18));
+    at(&mut c, "MnWinona", (5, 18));
     let after = c.snapshot().expect("wardens after receiving a starter");
     assert!(event(&c, "EVENT_MN_STARTER_RECEIVED"));
     for (id, position) in [
@@ -403,22 +419,32 @@ fn winona_wardens_explain_partner_requirement_and_remain_after_starter() {
             .expect("visible warden");
         assert_eq!((tile.x, tile.y), position);
     }
-    for x in [5, 6] {
+    let north_clear =
+        super::northstar_dialogue::canonical_pages(&r, "MS00", "MnWTrailWardenClearedText");
+    let south_clear =
+        super::northstar_dialogue::canonical_pages(&r, "MS00", "MnWTrailWardenSouthClearedText");
+    assert_ne!(
+        north_clear, south_clear,
+        "the wardens keep distinct return lines"
+    );
+    for (x, label, pages) in [
+        (5, "MnWTrailWardenClearedText", north_clear),
+        (6, "MnWTrailWardenSouthClearedText", south_clear),
+    ] {
         indoor_walk(&mut c, &r, (x, 18));
+        at(&mut c, "MnWinona", (x, 18));
         press(&mut c, GameButton::Up);
+        at(&mut c, "MnWinona", (x, 18));
         press(&mut c, GameButton::A);
-        for (index, expected) in ["ROCHESTER is west.\nRest at home if", "your team tires."]
-            .into_iter()
-            .enumerate()
-        {
+        for (index, expected) in pages.iter().enumerate() {
             let page = c
                 .snapshot()
                 .expect("warden directions")
                 .ui
                 .text
                 .expect("direction page");
-            assert_eq!(page.label, "MnWTrailWardenClearedText");
-            assert_eq!(page.asm_text.as_deref(), Some(expected));
+            assert_eq!(page.label, label);
+            assert_eq!(page.asm_text.as_ref(), Some(expected));
             capture_checkpoint(&mut c, &format!("warden-after-{x}-{index}"));
             press(&mut c, GameButton::A);
         }
@@ -442,6 +468,53 @@ fn overhaul_three_earned_starters_and_ivy_delivery() {
     for index in 0..3 {
         delivery(index);
     }
+}
+
+#[test]
+#[ignore = "requires reached dialogue saves in CRYSTAL_DIALOGUE_REVIEW_SAVES"]
+fn overhaul_reached_dialogue_renders_without_advancing_the_conversation() {
+    let directory = std::path::PathBuf::from(
+        std::env::var_os("CRYSTAL_DIALOGUE_REVIEW_SAVES").expect("reached dialogue saves"),
+    );
+    let output = directory.join("native-pages");
+    let (root, runtime) = load();
+    let mut rendered = 0;
+    for entry in std::fs::read_dir(&directory).expect("dialogue capture directory") {
+        let path = entry.expect("captured save entry").path();
+        let name = path
+            .file_stem()
+            .expect("capture filename")
+            .to_string_lossy();
+        if path.extension().and_then(|value| value.to_str()) != Some("crystalsave")
+            || !(name.contains("-page-") || name.starts_with("warden-"))
+        {
+            continue;
+        }
+        let mut controller =
+            VisibleShellController::load_save(root.clone(), runtime.clone(), path.clone(), None)
+                .expect("Continue the actual reached dialogue");
+        let before = controller
+            .snapshot()
+            .expect("saved page")
+            .ui
+            .text
+            .expect("saved conversation");
+        let mut controller =
+            super::brainerd_guide::capture(controller, Some(&output), &format!("{name}.png"));
+        let after = controller
+            .snapshot()
+            .expect("rendered page")
+            .ui
+            .text
+            .expect("conversation remains open");
+        assert_eq!(before.label, after.label, "rendering changed the speaker");
+        assert_eq!(
+            before.asm_text, after.asm_text,
+            "rendering advanced the page"
+        );
+        rendered += 1;
+    }
+    assert!(rendered > 0, "no reached pages were rendered");
 }
 
 #[test]

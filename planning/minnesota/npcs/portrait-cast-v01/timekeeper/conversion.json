@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "name": "timekeeper",
+  "source": "planning/minnesota/npcs/portrait-cast-v01/timekeeper/native-pixels-v1.json",
+  "previous_source": "planning/minnesota/gyms/battle-lessons-v01/tavel.json",
+  "image_source": "planning/minnesota/npcs/portrait-cast-v01/timekeeper/image-source-v2.png",
+  "prompt": "planning/minnesota/npcs/portrait-cast-v01/timekeeper/image-prompt-v2.txt",
+  "method": "built-in-imagegen-and-whole-source-rust-conversion",
+  "source_sha256": "88af30d950276d1cdfe0b93f14ac43bb959ee9dd124d193f1e15e260e2bbed3e",
+  "native_sha256": "18f350ca5902152d04d61d7be2cfd1bfc284c15d9c46d860f9d67a6120a9402d",
+  "machine_rows": "target/trainer-cast-rest/timekeeper/v2/point0.75-0.25.json",
+  "conversion_command": [
+    "target/trainer-face-diagnosis/tools/trainer_portrait_palette",
+    "planning/minnesota/npcs/portrait-cast-v01/timekeeper/image-source-v2.png",
+    "target/trainer-cast-rest/timekeeper/v2/point0.75-0.25.png",
+    "16159",
+    "20041",
+    "--native",
+    "0.75",
+    "0.25",
+    "--chroma-weight",
+    "4"
+  ],
+  "sampling": "whole_source_phase_d65_lab",
+  "source_bounds": [
+    179,
+    33,
+    1074,
+    1228
+  ],
+  "fit_size": [
+    40,
+    54
+  ],
+  "phase": [
+    0.75,
+    0.25
+  ],
+  "chroma_weight": 4.0,
+  "palette_rgb555": [
+    32767,
+    16159,
+    20041,
+    0
+  ],
+  "review": "Sourcev2 imagegen correction; selected whole-image point(.75,.25) because area sampling still erased right pupil. Actual56: matched black pupils in white openings, separate black nose row14, skin row15, mouth row16. Running full-body pose and both shoes remain clear. Some source contours develop minor gaps through point sampling. Original id,palette and all overworld preserved byte-equivalent as JSON data."
+}

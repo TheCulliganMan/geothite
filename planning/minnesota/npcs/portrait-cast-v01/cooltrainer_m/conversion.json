@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "name": "cooltrainer_m",
+  "source": "planning/minnesota/npcs/portrait-cast-v01/cooltrainer_m/native-pixels-v1.json",
+  "previous_source": null,
+  "image_source": "planning/minnesota/npcs/portrait-cast-v01/cooltrainer_m/image-source-v1.png",
+  "prompt": "planning/minnesota/npcs/portrait-cast-v01/cooltrainer_m/image-prompt-v1.txt",
+  "method": "built-in-imagegen-and-whole-source-rust-conversion",
+  "source_sha256": "5b749b76e9454f599707956c8986b6aebc3d6f9d9144f2f56973c4488721d7a4",
+  "native_sha256": "8874db6f97ba3e7c3d9b3a3f9c092e8e375e6c4574519be48897b418470d2f29",
+  "machine_rows": "target/trainer-cast-rest/cooltrainer_m/v1/point0.25-0.25.json",
+  "conversion_command": [
+    "target/trainer-face-diagnosis/tools/trainer_portrait_palette",
+    "planning/minnesota/npcs/portrait-cast-v01/cooltrainer_m/image-source-v1.png",
+    "target/trainer-cast-rest/cooltrainer_m/v1/point0.25-0.25.png",
+    "15962",
+    "3382",
+    "--native",
+    "0.25",
+    "0.25",
+    "--chroma-weight",
+    "4"
+  ],
+  "sampling": "whole_source_phase_d65_lab",
+  "source_bounds": [
+    218,
+    16,
+    926,
+    1238
+  ],
+  "fit_size": [
+    31,
+    54
+  ],
+  "phase": [
+    0.25,
+    0.25
+  ],
+  "chroma_weight": 4.0,
+  "palette_rgb555": [
+    32767,
+    15962,
+    3382,
+    0
+  ],
+  "actual_reference_path": "target/trainer-cast-rest/reference/cooltrainer_m.png",
+  "trainer_ids": [
+    "MN_DULUTH_X_T05",
+    "MN_EXTRA_R20_WAYFINDER",
+    "MN_GYM_7_TRAINER_1",
+    "MN_GYM_8_TRAINER_3",
+    "MN_R13_T10",
+    "MN_R17_T06",
+    "MN_R20_T10"
+  ],
+  "new_art_id": "mn_portrait_cooltrainer_m",
+  "encoded_png": "target/trainer-cast-rest/cooltrainer_m/encoded/gfx/trainers/mn_portrait_cooltrainer_m.png",
+  "battle_only": true
+}

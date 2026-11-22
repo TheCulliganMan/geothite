@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "name": "juggler",
+  "source": "planning/minnesota/npcs/portrait-cast-v01/juggler/native-pixels-v1.json",
+  "previous_source": null,
+  "image_source": "planning/minnesota/npcs/portrait-cast-v01/juggler/image-source-v3.png",
+  "prompt": "planning/minnesota/npcs/portrait-cast-v01/juggler/image-prompt-v3.txt",
+  "method": "built-in-imagegen-and-whole-source-rust-conversion",
+  "source_sha256": "51fef2fcf080b18c4e475a6894e065c71863661a509ca3e403729c0bdc82997c",
+  "native_sha256": "d0cbcb5b59e706ffcfb97f9de9a2c18b9f9fb37bcc0f09d0a107e81157a510e8",
+  "machine_rows": "target/trainer-cast-rest/juggler/choices-v3/area32/battle.candidate.json",
+  "conversion_command": [
+    "target/trainer-full-body/tamarack/sampling-study-v1/npc_sprite_candidate",
+    "planning/minnesota/npcs/portrait-cast-v01/juggler/image-source-v3.png",
+    "target/trainer-cast-rest/juggler/choices-v3/area32",
+    "0",
+    "0",
+    "1254",
+    "1254",
+    "10746",
+    "31945",
+    "area_vote",
+    "32",
+    "16"
+  ],
+  "sampling": "area_vote",
+  "source_bounds": [
+    184,
+    23,
+    1054,
+    1236
+  ],
+  "palette_rgb555": [
+    32767,
+    10746,
+    31945,
+    0
+  ],
+  "minimum_black_samples": 32,
+  "minimum_white_samples": 16,
+  "crop": [
+    0,
+    0,
+    1254,
+    1254
+  ],
+  "trainer_class": "JUGGLER",
+  "trainer_ids": [
+    "MN_R04_T01"
+  ],
+  "actual_reference_path": "target/trainer-cast-rest/reference/juggler.png",
+  "review": "V3 face has enough verticalspace for two white/pupil eyes, separateblacknose andmouth. Selectedarea32 after sourcev1/v2 lostnose orjoinedmouth. Adultangularface, fullbody balancedjugglingpose, coat tails, balls andbothshoesread. Exactoriginalpalette. No handpixels."
+}

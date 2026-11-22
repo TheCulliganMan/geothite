@@ -1,0 +1,903 @@
+{
+  "schema_version": 1,
+  "scope": "All current Minnesota trainer portraits and professor opening art",
+  "parent_revision": "fair_release_intro_revision",
+  "parent_pack": "content-packs/minnesota-fair-release-v01.crystalpack",
+  "parent_pack_sha256": "18003b91597173f1d98937a0f6cc2fa82cfd2c5b3612c9803cd5f615acad2a73",
+  "coverage": {
+    "mn_catalog_trainers": 337,
+    "mn_map_referenced_trainers": 337,
+    "mn_map_referenced_classes": 45,
+    "catalog_only_mn_trainers": [],
+    "mn_map_non_mn_trainer_ids": [],
+    "private_battle_classes": 14,
+    "shared_stock_battle_classes": 31,
+    "remaining_current_classes_excluding_eight_gym": 37,
+    "remaining_proposed_unique_portraits_splitting_ice_lode": 40,
+    "remaining_plus_sivren_correction": 41
+  },
+  "entries": [
+    {
+      "slug": "varel",
+      "name": "Varel",
+      "id": "mn_leader_varel",
+      "source": "planning/minnesota/npcs/portrait-faces-v03/varel/native-pixels-v1.json",
+      "encoded_png": "target/trainer-cast-rest/final-native/varel/encoded/gfx/trainers/mn_leader_varel.png",
+      "role": "gym_leader",
+      "fixture": "target/trainer-face-review/controller-fixtures/varel.json"
+    },
+    {
+      "slug": "torven",
+      "name": "Torven",
+      "id": "mn_leader_torven",
+      "source": "planning/minnesota/npcs/portrait-faces-v03/torven/native-pixels-v1.json",
+      "encoded_png": "target/trainer-cast-rest/final-native/torven/encoded/gfx/trainers/mn_leader_torven.png",
+      "role": "gym_leader",
+      "fixture": "target/trainer-face-review/controller-fixtures/torven.json"
+    },
+    {
+      "slug": "avrin",
+      "name": "Avrin",
+      "id": "mn_leader_avrin",
+      "source": "planning/minnesota/npcs/portrait-faces-v03/avrin/native-pixels-v1.json",
+      "encoded_png": "target/trainer-cast-rest/final-native/avrin/encoded/gfx/trainers/mn_leader_avrin.png",
+      "role": "gym_leader",
+      "fixture": "target/trainer-face-review/controller-fixtures/avrin.json"
+    },
+    {
+      "slug": "brannic",
+      "name": "Brannic",
+      "id": "mn_leader_brannic",
+      "source": "planning/minnesota/npcs/portrait-faces-v03/brannic/native-pixels-v1.json",
+      "encoded_png": "target/trainer-cast-rest/final-native/brannic/encoded/gfx/trainers/mn_leader_brannic.png",
+      "role": "gym_leader",
+      "fixture": "target/trainer-face-review/controller-fixtures/brannic.json"
+    },
+    {
+      "slug": "saven",
+      "name": "Saven",
+      "id": "mn_leader_saven",
+      "source": "planning/minnesota/npcs/portrait-faces-v03/saven/native-pixels-v1.json",
+      "encoded_png": "target/trainer-cast-rest/final-native/saven/encoded/gfx/trainers/mn_leader_saven.png",
+      "role": "gym_leader",
+      "fixture": "target/trainer-face-review/controller-fixtures/saven.json"
+    },
+    {
+      "slug": "sivren",
+      "name": "Sivren",
+      "id": "mn_leader_sivren",
+      "source": "planning/minnesota/npcs/portrait-faces-v03/sivren/native-pixels-v2.json",
+      "encoded_png": "target/trainer-cast-rest/final-native/sivren/encoded/gfx/trainers/mn_leader_sivren.png",
+      "role": "gym_leader",
+      "fixture": "target/trainer-face-review/controller-fixtures/sivren.json"
+    },
+    {
+      "slug": "orlis",
+      "name": "Orlis",
+      "id": "mn_leader_orlis",
+      "source": "planning/minnesota/npcs/portrait-faces-v03/orlis/native-pixels-v1.json",
+      "encoded_png": "target/trainer-cast-rest/final-native/orlis/encoded/gfx/trainers/mn_leader_orlis.png",
+      "role": "gym_leader",
+      "fixture": "target/trainer-face-review/controller-fixtures/orlis.json"
+    },
+    {
+      "slug": "norek",
+      "name": "Norek",
+      "id": "mn_leader_norek",
+      "source": "planning/minnesota/npcs/portrait-faces-v03/norek/native-pixels-v1.json",
+      "encoded_png": "target/trainer-cast-rest/final-native/norek/encoded/gfx/trainers/mn_leader_norek.png",
+      "role": "gym_leader",
+      "fixture": "target/trainer-face-review/controller-fixtures/norek.json"
+    },
+    {
+      "slug": "tamarack",
+      "name": "Tamarack",
+      "id": "mn_prof_tamarack",
+      "source": "planning/minnesota/npcs/portrait-faces-v03/tamarack/native-pixels-v1.json",
+      "encoded_png": "target/trainer-cast-rest/final-native/tamarack/encoded/gfx/trainers/mn_prof_tamarack.png",
+      "role": "professor_intro",
+      "fixture": null
+    },
+    {
+      "slug": "beauty",
+      "name": "Beauty",
+      "id": "mn_portrait_beauty",
+      "source": "planning/minnesota/npcs/portrait-cast-v01/beauty/native-pixels-v1.json",
+      "encoded_png": "target/trainer-cast-rest/final-native/beauty/encoded/gfx/trainers/mn_portrait_beauty.png",
+      "role": "ordinary_type",
+      "trainer_class": "BEAUTY",
+      "trainer_ids": [
+        "MN_DULUTH_X_T08"
+      ],
+      "fixture": null
+    },
+    {
+      "slug": "bird_keeper",
+      "name": "Bird Keeper",
+      "id": "mn_portrait_bird_keeper",
+      "source": "planning/minnesota/npcs/portrait-cast-v01/bird_keeper/native-pixels-v1.json",
+      "encoded_png": "target/trainer-cast-rest/final-native/bird_keeper/encoded/gfx/trainers/mn_portrait_bird_keeper.png",
+      "role": "ordinary_type",
+      "trainer_class": "BIRD_KEEPER",
+      "trainer_ids": [
+        "MN_COHESION_DETROIT_KEEPER",
+        "MN_COHESION_MARAIS_KEEPER",
+        "MN_GYM_5_TRAINER_2",
+        "MN_R05_T02",
+        "MN_R06_T04",
+        "MN_R07_T06",
+        "MN_R08_T05",
+        "MN_R10_T03",
+        "MN_R11_T06",
+        "MN_R11_T10",
+        "MN_R12_T02",
+        "MN_R16_T02",
+        "MN_R16_T09",
+        "MN_R17_T01",
+        "MN_R17_T03",
+        "MN_R19_T02",
+        "MN_R20_T02",
+        "MN_R20_T09",
+        "MN_RIVER_FUN_LOWER_BANKS",
+        "MN_RIVER_FUN_LOWER_IVY",
+        "MN_RIVER_FUN_LOWER_REED",
+        "MN_RIVER_FUN_UPSTREAM_COVE",
+        "MN_RIVER_FUN_UPSTREAM_DAWN",
+        "MN_RIVER_FUN_UPSTREAM_GUS",
+        "MN_RIVER_FUN_UPSTREAM_WREN",
+        "MN_RIVER_LOWER_PINE_KEEPER",
+        "MN_RIVER_UPSTREAM_WOODS_KEEPER",
+        "MN_SPX_TRAINER_4"
+      ],
+      "fixture": null
+    },
+    {
+      "slug": "blackbelt_t",
+      "name": "Blackbelt",
+      "id": "mn_portrait_blackbelt_t",
+      "source": "planning/minnesota/npcs/portrait-cast-v01/blackbelt_t/native-pixels-v1.json",
+      "encoded_png": "target/trainer-cast-rest/final-native/blackbelt_t/encoded/gfx/trainers/mn_portrait_blackbelt_t.png",
+      "role": "ordinary_type",
+      "trainer_class": "BLACKBELT_T",
+      "trainer_ids": [
+        "MN_DULUTH_X_T04",
+        "MN_R13_T04",
+        "MN_SPX_TRAINER_7"
+      ],
+      "fixture": null
+    },
+    {
+      "slug": "boarder",
+      "name": "Boarder",
+      "id": "mn_portrait_boarder",
+      "source": "planning/minnesota/npcs/portrait-cast-v01/boarder/native-pixels-v1.json",
+      "encoded_png": "target/trainer-cast-rest/final-native/boarder/encoded/gfx/trainers/mn_portrait_boarder.png",
+      "role": "ordinary_type",
+      "trainer_class": "BOARDER",
+      "trainer_ids": [
+        "MN_ICE_BOARDER_NILS"
+      ],
+      "fixture": null
+    },
+    {
+      "slug": "bug_catcher",
+      "name": "Bug Catcher",
+      "id": "mn_portrait_bug_catcher",
+      "source": "planning/minnesota/npcs/portrait-cast-v01/bug_catcher/native-pixels-v1.json",
+      "encoded_png": "target/trainer-cast-rest/final-native/bug_catcher/encoded/gfx/trainers/mn_portrait_bug_catcher.png",
+      "role": "ordinary_type",
+      "trainer_class": "BUG_CATCHER",
+      "trainer_ids": [
+        "MN_R06_T01",
+        "MN_R07_T04",
+        "MN_R08_T04",
+        "MN_R12_T07",
+        "MN_R14_T03",
+        "MN_R14_T06",
+        "MN_R17_T02",
+        "MN_R18_T04"
+      ],
+      "fixture": null
+    },
+    {
+      "slug": "camper",
+      "name": "Camper",
+      "id": "mn_portrait_camper",
+      "source": "planning/minnesota/npcs/portrait-cast-v01/camper/native-pixels-v1.json",
+      "encoded_png": "target/trainer-cast-rest/final-native/camper/encoded/gfx/trainers/mn_portrait_camper.png",
+      "role": "ordinary_type",
+      "trainer_class": "CAMPER",
+      "trainer_ids": [
+        "MN_EXTRA_MPLS_CYCLE_01",
+        "MN_EXTRA_MPLS_CYCLE_03",
+        "MN_EXTRA_MPLS_CYCLE_05",
+        "MN_EXTRA_MPLS_CYCLE_07",
+        "MN_EXTRA_MPLS_CYCLE_09",
+        "MN_EXTRA_MPLS_CYCLE_11",
+        "MN_EXTRA_MPLS_CYCLE_13",
+        "MN_EXTRA_MPLS_CYCLE_15",
+        "MN_EXTRA_MPLS_CYCLE_17",
+        "MN_GYM_2_TRAINER_1",
+        "MN_R01_T03",
+        "MN_R03_T04",
+        "MN_R06_T02",
+        "MN_R07_T02",
+        "MN_R08_T01",
+        "MN_R08_T07",
+        "MN_R12_T09",
+        "MN_R14_T01",
+        "MN_R15_T03",
+        "MN_R16_T07",
+        "MN_RIVER_FUN_LOWER_EDDY",
+        "MN_RIVER_FUN_LOWER_FERN",
+        "MN_RIVER_FUN_LOWER_TOM",
+        "MN_RIVER_FUN_UPSTREAM_ALDER",
+        "MN_RIVER_FUN_UPSTREAM_MAPLE",
+        "MN_RIVER_FUN_UPSTREAM_PETAL",
+        "MN_SPX_TRAINER_8"
+      ],
+      "fixture": null
+    },
+    {
+      "slug": "champion",
+      "name": "Casey",
+      "id": "mn_portrait_champion",
+      "source": "planning/minnesota/npcs/portrait-cast-v01/champion/native-pixels-v1.json",
+      "encoded_png": "target/trainer-cast-rest/final-native/champion/encoded/gfx/trainers/mn_portrait_champion.png",
+      "role": "champion",
+      "trainer_class": "CHAMPION",
+      "trainer_ids": [
+        "MN_CHAMPION"
+      ],
+      "fixture": null
+    },
+    {
+      "slug": "cooltrainer_f",
+      "name": "Cooltrainer F",
+      "id": "mn_portrait_cooltrainer_f",
+      "source": "planning/minnesota/npcs/portrait-cast-v01/cooltrainer_f/native-pixels-v1.json",
+      "encoded_png": "target/trainer-cast-rest/final-native/cooltrainer_f/encoded/gfx/trainers/mn_portrait_cooltrainer_f.png",
+      "role": "ordinary_type",
+      "trainer_class": "COOLTRAINERF",
+      "trainer_ids": [
+        "MN_DULUTH_X_T02",
+        "MN_EXTRA_LEECH_ISLAND_NATURALIST",
+        "MN_GYM_4_TRAINER_1",
+        "MN_GYM_5_TRAINER_1",
+        "MN_GYM_7_TRAINER_2",
+        "MN_GYM_8_TRAINER_1",
+        "MN_MP_CLUB_COACH_INEZ",
+        "MN_R11_T02",
+        "MN_R11_T03",
+        "MN_R11_T08",
+        "MN_R12_T03",
+        "MN_R12_T06",
+        "MN_R12_T10",
+        "MN_R13_T01",
+        "MN_R13_T03",
+        "MN_R13_T05",
+        "MN_R13_T07",
+        "MN_R14_T04",
+        "MN_R17_T04",
+        "MN_R20_T07",
+        "MN_RIVER_FUN_LOWER_BROOK",
+        "MN_RIVER_FUN_UPSTREAM_HOLLY"
+      ],
+      "fixture": null
+    },
+    {
+      "slug": "cooltrainer_m",
+      "name": "Cooltrainer M",
+      "id": "mn_portrait_cooltrainer_m",
+      "source": "planning/minnesota/npcs/portrait-cast-v01/cooltrainer_m/native-pixels-v1.json",
+      "encoded_png": "target/trainer-cast-rest/final-native/cooltrainer_m/encoded/gfx/trainers/mn_portrait_cooltrainer_m.png",
+      "role": "ordinary_type",
+      "trainer_class": "COOLTRAINERM",
+      "trainer_ids": [
+        "MN_DULUTH_X_T05",
+        "MN_EXTRA_R20_WAYFINDER",
+        "MN_GYM_7_TRAINER_1",
+        "MN_GYM_8_TRAINER_3",
+        "MN_R13_T10",
+        "MN_R17_T06",
+        "MN_R20_T10"
+      ],
+      "fixture": null
+    },
+    {
+      "slug": "executive_m",
+      "name": "Lode Chief",
+      "id": "mn_portrait_executive_m",
+      "source": "planning/minnesota/npcs/portrait-cast-v01/executive_m/native-pixels-v1.json",
+      "encoded_png": "target/trainer-cast-rest/final-native/executive_m/encoded/gfx/trainers/mn_portrait_executive_m.png",
+      "role": "team_lode_chief",
+      "trainer_class": "EXECUTIVEM",
+      "trainer_ids": [
+        "MN_LODE_CHIEF"
+      ],
+      "fixture": null
+    },
+    {
+      "slug": "firebreather",
+      "name": "Firebreather",
+      "id": "mn_portrait_firebreather",
+      "source": "planning/minnesota/npcs/portrait-cast-v01/firebreather/native-pixels-v1.json",
+      "encoded_png": "target/trainer-cast-rest/final-native/firebreather/encoded/gfx/trainers/mn_portrait_firebreather.png",
+      "role": "ordinary_type",
+      "trainer_class": "FIREBREATHER",
+      "trainer_ids": [
+        "MN_R05_T04",
+        "MN_R10_T02"
+      ],
+      "fixture": null
+    },
+    {
+      "slug": "fisher",
+      "name": "Fisher",
+      "id": "mn_portrait_fisher",
+      "source": "planning/minnesota/npcs/portrait-cast-v01/fisher/native-pixels-v1.json",
+      "encoded_png": "target/trainer-cast-rest/final-native/fisher/encoded/gfx/trainers/mn_portrait_fisher.png",
+      "role": "ordinary_type",
+      "trainer_class": "FISHER",
+      "trainer_ids": [
+        "MN_CAVE_GUNFLINT_ANGLER",
+        "MN_DULUTH_X_T06",
+        "MN_EXTRA_GR_BANK_FISHER",
+        "MN_EXTRA_LEECH_MAINLAND_FLY_TIER",
+        "MN_EXTRA_R10_SPRING",
+        "MN_FAIR_EXHIBITOR_09_TRAINER",
+        "MN_FAIR_ORCHARD_TRAINER",
+        "MN_FAIR_RICE_TRAINER",
+        "MN_GYM_6_TRAINER_2",
+        "MN_MOTHLIGHT_CAFE",
+        "MN_MP_CLUB_BANKS",
+        "MN_R03_T01",
+        "MN_R06_T03",
+        "MN_R07_T01",
+        "MN_R07_T07",
+        "MN_R08_T03",
+        "MN_R08_T06",
+        "MN_R09_T02",
+        "MN_R11_T05",
+        "MN_R11_T09",
+        "MN_R12_T08",
+        "MN_R14_T05",
+        "MN_R15_T02",
+        "MN_R16_T01",
+        "MN_R16_T05",
+        "MN_R18_T01",
+        "MN_R18_T06",
+        "MN_R19_T06",
+        "MN_R20_T05",
+        "MN_R20_T06",
+        "MN_RIVER_CONFLUENCE_FISHER",
+        "MN_RIVER_FUN_LOWER_LENA",
+        "MN_RIVER_FUN_LOWER_MARSH",
+        "MN_RIVER_FUN_LOWER_WADE",
+        "MN_RIVER_FUN_UPSTREAM_FINN",
+        "MN_RIVER_FUN_UPSTREAM_JET",
+        "MN_RIVER_FUN_UPSTREAM_OTTO",
+        "MN_RIVER_FUN_UPSTREAM_STONE",
+        "MN_RIVER_LOWER_BANK_FISHER",
+        "MN_RIVER_UPSTREAM_BANK_FISHER",
+        "MN_SPX_TRAINER_6"
+      ],
+      "fixture": null
+    },
+    {
+      "slug": "gentleman",
+      "name": "Gentleman",
+      "id": "mn_portrait_gentleman",
+      "source": "planning/minnesota/npcs/portrait-cast-v01/gentleman/native-pixels-v1.json",
+      "encoded_png": "target/trainer-cast-rest/final-native/gentleman/encoded/gfx/trainers/mn_portrait_gentleman.png",
+      "role": "ordinary_type",
+      "trainer_class": "GENTLEMAN",
+      "trainer_ids": [
+        "MN_FAIR_EXHIBITOR_06_TRAINER",
+        "MN_FAIR_PICNIC_TRAINER",
+        "MN_FAIR_RING_FAN_TRAINER",
+        "MN_GYM_7_TRAINER_3",
+        "MN_SPX_TRAINER_5"
+      ],
+      "fixture": null
+    },
+    {
+      "slug": "lode",
+      "name": "Team Lode",
+      "id": "mn_portrait_lode",
+      "source": "planning/minnesota/npcs/portrait-cast-v01/lode/native-pixels-v1.json",
+      "encoded_png": "target/trainer-cast-rest/final-native/lode/encoded/gfx/trainers/mn_portrait_lode.png",
+      "role": "villain_team",
+      "trainer_class": "GRUNTM",
+      "trainer_ids": [
+        "MN_LODE_ARC_ACCESS",
+        "MN_LODE_ARC_CONVEYOR",
+        "MN_LODE_ARC_CORE_EAST",
+        "MN_LODE_ARC_CORE_WEST",
+        "MN_LODE_ARC_DRAIN",
+        "MN_LODE_ARC_INTAKE",
+        "MN_LODE_ARC_INTAKE_CONTROL",
+        "MN_LODE_ARC_INTAKE_EAST",
+        "MN_LODE_ARC_PUMP",
+        "MN_LODE_ARC_SHIFT",
+        "MN_LODE_ARC_SPOIL",
+        "MN_LODE_ARC_SUMP",
+        "MN_LODE_ARC_VENT",
+        "MN_LODE_ARC_WEIGH",
+        "MN_LODE_COURIER",
+        "MN_LODE_FOREMAN"
+      ],
+      "fixture": null
+    },
+    {
+      "slug": "guitarist",
+      "name": "Guitarist",
+      "id": "mn_portrait_guitarist",
+      "source": "planning/minnesota/npcs/portrait-cast-v01/guitarist/native-pixels-v1.json",
+      "encoded_png": "target/trainer-cast-rest/final-native/guitarist/encoded/gfx/trainers/mn_portrait_guitarist.png",
+      "role": "ordinary_type",
+      "trainer_class": "GUITARIST",
+      "trainer_ids": [
+        "MN_MP_CLUB_RIVET"
+      ],
+      "fixture": null
+    },
+    {
+      "slug": "hiker",
+      "name": "Hiker",
+      "id": "mn_portrait_hiker",
+      "source": "planning/minnesota/npcs/portrait-cast-v01/hiker/native-pixels-v1.json",
+      "encoded_png": "target/trainer-cast-rest/final-native/hiker/encoded/gfx/trainers/mn_portrait_hiker.png",
+      "role": "ordinary_type",
+      "trainer_class": "HIKER",
+      "trainer_ids": [
+        "MN_CAVE_ORE_CLIMBER",
+        "MN_DULUTH_X_T07",
+        "MN_EXTRA_R10_SURVEY",
+        "MN_R05_T01",
+        "MN_R06_T05",
+        "MN_R09_T01",
+        "MN_R09_T03",
+        "MN_R09_T04",
+        "MN_R09_T06",
+        "MN_R09_T07",
+        "MN_R10_T01",
+        "MN_R10_T05",
+        "MN_R11_T01",
+        "MN_R11_T04",
+        "MN_R11_T07",
+        "MN_R12_T01",
+        "MN_R12_T04",
+        "MN_R13_T02",
+        "MN_R19_T04",
+        "MN_R20_T03",
+        "MN_R20_T08",
+        "MN_RIVER_FUN_LOWER_BEAU",
+        "MN_RIVER_FUN_LOWER_BIRCH",
+        "MN_RIVER_FUN_LOWER_CLAY",
+        "MN_RIVER_FUN_LOWER_LARK",
+        "MN_RIVER_FUN_UPSTREAM_FLINT",
+        "MN_RIVER_FUN_UPSTREAM_HANK",
+        "MN_RIVER_FUN_UPSTREAM_KIP"
+      ],
+      "fixture": null
+    },
+    {
+      "slug": "juggler",
+      "name": "Juggler",
+      "id": "mn_portrait_juggler",
+      "source": "planning/minnesota/npcs/portrait-cast-v01/juggler/native-pixels-v1.json",
+      "encoded_png": "target/trainer-cast-rest/final-native/juggler/encoded/gfx/trainers/mn_portrait_juggler.png",
+      "role": "ordinary_type",
+      "trainer_class": "JUGGLER",
+      "trainer_ids": [
+        "MN_R04_T01"
+      ],
+      "fixture": null
+    },
+    {
+      "slug": "lass",
+      "name": "Lass",
+      "id": "mn_portrait_lass",
+      "source": "planning/minnesota/npcs/portrait-cast-v01/lass/native-pixels-v1.json",
+      "encoded_png": "target/trainer-cast-rest/final-native/lass/encoded/gfx/trainers/mn_portrait_lass.png",
+      "role": "ordinary_type",
+      "trainer_class": "LASS",
+      "trainer_ids": [
+        "MN_COHESION_DETROIT_WALKER",
+        "MN_COHESION_MARAIS_WALKER",
+        "MN_FAIR_BAKER_TRAINER",
+        "MN_FAIR_EXHIBITOR_02_TRAINER",
+        "MN_FAIR_EXHIBITOR_05_TRAINER",
+        "MN_FAIR_EXHIBITOR_11_TRAINER",
+        "MN_FAIR_GARDEN_TRAINER",
+        "MN_FAIR_MIDWAY_B_TRAINER",
+        "MN_FAIR_PRETZEL_TRAINER",
+        "MN_FAIR_STAGE_TRAINER",
+        "MN_MP_CLUB_CEDAR",
+        "MN_R01_T02",
+        "MN_R02_T01",
+        "MN_R03_T02",
+        "MN_R16_T10",
+        "MN_R18_T03"
+      ],
+      "fixture": null
+    },
+    {
+      "slug": "fern",
+      "name": "Fern",
+      "id": "mn_elite_fern",
+      "source": "planning/minnesota/npcs/portrait-cast-v01/fern/native-pixels-v1.json",
+      "encoded_png": "target/trainer-cast-rest/final-native/fern/encoded/gfx/trainers/mn_elite_fern.png",
+      "role": "elite_four",
+      "trainer_class": "MN_ELITE_FERN",
+      "trainer_ids": [
+        "MN_LEAGUE_1"
+      ],
+      "fixture": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/10-fern/controller-v1.json"
+    },
+    {
+      "slug": "flint",
+      "name": "Flint",
+      "id": "mn_elite_flint",
+      "source": "planning/minnesota/npcs/portrait-cast-v01/flint/native-pixels-v1.json",
+      "encoded_png": "target/trainer-cast-rest/final-native/flint/encoded/gfx/trainers/mn_elite_flint.png",
+      "role": "elite_four",
+      "trainer_class": "MN_ELITE_FLINT",
+      "trainer_ids": [
+        "MN_LEAGUE_2"
+      ],
+      "fixture": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/11-flint/controller-v1.json"
+    },
+    {
+      "slug": "halden",
+      "name": "Halden",
+      "id": "mn_elite_halden",
+      "source": "planning/minnesota/npcs/portrait-cast-v01/halden/native-pixels-v1.json",
+      "encoded_png": "target/trainer-cast-rest/final-native/halden/encoded/gfx/trainers/mn_elite_halden.png",
+      "role": "elite_four",
+      "trainer_class": "MN_ELITE_HALDEN",
+      "trainer_ids": [
+        "MN_HALDEN_FIRST",
+        "MN_LEAGUE_4"
+      ],
+      "fixture": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/13-halden/controller-v1.json"
+    },
+    {
+      "slug": "veil",
+      "name": "Veil",
+      "id": "mn_elite_veil",
+      "source": "planning/minnesota/npcs/portrait-cast-v01/veil/native-pixels-v1.json",
+      "encoded_png": "target/trainer-cast-rest/final-native/veil/encoded/gfx/trainers/mn_elite_veil.png",
+      "role": "elite_four",
+      "trainer_class": "MN_ELITE_VEIL",
+      "trainer_ids": [
+        "MN_LEAGUE_3"
+      ],
+      "fixture": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/12-veil/controller-v1.json"
+    },
+    {
+      "slug": "reed",
+      "name": "Reed",
+      "id": "mn_rival_reed",
+      "source": "planning/minnesota/npcs/portrait-cast-v01/reed/native-pixels-v1.json",
+      "encoded_png": "target/trainer-cast-rest/final-native/reed/encoded/gfx/trainers/mn_rival_reed.png",
+      "role": "rival",
+      "trainer_class": "MN_RIVAL_REED",
+      "trainer_ids": [
+        "MN_REED_BOUNDARY",
+        "MN_REED_MINE",
+        "MN_REED_REFINEMENT",
+        "MN_REED_RELAY",
+        "MN_REED_ROCHESTER",
+        "MN_REED_STPAUL",
+        "MN_REED_WINONA"
+      ],
+      "fixture": "planning/minnesota/npcs/regional-trainers-v01/controller-fixtures/reed-rochester.json"
+    },
+    {
+      "slug": "timekeeper",
+      "name": "Tavel",
+      "id": "mn_timekeeper",
+      "source": "planning/minnesota/npcs/portrait-cast-v01/timekeeper/native-pixels-v1.json",
+      "encoded_png": "target/trainer-cast-rest/final-native/timekeeper/encoded/gfx/trainers/mn_timekeeper.png",
+      "role": "timekeeper",
+      "trainer_class": "MN_TIMEKEEPER",
+      "trainer_ids": [
+        "MN_GYM_1_TRAINER_1"
+      ],
+      "fixture": null
+    },
+    {
+      "slug": "officer",
+      "name": "Officer",
+      "id": "mn_portrait_officer",
+      "source": "planning/minnesota/npcs/portrait-cast-v01/officer/native-pixels-v1.json",
+      "encoded_png": "target/trainer-cast-rest/final-native/officer/encoded/gfx/trainers/mn_portrait_officer.png",
+      "role": "ordinary_type",
+      "trainer_class": "OFFICER",
+      "trainer_ids": [
+        "MN_R20_T01"
+      ],
+      "fixture": null
+    },
+    {
+      "slug": "picnicker",
+      "name": "Picnicker",
+      "id": "mn_portrait_picnicker",
+      "source": "planning/minnesota/npcs/portrait-cast-v01/picnicker/native-pixels-v1.json",
+      "encoded_png": "target/trainer-cast-rest/final-native/picnicker/encoded/gfx/trainers/mn_portrait_picnicker.png",
+      "role": "ordinary_type",
+      "trainer_class": "PICNICKER",
+      "trainer_ids": [
+        "MN_EXTRA_MPLS_CYCLE_02",
+        "MN_EXTRA_MPLS_CYCLE_04",
+        "MN_EXTRA_MPLS_CYCLE_06",
+        "MN_EXTRA_MPLS_CYCLE_08",
+        "MN_EXTRA_MPLS_CYCLE_10",
+        "MN_EXTRA_MPLS_CYCLE_12",
+        "MN_EXTRA_MPLS_CYCLE_14",
+        "MN_EXTRA_MPLS_CYCLE_16",
+        "MN_EXTRA_MPLS_CYCLE_18",
+        "MN_GYM_2_TRAINER_2",
+        "MN_R02_T03",
+        "MN_R03_T03",
+        "MN_R05_T03",
+        "MN_R07_T03",
+        "MN_R07_T05",
+        "MN_R07_T08",
+        "MN_R08_T02",
+        "MN_R10_T06",
+        "MN_R12_T05",
+        "MN_R14_T02",
+        "MN_R16_T04",
+        "MN_R18_T02",
+        "MN_R19_T01",
+        "MN_R19_T05",
+        "MN_R20_T04",
+        "MN_RIVER_FUN_LOWER_IRIS",
+        "MN_RIVER_FUN_LOWER_MIRA",
+        "MN_RIVER_FUN_LOWER_RORY",
+        "MN_RIVER_FUN_LOWER_ROSE",
+        "MN_RIVER_FUN_UPSTREAM_NELL",
+        "MN_RIVER_FUN_UPSTREAM_ROWAN",
+        "MN_RIVER_FUN_UPSTREAM_SAGE",
+        "MN_SPX_TRAINER_1"
+      ],
+      "fixture": null
+    },
+    {
+      "slug": "pokefan_f",
+      "name": "Pokefan F",
+      "id": "mn_portrait_pokefan_f",
+      "source": "planning/minnesota/npcs/portrait-cast-v01/pokefan_f/native-pixels-v1.json",
+      "encoded_png": "target/trainer-cast-rest/final-native/pokefan_f/encoded/gfx/trainers/mn_portrait_pokefan_f.png",
+      "role": "ordinary_type",
+      "trainer_class": "POKEFANF",
+      "trainer_ids": [
+        "MN_FAIR_CURDS_TRAINER",
+        "MN_FAIR_EXHIBITOR_03_TRAINER",
+        "MN_R09_T08",
+        "MN_R16_T08",
+        "MN_R19_T03",
+        "MN_SPX_TRAINER_2"
+      ],
+      "fixture": null
+    },
+    {
+      "slug": "pokefan_m",
+      "name": "Pokefan M",
+      "id": "mn_portrait_pokefan_m",
+      "source": "planning/minnesota/npcs/portrait-cast-v01/pokefan_m/native-pixels-v1.json",
+      "encoded_png": "target/trainer-cast-rest/final-native/pokefan_m/encoded/gfx/trainers/mn_portrait_pokefan_m.png",
+      "role": "ordinary_type",
+      "trainer_class": "POKEFANM",
+      "trainer_ids": [
+        "MN_FAIR_EXHIBITOR_12_TRAINER",
+        "MN_FAIR_MIDWAY_C_TRAINER",
+        "MN_FAIR_SHOW_TRAINER",
+        "MN_GYM_4_TRAINER_2",
+        "MN_R09_T05",
+        "MN_R16_T03",
+        "MN_R17_T05"
+      ],
+      "fixture": null
+    },
+    {
+      "slug": "pokemaniac",
+      "name": "Pokemaniac",
+      "id": "mn_portrait_pokemaniac",
+      "source": "planning/minnesota/npcs/portrait-cast-v01/pokemaniac/native-pixels-v1.json",
+      "encoded_png": "target/trainer-cast-rest/final-native/pokemaniac/encoded/gfx/trainers/mn_portrait_pokemaniac.png",
+      "role": "ordinary_type",
+      "trainer_class": "POKEMANIAC",
+      "trainer_ids": [
+        "MN_R05_T05",
+        "MN_R08_T08"
+      ],
+      "fixture": null
+    },
+    {
+      "slug": "sailor",
+      "name": "Sailor",
+      "id": "mn_portrait_sailor",
+      "source": "planning/minnesota/npcs/portrait-cast-v01/sailor/native-pixels-v1.json",
+      "encoded_png": "target/trainer-cast-rest/final-native/sailor/encoded/gfx/trainers/mn_portrait_sailor.png",
+      "role": "ordinary_type",
+      "trainer_class": "SAILOR",
+      "trainer_ids": [
+        "MN_DULUTH_X_T01",
+        "MN_GYM_8_TRAINER_2",
+        "MN_R10_T04",
+        "MN_R18_T05"
+      ],
+      "fixture": null
+    },
+    {
+      "slug": "schoolboy",
+      "name": "Schoolboy",
+      "id": "mn_portrait_schoolboy",
+      "source": "planning/minnesota/npcs/portrait-cast-v01/schoolboy/native-pixels-v1.json",
+      "encoded_png": "target/trainer-cast-rest/final-native/schoolboy/encoded/gfx/trainers/mn_portrait_schoolboy.png",
+      "role": "ordinary_type",
+      "trainer_class": "SCHOOLBOY",
+      "trainer_ids": [
+        "MN_FAIR_COOKIE_TRAINER",
+        "MN_FAIR_EXHIBITOR_01_TRAINER",
+        "MN_FAIR_EXHIBITOR_04_TRAINER",
+        "MN_FAIR_EXHIBITOR_07_TRAINER",
+        "MN_FAIR_EXHIBITOR_08_TRAINER",
+        "MN_FAIR_GRAIN_KID_TRAINER",
+        "MN_FAIR_JUNIOR_TRAINER",
+        "MN_FAIR_MILK_TRAINER",
+        "MN_FAIR_NORTH_KID_TRAINER",
+        "MN_GYM_1_TRAINER_2",
+        "MN_R04_T02",
+        "MN_R16_T06"
+      ],
+      "fixture": null
+    },
+    {
+      "slug": "scientist",
+      "name": "Scientist",
+      "id": "mn_portrait_scientist",
+      "source": "planning/minnesota/npcs/portrait-cast-v01/scientist/native-pixels-v1.json",
+      "encoded_png": "target/trainer-cast-rest/final-native/scientist/encoded/gfx/trainers/mn_portrait_scientist.png",
+      "role": "ordinary_type",
+      "trainer_class": "SCIENTIST",
+      "trainer_ids": [
+        "MN_GYM_3_TRAINER_1"
+      ],
+      "fixture": null
+    },
+    {
+      "slug": "skier",
+      "name": "Skier",
+      "id": "mn_portrait_skier",
+      "source": "planning/minnesota/npcs/portrait-cast-v01/skier/native-pixels-v1.json",
+      "encoded_png": "target/trainer-cast-rest/final-native/skier/encoded/gfx/trainers/mn_portrait_skier.png",
+      "role": "ordinary_type",
+      "trainer_class": "SKIER",
+      "trainer_ids": [
+        "MN_EXTRA_FALLS_SKIER",
+        "MN_ICE_SKIER_ELSA"
+      ],
+      "fixture": null
+    },
+    {
+      "slug": "super_nerd",
+      "name": "Super Nerd",
+      "id": "mn_portrait_super_nerd",
+      "source": "planning/minnesota/npcs/portrait-cast-v01/super_nerd/native-pixels-v1.json",
+      "encoded_png": "target/trainer-cast-rest/final-native/super_nerd/encoded/gfx/trainers/mn_portrait_super_nerd.png",
+      "role": "ordinary_type",
+      "trainer_class": "SUPER_NERD",
+      "trainer_ids": [
+        "MN_DULUTH_X_T03",
+        "MN_GYM_3_TRAINER_2",
+        "MN_SPX_TRAINER_3"
+      ],
+      "fixture": null
+    },
+    {
+      "slug": "swimmer_f",
+      "name": "Swimmer",
+      "id": "mn_portrait_swimmer_f",
+      "source": "planning/minnesota/npcs/portrait-cast-v01/swimmer_f/native-pixels-v1.json",
+      "encoded_png": "target/trainer-cast-rest/final-native/swimmer_f/encoded/gfx/trainers/mn_portrait_swimmer_f.png",
+      "role": "ordinary_type",
+      "trainer_class": "SWIMMERF",
+      "trainer_ids": [
+        "MN_GYM_6_TRAINER_1"
+      ],
+      "fixture": null
+    },
+    {
+      "slug": "teacher",
+      "name": "Teacher",
+      "id": "mn_portrait_teacher",
+      "source": "planning/minnesota/npcs/portrait-cast-v01/teacher/native-pixels-v1.json",
+      "encoded_png": "target/trainer-cast-rest/final-native/teacher/encoded/gfx/trainers/mn_portrait_teacher.png",
+      "role": "ordinary_type",
+      "trainer_class": "TEACHER",
+      "trainer_ids": [
+        "MN_FAIR_EXHIBITOR_13_TRAINER",
+        "MN_FAIR_MIDWAY_D_TRAINER"
+      ],
+      "fixture": null
+    },
+    {
+      "slug": "youngster",
+      "name": "Youngster",
+      "id": "mn_portrait_youngster",
+      "source": "planning/minnesota/npcs/portrait-cast-v01/youngster/native-pixels-v1.json",
+      "encoded_png": "target/trainer-cast-rest/final-native/youngster/encoded/gfx/trainers/mn_portrait_youngster.png",
+      "role": "ordinary_type",
+      "trainer_class": "YOUNGSTER",
+      "trainer_ids": [
+        "MN_CAVE_DRIFTLESS_ROOKIE",
+        "MN_FAIR_BARN_KID_TRAINER",
+        "MN_FAIR_DAIRY_KID_TRAINER",
+        "MN_FAIR_EXHIBITOR_10_TRAINER",
+        "MN_FAIR_MIDWAY_A_TRAINER",
+        "MN_FAIR_WEST_TRAINER",
+        "MN_R01_T01",
+        "MN_R02_T02"
+      ],
+      "fixture": null
+    },
+    {
+      "slug": "ice_agent",
+      "name": "ICE Agent",
+      "id": "mn_portrait_ice_agent",
+      "source": "planning/minnesota/npcs/portrait-cast-v01/ice_agent/native-pixels-v1.json",
+      "encoded_png": "target/trainer-cast-rest/final-native/ice_agent/encoded/gfx/trainers/mn_portrait_ice_agent.png",
+      "role": "villain_team",
+      "trainer_class": "GRUNTM",
+      "trainer_ids": [
+        "MN_ICE_ARC_INTAKE_WEST",
+        "MN_ICE_CARGO_GUARD",
+        "MN_ICE_HQ_CARGO_MANIFEST",
+        "MN_ICE_HQ_DISPATCH",
+        "MN_ICE_HQ_ESCORT",
+        "MN_ICE_HQ_MAINTENANCE_GUARD",
+        "MN_ICE_HQ_OPERATIONS_GUARD",
+        "MN_ICE_HQ_RECORDS_GUARD",
+        "MN_ICE_HQ_TRANSFER_GUARD",
+        "MN_ICE_RELAY_GUARD"
+      ],
+      "fixture": null
+    },
+    {
+      "slug": "ice_operative",
+      "name": "ICE Operative",
+      "id": "mn_portrait_ice_operative",
+      "source": "planning/minnesota/npcs/portrait-cast-v01/ice_operative/native-pixels-v1.json",
+      "encoded_png": "target/trainer-cast-rest/final-native/ice_operative/encoded/gfx/trainers/mn_portrait_ice_operative.png",
+      "role": "villain_team",
+      "trainer_class": "GRUNTM",
+      "trainer_ids": [
+        "MN_ICE_ARC_INTAKE_RECORDS",
+        "MN_ICE_HQ_ARCHIVE",
+        "MN_ICE_HQ_CARGO_SEARCH",
+        "MN_ICE_HQ_OPERATIONS_PATROL",
+        "MN_ICE_HQ_RELAY_PATROL",
+        "MN_ICE_HQ_WORKSHOP"
+      ],
+      "fixture": null
+    },
+    {
+      "slug": "ice_enforcer",
+      "name": "ICE Enforcer",
+      "id": "mn_portrait_ice_enforcer",
+      "source": "planning/minnesota/npcs/portrait-cast-v01/ice_enforcer/native-pixels-v1.json",
+      "encoded_png": "target/trainer-cast-rest/final-native/ice_enforcer/encoded/gfx/trainers/mn_portrait_ice_enforcer.png",
+      "role": "villain_team",
+      "trainer_class": "GRUNTM",
+      "trainer_ids": [
+        "MN_ICE_ENFORCER"
+      ],
+      "fixture": null
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "name": "veil",
+  "method": "built-in imagegen and whole-image Rust conversion; no hand pixel edits",
+  "previous_source": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/12-veil/native-pixels-v3.json",
+  "previous_source_sha256": "7426a1bb490ffa3da87e949336253b9c35e7c5534b1c6fd277af40447395b624",
+  "source": "planning/minnesota/npcs/portrait-cast-v01/veil/native-pixels-v1.json",
+  "native_sha256": "76a95964af6800719023ff5ada6795cf988b137ecc87246cefe174fbe3b463d6",
+  "image_source": "planning/minnesota/npcs/portrait-cast-v01/veil/image-source-v2.png",
+  "source_sha256": "977bf38bdb5231b5aed0b0394fb344c6e91731f3d20423938065f3c5262df56e",
+  "image_prompt": "planning/minnesota/npcs/portrait-cast-v01/veil/image-prompt-v2.txt",
+  "image_prompt_history": [
+    "planning/minnesota/npcs/portrait-cast-v01/veil/image-prompt-v1.txt",
+    "planning/minnesota/npcs/portrait-cast-v01/veil/image-prompt-v2.txt"
+  ],
+  "authentic_and_style_references": [
+    "target/trainer-full-body-references/sage-20x.png",
+    "planning/minnesota/npcs/portrait-faces-v03/tamarack/image-source-v3.png",
+    "planning/minnesota/npcs/portrait-cast-v01/veil/image-source-v1.png"
+  ],
+  "palette_rgb555": [
+    32767,
+    32637,
+    20717,
+    0
+  ],
+  "sampling": "area_vote",
+  "source_bounds": [
+    272,
+    16,
+    869,
+    1235
+  ],
+  "machine_rows": "target/trainer-cast-rest/veil/v2/area32-16/battle.candidate.json",
+  "replay_command": [
+    "target/trainer-full-body/tamarack/sampling-study-v1/npc_sprite_candidate",
+    "planning/minnesota/npcs/portrait-cast-v01/veil/image-source-v2.png",
+    "target/trainer-cast-rest/veil/v2/area32-16",
+    "0",
+    "0",
+    "1254",
+    "1254",
+    "32637",
+    "20717",
+    "area_vote",
+    "32",
+    "16"
+  ],
+  "controller_fixture": "planning/minnesota/npcs/regional-trainers-v01/story-field-repairs/12-veil/controller-v1.json",
+  "integration": "planning/minnesota/npcs/regional-trainers-v01/story-bindings/12-veil.json",
+  "encoded_preview": "target/trainer-cast-rest/veil/encoded/gfx/trainers/mn_elite_veil.png",
+  "status": "native visual candidate; combined pack gameplay and user review pending",
+  "crop": [
+    0,
+    0,
+    1254,
+    1254
+  ],
+  "minimum_black_samples": 32,
+  "minimum_white_samples": 16,
+  "exterior_contour": "source_backed",
+  "native_fit_limit": [
+    52,
+    54
+  ]
+}
