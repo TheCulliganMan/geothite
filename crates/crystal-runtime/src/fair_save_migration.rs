@@ -74,12 +74,13 @@ struct PresentationRelease {
 pub(super) fn parse_presentation(bytes: &[u8], target: &str) -> Result<Compatibility> {
     let release: PresentationRelease = serde_json::from_slice(bytes)?;
     let [raw, hosted] = &release.sources;
-    let parent = target
+    let target_base = target.strip_suffix(SUFFIX).unwrap_or(target);
+    let parent = target_base
         .strip_suffix(PRESENTATION_MARKER)
         .context("invalid Fair presentation target")?;
     ensure!(
         release.schema_version == 10
-            && (parent == raw.modpack_id || parent == hosted.modpack_id)
+            && parent == raw.modpack_id
             && hosted.modpack_id.strip_prefix(&raw.modpack_id) == Some(SUFFIX)
             && release.sources.iter().enumerate().all(|(i, source)| {
                 source.modpack_hash == FAIR_HASHES[i] && source.content_hash == FAIR_CONTENT[i]
@@ -91,7 +92,12 @@ pub(super) fn parse_presentation(bytes: &[u8], target: &str) -> Result<Compatibi
         inherited.target_modpack_ids == [raw.modpack_id.clone(), hosted.modpack_id.clone()],
         "mismatched inherited Fair save targets"
     );
-    let mut policy = parse(&serde_json::to_vec(&release.inherited)?, parent)?;
+    let fair_target = if target_base == target {
+        &raw.modpack_id
+    } else {
+        &hosted.modpack_id
+    };
+    let mut policy = parse(&serde_json::to_vec(&release.inherited)?, fair_target)?;
     policy.unchanged_checkpoint_parents.extend(
         release
             .sources

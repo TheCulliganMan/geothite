@@ -88,5 +88,10 @@ pub fn build_northstar_fair_presentation(
         crate::verify_compiled_game_pack_for_runtime(&pack)?;
         Ok(pack)
     };
-    Ok([build(fair_raw.pack())?, build(fair_hosted.pack())?])
+    let raw = build(fair_raw.pack())?;
+    let all = crate::build_all_pokemon_modpack(&raw)?;
+    let battles = crate::build_default_battle_modpack(&all)?;
+    let clock = crate::build_realtime_clock_modpack(&battles)?;
+    let hosted = crate::build_player_customization_modpack(&clock)?;
+    Ok([raw, hosted])
 }
