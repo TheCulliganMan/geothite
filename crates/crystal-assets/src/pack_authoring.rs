@@ -198,6 +198,8 @@ mod northstar_fair_table;
 pub use northstar_fair_table::revise_fair_table;
 mod northstar_fair_release;
 pub use northstar_fair_release::build_northstar_fair_release;
+mod northstar_fair_presentation;
+pub use northstar_fair_presentation::build_northstar_fair_presentation;
 mod northstar_fair_patrols;
 pub use northstar_fair_patrols::revise_fair_patrols;
 mod northstar_ely_challenge;

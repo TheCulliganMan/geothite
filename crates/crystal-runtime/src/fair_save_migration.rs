@@ -15,6 +15,15 @@ use std::collections::{BTreeMap, BTreeSet, VecDeque};
 use super::{Compatibility, CompatibleSaveSource, parse_regional_compatibility};
 
 const MARKER: &str = "northstar-fair-release-v1";
+const PRESENTATION_MARKER: &str = "+northstar-fair-presentation-v1";
+const FAIR_HASHES: [&str; 2] = [
+    "18003b91597173f1d98937a0f6cc2fa82cfd2c5b3612c9803cd5f615acad2a73",
+    "9fbfa371972f6b3cdbd9d0ca9689aa5a66ee43d1d17e7650982da88d4e57f58e",
+];
+const FAIR_CONTENT: [&str; 2] = [
+    "d81cdb3d46bd72ffd22a2793c66f1d2f7ff2b8500674bca1ec68e1ee230a3078",
+    "415294715e2f50c60b3696966441a98a7b869fde34f6a3acbf94b4ab64bb8b4a",
+];
 const SUFFIX: &str = "+realtime-clock+player-customization";
 const LAKESIDE_RAW_HASH: &str = "e56ded3d55b8364e8756a4a02eb530fb74f52c03951c1c01d962441f7e2193d9";
 const LAKESIDE_HOSTED_HASH: &str =
@@ -52,6 +61,45 @@ struct Release {
     sources: [CompatibleSaveSource; 2],
     inherited: serde_json::Value,
     layouts: BTreeMap<String, MapChange>,
+}
+
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct PresentationRelease {
+    schema_version: u8,
+    sources: [CompatibleSaveSource; 2],
+    inherited: serde_json::Value,
+}
+
+pub(super) fn parse_presentation(bytes: &[u8], target: &str) -> Result<Compatibility> {
+    let release: PresentationRelease = serde_json::from_slice(bytes)?;
+    let [raw, hosted] = &release.sources;
+    let parent = target
+        .strip_suffix(PRESENTATION_MARKER)
+        .context("invalid Fair presentation target")?;
+    ensure!(
+        release.schema_version == 10
+            && (parent == raw.modpack_id || parent == hosted.modpack_id)
+            && hosted.modpack_id.strip_prefix(&raw.modpack_id) == Some(SUFFIX)
+            && release.sources.iter().enumerate().all(|(i, source)| {
+                source.modpack_hash == FAIR_HASHES[i] && source.content_hash == FAIR_CONTENT[i]
+            }),
+        "expected exact Fair presentation sources"
+    );
+    let inherited: Release = serde_json::from_value(release.inherited.clone())?;
+    ensure!(
+        inherited.target_modpack_ids == [raw.modpack_id.clone(), hosted.modpack_id.clone()],
+        "mismatched inherited Fair save targets"
+    );
+    let mut policy = parse(&serde_json::to_vec(&release.inherited)?, parent)?;
+    policy.unchanged_checkpoint_parents.extend(
+        release
+            .sources
+            .iter()
+            .map(|source| source.modpack_id.clone()),
+    );
+    policy.sources.splice(0..0, release.sources);
+    Ok(policy)
 }
 
 pub(super) fn parse(bytes: &[u8], target: &str) -> Result<Compatibility> {
@@ -104,6 +152,10 @@ pub(super) fn reconcile(
     layouts: &BTreeMap<String, MapChange>,
     source: &CompatibleSaveSource,
 ) -> Result<()> {
+    // The presentation release preserves Fair terrain and object positions.
+    if FAIR_HASHES.contains(&source.modpack_hash.as_str()) {
+        return Ok(());
+    }
     for (map, change) in layouts {
         let room = data.map_module(map)?;
         if let Some(blocks) = state.map_block_overrides.get_mut(map) {

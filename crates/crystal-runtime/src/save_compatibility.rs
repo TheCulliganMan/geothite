@@ -74,6 +74,9 @@ fn parse_compatibility(bytes: &[u8], target_id: &str) -> Result<Compatibility> {
         schema_version: u8,
     }
     let header: Header = serde_json::from_slice(bytes).context("save compatibility version")?;
+    if header.schema_version == 10 {
+        return fair_save_migration::parse_presentation(bytes, target_id);
+    }
     if header.schema_version == 9 {
         return fair_save_migration::parse(bytes, target_id);
     }
