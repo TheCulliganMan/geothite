@@ -1010,3 +1010,32 @@ The production image is `sha256:cbdf6d6098581e2c8e12c1f08911ca90d5e04a43cdcbafc5
 ```sh
 python3 /mnt/homelab/config/geothite/releases/northstar-fair-20261120/deploy.py rollback
 ```
+
+## Minnesota Fair presentation release
+
+The browser game, browser terminal, and Apple Silicon and Linux x86-64
+installers use `northstar-fair-presentation-20261122-r2`. The production
+source is `cbbd7db7c1efd300e429502f5414c9f272a4e057`. The release
+combines the full-cast trainer portraits, dialogue changes across 318 maps,
+and save recovery for Gunflint Cave and Route 15.
+[Pack recipe and save checks](../planning/minnesota/revisions/fair-presentation-v01/README.md)
+
+| Edition | Archive SHA-256 | Content identity |
+| --- | --- | --- |
+| Raw Minnesota | `c28b37a15c0ae59151da94d4d70dde6ac3cc066b47afe993665cb071e7a4b3d4` | `d09a77f306578627e661a0811d2bacc12d22552e5e84041e0f002f6635db46c2` |
+| Browser and installer | `f123f566ed0b70cd9e551a2c88673faac132555e610c3eb5e3ecc95816d1bc57` | `d03e25c72b2852c6c87e31924a7c2467f35f51469a7fc7e327370f7a84676a3e` |
+
+Public checks matched 74 active web assets, including six compiled WASM
+modules. Both supported native installers ran twice with `--no-play`,
+matched the built executables, and preserved a scratch save marker. The
+production game retained its existing storage mounts.
+
+The production image is `sha256:d14eea33bb26a3aab3d65b72dd3cf3a6d680007b802810a0a2c15745a633dd3a`.
+The installer manifest SHA-256 is
+`1dba8280ddcebe3dbca71d7b7803ef62633eefce1f39a39b36a6899b63fb2b6e`.
+While this release is active, the deployment host can restore the previous
+Fair Patrols service and installer together.
+
+```sh
+python3 /mnt/homelab/config/geothite/releases/northstar-fair-presentation-20261122-r2/deploy.py rollback
+```

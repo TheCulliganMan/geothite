@@ -14,6 +14,8 @@ in each edition, 656 restored. The other 16 were fully enclosed in the old
 layout. Six generated Fair saves also copied at their original coordinates.
 Verification used compiled maps and isolated save files.
 
+[Public release and rollback](../../../../docs/deployment.md#minnesota-fair-presentation-release)
+
 Build both editions with the exact raw and hosted Fair packs and the [verified
 full-cast v03 art pack](../../npcs/portrait-cast-v01/README.md).
 

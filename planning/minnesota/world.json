@@ -8034,13 +8034,14 @@
   },
   "fair_presentation_revision": {
     "kind": "campaign_release",
-    "deployed": false,
+    "deployed": true,
+    "release": "northstar-fair-presentation-20261122-r2",
     "parent_revision": "fair_release_intro_revision",
     "pack": "content-packs/minnesota-fair-presentation-v01.crystalpack",
     "pack_sha256": "c28b37a15c0ae59151da94d4d70dde6ac3cc066b47afe993665cb071e7a4b3d4",
     "content_identity": "d09a77f306578627e661a0811d2bacc12d22552e5e84041e0f002f6635db46c2",
-    "hosted_pack_sha256": "1301921f28aa988d6a4ee9733284bbd99545903e9faa21305504d8bcaeefe8ff",
-    "hosted_content_identity": "0f0e0a202bafb3e1e33e276c849c8d9099e792d21bc1c50a04c00d0be4d0554d",
+    "hosted_pack_sha256": "f123f566ed0b70cd9e551a2c88673faac132555e610c3eb5e3ecc95816d1bc57",
+    "hosted_content_identity": "d03e25c72b2852c6c87e31924a7c2467f35f51469a7fc7e327370f7a84676a3e",
     "runbook": "revisions/fair-presentation-v01/README.md",
     "map_count": 746,
     "save_sources": 22
