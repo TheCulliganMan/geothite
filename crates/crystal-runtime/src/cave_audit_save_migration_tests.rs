@@ -121,6 +121,9 @@ fn checkpoint(
         state.flags.set_event_flag(OUTLET, true)?;
         session.shown_object_identifiers.insert(STRANDRAK.into());
     }
+    if room == "MnIronDrillCore" {
+        state.flags.set_event_flag("EVENT_MN_DRILL_STOPPED", true)?;
+    }
     session.begin_map_object_setup();
     session.finish_map_object_setup()?;
     sync_state_object_overrides(&mut state, &session)?;
@@ -293,6 +296,12 @@ fn cave_audit_migrates_all_rebuilt_rooms_and_exact_outside_checkpoints() -> Resu
                 assert!(state.flags.is_event_flag_set(OUTLET)?);
                 assert!(memory.shown_object_identifiers.contains(STRANDRAK));
                 assert_eq!(state.map_block_overrides[room].get(&(10, 5)), Some(&18));
+            }
+            if room == "MnIronDrillCore" {
+                let memory = &state.map_object_overrides[room];
+                assert!(memory.shown_object_identifiers.contains("MN_NDRILL_FINN"));
+                let finn = &memory.objects["MN_NDRILL_FINN"];
+                assert_eq!((finn.x, finn.y), (8, 7));
             }
         }
         println!(
