@@ -26,7 +26,7 @@ search terms, page labels and previous/next navigation together. The pack
 recipe is documented in
 [the ordering revision](../planning/minnesota/revisions/pokedex-order-v01/README.md).
 
-The live guide serves `20261120-fair-patrols-sprite-edges-47`. It keeps the 225 active species and Lakeside Gym machine data from release 46. Scutlet’s back, Dynarill’s front, Emberm’s back and Mudnip’s front now use the repaired sprites in both normal and shiny colors. The publisher updates image links inherited from older releases when replacing those sprites. [Artwork and verification](../planning/minnesota/pokemon/sprite-edge-cleanup-20261118/README.md)
+The live guide serves `20261124-regional-order-48`. All 225 entries follow the regional order above, including numeric searches and previous/next links. It retains the profiles, acquisition information, archives and media from release 47, including the repaired normal/shiny sprites for Scutlet, Dynarill, Emberm and Mudnip and the Lakeside Gym machine data. [Artwork and verification](../planning/minnesota/pokemon/sprite-edge-cleanup-20261118/README.md)
 
 Release 45 updated the front and back sprites for entries 181–186 and retained the Cindore refinement and Cascavolt crop repair from release 44. [Native art and media verification](../planning/minnesota/pokemon/NATIVE-ART-20261104.md)
 

@@ -14070,5 +14070,36 @@
     "changed_maps": 0,
     "selected": false,
     "deployed": false
+  },
+  "pokedex_order_revision": {
+    "kind": "campaign_release",
+    "deployed": true,
+    "release": "northstar-pokedex-order-20261124-v1",
+    "parent_revision": "fair_presentation_revision",
+    "parent_pack": "content-packs/minnesota-fair-presentation-v01.crystalpack",
+    "parent_pack_sha256": "c28b37a15c0ae59151da94d4d70dde6ac3cc066b47afe993665cb071e7a4b3d4",
+    "pack": "content-packs/minnesota-pokedex-order-v01.crystalpack",
+    "pack_sha256": "9415b9ae8def05303e8cd07ade5525c9c6f92c8a775498cb69e67975a19e7f13",
+    "content_identity": "8123e801db425666fefa8c5d2b532f0c9f130ecc4b59b1636fe20a5ee251add6",
+    "hosted_pack_sha256": "3f1df5134910d4c8b32e31428a668736ca8fbbc8b05e7c240865abcf6c7276d8",
+    "hosted_content_identity": "d77d63d93dc30b953cc5a8f8a8681a6c2af2fca4a4b480b86360863a1f13a8f6",
+    "source_commit": "0518db8642bc8683cf61f0cb7e145f1bcbf74eb1",
+    "runbook": "revisions/pokedex-order-v01/README.md",
+    "map_count": 746,
+    "changed_maps": 0,
+    "active_species": 225,
+    "active_families": 99,
+    "changed_numbers": 39,
+    "legendary_numbers": [
+      221,
+      222,
+      223,
+      224,
+      225
+    ],
+    "save_sources": 24,
+    "save_compatibility_schema": 11,
+    "website_release": "20261124-regional-order-48",
+    "local_review_selection_changed": false
   }
 }

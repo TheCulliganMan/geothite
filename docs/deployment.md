@@ -1039,3 +1039,47 @@ Fair Patrols service and installer together.
 ```sh
 python3 /mnt/homelab/config/geothite/releases/northstar-fair-presentation-20261122-r2/deploy.py rollback
 ```
+
+## Regional Pokédex ordering release (2026-11-24)
+
+The browser game, browser terminal, and Apple Silicon and Linux x86-64
+installers now use `northstar-pokedex-order-20261124-v1`, built from
+`0518db8642bc8683cf61f0cb7e145f1bcbf74eb1`. The website uses
+`20261124-regional-order-48`. The 225-species regional Pokédex keeps ordinary
+families first, the mosquito line at 218–220, and its five legendaries at
+221–225. Evolution families remain adjacent.
+[Pack recipe and verification](../planning/minnesota/revisions/pokedex-order-v01/README.md)
+
+| Edition | Archive SHA-256 | Content identity |
+| --- | --- | --- |
+| Raw Minnesota | `9415b9ae8def05303e8cd07ade5525c9c6f92c8a775498cb69e67975a19e7f13` | `8123e801db425666fefa8c5d2b532f0c9f130ecc4b59b1636fe20a5ee251add6` |
+| Browser and installer | `3f1df5134910d4c8b32e31428a668736ca8fbbc8b05e7c240865abcf6c7276d8` | `d77d63d93dc30b953cc5a8f8a8681a6c2af2fca4a4b480b86360863a1f13a8f6` |
+
+Both packs preserve all other content, including 746 maps and all 602 audio
+programs. Save policy schema 11 retains 22 inherited identities and adds both
+Fair presentation parents. Isolated raw and hosted migration fixtures preserve
+complete eligible idle checkpoints and the original primary/recovery files.
+The separate local cave review remains unchanged and was excluded from this
+release.
+
+Private and public checks matched all 74 active assets and six WASM modules.
+Desktop Chromium and mobile WebKit checked every Pokédex entry, all eight final
+detail pages, view toggles and Save/Continue. Both downloaded native clients
+passed real curl/PTY startup, painted/text transitions, Start/Pokédex input,
+F5 save, silent reinstall and installed-launcher MCP resume. The fixture player
+never moved; no campaign playthrough or player saves were used. The website's
+227 canonical responses matched the release, with real desktop/mobile filters,
+numeric search and adjacent-entry navigation.
+
+The live image is
+`sha256:72bdf3c3eb9a7c2c90d173e867e9d0bbf6775cf61744ba613699593a818246bd`.
+The installer manifest SHA-256 is
+`da6af0a49c740536b1b4f1024a6dad24df8c0178af0e630bd467964ff501675b`.
+Existing mounts and immutable downloads remain available. This command restores
+the preceding Fair presentation game and installer while this release is active:
+
+```sh
+python3 /mnt/homelab/config/geothite/releases/northstar-pokedex-order-20261124-v1/deploy.py rollback
+```
+
+The static guide retains release 47 separately under its immutable release path.
