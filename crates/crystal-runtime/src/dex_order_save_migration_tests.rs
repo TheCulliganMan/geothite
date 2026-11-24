@@ -94,7 +94,7 @@ fn dex_order_copies_exact_idle_checkpoints_and_preserves_research() -> Result<()
     ));
     std::fs::create_dir(&root)?;
     let result = (|| -> Result<()> {
-        for (index, (map, x, y)) in [("MnR10C00R00", 24, 20), ("MnStateFairgrounds", 3, 2)]
+        for (index, (map, x, y)) in [("MnR10C00R00", 24, 20), ("MnStateFairgrounds", 36, 28)]
             .into_iter()
             .enumerate()
         {
