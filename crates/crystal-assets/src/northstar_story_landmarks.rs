@@ -22,20 +22,23 @@ struct Story {
     journey_landmark_dialogue: BTreeMap<String, BTreeMap<String, Vec<AuthoredDialoguePage>>>,
 }
 
-/// Fill the missing journey scenes in an edition that predates Lakeside.
-/// A parent that already has them must contain the complete authored scenes.
+/// Fill missing journey scenes and refresh older lake-country handoffs.
+/// A Lakeside parent must already contain the other authored scenes.
 pub(super) fn complete(pack: &mut CompiledGamePack) -> Result<()> {
-    if !pack
+    let has_journey_scenes = pack
         .data
         .story_event_script_constants
         .global
-        .contains_key(SUPPER)
-    {
+        .contains_key(SUPPER);
+    if !has_journey_scenes {
         install(pack)?;
     }
     let story: Story =
         serde_json::from_str(include_str!("../../../planning/minnesota/story.json"))?;
     for (name, labels) in story.journey_landmark_dialogue {
+        if has_journey_scenes && matches!(name.as_str(), "MnBrainerd" | "MnBemidji") {
+            install_room(pack, &name, &labels)?;
+        }
         let room = pack.data.maps.get(&name).context("missing journey map")?;
         for (label, pages) in labels {
             let expected = authored_dialogue::compile(&pages)?;
@@ -84,45 +87,162 @@ pub(super) fn install(pack: &mut CompiledGamePack) -> Result<()> {
         serde_json::from_str(include_str!("../../../planning/minnesota/story.json"))?;
     northstar_lair_authoring::flag(pack, SUPPER)?;
     for (id, labels) in story.journey_landmark_dialogue {
-        let previous = pack
-            .data
-            .maps
-            .get(&id)
-            .with_context(|| format!("story map {id}"))?;
-        let mut room = previous.clone();
-        if id == HOME {
-            homecoming(&mut room)?;
-        } else if id == LOBBY {
-            registrar(&mut room)?;
+        install_room(pack, &id, &labels)?;
+    }
+    Ok(())
+}
+
+fn install_room(
+    pack: &mut CompiledGamePack,
+    id: &str,
+    labels: &BTreeMap<String, Vec<AuthoredDialoguePage>>,
+) -> Result<()> {
+    let previous = pack
+        .data
+        .maps
+        .get(id)
+        .with_context(|| format!("story map {id}"))?;
+    let mut room = previous.clone();
+    match id {
+        HOME => homecoming(&mut room)?,
+        LOBBY => registrar(&mut room)?,
+        "MnBrainerd" => ranger_handoff(&mut room)?,
+        "MnBemidji" => officer_handoff(&mut room)?,
+        _ => {}
+    }
+    for (label, pages) in labels {
+        let program = authored_dialogue::compile(pages)
+            .with_context(|| format!("native dialogue {id}/{label}"))?;
+        if let Some(old) = previous.scripts.get(label) {
+            ensure!(
+                previous.script_text_bodies.contains_key(label)
+                    && old.as_array().and_then(|rows| rows.last()) == Some(&c("done", &[])),
+                "expected ordinary finished speech at {id}/{label}"
+            );
+        } else {
+            ensure!(
+                room.scripts
+                    .values()
+                    .filter_map(Value::as_array)
+                    .flatten()
+                    .any(|row| matches!(
+                        row["command"].as_str(),
+                        Some("writetext" | "jumptext" | "jumptextfaceplayer")
+                    ) && row["args"][0] == label.as_str()),
+                "new speech must have a speaker: {id}/{label}"
+            );
         }
-        for (label, pages) in labels {
-            let program = authored_dialogue::compile(&pages)
-                .with_context(|| format!("native dialogue {id}/{label}"))?;
-            if let Some(old) = room.scripts.get(&label) {
-                ensure!(
-                    previous.script_text_bodies.contains_key(&label)
-                        && old.as_array().and_then(|rows| rows.last()) == Some(&c("done", &[])),
-                    "expected ordinary finished speech at {id}/{label}"
-                );
-            } else {
-                ensure!(
-                    room.scripts
-                        .values()
-                        .filter_map(Value::as_array)
-                        .flatten()
-                        .any(|row| row == &c("writetext", &[&label])
-                            || row == &c("jumptext", &[&label])),
-                    "new speech must have a speaker: {id}/{label}"
-                );
-            }
-            room.scripts.insert(label, program);
-        }
+        room.scripts.insert(label.clone(), program);
+    }
+    if room.scripts != previous.scripts {
         ely_league_rooms::finish(pack, &mut room)?;
-        room.script_audio_commands = parse_script_audio_commands(&id, &room.scripts)?;
-        // Dialogue publication does not normalize the original map's event table.
+        room.script_audio_commands = parse_script_audio_commands(id, &room.scripts)?;
         room.map_event_section_commands
             .clone_from(&previous.map_event_section_commands);
         authored_town_publication::replace(pack, room)?;
+    }
+    Ok(())
+}
+
+fn replace_tail(map: &mut MapModule, label: &str, last: Value, tail: Vec<Value>) -> Result<()> {
+    let script = map
+        .scripts
+        .get_mut(label)
+        .and_then(Value::as_array_mut)
+        .with_context(|| format!("{}/{label} script", map.id))?;
+    ensure!(
+        script.last() == Some(&last),
+        "unexpected handoff in {}/{label}",
+        map.id
+    );
+    script.pop();
+    script.extend(tail);
+    Ok(())
+}
+
+fn ranger_handoff(map: &mut MapModule) -> Result<()> {
+    if map.scripts.contains_key("MnFlowRangerReading") {
+        return Ok(());
+    }
+    let repeat = "MnBrainerdRangerRepeat";
+    let text = "MnBrainerdRangerRepeatText";
+    replace_tail(
+        map,
+        repeat,
+        c("jumptextfaceplayer", &[text]),
+        vec![
+            c("checkevent", &[crate::itasca_events::READING]),
+            c("iftrue", &["MnFlowRangerReading"]),
+            c("jumptextfaceplayer", &[text]),
+        ],
+    )?;
+    put(
+        map,
+        "MnFlowRangerReading",
+        vec![c("jumptextfaceplayer", &["MnFlowRangerReadingText"])],
+    );
+    let before = "MnBrainerdRangerBeforeText";
+    replace_tail(
+        map,
+        "MnBrainerdRangerBefore",
+        c("jumptextfaceplayer", &[before]),
+        vec![
+            c("checkevent", &[crate::itasca_events::READING]),
+            c("iftrue", &[repeat]),
+            c("jumptextfaceplayer", &[before]),
+        ],
+    )?;
+    for (label, text) in [
+        ("MnBrainerdRangerGift", "MnBrainerdRangerGiftText"),
+        ("MnBrainerdRangerFull", "MnBrainerdRangerFullText"),
+    ] {
+        replace_tail(
+            map,
+            label,
+            c("jumptextfaceplayer", &[text]),
+            vec![
+                c("opentext", &[]),
+                c("writetext", &[text]),
+                c("promptbutton", &[]),
+                c("closetext", &[]),
+                c("sjump", &[repeat]),
+            ],
+        )?;
+    }
+    Ok(())
+}
+
+fn officer_handoff(map: &mut MapModule) -> Result<()> {
+    if map.scripts.contains_key("MnFlowOfficerPine") {
+        return Ok(());
+    }
+    let after = "MnBemidjiReportAfter";
+    let text = "MnBemidjiReportAfterText";
+    replace_tail(
+        map,
+        after,
+        c("jumptextfaceplayer", &[text]),
+        vec![
+            c("checkflag", &["ENGINE_GLACIERBADGE"]),
+            c("iffalse", &["MnFlowOfficerPine"]),
+            c("checkevent", &["EVENT_MN_DEPOT_FOREMAN_DEFEATED"]),
+            c("iftrue", &["MnFlowOfficerNell"]),
+            c("jumptextfaceplayer", &[text]),
+        ],
+    )?;
+    for (label, text) in [
+        ("MnFlowOfficerPine", "MnFlowOfficerPineText"),
+        ("MnFlowOfficerNell", "MnFlowOfficerNellText"),
+    ] {
+        put(map, label, vec![c("jumptextfaceplayer", &[text])]);
+    }
+    for label in ["MN_BEMIDJI_OFFICER", "MnBemidjiNotebookMatch"] {
+        replace_tail(
+            map,
+            label,
+            c("jumptext", &[text]),
+            vec![c("sjump", &[after])],
+        )?;
     }
     Ok(())
 }

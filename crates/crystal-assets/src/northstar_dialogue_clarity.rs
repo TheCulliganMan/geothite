@@ -16,6 +16,9 @@ const SOUTH_TEXT: &str = "MnWTrailWardenSouthText";
 const SOUTH_CLEAR_TEXT: &str = "MnWTrailWardenSouthClearedText";
 const SOUTH_TALK: &str = "MnWTrailWardenSouthTalk";
 const SOUTH_CLEAR: &str = "MnWTrailWardenSouthCleared";
+const LOBBY: &str = "MnLeagueLobby";
+const REGISTRATION: &str = "MnElyRegistrationText";
+const PREPARATION: &str = "MnElyPrepareOutsideText";
 
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -127,8 +130,61 @@ pub fn revise_northstar_dialogue_clarity(
     }
     // A review identity must not inherit a migration policy addressed to the
     // public Fair release. Existing saves remain attached to their original pack.
+    finish_review(pack, MANIFEST)
+}
+
+/// Adds optional team advice to the Ely registrar's existing registration.
+///
+/// The advice is offered before the registration choice and is read by
+/// declining it.
+///
+/// # Errors
+/// Rejects a pack without the expected registrar branches, invalid pages,
+/// or a result that fails pack validation.
+pub fn revise_northstar_ely_preparation(
+    base: &CompiledGamePack,
+    source: &str,
+) -> Result<CompiledGamePack> {
+    const REVIEW: &str = "northstar-ely-preparation-v1";
+    crate::verify_compiled_game_pack_for_runtime(base)?;
+    ensure!(
+        !base.report.manifests.iter().any(|id| id == REVIEW),
+        "Ely preparation is already installed"
+    );
+    let lobby = base.data.maps.get(LOBBY).context("Ely League lobby")?;
+    let registration = lobby
+        .scripts
+        .get("MnElyRegister")
+        .and_then(Value::as_array)
+        .context("Ely registration script")?;
+    ensure!(
+        registration.windows(3).any(|rows| rows
+            == [
+                command("writetext", &[REGISTRATION]),
+                command("yesorno", &[]),
+                command("iffalse", &["MnElyRegistrationDeclined"]),
+            ])
+            && lobby
+                .scripts
+                .get("MnElyRegistrationDeclined")
+                .and_then(|script| script.get(1))
+                == Some(&command("writetext", &[PREPARATION])),
+        "unexpected registrar choice or decline response"
+    );
+    let source: Value = serde_json::from_str(source).context("canonical story JSON")?;
+    let pages = &source["ely_preparation_dialogue"];
+    let mut pack = base.clone();
+    for label in [REGISTRATION, PREPARATION] {
+        let authored: Vec<AuthoredDialoguePage> = serde_json::from_value(pages[label].clone())
+            .with_context(|| format!("Ely preparation pages for {label}"))?;
+        replace_text(&mut pack, LOBBY, label, &authored)?;
+    }
+    finish_review(pack, REVIEW)
+}
+
+fn finish_review(mut pack: CompiledGamePack, manifest: &str) -> Result<CompiledGamePack> {
     pack.runtime_files.remove(SAVE_POLICY);
-    pack.report.manifests.push(MANIFEST.into());
+    pack.report.manifests.push(manifest.into());
     pack.identity = crate::derive_compiled_game_pack_identity_from_manifest(
         pack.format_version,
         &pack.data,

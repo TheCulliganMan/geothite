@@ -1,0 +1,23 @@
+{
+  "map": "MnR12Cave1F",
+  "dimensions_metatiles": [20, 14],
+  "before_blocks_sha256": "426b5be5104d260ac14c19e5ba118ce1e4bfaadf051a2e5af9398168f0cdbb5a",
+  "arrivals": [[17, 22]],
+  "cameras": {"Mouth": [17, 22], "Otta shelter": [6, 5], "Elixer shelf": [12, 5], "Angler lane": [31, 11], "Spring island": [27, 16]},
+  "rows": [
+    "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e",
+    "2e 2e 04 05 06 2e 04 05 06 2e 2e 2e 2e 2e 2e 2e 04 05 06 2e",
+    "2e 04 02 02 0a 08 28 02 0a 2e 2e 2e 2e 2e 2e 04 02 02 02 0a",
+    "2e 08 02 02 05 05 02 02 22 2e 2e 2e 2e 2e 2e 08 02 02 22 2e",
+    "2e 20 21 12 21 02 02 0a 2e 2e 2e 2e 2e 04 05 02 12 0a 2e 2e",
+    "2e 2e 2e 08 02 0a 08 02 05 06 2e 04 05 02 02 02 02 02 06 2e",
+    "2e 2e 2e 20 12 02 05 02 02 02 05 05 02 27 27 3d 08 0a 2e 2e",
+    "2e 2e 2e 2e 08 02 02 02 02 02 0a 2e 08 3e 0f 0f 3d 02 0a 2e",
+    "2e 2e 2e 2e 2e 20 21 21 12 02 05 06 08 26 31 26 0f 3d 0a 2e",
+    "2e 2e 2e 2e 2e 2e 2e 04 02 02 02 02 02 26 0f 0f 0f 25 0a 2e",
+    "2e 2e 2e 2e 2e 2e 2e 08 02 02 0a 08 02 32 0f 0f 33 02 0a 2e",
+    "2e 2e 2e 2e 2e 2e 2e 20 40 22 2e 20 21 21 32 33 21 21 22 2e",
+    "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e",
+    "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e"
+  ]
+}

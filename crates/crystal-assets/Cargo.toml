@@ -35,6 +35,10 @@ name = "pack_floodwatch"
 required-features = ["pack-authoring"]
 
 [[example]]
+name = "pack_northstar_iron_wayfinding"
+required-features = ["pack-authoring"]
+
+[[example]]
 name = "pack_trainer_portraits"
 required-features = ["pack-authoring"]
 
@@ -114,6 +118,10 @@ required-features = ["pack-authoring"]
 name = "pack_outdoor_contours"
 required-features = ["pack-authoring"]
 
+[[example]]
+name = "pack_northstar_casey_field"
+required-features = ["pack-authoring"]
+
 [dev-dependencies]
 crystal-core = { workspace = true, features = ["test-fixtures"] }
 
@@ -151,6 +159,10 @@ required-features = ["pack-authoring"]
 
 [[bin]]
 name = "pack_river_terrace"
+required-features = ["pack-authoring"]
+
+[[bin]]
+name = "pack_r11_bluff_and_shoal"
 required-features = ["pack-authoring"]
 
 [[bin]]

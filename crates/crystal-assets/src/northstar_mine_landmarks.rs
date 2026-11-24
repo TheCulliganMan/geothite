@@ -3,9 +3,12 @@ use std::collections::btree_map::Entry;
 use std::collections::{BTreeMap, BTreeSet};
 
 use anyhow::{Context, Result, ensure};
+use crystal_core::map::BackgroundEvent;
 use serde::Deserialize;
+use serde_json::json;
 
 use crate::authored_town_publication;
+use crate::grand_marais_modpack::authoring;
 use crate::{CompiledGamePack, MapModule};
 
 #[derive(Deserialize)]
@@ -22,6 +25,22 @@ struct Junction {
 struct Fixture {
     palette: u8,
     rows: [String; 16],
+}
+
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct Approach {
+    map: String,
+    plates: Vec<ApproachPlate>,
+}
+
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct ApproachPlate {
+    tile: [u16; 3],
+    kind: String,
+    shaft: Option<[u16; 2]>,
+    lines: Vec<String>,
 }
 
 #[derive(Clone, PartialEq)]
@@ -121,6 +140,7 @@ fn revise(
     pack: &mut CompiledGamePack,
     spec: &Junction,
     art: &BTreeMap<String, Fixture>,
+    plates: &[ApproachPlate],
 ) -> Result<()> {
     let mut room = pack.data.maps.get(&spec.map).context("mine room")?.clone();
     let name = &room.attributes.tileset_name;
@@ -212,7 +232,7 @@ fn revise(
                     }
                     "LADDER"
                 }
-                "rail" => "FLOOR",
+                "rail" | "sump" | "vent" | "gallery" => "FLOOR",
                 "pump" | "pipe" | "fan" => "WALL",
                 _ => anyhow::bail!("unknown mine fixture {kind}"),
             };
@@ -274,7 +294,77 @@ fn revise(
         format!("data/tilesets/{name}_palette_map.json"),
         serde_json::to_vec(&def.palette_map)?,
     );
+    if !plates.is_empty() {
+        add_approach_signs(pack, &mut room, plates)?;
+    }
     authored_town_publication::replace(pack, room)
+}
+
+fn add_approach_signs(
+    pack: &CompiledGamePack,
+    room: &mut MapModule,
+    plates: &[ApproachPlate],
+) -> Result<()> {
+    let mut scripts = BTreeMap::new();
+    for plate in plates {
+        let [x, y, _] = plate.tile;
+        let target = match plate.kind.as_str() {
+            "sump" => "MN_IRON_SUMP",
+            "vent" => "MN_IRON_VENTILATION",
+            "gallery" => "MN_IRON_PUMP_GALLERY",
+            kind => anyhow::bail!("unknown mine plate {kind}"),
+        };
+        if let Some([sx, sy]) = plate.shaft {
+            ensure!(
+                x.abs_diff(sx) + y.abs_diff(sy) == 1
+                    && room.events.warps.iter().any(|warp| {
+                        (warp.x, warp.y) == (sx, sy) && warp.target_map_constant == target
+                    }),
+                "incorrect ladder destination for {} plate at {x}, {y}",
+                room.id
+            );
+        }
+        ensure!(
+            !room.events.warps.iter().any(|e| (e.x, e.y) == (x, y))
+                && !room
+                    .events
+                    .coord_events
+                    .iter()
+                    .any(|e| (e.x, e.y) == (x, y))
+                && !room.events.bg_events.iter().any(|e| (e.x, e.y) == (x, y))
+                && !room.objects.iter().any(|e| (e.x, e.y) == (x, y)),
+            "occupied mine plate position in {} at {x}, {y}",
+            room.id
+        );
+        let script = format!("{}ApproachPlate{x}_{y}", room.id);
+        let label = format!("{script}Text");
+        ensure!(
+            !pack.data.map_scripts.contains_key(&script)
+                && !pack.data.map_scripts.contains_key(&label),
+            "existing mine plate script {script}"
+        );
+        let lines: Vec<_> = plate.lines.iter().map(String::as_str).collect();
+        authoring::text(room, &label, &lines);
+        let body = room.scripts.remove(&label).context("mine plate text")?;
+        scripts.insert(label.clone(), body);
+        scripts.insert(
+            script.clone(),
+            json!([authoring::command("jumptext", &[&label])]),
+        );
+        room.events.bg_events.push(BackgroundEvent {
+            x,
+            y,
+            event_type: "BGEVENT_READ".into(),
+            script,
+        });
+    }
+    room.script_text_commands
+        .extend(crate::parse_script_text_commands(&room.id, &scripts)?);
+    room.script_text_bodies
+        .extend(crate::parse_script_text_bodies(&room.id, &scripts)?);
+    room.scripts.extend(scripts);
+    authoring::refresh_event_section(room);
+    Ok(())
 }
 
 // Compare the closed and open crosscut using production movement rules. In
@@ -335,7 +425,60 @@ pub(super) fn install(pack: &mut CompiledGamePack) -> Result<()> {
         .context("previous haulage working")?
         .clone();
     for room in &rooms {
-        revise(pack, room, &art)?;
+        revise(pack, room, &art, &[])?;
     }
     verify_discharge(pack, &before, &pack.data.maps["MnIronHaulage"])
+}
+
+/// Builds an isolated Iron Range wayfinding preview from either released Fair
+/// Presentation edition. The preview uses its own save identity.
+///
+/// # Errors
+/// Rejects unexpected parent content, conflicting terrain or events, exhausted
+/// native art banks, or a result that fails runtime pack validation.
+pub fn revise_northstar_iron_wayfinding(base: &CompiledGamePack) -> Result<CompiledGamePack> {
+    ensure!(
+        matches!(
+            base.identity()?.content_hash.as_str(),
+            "d09a77f306578627e661a0811d2bacc12d22552e5e84041e0f002f6635db46c2"
+                | "d03e25c72b2852c6c87e31924a7c2467f35f51469a7fc7e327370f7a84676a3e"
+        ),
+        "expected a released Fair Presentation edition"
+    );
+    let approaches: Vec<Approach> = serde_json::from_str(include_str!(
+        "../../../planning/minnesota/caves/iron-mine-junctions-v01/approach-plates.json"
+    ))?;
+    let art = serde_json::from_str(include_str!(
+        "../../../planning/minnesota/caves/iron-mine-junctions-v01/approach-art.json"
+    ))?;
+    let mut pack = base.clone();
+    for approach in approaches {
+        let mut spec = Junction {
+            map: approach.map,
+            fixtures: BTreeMap::new(),
+            bank: Vec::new(),
+        };
+        for plate in &approach.plates {
+            spec.fixtures
+                .entry(plate.kind.clone())
+                .or_default()
+                .push(plate.tile);
+        }
+        revise(&mut pack, &spec, &art, &approach.plates)?;
+    }
+    // The published migration policy is addressed to the Fair Presentation ID.
+    pack.runtime_files
+        .remove("data/northstar-save-compatibility.json");
+    pack.report
+        .manifests
+        .push("northstar-iron-wayfinding-preview-v1".into());
+    pack.identity = crate::derive_compiled_game_pack_identity_from_manifest(
+        pack.format_version,
+        &pack.data,
+        &pack.audio_manifest,
+        &pack.runtime_files,
+        &pack.report,
+    )?;
+    crate::verify_compiled_game_pack_for_runtime(&pack)?;
+    Ok(pack)
 }

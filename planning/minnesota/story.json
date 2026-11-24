@@ -2533,6 +2533,82 @@
       ]
     }
   },
+  "ely_preparation_dialogue": {
+    "MnElyRegistrationText": [
+      [
+        "REGISTRAR: Ready?",
+        "Four wins, then"
+      ],
+      [
+        "CASEY. No nurse",
+        "past this door."
+      ],
+      [
+        "For team advice,",
+        "choose NO."
+      ],
+      [
+        "Lose or return",
+        "here and your run"
+      ],
+      [
+        "ends. Register?"
+      ]
+    ],
+    "MnElyPrepareOutsideText": [
+      [
+        "REGISTRAR: Heal at",
+        "the clinic first."
+      ],
+      [
+        "Stock REVIVES and",
+        "HYPER POTIONS."
+      ],
+      [
+        "The MART is south,",
+        "on the other path."
+      ],
+      [
+        "GREYTAG can't hit",
+        "a GHOST type."
+      ],
+      [
+        "Try DOUBLEHEX in",
+        "ROUTE 13 grass at"
+      ],
+      [
+        "night, just north",
+        "of ELY."
+      ],
+      [
+        "For TACONARCH,",
+        "bring EARTHQUAKE."
+      ],
+      [
+        "PRAIRONDO learns",
+        "it at level 48."
+      ],
+      [
+        "Farther north,",
+        "look for WAYWOLF"
+      ],
+      [
+        "in ROUTE 13 grass."
+      ],
+      [
+        "Save THUNDERBOLT",
+        "for MUSKETUNGE."
+      ],
+      [
+        "CANALARM learns",
+        "it at level 37."
+      ],
+      [
+        "Try ROUTE 10's",
+        "cave by day."
+      ]
+    ]
+  },
   "dialogue_overhaul": {
     "schema_version": 1,
     "id": "northstar-dialogue-overhaul-v1",
@@ -61146,48 +61222,103 @@
         ],
         [
           "Here's my reading.",
-          "Check LAKE ITASCA"
+          "The ITASCA gauge"
         ],
         [
-          "on the same date.",
-          "Go north through"
+          "has marks for",
+          "that same date."
+        ]
+      ],
+      "MnBrainerdRangerFullText": [
+        [
+          "Come back for SURF",
+          "with TM/HM space."
+        ]
+      ],
+      "MnBrainerdRangerGiftText": [
+        [
+          "Take HM SURF.",
+          "The CAPITOL BADGE"
         ],
         [
-          "LEECH LAKE, then",
-          "west from BEMIDJI."
+          "lets a partner",
+          "carry you afloat."
         ]
       ],
       "MnBrainerdRangerRepeatText": [
         [
-          "RANGER: North to",
-          "BEMIDJI, then west"
+          "Take LEECH LAKE's",
+          "trail to BEMIDJI."
         ],
         [
-          "to ITASCA."
+          "Go west to ITASCA.",
+          "Read the gauge."
         ],
         [
-          "Copy the mark",
-          "for my date."
+          "Show the reading",
+          "to the officer."
+        ]
+      ],
+      "MnFlowRangerReadingText": [
+        [
+          "You have the date",
+          "from ITASCA?"
         ],
         [
-          "Bring it back to",
-          "BEMIDJI's officer."
+          "Show BEMIDJI's",
+          "officer the marks."
         ]
       ]
     },
     "MnBemidji": {
+      "MN_BEMIDJI_OFFICERText": [
+        [
+          "HALE's readings",
+          "don't add up."
+        ]
+      ],
       "MnBemidjiNeedReadingText": [
         [
-          "OFFICER: I need",
-          "ITASCA's readings"
+          "Go west to ITASCA.",
+          "Copy the readings"
         ],
         [
-          "to check HALE's.",
-          "Go west. Copy the"
+          "by the footbridge.",
+          "Bring them to me."
+        ]
+      ],
+      "MnBemidjiReportAfterText": [
+        [
+          "Go east to the",
+          "ROUTE 09 mine."
         ],
         [
-          "date and marks",
-          "at the headwaters."
+          "Show the foreman",
+          "my signed report."
+        ]
+      ],
+      "MnFlowOfficerPineText": [
+        [
+          "Your report's",
+          "signed. See ORLIS"
+        ],
+        [
+          "at the BEMIDJI GYM",
+          "for a PINE BADGE."
+        ],
+        [
+          "Take both to the",
+          "mine east of town."
+        ]
+      ],
+      "MnFlowOfficerNellText": [
+        [
+          "Speak to NELL by",
+          "the mine stairs."
+        ],
+        [
+          "She'll know where",
+          "to find the meter."
         ]
       ]
     },

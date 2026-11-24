@@ -9,6 +9,36 @@ Use the current composition path for new publications. Later source changes
 need their own pack verification. Historical fixtures do not establish an
 uninterrupted ordinary-party campaign.
 
+## Casey preparation
+
+Choose **No** at the registrar to read the team advice before entering.
+Doublehex appears in the first stretch of Route 13 north of Ely at night
+at level 43 (30% of grass encounters) and is immune to Greytag's attacks.
+Prairondo learns Earthquake at level 48. Waywolf, an alternative for a party
+without Prairondo, appears farther north on Route 13 at level 48 (4%) and
+learns the move at level 41. Canalarm appears at level 37 in Route 10's cave
+by day (30%) and learns Thunderbolt at that level. A challenger can train it
+and reserve Thunderbolt for Musketunge. Ely's Hyper Potions cost ₽1,200 each
+and Revives cost ₽1,500.
+
+In isolated matches against the Fair presentation lineup, a Pouchid party
+with Prairondo and a Kindlit party with Waywolf each defeated Casey once in
+three attempts, with three partners standing in both wins. Both parties
+brought Doublehex and level-47 Canalarm. The fixtures started at Casey with
+the eight badges, six Gold Berries, six Hyper Potions, six Revives and three
+Full Heals. They used the published terminal client's ordinary fight, switch
+and bag inputs. The two wins spent ₽10,200 and ₽9,600 in Ely medicine,
+respectively. These attempts establish counterplay at Casey's door.
+
+Apply the dialogue locally to a Fair presentation pack with the review
+builder and a fresh ignored output path.
+
+```sh
+cargo run --locked -p crystal-assets --bin revise_northstar_dialogue_clarity -- \
+  --ely-preparation PARENT.crystalpack planning/minnesota/story.json \
+  target/ely-preparation.crystalpack
+```
+
 ## Historical chapter record
 
 The [written League finale](../revisions/league-finale-v01/README.md) adds

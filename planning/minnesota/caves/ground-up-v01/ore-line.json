@@ -1,0 +1,38 @@
+{
+  "map": "MnR10Cave1F",
+  "dimensions_metatiles": [24, 18],
+  "before_blocks_sha256": "50d308c1187c11c9e05cd5b216f15efec10991d845f8d24ab98f75531c102095",
+  "arrivals": [[3, 12]],
+  "cameras": {
+    "Ladder and survey split": [7, 12],
+    "Upper ore spine": [19, 8],
+    "Spring bank": [34, 25],
+    "Fracture ledge": [42, 13]
+  },
+  "drops": [
+    {"from": [14, 16], "to": [14, 18]},
+    {"from": [15, 16], "to": [15, 18]},
+    {"from": [42, 16], "to": [42, 18]},
+    {"from": [43, 16], "to": [43, 18]}
+  ],
+  "rows": [
+    "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e",
+    "2e 2e 2e 04 05 06 2e 04 05 06 2e 04 05 05 06 2e 2e 2e 2e 2e 2e 2e 2e 2e",
+    "2e 2e 2e 08 02 0a 2e 08 02 02 05 02 02 2b 0a 2e 04 05 02 02 43 46 48 2e",
+    "2e 2e 2e 20 30 22 2e 08 02 02 02 02 0a 08 02 05 02 0a 2e 2e 44 47 0a 2e",
+    "2e 2e 2e 04 02 05 06 20 21 21 12 02 02 02 02 0a 2e 2e 05 06 04 02 02 06",
+    "2e 2e 04 02 02 02 0a 2e 2e 04 05 02 21 21 21 02 02 02 02 0a 08 02 28 0a",
+    "2e 07 02 02 02 0a 2e 2e 04 02 02 0a 2e 2e 2e 08 02 02 02 0a 20 02 02 22",
+    "2e 2e 20 21 02 21 21 02 02 02 0a 2e 2e 04 05 02 02 06 2e 2e 2e 08 22 2e",
+    "2e 2e 2e 2e 08 02 02 39 21 02 0a 2e 2e 08 02 02 0a 2e 3e 3d 2e 39 2e 2e",
+    "2e 2e 2e 2e 20 21 0a 02 05 02 0a 2e 04 02 02 02 0a 3e 0f 25 45 2b 2e 2e",
+    "2e 2e 2e 2e 2e 2e 08 02 02 02 02 05 02 02 02 02 02 26 0f 25 0a 2e 2e 2e",
+    "2e 2e 2e 2e 2e 2e 20 21 21 21 21 22 2e 08 02 02 02 3e 0f 25 0a 2e 2e 2e",
+    "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 08 02 02 02 26 0f 33 0a 2e 2e 2e",
+    "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 20 21 02 02 32 33 02 0a 2e 2e 2e",
+    "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 20 02 02 02 02 02 0a 2e 2e",
+    "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 20 21 21 21 21 22 2e 2e",
+    "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e",
+    "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e"
+  ]
+}

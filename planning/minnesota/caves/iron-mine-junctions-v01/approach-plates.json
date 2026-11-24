@@ -1,0 +1,33 @@
+[
+  {
+    "map": "MnIronHaulage",
+    "plates": [
+      {"tile": [7, 5, 70], "kind": "sump", "shaft": [7, 4], "lines": ["Sump", "West basin"]},
+      {"tile": [29, 21, 13], "kind": "sump", "shaft": [29, 22], "lines": ["Sump", "East basin"]},
+      {"tile": [27, 5, 70], "kind": "vent", "shaft": [27, 4], "lines": ["Ventilation", "West landing"]},
+      {"tile": [13, 13, 70], "kind": "vent", "shaft": [13, 12], "lines": ["Ventilation", "East landing"]}
+    ]
+  },
+  {
+    "map": "MnIronVentilation",
+    "plates": [
+      {"tile": [5, 19, 13], "kind": "sump", "shaft": [5, 20], "lines": ["Sump", "West basin"]},
+      {"tile": [29, 5, 70], "kind": "sump", "shaft": [29, 4], "lines": ["Sump", "East basin"]}
+    ]
+  },
+  {
+    "map": "MnIronSump",
+    "plates": [
+      {"tile": [9, 5, 70], "kind": "vent", "shaft": [9, 4], "lines": ["Ventilation", "West landing"]},
+      {"tile": [25, 11, 70], "kind": "vent", "shaft": [25, 10], "lines": ["Ventilation", "East landing"]},
+      {"tile": [32, 8, 13], "kind": "gallery", "lines": ["Pump Gallery", "Beyond the shutter"]},
+      {"tile": [35, 5, 71], "kind": "gallery", "shaft": [35, 4], "lines": ["Pump Gallery", "Ladder down"]}
+    ]
+  },
+  {
+    "map": "MnIronPumpGallery",
+    "plates": [
+      {"tile": [5, 17, 13], "kind": "sump", "shaft": [5, 18], "lines": ["Sump", "Ladder up"]}
+    ]
+  }
+]

@@ -1,3 +1,30 @@
+# Bluff passage and Split Rock Shoal
+
+The middle cape's spur passes between staggered basalt faces before the
+existing grass saddle. At Split Rock, a sign on the apron east of the
+lighthouse points to a short optional Surf crossing. The shoal has a dry
+landing, stone steps to its crown, and a sign pointing back to the mainland.
+The Duluth–Grand Marais overland connection, lighthouse doors and mooring-ring
+Ultra Ball are inherited from the parent.
+
+[The exterior overlay](MN_R11.bluff-and-shoal.json) lists local metatile
+coordinates with expected and replacement block IDs. Sign coordinates are in
+local walking tiles. Apply it as a separate revision to a verified compact
+Minnesota pack with the matching terrain preimages.
+
+```sh
+cargo run --locked -p crystal-assets --bin pack_r11_bluff_and_shoal -- \
+  "$BASE" target/r11-bluff-and-shoal.crystalpack
+```
+
+The compiled Fair presentation baseline and the overlay were checked using
+the packed collision table, reciprocal connections, warp destinations and
+daytime source-pixel renders. Both towns remain connected on foot. The
+mainland launch is `(59, 4)` in `MnR11C00R02`. Its adjacent Water connects
+across the route seams to the shoal's `(10, 46)` landing in `MnR11C01R01`.
+The crown has a dry return to that landing and a Water route back to the same
+mainland apron.
+
 # Current installed warm grass revision, 2026-10-28
 
 [Selected R11 review](../revisions/route-grass-v01/current-r11-v01/README.md) adds8grass metatiles and1attached boulder on the705-map current game. Birch and Lester climbs require grass with dry downhill returns; Stoney is shared four-step habitat. Nine fresh native cases,15clean stdio calls,759preservation checks and377audio programs pass. North Shore remains on mn_north_shore with zeroICE, including scripted changes. All earlier pack/dimension claims below are historical.

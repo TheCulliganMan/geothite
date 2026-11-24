@@ -5,10 +5,78 @@ use anyhow::{Context, Result, ensure};
 use serde_json::Value;
 
 use super::{
-    Revision, SAVE_POLICY, SOUTH_CLEAR_TEXT, SOUTH_TALK, SOUTH_TEXT,
-    revise_northstar_dialogue_clarity,
+    LOBBY, PREPARATION, REGISTRATION, Revision, SAVE_POLICY, SOUTH_CLEAR_TEXT, SOUTH_TALK,
+    SOUTH_TEXT, revise_northstar_dialogue_clarity, revise_northstar_ely_preparation,
 };
 use crate::authored_dialogue::{self, AuthoredDialoguePage};
+
+#[test]
+#[ignore = "requires CRYSTAL_ELY_PREPARATION_PARENT"]
+fn ely_preparation_only_replaces_the_registrar_text() -> Result<()> {
+    let path = std::env::var_os("CRYSTAL_ELY_PREPARATION_PARENT").context("external Fair pack")?;
+    let base = crate::read_verified_compiled_game_pack(path)?;
+    let roster = crate::northstar_regional_roster::RegionalRoster::current()?;
+    for species in ["DOUBLEHEX", "PRAIRONDO", "WAYWOLF", "CANALARM"] {
+        assert!(roster.allowed.contains(species), "{species} must be active");
+    }
+    for (map, species, night) in [
+        ("MnR13C00R02", "DOUBLEHEX", true),
+        ("MnR13C00R00", "WAYWOLF", false),
+        ("MnR10Cave1F", "CANALARM", false),
+    ] {
+        let grass = base.data.wild_encounters[map]
+            .grass
+            .as_ref()
+            .with_context(|| format!("missing encounters at {map}"))?;
+        let table = if night { &grass.night } else { &grass.day };
+        assert!(table.iter().any(|entry| entry.species == species));
+    }
+    for (species, level, move_id) in [
+        ("PRAIRONDO", 48, "EARTHQUAKE"),
+        ("WAYWOLF", 41, "EARTHQUAKE"),
+        ("CANALARM", 37, "THUNDERBOLT"),
+    ] {
+        assert!(
+            base.data.learnsets[species]
+                .iter()
+                .any(|(learned_at, known)| *learned_at == level && known == move_id),
+            "{species} should learn {move_id} at {level}"
+        );
+    }
+    let source = include_str!("../../../planning/minnesota/story.json");
+    let revised = revise_northstar_ely_preparation(&base, source)?;
+    let json: Value = serde_json::from_str(source)?;
+    let mut normalized = revised.data.clone();
+    let lobby = normalized.maps.get_mut(LOBBY).context("Ely League lobby")?;
+    let original = &base.data.maps[LOBBY];
+    for label in [REGISTRATION, PREPARATION] {
+        let pages: Vec<AuthoredDialoguePage> =
+            serde_json::from_value(json["ely_preparation_dialogue"][label].clone())?;
+        let expected = authored_dialogue::compile(&pages)?;
+        assert_eq!(lobby.scripts[label], expected);
+        assert_eq!(normalized.map_scripts[label], expected);
+        let programs = std::collections::BTreeMap::from([(label.to_owned(), expected)]);
+        assert_eq!(
+            lobby.script_text_bodies[label],
+            crate::parse_script_text_bodies(LOBBY, &programs)?[label]
+        );
+        lobby
+            .scripts
+            .insert(label.into(), original.scripts[label].clone());
+        lobby
+            .script_text_bodies
+            .insert(label.into(), original.script_text_bodies[label].clone());
+        normalized
+            .map_scripts
+            .insert(label.into(), base.data.map_scripts[label].clone());
+    }
+    assert!(
+        normalized == base.data,
+        "changed data outside the two text bodies"
+    );
+    assert_eq!(revised.audio_manifest, base.audio_manifest);
+    Ok(())
+}
 
 #[test]
 #[ignore = "requires CRYSTAL_DIALOGUE_CLARITY_PARENT"]

@@ -59,6 +59,38 @@ pub(crate) fn compile(
             && field.palette_rgb555 == battle.palette_rgb555,
         "matching native NPC identity and palette required"
     );
+    let mut files = encode_field(stem, &battle.palette_rgb555, &field.overworld_frames)?;
+    let front = pixels(&battle.battle_rows, 56)?;
+    files.insert(
+        format!("gfx/trainers/{stem}.png"),
+        png_rgb(56, 56, &colored(&front, battle.palette_rgb555))?,
+    );
+    files.insert(
+        format!("gfx/trainers/{stem}.2bpp"),
+        bitplanes(&front, 56, 56),
+    );
+    files.insert(
+        format!("gfx/trainers/{stem}.gbcpal"),
+        files[&format!("gfx/sprites/{stem}.gbcpal")].clone(),
+    );
+    crate::minnesota_trainers::verify_original_npc_bundle(&files, stem)?;
+    Ok(files)
+}
+
+pub(crate) fn compile_field(
+    stem: &str,
+    palette: &[u16; 4],
+    source: &str,
+) -> Result<BTreeMap<String, Vec<u8>>> {
+    let frames: Vec<NativeFrame> = serde_json::from_str(source)?;
+    encode_field(stem, palette, &frames)
+}
+
+fn encode_field(
+    stem: &str,
+    palette: &[u16; 4],
+    frames: &[NativeFrame],
+) -> Result<BTreeMap<String, Vec<u8>>> {
     let mut bank = Vec::new();
     let poses = [
         "down_idle",
@@ -68,11 +100,8 @@ pub(crate) fn compile(
         "up_step",
         "left_step",
     ];
-    ensure!(
-        field.overworld_frames.len() == poses.len(),
-        "six native NPC poses required"
-    );
-    for (frame, pose) in field.overworld_frames.iter().zip(poses) {
+    ensure!(frames.len() == poses.len(), "six native NPC poses required");
+    for (frame, pose) in frames.iter().zip(poses) {
         ensure!(frame.pose == pose, "wrong native NPC pose order");
         let frame_pixels = pixels(&frame.rows, 16)?;
         ensure!(
@@ -88,7 +117,6 @@ pub(crate) fn compile(
             "identical native NPC walking pair"
         );
     }
-    let front = pixels(&battle.battle_rows, 56)?;
     let grayscale = bank
         .iter()
         .map(|ink| {
@@ -96,30 +124,18 @@ pub(crate) fn compile(
             [value, value, value, if *ink == 0 { 0 } else { 255 }]
         })
         .collect::<Vec<_>>();
-    let palette = battle.palette_rgb555;
     let palette_bytes = palette
         .iter()
         .flat_map(|ink| ink.to_le_bytes())
         .collect::<Vec<_>>();
-    let files = BTreeMap::from([
+    Ok(BTreeMap::from([
         (
             format!("gfx/sprites/{stem}.png"),
             png_rgba(16, 96, &grayscale)?,
         ),
         (format!("gfx/sprites/{stem}.2bpp"), bitplanes(&bank, 16, 96)),
-        (format!("gfx/sprites/{stem}.gbcpal"), palette_bytes.clone()),
-        (
-            format!("gfx/trainers/{stem}.png"),
-            png_rgb(56, 56, &colored(&front, palette))?,
-        ),
-        (
-            format!("gfx/trainers/{stem}.2bpp"),
-            bitplanes(&front, 56, 56),
-        ),
-        (format!("gfx/trainers/{stem}.gbcpal"), palette_bytes),
-    ]);
-    crate::minnesota_trainers::verify_original_npc_bundle(&files, stem)?;
-    Ok(files)
+        (format!("gfx/sprites/{stem}.gbcpal"), palette_bytes),
+    ]))
 }
 
 #[cfg(test)]

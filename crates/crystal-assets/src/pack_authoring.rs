@@ -109,6 +109,7 @@ mod northstar_mille_lacs_erratic;
 mod northstar_park_passage;
 mod northstar_route_passages;
 mod northstar_mine_landmarks;
+pub use northstar_mine_landmarks::revise_northstar_iron_wayfinding;
 mod northstar_northern_rockfall;
 mod northstar_small_water_caves;
 mod northstar_trail_caches;
@@ -131,6 +132,8 @@ pub use northstar_campaign_quality::revise_campaign_quality;
 mod northstar_basin_controls;
 mod northstar_cave_journey;
 mod northstar_northern_trails;
+mod northstar_casey_field;
+pub use northstar_casey_field::build_northstar_casey_field;
 mod northstar_champion_invitation;
 mod northstar_fair_approach;
 mod northstar_league_and_fair;
@@ -698,6 +701,8 @@ mod r08_shore_grass;
 mod r09_southwest_grass;
 mod r10_neck_grass;
 mod r11_upper_grass;
+mod r11_bluff_and_shoal;
+pub use r11_bluff_and_shoal::build_r11_bluff_and_shoal_pack;
 mod r13_pine_grass;
 pub use north_shore_footbridges::rebuild_north_shore_footbridges;
 pub use north_shore_passing_width::rebuild_north_shore_passing_width;
@@ -1119,7 +1124,9 @@ pub use northstar_title::{NORTHSTAR_TITLE_IMAGE, build_northstar_title};
 mod northstar_intro_polish;
 pub use northstar_intro_polish::polish_northstar_intro;
 mod northstar_dialogue_clarity;
-pub use northstar_dialogue_clarity::revise_northstar_dialogue_clarity;
+pub use northstar_dialogue_clarity::{
+    revise_northstar_dialogue_clarity, revise_northstar_ely_preparation,
+};
 mod minnesota_daycares;
 #[cfg(test)]
 mod minnesota_daycares_tests;
