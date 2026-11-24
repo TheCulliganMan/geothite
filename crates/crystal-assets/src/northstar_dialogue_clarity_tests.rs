@@ -39,7 +39,7 @@ fn ely_preparation_only_replaces_the_registrar_text() -> Result<()> {
         assert!(
             base.data.learnsets[species]
                 .iter()
-                .any(|(learned_at, known)| *learned_at == level && known == move_id),
+                .any(|entry| entry.0 == level && entry.1 == move_id),
             "{species} should learn {move_id} at {level}"
         );
     }
