@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "builder": "pack_northstar_cave_detail",
+  "parent_pack": "content-packs/minnesota-cave-wall-finish-v03.crystalpack",
+  "parent_pack_sha256": "1ecebbb76c5410ca3d1adf91173d98795481067078f0689d3c999da1f3f923a6",
+  "source_directory": "planning/minnesota/caves/crystal-detail-v04",
+  "source_sha256": {
+    "south.json": "3047d517440ee91ae490143af66ec32c4987182915a663f474fba568969310c2",
+    "south-art.json": "ad755a9e3e0396f30e00efe1062f755a2328a50c647149b5a9674c59c4c4f25a",
+    "north.json": "9c945816e63a9eb089ae2dbd7d9fa1fba4c80d2cf11327d10e5b9fddc7f6c3e2",
+    "north-art.json": "0df8b2a16d680fe88d822ebb4aa5ec9a8570956cba9994d3eaad65551771f9bd",
+    "mines.json": "0b7d9f235b1647f7e0589fc8a7ec082a33bc8bdba91b24cd0b77834ad7fdb173",
+    "mines-art.json": "057d02163c825acd4fff4e47abc7dfbd995542280d6315d336e3c09c52c6eba7",
+    "ice.json": "06f699d2193e14e0c438adfd51127c3199537ee54c6029d4a080818e805d3ccb",
+    "ice-art.json": "5949a082a08c1b3d7ee4a2075f5bbb7ef8603b5f7fcac23d1fa63079b0e347cf"
+  },
+  "output_pack": "content-packs/minnesota-cave-detail-v04.crystalpack",
+  "expected_pack_sha256": "992922e43714d91121c1d9887a2cfa94b7fd300d6afb7efe498aead1889eba48",
+  "expected_content_hash": "768c0244886c6ecdc609336c04409d21b27941aea90175d943440a7166090440"
+}

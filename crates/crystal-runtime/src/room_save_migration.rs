@@ -35,6 +35,13 @@ pub(crate) enum ArrivalSurface {
 }
 
 impl RoomReentry {
+    pub(crate) fn arrival(&self, map_name: &str) -> Option<(TilePosition, Direction)> {
+        self.maps
+            .iter()
+            .find(|entry| entry.map_id == map_name)
+            .map(|entry| (entry.arrival, entry.facing))
+    }
+
     pub(crate) fn validate_metadata(&self, policy: &str, allowed_maps: &[&str]) -> Result<()> {
         ensure!(self.policy == policy, "unsupported room reentry policy");
         ensure!(

@@ -34,7 +34,7 @@ def bound(binding):
     return json.loads(path.read_text())
 
 
-def owner(index, name):
+def owner(index, name, wall_edges):
     for field in ['current_native_layouts', 'current_caves', 'current_story_floors',
                   'current_ice_caves', 'current_discovery_sites']:
         binding = index.get(field, {}).get(name)
@@ -51,6 +51,17 @@ def owner(index, name):
             rows = spec['rows']
         else:
             spec, rows = source, source['rows']
+        if finish := binding.get('wall_finish'):
+            blocks = [line.split() for line in rows]
+            for line in blocks:
+                for x, block in enumerate(line):
+                    if block == finish['from']:
+                        line[x] = finish['to']
+            for edit in wall_edges.pop(name, []):
+                x, y = edit['at']
+                assert blocks[y][x] == edit['from'], ('wall finish preimage', name, x, y)
+                blocks[y][x] = edit['to']
+            rows = [' '.join(line) for line in blocks]
         return dict(binding), deepcopy(rows), spec['dimensions_metatiles'], field
     # The regional mine adds a story-gated shaft to the original terrain.
     # Keep that explicit overlay; never restore its old unguarded floor merely
@@ -67,6 +78,10 @@ def owner(index, name):
 
 def inspect(pack, index):
     maps = pack['data']['maps']
+    wall_edges = {}
+    for binding in index.get('wall_finish_edges', []):
+        for room in bound(binding):
+            wall_edges.setdefault(room['map'], []).extend(room['edits'])
     expected = (set(index['current_caves']) | set(index['current_ice_caves'])
                 | KNOWN_MINES | {'MnR09Cave1F'}
                 | {name for name, binding in index['current_native_layouts'].items()
@@ -82,7 +97,7 @@ def inspect(pack, index):
             assert cave or mine, ('cave classification changed', name)
         if not name.startswith('Mn') or not (cave or mine):
             continue
-        binding, rows, dimensions, role = owner(index, name)
+        binding, rows, dimensions, role = owner(index, name, wall_edges)
         assert dimensions == [attrs['width'], attrs['height']], ('cave dimensions', name)
         assert len(rows) == attrs['height'] and all(len(row.split()) == attrs['width'] for row in rows)
         assert [int(b, 16) for row in rows for b in row.split()] == module['blocks'], ('cave rows', name)
@@ -111,20 +126,24 @@ def inspect(pack, index):
                           hidden_item_or_read_posts=len(module['events']['bg_events']),
                           authored_links=links))
     assert expected <= {r['map'] for r in rooms}, 'include every source-owned cave and rock mine'
+    assert not wall_edges, ('unused wall edits', sorted(wall_edges))
     return rooms
 
 
 def main():
     cli = argparse.ArgumentParser(description=__doc__)
     cli.add_argument('--output', type=Path, required=True)
+    cli.add_argument('--revision', help='defaults to the selected local review revision')
     args = cli.parse_args()
     assert not args.output.exists(), 'retain all earlier review epochs'
     world_path = ROOT / 'planning/minnesota/world.json'
     world = json.loads(world_path.read_text())
-    revision = world[world['active_local_review_revision']]
-    pack_path, index_path = ROOT / revision['pack'], ROOT / revision['authoring_source_index']
+    revision_name = args.revision or world['active_local_review_revision']
+    revision = world[revision_name]
+    index_key = 'cave_source_index' if 'cave_source_index' in revision else 'authoring_source_index'
+    pack_path, index_path = ROOT / revision['pack'], ROOT / revision[index_key]
     assert sha(pack_path) == revision['pack_sha256']
-    assert sha(index_path) == revision['authoring_source_index_sha256']
+    assert sha(index_path) == revision[f'{index_key}_sha256']
     inputs = {str(path): sha(path) for path in [world_path, pack_path, index_path]}
     index = json.loads(index_path.read_text())
     pack = load_pack(pack_path)
@@ -139,9 +158,10 @@ def main():
         sheet.append((name + ' — ' + room['environment'], image))
     save_render(room_sheet(sheet, columns=3), args.output / 'all-current-caves-and-mines-original.png')
     assert all(sha(Path(path)) == digest for path, digest in inputs.items()), 'review inputs changed'
-    receipt = dict(status='SOURCE_TERRAIN_AND_LINKS_MATCH', selected_revision=world['active_local_review_revision'],
+    receipt = dict(status='SOURCE_TERRAIN_AND_LINKS_MATCH', reviewed_revision=revision_name,
+                   selected_revision=world['active_local_review_revision'],
                    world_sha256=sha(world_path), pack=revision['pack'], pack_sha256=sha(pack_path),
-                   source_index=revision['authoring_source_index'], source_index_sha256=sha(index_path),
+                   source_index=revision[index_key], source_index_sha256=sha(index_path),
                    cave_environment_count=sum(r['environment'] == 'CAVE' for r in rooms),
                    rock_dungeon_count=sum(r['environment'] == 'DUNGEON' for r in rooms),
                    rooms=rooms, inputs_unchanged=True, tool_sha256=sha(Path(__file__)), scope=__doc__)

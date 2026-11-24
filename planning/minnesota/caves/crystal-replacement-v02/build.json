@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "builder": "pack_northstar_cave_redesign",
+  "parent_pack": "content-packs/minnesota-fair-presentation-v01.crystalpack",
+  "parent_pack_sha256": "c28b37a15c0ae59151da94d4d70dde6ac3cc066b47afe993665cb071e7a4b3d4",
+  "source_directory": "planning/minnesota/caves/crystal-replacement-v02",
+  "source_sha256": {
+    "south.json": "90439fb0babe626d1a09d77c0fe7cac2f7484d56fa802f022e20ac351243cd7d",
+    "north.json": "088ec73fc42c025fdbc9e0a1c683320c412314e9d68460dbfc236978c849579b",
+    "mines.json": "abb68ef6d6f93a4b331aebbfd491881838050e5d7691ddb1a02622b649a69e24",
+    "ice.json": "b3bdeb39694d41666d690c2f24f53995c3b12253a8d990908c5d5834579ba08e"
+  },
+  "output_pack": "content-packs/minnesota-cave-replacement-v02.crystalpack",
+  "expected_pack_sha256": "bb71f6b195284c2cf8c3f8f92e57e961d6b10fb856bc4e6eccfd3d4533297691",
+  "expected_content_hash": "be0f0dd31e1e18e373112c4aa14ab54eab3e8aae94f67f8f9b2bab6f99249677"
+}

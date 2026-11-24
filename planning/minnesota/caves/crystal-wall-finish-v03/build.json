@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "builder": "pack_northstar_cave_wall_finish",
+  "parent_pack": "content-packs/minnesota-cave-replacement-v02.crystalpack",
+  "parent_pack_sha256": "bb71f6b195284c2cf8c3f8f92e57e961d6b10fb856bc4e6eccfd3d4533297691",
+  "source_directory": "planning/minnesota/caves/crystal-wall-finish-v03",
+  "source_sha256": {
+    "natural-edges.json": "d4f5e476249d7b88226f1b72965d089ca38859b2f408eda0b85b37ab9a0f33df",
+    "mine-edges.json": "24533a8c3c742fd910ca614768481f5c4fa0a7eb30354f4260a90c82e41be19c"
+  },
+  "output_pack": "content-packs/minnesota-cave-wall-finish-v03.crystalpack",
+  "expected_pack_sha256": "1ecebbb76c5410ca3d1adf91173d98795481067078f0689d3c999da1f3f923a6",
+  "expected_content_hash": "e9ec9900f13336921922a8b61fea912b3a6da0290164cc3f9c73c367b3503f2a"
+}

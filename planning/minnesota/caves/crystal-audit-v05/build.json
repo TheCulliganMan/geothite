@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "builder": "pack_northstar_cave_detail",
+  "builder_arguments": [
+    "--audit"
+  ],
+  "parent_pack": "content-packs/minnesota-cave-detail-v04.crystalpack",
+  "parent_pack_sha256": "992922e43714d91121c1d9887a2cfa94b7fd300d6afb7efe498aead1889eba48",
+  "source_directory": "planning/minnesota/caves/crystal-audit-v05",
+  "source_sha256": {
+    "south.json": "ffe1d7f7c9b050591b08474aa1331392bd9196d631d60fe41329f120ea0c4a1a",
+    "south-art.json": "6af732db70d11f1e6bdd3b0e9ba2713f1e93ad28ba284bc4d7855a7676e58777",
+    "north.json": "61bd186d7b1ad45a350f05945acbdaaad04f9f34ef5f9fc3361beca12aee5118",
+    "north-art.json": "3d972dbe25af9a7230acbaf1d8bc2fc17136efe5bdb59e5f3fbf3204e5902e80",
+    "mines.json": "88b535868f93d2d5b195ca084f83a19ee313ada4d0687ef87398dd4d7ac85494",
+    "mines-art.json": "8363640fe31d6cb0e8af98f95857ef381a53563a3ca8be6b7c0ce8dfaac39086",
+    "ice.json": "6ad125c8ec60bd5e8ac2267e4d112404b040997fedb6cd9933d1885cf6ae7533",
+    "ice-art.json": "f1f0317de246e9e2b5863f4aaa5f6128fe67cb7ae9791729f23b67b9190af4e5"
+  },
+  "output_pack": "content-packs/minnesota-cave-audit-v05.crystalpack",
+  "expected_pack_sha256": "63769b0e94af05fd653699486ffe26f7c8815083af0587e1162160ed0644e56e",
+  "expected_content_hash": "5b0260fe080878fb7c4d3d9df39fcd4df1489910949fe10294d38adc9a3ff4fc"
+}

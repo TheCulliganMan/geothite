@@ -14,12 +14,16 @@ use crate::CrystalRuntime;
 use crate::cave_save_migration::{self, CaveReentry};
 use crate::gym_save_migration::{self, GymReentry};
 use crate::iron_save_migration::{self, IronRelocations};
+use crate::room_save_migration::RoomReentry;
 
 #[path = "fair_save_migration.rs"]
 mod fair_save_migration;
 
 #[path = "dex_order_save_migration.rs"]
 mod dex_order_save_migration;
+
+#[path = "cave_audit_save_migration.rs"]
+mod cave_audit_save_migration;
 
 #[path = "road_trainer_save_migration.rs"]
 mod road_trainer_save_migration;
@@ -53,6 +57,8 @@ struct Compatibility {
     iron_relocations: Option<IronRelocations>,
     layout_reentry: Option<Vec<String>>,
     #[serde(skip)]
+    cave_audit_reentry: Option<RoomReentry>,
+    #[serde(skip)]
     fair_layouts: BTreeMap<String, fair_save_migration::MapChange>,
     #[serde(skip)]
     regional_parents: Vec<String>,
@@ -77,6 +83,9 @@ fn parse_compatibility(bytes: &[u8], target_id: &str) -> Result<Compatibility> {
         schema_version: u8,
     }
     let header: Header = serde_json::from_slice(bytes).context("save compatibility version")?;
+    if header.schema_version == 12 {
+        return cave_audit_save_migration::parse(bytes, target_id);
+    }
     if header.schema_version == 11 {
         return dex_order_save_migration::parse(bytes, target_id);
     }
@@ -371,6 +380,9 @@ pub fn prepare_runtime_save_slot(
     if let Some(policy) = &metadata.iron_relocations {
         policy.validate_landings(runtime.data())?;
     }
+    if let Some(policy) = &metadata.cave_audit_reentry {
+        cave_audit_save_migration::validate_arrivals(policy, runtime.data())?;
+    }
     for source in &metadata.sources {
         let path = previous_path(source);
         if path == destination {
@@ -386,13 +398,18 @@ pub fn prepare_runtime_save_slot(
             )?;
             let mut upgraded =
                 upgrade_source_checkpoint(saved.into_state(), &metadata, source, runtime.data())?;
-            if !dex_order_save_migration::preserves_fair_layout(source) {
+            if !dex_order_save_migration::preserves_fair_layout(source)
+                && !cave_audit_save_migration::is_direct_parent(source)
+            {
                 fair_save_migration::reconcile(
                     &mut upgraded,
                     runtime.data(),
                     &metadata.fair_layouts,
                     source,
                 )?;
+            }
+            if let Some(policy) = &metadata.cave_audit_reentry {
+                cave_audit_save_migration::reenter(policy, &mut upgraded, runtime.data())?;
             }
             runtime.validate_save_state_for_runtime_pack(&upgraded)?;
             Ok(upgraded)
@@ -416,7 +433,9 @@ fn upgrade_source_checkpoint(
     source: &CompatibleSaveSource,
     data: &GameDataSet,
 ) -> Result<GameState> {
-    if dex_order_save_migration::preserves_fair_layout(source) {
+    if dex_order_save_migration::preserves_fair_layout(source)
+        || cave_audit_save_migration::is_direct_parent(source)
+    {
         validate_upgrade_checkpoint(&state, data)?;
         return Ok(state);
     }

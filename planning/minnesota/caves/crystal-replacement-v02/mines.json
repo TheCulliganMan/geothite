@@ -1,0 +1,1588 @@
+[
+  {
+    "map": "MnR09Cave1F",
+    "dimensions_metatiles": [
+      16,
+      11
+    ],
+    "before_blocks_sha256": "ed3138da06d726728453766d38b1cb8c8159b99e124bb44de1721c115909f639",
+    "rows": [
+      "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e",
+      "2e 2e 04 05 05 05 06 2e 2e 2e 2e 2e 2e 2e 2e 2e",
+      "2e 2e 08 02 02 02 02 05 05 05 05 06 2e 2e 2e 2e",
+      "2e 2e 20 12 21 21 02 02 05 02 08 02 02 06 2e 2e",
+      "2e 2e 2e 2e 08 02 02 02 02 08 02 02 2d 0a 2e 2e",
+      "2e 2e 2e 2e 08 02 04 05 02 02 0a 02 02 0a 2e 2e",
+      "2e 04 05 05 02 02 08 02 2e 2e 0c 0d 0d 0e 2e 2e",
+      "2e 08 02 05 05 02 0a 2e 2e 2e 2e 2e 2e 2e 2e 2e",
+      "2e 08 07 02 02 02 0a 2e 2e 2e 2e 2e 2e 2e 2e 2e",
+      "2e 0c 0d 0d 0d 0d 0e 2e 2e 2e 2e 2e 2e 2e 2e 2e",
+      "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e"
+    ],
+    "arrivals": [
+      [
+        5,
+        16
+      ],
+      [
+        25,
+        7
+      ]
+    ],
+    "cameras": {
+      "adit landing": [
+        5,
+        16
+      ],
+      "foreman\u2019s switchback": [
+        7,
+        7
+      ],
+      "hidden survey stone": [
+        13,
+        9
+      ],
+      "shaft shelf": [
+        23,
+        7
+      ]
+    },
+    "warps": [
+      {
+        "index": 1,
+        "from": [
+          13,
+          19
+        ],
+        "to": [
+          5,
+          17
+        ]
+      },
+      {
+        "index": 2,
+        "from": [
+          19,
+          9
+        ],
+        "to": [
+          25,
+          7
+        ]
+      },
+      {
+        "index": 3,
+        "from": [
+          19,
+          11
+        ],
+        "to": [
+          25,
+          9
+        ]
+      }
+    ],
+    "actors": [
+      {
+        "script": "MN_NDRILL_NELL",
+        "from": [
+          19,
+          7
+        ],
+        "to": [
+          23,
+          7
+        ]
+      }
+    ],
+    "backgrounds": [
+      {
+        "script": "MN_HIDDEN_R09CAVE1F",
+        "from": [
+          11,
+          16
+        ],
+        "to": [
+          13,
+          9
+        ]
+      }
+    ],
+    "script_patches": [
+      {
+        "script": "MnIronRangeForemanAfter",
+        "index": 0,
+        "before_args": [
+          "18",
+          "10",
+          "7"
+        ],
+        "after_args": [
+          "24",
+          "8",
+          "7"
+        ]
+      },
+      {
+        "script": "MnNDrillPublicTiles",
+        "index": 2,
+        "before_args": [
+          "18",
+          "10",
+          "7"
+        ],
+        "after_args": [
+          "24",
+          "8",
+          "7"
+        ]
+      }
+    ]
+  },
+  {
+    "map": "MnIronDrillApproach",
+    "dimensions_metatiles": [
+      12,
+      17
+    ],
+    "before_blocks_sha256": "e865a7583b34a248cbb2e91b9508583dc199432def0ad82a52a8bd8f340b84d1",
+    "rows": [
+      "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e",
+      "2e 2e 2e 2e 2e 2e 04 05 05 05 06 2e",
+      "2e 2e 2e 2e 2e 2e 08 02 02 07 0a 2e",
+      "2e 2e 2e 2e 2e 2e 08 02 02 02 0a 2e",
+      "2e 2e 2e 2e 04 05 02 02 02 02 0a 2e",
+      "2e 2e 2e 2e 08 02 02 12 21 21 22 2e",
+      "2e 2e 2e 2e 08 05 05 02 02 2e 2e 2e",
+      "2e 2e 04 05 02 02 2e 2e 0a 2e 2e 2e",
+      "2e 2e 08 02 02 02 2e 2e 08 02 06 2e",
+      "2e 2e 08 02 02 02 2e 2e 02 02 0a 2e",
+      "2e 2e 08 02 02 12 02 02 02 02 0a 2e",
+      "2e 2e 08 02 05 05 02 02 21 21 22 2e",
+      "2e 2e 08 02 02 0a 2e 2e 2e 2e 2e 2e",
+      "2e 04 02 02 21 22 2e 2e 2e 2e 2e 2e",
+      "2e 08 02 07 0a 2e 2e 2e 2e 2e 2e 2e",
+      "2e 0c 0d 0d 0e 2e 2e 2e 2e 2e 2e 2e",
+      "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e"
+    ],
+    "arrivals": [
+      [
+        6,
+        29
+      ],
+      [
+        18,
+        5
+      ]
+    ],
+    "cameras": {
+      "lower adit": [
+        6,
+        29
+      ],
+      "two-sided incline": [
+        12,
+        20
+      ],
+      "spoil notch": [
+        9,
+        12
+      ],
+      "stairhead": [
+        18,
+        5
+      ]
+    },
+    "warps": [
+      {
+        "index": 1,
+        "from": [
+          7,
+          21
+        ],
+        "to": [
+          7,
+          29
+        ]
+      },
+      {
+        "index": 2,
+        "from": [
+          6,
+          21
+        ],
+        "to": [
+          6,
+          29
+        ]
+      },
+      {
+        "index": 3,
+        "from": [
+          25,
+          5
+        ],
+        "to": [
+          19,
+          5
+        ]
+      },
+      {
+        "index": 4,
+        "from": [
+          24,
+          5
+        ],
+        "to": [
+          18,
+          5
+        ]
+      }
+    ],
+    "actors": [
+      {
+        "script": "MN_LODE_ARC_ACCESS",
+        "from": [
+          10,
+          12
+        ],
+        "to": [
+          15,
+          20
+        ]
+      },
+      {
+        "script": "MN_LODE_ARC_SPOIL",
+        "from": [
+          26,
+          18
+        ],
+        "to": [
+          16,
+          8
+        ]
+      },
+      {
+        "script": "MN_IRON_APPROACH_ETHER",
+        "from": [
+          5,
+          5
+        ],
+        "to": [
+          9,
+          12
+        ]
+      }
+    ]
+  },
+  {
+    "map": "MnIronHaulage",
+    "dimensions_metatiles": [
+      24,
+      10
+    ],
+    "before_blocks_sha256": "81f935fc28d4fe74a01ecd235e45ea5c1fbf0cecc1ec8dcea78e1d2e2d1f0f39",
+    "rows": [
+      "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e",
+      "2e 2e 04 05 05 06 04 05 05 05 06 2e 2e 2e 04 05 05 05 06 04 05 05 06 2e",
+      "2e 2e 08 0d 46 0d 0d 46 0d 0d 1e 2e 2e 2e 08 0d 46 0d 0d 46 0d 0d 1e 2e",
+      "2e 2e 08 0d 0d 0d 0d 40 0d 0d 1e 2e 2e 2e 08 0d 0d 40 0d 0d 0d 0d 1e 2e",
+      "2e 2e 08 0d 0d 08 0d 0d 0d 0d 0e 2e 2e 04 0d 0d 05 05 05 05 0d 0d 1e 2e",
+      "2e 2e 2e 04 0d 0d 12 0d 0d 0d 0d 0d 0d 41 0d 0d 0d 0d 0d 0d 0d 48 1e 2e",
+      "2e 2e 2e 08 0d 0d 05 0d 0d 0d 1e 2e 2e 2e 08 0d 0d 47 0d 0d 0d 49 1e 2e",
+      "2e 2e 2e 08 0d 0d 46 21 21 21 22 2e 2e 2e 0c 0d 0d 0d 0d 0d 0d 4c 0e 2e",
+      "2e 2e 2e 0c 0d 0d 0e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e",
+      "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e"
+    ],
+    "arrivals": [
+      [
+        12,
+        15
+      ],
+      [
+        8,
+        5
+      ],
+      [
+        32,
+        5
+      ],
+      [
+        38,
+        5
+      ],
+      [
+        14,
+        5
+      ]
+    ],
+    "cameras": {
+      "rail approach": [
+        12,
+        13
+      ],
+      "weigh sample": [
+        14,
+        6
+      ],
+      "shutter line": [
+        24,
+        10
+      ],
+      "crossover controls": [
+        34,
+        6
+      ]
+    },
+    "warps": [
+      {
+        "index": 1,
+        "from": [
+          5,
+          22
+        ],
+        "to": [
+          13,
+          14
+        ]
+      },
+      {
+        "index": 2,
+        "from": [
+          4,
+          23
+        ],
+        "to": [
+          12,
+          15
+        ]
+      },
+      {
+        "index": 3,
+        "from": [
+          7,
+          4
+        ],
+        "to": [
+          9,
+          4
+        ]
+      },
+      {
+        "index": 4,
+        "from": [
+          6,
+          5
+        ],
+        "to": [
+          8,
+          5
+        ]
+      },
+      {
+        "index": 5,
+        "from": [
+          27,
+          4
+        ],
+        "to": [
+          33,
+          4
+        ]
+      },
+      {
+        "index": 6,
+        "from": [
+          26,
+          5
+        ],
+        "to": [
+          32,
+          5
+        ]
+      },
+      {
+        "index": 7,
+        "from": [
+          29,
+          22
+        ],
+        "to": [
+          39,
+          4
+        ]
+      },
+      {
+        "index": 8,
+        "from": [
+          28,
+          23
+        ],
+        "to": [
+          38,
+          5
+        ]
+      },
+      {
+        "index": 9,
+        "from": [
+          13,
+          12
+        ],
+        "to": [
+          15,
+          4
+        ]
+      },
+      {
+        "index": 10,
+        "from": [
+          12,
+          13
+        ],
+        "to": [
+          14,
+          5
+        ]
+      }
+    ],
+    "actors": [
+      {
+        "script": "MnIronHaulageRuth",
+        "from": [
+          5,
+          15
+        ],
+        "to": [
+          9,
+          10
+        ]
+      },
+      {
+        "script": "MN_LODE_ARC_WEIGH",
+        "from": [
+          14,
+          7
+        ],
+        "to": [
+          13,
+          6
+        ]
+      },
+      {
+        "script": "MN_LODE_ARC_CONVEYOR",
+        "from": [
+          30,
+          13
+        ],
+        "to": [
+          41,
+          12
+        ]
+      }
+    ],
+    "backgrounds": [
+      {
+        "script": "MnIronPressureHAUL",
+        "from": [
+          29,
+          11
+        ],
+        "to": [
+          34,
+          6
+        ]
+      }
+    ],
+    "script_patches": [
+      {
+        "script": "MnIronPressureHAUL",
+        "index": 7,
+        "before_args": [
+          "18",
+          "16",
+          "13"
+        ],
+        "after_args": [
+          "26",
+          "10",
+          "13"
+        ]
+      },
+      {
+        "script": "MnIronPressureHAULRestore",
+        "index": 2,
+        "before_args": [
+          "18",
+          "16",
+          "13"
+        ],
+        "after_args": [
+          "26",
+          "10",
+          "13"
+        ]
+      }
+    ]
+  },
+  {
+    "map": "MnIronSump",
+    "dimensions_metatiles": [
+      15,
+      15
+    ],
+    "before_blocks_sha256": "bfcc69c0b429a19d34956ae9ed0a9f5b2b479cc4cf84bc06cb40a28cb34c39dc",
+    "rows": [
+      "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e",
+      "2e 2e 04 05 05 05 06 2e 2e 2e 2e 2e 2e 2e 2e",
+      "2e 2e 08 0d 46 0d 1e 2e 2e 04 05 05 06 0d 2e",
+      "2e 2e 08 0d 0d 0d 1e 2e 2e 08 0d 46 0d 1e 2e",
+      "2e 2e 08 0f 0f 0f 1e 2e 2e 20 0d 41 0d 22 2e",
+      "2e 2e 08 0f 0f 0f 2e 2e 2e 2e 2e 0d 2e 2e 2e",
+      "2e 2e 08 0f 0f 0f 1e 2e 2e 2e 04 0d 0d 0d 2e",
+      "2e 2e 08 0f 2d 0f 1e 2e 2e 2e 08 0d 0d 0d 2e",
+      "2e 2e 0d 0f 0f 0f 1e 2e 2e 2e 08 0d 46 0d 2e",
+      "2e 2e 0d 0d 0f 0d 1e 2e 2e 2e 08 0d 0d 0d 2e",
+      "2e 2e 08 0d 0d 0d 1e 2e 2e 2e 08 0d 48 1e 2e",
+      "2e 2e 08 0d 46 0d 1e 2e 2e 2e 08 0d 0d 1e 2e",
+      "2e 2e 08 0d 0d 0d 1e 2e 2e 2e 08 0d 46 1e 2e",
+      "2e 2e 0c 0d 0d 0d 0e 2e 2e 2e 0c 0d 0d 0e 2e",
+      "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e"
+    ],
+    "arrivals": [
+      [
+        8,
+        23
+      ],
+      [
+        8,
+        5
+      ],
+      [
+        24,
+        25
+      ],
+      [
+        22,
+        7
+      ],
+      [
+        24,
+        17
+      ]
+    ],
+    "cameras": {
+      "lower shaft": [
+        8,
+        23
+      ],
+      "flooded shaft reach": [
+        8,
+        16
+      ],
+      "waterline cache": [
+        7,
+        10
+      ],
+      "pump gate": [
+        22,
+        9
+      ]
+    },
+    "warps": [
+      {
+        "index": 1,
+        "from": [
+          5,
+          18
+        ],
+        "to": [
+          9,
+          22
+        ]
+      },
+      {
+        "index": 2,
+        "from": [
+          4,
+          19
+        ],
+        "to": [
+          8,
+          23
+        ]
+      },
+      {
+        "index": 5,
+        "from": [
+          31,
+          18
+        ],
+        "to": [
+          25,
+          24
+        ]
+      },
+      {
+        "index": 6,
+        "from": [
+          30,
+          19
+        ],
+        "to": [
+          24,
+          25
+        ]
+      },
+      {
+        "index": 7,
+        "from": [
+          35,
+          4
+        ],
+        "to": [
+          23,
+          6
+        ]
+      },
+      {
+        "index": 8,
+        "from": [
+          34,
+          5
+        ],
+        "to": [
+          22,
+          7
+        ]
+      },
+      {
+        "index": 9,
+        "from": [
+          25,
+          10
+        ],
+        "to": [
+          25,
+          16
+        ]
+      },
+      {
+        "index": 10,
+        "from": [
+          24,
+          11
+        ],
+        "to": [
+          24,
+          17
+        ]
+      }
+    ],
+    "actors": [
+      {
+        "script": "MN_LODE_ARC_SUMP",
+        "from": [
+          14,
+          10
+        ],
+        "to": [
+          5,
+          18
+        ]
+      },
+      {
+        "script": "MN_LODE_ARC_DRAIN",
+        "from": [
+          25,
+          17
+        ],
+        "to": [
+          21,
+          22
+        ]
+      }
+    ],
+    "backgrounds": [
+      {
+        "script": "MnIronSumpGateRead",
+        "from": [
+          32,
+          7
+        ],
+        "to": [
+          24,
+          21
+        ]
+      },
+      {
+        "script": "MN_IRON_CACHE_SUMP_WATERLINE",
+        "from": [
+          8,
+          7
+        ],
+        "to": [
+          8,
+          14
+        ]
+      }
+    ],
+    "script_patches": [
+      {
+        "script": "MnIronSumpGate",
+        "index": 4,
+        "before_args": [
+          "32",
+          "6",
+          "13"
+        ],
+        "after_args": [
+          "22",
+          "8",
+          "13"
+        ]
+      }
+    ]
+  },
+  {
+    "map": "MnIronVentilation",
+    "dimensions_metatiles": [
+      14,
+      17
+    ],
+    "before_blocks_sha256": "27b16f807fabe6b458f731be528a153ba3cfead77f30b9d28223ddd69b37552d",
+    "rows": [
+      "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e",
+      "2e 04 05 05 06 04 05 05 06 2e 2e 2e 2e 2e",
+      "2e 08 0d 46 0d 0d 43 0d 1e 2e 2e 2e 2e 2e",
+      "2e 08 0d 0d 0d 0d 44 0d 1e 2e 2e 2e 2e 2e",
+      "2e 08 0d 0d 06 2e 2e 2e 2e 04 05 05 06 2e",
+      "2e 2e 0d 0d 1e 2e 2e 2e 2e 08 0d 46 0d 1e",
+      "2e 2e 0d 0d 2e 2e 2e 2e 2e 08 0d 0d 0d 1e",
+      "2e 2e 0d 0d 2e 2e 2e 2e 2e 08 0d 0d 0d 1e",
+      "2e 2e 08 0d 0d 05 05 06 40 2e 0d 0d 0d 1e",
+      "2e 2e 08 0d 0d 46 0d 0d 0d 0d 41 0d 0d 1e",
+      "2e 2e 08 0d 0d 1e 2e 2e 2e 2e 08 0d 0d 1e",
+      "2e 2e 08 0d 0d 1e 2e 2e 2e 08 0d 0d 0d 1e",
+      "2e 2e 08 0d 0d 0d 2e 2e 2e 08 0d 0d 0d 1e",
+      "2e 2e 0c 0d 0d 0e 2e 2e 2e 08 0d 46 0d 1e",
+      "2e 2e 2e 2e 2e 2e 2e 2e 2e 08 0d 0d 0d 1e",
+      "2e 2e 2e 2e 2e 2e 2e 2e 2e 0c 0d 0d 0d 0e",
+      "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e"
+    ],
+    "arrivals": [
+      [
+        10,
+        19
+      ],
+      [
+        6,
+        5
+      ],
+      [
+        22,
+        27
+      ],
+      [
+        22,
+        11
+      ]
+    ],
+    "cameras": {
+      "fan shelf": [
+        6,
+        5
+      ],
+      "duct bend": [
+        5,
+        13
+      ],
+      "shutter controls": [
+        17,
+        18
+      ],
+      "operator descent": [
+        22,
+        27
+      ]
+    },
+    "warps": [
+      {
+        "index": 1,
+        "from": [
+          5,
+          20
+        ],
+        "to": [
+          11,
+          18
+        ]
+      },
+      {
+        "index": 2,
+        "from": [
+          4,
+          21
+        ],
+        "to": [
+          10,
+          19
+        ]
+      },
+      {
+        "index": 5,
+        "from": [
+          27,
+          20
+        ],
+        "to": [
+          23,
+          26
+        ]
+      },
+      {
+        "index": 6,
+        "from": [
+          26,
+          21
+        ],
+        "to": [
+          22,
+          27
+        ]
+      },
+      {
+        "index": 7,
+        "from": [
+          29,
+          4
+        ],
+        "to": [
+          23,
+          10
+        ]
+      },
+      {
+        "index": 8,
+        "from": [
+          28,
+          5
+        ],
+        "to": [
+          22,
+          11
+        ]
+      }
+    ],
+    "actors": [
+      {
+        "script": "MnIronVentilationVern",
+        "from": [
+          25,
+          15
+        ],
+        "to": [
+          23,
+          23
+        ]
+      },
+      {
+        "script": "MN_LODE_ARC_VENT",
+        "from": [
+          10,
+          10
+        ],
+        "to": [
+          5,
+          11
+        ]
+      },
+      {
+        "script": "MN_LODE_ARC_SHIFT",
+        "from": [
+          29,
+          8
+        ],
+        "to": [
+          25,
+          14
+        ]
+      }
+    ],
+    "backgrounds": [
+      {
+        "script": "MnIronPressureVENT",
+        "from": [
+          13,
+          15
+        ],
+        "to": [
+          17,
+          17
+        ]
+      }
+    ],
+    "script_patches": [
+      {
+        "script": "MnIronPressureVENT",
+        "index": 7,
+        "before_args": [
+          "18",
+          "12",
+          "7"
+        ],
+        "after_args": [
+          "20",
+          "18",
+          "7"
+        ]
+      },
+      {
+        "script": "MnIronPressureVENTRestore",
+        "index": 2,
+        "before_args": [
+          "18",
+          "12",
+          "7"
+        ],
+        "after_args": [
+          "20",
+          "18",
+          "7"
+        ]
+      }
+    ]
+  },
+  {
+    "map": "MnIronPumpGallery",
+    "dimensions_metatiles": [
+      20,
+      11
+    ],
+    "before_blocks_sha256": "b67b42237fe2cb845aea4a332fa1bdf24566efa0948c62190b205e36a11bb9ce",
+    "rows": [
+      "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e",
+      "2e 2e 04 05 05 06 2e 2e 2e 2e 2e 2e 2e 2e 2e 04 05 05 06 2e",
+      "2e 2e 08 0d 46 1e 2e 2e 2e 2e 2e 2e 2e 2e 2e 08 0d 46 1e 2e",
+      "2e 2e 08 0d 0d 1e 2e 2e 2e 2e 2e 2e 2e 04 0d 41 0d 0d 1e 2e",
+      "2e 2e 08 0d 0d 0d 0d 0d 0d 05 05 05 0d 0d 1e 2e 2e 2e 0e 2e",
+      "2e 2e 04 0d 0d 0d 05 0d 0d 0d 1e 2e 0d 0d 2e 2e 2e 2e 2e 2e",
+      "2e 2e 08 0d 0d 1e 2e 2e 41 0d 0d 1e 0d 0d 04 05 06 2e 2e 2e",
+      "2e 2e 08 0d 0d 1e 2e 2e 41 0d 0d 1e 0d 0d 0d 0d 1e 2e 2e 2e",
+      "2e 2e 08 0d 0d 0d 0d 0d 0d 41 0d 0d 0d 0d 40 0d 1e 2e 2e 2e",
+      "2e 2e 0c 0d 0d 0d 0d 0d 0d 2e 0d 0d 0d 0d 0d 0d 0e 2e 2e 2e",
+      "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e"
+    ],
+    "arrivals": [
+      [
+        8,
+        5
+      ],
+      [
+        34,
+        5
+      ]
+    ],
+    "cameras": {
+      "intake landing": [
+        8,
+        5
+      ],
+      "pump stacks": [
+        14,
+        15
+      ],
+      "service gate": [
+        18,
+        15
+      ],
+      "feed controls": [
+        28,
+        15
+      ]
+    },
+    "warps": [
+      {
+        "index": 1,
+        "from": [
+          5,
+          18
+        ],
+        "to": [
+          9,
+          4
+        ]
+      },
+      {
+        "index": 2,
+        "from": [
+          4,
+          19
+        ],
+        "to": [
+          8,
+          5
+        ]
+      },
+      {
+        "index": 3,
+        "from": [
+          25,
+          4
+        ],
+        "to": [
+          35,
+          4
+        ]
+      },
+      {
+        "index": 4,
+        "from": [
+          24,
+          5
+        ],
+        "to": [
+          34,
+          5
+        ]
+      }
+    ],
+    "actors": [
+      {
+        "script": "MN_LODE_ARC_PUMP",
+        "from": [
+          12,
+          5
+        ],
+        "to": [
+          9,
+          11
+        ]
+      },
+      {
+        "script": "MN_LODE_ARC_INTAKE",
+        "from": [
+          25,
+          13
+        ],
+        "to": [
+          27,
+          14
+        ]
+      }
+    ],
+    "backgrounds": [
+      {
+        "script": "MnNDrillGalleryFeed",
+        "from": [
+          25,
+          17
+        ],
+        "to": [
+          28,
+          16
+        ]
+      }
+    ],
+    "script_patches": [
+      {
+        "script": "MnNDrillGalleryFeed",
+        "index": 7,
+        "before_args": [
+          "24",
+          "6",
+          "13"
+        ],
+        "after_args": [
+          "30",
+          "6",
+          "13"
+        ]
+      },
+      {
+        "script": "MnNDrillGalleryTiles",
+        "index": 2,
+        "before_args": [
+          "24",
+          "6",
+          "13"
+        ],
+        "after_args": [
+          "30",
+          "6",
+          "13"
+        ]
+      },
+      {
+        "script": "MnNDrillGalleryFeed",
+        "index": 8,
+        "before_args": [
+          "14",
+          "16",
+          "13"
+        ],
+        "after_args": [
+          "18",
+          "16",
+          "13"
+        ]
+      },
+      {
+        "script": "MnNDrillGalleryTiles",
+        "index": 3,
+        "before_args": [
+          "14",
+          "16",
+          "13"
+        ],
+        "after_args": [
+          "18",
+          "16",
+          "13"
+        ]
+      }
+    ]
+  },
+  {
+    "map": "MnIronDrillCore",
+    "dimensions_metatiles": [
+      16,
+      15
+    ],
+    "before_blocks_sha256": "76814f87e56122ace649a1b5953c465d719b919a97ff96ecc6c3a9a6b3517764",
+    "rows": [
+      "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e",
+      "2e 2e 2e 2e 2e 2e 2e 04 05 05 05 05 05 06 2e 2e",
+      "2e 2e 2e 2e 04 0d 0d 0d 0d 46 0d 0d 0d 1e 2e 2e",
+      "2e 2e 2e 2e 08 0d 0d 0d 0d 0d 0d 0d 0d 1e 2e 2e",
+      "2e 2e 2e 04 0d 0d 44 43 0d 0d 05 05 05 1e 2e 2e",
+      "2e 2e 2e 08 0d 0d 44 43 0d 0d 0d 0d 0d 1e 2e 2e",
+      "2e 2e 04 1e 0d 0d 44 43 0d 0d 0d 0d 0d 1e 2e 2e",
+      "2e 2e 08 0d 0d 0d 0d 0d 0d 0d 0d 1e 2e 2e 2e 2e",
+      "2e 2e 08 0d 0d 0d 0d 0d 0d 0d 0d 0d 1e 2e 2e 2e",
+      "2e 2e 2e 08 0d 0d 05 05 0d 05 05 05 22 2e 2e 2e",
+      "2e 2e 2e 08 0d 0d 0d 1e 2e 2e 2e 2e 2e 2e 2e 2e",
+      "2e 2e 2e 08 0d 0d 0d 1e 2e 2e 2e 2e 2e 2e 2e 2e",
+      "2e 2e 04 0d 0d 0d 47 1e 2e 2e 2e 2e 2e 2e 2e 2e",
+      "2e 2e 0c 0d 0d 0d 0d 0e 2e 2e 2e 2e 2e 2e 2e 2e",
+      "2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e 2e"
+    ],
+    "arrivals": [
+      [
+        12,
+        25
+      ]
+    ],
+    "cameras": {
+      "crew approach": [
+        12,
+        25
+      ],
+      "blast line": [
+        11,
+        14
+      ],
+      "rig controls": [
+        18,
+        5
+      ],
+      "viewing floor": [
+        11,
+        11
+      ]
+    },
+    "warps": [
+      {
+        "index": 1,
+        "from": [
+          5,
+          14
+        ],
+        "to": [
+          13,
+          24
+        ]
+      },
+      {
+        "index": 2,
+        "from": [
+          4,
+          15
+        ],
+        "to": [
+          12,
+          25
+        ]
+      }
+    ],
+    "actors": [
+      {
+        "script": "MN_NDRILL_REED",
+        "from": [
+          8,
+          8
+        ],
+        "to": [
+          10,
+          10
+        ]
+      },
+      {
+        "script": "MN_NDRILL_ENGINEER",
+        "from": [
+          8,
+          5
+        ],
+        "to": [
+          10,
+          7
+        ]
+      },
+      {
+        "script": "MN_NDRILL_FINN",
+        "from": [
+          15,
+          9
+        ],
+        "to": [
+          17,
+          11
+        ]
+      },
+      {
+        "script": "MN_LODE_ARC_CORE_WEST",
+        "from": [
+          5,
+          11
+        ],
+        "to": [
+          7,
+          15
+        ]
+      },
+      {
+        "script": "MN_LODE_ARC_CORE_EAST",
+        "from": [
+          18,
+          12
+        ],
+        "to": [
+          20,
+          14
+        ]
+      }
+    ],
+    "backgrounds": [
+      {
+        "script": "MnNDrillStop",
+        "from": [
+          16,
+          2
+        ],
+        "to": [
+          18,
+          4
+        ]
+      }
+    ],
+    "coordinates": [
+      {
+        "script": "MnNDrillEnter3",
+        "from": [
+          3,
+          12
+        ],
+        "to": [
+          5,
+          14
+        ]
+      },
+      {
+        "script": "MnNDrillEnter4",
+        "from": [
+          4,
+          12
+        ],
+        "to": [
+          6,
+          14
+        ]
+      },
+      {
+        "script": "MnNDrillEnter5",
+        "from": [
+          5,
+          12
+        ],
+        "to": [
+          7,
+          14
+        ]
+      },
+      {
+        "script": "MnNDrillEnter6",
+        "from": [
+          6,
+          12
+        ],
+        "to": [
+          8,
+          14
+        ]
+      },
+      {
+        "script": "MnNDrillEnter7",
+        "from": [
+          7,
+          12
+        ],
+        "to": [
+          9,
+          14
+        ]
+      },
+      {
+        "script": "MnNDrillEnter8",
+        "from": [
+          8,
+          12
+        ],
+        "to": [
+          10,
+          14
+        ]
+      },
+      {
+        "script": "MnNDrillEnter9",
+        "from": [
+          9,
+          12
+        ],
+        "to": [
+          11,
+          14
+        ]
+      },
+      {
+        "script": "MnNDrillEnter10",
+        "from": [
+          10,
+          12
+        ],
+        "to": [
+          12,
+          14
+        ]
+      },
+      {
+        "script": "MnNDrillEnter11",
+        "from": [
+          11,
+          12
+        ],
+        "to": [
+          13,
+          14
+        ]
+      },
+      {
+        "script": "MnNDrillEnter12",
+        "from": [
+          12,
+          12
+        ],
+        "to": [
+          14,
+          14
+        ]
+      },
+      {
+        "script": "MnNDrillEnter13",
+        "from": [
+          13,
+          12
+        ],
+        "to": [
+          15,
+          14
+        ]
+      },
+      {
+        "script": "MnNDrillEnter14",
+        "from": [
+          14,
+          12
+        ],
+        "to": [
+          16,
+          14
+        ]
+      },
+      {
+        "script": "MnNDrillEnter15",
+        "from": [
+          15,
+          12
+        ],
+        "to": [
+          17,
+          14
+        ]
+      },
+      {
+        "script": "MnNDrillEnter16",
+        "from": [
+          16,
+          12
+        ],
+        "to": [
+          18,
+          14
+        ]
+      },
+      {
+        "script": "MnNDrillEnter17",
+        "from": [
+          17,
+          12
+        ],
+        "to": [
+          19,
+          14
+        ]
+      },
+      {
+        "script": "MnNDrillEnter18",
+        "from": [
+          18,
+          12
+        ],
+        "to": [
+          20,
+          14
+        ]
+      },
+      {
+        "script": "MnNDrillEnter19",
+        "from": [
+          19,
+          12
+        ],
+        "to": [
+          21,
+          14
+        ]
+      },
+      {
+        "script": "MnNDrillEnter20",
+        "from": [
+          20,
+          12
+        ],
+        "to": [
+          22,
+          14
+        ]
+      }
+    ],
+    "script_patches": [
+      {
+        "script": "MnNDrillCoreTiles",
+        "index": 2,
+        "before_args": [
+          "10",
+          "8",
+          "22"
+        ],
+        "after_args": [
+          "12",
+          "10",
+          "22"
+        ]
+      },
+      {
+        "script": "MnNDrillStop",
+        "index": 13,
+        "before_args": [
+          "10",
+          "8",
+          "22"
+        ],
+        "after_args": [
+          "12",
+          "10",
+          "22"
+        ]
+      },
+      {
+        "script": "MnNDrillWitness",
+        "index": 1,
+        "before_args": [
+          "10",
+          "8",
+          "22"
+        ],
+        "after_args": [
+          "12",
+          "10",
+          "22"
+        ]
+      },
+      {
+        "script": "MnNDrillWitness",
+        "index": 8,
+        "before_args": [
+          "10",
+          "8",
+          "18"
+        ],
+        "after_args": [
+          "12",
+          "10",
+          "18"
+        ]
+      },
+      {
+        "script": "MnNDrillWitness",
+        "index": 17,
+        "before_args": [
+          "10",
+          "8",
+          "22"
+        ],
+        "after_args": [
+          "12",
+          "10",
+          "22"
+        ]
+      },
+      {
+        "script": "MnNDrillWitness",
+        "index": 20,
+        "before_args": [
+          "10",
+          "8",
+          "18"
+        ],
+        "after_args": [
+          "12",
+          "10",
+          "18"
+        ]
+      },
+      {
+        "script": "MnMineWalkToCrew",
+        "index": 1,
+        "before_args": [
+          "15",
+          "MnMineFromMotorFront"
+        ],
+        "after_args": [
+          "17",
+          "MnMineFromMotorFront"
+        ]
+      }
+    ],
+    "time_of_day": "day"
+  }
+]

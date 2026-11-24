@@ -142,6 +142,18 @@ name = "pack_northstar_gyms"
 required-features = ["pack-authoring"]
 
 [[bin]]
+name = "pack_northstar_cave_redesign"
+required-features = ["pack-authoring"]
+
+[[bin]]
+name = "pack_northstar_cave_wall_finish"
+required-features = ["pack-authoring"]
+
+[[bin]]
+name = "pack_northstar_cave_detail"
+required-features = ["pack-authoring"]
+
+[[bin]]
 name = "pack_iron_workings"
 required-features = ["pack-authoring"]
 
@@ -195,6 +207,10 @@ required-features = ["pack-authoring"]
 
 [[example]]
 name = "pack_northstar_dex_order"
+required-features = ["pack-authoring"]
+
+[[example]]
+name = "pack_northstar_cave_release"
 required-features = ["pack-authoring"]
 
 [[bin]]

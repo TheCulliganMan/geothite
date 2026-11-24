@@ -1,6 +1,13 @@
 {
   "schema_version": 1,
   "status": "Interior floor/door reservations; production warp indices and facade coordinates must be frozen after source-art fitting.",
+  "cave_replacement": {
+    "revision": "cave_audit_revision",
+    "base_floorplan_revision": "cave_detail_revision",
+    "source_index": "caves/crystal-audit-v05/sources.json",
+    "runbook": "caves/crystal-audit-v05/README.md",
+    "contract": "The indexed source rows and relocated warp records supersede the older indoor coordinates and dimensions in contracts. Exterior mouths and warp indices retain their Fair links."
+  },
   "contracts": [
     {
       "interior": "MnWinonaPokecenter1F",

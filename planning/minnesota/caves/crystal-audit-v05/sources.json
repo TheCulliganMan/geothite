@@ -1,0 +1,180 @@
+{
+  "schema_version": 1,
+  "pack_sha256": "63769b0e94af05fd653699486ffe26f7c8815083af0587e1162160ed0644e56e",
+  "current_native_layouts": {},
+  "current_caves": {
+    "MnR01Cave1F": {
+      "path": "planning/minnesota/caves/crystal-audit-v05/south.json",
+      "sha256": "ffe1d7f7c9b050591b08474aa1331392bd9196d631d60fe41329f120ea0c4a1a",
+      "rows_pointer": "/0/rows",
+      "dimensions_metatiles": [
+        24,
+        13
+      ]
+    },
+    "MnDriftlessLampGallery": {
+      "path": "planning/minnesota/caves/crystal-audit-v05/south.json",
+      "sha256": "ffe1d7f7c9b050591b08474aa1331392bd9196d631d60fe41329f120ea0c4a1a",
+      "rows_pointer": "/1/rows",
+      "dimensions_metatiles": [
+        13,
+        15
+      ]
+    },
+    "MnR03Cave1F": {
+      "path": "planning/minnesota/caves/crystal-audit-v05/south.json",
+      "sha256": "ffe1d7f7c9b050591b08474aa1331392bd9196d631d60fe41329f120ea0c4a1a",
+      "rows_pointer": "/2/rows",
+      "dimensions_metatiles": [
+        21,
+        16
+      ]
+    },
+    "MnR05RockCut": {
+      "path": "planning/minnesota/caves/crystal-audit-v05/south.json",
+      "sha256": "ffe1d7f7c9b050591b08474aa1331392bd9196d631d60fe41329f120ea0c4a1a",
+      "rows_pointer": "/3/rows",
+      "dimensions_metatiles": [
+        11,
+        16
+      ]
+    },
+    "MnR13Cave1F": {
+      "path": "planning/minnesota/caves/crystal-audit-v05/south.json",
+      "sha256": "ffe1d7f7c9b050591b08474aa1331392bd9196d631d60fe41329f120ea0c4a1a",
+      "rows_pointer": "/4/rows",
+      "dimensions_metatiles": [
+        15,
+        13
+      ]
+    },
+    "MnR17Cave1F": {
+      "path": "planning/minnesota/caves/crystal-audit-v05/south.json",
+      "sha256": "ffe1d7f7c9b050591b08474aa1331392bd9196d631d60fe41329f120ea0c4a1a",
+      "rows_pointer": "/5/rows",
+      "dimensions_metatiles": [
+        19,
+        15
+      ]
+    },
+    "MnR20Cave1F": {
+      "path": "planning/minnesota/caves/crystal-audit-v05/north.json",
+      "sha256": "61bd186d7b1ad45a350f05945acbdaaad04f9f34ef5f9fc3361beca12aee5118",
+      "rows_pointer": "/0/rows",
+      "dimensions_metatiles": [
+        25,
+        11
+      ]
+    },
+    "MnR12Cave1F": {
+      "path": "planning/minnesota/caves/crystal-audit-v05/north.json",
+      "sha256": "61bd186d7b1ad45a350f05945acbdaaad04f9f34ef5f9fc3361beca12aee5118",
+      "rows_pointer": "/1/rows",
+      "dimensions_metatiles": [
+        18,
+        14
+      ]
+    },
+    "MnR10Cave1F": {
+      "path": "planning/minnesota/caves/crystal-audit-v05/north.json",
+      "sha256": "61bd186d7b1ad45a350f05945acbdaaad04f9f34ef5f9fc3361beca12aee5118",
+      "rows_pointer": "/2/rows",
+      "dimensions_metatiles": [
+        16,
+        24
+      ]
+    },
+    "MnInnerBasin": {
+      "path": "planning/minnesota/caves/crystal-audit-v05/north.json",
+      "sha256": "61bd186d7b1ad45a350f05945acbdaaad04f9f34ef5f9fc3361beca12aee5118",
+      "rows_pointer": "/3/rows",
+      "dimensions_metatiles": [
+        20,
+        16
+      ]
+    },
+    "MnR09Cave1F": {
+      "path": "planning/minnesota/caves/crystal-audit-v05/mines.json",
+      "sha256": "88b535868f93d2d5b195ca084f83a19ee313ada4d0687ef87398dd4d7ac85494",
+      "rows_pointer": "/0/rows",
+      "dimensions_metatiles": [
+        16,
+        11
+      ]
+    },
+    "MnIronDrillApproach": {
+      "path": "planning/minnesota/caves/crystal-audit-v05/mines.json",
+      "sha256": "88b535868f93d2d5b195ca084f83a19ee313ada4d0687ef87398dd4d7ac85494",
+      "rows_pointer": "/1/rows",
+      "dimensions_metatiles": [
+        12,
+        17
+      ]
+    },
+    "MnIronHaulage": {
+      "path": "planning/minnesota/caves/crystal-audit-v05/mines.json",
+      "sha256": "88b535868f93d2d5b195ca084f83a19ee313ada4d0687ef87398dd4d7ac85494",
+      "rows_pointer": "/2/rows",
+      "dimensions_metatiles": [
+        24,
+        10
+      ]
+    },
+    "MnIronSump": {
+      "path": "planning/minnesota/caves/crystal-audit-v05/mines.json",
+      "sha256": "88b535868f93d2d5b195ca084f83a19ee313ada4d0687ef87398dd4d7ac85494",
+      "rows_pointer": "/3/rows",
+      "dimensions_metatiles": [
+        15,
+        15
+      ]
+    },
+    "MnIronVentilation": {
+      "path": "planning/minnesota/caves/crystal-audit-v05/mines.json",
+      "sha256": "88b535868f93d2d5b195ca084f83a19ee313ada4d0687ef87398dd4d7ac85494",
+      "rows_pointer": "/4/rows",
+      "dimensions_metatiles": [
+        14,
+        17
+      ]
+    },
+    "MnIronPumpGallery": {
+      "path": "planning/minnesota/caves/crystal-audit-v05/mines.json",
+      "sha256": "88b535868f93d2d5b195ca084f83a19ee313ada4d0687ef87398dd4d7ac85494",
+      "rows_pointer": "/5/rows",
+      "dimensions_metatiles": [
+        20,
+        11
+      ]
+    },
+    "MnIronDrillCore": {
+      "path": "planning/minnesota/caves/crystal-audit-v05/mines.json",
+      "sha256": "88b535868f93d2d5b195ca084f83a19ee313ada4d0687ef87398dd4d7ac85494",
+      "rows_pointer": "/6/rows",
+      "dimensions_metatiles": [
+        16,
+        15
+      ]
+    }
+  },
+  "current_ice_caves": {
+    "MnVoyageursIce1F": {
+      "path": "planning/minnesota/caves/crystal-audit-v05/ice.json",
+      "sha256": "6ad125c8ec60bd5e8ac2267e4d112404b040997fedb6cd9933d1885cf6ae7533",
+      "rows_pointer": "/0/rows",
+      "dimensions_metatiles": [
+        20,
+        13
+      ]
+    },
+    "MnVoyageursIceB1F": {
+      "path": "planning/minnesota/caves/crystal-audit-v05/ice.json",
+      "sha256": "6ad125c8ec60bd5e8ac2267e4d112404b040997fedb6cd9933d1885cf6ae7533",
+      "rows_pointer": "/1/rows",
+      "dimensions_metatiles": [
+        16,
+        14
+      ]
+    }
+  }
+}

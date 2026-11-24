@@ -1,0 +1,372 @@
+[
+  {
+    "map": "MnVoyageursIce1F",
+    "dimensions_metatiles": [
+      20,
+      10
+    ],
+    "before_blocks_sha256": "ddbde1413f32db2dc14b731fca7e15a6e0e0e2db3e86af661d9a196a83c1f62a",
+    "rows": [
+      "3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b",
+      "3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 04 05 05 06 3b",
+      "3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 04 05 02 02 03 0a 3b",
+      "3b 04 05 05 06 3b 3b 3b 3b 3b 3b 3b 04 02 1f 1f 1f 02 0a 3b",
+      "3b 08 02 02 02 05 06 3b 3b 04 05 06 08 1f 1f 19 1f 1f 0a 3b",
+      "3b 07 02 02 1f 1f 1f 1f 1f 02 02 02 1f 1f 2d 1c 1f 1f 0a 3b",
+      "3b 08 02 02 1f 1f 19 2c 1f 02 19 02 1f 1f 1f 1f 1f 09 0a 3b",
+      "3b 0c 23 0d 1f 1f 1f 1f 1f 02 02 09 1f 1f 1f 1f 02 02 0a 3b",
+      "3b 3b 3b 3b 0c 0d 0d 0d 0d 0d 0d 0d 0d 0d 0d 0d 0d 0d 0e 3b",
+      "3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b"
+    ],
+    "arrivals": [
+      [
+        5,
+        11
+      ],
+      [
+        35,
+        6
+      ]
+    ],
+    "cameras": {
+      "West opening": [
+        5,
+        11
+      ],
+      "Bend in the frozen creek": [
+        15,
+        10
+      ],
+      "Glacial stair landing": [
+        35,
+        6
+      ]
+    },
+    "warps": [
+      {
+        "index": 1,
+        "from": [
+          5,
+          21
+        ],
+        "to": [
+          3,
+          11
+        ]
+      },
+      {
+        "index": 2,
+        "from": [
+          23,
+          5
+        ],
+        "to": [
+          35,
+          5
+        ]
+      },
+      {
+        "index": 3,
+        "from": [
+          5,
+          19
+        ],
+        "to": [
+          5,
+          11
+        ]
+      },
+      {
+        "index": 4,
+        "from": [
+          23,
+          6
+        ],
+        "to": [
+          35,
+          6
+        ]
+      }
+    ],
+    "actors": [
+      {
+        "script": "MnVoyageursIceGuide",
+        "from": [
+          3,
+          16
+        ],
+        "to": [
+          4,
+          9
+        ]
+      },
+      {
+        "script": "MnVoyageursIceHeal",
+        "from": [
+          9,
+          4
+        ],
+        "to": [
+          19,
+          11
+        ]
+      }
+    ],
+    "backgrounds": [
+      {
+        "script": "MN_CAVE_ICE_FULL_HEAL",
+        "from": [
+          17,
+          12
+        ],
+        "to": [
+          32,
+          17
+        ]
+      }
+    ],
+    "script_patches": [
+      {
+        "script": "MnVoyageursIceGuideText",
+        "index": 0,
+        "before_args": [
+          "\"Aim for rock or\""
+        ],
+        "after_args": [
+          "\"The first slide\""
+        ]
+      },
+      {
+        "script": "MnVoyageursIceGuideText",
+        "index": 1,
+        "before_args": [
+          "\"dry ground\""
+        ],
+        "after_args": [
+          "\"runs east.\""
+        ]
+      },
+      {
+        "script": "MnVoyageursIceGuideText",
+        "index": 2,
+        "before_args": [
+          "\"before you step\""
+        ],
+        "after_args": [
+          "\"The bend has a\""
+        ]
+      },
+      {
+        "script": "MnVoyageursIceGuideText",
+        "index": 3,
+        "before_args": [
+          "\"onto ice.\""
+        ],
+        "after_args": [
+          "\"dry ledge to stop.\""
+        ]
+      },
+      {
+        "script": "MnVoyageursIceGuideText",
+        "index": 4,
+        "before_args": [
+          "\"The middle shelf\""
+        ],
+        "after_args": [
+          "\"Climb the bank\""
+        ]
+      },
+      {
+        "script": "MnVoyageursIceGuideText",
+        "index": 5,
+        "before_args": [
+          "\"is a safe stop.\""
+        ],
+        "after_args": [
+          "\"at the far end.\""
+        ]
+      }
+    ]
+  },
+  {
+    "map": "MnVoyageursIceB1F",
+    "dimensions_metatiles": [
+      12,
+      17
+    ],
+    "before_blocks_sha256": "17997946953859bd1853fe050bb89773f61d35eaf609cb06ca5b0ac4d65591fe",
+    "rows": [
+      "3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b",
+      "3b 04 03 05 06 3b 3b 3b 3b 3b 3b 3b",
+      "3b 08 02 02 02 06 3b 3b 3b 3b 3b 3b",
+      "3b 08 02 02 02 05 06 3b 3b 3b 3b 3b",
+      "3b 08 02 1f 1f 1f 0a 3b 3b 3b 3b 3b",
+      "3b 0c 23 1f 19 1f 0a 3b 3b 3b 3b 3b",
+      "3b 3b 08 1f 1c 1f 06 3b 3b 3b 3b 3b",
+      "3b 3b 08 1f 1f 1f 02 06 3b 3b 3b 3b",
+      "3b 3b 0c 23 1f 1f 02 02 05 06 3b 3b",
+      "3b 3b 3b 08 1f 1f 1e 02 02 0a 3b 3b",
+      "3b 3b 04 02 02 02 06 23 02 0a 3b 3b",
+      "3b 3b 08 1f 1f 1f 0a 08 1f 0a 3b 3b",
+      "3b 04 02 1f 1f 1f 02 1f 1f 02 06 3b",
+      "3b 08 02 1f 19 1f 1f 1f 1f 1f 0a 3b",
+      "3b 08 02 1f 1f 1f 1f 2d 02 02 0a 3b",
+      "3b 0c 0d 0d 0d 0d 0d 0d 0d 0d 0e 3b",
+      "3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b 3b"
+    ],
+    "arrivals": [
+      [
+        5,
+        4
+      ]
+    ],
+    "cameras": {
+      "Survey station": [
+        5,
+        4
+      ],
+      "Rib of ice": [
+        10,
+        13
+      ],
+      "Deep ice shelf": [
+        15,
+        28
+      ]
+    },
+    "warps": [
+      {
+        "index": 1,
+        "from": [
+          5,
+          21
+        ],
+        "to": [
+          5,
+          3
+        ]
+      },
+      {
+        "index": 2,
+        "from": [
+          5,
+          19
+        ],
+        "to": [
+          5,
+          4
+        ]
+      }
+    ],
+    "actors": [
+      {
+        "script": "MnVoyageursIceNeverMelt",
+        "from": [
+          19,
+          3
+        ],
+        "to": [
+          17,
+          29
+        ]
+      },
+      {
+        "script": "MnVoyageursIceRevive",
+        "from": [
+          5,
+          5
+        ],
+        "to": [
+          17,
+          18
+        ]
+      },
+      {
+        "script": "MN_INTERIOR_VOYAGEURS_SURVEYOR",
+        "from": [
+          3,
+          20
+        ],
+        "to": [
+          3,
+          6
+        ]
+      }
+    ],
+    "backgrounds": [
+      {
+        "script": "MN_CAVE_ICE_PP_UP",
+        "from": [
+          27,
+          11
+        ],
+        "to": [
+          8,
+          27
+        ]
+      }
+    ],
+    "script_patches": [
+      {
+        "script": "MN_INTERIOR_VOYAGEURS_SURVEYORInteriorText",
+        "index": 0,
+        "before_args": [
+          "\"I drew a turn on\""
+        ],
+        "after_args": [
+          "\"My grandson drew\""
+        ]
+      },
+      {
+        "script": "MN_INTERIOR_VOYAGEURS_SURVEYORInteriorText",
+        "index": 1,
+        "before_args": [
+          "\"bare ice.\""
+        ],
+        "after_args": [
+          "\"the old ice trail.\""
+        ]
+      },
+      {
+        "script": "MN_INTERIOR_VOYAGEURS_SURVEYORInteriorText",
+        "index": 2,
+        "before_args": [
+          "\"My grandson caught\""
+        ],
+        "after_args": [
+          "\"Keep the stone rib\""
+        ]
+      },
+      {
+        "script": "MN_INTERIOR_VOYAGEURS_SURVEYORInteriorText",
+        "index": 3,
+        "before_args": [
+          "\"that!\""
+        ],
+        "after_args": [
+          "\"on your right.\""
+        ]
+      },
+      {
+        "script": "MN_INTERIOR_VOYAGEURS_SURVEYORInteriorText",
+        "index": 4,
+        "before_args": [
+          "\"Aim for the north\""
+        ],
+        "after_args": [
+          "\"The lower shelf\""
+        ]
+      },
+      {
+        "script": "MN_INTERIOR_VOYAGEURS_SURVEYORInteriorText",
+        "index": 5,
+        "before_args": [
+          "\"shelf first.\""
+        ],
+        "after_args": [
+          "\"is a long slide.\""
+        ]
+      }
+    ]
+  }
+]

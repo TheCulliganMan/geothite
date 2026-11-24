@@ -294,6 +294,17 @@ their previous Gym and cave reentry rules.
 
 ## Minnesota Gym and cave overhaul
 
+The [cave replacement](../planning/minnesota/caves/crystal-replacement-v02/README.md)
+builds 19 new Minnesota interiors on Fair Presentation. The
+[cave wall finish](../planning/minnesota/caves/crystal-wall-finish-v03/README.md)
+adds quieter backgrounds and hand-authored cliff edges. The
+[cave routes and landmarks](../planning/minnesota/caves/crystal-detail-v04/README.md)
+pass reshapes the walkways, clarifies entrance and reward cues, and stages
+slide stops and working mine routes. The [comparative cave audit and replacement](../planning/minnesota/caves/crystal-audit-v05/README.md)
+reworks all 19 interiors against original Crystal floorplans. It includes the
+room-by-room findings, exact build inputs, and checks for the selected local
+pack.
+
 The combined overlay builds directly on the exact refinement v02 raw and hosted
 packs. It replaces all eight Gym layouts, gives all eighteen supporting Gym
 trainers native sight encounters, preserves talk-initiated leaders, and installs

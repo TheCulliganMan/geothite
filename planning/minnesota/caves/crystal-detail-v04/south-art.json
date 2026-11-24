@@ -1,0 +1,13 @@
+[
+  {
+    "tileset": "mn_r05_rock_cut",
+    "metatiles": [
+      {
+        "id": 99,
+        "glyphs": [22, 22, 26, 27, 22, 22, 22, 22, 38, 38, 38, 38, 38, 38, 38, 38],
+        "collision": ["WALL", "WALL", "WALL", "WALL"]
+      }
+    ],
+    "glyphs": []
+  }
+]
