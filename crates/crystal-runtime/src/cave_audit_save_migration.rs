@@ -157,6 +157,15 @@ pub(super) fn reenter(
     session.set_time(state.time.registers.hours, state.time.time_of_day);
     session.sync_event_flag_memory(&state.flags);
     data.apply_saved_overworld_overrides(&mut session, state)?;
+    if map_name == "MnIronDrillCore" {
+        // Continue skips the object callback that stages Finn after the drill
+        // stops. Keep only the reconstructed room state from this replay.
+        let mut checkpoint = state.clone();
+        data.apply_map_setup_callbacks(&mut checkpoint, &mut session, &map_name, "MAPSETUP_WARP")?;
+        if let Some(objects) = checkpoint.map_object_overrides.remove(&map_name) {
+            state.map_object_overrides.insert(map_name.clone(), objects);
+        }
+    }
     session.begin_map_object_setup();
     session.finish_map_object_setup()?;
     state
