@@ -11,6 +11,8 @@ import json
 from pathlib import Path
 import shutil
 
+from audit_pokedex_roster import regional_order
+
 ROOT = Path(__file__).resolve().parents[1] / "pokemon"
 VOID = {"area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "param", "source", "track", "wbr"}
 
@@ -128,7 +130,8 @@ def export(baseline, output):
     roster, curation = read(ROOT / "roster.json"), read(ROOT / "roster-curation.json")
     profiles = {p["id"]: p for p in read(ROOT / "species-profiles.json")["species"]}
     palettes = read(ROOT / "palettes.json")["pokemon"]
-    order = {s["id"]: s["number"] for s in read(ROOT / "pokedex-order.json")["species"]}
+    order = {species_id: number for number, species_id in enumerate(
+        regional_order(roster, read(ROOT / "pokedex-order.json")), 1)}
     retired = {f["id"] for f in curation["retired_families"]}
     families = {f["id"]: f for f in roster["families"]}
     retained = {m["id"]: (f, m) for f in families.values() if f["id"] not in retired for m in f["members"]}
@@ -141,7 +144,7 @@ def export(baseline, output):
     document = Parser((output / "index.html").read_text()).root
     styles = {"".join(n.children).upper(): n.attrs.get("style", "") for n in document.nodes() if n.has("type-badge")}
     cards = {n.attrs["data-id"]: n for n in document.nodes() if n.has("pokemon-card")}
-    rare = [sid for sid in retained if cards[sid].attrs.get("data-rarity") in {"rare", "pseudo"}]
+    rare = [sid for sid in retained if cards[sid].attrs.get("data-rarity") in {"legendary", "mythical", "pseudo"}]
     ordinary = sorted(set(retained) - set(rare), key=order.get)
     ids = ordinary + list(candidates) + sorted(rare, key=order.get)
     numbers = {sid: i for i, sid in enumerate(ids, 1)}

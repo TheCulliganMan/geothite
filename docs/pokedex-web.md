@@ -1,5 +1,31 @@
 # Northwoods Pokédex web app
 
+## Regional ordering
+
+`planning/minnesota/pokemon/pokedex-order.json` lists the authored family
+sections and the matching source-number table. Curation removes whole families,
+then the website and game compact the remaining entries to 001–225. Starters
+and evolution stages stay together. Ordinary families occupy 001–217,
+Wrigglet/Pupump/Mosquitan occupy 218–220, and Babehemoth, Kettlurk, Verdigrim,
+Bunjant and Vergloom finish the active Pokédex at 221–225. Retired legendary
+and mythical proposals remain archived.
+
+Validate both the authored order and a candidate release before publication:
+
+```sh
+python3 planning/minnesota/tools/audit_pokedex_roster.py
+python3 -m unittest discover -s planning/minnesota/tools -p test_pokedex_order.py
+python3 planning/minnesota/tools/revise_pokedex_order.py BASE_RELEASE NEW_RELEASE
+POKEDEX_WEB_RELEASE=NEW_RELEASE POKEDEX_WEB_BASELINE=BASE_RELEASE \
+  node web-client/pokedex/order.test.mjs
+```
+
+The ordering publisher retains species identities, profiles, artwork, cries,
+moves and notebook keys. It updates the catalog, species/family grids, number
+search terms, page labels and previous/next navigation together. The pack
+recipe is documented in
+[the ordering revision](../planning/minnesota/revisions/pokedex-order-v01/README.md).
+
 The live guide serves `20261120-fair-patrols-sprite-edges-47`. It keeps the 225 active species and Lakeside Gym machine data from release 46. Scutlet’s back, Dynarill’s front, Emberm’s back and Mudnip’s front now use the repaired sprites in both normal and shiny colors. The publisher updates image links inherited from older releases when replacing those sprites. [Artwork and verification](../planning/minnesota/pokemon/sprite-edge-cleanup-20261118/README.md)
 
 Release 45 updated the front and back sprites for entries 181–186 and retained the Cindore refinement and Cascavolt crop repair from release 44. [Native art and media verification](../planning/minnesota/pokemon/NATIVE-ART-20261104.md)

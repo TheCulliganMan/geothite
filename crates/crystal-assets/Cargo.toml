@@ -193,6 +193,10 @@ required-features = ["pack-authoring"]
 name = "pack_northstar_fair_release"
 required-features = ["pack-authoring"]
 
+[[example]]
+name = "pack_northstar_dex_order"
+required-features = ["pack-authoring"]
+
 [[bin]]
 name = "revise_northstar_dialogue_clarity"
 required-features = ["pack-authoring"]

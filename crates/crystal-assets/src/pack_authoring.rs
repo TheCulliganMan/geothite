@@ -203,6 +203,8 @@ mod northstar_fair_release;
 pub use northstar_fair_release::build_northstar_fair_release;
 mod northstar_fair_presentation;
 pub use northstar_fair_presentation::build_northstar_fair_presentation;
+mod northstar_dex_order;
+pub use northstar_dex_order::build_northstar_dex_order;
 mod northstar_fair_patrols;
 pub use northstar_fair_patrols::revise_fair_patrols;
 mod northstar_ely_challenge;

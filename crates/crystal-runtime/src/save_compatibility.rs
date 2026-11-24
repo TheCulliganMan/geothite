@@ -18,6 +18,9 @@ use crate::iron_save_migration::{self, IronRelocations};
 #[path = "fair_save_migration.rs"]
 mod fair_save_migration;
 
+#[path = "dex_order_save_migration.rs"]
+mod dex_order_save_migration;
+
 #[path = "road_trainer_save_migration.rs"]
 mod road_trainer_save_migration;
 
@@ -74,6 +77,9 @@ fn parse_compatibility(bytes: &[u8], target_id: &str) -> Result<Compatibility> {
         schema_version: u8,
     }
     let header: Header = serde_json::from_slice(bytes).context("save compatibility version")?;
+    if header.schema_version == 11 {
+        return dex_order_save_migration::parse(bytes, target_id);
+    }
     if header.schema_version == 10 {
         return fair_save_migration::parse_presentation(bytes, target_id);
     }
@@ -380,12 +386,14 @@ pub fn prepare_runtime_save_slot(
             )?;
             let mut upgraded =
                 upgrade_source_checkpoint(saved.into_state(), &metadata, source, runtime.data())?;
-            fair_save_migration::reconcile(
-                &mut upgraded,
-                runtime.data(),
-                &metadata.fair_layouts,
-                source,
-            )?;
+            if !dex_order_save_migration::preserves_fair_layout(source) {
+                fair_save_migration::reconcile(
+                    &mut upgraded,
+                    runtime.data(),
+                    &metadata.fair_layouts,
+                    source,
+                )?;
+            }
             runtime.validate_save_state_for_runtime_pack(&upgraded)?;
             Ok(upgraded)
         }) else {
@@ -408,6 +416,10 @@ fn upgrade_source_checkpoint(
     source: &CompatibleSaveSource,
     data: &GameDataSet,
 ) -> Result<GameState> {
+    if dex_order_save_migration::preserves_fair_layout(source) {
+        validate_upgrade_checkpoint(&state, data)?;
+        return Ok(state);
+    }
     if metadata
         .unchanged_checkpoint_parents
         .contains(&source.modpack_id)
